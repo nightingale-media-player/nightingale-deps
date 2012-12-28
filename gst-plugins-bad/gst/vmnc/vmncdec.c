@@ -43,9 +43,9 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 #define GST_VMNC_DEC(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_VMNC_DEC,GstVMncDec))
 
-#define RFB_GET_UINT32(ptr) GST_READ_UINT32_BE(ptr)
-#define RFB_GET_UINT16(ptr) GST_READ_UINT16_BE(ptr)
-#define RFB_GET_UINT8(ptr) GST_READ_UINT8(ptr)
+#define RFB_GET_UINT32(ptr) GUINT32_FROM_BE (*(guint32 *)(ptr))
+#define RFB_GET_UINT16(ptr) GUINT16_FROM_BE (*(guint16 *)(ptr))
+#define RFB_GET_UINT8(ptr) (*(guint8 *)(ptr))
 
 enum
 {
@@ -134,6 +134,12 @@ typedef struct
   GstElementClass parent_class;
 } GstVMncDecClass;
 
+static const GstElementDetails vmnc_dec_details =
+GST_ELEMENT_DETAILS ("VMnc video decoder",
+    "Codec/Decoder/Video",
+    "Decode VMnc to raw (RGB) video",
+    "Michael Smith <msmith@xiph.org>");
+
 static GstStaticPadTemplate vmnc_dec_src_factory =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -149,7 +155,6 @@ GST_STATIC_PAD_TEMPLATE ("sink",
         "width=(int)[0, max], " "height=(int)[0, max]")
     );
 
-GType gst_vmnc_dec_get_type (void);
 GST_BOILERPLATE (GstVMncDec, gst_vmnc_dec, GstElement, GST_TYPE_ELEMENT);
 
 static void vmnc_dec_get_property (GObject * object, guint prop_id,
@@ -172,10 +177,7 @@ gst_vmnc_dec_base_init (gpointer g_class)
       gst_static_pad_template_get (&vmnc_dec_src_factory));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&vmnc_dec_sink_factory));
-  gst_element_class_set_static_metadata (element_class, "VMnc video decoder",
-      "Codec/Decoder/Video",
-      "Decode VmWare video to raw (RGB) video",
-      "Michael Smith <msmith@xiph.org>");
+  gst_element_class_set_details (element_class, &vmnc_dec_details);
 }
 
 static void
@@ -727,7 +729,6 @@ vmnc_handle_copy_rectangle (GstVMncDec * dec, struct RfbRectangle *rect,
   return 4;
 }
 
-/* FIXME: data+off might not be properly aligned */
 #define READ_PIXEL(pixel, data, off, len)         \
   if (dec->format.bytes_per_pixel == 1) {         \
      if (off >= len)                              \
@@ -1139,6 +1140,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    vmnc,
-    "VmWare Video Codec plugins",
+    "vmnc",
+    "VMnc video plugin library",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

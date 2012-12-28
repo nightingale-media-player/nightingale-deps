@@ -1,5 +1,4 @@
-/* GStreamer PNM encoder
- * Copyright (C) 2009 Lutz Mueller <lutz@users.sourceforge.net>
+/* GStreamer
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,8 +19,7 @@
 #ifndef __GST_PNMENC_H__
 #define __GST_PNMENC_H__
 
-#include <gst/gst.h>
-#include <gst/video/video.h>
+#include <gst/gstelement.h>
 
 #include "gstpnmutils.h"
 
@@ -40,7 +38,6 @@ struct _GstPnmenc
 {
   GstElement element;
 
-  GstVideoInfo vinfo;
   GstPnmInfo info;
 
   GstPad *src;

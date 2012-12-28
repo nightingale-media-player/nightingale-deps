@@ -68,19 +68,19 @@ no_pipeline (DemoPlayer * player)
   return FALSE;
 }
 
-static GstPadProbeReturn
-demo_player_event_listener (GstPad * pad, GstPadProbeInfo * info, gpointer data)
+static gboolean
+demo_player_event_listener (GstElement * host, GstEvent * event, gpointer data)
 {
-  GstEvent *event = GST_PAD_PROBE_INFO_EVENT (info);
   DemoPlayer *player = DEMO_PLAYER (data);
   DemoPlayerPrivate *priv = DEMO_PLAYER_GET_PRIVATE (player);
 
-  if (GST_EVENT_TYPE (event) == GST_EVENT_SEGMENT) {
-    const GstSegment *segment;
+  if (GST_EVENT_TYPE (event) == GST_EVENT_NEWSEGMENT) {
+    gdouble rate, applied_rate;
     gdouble new_rate;
 
-    gst_event_parse_segment (event, &segment);
-    new_rate = segment->rate * segment->applied_rate;
+    gst_event_parse_new_segment_full (event, NULL, &rate, &applied_rate, NULL,
+        NULL, NULL, NULL);
+    new_rate = rate * applied_rate;
     if (priv->rate != new_rate) {
       priv->rate = new_rate;
       g_signal_emit (player, demo_player_signals[SIGNAL_RATE_CHANGE], 0,
@@ -88,7 +88,7 @@ demo_player_event_listener (GstPad * pad, GstPadProbeInfo * info, gpointer data)
     }
   }
 
-  return GST_PAD_PROBE_OK;
+  return TRUE;
 }
 
 static void
@@ -154,7 +154,8 @@ demo_player_build_pipeline (DemoPlayer * player)
   filter = priv->scaletempo;
 
   MAKE_ELEMENT (NULL, playbin, "playbin", "playbin");
-  gconf = gst_registry_find_plugin (gst_registry_get (), "gconfelements");
+
+  gconf = gst_default_registry_find_plugin ("gconfelements");
   has_gconf = (gconf != NULL);
   gst_object_unref (gconf);
 
@@ -173,9 +174,8 @@ demo_player_build_pipeline (DemoPlayer * player)
   LINK_ELEMENTS (format, resample);
   LINK_ELEMENTS (resample, asink);
 
-  gst_pad_add_probe (gst_element_get_static_pad (asink, "sink"),
-      GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM,
-      demo_player_event_listener, player, NULL);
+  gst_pad_add_event_probe (gst_element_get_static_pad (asink, "sink"),
+      G_CALLBACK (demo_player_event_listener), player);
 
   ghostpad = gst_element_get_static_pad (filter, "sink");
   gst_element_add_pad (audioline, gst_ghost_pad_new ("sink", ghostpad));
@@ -196,9 +196,8 @@ demo_player_build_pipeline (DemoPlayer * player)
   priv->scaletempo_line = audioline;
   MAKE_ELEMENT (NULL, priv->scalerate_line, audiosink_name,
       "scaling_audio_sink");
-  gst_pad_add_probe (gst_element_get_static_pad (priv->scalerate_line,
-          "sink"), GST_PAD_PROBE_TYPE_EVENT_DOWNSTREAM,
-      demo_player_event_listener, player, NULL);
+  gst_pad_add_event_probe (gst_element_get_static_pad (priv->scalerate_line,
+          "sink"), G_CALLBACK (demo_player_event_listener), player);
   g_object_ref (priv->scaletempo_line);
   g_object_ref (priv->scalerate_line);
 }
@@ -222,8 +221,9 @@ _set_rate (DemoPlayer * player, gdouble new_rate, gint second)
   priv = DEMO_PLAYER_GET_PRIVATE (player);
 
   if (second < 0) {
+    GstFormat fmt = GST_FORMAT_TIME;
     seek_type = GST_SEEK_TYPE_SET;
-    if (!gst_element_query_position (priv->pipeline, GST_FORMAT_TIME, &pos)) {
+    if (!gst_element_query_position (priv->pipeline, &fmt, &pos)) {
       // This should be the default but too many upstream elements seek anyway
       pos = GST_CLOCK_TIME_NONE;
       seek_type = GST_SEEK_TYPE_NONE;
@@ -461,12 +461,12 @@ demo_player_get_position_func (DemoPlayer * player)
 {
   DemoPlayerPrivate *priv = DEMO_PLAYER_GET_PRIVATE (player);
   gint64 pos;
+  GstFormat fmt = GST_FORMAT_TIME;
 
   if (!priv->pipeline)
     return -1;
 
-  if (!gst_element_query_position (priv->pipeline, GST_FORMAT_TIME, &pos)
-      || pos < 0) {
+  if (!gst_element_query_position (priv->pipeline, &fmt, &pos) || pos < 0) {
     return -1;
   }
 
@@ -478,12 +478,12 @@ demo_player_get_duration_func (DemoPlayer * player)
 {
   DemoPlayerPrivate *priv = DEMO_PLAYER_GET_PRIVATE (player);
   gint64 dur;
+  GstFormat fmt = GST_FORMAT_TIME;
 
   if (!priv->pipeline)
     return -1;
 
-  if (!gst_element_query_duration (priv->pipeline, GST_FORMAT_TIME, &dur)
-      || dur < 0) {
+  if (!gst_element_query_duration (priv->pipeline, &fmt, &dur) || dur < 0) {
     return -1;
   }
 

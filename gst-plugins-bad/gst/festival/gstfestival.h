@@ -75,9 +75,9 @@ extern "C" {
 typedef struct FT_Info
 {
     int encoding;
-    const char *server_host;
+    char *server_host;
     int server_port;
-    const char *text_mode;
+    char *text_mode;
     
     int server_fd;
 } FT_Info;

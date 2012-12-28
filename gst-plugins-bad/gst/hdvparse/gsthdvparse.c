@@ -113,16 +113,19 @@ static GstCaps *gst_hdvparse_transform_caps (GstBaseTransform * trans,
 static void
 gst_hdvparse_base_init (gpointer klass)
 {
-
+  static GstElementDetails element_details = {
+    "HDVParser",
+    "Data/Parser",
+    "HDV private stream Parser",
+    "Edward Hervey <bilboed@bilboed.com>"
+  };
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_template));
-  gst_element_class_set_static_metadata (element_class, "HDVParser",
-      "Data/Parser",
-      "HDV private stream Parser", "Edward Hervey <bilboed@bilboed.com>");
+  gst_element_class_set_details (element_class, &element_details);
 }
 
 /* initialize the HDVParse's class */
@@ -546,9 +549,9 @@ parse_video_frame (GstHDVParse * filter, guint8 * data, guint64 size,
      * 37   | Tens of Years |Units of Years |
      *      ---------------------------------
      */
-    ds = data[34] >> 7;
-    tm = (data[34] >> 6) & 0x1;
-    tz = BCD (data[34] & 0x3f);
+    ds = data[32] >> 7;
+    tm = (data[32] >> 6) & 0x1;
+    tz = BCD (data[32] & 0x3f);
     day = BCD (data[35] & 0x3f);
     dow = data[36] >> 5;
     month = BCD (data[36] & 0x1f);
@@ -885,6 +888,6 @@ HDVParse_init (GstPlugin * HDVParse)
  */
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    hdvparse,
+    "hdvparse",
     "HDV private stream parser",
     HDVParse_init, VERSION, "LGPL", "GStreamer", "http://gstreamer.net/")

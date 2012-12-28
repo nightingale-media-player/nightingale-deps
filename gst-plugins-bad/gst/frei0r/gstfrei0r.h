@@ -32,9 +32,9 @@ typedef struct _GstFrei0rPropertyValue GstFrei0rPropertyValue;
 
 struct _GstFrei0rPropertyValue {
   union {
-    f0r_param_bool b;
-    f0r_param_double d;
-    f0r_param_string *s;
+    gboolean b;
+    gdouble d;
+    gchar *s;
     f0r_param_position_t position;
     f0r_param_color_t color;
   } data;
@@ -66,20 +66,14 @@ struct _GstFrei0rFuncTable {
 			   f0r_param_t param, int param_index);
   
   void (*update) (f0r_instance_t instance, 
-		  double time, const guint32* inframe, guint32* outframe);
+		  double time, const uint32_t* inframe, uint32_t* outframe);
   void (*update2) (f0r_instance_t instance,
 		   double time,
-		   const guint32* inframe1,
-		   const guint32* inframe2,
-		   const guint32* inframe3,
-		   guint32* outframe);
+		   const uint32_t* inframe1,
+		   const uint32_t* inframe2,
+		   const uint32_t* inframe3,
+		   uint32_t* outframe);
 };
-
-typedef enum {
-  GST_FREI0R_PLUGIN_REGISTER_RETURN_OK,
-  GST_FREI0R_PLUGIN_REGISTER_RETURN_FAILED,
-  GST_FREI0R_PLUGIN_REGISTER_RETURN_ALREADY_REGISTERED
-} GstFrei0rPluginRegisterReturn;
 
 void gst_frei0r_klass_install_properties (GObjectClass *gobject_class, GstFrei0rFuncTable *ftable, GstFrei0rProperty *properties, gint n_properties);
 

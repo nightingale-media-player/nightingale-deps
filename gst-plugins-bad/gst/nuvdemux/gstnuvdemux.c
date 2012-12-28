@@ -31,7 +31,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch filesrc test.nuv ! nuvdemux name=demux  demux.audio_00 ! decodebin ! audioconvert ! audioresample ! autoaudiosink   demux.video_00 ! queue ! decodebin ! videoconvert ! videoscale ! autovideosink
+ * gst-launch filesrc test.nuv ! nuvdemux name=demux  demux.audio_00 ! decodebin ! audioconvert ! audioresample ! autoaudiosink   demux.video_00 ! queue ! decodebin ! ffmpegcolorspace ! videoscale ! autovideosink
  * ]| Play (parse and decode) an .nuv file and try to output it to
  * an automatically detected soundcard and videosink. If the NUV file contains
  * compressed audio or video data, this will only work if you have the
@@ -59,6 +59,13 @@ GST_DEBUG_CATEGORY_STATIC (nuvdemux_debug);
 #define GST_FLOW_ERROR_NO_DATA  -101
 
 GST_DEBUG_CATEGORY_EXTERN (GST_CAT_EVENT);
+
+static const GstElementDetails gst_nuv_demux_details =
+GST_ELEMENT_DETAILS ("Nuv demuxer",
+    "Codec/Demuxer",
+    "Demultiplex a mythtv .nuv file into audio and video",
+    "Renato Araujo Oliveira Filho <renato.filho@indt.org.br>,"
+    "Rosfran Borges <rosfran.borges@indt.org.br>");
 
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -132,11 +139,7 @@ gst_nuv_demux_base_init (gpointer klass)
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_template));
-  gst_element_class_set_static_metadata (element_class, "Nuv demuxer",
-      "Codec/Demuxer",
-      "Demultiplex a MythTV NuppleVideo .nuv file into audio and video",
-      "Renato Araujo Oliveira Filho <renato.filho@indt.org.br>,"
-      "Rosfran Borges <rosfran.borges@indt.org.br>");
+  gst_element_class_set_details (element_class, &gst_nuv_demux_details);
 }
 
 static void
@@ -488,7 +491,7 @@ gst_nuv_demux_stream_data (GstNuvDemux * nuv)
   switch (h->i_type) {
     case 'V':
     {
-      if (!buf)
+      if (h->i_length == 0)
         break;
 
       GST_BUFFER_OFFSET (buf) = nuv->video_offset;
@@ -499,7 +502,7 @@ gst_nuv_demux_stream_data (GstNuvDemux * nuv)
     }
     case 'A':
     {
-      if (!buf)
+      if (h->i_length == 0)
         break;
 
       GST_BUFFER_OFFSET (buf) = nuv->audio_offset;
@@ -544,7 +547,6 @@ gst_nuv_demux_stream_mpeg_data (GstNuvDemux * nuv)
   GstFlowReturn ret = GST_FLOW_OK;
 
   /* ffmpeg extra data */
-  nuv->mpeg_buffer = NULL;
   ret =
       gst_nuv_demux_read_bytes (nuv, nuv->mpeg_data_size, TRUE,
       &nuv->mpeg_buffer);
@@ -638,7 +640,7 @@ gst_nuv_demux_stream_extend_header (GstNuvDemux * nuv)
     nuv->state = GST_NUV_DEMUX_INVALID_DATA;
     GST_ELEMENT_ERROR (nuv, STREAM, DEMUX, (NULL),
         ("Unsupported extended header (0x%02x)", buf->data[0]));
-    gst_buffer_unref (buf);
+    g_object_unref (buf);
     return GST_FLOW_ERROR;
   }
   return res;
@@ -730,9 +732,7 @@ gst_nuv_demux_play (GstPad * pad)
 pause:
   GST_LOG_OBJECT (nuv, "pausing task, reason %s", gst_flow_get_name (res));
   gst_pad_pause_task (nuv->sinkpad);
-  if (res == GST_FLOW_UNEXPECTED) {
-    gst_nuv_demux_send_eos (nuv);
-  } else if (res == GST_FLOW_NOT_LINKED || res < GST_FLOW_UNEXPECTED) {
+  if (GST_FLOW_IS_FATAL (res)) {
     GST_ELEMENT_ERROR (nuv, STREAM, FAILED,
         (_("Internal data stream error.")),
         ("streaming stopped, reason %s", gst_flow_get_name (res)));
@@ -774,7 +774,7 @@ gst_nuv_demux_read_bytes (GstNuvDemux * nuv, guint64 size, gboolean move,
       /* got eos */
     } else if (ret == GST_FLOW_UNEXPECTED) {
       gst_nuv_demux_send_eos (nuv);
-      return GST_FLOW_FLUSHING;
+      return GST_FLOW_WRONG_STATE;
     }
   } else {
     if (gst_adapter_available (nuv->adapter) < size)
@@ -824,8 +824,7 @@ gst_nuv_demux_sink_activate_pull (GstPad * sinkpad, gboolean active)
   GstNuvDemux *nuv = GST_NUV_DEMUX (gst_pad_get_parent (sinkpad));
 
   if (active) {
-    gst_pad_start_task (sinkpad, (GstTaskFunction) gst_nuv_demux_loop, sinkpad,
-        NULL);
+    gst_pad_start_task (sinkpad, (GstTaskFunction) gst_nuv_demux_loop, sinkpad);
   } else {
     gst_pad_stop_task (sinkpad);
   }
@@ -941,6 +940,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    nuvdemux,
-    "Demuxes MythTV NuppelVideo files",
+    "nuvdemux",
+    "Demuxes and muxes audio and video",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

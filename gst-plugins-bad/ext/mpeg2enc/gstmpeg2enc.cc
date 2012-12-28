@@ -57,7 +57,6 @@
 #include "config.h"
 #endif
 
-#include <gst/glib-compat-private.h>
 #include "gstmpeg2enc.hh"
 
 GST_DEBUG_CATEGORY (mpeg2enc_debug);
@@ -71,8 +70,8 @@ GST_DEBUG_CATEGORY (mpeg2enc_debug);
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("video/x-raw, "
-        "format = (string) { I420 }, " COMMON_VIDEO_CAPS)
+    GST_STATIC_CAPS ("video/x-raw-yuv, "
+        "format = (fourcc) { I420 }, " COMMON_VIDEO_CAPS)
     );
 
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
@@ -86,17 +85,12 @@ static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
 
 static void gst_mpeg2enc_finalize (GObject * object);
 static void gst_mpeg2enc_reset (GstMpeg2enc * enc);
-static gboolean gst_mpeg2enc_setcaps (GstMpeg2enc * enc, GstPad * pad,
-    GstCaps * caps);
-static gboolean gst_mpeg2enc_sink_query (GstPad * pad, GstObject * parent,
-    GstQuery * query);
-static gboolean gst_mpeg2enc_sink_event (GstPad * pad, GstObject * parent,
-    GstEvent * event);
+static gboolean gst_mpeg2enc_setcaps (GstPad * pad, GstCaps * caps);
+static GstCaps *gst_mpeg2enc_getcaps (GstPad * pad);
+static gboolean gst_mpeg2enc_sink_event (GstPad * pad, GstEvent * event);
 static void gst_mpeg2enc_loop (GstMpeg2enc * enc);
-static GstFlowReturn gst_mpeg2enc_chain (GstPad * pad, GstObject * parent,
-    GstBuffer * buffer);
-static gboolean gst_mpeg2enc_src_activate_mode (GstPad * pad, GstObject * parent,
-    GstPadMode mode, gboolean active);
+static GstFlowReturn gst_mpeg2enc_chain (GstPad * pad, GstBuffer * buffer);
+static gboolean gst_mpeg2enc_src_activate_push (GstPad * pad, gboolean active);
 static GstStateChangeReturn gst_mpeg2enc_change_state (GstElement * element,
     GstStateChange transition);
 
@@ -105,9 +99,38 @@ static void gst_mpeg2enc_get_property (GObject * object,
 static void gst_mpeg2enc_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
 
-#define gst_mpeg2enc_parent_class parent_class
-G_DEFINE_TYPE_WITH_CODE (GstMpeg2enc, gst_mpeg2enc, GST_TYPE_ELEMENT,
-    G_IMPLEMENT_INTERFACE (GST_TYPE_PRESET, NULL));
+static void
+_do_init (GType object_type)
+{
+  const GInterfaceInfo preset_interface_info = {
+    NULL,                       /* interface_init */
+    NULL,                       /* interface_finalize */
+    NULL                        /* interface_data */
+  };
+
+  g_type_add_interface_static (object_type, GST_TYPE_PRESET,
+      &preset_interface_info);
+}
+
+GST_BOILERPLATE_FULL (GstMpeg2enc, gst_mpeg2enc, GstElement, GST_TYPE_ELEMENT,
+    _do_init);
+
+static void
+gst_mpeg2enc_base_init (gpointer klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_set_details_simple (element_class,
+      "mpeg2enc video encoder", "Codec/Encoder/Video",
+      "High-quality MPEG-1/2 video encoder",
+      "Andrew Stevens <andrew.stevens@nexgo.de>\n"
+      "Ronald Bultje <rbultje@ronald.bitfreak.net>");
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_template));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_template));
+}
 
 static void
 gst_mpeg2enc_class_init (GstMpeg2encClass * klass)
@@ -126,17 +149,6 @@ gst_mpeg2enc_class_init (GstMpeg2encClass * klass)
   object_class->finalize = GST_DEBUG_FUNCPTR (gst_mpeg2enc_finalize);
 
   element_class->change_state = GST_DEBUG_FUNCPTR (gst_mpeg2enc_change_state);
-
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&src_template));
-  gst_element_class_add_pad_template (element_class,
-      gst_static_pad_template_get (&sink_template));
-
-  gst_element_class_set_static_metadata (element_class,
-      "mpeg2enc video encoder", "Codec/Encoder/Video",
-      "High-quality MPEG-1/2 video encoder",
-      "Andrew Stevens <andrew.stevens@nexgo.de>\n"
-      "Ronald Bultje <rbultje@ronald.bitfreak.net>");
 }
 
 static void
@@ -151,39 +163,46 @@ gst_mpeg2enc_finalize (GObject * object)
   }
   delete enc->options;
 
+  g_mutex_free (enc->tlock);
+  g_cond_free (enc->cond);
   g_queue_free (enc->time);
-  g_mutex_clear (&enc->tlock);
-  g_cond_clear (&enc->cond);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
-gst_mpeg2enc_init (GstMpeg2enc * enc)
+gst_mpeg2enc_init (GstMpeg2enc * enc, GstMpeg2encClass * g_class)
 {
   GstElement *element = GST_ELEMENT (enc);
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  enc->sinkpad = gst_pad_new_from_static_template (&sink_template, "sink");
-  gst_pad_set_query_function (enc->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_mpeg2enc_sink_query));
+  enc->sinkpad =
+      gst_pad_new_from_template (gst_element_class_get_pad_template
+      (element_class, "sink"), "sink");
+  gst_pad_set_setcaps_function (enc->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_mpeg2enc_setcaps));
+  gst_pad_set_getcaps_function (enc->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_mpeg2enc_getcaps));
   gst_pad_set_event_function (enc->sinkpad,
       GST_DEBUG_FUNCPTR (gst_mpeg2enc_sink_event));
   gst_pad_set_chain_function (enc->sinkpad,
       GST_DEBUG_FUNCPTR (gst_mpeg2enc_chain));
   gst_element_add_pad (element, enc->sinkpad);
 
-  enc->srcpad = gst_pad_new_from_static_template (&src_template, "src");
+  enc->srcpad =
+      gst_pad_new_from_template (gst_element_class_get_pad_template
+      (element_class, "src"), "src");
   gst_pad_use_fixed_caps (enc->srcpad);
-  gst_pad_set_activatemode_function (enc->srcpad,
-      GST_DEBUG_FUNCPTR (gst_mpeg2enc_src_activate_mode));
+  gst_pad_set_activatepush_function (enc->srcpad,
+      GST_DEBUG_FUNCPTR (gst_mpeg2enc_src_activate_push));
   gst_element_add_pad (element, enc->srcpad);
 
   enc->options = new GstMpeg2EncOptions ();
   enc->encoder = NULL;
 
   enc->buffer = NULL;
-  g_mutex_init (&enc->tlock);
-  g_cond_init (&enc->cond);
+  enc->tlock = g_mutex_new ();
+  enc->cond = g_cond_new ();
   enc->time = g_queue_new ();
 
   gst_mpeg2enc_reset (enc);
@@ -255,8 +274,8 @@ gst_mpeg2enc_structure_from_norm (GstMpeg2enc * enc, gint horiz,
 {
   GstStructure *structure;
 
-  structure = gst_structure_new ("video/x-raw",
-      "format", G_TYPE_STRING, 'I420', NULL);
+  structure = gst_structure_new ("video/x-raw-yuv",
+      "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('I', '4', '2', '0'), NULL);
 
   switch (enc->options->norm) {
     case 0:
@@ -291,11 +310,12 @@ gst_mpeg2enc_structure_from_norm (GstMpeg2enc * enc, gint horiz,
 }
 
 static GstCaps *
-gst_mpeg2enc_getcaps (GstMpeg2enc * enc, GstPad * pad)
+gst_mpeg2enc_getcaps (GstPad * pad)
 {
+  GstMpeg2enc *enc = GST_MPEG2ENC (GST_PAD_PARENT (pad));
   GstCaps *caps;
 
-  caps = gst_pad_get_current_caps (pad);
+  caps = GST_PAD_CAPS (pad);
   if (caps) {
     gst_caps_ref (caps);
     return caps;
@@ -344,51 +364,24 @@ gst_mpeg2enc_getcaps (GstMpeg2enc * enc, GstPad * pad)
 }
 
 static gboolean
-gst_mpeg2enc_sink_query (GstPad * pad, GstObject * parent,
-    GstQuery * query)
+gst_mpeg2enc_setcaps (GstPad * pad, GstCaps * caps)
 {
-  GstMpeg2enc *enc;
-  gboolean res = FALSE;
-
-  enc = GST_MPEG2ENC (parent);
-
-  switch (GST_QUERY_TYPE (query)) {
-    case GST_QUERY_CAPS:
-    {
-      GstCaps *filter, *caps;
-
-      gst_query_parse_caps (query, &filter);
-      caps = gst_mpeg2enc_getcaps (enc, pad);
-      gst_query_set_caps_result (query, caps);
-      gst_caps_unref (caps);
-      res = TRUE;
-    }
-    default:
-      res = gst_pad_query_default (pad, parent, query);
-      break;
-  }
-
-  return res;
-}
-
-static gboolean
-gst_mpeg2enc_setcaps (GstMpeg2enc * enc, GstPad * pad, GstCaps * caps)
-{
-  GstCaps *othercaps = NULL;
+  GstMpeg2enc *enc = GST_MPEG2ENC (GST_PAD_PARENT (pad));
+  GstCaps *othercaps = NULL, *mycaps;
   gboolean ret;
 
   /* does not go well to restart stream mid-way */
   if (enc->encoder)
     goto refuse_renegotiation;
 
-  pad = enc->sinkpad;
-
   /* since mpeg encoder does not really check, let's check caps */
-  if (!gst_video_info_from_caps (&enc->vinfo, caps))
+  mycaps = gst_pad_get_caps (pad);
+  othercaps = gst_caps_intersect (caps, mycaps);
+  gst_caps_unref (mycaps);
+  if (!othercaps || gst_caps_is_empty (othercaps))
     goto refuse_caps;
-
-  if (GST_VIDEO_INFO_FORMAT (&enc->vinfo) != GST_VIDEO_FORMAT_I420)
-    goto refuse_caps;
+  gst_caps_unref (othercaps);
+  othercaps = NULL;
 
   /* create new encoder with these settings */
   enc->encoder = new GstMpeg2Encoder (enc->options, GST_ELEMENT (enc), caps);
@@ -406,7 +399,7 @@ gst_mpeg2enc_setcaps (GstMpeg2enc * enc, GstPad * pad, GstCaps * caps)
 
   /* now that we have all the setup and buffers are expected incoming;
    * task can get going */
-  gst_pad_start_task (enc->srcpad, (GstTaskFunction) gst_mpeg2enc_loop, enc, NULL);
+  gst_pad_start_task (enc->srcpad, (GstTaskFunction) gst_mpeg2enc_loop, enc);
 
   return TRUE;
 
@@ -435,12 +428,12 @@ refuse_renegotiation:
 }
 
 static gboolean
-gst_mpeg2enc_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
+gst_mpeg2enc_sink_event (GstPad * pad, GstEvent * event)
 {
   GstMpeg2enc *enc;
   gboolean result = TRUE;
 
-  enc = GST_MPEG2ENC (parent);
+  enc = GST_MPEG2ENC (GST_PAD_PARENT (pad));
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_FLUSH_START:
@@ -475,16 +468,6 @@ gst_mpeg2enc_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
       gst_event_unref (event);
       goto done;
       break;
-    case GST_EVENT_CAPS:
-    {
-      GstCaps *caps;
-
-      gst_event_parse_caps (event, &caps);
-      result = gst_mpeg2enc_setcaps (enc, pad, caps);
-      gst_event_unref (event);
-      goto done;
-      break;
-    }
     default:
       /* for a serialized event, wait until an earlier buffer is gone,
        * though this is no guarantee as to when the encoder is done with it */
@@ -558,11 +541,11 @@ ignore:
 }
 
 static GstFlowReturn
-gst_mpeg2enc_chain (GstPad * pad, GstObject * parent, GstBuffer * buffer)
+gst_mpeg2enc_chain (GstPad * pad, GstBuffer * buffer)
 {
   GstMpeg2enc *enc;
 
-  enc = GST_MPEG2ENC (parent);
+  enc = GST_MPEG2ENC (GST_PAD_PARENT (pad));
 
   if (G_UNLIKELY (!enc->encoder))
     goto not_negotiated;
@@ -601,7 +584,7 @@ eos:
     GST_MPEG2ENC_MUTEX_UNLOCK (enc);
 
     gst_buffer_unref (buffer);
-    return GST_FLOW_EOS;
+    return GST_FLOW_UNEXPECTED;
   }
 ignore:
   {
@@ -632,16 +615,12 @@ gst_mpeg2enc_set_property (GObject * object,
 }
 
 static gboolean
-gst_mpeg2enc_src_activate_mode (GstPad * pad, GstObject * parent,
-    GstPadMode mode, gboolean active)
+gst_mpeg2enc_src_activate_push (GstPad * pad, gboolean active)
 {
   gboolean result = TRUE;
   GstMpeg2enc *enc;
 
-  enc = GST_MPEG2ENC (parent);
-
-  if (mode != GST_PAD_MODE_PUSH)
-    return FALSE;
+  enc = GST_MPEG2ENC (GST_PAD_PARENT (pad));
 
   if (active) {
     /* setcaps will start task once encoder is setup */
@@ -649,7 +628,7 @@ gst_mpeg2enc_src_activate_mode (GstPad * pad, GstObject * parent,
     /* can only end the encoding loop by forcing eos */
     GST_MPEG2ENC_MUTEX_LOCK (enc);
     enc->eos = TRUE;
-    enc->srcresult = GST_FLOW_FLUSHING;
+    enc->srcresult = GST_FLOW_WRONG_STATE;
     GST_MPEG2ENC_SIGNAL (enc);
     GST_MPEG2ENC_MUTEX_UNLOCK (enc);
 
@@ -738,11 +717,11 @@ plugin_init (GstPlugin * plugin)
   mjpeg_default_handler_verbosity (0);
 
   return gst_element_register (plugin, "mpeg2enc",
-      GST_RANK_MARGINAL, GST_TYPE_MPEG2ENC);
+      GST_RANK_SECONDARY, GST_TYPE_MPEG2ENC);
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    mpeg2enc,
+    "mpeg2enc",
     "High-quality MPEG-1/2 video encoder",
     plugin_init, VERSION, "GPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

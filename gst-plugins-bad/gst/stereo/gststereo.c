@@ -45,6 +45,15 @@
 #include <gst/audio/gstaudiofilter.h>
 #include <gst/controller/gstcontroller.h>
 
+
+/* elementfactory information */
+static const GstElementDetails stereo_details =
+GST_ELEMENT_DETAILS ("Stereo effect",
+    "Filter/Effect/Audio",
+    "Muck with the stereo signal to enhance its 'stereo-ness'",
+    "Erik Walthinsen <omega@cse.ogi.edu>");
+
+
 #define ALLOWED_CAPS \
     "audio/x-raw-int,"                                                \
     " depth = (int) 16, "                                             \
@@ -86,10 +95,7 @@ gst_stereo_base_init (gpointer g_class)
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
   GstCaps *caps;
 
-  gst_element_class_set_static_metadata (element_class, "Stereo effect",
-      "Filter/Effect/Audio",
-      "Muck with the stereo signal to enhance its 'stereo-ness'",
-      "Erik Walthinsen <omega@cse.ogi.edu>");
+  gst_element_class_set_details (element_class, &stereo_details);
 
   caps = gst_caps_from_string (ALLOWED_CAPS);
   gst_audio_filter_class_add_pad_templates (GST_AUDIO_FILTER_CLASS (g_class),
@@ -101,9 +107,11 @@ static void
 gst_stereo_class_init (GstStereoClass * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *gstelement_class;
   GstBaseTransformClass *trans_class;
 
   gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
   trans_class = (GstBaseTransformClass *) klass;
 
   parent_class = g_type_class_peek_parent (klass);
@@ -113,13 +121,11 @@ gst_stereo_class_init (GstStereoClass * klass)
 
   g_object_class_install_property (gobject_class, ARG_ACTIVE,
       g_param_spec_boolean ("active", "active", "active",
-          TRUE,
-          G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE | G_PARAM_STATIC_STRINGS));
+          TRUE, G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
 
   g_object_class_install_property (gobject_class, ARG_STEREO,
       g_param_spec_float ("stereo", "stereo", "stereo",
-          0.0, 1.0, 0.1,
-          G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE | G_PARAM_STATIC_STRINGS));
+          0.0, 1.0, 0.1, G_PARAM_READWRITE | GST_PARAM_CONTROLLABLE));
 
   trans_class->transform_ip = GST_DEBUG_FUNCPTR (gst_stereo_transform_ip);
 }
@@ -145,7 +151,7 @@ gst_stereo_transform_ip (GstBaseTransform * base, GstBuffer * outbuf)
     return GST_FLOW_OK;
 
   if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_TIMESTAMP (outbuf)))
-    gst_object_sync_values (GST_OBJECT (stereo), GST_BUFFER_TIMESTAMP (outbuf));
+    gst_object_sync_values (G_OBJECT (stereo), GST_BUFFER_TIMESTAMP (outbuf));
 
   if (stereo->active) {
     for (i = 0; i < samples / 2; i += 2) {
@@ -225,6 +231,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    stereo,
+    "stereo",
     "Muck with the stereo signal, enhance it's 'stereo-ness'",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

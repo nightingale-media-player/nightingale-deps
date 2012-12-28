@@ -65,9 +65,19 @@ struct _GstCogdownsampleClass
 
 GType gst_cogdownsample_get_type (void);
 
+/* GstCogdownsample signals and args */
 enum
 {
-  ARG_0
+  /* FILL ME */
+  LAST_SIGNAL
+};
+
+enum
+{
+  ARG_0,
+  ARG_WAVELET_TYPE,
+  ARG_LEVEL
+      /* FILL ME */
 };
 
 static void gst_cogdownsample_base_init (gpointer g_class);
@@ -129,7 +139,11 @@ gst_cogdownsample_get_type (void)
 static void
 gst_cogdownsample_base_init (gpointer g_class)
 {
-
+  static GstElementDetails compress_details =
+      GST_ELEMENT_DETAILS ("Downsample video",
+      "Filter/Effect/Video",
+      "Decreases size of video by a factor of 2",
+      "David Schleef <ds@schleef.org>");
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
   gst_element_class_add_pad_template (element_class,
@@ -137,9 +151,7 @@ gst_cogdownsample_base_init (gpointer g_class)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_cogdownsample_sink_template));
 
-  gst_element_class_set_static_metadata (element_class,
-      "Scale down video by factor of 2", "Filter/Effect/Video",
-      "Scales down video by a factor of 2", "David Schleef <ds@schleef.org>");
+  gst_element_class_set_details (element_class, &compress_details);
 }
 
 static void
@@ -147,12 +159,23 @@ gst_cogdownsample_class_init (gpointer g_class, gpointer class_data)
 {
   GObjectClass *gobject_class;
   GstBaseTransformClass *base_transform_class;
+  GstCogdownsampleClass *downsample_class;
 
   gobject_class = G_OBJECT_CLASS (g_class);
   base_transform_class = GST_BASE_TRANSFORM_CLASS (g_class);
+  downsample_class = GST_COGDOWNSAMPLE_CLASS (g_class);
 
   gobject_class->set_property = gst_cogdownsample_set_property;
   gobject_class->get_property = gst_cogdownsample_get_property;
+
+#if 0
+  g_object_class_install_property (gobject_class, ARG_WAVELET_TYPE,
+      g_param_spec_int ("wavelet-type", "wavelet type", "wavelet type",
+          0, 4, 0, G_PARAM_READWRITE));
+  g_object_class_install_property (gobject_class, ARG_LEVEL,
+      g_param_spec_int ("level", "level", "level",
+          0, 100, 0, G_PARAM_READWRITE));
+#endif
 
   base_transform_class->transform = gst_cogdownsample_transform;
   base_transform_class->transform_caps = gst_cogdownsample_transform_caps;
@@ -170,7 +193,10 @@ static void
 gst_cogdownsample_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
 {
+  GstCogdownsample *src;
+
   g_return_if_fail (GST_IS_COGDOWNSAMPLE (object));
+  src = GST_COGDOWNSAMPLE (object);
 
   GST_DEBUG ("gst_cogdownsample_set_property");
   switch (prop_id) {
@@ -183,7 +209,10 @@ static void
 gst_cogdownsample_get_property (GObject * object, guint prop_id, GValue * value,
     GParamSpec * pspec)
 {
+  GstCogdownsample *src;
+
   g_return_if_fail (GST_IS_COGDOWNSAMPLE (object));
+  src = GST_COGDOWNSAMPLE (object);
 
   switch (prop_id) {
     default:
@@ -302,12 +331,14 @@ static GstFlowReturn
 gst_cogdownsample_transform (GstBaseTransform * base_transform,
     GstBuffer * inbuf, GstBuffer * outbuf)
 {
+  GstCogdownsample *compress;
   CogFrame *outframe;
   int width, height;
   uint32_t format;
   CogFrame *frame;
 
   g_return_val_if_fail (GST_IS_COGDOWNSAMPLE (base_transform), GST_FLOW_ERROR);
+  compress = GST_COGDOWNSAMPLE (base_transform);
 
   gst_structure_get_fourcc (gst_caps_get_structure (inbuf->caps, 0),
       "format", &format);
@@ -349,7 +380,6 @@ gst_cogdownsample_transform (GstBaseTransform * base_transform,
       break;
     default:
       g_assert_not_reached ();
-      return GST_FLOW_ERROR;
   }
 
   frame = cog_virt_frame_new_unpack (frame);

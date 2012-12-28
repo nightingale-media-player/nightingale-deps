@@ -49,8 +49,6 @@
 #include <kate/kate.h>
 #include <tiger/tiger.h>
 #include <gst/gst.h>
-#include <gst/video/video.h>
-#include <gst/video/video-overlay-composition.h>
 #include "gstkateutil.h"
 
 G_BEGIN_DECLS
@@ -70,11 +68,13 @@ typedef struct _GstKateTigerClass GstKateTigerClass;
 
 struct _GstKateTiger
 {
-  GstKateDecoderBase decoder;
+  GstElement element;
 
   GstPad *katesinkpad;
   GstPad *videosinkpad;
   GstPad *srcpad;
+
+  GstKateDecoderBase decoder;
 
   tiger_renderer *tr;
 
@@ -90,21 +90,11 @@ struct _GstKateTiger
   guchar default_background_g;
   guchar default_background_b;
   guchar default_background_a;
-  gboolean silent;
 
-  GstVideoFormat video_format;
   gint video_width;
   gint video_height;
-  gboolean swap_rgb;
-  GstBuffer *render_buffer;
-  GstVideoOverlayComposition *composition;
 
   GMutex *mutex;
-  GCond *cond;
-
-  GstSegment video_segment;
-  gboolean video_flushing;
-  gboolean seen_header;
 };
 
 struct _GstKateTigerClass

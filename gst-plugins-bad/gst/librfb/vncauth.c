@@ -22,8 +22,7 @@
  */
 
 #include "config.h"
-#include <glib.h>
-#include "_stdint.h"
+#include "stdint.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
@@ -96,18 +95,15 @@ vncDecryptPasswdFromFile (char *fname)
 {
   FILE *fp;
   int32_t i, ch;
-  unsigned char *passwd;
+  unsigned char *passwd = (unsigned char *) malloc (9);
 
   if ((fp = fopen (fname, "r")) == NULL)
     return NULL;
-
-  passwd = (unsigned char *) malloc (9);
 
   for (i = 0; i < 8; i++) {
     ch = getc (fp);
     if (ch == EOF) {
       fclose (fp);
-      free (passwd);
       return NULL;
     }
     passwd[i] = ch;
@@ -134,17 +130,10 @@ vncRandomBytes (unsigned char *bytes)
 {
   int32_t i;
   uint32_t seed = (uint32_t) time (0);
-#ifndef G_OS_WIN32
+
   srandom (seed);
-#else
-  srand (seed);
-#endif
   for (i = 0; i < CHALLENGESIZE; i++) {
-#ifndef G_OS_WIN32
     bytes[i] = (unsigned char) (random () & 255);
-#else
-    bytes[i] = (unsigned char) (rand () & 255);
-#endif
   }
 }
 

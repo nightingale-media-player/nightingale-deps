@@ -38,7 +38,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch ssim name=ssim ssim.src0 ! videoconvert ! glimagesink filesrc
+ * gst-launch ssim name=ssim ssim.src0 ! ffmpegcolorspace ! glimagesink filesrc
  * location=orig.avi ! decodebin2 ! ssim.original filesrc location=compr.avi !
  * decodebin2 ! ssim.modified0
  * ]| This pipeline produces a video stream that consists of SSIM frames.
@@ -66,7 +66,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
 #define SINK_CAPS \
   "video/x-raw-yuv, " \
-  "format = (fourcc) { I420, YV12, Y41B, Y42B } "
+  "format = (fourcc) { YV12, Y41B, Y42B } "
 
 
 #define SRC_CAPS \
@@ -78,7 +78,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
   "depth = (int) 8 "
 
 static GstStaticPadTemplate gst_ssim_src_template =
-GST_STATIC_PAD_TEMPLATE ("src_%u",
+GST_STATIC_PAD_TEMPLATE ("src%d",
     GST_PAD_SRC,
     GST_PAD_SOMETIMES,
     GST_STATIC_CAPS (SRC_CAPS)
@@ -92,7 +92,7 @@ GST_STATIC_PAD_TEMPLATE ("original",
     );
 
 static GstStaticPadTemplate gst_ssim_sink_modified_template =
-GST_STATIC_PAD_TEMPLATE ("modified_%u",
+GST_STATIC_PAD_TEMPLATE ("modified%d",
     GST_PAD_SINK,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS (SINK_CAPS)
@@ -215,6 +215,8 @@ calculate_mu (GstSSim * ssim, gfloat * outmu, guint8 * buf)
       gint winstart_x;
       gint wghstart_x;
       gint winend_x;
+      gint winlen_x;
+      gint winstride_x;
       gfloat weight;
       gint source_offset;
 
@@ -226,6 +228,8 @@ calculate_mu (GstSSim * ssim, gfloat * outmu, guint8 * buf)
       winstart_y = ssim->windows[source_offset].y_window_start;
       wghstart_y = ssim->windows[source_offset].y_weight_start;
       winend_y = ssim->windows[source_offset].y_window_end;
+      winlen_x = winend_x - winstart_x + 1;
+      winstride_x = sizeof (gfloat) * winlen_x;
       elsumm = ssim->windows[source_offset].element_summ;
 
       switch (ssim->windowtype) {
@@ -385,6 +389,8 @@ calcssim_canonical (GstSSim * ssim, guint8 * org, gfloat * orgmu, guint8 * mod,
       gint winstart_x;
       gint wghstart_x;
       gint winend_x;
+      gint winlen_x;
+      gint winstride_x;
       gfloat weight;
       gint source_offset;
 
@@ -396,6 +402,8 @@ calcssim_canonical (GstSSim * ssim, guint8 * org, gfloat * orgmu, guint8 * mod,
       winstart_y = ssim->windows[source_offset].y_window_start;
       wghstart_y = ssim->windows[source_offset].y_weight_start;
       winend_y = ssim->windows[source_offset].y_window_end;
+      winlen_x = winend_x - winstart_x + 1;
+      winstride_x = sizeof (gfloat) * winlen_x;
       elsumm = ssim->windows[source_offset].element_summ;
 
       switch (ssim->windowtype) {
@@ -516,8 +524,6 @@ gst_ssim_setcaps (GstPad * pad, GstCaps * caps)
     g_value_init (&list, GST_TYPE_LIST);
     g_value_init (&fourcc, GST_TYPE_FOURCC);
 
-    gst_value_set_fourcc (&fourcc, GST_MAKE_FOURCC ('I', '4', '2', '0'));
-    gst_value_list_append_value (&list, &fourcc);
     gst_value_set_fourcc (&fourcc, GST_MAKE_FOURCC ('Y', 'V', '1', '2'));
     gst_value_list_append_value (&list, &fourcc);
     gst_value_set_fourcc (&fourcc, GST_MAKE_FOURCC ('Y', '4', '1', 'B'));
@@ -598,7 +604,6 @@ gst_ssim_setcaps (GstPad * pad, GstCaps * caps)
      * index for R, G or B channels separately.
      */
     switch (fourcc) {
-      case GST_MAKE_FOURCC ('I', '4', '2', '0'):
       case GST_MAKE_FOURCC ('Y', 'V', '1', '2'):
       case GST_MAKE_FOURCC ('Y', '4', '1', 'B'):
       case GST_MAKE_FOURCC ('Y', '4', '2', 'B'):
@@ -858,11 +863,14 @@ forward_event_func (GstPad * pad, GValue * ret, GstEvent * event)
 static gboolean
 forward_event (GstSSim * ssim, GstEvent * event)
 {
+  gboolean ret;
   GstIterator *it;
   GValue vret = { 0 };
 
   GST_LOG_OBJECT (ssim, "Forwarding event %p (%s)", event,
       GST_EVENT_TYPE_NAME (event));
+
+  ret = TRUE;
 
   g_value_init (&vret, G_TYPE_BOOLEAN);
   g_value_set_boolean (&vret, TRUE);
@@ -872,7 +880,9 @@ forward_event (GstSSim * ssim, GstEvent * event)
   gst_iterator_free (it);
   gst_event_unref (event);
 
-  return g_value_get_boolean (&vret);
+  ret = g_value_get_boolean (&vret);
+
+  return ret;
 }
 
 static gboolean
@@ -1076,24 +1086,23 @@ gst_ssim_class_init (GstSSimClass * klass)
       g_param_spec_int ("ssim-type", "SSIM type",
           "Type of the SSIM metric. 0 - canonical. 1 - with fixed mu "
           "(almost the same results, but roughly 20% faster)",
-          0, 1, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          0, 1, 0, G_PARAM_READWRITE));
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_WINDOW_TYPE,
       g_param_spec_int ("window-type", "Window type",
           "Type of the weighting in the window. "
           "0 - no weighting. 1 - Gaussian weighting (controlled by \"sigma\")",
-          0, 1, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          0, 1, 1, G_PARAM_READWRITE));
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_WINDOW_SIZE,
       g_param_spec_int ("window-size", "Window size",
-          "Size of a window.", 1, 22, 11,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "Size of a window.", 1, 22, 11, G_PARAM_READWRITE));
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_GAUSS_SIGMA,
       g_param_spec_float ("gauss-sigma", "Deviation (for Gauss function)",
           "Used to calculate Gussian weights "
           "(only when using Gaussian window).",
-          G_MINFLOAT, 10, 1.5, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_MINFLOAT, 10, 1.5, G_PARAM_READWRITE));
 
   gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&gst_ssim_src_template));
@@ -1101,8 +1110,8 @@ gst_ssim_class_init (GstSSimClass * klass)
       gst_static_pad_template_get (&gst_ssim_sink_original_template));
   gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&gst_ssim_sink_modified_template));
-  gst_element_class_set_static_metadata (gstelement_class, "SSim",
-      "Filter/Analyzer/Video",
+  gst_element_class_set_details_simple (gstelement_class, "SSim",
+      "Filter/Converter/Video",
       "Calculate Y-SSIM for n+2 YUV video streams",
       "Руслан Ижбулатов <lrn1986 _at_ gmail _dot_ com>");
 
@@ -1125,7 +1134,7 @@ gst_ssim_request_new_pad (GstElement * element, GstPadTemplate * templ,
   GstPad *newsrc;
   gint padcount;
   GstPadTemplate *template;
-  guint num = -1;
+  gint num = -1;
 
   if (templ->direction != GST_PAD_SINK)
     goto not_sink;
@@ -1145,9 +1154,9 @@ gst_ssim_request_new_pad (GstElement * element, GstPadTemplate * templ,
     newpad = gst_pad_new_from_template (templ, "original");
     GST_DEBUG_OBJECT (ssim, "request new sink pad original");
     ssim->orig = newpad;
-  } else if (strncmp (padname, "modified_", 9) == 0) {
-    const gchar *numstr = &padname[9];
-    num = strtoul (numstr, NULL, 10);
+  } else if (strncmp (padname, "modified", 8) == 0) {
+    const gchar *numstr = &padname[8];
+    num = strtol (numstr, NULL, 10);
     if (errno == EINVAL || errno == ERANGE)
       goto bad_name;
     newpad = gst_pad_new_from_template (templ, padname);
@@ -1158,8 +1167,7 @@ gst_ssim_request_new_pad (GstElement * element, GstPadTemplate * templ,
   gst_pad_set_getcaps_function (newpad,
       GST_DEBUG_FUNCPTR (gst_ssim_sink_getcaps));
   gst_pad_set_setcaps_function (newpad, GST_DEBUG_FUNCPTR (gst_ssim_setcaps));
-  gst_collect_pads_add_pad (ssim->collect, newpad, sizeof (GstCollectData),
-      NULL, TRUE);
+  gst_collect_pads_add_pad (ssim->collect, newpad, sizeof (GstCollectData));
 
   /* FIXME: hacked way to override/extend the event function of
    * GstCollectPads; because it sets its own event function giving the
@@ -1176,17 +1184,13 @@ gst_ssim_request_new_pad (GstElement * element, GstPadTemplate * templ,
     goto could_not_add_sink;
   else
     /* increment pad counter */
-#if GLIB_CHECK_VERSION(2,29,5)
-    padcount = g_atomic_int_add (&ssim->padcount, 1);
-#else
     padcount = g_atomic_int_exchange_and_add (&ssim->padcount, 1);
-#endif
 
-  if (num != -1) {
+  if (num >= 0) {
     GstSSimOutputContext *c;
-
+    GObject *asobject;
     template = gst_static_pad_template_get (&gst_ssim_src_template);
-    name = g_strdup_printf ("src_%u", num);
+    name = g_strdup_printf ("src%d", num);
     newsrc = gst_pad_new_from_template (template, name);
     GST_DEBUG_OBJECT (ssim, "creating src pad %s", name);
     g_free (name);
@@ -1202,6 +1206,7 @@ gst_ssim_request_new_pad (GstElement * element, GstPadTemplate * templ,
 
     c = g_new (GstSSimOutputContext, 1);
     c->pad = newsrc;
+    asobject = G_OBJECT (newsrc);
     g_object_set_data (G_OBJECT (newpad), "ssim-match-output-context", c);
     g_ptr_array_add (ssim->src, (gpointer) c);
   }
@@ -1299,13 +1304,13 @@ gst_ssim_finalize (GObject * object)
 
 typedef gfloat (*GstSSimWeightFunc) (GstSSim * ssim, gint y, gint x);
 
-static gfloat
+gfloat
 gst_ssim_weight_func_none (GstSSim * ssim, gint y, gint x)
 {
   return 1;
 }
 
-static gfloat
+gfloat
 gst_ssim_weight_func_gauss (GstSSim * ssim, gint y, gint x)
 {
   gfloat coord = sqrt (x * x + y * y);
@@ -1313,7 +1318,7 @@ gst_ssim_weight_func_gauss (GstSSim * ssim, gint y, gint x)
       (ssim->sigma * sqrt (2 * G_PI));
 }
 
-static gboolean
+gboolean
 gst_ssim_regenerate_windows (GstSSim * ssim)
 {
   gint windowiseven;
@@ -1334,16 +1339,16 @@ gst_ssim_regenerate_windows (GstSSim * ssim)
 
   switch (ssim->windowtype) {
     case 0:
-      func = gst_ssim_weight_func_none;
+      func = (GstSSimWeightFunc) gst_ssim_weight_func_none;
       break;
     case 1:
-      func = gst_ssim_weight_func_gauss;
+      func = (GstSSimWeightFunc) gst_ssim_weight_func_gauss;
       break;
     default:
       GST_WARNING_OBJECT (ssim, "unknown window type - %d. Defaulting to %d",
           ssim->windowtype, 1);
       ssim->windowtype = 1;
-      func = gst_ssim_weight_func_gauss;
+      func = (GstSSimWeightFunc) gst_ssim_weight_func_gauss;
   }
 
   for (y = 0; y < ssim->windowsize; y++) {
@@ -1419,6 +1424,7 @@ gst_ssim_collected (GstCollectPads * pads, gpointer user_data)
   gpointer outdata = NULL;
   guint outsize = 0;
   gfloat mssim = 0, lowest = 1, highest = -1;
+  gboolean empty = TRUE;
   gboolean ready = TRUE;
   gint padnumber = 0;
 
@@ -1495,6 +1501,7 @@ gst_ssim_collected (GstCollectPads * pads, gpointer user_data)
     GstCollectData *collect_data;
     GstBuffer *inbuf;
     guint8 *indata;
+    guint insize;
 
     collect_data = (GstCollectData *) collected->data;
 
@@ -1502,6 +1509,7 @@ gst_ssim_collected (GstCollectPads * pads, gpointer user_data)
       inbuf = gst_collect_pads_pop (pads, collect_data);
 
       indata = GST_BUFFER_DATA (inbuf);
+      insize = GST_BUFFER_SIZE (inbuf);
 
       GST_DEBUG_OBJECT (ssim, "Modified stream - flags(0x%x), timestamp(%"
           GST_TIME_FORMAT "), duration(%" GST_TIME_FORMAT ")",
@@ -1597,6 +1605,8 @@ gst_ssim_collected (GstCollectPads * pads, gpointer user_data)
         measured = gst_event_new_measured (offset,
             GST_BUFFER_TIMESTAMP (inbuf), "SSIM", &vmean, &vlowest, &vhighest);
         gst_pad_push_event (c->pad, measured);
+
+        empty = FALSE;
 
         /* send it out */
         GST_DEBUG_OBJECT (ssim, "pushing outbuf, timestamp %" GST_TIME_FORMAT

@@ -1,94 +1,928 @@
-This is GStreamer Bad Plugins 1.0.4
+This is GStreamer Bad Plug-ins 0.10.16, "Sensible Precaution"
 
-Changes since 1.0.3:
+Changes since 0.10.15:
+    
+      * Fix various bugs in the 0.10.15 release
+      * Fix a deadlock in starting DVD
+      * Fix compilation problems
+      * Allow libneon versions >= 29.x
 
-      * mpeg4videoparse: also parse divx 4/5
-      * mpeg4videoparse: export number of sprite warping points in caps (decoders might have no or only limited GMC support)
-      * mpegtsmux: propagate flow returns upstream; don't crash when reused
-      * rtmpsrc: disable seeking if the configured url specifies live=true
-      * build fixes for OS/X (shm) and Windows (d3dvideosink)
+Bugs fixed since 0.10.15:
+     
+      * 599272 : faac check fails, undefined symbol
+      * 599332 : [neonhttpsrc] fails to compile with libneon 0.29.0
 
-Bugs fixed since 1.0.3:
+Changes since 0.10.14:
+    
+      * Add barcode scanner plugin using the zbar library
+      * Improvements to camerabin
+      * Support audio-track format switching in DVD
+      * Improve parsing and display of PGS subpictures
+      * Add Cog plugin
+      * Add LV2 plugin support
+      * Improve VDPAU plugin. Add post-processing support
+      * Add videomeasure plugin
+      * Improve Siren codec
+      * Improved Directshow capture element
+      * Add EAC3 mapping in MPEG-TS playback
+      * Improve AAC encoding
+      * Improved MIDI file playback
+      * Improve H-264 parsing
+      * Add MPEG-PS muxer
+      * Add PNM encoder and decoder
+      * Add SVG decoder
+      * Update GLib dependency to GLib 2.16
+      * Various other bug fixes and improvements (see ChangeLog)
 
-      * 688870 : mpegtsmux: does not propagate flow status
-      * 689107 : mpegtsmux: crashes when re-used
-      * 689183 : [shm] Modifications to get shm to compile on OSX
-      * 690031 : d3dvideosink makefile missing GST_PLUGINS_BASE_CFLAGS and GMODULE_NO_EXPORT_LIBS
-      * 690149 : [mpeg4videoparse] support divx and add GMC info in caps
+Bugs fixed since 0.10.14:
+     
+      * 303975 : Add tar support
+      * 519001 : [wildmidi] Doesn't handle seeking correctly
+      * 575261 : Do not use the outdated Debian/Ubuntu libass libraries!
+      * 583901 : aacparse fails for remuxing
+      * 589609 : [PATCH] fix dvdspu crash when subtitles do not fit the incoming video
+      * 593348 : faac encoder produces first buffer with wrong duration
+      * 593625 : Broken Compilation, missing files with latest commits in git repository
+      * 593683 : Typo in variable name for libraries to link against
+      * 593864 : pcapparse: Set the GStreamer timestamp according to the pcap timestamps
+      * 594030 : [mpegtsdemux] Support for AC3/EAC3 not 100% correct
+      * 594277 : Make the default segment of outputselector TIME instead of UNDEFINED
+      * 594278 : dshowvideosink: remove unused variable
+      * 594279 : dshowsrcwrapper: use tchar macro for string literals
+      * 594321 : Videomeasure plugin
+      * 594382 : assrender: Fix compilation with libass = 0.9.6
+      * 594489 : broken compilation for mpegdemux
+      * 594715 : libgstsignalprocessor install issues
+      * 594812 : [mpegpsdemux] Seeking broken for MPEG PS cut from VOB file
+      * 595215 : PNM encoder doesn't support ASCII encoding
+      * 595409 : PNM decoder can't decode ASCII encoded files.
+      * 596285 : gstvideomeasure crashes at the end of some streams
+      * 596743 : qtmux: fix flags_as_uint to flags[]
+      * 598139 : faad element leaks itself.
+      * 598263 : refcount leak in resindvd
+      * 598274 : dtsdec leaks input buffers
+      * 598369 : Properly detect pre-releases
+      * 598733 : id3mux doesn't write image to APIC tag
+      * 582779 : [resindvd] Add support for other audio codecs than ac3
+      * 595700 : PNM decoder doesn't handle ASCII encoded pnm data split over several buffers
 
-Changes since 1.0.2:
+Changes since 0.10.13:
 
-      * mpegtsmux: fix DTS/PTS confusion
-      * tsdemux, tsparse: seeking fixes
-      * tsdemux, tsparse: fix timestamping with push-based input
-      * h264parse: fix PPS insertion
-      * mpg123audiodec: fix leaks from not chaining up in the finalize function
+      * Moved rtpmanager to -good
+      * Moved dirac elements from schroedinger to gst-plugins-bad
+        (new schroedinger release without the gstreamer elements
+         will follow shortly)
+      * amrwb: Remove AMR-WB parser and decoder and rename encoder plugin
+        from amrwb to amrwbenc (the removed elements will re-appear in the
+        next -ugly release; no migration strategy provided in this case
+        because of the special status of the amrwb plugin)
+      * asfmux, rtpasfpay: add ASF muxer and windows media payloader
+      * basevideo: add experimental video base class library/API
+      * camerabin: lots of fixes and improvements
+      * capssetter: new element for debugging purposes
+      * directdraw: Implement GstNavigation interface
+      * directshow: refactor and improve dshowsrcwrapper, dshowideosrc, dshowaudiosrc
+      * frei0r: wrapper for frei0r video filter plugins
+      * gme: add libgme plugin which supersedes the existing OpenSPC spc plugin
+      * Implement SEEKING query in more demuxers and decoders (notably
+        mpeg-ps/mpeg-ts, mxf, musepack, rawparse)
+      * kate: add kate subtitle encoder, decoder and overlay
+      * mimic: lots of fixes for mimenc and mimdec; add "paused mode"
+      * mpegpsdemux: added caps for AAC and fixed playback of a clip with LPCM
+      * mpegtsdemux: added VC1, EAC3 and LPCM related to blueray/hdmv
+      * qtmux: handle pixel-aspect-ratio; misc. other fixes and improvements
+      * shapewipe: support ARGB/RGBA for video input/output; fix for still images
+      * vdpau: add experimental vdpau plugin
 
-Bugs fixed since 1.0.2:
+Bugs fixed since 0.10.13:
 
-      * 686871 : A number of errors in directsoundsrc
-      * 687178 : tsdemux produces buffers without timestamps when activated in push mode
-      * 687806 : mpegtsmux: Fix PTS being incorrectly created
-      * 688091 : tsdemux: multiple seeking-related fixes
-      * 688626 : codecparsers: vc1: fix PTYPE for interlaced frames
-      * 688510 : d3dvideosink: " DECLARE_INTERFACE_IID_ " redefined compiler warning
+      * 587819 : [mpegtsparse] crash because of double free
+      * 344129 : [directsoundsrc] Plugin for Directsound source
+      * 377784 : xvidenc should output video/mpeg
+      * 540128 : Totem freeze with short HDV file
+      * 541962 : [directdrawsink] crash when exposing in GST_STATE_READY
+      * 561241 : metadatademux pad activation deadlock
+      * 561752 : GstRtpBin implement Release pad functions
+      * 575672 : [mpegtsdemux] crashes when souphttpsrc is used as a stream source
+      * 575818 : [ivorbisdec] extract vorbis tags
+      * 576800 : gstreamer SPC plugin requires non-portable x86 code
+      * 583470 : mpegtsparse: Old pes pids not removed when receiving PAT table
+      * 584252 : enhancements to OSSv4 plugin
+      * 584897 : Remove AMR plugin as it has been replaced by updated OpenCore plugin
+      * 585839 : Support for sending RTP packets as GstBufferList in the gstrtpbin
+      * 586019 : [mxfdemux] stray semicolons after if statement
+      * 586097 : GStreamer DVB tuning too quick for some devices
+      * 586956 : Include < sys/time.h > only if it is present in the system
+      * 587023 : [freeze] disable plugin static lib
+      * 587595 : [dshowsrcwrapper] start refactoring
+      * 588638 : [katedec] add x-dvd-subpicture output
+      * 588944 : mpegpsdemux doesn't support seeking with GST_FORMAT_TIME anymore
+      * 590030 : rtpsource: Incoming buffers do not always have caps
+      * 590208 : GstNavigation interface support for directdrawsink
+      * 590360 : [qtmux] requires endianness even if the samples are 8bit
+      * 590446 : [mpegdemux] MPEG TS with A52 not seekable
+      * 590797 : Memory leak in rtpsource.c
+      * 591440 : rtpdtmfsrc event cleanup
+      * 591538 : generic states test fails (vdpau, mimenc)
+      * 591610 : asfmux: messing up with sinkpads
+      * 591927 : REQUIREMENTS is out of date
+      * 592259 : mimenc: fourcc written incorrectly
+      * 593024 : regression in schroenc streamheader initialization
+      * 593063 : resindvd and rawparse do not use correct base LDFLAGS
+      * 593068 : Disarray in directsoundsrc/directdrawsink
+      * 586354 : [h264parse] blocked in infinite loop while parsing a corrupted frame
 
-Changes since 1.0.1:
 
-      * Parallel installability with 0.10.x series
-      * audioparse: add mode where caps are taken from upstream and only timestamping is performed
-      * directsoundsrc: port to 1.0
-      * dtsdec: fix buffer parsing
-      * fieldanalysis: actually build (remove from the NONPORTED plugins list)
-      * hlsdemux: numerous thread-safety fixes, and an invalid memory access fix
-      * mpegdemux: handle and combine downstream flow returns better
-      * mpegdemux: make work properly with dvdreadsrc
-      * mpegtsdemux: PES header parsing fixes; fix potential crash
-      * mpegtsdemux: First push EOS, then destroy all programs
-      * mpegtsmux: fix buffer refcounting issue
-      * mpeg4videoparse: correctly parse the full first frame; properly mark config data presence
-      * mpegvideoparse: correctly parse the full first frame; signal interlacing properly in caps
-      * pitch: fix for start times > 0 (e.g. ogg streaming)
-      * rtmpsink: handle RTMP_Write() return value correctly, fix memory leak
-      * scaletempo: fix timestamp and latency query handling, and event leak
-      * subenc: port to 1.0
+Changes since 0.10.12:
+    
+      * New shapewipe video transition plugin
+      * qtmux improvements
+      * camerabin improvements
+      * HDV MPEG-TS private streams support
+      * Output interlacing information in mpegvideoparse
+      * MS-ADPCM decoder
+      * RTP fixes and enhancements
+      * DTS decoder improvements
+      * New ID3 tagging plugin that supports v1, v2.3 and v2.4
+      * Support for PGS (BluRay) subtitles
+      * Many other bug fixes and enhancements
 
-Bugs fixed since 1.0.1:
+Bugs fixed since 0.10.12:
+     
+      * 584945 : camerabin unit tests failing
+      * 511097 : Support self-signed certificates in neonhttpsrc
+      * 561752 : GstRtpBin implement Release pad functions
+      * 584164 : gstspu-pgs.c warnings for format string args and uninitia...
+      * 584165 : rtpbin sdes message broken
+      * 584360 : gppmux ftyp
+      * 585015 : debugutils can't find libgstinterfaces
+      * 585660 : segfault in scaletempo plugin
+      * 584114 : gppmux and h263
+      * 583188 : Problem with sdp: bind failed or video disappear after fe...
+      * 583627 : statistic file name needs to be standardized
 
-      * 623387 : mpegdemux: check base_time before calculating new_start 
-      * 673414 : directsoundsrc: Port to 1.0
-      * 681459 : rtmpsink: memory leak
-      * 685709 : mpeg4videoparse: AVI file with XVID video doesn't want to preroll: p_length.avi
-      * 685895 : mpegvideoparse: signal interlacing correctly in caps using new " interlace-mode " field
-      * 686009 : rtmpsink: handle RTMP_Write() return value correctly
-      * 686294 : tsdemux: Fix checking P-STD_buffer marker in PES header
-      * 686327 : mpegtsmux: fix refcount issue with input buffers
-      * 686358 : tsdemux: fix potential crash dereferencing NULL program pointer
-      * 686520 : wayland: update to wayland-protocol 0.99
-      * 686547 : rtpopuspay outputs unparseable caps
-      * 686595 : [mpg123] misc improvements and fixes
-      * 686774 : gst-plugins-bad/curl: add a comment describing function...
-      * 686829 : opusdec: invalid gst_buffer_unmap() call for NULL buffer
-
-Changes since 1.0.0:
-
-      * fieldanalysis and frei0r plugins ported to 1.0
-      * DVD playback fixes
-      * pitch: transform timestamps properly after a seek
+Changes since 0.10.11:
+    
+      * Presets support in several elements
+      * Support ITV MPEG-TS streams
+      * New element: flvmux
+      * New element: osxvideosrc
+      * Fixes in RTP elements
       * camerabin fixes
+      * Improved QT/mp4 muxing
+      * xdgmime based content type guessing
+      * deinterlace2 moved to the Good plugins (replacing deinterlace)
+      * Support for MXF muxing, and improved MXF demuxing
+      * Greatly improved DVD playback
+      * DirectDraw element moved back from Good plugins
+      * Many other bug fixes and improvements
 
-Bugs fixed since 1.0.0:
+Bugs fixed since 0.10.11:
+     
+      * 573852 : Update celt to 0.5.x
+      * 574401 : metadatamux fails^WIS failure
+      * 580091 : soundtouch plugin fails to load
+      * 153684 : [osxvideosrc] Mac users needs an osxvideosrc
+      * 537700 : [scaletempo] Scale audio tempo in sync with playback rate
+      * 569437 : mpegtsparse: flow error or crashes while dynamicly changi...
+      * 569673 : [Mpegtsparse] PAT changes not always signaled
+      * 569781 : [Mpegtsparse] drop of valid TS packets
+      * 573595 : plugins-bad mingw ports
+      * 573846 : Check for soundtouch-1.4 too
+      * 573847 : Use SDL static-libs for conftest and libs for gstsdl*
+      * 573848 : Use native CPU number detection in mpeg2enc
+      * 573849 : modplug's sndfile.h conflicts with libsndfile's sndfile.h
+      * 575388 : [aacparse] deadlocks in busy loop when seeking
+      * 575736 : mpeg2enc's bitrate parameter does not work properly
+      * 576408 : [playbin2] Deadlock when using resindvd as source
+      * 577690 : rtpdtmfmux: missing pad unref
+      * 577864 : [residvd] dvdnav version requirements should be higher
+      * 578112 : x264enc: I-frame request
+      * 578562 : dshowdecwrapper missing check for GST_DISABLE_GST_DEBUG
+      * 578563 : win32 export files are not disted
+      * 580133 : Regression in baseparse since last release
+      * 580144 : emit notify::internal-ssrc when there is a ssrc collision
+      * 580786 : [flvmux] " uninitialized variable " compiler warning
+      * 580901 : Uninitialized variable may be used in fpsdisplaysink.c
+      * 581375 : rtpssrcdemux crashes on SR-less rtcp packets
+      * 582013 : uninitialized var in mxfmux.c prevents gst-plugins-bad bu...
+      * 582074 : [faad] Fails to build with faad 2.6 (misdetected as 2.7)
+      * 582208 : [PATCH] fix for soundtouch-1.4
+      * 582483 : y4menc doesn't pass timestamps on
+      * 582656 : [mxfdemux] Fix deadlock when querying from the pad-added ...
+      * 582702 : qtmux: crash in atom_moov_add_blob_tag
+      * 583337 : [mxfmux] Wrong layout for non-interlaced formats
+      * 580585 : rtpmux memleak
+      * 577843 : input-selector causes problems with DVD menus in playbin2
+      * 581593 : gppmux doesn't support MPEG4 part 2 in sink caps
+      * 575284 : add auto-connect-forced mode to jackaudiosrc and jackaudi...
+      * 576021 : On Windows qtmux can't write files longer than 2-4 GiB, u...
+      * 576712 : Output-selector keeps reference to latest buffer when cha...
+      * 581427 : [mpeg4videoparse] config buffer is leaked
 
-      * 667220 : dvdspu: add NV12 support
-      * 681562 : Issue setting " video-source " property on wrappercamerabinsrc
-      * 681564 : Issue setting " video-source-filter " property on wrappercamerabinsrc
-      * 681678 : frei0r: port to 1.0
-      * 684740 : chromaprint: resolve undefined symbols
-      * 684847 : curl: fix build on win32
-      * 685065 : Missing cast in curlbasesink
-      * 685159 : chromaprint: Missing unmap buffer in transform_ip
+Changes since 0.10.10:
+    
+      * Add ASS/SSA subtitle handling element assrender
+      * Leak fixes in the QuickTime decoder wrapper
+      * Better DirectShow output on Windows
+      * Extend QT muxing support to include AMR and H.263
+      * mms seeking support
+      * Extended MXF file format handling
+      * camerabin and photography API for digital camera interfacing
+      * Merge elements from Farsight: liveadder, sirendec, sirenenc, valve,
+        rtpdtmfsrc, rtpdtmdepay, dtmfsrc, rtpdtmfmux, autoconvert,
+        mimdec, mimenc
+      * typefinder based on xdgmime
 
-New features in 1.0.0:
+Bugs fixed since 0.10.10:
+     
+      * 573369 : [gstfaad] Memory corruption and segfault
+      * 568704 : Metadatamux: unable to configure byte order for EXIF
+      * 354908 : videoflipping interface for v4l2src
+      * 369912 : missing inclusion in rpm spec file
+      * 469930 : [mmssrc] seeking support PATCH
+      * 481075 : Full support for ASS/SSA subtitles
+      * 549645 : merge useful elements from gst-plugins-farsight into core
+      * 567003 : [ladspa] improve plugin scanning
+      * 567371 : [mpegtsparse] memory leak in mpegtspacketizer
+      * 567828 : rtpmanager and RTCP BYE packet
+      * 567965 : [flvdemux] add support for ECMA arrays in script tags
+      * 568480 : gst-plugins-bad dccp plugin won't compile on Soalris
+      * 568483 : Problems linking gst-plugins-bad
+      * 568837 : RFE: allow building against the system modplug library
+      * 569323 : [qtmux] should support audio/AMR sink
+      * 570996 : bpmdetect relibably crashes with SIGSEGV on particular file
+      * 571560 : gstdshowaudio decoder doesn't compile.
+      * 572315 : Compiling camerabin on Windows with Visual Studio
+      * 572900 : gstrtpsession should not forward recv side event to the s...
+      * 573288 : [mpegtsdemux] memory leak when pusi is missed due to pack...
+      * 573391 : [videoanalyse] Wrong brightness calculation
+      * 575157 : xdgmime typefinder: make more conservative
+      * 575565 : [mxf] mxf plugin uses symbols not in glib 2.6 (minimum gl...
+      * 564114 : [PATCH] fbdev: fix depth calculation
+      * 573850 : Use Glib's byte order in gstgsmdec
+      * 573851 : Use glib integer types in gstfaad
+      * 172043 : [mpegpsdemux] wrong video length on mpeg file
 
-      * Parallel installability with 0.10.x series
-      * See release notes for more details
+Changes since 0.10.9:
+
+      * Require gettext 0.17
+      * ACM mp3 decoder element for win32
+      * New MXF demuxer added
+      * JPEG-2000 encoder - jp2enc added
+      * RTP support
+      * Fixes for RTP support
+      * Add parsers for AAC and AMR
+      * Move libgstapp and elements to -base
+      * Add Quicktime muxer element qtmux
+      * Enhance RFB capture
+      * Improve MPEG-TS and MPEG-PS demuxing
+      * Don't install static libs for plugins
+      * Introduce audioringbuffer element
+      * Improve DVD playback of ResinDVD components
+      * Move old audioresample from -base as legacyaudioresample
+      * Improve speexresampler, and then move it to -base
+      * Improve FLV demuxing and parsing
+      * Various DVB input fixes
+      * Add support for frequency list descriptors for DVB
+      * Improve MPEG-TS muxer
+      * Various other bug-fixes
+
+Bugs fixed since 0.10.9:
+
+      * 127574 : replaygain support
+      * 480543 : [spc] crashes when not given any input data
+      * 546319 : [resindvd] Stuck on first menu (language selection)
+      * 549222 : Totem using resindvd element as DVD navigation module doe...
+      * 550280 : Move qtmux to gst-plugins-bad
+      * 550454 : FLV demuxer screws up in Pitivi
+      * 550613 : [mpegtsmux] Add support for ac3/dts/lpcm
+      * 553823 : CodeStyle improvements and minor fixes to the DCCP plugin.
+      * 555238 : Recent changes in x264 breaks compilation of x264 plugin.
+      * 557161 : Wrong time displayed and no seeking with MPEG PS cut from...
+      * 557763 : [mpegtsmux] DeadlockEOS due to interleaving mechanism
+      * 557814 : [mpegdemux] frequency list descriptor support
+      * 558639 : cross-configuring interrupts due to a failing check for " ...
+      * 560841 : Provide access to packet loss
+      * 561992 : debug format warning during compilation of resindvdsrc.c ...
+      * 562312 : Lip-sync generates wrong `ts-offset' in GstRtpBin
+      * 562319 : [rtpsession] memory corruption
+      * 562802 : [appsrc] lockup in pad_push() if previous flow was wrong-...
+      * 563006 : mxf mpeg422 file stops playing
+      * 563147 : input-selector doesn't notify of active-pad changing when...
+      * 564232 : Dual Licensing qtmux
+      * 565439 : Make pcapparse compile with (mingw32) gcc
+      * 565509 : rtpsource on receiver side can't get clock-rate for h264,...
+      * 565614 : [mpegtsdemux] Fix memory leak
+      * 565910 : allow forcing the ssrc on a rtpsession
+      * 566356 : [dvbbasebin] Couple of memleaks
+      * 566613 : bayer2rgb calculates wrong color offset
+      * 566878 : [ladspa] Add dependencies for ladspa modules
+      * 566957 : Add time based seeking to ResinDVD
+      * 566958 : fix dirac support in qtmux/mp4mux
+      * 566959 : Fix duration query on mpegtsdemux
+      * 508029 : [speexresample] pops/glitches in some cases
+      * 558416 : [PATCH] realvideodec: use pixel aspect ratio of container
+      * 564482 : [appsrc] semantics of push-buffer signal awkward for bind...
+      * 565319 : rtpjitterbuffer: bursty reception can cause time to be re...
+      * 565613 : [mpegtsdemux] Add scrambled field to service structure
+      * 567004 : ladspa plugin crashes on Solaris
+
+Changes since 0.10.8:
+
+      * New CELT encoder and decoder
+      * New TwoLAME encoder
+      * New DCCP element
+      * New AIFF parser element
+      * New APEX sink element
+      * deinterlace2 element improvements
+      * New JACK audio src element
+      * New winscreencap, winks and pcapparse plugins
+      * x624enc fixes
+      * Support for ATSC tuning and channels.conf parsing
+      * RTP improvements
+      * New scaletempo element
+      * Add Fluendo MPEG-TS muxer
+      * Add Fluendo MPEG-TS and MPEG-PS demuxers
+      * New JPEG2000 element
+      * New FLAC parser element
+      * DVD playback improvements
+      * Improved DirectShow decoding support
+      * New Windows Audio Session audio src element
+      * New FLV muxer element
+      * Many other bug fixes and improvements
+
+Bugs fixed since 0.10.8:
+
+      * 537700 : [scaletempo] Scale audio tempo in sync with playback rate
+      * 550468 : [name conflict] New Fluendo mpeg demuxers
+      * 545197 : jackaudiosrc
+      * 555244 : Output-selector has unexpected event forwarding right aft...
+      * 402593 : deinterleave gives corrupt output
+      * 406673 : Need AIFF parser
+      * 535527 : [real] Real video/audio stream fails to play
+      * 537455 : ATSC: VSB / QAM Annex B support
+      * 538500 : AIFF file doesn't play
+      * 542390 : Implementation of DCCP Plugin for gstreamer
+      * 542510 : [apexsink] Apple AirPort Express Wireless Sink
+      * 545247 : use g_setenv() insteed of setenv() in sdlvideosink.c
+      * 546312 : Make the metadata writable before modifying it in rtpmanager
+      * 549409 : gstrtpbin don't stop at the end of a stream
+      * 549774 : audio / video synchronization glitch during rtsp playback
+      * 550486 : [faac] Negotiation problem with mono audio for some sampl...
+      * 550657 : New element jasperdec
+      * 552506 : [neonhttpsrc] doesn't handle/throw errors correctly
+      * 552536 : fix incomplete change to gstdvbsrc.c
+      * 553755 : [mpegpsdemux] FP exception when playing tv2-1_25.mpg
+      * 555193 : [ELEMENT-MOVE] Move mpegtsparse element into mpegdemux pl...
+      * 555198 : [mpegpsdemux] Lower the RANK to MARGINAL for next release
+      * 555912 : [apexsink] Missing from ext/Makefile.am
+      * 555965 : Missing space after point mark
+      * 555968 : Missing space after point mark
+      * 555969 : Missing space after point mark
+      * 556003 : [flvdemux] Regression in handling flow returns in pull-mode
+      * 556274 : [aiffparse] Uses debugging methods before debugging is in...
+      * 556338 : Failed to configure latency
+      * 556428 : [mpegpsdemux] Creates invalid newsegment events 
+      * 556430 : [inputselector] Assumes there's always an otherpad
+      * 556440 : [PATCH] crash on demuxing certain transport streams
+      * 556482 : [PATCH] crash in mpegtsparse get_encoding_and_convert
+      * 556564 : [flvmux] Copy & paste bugs resulting in invalid files
+      * 556588 : [apexsink] should not have PRIMARY rank
+      * 557080 : [mpegpsdemux] Regression with reverse-playback
+      * 543480 : gstrtpbin fails to release lock while emitting signal
+      * 556520 : jitterbuffer seqnum gap detection is wrong
+      * 463941 : Plugin for screen capture on windows
+      * 519935 : New plugin for video capture on Windows
+      * 520899 : New plugin: pcapparse
+      * 520901 : New plugin: wasapi (Windows Audio Session API) 
+
+Changes since 0.10.7:
+
+      * Support shared desktops in RFB input
+      * Make the Quicktime codec wrapper work on win32
+      * Experimental DVD navigation support
+      * Support AAC/H.264 in FLV files
+      * Fixes in the DirectShow codec wrapper
+      * Fix the Real codec wrapper plugin
+      * New deinterlace2 plugin incorporating TVtime deinterlacers
+      * Handle seeking, timestamps, duration in RAW video/audio parsers
+      * New DirectShow video sink for Win32
+      * FAAD reverse playback support
+      * OSS4 support improvements
+      * MythTV seeking support
+      * SPC decoder now supports seeking, tags and duration queries
+      * Replaygain elements moved to Good
+      * Deinterleave/interleave elements fixed and moved to Good
+      * MPEG-4 video stream parser fixes
+      * Improved MPEG-TS parsing for DVB support
+      * Improvements in App source/sink
+      * RTP manager enhancements
+
+Bugs fixed since 0.10.7:
+
+      * 533736 : [mythtvsrc] Seeking doesn't work
+      * 544050 : ext/timidity/gsttimidity.c :  ISO C90 forbids mixed decla...
+      * 454151 : SPC plugin enhancements (patch)
+      * 506594 : [interleave] doesn't work with channels > 1
+      * 521392 : Proposed patches for bayer2rgb encoding
+      * 525613 : [wildmidi] [PATCH] initializes library multiple times
+      * 528618 : amrwb plugin do not build without warning with the 3ggp s...
+      * 529359 : BBC Real Audio stream is just noise
+      * 530611 : [gstsrtenc] declare variables at beginning of block
+      * 531840 : QuickTime wrapper doesn't work on Win32
+      * 531955 : gstrtpsession doesn't send RTCP bye on EOS
+      * 532723 : mpeg4videoparse should parse the codec data
+      * 533435 : wildmidi does not work
+      * 533559 : mpeg4videoparse should skip garbage
+      * 535043 : VCD plugin only plays first track
+      * 536042 : mpeg4videoparse broken on big endian architectures
+      * 536258 : interleave doesn't close properly
+      * 536856 : rtpmanager deadlocks when receiving new data while going ...
+      * 538560 : [mpegtsparse] static caps reference counter incremented i...
+      * 539292 : memory leak in mpegtsparse
+      * 539601 : [realvideodec] not-negotiated error if codec lib isn't found
+      * 541522 : cross mingw32 gcc: festival plugin compilation fix
+      * 541543 : fix HAVE_OSS4 detection code in configure.ac
+      * 543286 : deinterlace2 doesn't build outside gcc
+      * 543846 : [resindvd] Impossible to build from the first configure r...
+      * 543848 : [ladspa] Needs to link with -ldl for dlopen() and friends
+      * 543860 : [modplug] Uses CFLAGS for CXXFLAGS
+      * 543861 : [resindvd] Some files not disted
+      * 544457 : -bad doesn't compile with MSVC
+      * 526905 : [musepack] Port to the new libmpcdec API
+      * 532011 : Deadlock in rtpsession
+      * 536309 : Seeking in pipeline with videoparse crashes
+
+Changes since 0.10.6:
+    
+      * OSS v4 support
+      * libdc1394 2.0.0 support
+      * AAC support fixes
+      * RTP support improved
+      * New OFA element
+      * SRT subtitle encoder added
+      * Windows Inet support for http/ftp
+      * Fixes in dc1394, MIDI, MPEG-2 encoding, MythTV input, NAS
+      * Fixes in Bayer decoder, replaygain analysis, GSM decoder
+      * DVB/MPEG-TS support improved
+      * NSF decoder updated
+      * 'metadata' plugin enhancements
+      * Dirac encoder ported to libschroedinger
+      * mplex element ported to 0.10
+      * VCD/CDXA parser ported to 0.10
+      * Directshow wrapper improvements
+      * 'selector' plugin enhancements
+      * souphttpsrc moved to the -good module
+      * Various other fixes and enhancements
+
+Bugs fixed since 0.10.6:
+     
+      * 498237 : nsfdec crash with SK8ORDIE.
+      * 529378 : faad leaks GstAudioChannelPosition
+      * 351309 : New Element: gst-puid
+      * 469979 : [faad] Could not map channel positions - setting caps on ...
+      * 494499 : replaygain analysis slowdown on low volume (denormals)
+      * 514948 : [souphttpsrc] configurable buffer size setting and zero-copy
+      * 514964 : [dc1394] port to new stable 2.0.x API
+      * 517937 : various C89 fixes
+      * 518227 : test/icles/metadata_editor.c does not compile on Windows
+      * 518722 : [souphttpsrc] append cookie headers to HTTP request
+      * 519905 : [mvedemux] fix audio discontinuity
+      * 520329 : [PATCH] mjpegtools: mplex ported to 0.10 and mpeg2enc upd...
+      * 520626 : Implement collision and loop detection in rtpmanager
+      * 520892 : [dshowvideosrc] latency and shutdown improvements
+      * 520894 : rtpmanager rtcp thread shutdown deadlock
+      * 520897 : new element: wininetsrc
+      * 521749 : [souphttpsrc] unit test fails on mandriva cooker
+      * 522134 : [souphttpsrc] Playback should continue seamlessly on serv...
+      * 522212 : wrong origin
+      * 522884 : gstneonhttpsrc does not handle the HTTP status 303 correc...
+      * 523854 : [souphttpsrc] Glitches and crackling when playing things ...
+      * 524035 : [neonhttpsrc] fails to compile with libneon 0.28.x
+      * 525271 : [new plugin] srtenc
+      * 526337 : souphttpsrc ignores connections error
+      * 527622 : [flvdemux] crash in FLV demuxer
+      * 528000 : [timidity] Doesn't dist all files correctly
+      * 528011 : [dc1394] Shouldn't be included in the states test
+      * 528245 : rtpbin element leaks
+      * 528266 : [ofa] Unit test fails because of different fingerprints
+      * 528614 : timeout introduced in poll loop for fd in dvbsrc causes b...
+      * 529283 : [ofa] Unit test leaks tag string
+      * 529285 : [rganalysis] Unit test leaks a GstTagList
+      * 517854 : DirectFB check fails
+      * 517895 : nas plugin no longer builds (configure.ac error)
+      * 517896 : PATCH: fix building of mpeg2enc plugin with even newer mj...
+      * 525100 : does not build with --disable-external
+      * 481354 : [wavparse] does not play 700Hz GSM 6.10 wav file
+
+Changes since 0.10.5:
+    
+      * DVB support added
+      * dc1394 support
+      * RTP-manager improvements
+      * Support for native QT codecs on OS/X and DirectShow codecs on Windows,
+        courtesy of Songbird and Fluendo
+      * New elements: flvdemux, flvparse, mpegtsparse, dvbsrc, dvdspu
+      * More new elements: mpeg4videoparse, metadatademux/mux, souphttpsrc,
+        speexresample, qtwrapper
+      * Even more new elements: rawaudioparse, fbdevsink
+      * Renamed elements/plugins: switch (now selector), pitch (now soundtouch)
+      * Elements graduated to good: multifilesrc/sink, spectrum, equalizer,
+        bpwsinc, lpwsinc
+      * Elements graduated to ugly: xingmux (now part of mpegaudioparse)
+      * OpenGL support moved to new module: gst-plugins-gl
+      * appsrc/appsink improvements
+      * Fixes in neonhttpsrc
+      * Fixes in amrwbparse
+      * Deinterlacer improvements
+      * Fixes in dtsdec
+      * Fixes in the Real codec wrappers
+
+Bugs fixed since 0.10.5:
+     
+      * 321240 : [PLUGIN-MOVE] dfbvideosink should be moved from -bad to -...
+      * 508029 : [speexresample] pops/glitches in some cases
+      * 508294 : [realaudiodec] crash in set_caps dereferencing NULL funcs...
+      * 387251 : New Plugin! : dc1394 Adds Support for firewire (1394) IID...
+      * 393461 : [Real] Location of .so varies on each distribution
+      * 395424 : neonhttpsrc lacks support for proxy servers
+      * 397759 : Xingmux may not write a proper Xing/VBR header
+      * 403992 : [new plugin] timidity based midi decoder
+      * 409974 : Code for improved GStreamer resampler (based on speex res...
+      * 426657 : Add support for SDP multicast description files
+      * 433373 : [win32] autogenerated win32/common/config.h needed
+      * 444499 : build of fresh CVS is failing in ext/sdl
+      * 450175 : gcc-2.9x build fixes
+      * 450605 : Missing files in po/POTFILES.in
+      * 452009 : ./configure breaks when cross-compiling FAAD2
+      * 452258 : [mpeg2enc] make work with mjpegtools 1.9
+      * 453636 : dvbsrc needs more flexible adapter selection
+      * 454078 : [ivorbis] header files missing in release tarball
+      * 454313 : missing xml files to build docs/plugins
+      * 456901 : PATCH: add several missing supported mime-types to the mo...
+      * 456912 : PATCH: make wildmidi plugin check for /etc/timidity.cfg
+      * 461068 : Seeking not properly implemented by the pitch plugin
+      * 461373 : HP-UX 11.11 build with native compiler
+      * 461377 : [festival] port to GStreamer-0.10
+      * 461601 : Some files missing from POTFILES.in
+      * 462737 : compilation breaks with g++-4.2 and gcc-4.2
+      * 464678 : Add connection-speed property to mmssrc element
+      * 468039 : [mythtvsrc] missing examples for live tv in gst-inspect
+      * 471554 : real media videos do not work
+      * 473562 : [rtpmanager] cvs build problem due to compiler warning
+      * 474969 : [neonhttpsrc] fails to play radio streams with neon > =0.26
+      * 476128 : Printf format fixes
+      * 476148 : Add mpeg4 video parser
+      * 476159 : memleak patch to rtpmanager
+      * 476370 : [faad] shouldn't set channel-positions for mono and stereo
+      * 477306 : amrwbenc has not property to select band mode
+      * 478566 : Add notification of active SSRCs to the RTP manager
+      * 481200 : gstneonhttpsrc discards GET parameters from URL
+      * 481276 : [mpegtsparse] " not linked (-1) " error
+      * 481279 : [mpegtsparse] partial corruption of the output stream
+      * 483400 : mpegtsparse: PAT with version 0 incorrectly skipped by pa...
+      * 484990 : memleak - missing g_free() rtpmanager/gstrtpbin.c
+      * 485462 : alsaspdifsink uses wrong sample rate
+      * 487496 : [dvdspu] fails to link on Mac OS
+      * 487892 : [mpegtsparse] getting pat-info property before PAT is ava...
+      * 487901 : [mpegtsparse] stale PAT info when switching from PLAYING ...
+      * 490060 : [faac] a few minor issues: bitrate, enum nick for low com...
+      * 490682 : [interleave] can't create more than one request sink pad
+      * 492406 : Crasher in libgstdshow on Windows/MSVC
+      * 492798 : [rtpmanager] build issues on Windows/MSVC
+      * 496221 : Streaming FLV's over HTTP doesn't work, for totem and the...
+      * 498430 : incomplete CVS commit
+      * 498667 : gstreamer segfaults in faac
+      * 498755 : FLV files incorrectly report framerate of 1000fps
+      * 499008 : mpeg2enc ignores the incoming stream aspect property
+      * 500099 : Fixes and improvements to souphttpsrc
+      * 500142 : switch element in switch plugin should be renamed
+      * 501579 : rtpmanager should emit a signal when it can associate a s...
+      * 502335 : [souphttpsrc] some enhancements
+      * 502879 : videoparse segmentation fault
+      * 503308 : Changing tempo using pitch plugin doesn't update length info
+      * 507020 : [rtpjitterbuffer] unreffing peeked buffer and not popping...
+      * 507584 : gio: gstgiobasesrc.c does not compile with CVS version of...
+      * 507940 : rtpsession:rtp_send_src shouldnt not have fixed caps
+      * 508515 : [rtpbin] allow request_new_pad with name NULL
+      * 508587 : Improvement to rtpsession
+      * 508979 : Enhancement for xingmux
+      * 510708 : [souphttpsrc] support for libsoup-2.4
+      * 511001 : enhanced deinterlace plugin
+      * 511146 : rtpjitterbuffer should not return an error on no-caps
+      * 511530 : DTS library API change?
+      * 511683 : gstrtpbin fails to associate streams together for lipsync
+      * 511686 : make gstrtpjitterbuffer respect different clock rates for...
+      * 511920 : rtpsource queue full tries to treat GstBuffer as GstObject
+      * 512654 : [h264parse] does not build in cvs head (unused variable i...
+      * 512774 : [rtpjitterbuffer] does not accept clock rate from caps
+      * 512826 : switch / selector event leak
+      * 514093 : bug in configure.ac prevents glimagesink plugin from bein...
+      * 515564 : souphttpsrc unit test fails to build
+      * 515567 : [states] States unit test should exclude the dvb plugin
+      * 515588 : Warning building tremor plugin
+      * 515720 : [xvid] Memory leak caused by not unsetting GValue
+      * 515721 : [rfb] rfbsrc leaking the rfb decoder
+      * 515722 : [fbdev] Leaking the device property string
+      * 515815 : [mpegvideoparse] fix a few new memory leaks
+      * 515860 : plugins should not install headers - fix metadata
+      * 515919 : Fix a bunch of finalize leaks
+      * 515964 : [docs] Still contains docs for the GIO plugin although it...
+      * 515970 : [dshowdecwrapper] Doesn't chain up dispose function properly
+      * 516061 : [h264parse] fix a few new memory leaks
+      * 516094 : Remove glimagesink from -bad
+      * 516114 : dvbbasebin leaks the location string when the uri handler...
+      * 516160 : gstrtpbin did not ignore streams with no SR when doing as...
+      * 516436 : [dvdsub] segfault on display of 1st subpicture in 2nd cha...
+      * 516448 : criticals due to missing debug category init in mpegtsparse
+      * 516499 : critical caused by assuming optional property " descriptor...
+      * 517391 : [tta] Doesn't link with libm
+      * 517571 : small memory leak in gstrtpbin
+      * 517684 : [mythtvsrc] Small bug fixes
+      * 478159 : Could not decode realvideo buffer
+      * 497020 : Add fully async HTTP source based on libsoup.
+      * 501562 : [switch] bogus locking order
+
+Changes since 0.10.4:
+
+      * New plugin - realdec for decoding Real streams using binary libs
+      * New plugin - MythTV source
+      * New plugin - appsrc (for application data insertion)
+      * New plugin - VMnc VMware capture decoder
+      * New plugin - JACK audio output
+      * New plugin - interleave/deinterleave
+      * New plugin - RTP manager
+      * New plugin - Bayer to RGB converter
+      * New plugin - ReplayGain support
+      * New plugin - DirectShow win32 input support
+      * New plugin - videosignal/videoanalyse
+      * LADSPA plugin improvements
+      * IIR equaliser ported to 0.10 (iirequalizer)
+      * libsndfile output ported to 0.10
+      * mpegvideoparse ported to 0.10 and improved
+      * switch element ported to 0.10
+      * VCD source element ported to 0.10
+      * AMR-WB support fixes 
+      * MIDI renderer plugin based on timidity
+      * Windows and OS/X output plugins moved to the Good module 
+      * qtdemux, wavpack and videocrop plugins moved to the Good module
+      * Many other bug fixes and improvements
+      * Parallel installability with 0.8.x series
+      * Threadsafe design and API
+
+Bugs fixed since 0.10.4:
+
+      * 152403 : [mpeg/DVB] Integrating externaly developped DVB source el...
+      * 333307 : AmrWB Plugin
+      * 345633 : [nassink] port to 0.10
+      * 354174 : [PATCH] add REAL support by using the proprietary drivers
+      * 354451 : [mythtvsrc] Plugin for MythTV source
+      * 357055 : Tremor (ivorbis) plug-in is unable to decode vorbis strea...
+      * 374773 : [qtdemux] [PLUGIN-MOVE] Move from -bad to good
+      * 375264 : [neonhttpsrc] add seek support
+      * 376591 : configure.ac looks for wrong symbols for FAAD support
+      * 382184 : Port interleave and deinterleave to 0.10 for audio channe...
+      * 388050 : [neonhttpsrc] code simplifications
+      * 392112 : [rfbsrc] doesn't build with MinGW
+      * 393622 : Not building real plugin, only works on 32bit x86 platforms.
+      * 395536 : [wavpackenc] Trivial cleanup
+      * 395597 : Deinterleave fails to negotiate with alsasrc when using D...
+      * 400555 : dts-in-wav: only 2 channel recognised
+      * 402470 : [osxvideosink] video sink for MacOSX
+      * 412077 : [speed] can't initially set speed > 1
+      * 412710 : [replaygain] Add playback elements
+      * 413818 : [neonhttpsrc] errors out on redirects
+      * 421110 : New x264enc plugin
+      * 421598 : [wavpack] Add support for non-8*n depths and don't play a...
+      * 423283 : [qtdemux] timestamps of outgoing h264 packets are wrong
+      * 423741 : [amrwb] use external shared libamrwb
+      * 430594 : Unable to compile gst-plugins-bad CVS
+      * 430598 : [realvideodec] dll functions not available on MinGW
+      * 430664 : name conflict for " rtpbin " element
+      * 437260 : CFLAGS are poinsoned by the OpenGL test
+      * 437403 : gst-plugins-bad uses #ifdef G_OS_WIN32 instead of #ifdef ...
+      * 437539 : Compilation of DirectDraw and DirectSound plugins using m...
+      * 439405 : YUV not working in GL image sink.
+      * 439910 : [switch] Warning in a debug function (Mingw)
+      * 439911 : [qtdemux] Warning in a debug function (MinGW)
+      * 439914 : [directdraw] Warnings when using MinGW
+      * 440466 : [PLUGIN-MOVE] osxvideo
+      * 440774 : [sdl] sdlvideosink has ill-formatted element details
+      * 442689 : [neon] Property-related cleanups of neonhttpsrc
+      * 445189 : PLUGIN-MOVE - Move Windows sinks to -good
+      * 348973 : New plugins: MVE muxer/demuxer
+      * 391971 : Fix build with gcc-2.x
+      * 392313 : [directdrawsink] dist and add to gst-plugins-bad
+      * 392638 : [directsoundsink] dist and add to gst-plugins-bad
+      * 392856 : [qtdemux] plugin must link against zlib (error with MinGW)
+      * 403572 : Port equaliser element to 0.10
+      * 352605 : [PLUGIN-MOVE] move wavpack to -good
+      * 426972 : Specific set of H.264 files cannot be played
+      * 434101 : [gsm] doesn't link against libgstbase-0.10
+
+Changes since 0.10.3:
+
+      * V4L2 source element moved to Good plugins
+      * Many improvements in Quicktime playback
+      * Xvid encoding and decoding improvements
+      * FAAD decoder fixes
+      * New element: alsaspdifsink for IEC958 output
+      * Spectrum FFT analysis element ported
+      * New element: h264parse. H.264 Parser
+      * Fixes in bz2 support
+      * New element: theoraexpdec. Libtheoraexp based Theora decoder
+      * New element: wavpackenc. Wavpack decoder
+      * Improvements in the libneon based http source
+      * gstfilter ported to 0.10
+      * mpeg2enc ported to 0.10
+      * New element: nsfdec. NSF decoder
+      * New element: spcdec. libopenspc based SPC decoder
+      * videocrop ported/re-written from 0.8
+      * cdaudio element ported to 0.10
+      * New element: rganalysis. ReplayGain analysis element
+      * New element: dvbsrc. DVB source element (disabled by default)
+      * deinterlace (Simple deinterlacer) ported from 0.8
+      * New element: nuvdemux. NUV video demuxer
+      * Fixes in the DirectDraw output elements
+      * New elements: multifilesrc, multifilesink
+      * y4mencode ported from 0.8
+      * rfbsrc, librfb based capture source ported from 0.8
+      * New element: jackaudiosink. JACK audio output element
+      * Many other fixes and improvements
+
+Bugs fixed since 0.10.3:
+
+      * 379261 : crash in Movie Player: Trying to play a partial...
+      * 151192 : [PATCH] nsf decoder
+      * 124580 : [jacksink] plugin needs a maintainer/love/to be updated
+      * 330632 : [qtdemux] MP3 stream in MP4 container not playable
+      * 335507 : [FAAD] blur_warhammer.mp4 movie doesn't transcode
+      * 339462 : [PATCH] xvid plugin to support more capabilities of XviD ...
+      * 340638 : New plugin: h264 parse element
+      * 341231 : [qtdemux] [faad] audio in some superman trailers doesn't ...
+      * 341461 : gst-plugins-bad missing -no-undefined again
+      * 341563 : [faad] fails to decode middle of file, should just skip o...
+      * 343031 : v4l2src caps negotion is faulty
+      * 343131 : [wavpack] add wavpack encoder
+      * 343184 : [mpeg2enc] ported to 0.10
+      * 343866 : cygwin fixes
+      * 344472 : [wavpackdec] should post audio codec tag and extract bitrate
+      * 344821 : [pitch] controllable properties
+      * 344944 : AAC Support crashes with some files
+      * 345182 : [neonhttpsrc] fails to compile with libneon 0.26.x
+      * 345336 : modplug plugin doesn't work on AMD64
+      * 345653 : [videocrop] port to 0.10, support all common formats
+      * 346853 : [PATCH] ported gstfilter elements to 0.10
+      * 347079 : [qtdemux] plugin doesn't decode Year
+      * 347443 : [wavpack] port parser/decoder to official API and random ...
+      * 347935 : [nsf] warning when building RPM
+      * 348220 : New libopenspc-based SPC playback plugin
+      * 348976 : [xviddec] crashes after invalid unit size warning
+      * 350399 : [qtdemux] extract multiple redirect locations and require...
+      * 350741 : [faac] Wrong bitrate set
+      * 351495 : [wavpackparse] add support for push-based mode
+      * 351557 : [wavpackparse] resync in push mode if sync was lost
+      * 357069 : [rganalysis] New element: ReplayGain analysis
+      * 357212 : [glimagesink] crashes if no DISPLAY
+      * 361260 : New element: nuvdemux
+      * 362626 : Fixes compiling with forte: warning clean up (part 5)
+      * 376106 : Port rfbsrc to gst 0.10
+      * 378613 : [qtdemux] non-working redirect ('alis' redirect reference...
+      * 382203 : ladspa element needs to be enabled
+      * 384294 : [modplug] returns position query results in attoseconds
+      * 385048 : [qtdemux] Crash on a mp4 file in qtdemux_parse_trak
+      * 385788 : [SECURITY] buffer overflows in modplug
+      * 387076 : [wavpack] Wrong include
+      * 387122 : [qtdemux] regression: crash in parse_trak
+      * 387160 : [qtdemux] posts buffering message which can cause hangs
+      * 351659 : [wavpackparse] fix resync in push mode, implement it in p...
+      * 351663 : [wavpackenc] doesn't set correct caps on source pad
+      * 352476 : [wavpack] documentation, unit tests, memleak fix
+      * 366523 : [directdraw] fix playback and vs8 fixes
+      * 369539 : [wavpackenc] More sensible values for GstEnums, don't sen...
+      * 384140 : [neonhttpsrc] id3demux autoplug loop streaming mp3 with I...
+      * 387137 : Regression: qtdemux paletted image handling
+      * 349916 : [gdp] raw audio saved in gdp, when depayloading  complain...
+      * 346723 : gstneonhttpsrc fails for URL
+      * 347439 : [qtdemux] seeks poorly in files with slideshows
+      * 349204 : [gdp] raw audio saved in gdp does not depayload correctly
+      * 351825 : [qtdemux] doesn't set proper caps for RGB video
+      * 367696 : [qtdemux] No support for QuickTime Animation (RLE).
+      * 372243 : [PATCH] yuv4mpeg (v2) encoder ported to 0.10
+      * 380610 : [rganalysis] Incorrect event handling
+      * 383471 : cannot link 1 ch raw 24-bit PCM audio
+      * 344987 : [PATCH] [dvbsrc] [ts-tools] gstreamer 0.10 port
+
+There was no 0.10.2 release
+
+Changes since 0.10.1:
+
+      * FAAD/AAC decoder improvements
+      * Better QuickTime support
+      * Plugins ported from 0.8: modplug, v4l2src, Musicbrainz TRM
+      * New plugins: Xing muxer, libsoundtouch, AMR-WB, theora-exp
+      * Musepack decoder improved
+      * libneon based http input now supports iradio mode
+      * More uniform plugin descriptions
+      * Many bug fixes
+
+Bugs fixed since 0.10.1:
+
+      * 334700 : [qtdemux] Memory leaks
+      * 333307 : AmrWB Plugin
+      * 330317 : New xingmux element  for writing Xing headers
+      * 304795 : [ximagesrc] port to 0.9 [PATCH]
+      * 154906 : [qtdemux] A/V Synch problem + crackling sound
+      * 167129 : [qtdemux] eats last chunk
+      * 173007 : [faad] Failed to decode buffer: Channel coupling not yet ...
+      * 302606 : [qtdemux] Movie playback too fast (quicktime mov, H.263 c...
+      * 321351 : extracted AAC output is played too slow
+      * 324082 : [qtdemux] [faad] playback issues with quicktime videos
+      * 327075 : [qtdemux] add support for palettized SMC videos
+      * 327355 : gst-plugins-bad CVS compilation breaks on gcc 4.1
+      * 331335 : New Element: libsoundtouch based pitch shifter
+      * 331909 : support for more fourccs in qtdemux
+      * 332066 : [qtdemux] doesn't extract Disc Number field from some files
+      * 332155 : Seeking problems in .mov files
+      * 332402 : quicktime file will not play
+      * 332598 : port modplug to 0.10
+      * 332892 : [faad] 'Negative scalefactor found' and 'Maximum number o...
+      * 333283 : [xviddec] Fix build with gcc 2.95
+      * 333501 : [patch] taglib element
+      * 334123 : [taglibmux] fixes for TPOS and TCOP
+      * 334417 : autogen.sh bit rot
+      * 334748 : [faad] doesn't take sampling rate from demuxer
+      * 335585 : xvidenc does not mark key-frame/delta-units
+      * 336898 : Port musicbrainz/trm plugin to 0.10
+      * 337263 : plugins need better/unified descriptions
+      * 338233 : theora-exp api out of sync
+      * 339041 : qtdemux : Floating point exception
+      * 339074 : Thumbnail generation fails on the following file
+      * 337436 : Sound is very jerky on this .mov file
+      * 338935 : [qtdemux] floating point exception parsing trac header
+
+Changes since 0.10.0:
+
+      * Parallel installability with 0.8.x series
+      * Threadsafe design and API
+      * Lots of fixes for the QT/MOV demuxer, including restoring 
+        the ability to play web streams, and more codecs supported
+      * AAC decoder fixes
+      * MMS source fixes
+      * DirectFB plugin updated
+      * New plugins ported to 0.10: swfdec, XVid, dtsdec, glimagesink
+      * New libneon based http source filter
+      * APE tag reader moved to gst-plugins-good module
+
+Bugs fixed since 0.10.0:
+
+      * 303167 : Add bzip2 support
+      * 322973 : [wavpack] erroneous sampling rates range
+      * 326524 : Support for Indeo 3-encoded QuickTime files
+      * 327133 : [qtdemux] QuickTime with 8-bit audio
+      * 328854 : AAC+ stream not working with FAAD plugin
+      * 330089 : [bz2] Wrong mimetype and no typefinding
+      * 331302 : bz2 plugin source files lack copyright notices
+      * 331543 : crash on iTunes MPEG v4 AAC-LC files
+      * 331582 : [qtdemux] protect log statement against invalid memory access
+
+Bugs fixed since 0.9.7:
+    
+      * 322962 : wavpack plugins don't get built
+
+Changes since 0.9.6:
+
+      * wavpack ported
+      * libmms ported
+
+Changes since 0.9.5:
+    
+      * Fractional framerates
+
+Bugs fixed since 0.9.5:
+    
+      * 320532 : [faac] set output samplerate and number of channels
+      * 321903 : [qtdemux] does not know fourcc DX50, as produced by DivX 5
+
+Changes since 0.9.4:
+    
+      * Parallel installability with 0.8.x series
+      * Threadsafe design and API
+      * qtdemux supports custom genre tags
+      * tremor integer vorbis decoder ported
+      * directfb video sink ported (with examples and documentation!)
+
+Bugs fixed since 0.9.4:
+    
+      * 321241 : faad compile fix
+
+Bugs fixed since 0.9.3:
+
+      * 317438 : [speed] fix 0.9 port
+      * 318659 : [faac] problem with float capabilities
+      * 318660 : [faac] missing unrefs
+
+Changes since 0.9.1:
+
+      * ported gsm, tta, sdlvideosink

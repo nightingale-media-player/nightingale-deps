@@ -35,10 +35,7 @@ bus_handler (GstBus * bus, GstMessage * message, gpointer data)
       GError *gerror;
       gchar *debug;
 
-      if (message->type == GST_MESSAGE_WARNING)
-        gst_message_parse_warning (message, &gerror, &debug);
-      else
-        gst_message_parse_error (message, &gerror, &debug);
+      gst_message_parse_error (message, &gerror, &debug);
       gst_object_default_error (GST_MESSAGE_SRC (message), gerror, debug);
       gst_message_unref (message);
       g_error_free (gerror);
@@ -63,7 +60,7 @@ bus_handler (GstBus * bus, GstMessage * message, gpointer data)
       }
 
       g_free (fpr);
-      gst_tag_list_unref (tag_list);
+      gst_tag_list_free (tag_list);
 
       found_fingerprint = TRUE;
 
@@ -84,10 +81,11 @@ GST_START_TEST (test_ofa_le_1ch)
 
   GstBus *bus;
   GMainLoop *loop;
+
   GstCaps *caps;
+
   gint64 position;
   GstFormat fmt = GST_FORMAT_TIME;
-  guint bus_watch = 0;
 
   pipeline = gst_pipeline_new ("pipeline");
   fail_unless (pipeline != NULL);
@@ -128,7 +126,7 @@ GST_START_TEST (test_ofa_le_1ch)
 
   bus = gst_element_get_bus (pipeline);
   fail_unless (bus != NULL);
-  bus_watch = gst_bus_add_watch (bus, bus_handler, loop);
+  gst_bus_add_watch (bus, bus_handler, loop);
   gst_object_unref (bus);
 
   found_fingerprint = FALSE;
@@ -143,7 +141,6 @@ GST_START_TEST (test_ofa_le_1ch)
   fail_unless (found_fingerprint == TRUE);
   g_object_unref (pipeline);
   g_main_loop_unref (loop);
-  g_source_remove (bus_watch);
 }
 
 GST_END_TEST;
@@ -153,12 +150,14 @@ GST_START_TEST (test_ofa_be_1ch)
 {
   GstElement *pipeline;
   GstElement *audiotestsrc, *audioconvert, *capsfilter, *ofa, *fakesink;
+
   GstBus *bus;
   GMainLoop *loop;
+
   GstCaps *caps;
+
   gint64 position;
   GstFormat fmt = GST_FORMAT_TIME;
-  guint bus_watch = 0;
 
   pipeline = gst_pipeline_new ("pipeline");
   fail_unless (pipeline != NULL);
@@ -199,7 +198,7 @@ GST_START_TEST (test_ofa_be_1ch)
 
   bus = gst_element_get_bus (pipeline);
   fail_unless (bus != NULL);
-  bus_watch = gst_bus_add_watch (bus, bus_handler, loop);
+  gst_bus_add_watch (bus, bus_handler, loop);
   gst_object_unref (bus);
 
   found_fingerprint = FALSE;
@@ -214,7 +213,6 @@ GST_START_TEST (test_ofa_be_1ch)
   fail_unless (found_fingerprint == TRUE);
   g_object_unref (pipeline);
   g_main_loop_unref (loop);
-  g_source_remove (bus_watch);
 }
 
 GST_END_TEST;
@@ -223,12 +221,14 @@ GST_START_TEST (test_ofa_le_2ch)
 {
   GstElement *pipeline;
   GstElement *audiotestsrc, *audioconvert, *capsfilter, *ofa, *fakesink;
+
   GstBus *bus;
   GMainLoop *loop;
+
   GstCaps *caps;
+
   gint64 position;
   GstFormat fmt = GST_FORMAT_TIME;
-  guint bus_watch = 0;
 
   pipeline = gst_pipeline_new ("pipeline");
   fail_unless (pipeline != NULL);
@@ -269,7 +269,7 @@ GST_START_TEST (test_ofa_le_2ch)
 
   bus = gst_element_get_bus (pipeline);
   fail_unless (bus != NULL);
-  bus_watch = gst_bus_add_watch (bus, bus_handler, loop);
+  gst_bus_add_watch (bus, bus_handler, loop);
   gst_object_unref (bus);
 
   found_fingerprint = FALSE;
@@ -284,7 +284,6 @@ GST_START_TEST (test_ofa_le_2ch)
   fail_unless (found_fingerprint == TRUE);
   g_object_unref (pipeline);
   g_main_loop_unref (loop);
-  g_source_remove (bus_watch);
 }
 
 GST_END_TEST;
@@ -294,12 +293,14 @@ GST_START_TEST (test_ofa_be_2ch)
 {
   GstElement *pipeline;
   GstElement *audiotestsrc, *audioconvert, *capsfilter, *ofa, *fakesink;
+
   GstBus *bus;
   GMainLoop *loop;
+
   GstCaps *caps;
+
   gint64 position;
   GstFormat fmt = GST_FORMAT_TIME;
-  guint bus_watch = 0;
 
   pipeline = gst_pipeline_new ("pipeline");
   fail_unless (pipeline != NULL);
@@ -340,7 +341,7 @@ GST_START_TEST (test_ofa_be_2ch)
 
   bus = gst_element_get_bus (pipeline);
   fail_unless (bus != NULL);
-  bus_watch = gst_bus_add_watch (bus, bus_handler, loop);
+  gst_bus_add_watch (bus, bus_handler, loop);
   gst_object_unref (bus);
 
   found_fingerprint = FALSE;
@@ -355,12 +356,11 @@ GST_START_TEST (test_ofa_be_2ch)
   fail_unless (found_fingerprint == TRUE);
   g_object_unref (pipeline);
   g_main_loop_unref (loop);
-  g_source_remove (bus_watch);
 }
 
 GST_END_TEST;
 
-static Suite *
+Suite *
 ofa_suite (void)
 {
   Suite *s = suite_create ("OFA");

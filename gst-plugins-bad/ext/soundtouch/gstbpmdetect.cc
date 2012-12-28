@@ -17,10 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
+#define FLOAT_SAMPLES 1
+#include <soundtouch/BPMDetect.h>
 /* FIXME: workaround for SoundTouch.h of version 1.3.1 defining those
  * variables while it shouldn't. */
 #undef VERSION
@@ -31,8 +29,10 @@
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE
 
-#define FLOAT_SAMPLES 1
-#include <soundtouch/BPMDetect.h>
+/* FIXME: keep it here to avoid PACKAGE* redefinition warnings */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include <gst/audio/audio.h>
 #include <gst/audio/gstaudiofilter.h>
@@ -48,7 +48,7 @@ GST_DEBUG_CATEGORY_STATIC (gst_bpm_detect_debug);
 struct _GstBPMDetectPrivate
 {
   gfloat bpm;
-#ifdef HAVE_SOUNDTOUCH_1_4
+#if HAVE_SOUNDTOUCH_1_4
     soundtouch::BPMDetect * detect;
 #else
   BPMDetect *detect;
@@ -56,13 +56,14 @@ struct _GstBPMDetectPrivate
 };
 
 #define ALLOWED_CAPS \
-    "audio/x-raw, "                                           \
-    " format = (string) " GST_AUDIO_NE (F32) ", "             \
+    "audio/x-raw-float, "                                     \
+    " width = (int) 32, "                                     \
+    " endianness = (int) BYTE_ORDER, "                        \
     " rate = (int) [ 8000, MAX ], "                           \
     " channels = (int) [ 1, 2 ]"
 
-#define gst_bpm_detect_parent_class parent_class
-G_DEFINE_TYPE (GstBPMDetect, gst_bpm_detect, GST_TYPE_AUDIO_FILTER);
+GST_BOILERPLATE (GstBPMDetect, gst_bpm_detect, GstAudioFilter,
+    GST_TYPE_AUDIO_FILTER);
 
 static void gst_bpm_detect_finalize (GObject * object);
 static gboolean gst_bpm_detect_stop (GstBaseTransform * trans);
@@ -71,14 +72,28 @@ static gboolean gst_bpm_detect_event (GstBaseTransform * trans,
 static GstFlowReturn gst_bpm_detect_transform_ip (GstBaseTransform * trans,
     GstBuffer * in);
 static gboolean gst_bpm_detect_setup (GstAudioFilter * filter,
-    const GstAudioInfo * info);
+    GstRingBufferSpec * format);
+
+static void
+gst_bpm_detect_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+  GstCaps *caps;
+
+  gst_element_class_set_details_simple (element_class, "BPM Detector",
+      "Filter/Analyzer/Audio", "Detect the BPM of an audio stream",
+      "Sebastian Dröge <slomo@circular-chaos.org>");
+
+  caps = gst_caps_from_string (ALLOWED_CAPS);
+  gst_audio_filter_class_add_pad_templates (GST_AUDIO_FILTER_CLASS (g_class),
+      caps);
+  gst_caps_unref (caps);
+}
 
 static void
 gst_bpm_detect_class_init (GstBPMDetectClass * klass)
 {
-  GstCaps *caps;
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
   GstBaseTransformClass *trans_class = GST_BASE_TRANSFORM_CLASS (klass);
   GstAudioFilterClass *filter_class = GST_AUDIO_FILTER_CLASS (klass);
 
@@ -87,17 +102,8 @@ gst_bpm_detect_class_init (GstBPMDetectClass * klass)
 
   gobject_class->finalize = gst_bpm_detect_finalize;
 
-  gst_element_class_set_static_metadata (element_class, "BPM Detector",
-      "Filter/Analyzer/Audio", "Detect the BPM of an audio stream",
-      "Sebastian Dröge <slomo@circular-chaos.org>");
-
-  caps = gst_caps_from_string (ALLOWED_CAPS);
-  gst_audio_filter_class_add_pad_templates (GST_AUDIO_FILTER_CLASS (klass),
-      caps);
-  gst_caps_unref (caps);
-
   trans_class->stop = GST_DEBUG_FUNCPTR (gst_bpm_detect_stop);
-  trans_class->sink_event = GST_DEBUG_FUNCPTR (gst_bpm_detect_event);
+  trans_class->event = GST_DEBUG_FUNCPTR (gst_bpm_detect_event);
   trans_class->transform_ip = GST_DEBUG_FUNCPTR (gst_bpm_detect_transform_ip);
   trans_class->passthrough_on_same_caps = TRUE;
 
@@ -107,7 +113,7 @@ gst_bpm_detect_class_init (GstBPMDetectClass * klass)
 }
 
 static void
-gst_bpm_detect_init (GstBPMDetect * bpm_detect)
+gst_bpm_detect_init (GstBPMDetect * bpm_detect, GstBPMDetectClass * g_class)
 {
   bpm_detect->priv = G_TYPE_INSTANCE_GET_PRIVATE ((bpm_detect),
       GST_TYPE_BPM_DETECT, GstBPMDetectPrivate);
@@ -153,7 +159,7 @@ gst_bpm_detect_event (GstBaseTransform * trans, GstEvent * event)
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_FLUSH_STOP:
     case GST_EVENT_EOS:
-    case GST_EVENT_SEGMENT:
+    case GST_EVENT_NEWSEGMENT:
       if (bpm_detect->priv->detect) {
         delete bpm_detect->priv->detect;
 
@@ -169,7 +175,7 @@ gst_bpm_detect_event (GstBaseTransform * trans, GstEvent * event)
 }
 
 static gboolean
-gst_bpm_detect_setup (GstAudioFilter * filter, const GstAudioInfo * info)
+gst_bpm_detect_setup (GstAudioFilter * filter, GstRingBufferSpec * format)
 {
   GstBPMDetect *bpm_detect = GST_BPM_DETECT (filter);
 
@@ -189,33 +195,29 @@ gst_bpm_detect_transform_ip (GstBaseTransform * trans, GstBuffer * in)
   GstAudioFilter *filter = GST_AUDIO_FILTER (trans);
   gint nsamples;
   gfloat bpm;
-  GstMapInfo info;
 
   if (G_UNLIKELY (!bpm_detect->priv->detect)) {
-    if (GST_AUDIO_INFO_FORMAT (&filter->info) == GST_AUDIO_FORMAT_UNKNOWN) {
+    if (filter->format.channels == 0 || filter->format.rate == 0) {
       GST_ERROR_OBJECT (bpm_detect, "No channels or rate set yet");
       return GST_FLOW_ERROR;
     }
-#ifdef HAVE_SOUNDTOUCH_1_4
+#if HAVE_SOUNDTOUCH_1_4
     bpm_detect->priv->detect =
-        new soundtouch::BPMDetect (GST_AUDIO_INFO_CHANNELS (&filter->info),
-        GST_AUDIO_INFO_RATE (&filter->info));
+        new soundtouch::BPMDetect (filter->format.channels,
+        filter->format.rate);
 #else
     bpm_detect->priv->detect =
-        new BPMDetect (GST_AUDIO_INFO_CHANNELS (&filter->info),
-        GST_AUDIO_INFO_RATE (&filter->info));
+        new BPMDetect (filter->format.channels, filter->format.rate);
 #endif
   }
 
-  gst_buffer_map (in, &info, GST_MAP_READ);
-
-  nsamples = info.size / (4 * GST_AUDIO_INFO_CHANNELS (&filter->info));
+  nsamples = GST_BUFFER_SIZE (in) / (4 * filter->format.channels);
 
   /* For stereo BPMDetect->inputSamples() does downmixing into the input
    * data but our buffer data shouldn't be modified.
    */
-  if (GST_AUDIO_INFO_CHANNELS (&filter->info) == 1) {
-    gfloat *inbuf = (gfloat *) info.data;
+  if (filter->format.channels == 1) {
+    gfloat *inbuf = (gfloat *) GST_BUFFER_DATA (in);
 
     while (nsamples > 0) {
       bpm_detect->priv->detect->inputSamples (inbuf, MIN (nsamples, 2048));
@@ -225,7 +227,7 @@ gst_bpm_detect_transform_ip (GstBaseTransform * trans, GstBuffer * in)
   } else {
     gfloat *inbuf, *intmp, data[2 * 2048];
 
-    inbuf = (gfloat *) info.data;
+    inbuf = (gfloat *) GST_BUFFER_DATA (in);
     intmp = data;
 
     while (nsamples > 0) {
@@ -235,15 +237,14 @@ gst_bpm_detect_transform_ip (GstBaseTransform * trans, GstBuffer * in)
       inbuf += 2048 * 2;
     }
   }
-  gst_buffer_unmap (in, &info);
 
   bpm = bpm_detect->priv->detect->getBpm ();
   if (bpm >= 1.0 && fabs (bpm_detect->bpm - bpm) >= 1.0) {
-    GstTagList *tags = gst_tag_list_new_empty ();
+    GstTagList *tags = gst_tag_list_new ();
 
     gst_tag_list_add (tags, GST_TAG_MERGE_REPLACE_ALL, GST_TAG_BEATS_PER_MINUTE,
         bpm, (void *) NULL);
-    gst_pad_push_event (trans->srcpad, gst_event_new_tag (tags));
+    gst_element_found_tags (GST_ELEMENT (bpm_detect), tags);
 
     GST_INFO_OBJECT (bpm_detect, "Detected BPM: %lf\n", bpm);
     bpm_detect->bpm = bpm;

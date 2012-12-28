@@ -53,7 +53,7 @@ size_t
     GstMplexIBitStream::ReadStreamBytes (uint8_t * buf, size_t size =
     BUFFER_SIZE)
 {
-  gpointer data;
+  guint8 *data;
 
   GST_MPLEX_MUTEX_LOCK (mplex);
 

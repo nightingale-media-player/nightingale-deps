@@ -187,10 +187,10 @@ gst_dvd_spu_exec_cmd_blk (GstDVDSpu * dvdspu, guint8 * data, guint8 * end)
         if (G_UNLIKELY (data + 7 >= end))
           return;               /* Invalid SET_DAREA cmd at the end of the blk */
 
-        r->top = ((data[4] & 0xff) << 4) | ((data[5] & 0xf0) >> 4);
-        r->left = ((data[1] & 0xff) << 4) | ((data[2] & 0xf0) >> 4);
-        r->right = ((data[2] & 0x0f) << 8) | data[3];
-        r->bottom = ((data[5] & 0x0f) << 8) | data[6];
+        r->top = ((data[4] & 0x3f) << 4) | ((data[5] & 0xe0) >> 4);
+        r->left = ((data[1] & 0x3f) << 4) | ((data[2] & 0xf0) >> 4);
+        r->right = ((data[2] & 0x03) << 8) | data[3];
+        r->bottom = ((data[5] & 0x03) << 8) | data[6];
 
         GST_DEBUG_OBJECT (dvdspu,
             " Set Display Area top %u left %u bottom %u right %u", r->top,
@@ -322,7 +322,6 @@ void
 gstspu_vobsub_handle_new_buf (GstDVDSpu * dvdspu, GstClockTime event_ts,
     GstBuffer * buf)
 {
-  GstMapInfo map;
   guint8 *start, *end;
   SpuState *state = &dvdspu->spu_state;
 
@@ -330,7 +329,7 @@ gstspu_vobsub_handle_new_buf (GstDVDSpu * dvdspu, GstClockTime event_ts,
   gst_dvd_spu_dump_dcsq (dvdspu, event_ts, buf);
 #endif
 
-  if (G_UNLIKELY (gst_buffer_get_size (buf) < 4))
+  if (G_UNLIKELY (GST_BUFFER_SIZE (buf) < 4))
     goto invalid;
 
   if (state->vobsub.buf != NULL) {
@@ -340,9 +339,8 @@ gstspu_vobsub_handle_new_buf (GstDVDSpu * dvdspu, GstClockTime event_ts,
   state->vobsub.buf = buf;
   state->vobsub.base_ts = event_ts;
 
-  gst_buffer_map (state->vobsub.buf, &map, GST_MAP_READ);
-  start = map.data;
-  end = start + map.size;
+  start = GST_BUFFER_DATA (state->vobsub.buf);
+  end = start + GST_BUFFER_SIZE (state->vobsub.buf);
 
   /* Configure the first command block in this buffer as our initial blk */
   state->vobsub.cur_cmd_blk = GST_READ_UINT16_BE (start + 2);
@@ -353,7 +351,6 @@ gstspu_vobsub_handle_new_buf (GstDVDSpu * dvdspu, GstClockTime event_ts,
     g_free (state->vobsub.line_ctrl_i);
     state->vobsub.line_ctrl_i = NULL;
   }
-  gst_buffer_unmap (state->vobsub.buf, &map);
   return;
 
 invalid:
@@ -364,7 +361,6 @@ invalid:
 gboolean
 gstspu_vobsub_execute_event (GstDVDSpu * dvdspu)
 {
-  GstMapInfo map;
   guint8 *start, *cmd_blk, *end;
   guint16 next_blk;
   SpuState *state = &dvdspu->spu_state;
@@ -376,14 +372,12 @@ gstspu_vobsub_execute_event (GstDVDSpu * dvdspu)
       " @ offset %u", GST_TIME_ARGS (state->next_ts),
       state->vobsub.cur_cmd_blk);
 
-  gst_buffer_map (state->vobsub.buf, &map, GST_MAP_READ);
-  start = map.data;
-  end = start + map.size;
+  start = GST_BUFFER_DATA (state->vobsub.buf);
+  end = start + GST_BUFFER_SIZE (state->vobsub.buf);
 
   cmd_blk = start + state->vobsub.cur_cmd_blk;
 
   if (G_UNLIKELY (cmd_blk + 5 >= end)) {
-    gst_buffer_unmap (state->vobsub.buf, &map);
     /* Invalid. Finish the buffer and loop again */
     gst_dvd_spu_finish_spu_buf (dvdspu);
     return FALSE;
@@ -398,11 +392,9 @@ gstspu_vobsub_execute_event (GstDVDSpu * dvdspu)
   } else {
     /* Next Block points to the current block, so we're finished with this
      * SPU buffer */
-    gst_buffer_unmap (state->vobsub.buf, &map);
     gst_dvd_spu_finish_spu_buf (dvdspu);
     return FALSE;
   }
-  gst_buffer_unmap (state->vobsub.buf, &map);
 
   return TRUE;
 }

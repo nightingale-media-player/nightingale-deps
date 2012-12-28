@@ -10,6 +10,11 @@ else
 SUBDIRS_EXAMPLES =
 endif
 
-SUBDIRS = $(SUBDIRS_CHECK) $(SUBDIRS_EXAMPLES) files icles
+SUBDIRS = icles			\
+	$(SUBDIRS_CHECK)	\
+	$(SUBDIRS_EXAMPLES)
 
-DIST_SUBDIRS = check examples files icles
+DIST_SUBDIRS = icles		\
+	check			\
+	examples
+

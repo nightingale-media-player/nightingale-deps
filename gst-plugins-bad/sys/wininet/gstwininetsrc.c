@@ -86,7 +86,7 @@ gst_win_inet_src_base_init (gpointer gclass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
 
-  gst_element_class_set_static_metadata (element_class,
+  gst_element_class_set_details_simple (element_class,
       "Windows Network Source", "Source/Network",
       "Receive data as a client over the network via HTTP or FTP",
       "Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>");
@@ -271,7 +271,7 @@ gst_win_inet_src_get_header_value_as_int (GstWinInetSrc * self,
         error_str = "ERROR_HTTP_HEADER_NOT_FOUND";
 
       GST_WARNING_OBJECT (self, "HttpQueryInfo for header '%s' failed: %s "
-          "(0x%08lx)", header_name, error_str, error_code);
+          "(0x%08x)", header_name, error_str, error_code);
     }
 
     return FALSE;
@@ -314,7 +314,7 @@ gst_win_inet_src_open (GstWinInetSrc * self)
 
 error:
   GST_ELEMENT_ERROR (self, RESOURCE, NOT_FOUND, (NULL),
-      ("Could not open location \"%s\" for reading: 0x%08lx",
+      ("Could not open location \"%s\" for reading: 0x%08x",
           self->location, GetLastError ()));
   gst_win_inet_src_reset (self);
 
@@ -372,7 +372,7 @@ gst_win_inet_src_create (GstPushSrc * pushsrc, GstBuffer ** buffer)
           }
         }
       } else {
-        GST_ERROR_OBJECT (self, "InternetReadFile failed: 0x%08lx",
+        GST_ERROR_OBJECT (self, "InternetReadFile failed: 0x%08x",
             GetLastError ());
 
         ret = GST_FLOW_ERROR;
@@ -403,12 +403,12 @@ gst_win_inet_src_uri_get_type (void)
 static gchar **
 gst_win_inet_src_uri_get_protocols (void)
 {
-  static const gchar *protocols[] = { "http", "https", "ftp", NULL };
+  static gchar *protocols[] = { "http", "https", "ftp", NULL };
 
-  return (gchar **) protocols;
+  return protocols;
 }
 
-static const gchar *
+static G_CONST_RETURN gchar *
 gst_win_inet_src_uri_get_uri (GstURIHandler * handler)
 {
   GstWinInetSrc *src = GST_WIN_INET_SRC (handler);
@@ -446,6 +446,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    wininet,
+    "wininet",
     "Windows network plugins",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

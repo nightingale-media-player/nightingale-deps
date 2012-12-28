@@ -39,15 +39,13 @@
 #include <math.h>
 #include <glib.h>
 #include <gst/audio/audio.h>
+#include <gst/controller/gstcontroller.h>
 #include <gst/audio/multichannel.h>
 
 #include "gstlv2.h"
 #include <slv2/slv2.h>
 
-#define GST_LV2_DEFAULT_PATH \
-  "/usr/lib/lv2" G_SEARCHPATH_SEPARATOR_S \
-  "/usr/local/lib/lv2" G_SEARCHPATH_SEPARATOR_S \
-  LIBDIR "/lv2"
+#define GST_SLV2_PLUGIN_QDATA g_quark_from_static_string("slv2-plugin")
 
 static void gst_lv2_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
@@ -55,7 +53,7 @@ static void gst_lv2_set_property (GObject * object,
 static void gst_lv2_get_property (GObject * object,
     guint prop_id, GValue * value, GParamSpec * pspec);
 
-static gboolean gst_lv2_setup (GstSignalProcessor * sigproc, GstCaps * caps);
+static gboolean gst_lv2_setup (GstSignalProcessor * sigproc, guint sample_rate);
 static gboolean gst_lv2_start (GstSignalProcessor * sigproc);
 static void gst_lv2_stop (GstSignalProcessor * sigproc);
 static void gst_lv2_cleanup (GstSignalProcessor * sigproc);
@@ -92,10 +90,7 @@ static GstPlugin *gst_lv2_plugin;
 GST_DEBUG_CATEGORY_STATIC (lv2_debug);
 #define GST_CAT_DEFAULT lv2_debug
 
-static GQuark descriptor_quark = 0;
-
-
-/* Convert an LV2 port role to a Gst channel positon
+/** Convert an LV2 port role to a Gst channel positon
  * WARNING: If the group has only a single port,
  * GST_AUDIO_CHANNEL_POSITION_FRONT_CENTER will be returned for pg:centerRole
  * (which is used by LV2 for mono groups), but this is not correct.  In this
@@ -144,7 +139,7 @@ gst_lv2_role_to_position (SLV2Value role)
   return GST_AUDIO_CHANNEL_POSITION_INVALID;
 }
 
-/* Find and return the group @a uri in @a groups, or NULL if not found */
+/** Find and return the group @a uri in @a groups, or NULL if not found */
 static GstLV2Group *
 gst_lv2_class_find_group (GArray * groups, SLV2Value uri)
 {
@@ -158,15 +153,16 @@ gst_lv2_class_find_group (GArray * groups, SLV2Value uri)
 static GstAudioChannelPosition *
 gst_lv2_build_positions (GstLV2Group * group)
 {
+  int i;
   GstAudioChannelPosition *positions = NULL;
-
-  /* don't do anything for mono */
-  if (group->ports->len > 1) {
-    gint i;
-
-    positions = g_new (GstAudioChannelPosition, group->ports->len);
+  if (group->has_roles) {
+    positions = malloc (group->ports->len * sizeof (GstAudioChannelPosition));
     for (i = 0; i < group->ports->len; ++i)
       positions[i] = g_array_index (group->ports, GstLV2Port, i).position;
+
+    // Fix up mono groups (see WARNING above)
+    if (group->ports->len == 1)
+      positions[0] = GST_AUDIO_CHANNEL_POSITION_FRONT_MONO;
   }
   return positions;
 }
@@ -177,22 +173,23 @@ gst_lv2_base_init (gpointer g_class)
   GstLV2Class *klass = (GstLV2Class *) g_class;
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
   GstSignalProcessorClass *gsp_class = GST_SIGNAL_PROCESSOR_CLASS (g_class);
+  GstElementDetails *details;
   SLV2Plugin lv2plugin;
   SLV2Value val;
   SLV2Values values, sub_values;
   GstLV2Group *group = NULL;
   GstAudioChannelPosition position = GST_AUDIO_CHANNEL_POSITION_INVALID;
+  GstAudioChannelPosition mono_position = GST_AUDIO_CHANNEL_POSITION_FRONT_MONO;
+  GstAudioChannelPosition *positions = NULL;
   guint j, in_pad_index = 0, out_pad_index = 0;
-  const gchar *klass_tags;
-  gchar *longname, *author;
+  gchar *klass_tags;
+
+  GST_DEBUG ("base_init %p", g_class);
 
   lv2plugin = (SLV2Plugin) g_type_get_qdata (G_OBJECT_CLASS_TYPE (klass),
-      descriptor_quark);
+      GST_SLV2_PLUGIN_QDATA);
 
   g_assert (lv2plugin);
-
-  GST_DEBUG ("base_init %p, plugin %s", g_class,
-      slv2_value_as_string (slv2_plugin_get_uri (lv2plugin)));
 
   gsp_class->num_group_in = 0;
   gsp_class->num_group_out = 0;
@@ -213,7 +210,7 @@ gst_lv2_base_init (gpointer g_class)
     const SLV2Port port = slv2_plugin_get_port_by_index (lv2plugin, j);
     const gboolean is_input = slv2_port_is_a (lv2plugin, port, input_class);
     gboolean in_group = FALSE;
-    struct _GstLV2Port desc = { j, 0, };
+    struct _GstLV2Port desc = { j, 0 };
     values = slv2_port_get_value (lv2plugin, port, in_group_pred);
 
     if (slv2_values_size (values) > 0) {
@@ -241,13 +238,13 @@ gst_lv2_base_init (gpointer g_class)
             assert (group);
             assert (slv2_value_equals (group->uri, group_uri));
           } else {
-            GST_WARNING ("plugin %s has duplicate group symbol '%s'",
+            GST_WARNING ("plugin %s has duplicate group symbol '%s'\n",
                 slv2_value_as_string (slv2_plugin_get_uri (lv2plugin)),
                 slv2_value_as_string (g.symbol));
             in_group = FALSE;
           }
         } else {
-          GST_WARNING ("plugin %s has illegal group with no symbol",
+          GST_WARNING ("plugin %s has illegal group with no symbol\n",
               slv2_value_as_string (slv2_plugin_get_uri (lv2plugin)));
           in_group = FALSE;
         }
@@ -286,7 +283,6 @@ gst_lv2_base_init (gpointer g_class)
           g_array_append_val (klass->control_out_ports, desc);
       } else {
         /* unknown port type */
-        GST_INFO ("unhandled port %d", j);
         continue;
       }
     }
@@ -303,19 +299,35 @@ gst_lv2_base_init (gpointer g_class)
   /* add input group pad templates */
   for (j = 0; j < gsp_class->num_group_in; ++j) {
     group = &g_array_index (klass->in_groups, GstLV2Group, j);
+    if (group->has_roles) {
+      positions = gst_lv2_build_positions (group);
+    }
 
     gst_signal_processor_class_add_pad_template (gsp_class,
-        slv2_value_as_string (group->symbol), GST_PAD_SINK, j,
-        group->ports->len);
+        slv2_value_as_string (group->symbol),
+        GST_PAD_SINK, j, group->ports->len, positions);
+
+    if (group->has_roles) {
+      free (positions);
+      positions = NULL;
+    }
   }
 
   /* add output group pad templates */
   for (j = 0; j < gsp_class->num_group_out; ++j) {
     group = &g_array_index (klass->out_groups, GstLV2Group, j);
+    if (group->has_roles) {
+      positions = gst_lv2_build_positions (group);
+    }
 
     gst_signal_processor_class_add_pad_template (gsp_class,
-        slv2_value_as_string (group->symbol), GST_PAD_SRC, j,
-        group->ports->len);
+        slv2_value_as_string (group->symbol),
+        GST_PAD_SRC, j, group->ports->len, positions);
+
+    if (group->has_roles) {
+      free (positions);
+      positions = NULL;
+    }
   }
 
   /* add non-grouped input port pad templates */
@@ -326,7 +338,7 @@ gst_lv2_base_init (gpointer g_class)
     const gchar *name =
         slv2_value_as_string (slv2_port_get_symbol (lv2plugin, port));
     gst_signal_processor_class_add_pad_template (gsp_class, name, GST_PAD_SINK,
-        j, 1);
+        j, 1, &mono_position);
   }
 
   /* add non-grouped output port pad templates */
@@ -336,23 +348,26 @@ gst_lv2_base_init (gpointer g_class)
     SLV2Port port = slv2_plugin_get_port_by_index (lv2plugin, desc->index);
     const gchar *name =
         slv2_value_as_string (slv2_port_get_symbol (lv2plugin, port));
-    gst_signal_processor_class_add_pad_template (gsp_class, name, GST_PAD_SRC,
-        j, 1);
+    gst_signal_processor_class_add_pad_template (gsp_class, name, GST_PAD_SINK,
+        j, 1, &mono_position);
   }
 
+  /* construct the element details struct */
+  details = g_new0 (GstElementDetails, 1);
   val = slv2_plugin_get_name (lv2plugin);
   if (val) {
-    longname = g_strdup (slv2_value_as_string (val));
+    details->longname = g_strdup (slv2_value_as_string (val));
     slv2_value_free (val);
   } else {
-    longname = g_strdup ("no description available");
+    details->longname = g_strdup ("no description available");
   }
+  details->description = details->longname;
   val = slv2_plugin_get_author_name (lv2plugin);
   if (val) {
-    author = g_strdup (slv2_value_as_string (val));
+    details->author = g_strdup (slv2_value_as_string (val));
     slv2_value_free (val);
   } else {
-    author = g_strdup ("no author available");
+    details->author = g_strdup ("no author available");
   }
 
   if (gsp_class->num_audio_in == 0)
@@ -365,11 +380,12 @@ gst_lv2_base_init (gpointer g_class)
   } else
     klass_tags = "Filter/Effect/Audio/LV2";
 
-  GST_INFO ("tags : %s", klass_tags);
-  gst_element_class_set_metadata (element_class, longname,
-      klass_tags, longname, author);
-  g_free (longname);
-  g_free (author);
+  details->klass = klass_tags;
+  GST_INFO ("tags : %s", details->klass);
+  gst_element_class_set_details (element_class, details);
+  g_free (details->longname);
+  g_free (details->author);
+  g_free (details);
 
   if (!slv2_plugin_has_feature (lv2plugin, in_place_broken_pred))
     GST_SIGNAL_PROCESSOR_CLASS_SET_CAN_PROCESS_IN_PLACE (klass);
@@ -378,49 +394,12 @@ gst_lv2_base_init (gpointer g_class)
 }
 
 static gchar *
-gst_lv2_class_get_param_name (GstLV2Class * klass, SLV2Port port)
+gst_lv2_class_get_param_name (GstLV2Class * klass, gint portnum)
 {
   SLV2Plugin lv2plugin = klass->plugin;
-  gchar *ret;
-
-  ret = g_strdup (slv2_value_as_string (slv2_port_get_symbol (lv2plugin,
+  SLV2Port port = slv2_plugin_get_port_by_index (lv2plugin, portnum);
+  return g_strdup (slv2_value_as_string (slv2_port_get_symbol (lv2plugin,
               port)));
-
-  /* this is the same thing that param_spec_* will do */
-  g_strcanon (ret, G_CSET_A_2_Z G_CSET_a_2_z G_CSET_DIGITS "-", '-');
-  /* satisfy glib2 (argname[0] must be [A-Za-z]) */
-  if (!((ret[0] >= 'a' && ret[0] <= 'z') || (ret[0] >= 'A' && ret[0] <= 'Z'))) {
-    gchar *tempstr = ret;
-
-    ret = g_strconcat ("param-", ret, NULL);
-    g_free (tempstr);
-  }
-
-  /* check for duplicate property names */
-  if (g_object_class_find_property (G_OBJECT_CLASS (klass), ret)) {
-    gint n = 1;
-    gchar *nret = g_strdup_printf ("%s-%d", ret, n++);
-
-    while (g_object_class_find_property (G_OBJECT_CLASS (klass), nret)) {
-      g_free (nret);
-      nret = g_strdup_printf ("%s-%d", ret, n++);
-    }
-    g_free (ret);
-    ret = nret;
-  }
-
-  GST_DEBUG ("built property name '%s' from port name '%s'", ret,
-      slv2_value_as_string (slv2_port_get_symbol (lv2plugin, port)));
-
-  return ret;
-}
-
-static gchar *
-gst_lv2_class_get_param_nick (GstLV2Class * klass, SLV2Port port)
-{
-  SLV2Plugin lv2plugin = klass->plugin;
-
-  return g_strdup (slv2_value_as_string (slv2_port_get_name (lv2plugin, port)));
 }
 
 static GParamSpec *
@@ -430,16 +409,11 @@ gst_lv2_class_get_param_spec (GstLV2Class * klass, gint portnum)
   SLV2Port port = slv2_plugin_get_port_by_index (lv2plugin, portnum);
   SLV2Value lv2def, lv2min, lv2max;
   GParamSpec *ret;
-  gchar *name, *nick;
+  gchar *name;
   gint perms;
   gfloat lower = 0.0f, upper = 1.0f, def = 0.0f;
 
-  nick = gst_lv2_class_get_param_nick (klass, port);
-  name = gst_lv2_class_get_param_name (klass, port);
-
-  GST_DEBUG ("%s trying port %s : %s",
-      slv2_value_as_string (slv2_plugin_get_uri (lv2plugin)), name, nick);
-
+  name = gst_lv2_class_get_param_name (klass, portnum);
   perms = G_PARAM_READABLE;
   if (slv2_port_is_a (lv2plugin, port, input_class))
     perms |= G_PARAM_WRITABLE | G_PARAM_CONSTRUCT;
@@ -447,8 +421,9 @@ gst_lv2_class_get_param_spec (GstLV2Class * klass, gint portnum)
     perms |= GST_PARAM_CONTROLLABLE;
 
   if (slv2_port_has_property (lv2plugin, port, toggled_prop)) {
-    ret = g_param_spec_boolean (name, nick, nick, FALSE, perms);
-    goto done;
+    ret = g_param_spec_boolean (name, name, name, FALSE, perms);
+    g_free (name);
+    return ret;
   }
 
   slv2_port_get_range (lv2plugin, port, &lv2def, &lv2min, &lv2max);
@@ -465,25 +440,23 @@ gst_lv2_class_get_param_spec (GstLV2Class * klass, gint portnum)
   slv2_value_free (lv2max);
 
   if (def < lower) {
-    GST_WARNING ("%s has lower bound %f > default %f",
+    GST_WARNING ("%s has lower bound %f > default %f\n",
         slv2_value_as_string (slv2_plugin_get_uri (lv2plugin)), lower, def);
     lower = def;
   }
 
   if (def > upper) {
-    GST_WARNING ("%s has upper bound %f < default %f",
+    GST_WARNING ("%s has upper bound %f < default %f\n",
         slv2_value_as_string (slv2_plugin_get_uri (lv2plugin)), upper, def);
     upper = def;
   }
 
   if (slv2_port_has_property (lv2plugin, port, integer_prop))
-    ret = g_param_spec_int (name, nick, nick, lower, upper, def, perms);
+    ret = g_param_spec_int (name, name, name, lower, upper, def, perms);
   else
-    ret = g_param_spec_float (name, nick, nick, lower, upper, def, perms);
+    ret = g_param_spec_float (name, name, name, lower, upper, def, perms);
 
-done:
   g_free (name);
-  g_free (nick);
 
   return ret;
 }
@@ -493,8 +466,7 @@ gst_lv2_class_init (GstLV2Class * klass, SLV2Plugin lv2plugin)
 {
   GObjectClass *gobject_class;
   GstSignalProcessorClass *gsp_class;
-  GParamSpec *p;
-  gint i, ix;
+  gint i;
 
   GST_DEBUG ("class_init %p", klass);
 
@@ -511,23 +483,27 @@ gst_lv2_class_init (GstLV2Class * klass, SLV2Plugin lv2plugin)
 
   klass->plugin = lv2plugin;
 
-  /* properties have an offset of 1 */
-  ix = 1;
-
   /* register properties */
 
-  for (i = 0; i < gsp_class->num_control_in; i++, ix++) {
+  for (i = 0; i < gsp_class->num_control_in; i++) {
+    GParamSpec *p;
+
     p = gst_lv2_class_get_param_spec (klass,
         g_array_index (klass->control_in_ports, GstLV2Port, i).index);
 
-    g_object_class_install_property (gobject_class, ix, p);
+    /* properties have an offset of 1 */
+    g_object_class_install_property (G_OBJECT_CLASS (klass), i + 1, p);
   }
 
-  for (i = 0; i < gsp_class->num_control_out; i++, ix++) {
+  for (i = 0; i < gsp_class->num_control_out; i++) {
+    GParamSpec *p;
+
     p = gst_lv2_class_get_param_spec (klass,
         g_array_index (klass->control_out_ports, GstLV2Port, i).index);
 
-    g_object_class_install_property (gobject_class, ix, p);
+    /* properties have an offset of 1, and we already added num_control_in */
+    g_object_class_install_property (G_OBJECT_CLASS (klass),
+        gsp_class->num_control_in + i + 1, p);
   }
 }
 
@@ -611,16 +587,12 @@ gst_lv2_get_property (GObject * object, guint prop_id, GValue * value,
 }
 
 static gboolean
-gst_lv2_setup (GstSignalProcessor * gsp, GstCaps * caps)
+gst_lv2_setup (GstSignalProcessor * gsp, guint sample_rate)
 {
   GstLV2 *lv2;
   GstLV2Class *oclass;
   GstSignalProcessorClass *gsp_class;
-  GstStructure *s;
   gint i;
-  GstLV2Group *group = NULL;
-  GstAudioChannelPosition *positions = NULL;
-  GstPad *pad;
 
   gsp_class = GST_SIGNAL_PROCESSOR_GET_CLASS (gsp);
   lv2 = (GstLV2 *) gsp;
@@ -628,11 +600,11 @@ gst_lv2_setup (GstSignalProcessor * gsp, GstCaps * caps)
 
   g_return_val_if_fail (lv2->activated == FALSE, FALSE);
 
-  GST_DEBUG_OBJECT (lv2, "instantiating the plugin at %d Hz", gsp->sample_rate);
+  GST_DEBUG_OBJECT (lv2, "instantiating the plugin at %d Hz", sample_rate);
 
-  if (!(lv2->instance =
-          slv2_plugin_instantiate (oclass->plugin, gsp->sample_rate, NULL)))
-    goto no_instance;
+  lv2->instance = slv2_plugin_instantiate (oclass->plugin, sample_rate, NULL);
+
+  g_return_val_if_fail (lv2->instance != NULL, FALSE);
 
   /* connect the control ports */
   for (i = 0; i < gsp_class->num_control_in; i++)
@@ -644,49 +616,7 @@ gst_lv2_setup (GstSignalProcessor * gsp, GstCaps * caps)
         g_array_index (oclass->control_out_ports, GstLV2Port, i).index,
         &(gsp->control_out[i]));
 
-  /* set input group pad audio channel position */
-  for (i = 0; i < gsp_class->num_group_in; ++i) {
-    group = &g_array_index (oclass->in_groups, GstLV2Group, i);
-    if (group->has_roles) {
-      if ((positions = gst_lv2_build_positions (group))) {
-        if ((pad = gst_element_get_static_pad (GST_ELEMENT (gsp),
-                    slv2_value_as_string (group->symbol)))) {
-          GST_INFO_OBJECT (lv2, "set audio channel positions on sink pad %s",
-              slv2_value_as_string (group->symbol));
-          s = gst_caps_get_structure (caps, 0);
-          gst_audio_set_channel_positions (s, positions);
-          gst_object_unref (pad);
-        }
-        g_free (positions);
-        positions = NULL;
-      }
-    }
-  }
-  /* set output group pad audio channel position */
-  for (i = 0; i < gsp_class->num_group_out; ++i) {
-    group = &g_array_index (oclass->out_groups, GstLV2Group, i);
-    if (group->has_roles) {
-      if ((positions = gst_lv2_build_positions (group))) {
-        if ((pad = gst_element_get_static_pad (GST_ELEMENT (gsp),
-                    slv2_value_as_string (group->symbol)))) {
-          GST_INFO_OBJECT (lv2, "set audio channel positions on src pad %s",
-              slv2_value_as_string (group->symbol));
-          s = gst_caps_get_structure (caps, 0);
-          gst_audio_set_channel_positions (s, positions);
-          gst_object_unref (pad);
-        }
-        g_free (positions);
-        positions = NULL;
-      }
-    }
-  }
   return TRUE;
-
-no_instance:
-  {
-    GST_WARNING_OBJECT (gsp, "could not create instance");
-    return FALSE;
-  }
 }
 
 static gboolean
@@ -741,7 +671,7 @@ gst_lv2_process (GstSignalProcessor * gsp, guint nframes)
 {
   GstSignalProcessorClass *gsp_class;
   GstLV2 *lv2;
-  GstLV2Class *lv2_class;
+  GstLV2Class *oclass;
   GstLV2Group *lv2_group;
   GstLV2Port *lv2_port;
   GstSignalProcessorGroup *gst_group;
@@ -749,11 +679,10 @@ gst_lv2_process (GstSignalProcessor * gsp, guint nframes)
 
   gsp_class = GST_SIGNAL_PROCESSOR_GET_CLASS (gsp);
   lv2 = (GstLV2 *) gsp;
-  lv2_class = (GstLV2Class *) gsp_class;
+  oclass = (GstLV2Class *) gsp_class;
 
-  /* multi channel inputs */
   for (i = 0; i < gsp_class->num_group_in; i++) {
-    lv2_group = &g_array_index (lv2_class->in_groups, GstLV2Group, i);
+    lv2_group = &g_array_index (oclass->in_groups, GstLV2Group, i);
     gst_group = &gsp->group_in[i];
     for (j = 0; j < lv2_group->ports->len; ++j) {
       lv2_port = &g_array_index (lv2_group->ports, GstLV2Port, j);
@@ -761,15 +690,13 @@ gst_lv2_process (GstSignalProcessor * gsp, guint nframes)
           gst_group->buffer + (j * nframes));
     }
   }
-  /* mono inputs */
   for (i = 0; i < gsp_class->num_audio_in; i++) {
-    lv2_port = &g_array_index (lv2_class->audio_in_ports, GstLV2Port, i);
+    lv2_port = &g_array_index (oclass->audio_in_ports, GstLV2Port, i);
     slv2_instance_connect_port (lv2->instance, lv2_port->index,
         gsp->audio_in[i]);
   }
-  /* multi channel outputs */
   for (i = 0; i < gsp_class->num_group_out; i++) {
-    lv2_group = &g_array_index (lv2_class->out_groups, GstLV2Group, i);
+    lv2_group = &g_array_index (oclass->out_groups, GstLV2Group, i);
     gst_group = &gsp->group_out[i];
     for (j = 0; j < lv2_group->ports->len; ++j) {
       lv2_port = &g_array_index (lv2_group->ports, GstLV2Port, j);
@@ -777,9 +704,8 @@ gst_lv2_process (GstSignalProcessor * gsp, guint nframes)
           gst_group->buffer + (j * nframes));
     }
   }
-  /* mono outputs */
   for (i = 0; i < gsp_class->num_audio_out; i++) {
-    lv2_port = &g_array_index (lv2_class->audio_out_ports, GstLV2Port, i);
+    lv2_port = &g_array_index (oclass->audio_out_ports, GstLV2Port, i);
     slv2_instance_connect_port (lv2->instance, lv2_port->index,
         gsp->audio_out[i]);
   }
@@ -792,14 +718,10 @@ gst_lv2_process (GstSignalProcessor * gsp, guint nframes)
 static gboolean
 lv2_plugin_discover (void)
 {
-  guint i, j;
+  guint i;
   SLV2Plugins plugins = slv2_world_get_all_plugins (world);
-
   for (i = 0; i < slv2_plugins_size (plugins); ++i) {
     SLV2Plugin lv2plugin = slv2_plugins_get_at (plugins, i);
-    gint num_audio_ports = 0;
-    const gchar *plugin_uri, *p;
-    gchar *type_name;
     GTypeInfo typeinfo = {
       sizeof (GstLV2Class),
       (GBaseInitFunc) gst_lv2_base_init,
@@ -811,33 +733,17 @@ lv2_plugin_discover (void)
       0,
       (GInstanceInitFunc) gst_lv2_init,
     };
+
     GType type;
 
-    plugin_uri = slv2_value_as_uri (slv2_plugin_get_uri (lv2plugin));
     /* construct the type name from plugin URI */
-    if ((p = strstr (plugin_uri, "://"))) {
-      /* cut off the protocol (e.g. http://) */
-      type_name = g_strdup (&p[3]);
-    } else {
-      type_name = g_strdup (plugin_uri);
-    }
+    gchar *type_name = g_strdup_printf ("%s",
+        slv2_value_as_uri (slv2_plugin_get_uri (lv2plugin)));
     g_strcanon (type_name, G_CSET_A_2_Z G_CSET_a_2_z G_CSET_DIGITS "-+", '-');
 
     /* if it's already registered, drop it */
     if (g_type_from_name (type_name))
       goto next;
-
-    /* check if this has any audio ports */
-    for (j = 0; j < slv2_plugin_get_num_ports (lv2plugin); j++) {
-      const SLV2Port port = slv2_plugin_get_port_by_index (lv2plugin, j);
-      if (slv2_port_is_a (lv2plugin, port, audio_class)) {
-        num_audio_ports++;
-      }
-    }
-    if (!num_audio_ports) {
-      GST_INFO ("plugin %s has no audio ports", type_name);
-      goto next;
-    }
 
     /* create the type */
     type =
@@ -846,7 +752,7 @@ lv2_plugin_discover (void)
 
     /* FIXME: not needed anymore when we can add pad templates, etc in class_init
      * as class_data contains the LADSPA_Descriptor too */
-    g_type_set_qdata (type, descriptor_quark, (gpointer) lv2plugin);
+    g_type_set_qdata (type, GST_SLV2_PLUGIN_QDATA, (gpointer) lv2plugin);
 
     if (!gst_element_register (gst_lv2_plugin, type_name, GST_RANK_NONE, type))
       goto next;
@@ -872,7 +778,7 @@ plugin_init (GstPlugin * plugin)
   output_class = slv2_value_new_uri (world, SLV2_PORT_CLASS_OUTPUT);
 
 #define NS_LV2 "http://lv2plug.in/ns/lv2core#"
-#define NS_PG  "http://lv2plug.in/ns/ext/port-groups"
+#define NS_PG  "http://lv2plug.in/ns/dev/port-groups#"
 
   integer_prop = slv2_value_new_uri (world, NS_LV2 "integer");
   toggled_prop = slv2_value_new_uri (world, NS_LV2 "toggled");
@@ -893,24 +799,11 @@ plugin_init (GstPlugin * plugin)
   side_left_role = slv2_value_new_uri (world, NS_PG "sideLeftChannel");
   side_right_role = slv2_value_new_uri (world, NS_PG "sideRightChannel");
 
-  gst_plugin_add_dependency_simple (plugin,
-      "LV2_PATH", GST_LV2_DEFAULT_PATH, NULL, GST_PLUGIN_DEPENDENCY_FLAG_NONE);
-
   parent_class = g_type_class_ref (GST_TYPE_SIGNAL_PROCESSOR);
 
   gst_lv2_plugin = plugin;
-  descriptor_quark = g_quark_from_static_string ("slv2-plugin");
 
-  /* ensure GstAudioChannelPosition type is registered */
-  if (!gst_audio_channel_position_get_type ())
-    return FALSE;
-
-  if (!lv2_plugin_discover ()) {
-    GST_WARNING ("no lv2 plugins found, check LV2_PATH");
-  }
-
-  /* we don't want to fail, even if there are no elements registered */
-  return TRUE;
+  return lv2_plugin_discover ();
 }
 
 #ifdef __GNUC__
@@ -947,6 +840,6 @@ __attribute__ ((destructor))
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    lv2,
+    "lv2",
     "All LV2 plugins",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

@@ -38,15 +38,12 @@ G_BEGIN_DECLS
 #define GST_IS_KS_CLOCK_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_KS_CLOCK))
 
-typedef struct _GstKsClock        GstKsClock;
-typedef struct _GstKsClockClass   GstKsClockClass;
-typedef struct _GstKsClockPrivate GstKsClockPrivate;
+typedef struct _GstKsClock      GstKsClock;
+typedef struct _GstKsClockClass GstKsClockClass;
 
 struct _GstKsClock
 {
   GObject parent;
-
-  GstKsClockPrivate *priv;
 };
 
 struct _GstKsClockClass

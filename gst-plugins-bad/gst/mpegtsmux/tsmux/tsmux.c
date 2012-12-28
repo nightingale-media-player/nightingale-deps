@@ -87,8 +87,6 @@
 #include "tsmuxstream.h"
 #include "crc.h"
 
-#define GST_CAT_DEFAULT mpegtsmux_debug
-
 /* Maximum total data length for a PAT section is 1024 bytes, minus an 
  * 8 byte header, then the length of each program entry is 32 bits, 
  * then finally a 32 bit CRC. Thus the maximum number of programs in this mux
@@ -100,6 +98,10 @@
 #define TSMUX_DEFAULT_NETWORK_ID 0x0001
 #define TSMUX_DEFAULT_TS_ID 0x0001
 
+#define TSMUX_START_PROGRAM_ID 0x0001
+#define TSMUX_START_PMT_PID 0x0010
+#define TSMUX_START_ES_PID 0x0040
+
 /* HACK: We use a fixed buffering offset for the PCR at the moment - 
  * this is the amount 'in advance' of the stream that the PCR sits.
  * 1/8 second atm */
@@ -108,9 +110,10 @@
 /* Times per second to write PCR */
 #define TSMUX_DEFAULT_PCR_FREQ (25)
 
-/* Base for all written PCR and DTS/PTS,
- * so we have some slack to go backwards */
-#define CLOCK_BASE (TSMUX_CLOCK_FREQ * 10 * 360)
+/* PAT frequency (1/10th sec) */
+#define TSMUX_DEFAULT_PAT_FREQ (TSMUX_CLOCK_FREQ / 10)
+/* PMT frequency (1/10th sec) */
+#define TSMUX_DEFAULT_PMT_FREQ (TSMUX_CLOCK_FREQ / 10)
 
 static gboolean tsmux_write_pat (TsMux * mux);
 static gboolean tsmux_write_pmt (TsMux * mux, TsMuxProgram * program);
@@ -123,7 +126,7 @@ static gboolean tsmux_write_pmt (TsMux * mux, TsMuxProgram * program);
  * Returns: A new #TsMux object.
  */
 TsMux *
-tsmux_new (void)
+tsmux_new ()
 {
   TsMux *mux;
 
@@ -137,7 +140,7 @@ tsmux_new (void)
 
   mux->pat_changed = TRUE;
   mux->last_pat_ts = -1;
-  mux->pat_interval = TSMUX_DEFAULT_PAT_INTERVAL;
+  mux->pat_frequency = TSMUX_DEFAULT_PAT_FREQ;
 
   return mux;
 }
@@ -161,57 +164,39 @@ tsmux_set_write_func (TsMux * mux, TsMuxWriteFunc func, void *user_data)
 }
 
 /**
- * tsmux_set_alloc_func:
+ * tsmux_set_pat_frequency:
  * @mux: a #TsMux
- * @func: a user callback function
- * @user_data: user data passed to @func
+ * @freq: a new PAT frequency
  *
- * Set the callback function and user data to be called when @mux needs
- * a new buffer to write a packet into.
- * @user_data will be passed as user data in @func.
- */
-void
-tsmux_set_alloc_func (TsMux * mux, TsMuxAllocFunc func, void *user_data)
-{
-  g_return_if_fail (mux != NULL);
-
-  mux->alloc_func = func;
-  mux->alloc_func_data = user_data;
-}
-
-/**
- * tsmux_set_pat_interval:
- * @mux: a #TsMux
- * @freq: a new PAT interval
- *
- * Set the interval (in cycles of the 90kHz clock) for writing out the PAT table.
+ * Set the frequency (against the 90Hz clock) for writing out the PAT table.
+ * A frequency of 0 will only write the PAT table when it changes.
  *
  * Many transport stream clients might have problems if the PAT table is not
  * inserted in the stream at regular intervals, especially when initially trying
  * to figure out the contents of the stream.
  */
 void
-tsmux_set_pat_interval (TsMux * mux, guint freq)
+tsmux_set_pat_frequency (TsMux * mux, guint freq)
 {
   g_return_if_fail (mux != NULL);
 
-  mux->pat_interval = freq;
+  mux->pat_frequency = freq;
 }
 
 /**
- * tsmux_get_pat_interval:
+ * tsmux_get_pat_frequency:
  * @mux: a #TsMux
  *
- * Get the configured PAT interval. See also tsmux_set_pat_interval().
+ * Get the configured PAT frequency. See also tsmux_set_pat_frequency().
  *
- * Returns: the configured PAT interval
+ * Returns: the configured PAT frequency
  */
 guint
-tsmux_get_pat_interval (TsMux * mux)
+tsmux_get_pat_frequency (TsMux * mux)
 {
   g_return_val_if_fail (mux != NULL, 0);
 
-  return mux->pat_interval;
+  return mux->pat_frequency;
 }
 
 /**
@@ -229,7 +214,7 @@ tsmux_free (TsMux * mux)
   g_return_if_fail (mux != NULL);
 
   /* Free all programs */
-  for (cur = mux->programs; cur; cur = cur->next) {
+  for (cur = g_list_first (mux->programs); cur != NULL; cur = g_list_next (cur)) {
     TsMuxProgram *program = (TsMuxProgram *) cur->data;
 
     tsmux_program_free (program);
@@ -237,7 +222,7 @@ tsmux_free (TsMux * mux)
   g_list_free (mux->programs);
 
   /* Free all streams */
-  for (cur = mux->streams; cur; cur = cur->next) {
+  for (cur = g_list_first (mux->streams); cur != NULL; cur = g_list_next (cur)) {
     TsMuxStream *stream = (TsMuxStream *) cur->data;
 
     tsmux_stream_free (stream);
@@ -271,11 +256,12 @@ tsmux_program_new (TsMux * mux)
 
   program->pmt_changed = TRUE;
   program->last_pmt_ts = -1;
-  program->pmt_interval = TSMUX_DEFAULT_PMT_INTERVAL;
+  program->pmt_frequency = TSMUX_DEFAULT_PMT_FREQ;
 
   program->pgm_number = mux->next_pgm_no++;
   program->pmt_pid = mux->next_pmt_pid++;
   program->pcr_stream = NULL;
+  program->last_pcr = -1;
 
   program->streams = g_array_sized_new (FALSE, TRUE, sizeof (TsMuxStream *), 1);
 
@@ -287,38 +273,39 @@ tsmux_program_new (TsMux * mux)
 }
 
 /**
- * tsmux_set_pmt_interval:
+ * tsmux_set_pmt_frequency:
  * @program: a #TsMuxProgram
- * @freq: a new PMT interval
+ * @freq: a new PMT frequency
  *
- * Set the interval (in cycles of the 90kHz clock) for writing out the PMT table.
+ * Set the frequency (against the 90Hz clock) for writing out the PMT table.
+ * A frequency of 0 will only write the PMT table when it changes.
  *
  * Many transport stream clients might have problems if the PMT table is not
  * inserted in the stream at regular intervals, especially when initially trying
  * to figure out the contents of the stream.
  */
 void
-tsmux_set_pmt_interval (TsMuxProgram * program, guint freq)
+tsmux_set_pmt_frequency (TsMuxProgram * program, guint freq)
 {
   g_return_if_fail (program != NULL);
 
-  program->pmt_interval = freq;
+  program->pmt_frequency = freq;
 }
 
 /**
- * tsmux_get_pmt_interval:
+ * tsmux_get_pmt_frequency:
  * @program: a #TsMuxProgram
  *
- * Get the configured PMT interval. See also tsmux_set_pmt_interval().
+ * Get the configured PMT frequency. See also tsmux_set_pmt_frequency().
  *
- * Returns: the configured PMT interval
+ * Returns: the configured PMT frequency
  */
 guint
-tsmux_get_pmt_interval (TsMuxProgram * program)
+tsmux_get_pmt_frequency (TsMuxProgram * program)
 {
   g_return_val_if_fail (program != NULL, 0);
 
-  return program->pmt_interval;
+  return program->pmt_frequency;
 }
 
 /**
@@ -334,6 +321,7 @@ tsmux_program_add_stream (TsMuxProgram * program, TsMuxStream * stream)
   g_return_if_fail (program != NULL);
   g_return_if_fail (stream != NULL);
 
+  program->nb_streams++;
   g_array_append_val (program->streams, stream);
   program->pmt_changed = TRUE;
 }
@@ -377,13 +365,9 @@ tsmux_get_new_pid (TsMux * mux)
 {
   g_return_val_if_fail (mux != NULL, -1);
 
-  /* make sure this PID is free
-   * (and not taken by a specific earlier request) */
-  do {
-    mux->next_stream_pid++;
-  } while (tsmux_find_stream (mux, mux->next_stream_pid));
-
-  return mux->next_stream_pid;
+  /* FIXME: It's possible that this next PID is already taken if a 
+   * specific PID was requested earlier. We should find a free PID */
+  return mux->next_stream_pid++;
 }
 
 /**
@@ -442,7 +426,7 @@ tsmux_find_stream (TsMux * mux, guint16 pid)
 
   g_return_val_if_fail (mux != NULL, NULL);
 
-  for (cur = mux->streams; cur; cur = cur->next) {
+  for (cur = g_list_first (mux->streams); cur != NULL; cur = g_list_next (cur)) {
     TsMuxStream *stream = (TsMuxStream *) cur->data;
 
     if (tsmux_stream_get_pid (stream) == pid) {
@@ -454,32 +438,13 @@ tsmux_find_stream (TsMux * mux, guint16 pid)
 }
 
 static gboolean
-tsmux_get_buffer (TsMux * mux, GstBuffer ** buf)
+tsmux_packet_out (TsMux * mux)
 {
-  g_return_val_if_fail (buf, FALSE);
-
-  if (G_UNLIKELY (!mux->alloc_func))
-    return FALSE;
-
-  mux->alloc_func (buf, mux->alloc_func_data);
-
-  if (!*buf)
-    return FALSE;
-
-  g_assert (gst_buffer_get_size (*buf) == TSMUX_PACKET_LENGTH);
-  return TRUE;
-}
-
-static gboolean
-tsmux_packet_out (TsMux * mux, GstBuffer * buf, gint64 pcr)
-{
-  if (G_UNLIKELY (mux->write_func == NULL)) {
-    if (buf)
-      gst_buffer_unref (buf);
+  if (G_UNLIKELY (mux->write_func == NULL))
     return TRUE;
-  }
 
-  return mux->write_func (buf, mux->write_func_data, pcr);
+  return mux->write_func (mux->packet_buf, TSMUX_PACKET_LENGTH,
+      mux->write_func_data, mux->new_pcr);
 }
 
 /*
@@ -744,119 +709,91 @@ tsmux_write_stream_packet (TsMux * mux, TsMuxStream * stream)
   guint payload_len, payload_offs;
   TsMuxPacketInfo *pi = &stream->pi;
   gboolean res;
-  gint64 cur_pcr = -1;
-  GstBuffer *buf = NULL;
-  GstMapInfo map;
 
+
+  mux->new_pcr = -1;
   g_return_val_if_fail (mux != NULL, FALSE);
   g_return_val_if_fail (stream != NULL, FALSE);
 
   if (tsmux_stream_is_pcr (stream)) {
+    gint64 cur_pcr = 0;
     gint64 cur_pts = tsmux_stream_get_pts (stream);
     gboolean write_pat;
     GList *cur;
 
-    cur_pcr = 0;
     if (cur_pts != -1) {
       TS_DEBUG ("TS for PCR stream is %" G_GINT64_FORMAT, cur_pts);
     }
 
     /* FIXME: The current PCR needs more careful calculation than just
      * writing a fixed offset */
-    if (cur_pts != -1) {
-      /* CLOCK_BASE >= TSMUX_PCR_OFFSET */
-      cur_pts += CLOCK_BASE;
+    if (cur_pts != -1 && (cur_pts >= TSMUX_PCR_OFFSET))
       cur_pcr = (cur_pts - TSMUX_PCR_OFFSET) *
           (TSMUX_SYS_CLOCK_FREQ / TSMUX_CLOCK_FREQ);
-    }
 
     /* Need to decide whether to write a new PCR in this packet */
     if (stream->last_pcr == -1 ||
         (cur_pcr - stream->last_pcr >
-            (TSMUX_SYS_CLOCK_FREQ / TSMUX_DEFAULT_PCR_FREQ))) {
+            (TSMUX_CLOCK_FREQ / TSMUX_DEFAULT_PCR_FREQ))) {
 
       stream->pi.flags |=
           TSMUX_PACKET_FLAG_ADAPTATION | TSMUX_PACKET_FLAG_WRITE_PCR;
       stream->pi.pcr = cur_pcr;
       stream->last_pcr = cur_pcr;
-    } else {
-      cur_pcr = -1;
+      mux->new_pcr = cur_pcr;
     }
 
     /* check if we need to rewrite pat */
     if (mux->last_pat_ts == -1 || mux->pat_changed)
       write_pat = TRUE;
-    else if (cur_pts >= mux->last_pat_ts + mux->pat_interval)
+    else if (cur_pcr >= mux->last_pat_ts + mux->pat_frequency)
       write_pat = TRUE;
     else
       write_pat = FALSE;
 
     if (write_pat) {
-      mux->last_pat_ts = cur_pts;
+      mux->last_pat_ts = cur_pcr;
       if (!tsmux_write_pat (mux))
         return FALSE;
     }
 
     /* check if we need to rewrite any of the current pmts */
-    for (cur = mux->programs; cur; cur = cur->next) {
+    for (cur = g_list_first (mux->programs); cur != NULL;
+        cur = g_list_next (cur)) {
       TsMuxProgram *program = (TsMuxProgram *) cur->data;
       gboolean write_pmt;
 
       if (program->last_pmt_ts == -1 || program->pmt_changed)
         write_pmt = TRUE;
-      else if (cur_pts >= program->last_pmt_ts + program->pmt_interval)
+      else if (cur_pcr >= program->last_pmt_ts + program->pmt_frequency)
         write_pmt = TRUE;
       else
         write_pmt = FALSE;
 
       if (write_pmt) {
-        program->last_pmt_ts = cur_pts;
+        program->last_pmt_ts = cur_pcr;
         if (!tsmux_write_pmt (mux, program))
           return FALSE;
       }
     }
   }
 
-  pi->packet_start_unit_indicator = tsmux_stream_at_pes_start (stream);
-  if (pi->packet_start_unit_indicator) {
-    tsmux_stream_initialize_pes_packet (stream);
-    if (stream->dts != -1)
-      stream->dts += CLOCK_BASE;
-    if (stream->pts != -1)
-      stream->pts += CLOCK_BASE;
-  }
   pi->stream_avail = tsmux_stream_bytes_avail (stream);
+  pi->packet_start_unit_indicator = tsmux_stream_at_pes_start (stream);
 
-  /* obtain buffer */
-  if (!tsmux_get_buffer (mux, &buf))
+  if (!tsmux_write_ts_header (mux->packet_buf, pi, &payload_len, &payload_offs))
     return FALSE;
 
-  gst_buffer_map (buf, &map, GST_MAP_READ);
+  if (!tsmux_stream_get_data (stream, mux->packet_buf + payload_offs,
+          payload_len))
+    return FALSE;
 
-  if (!tsmux_write_ts_header (map.data, pi, &payload_len, &payload_offs))
-    goto fail;
-
-
-  if (!tsmux_stream_get_data (stream, map.data + payload_offs, payload_len))
-    goto fail;
-
-  gst_buffer_unmap (buf, &map);
-
-  res = tsmux_packet_out (mux, buf, cur_pcr);
+  res = tsmux_packet_out (mux);
 
   /* Reset all dynamic flags */
   stream->pi.flags &= TSMUX_PACKET_FLAG_PES_FULL_HEADER;
 
   return res;
-
-  /* ERRORS */
-fail:
-  {
-    gst_buffer_unmap (buf, &map);
-    if (buf)
-      gst_buffer_unref (buf);
-    return FALSE;
-  }
 }
 
 /**
@@ -882,8 +819,6 @@ tsmux_write_section (TsMux * mux, TsMuxSection * section)
   guint payload_remain;
   guint payload_len, payload_offs;
   TsMuxPacketInfo *pi;
-  GstBuffer *buf = NULL;
-  GstMapInfo map;
 
   pi = &section->pi;
 
@@ -893,65 +828,45 @@ tsmux_write_section (TsMux * mux, TsMuxSection * section)
   payload_remain = pi->stream_avail;
 
   while (payload_remain > 0) {
-
-    /* obtain buffer */
-    map.data = NULL;
-    if (!tsmux_get_buffer (mux, &buf))
-      goto fail;
-
-    gst_buffer_map (buf, &map, GST_MAP_WRITE);
-
     if (pi->packet_start_unit_indicator) {
       /* Need to write an extra single byte start pointer */
       pi->stream_avail++;
 
-      if (!tsmux_write_ts_header (map.data, pi, &payload_len, &payload_offs)) {
+      if (!tsmux_write_ts_header (mux->packet_buf, pi,
+              &payload_len, &payload_offs)) {
         pi->stream_avail--;
-        goto fail;
+        return FALSE;
       }
       pi->stream_avail--;
 
       /* Write the pointer byte */
-      map.data[payload_offs] = 0x00;
+      mux->packet_buf[payload_offs] = 0x00;
 
       payload_offs++;
       payload_len--;
       pi->packet_start_unit_indicator = FALSE;
     } else {
-      if (!tsmux_write_ts_header (map.data, pi, &payload_len, &payload_offs))
-        goto fail;
+      if (!tsmux_write_ts_header (mux->packet_buf, pi,
+              &payload_len, &payload_offs))
+        return FALSE;
     }
 
     TS_DEBUG ("Outputting %d bytes to section. %d remaining after",
         payload_len, payload_remain - payload_len);
 
-    memcpy (map.data + payload_offs, cur_in, payload_len);
+    memcpy (mux->packet_buf + payload_offs, cur_in, payload_len);
 
     cur_in += payload_len;
     payload_remain -= payload_len;
 
-    gst_buffer_unmap (buf, &map);
-
-    /* we do not write PCR in section */
-    if (G_UNLIKELY (!tsmux_packet_out (mux, buf, -1))) {
-      /* buffer given away */
-      buf = NULL;
-      goto fail;
+    if (G_UNLIKELY (!tsmux_packet_out (mux))) {
+      mux->new_pcr = -1;
+      return FALSE;
     }
-    buf = NULL;
+    mux->new_pcr = -1;
   }
 
   return TRUE;
-
-  /* ERRORS */
-fail:
-  {
-    if (map.data && buf)
-      gst_buffer_unmap (buf, &map);
-    if (buf)
-      gst_buffer_unref (buf);
-    return FALSE;
-  }
 }
 
 static void
@@ -1007,7 +922,8 @@ tsmux_write_pat (TsMux * mux)
     /* Prepare the section data after the section header */
     pos = pat->data + TSMUX_SECTION_HDR_SIZE;
 
-    for (cur = mux->programs; cur; cur = cur->next) {
+    for (cur = g_list_first (mux->programs); cur != NULL;
+        cur = g_list_next (cur)) {
       TsMuxProgram *program = (TsMuxProgram *) cur->data;
 
       tsmux_put16 (&pos, program->pgm_number);
@@ -1094,7 +1010,7 @@ tsmux_write_pmt (TsMux * mux, TsMuxProgram * program)
     tsmux_put16 (&pos, 0xFCFC);
 
     /* Write out the entries */
-    for (i = 0; i < program->streams->len; i++) {
+    for (i = 0; i < program->nb_streams; i++) {
       TsMuxStream *stream = g_array_index (program->streams, TsMuxStream *, i);
       guint16 es_info_len;
 
@@ -1132,7 +1048,7 @@ tsmux_write_pmt (TsMux * mux, TsMuxProgram * program)
     tsmux_put32 (&pos, crc);
 
     TS_DEBUG ("PMT for program %d has %d streams, is %u bytes",
-        program->pgm_number, program->streams->len, pmt->pi.stream_avail);
+        program->pgm_number, program->nb_streams, pmt->pi.stream_avail);
 
     pmt->pi.pid = program->pmt_pid;
     program->pmt_changed = FALSE;

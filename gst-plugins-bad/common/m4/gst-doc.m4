@@ -5,7 +5,7 @@ AC_DEFUN([AG_GST_DOCBOOK_CHECK],
   then
     AC_MSG_ERROR([Internal error - PACKAGE_TARNAME not set])
   fi
-  docdir="\$(datadir)/doc/$PACKAGE_TARNAME-$GST_API_VERSION"
+  docdir="\$(datadir)/doc/$PACKAGE_TARNAME-$GST_MAJORMINOR"
 
   dnl enable/disable docbook documentation building
   AC_ARG_ENABLE(docbook,

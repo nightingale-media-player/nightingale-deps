@@ -55,7 +55,7 @@ struct _GstModPlug {
   gint         surround_depth;
   gint         surround_delay;
   gboolean     noise_reduction;
-  gint         bits;
+  gboolean     _16bit;
   gboolean     oversamp;
   gint         channel;
   gint         frequency;

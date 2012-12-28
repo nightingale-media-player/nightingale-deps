@@ -25,9 +25,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <gst/gst.h>
-#include <gst/controller/gsttimedvaluecontrolsource.h>
-#include <gst/controller/gstinterpolationcontrolsource.h>
-#include <gst/controller/gstdirectcontrolbinding.h>
+#include <gst/controller/gstcontroller.h>
 
 int
 main (int argc, char **argv)
@@ -40,8 +38,8 @@ main (int argc, char **argv)
   GstElement *pitch;
   GstElement *sink;
   GstElement *pipeline;
-  GstControlSource *cs;
-  GstTimedValueControlSource *tvcs;
+  GstController *ctl;
+  GValue val = { 0, };
 
   if (argc != 2) {
     g_printerr ("Usage: %s <audiosink>\n", argv[0]);
@@ -50,6 +48,7 @@ main (int argc, char **argv)
 
   /* initialize GStreamer */
   gst_init (&argc, &argv);
+  gst_controller_init (&argc, &argv);
 
   loop = g_main_loop_new (NULL, FALSE);
 
@@ -70,27 +69,27 @@ main (int argc, char **argv)
   gst_element_link_many (audiotestsrc, audioconvert1, pitch, audioconvert2,
       sink, NULL);
 
-  /* set up a controller */
-  cs = gst_interpolation_control_source_new ();
-  g_object_set (cs, "mode", GST_INTERPOLATION_MODE_LINEAR, NULL);
+  ctl = gst_object_control_properties (G_OBJECT (pitch), "pitch", NULL);
+  gst_controller_set_interpolation_mode (ctl, "pitch", GST_INTERPOLATE_LINEAR);
 
-  gst_object_add_control_binding (GST_OBJECT (pitch),
-      gst_direct_control_binding_new (GST_OBJECT (pitch), "pitch", cs));
-  tvcs = (GstTimedValueControlSource *) cs;
+  g_value_init (&val, G_TYPE_FLOAT);
 
   for (i = 0; i < 100; ++i) {
     if (i % 2)
-      gst_timed_value_control_source_set (tvcs, i * GST_SECOND, 0.5);
+      g_value_set_float (&val, 0.5);
     else
-      gst_timed_value_control_source_set (tvcs, i * GST_SECOND, 1.5);
+      g_value_set_float (&val, 1.5);
+
+    gst_controller_set (ctl, "pitch", i * GST_SECOND, &val);
   }
 
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
   g_print ("Running\n");
   g_main_loop_run (loop);
 
+  /* set up a controller */
+
   /* clean up nicely */
-  gst_object_unref (cs);
   g_print ("Returned, stopping playback\n");
   gst_element_set_state (pipeline, GST_STATE_NULL);
   g_print ("Deleting pipeline\n");

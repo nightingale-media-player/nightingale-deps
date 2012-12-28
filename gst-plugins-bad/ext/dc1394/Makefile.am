@@ -1,3 +1,4 @@
+plugindir = $(libdir)/gstreamer-@GST_MAJORMINOR@
 
 plugin_LTLIBRARIES =	libgstdc1394.la
 

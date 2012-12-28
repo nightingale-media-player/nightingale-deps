@@ -16,18 +16,6 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-/**
- * SECTION:element-rsvgdec
- *
- * This elements renders SVG graphics.
- *
- * <refsect2>
- * <title>Example launch lines</title>
- * |[
- * gst-launch filesrc location=image.svg ! rsvgdec ! imagefreeze ! videoconvert ! autovideosink
- * ]| render and show a svg image.
- * </refsect2>
- */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -44,15 +32,14 @@ static GstStaticPadTemplate sink_factory =
     GST_STATIC_PAD_TEMPLATE ("sink", GST_PAD_SINK, GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("image/svg+xml; image/svg"));
 
-#if G_BYTE_ORDER == G_LITTLE_ENDIAN
-#define GST_RSVG_VIDEO_CAPS GST_VIDEO_CAPS_BGRA
-#else
-#define GST_RSVG_VIDEO_CAPS GST_VIDEO_CAPS_ARGB
-#endif
-
 static GstStaticPadTemplate src_factory =
 GST_STATIC_PAD_TEMPLATE ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_RSVG_VIDEO_CAPS));
+#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_BGRA)
+#else
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_ARGB)
+#endif
+    );
 
 GST_BOILERPLATE (GstRsvgDec, gst_rsvg_dec, GstElement, GST_TYPE_ELEMENT);
 
@@ -77,7 +64,7 @@ gst_rsvg_dec_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_static_metadata (element_class,
+  gst_element_class_set_details_simple (element_class,
       "SVG image decoder", "Codec/Decoder/Image",
       "Uses librsvg to decode SVG images",
       "Sebastian Dröge <sebastian.droege@collabora.co.uk>");
@@ -141,7 +128,7 @@ gst_rsvg_dec_reset (GstRsvgDec * dec)
   dec->width = dec->height = 0;
   dec->fps_n = 0;
   dec->fps_d = 1;
-  dec->first_timestamp = GST_CLOCK_TIME_NONE;
+  dec->timestamp_offset = GST_CLOCK_TIME_NONE;
   dec->frame_count = 0;
 
   gst_segment_init (&dec->segment, GST_FORMAT_UNDEFINED);
@@ -150,6 +137,11 @@ gst_rsvg_dec_reset (GstRsvgDec * dec)
   g_list_foreach (dec->pending_events, (GFunc) gst_mini_object_unref, NULL);
   g_list_free (dec->pending_events);
   dec->pending_events = NULL;
+
+  if (dec->pending_tags) {
+    gst_tag_list_free (dec->pending_tags);
+    dec->pending_tags = NULL;
+  }
 }
 
 #define CAIRO_UNPREMULTIPLY(a,r,g,b) G_STMT_START { \
@@ -193,8 +185,7 @@ gst_rsvg_decode_image (GstRsvgDec * rsvg, const guint8 * data, guint size,
   GError *error = NULL;
   RsvgDimensionData dimension;
   gdouble scalex, scaley;
-
-  GST_LOG_OBJECT (rsvg, "parsing svg");
+  const gchar *title = NULL, *comment = NULL;
 
   handle = rsvg_handle_new_from_data (data, size, &error);
   if (!handle) {
@@ -203,12 +194,25 @@ gst_rsvg_decode_image (GstRsvgDec * rsvg, const guint8 * data, guint size,
     return GST_FLOW_ERROR;
   }
 
+  title = rsvg_handle_get_title (handle);
+  comment = rsvg_handle_get_desc (handle);
+
+  if (title || comment) {
+    if (!rsvg->pending_tags)
+      rsvg->pending_tags = gst_tag_list_new ();
+
+    if (title && *title)
+      gst_tag_list_add (rsvg->pending_tags, GST_TAG_MERGE_REPLACE_ALL,
+          GST_TAG_TITLE, title, NULL);
+    if (comment && *comment)
+      gst_tag_list_add (rsvg->pending_tags, GST_TAG_MERGE_REPLACE_ALL,
+          GST_TAG_COMMENT, comment, NULL);
+  }
+
   rsvg_handle_get_dimensions (handle, &dimension);
   if (rsvg->width != dimension.width || rsvg->height != dimension.height) {
     GstCaps *caps1, *caps2, *caps3;
     GstStructure *s;
-
-    GST_LOG_OBJECT (rsvg, "resolution changed, updating caps");
 
     caps1 = gst_caps_copy (gst_pad_get_pad_template_caps (rsvg->srcpad));
     caps2 = gst_pad_peer_get_caps (rsvg->srcpad);
@@ -275,8 +279,6 @@ gst_rsvg_decode_image (GstRsvgDec * rsvg, const guint8 * data, guint size,
     return ret;
   }
 
-  GST_LOG_OBJECT (rsvg, "render image at %d x %d", rsvg->height, rsvg->width);
-
   surface =
       cairo_image_surface_create_for_data (GST_BUFFER_DATA (*buffer),
       CAIRO_FORMAT_ARGB32, rsvg->width, rsvg->height, rsvg->width * 4);
@@ -312,24 +314,17 @@ gst_rsvg_decode_image (GstRsvgDec * rsvg, const guint8 * data, guint size,
 static GstFlowReturn
 gst_rsvg_dec_chain (GstPad * pad, GstBuffer * buffer)
 {
-  GstRsvgDec *rsvg = GST_RSVG_DEC (GST_PAD_PARENT (pad));
+  GstRsvgDec *rsvg = GST_RSVG_DEC (gst_pad_get_parent (pad));
   gboolean completed = FALSE;
   const guint8 *data;
   guint size;
   gboolean ret = GST_FLOW_OK;
 
-  /* first_timestamp is used slightly differently where a framerate
-     is given or not.
-     If there is a frame rate, it will be used as a base.
-     If there is not, it will be used to keep track of the timestamp
-     of the first buffer, to be used as the timestamp of the output
-     buffer. When a buffer is output, first timestamp will resync to
-     the next buffer's timestamp. */
-  if (rsvg->first_timestamp == GST_CLOCK_TIME_NONE) {
+  if (rsvg->timestamp_offset == GST_CLOCK_TIME_NONE) {
     if (GST_BUFFER_TIMESTAMP_IS_VALID (buffer))
-      rsvg->first_timestamp = GST_BUFFER_TIMESTAMP (buffer);
-    else if (rsvg->fps_n != 0)
-      rsvg->first_timestamp = 0;
+      rsvg->timestamp_offset = GST_BUFFER_TIMESTAMP (buffer);
+    else
+      rsvg->timestamp_offset = 0;
   }
 
   gst_adapter_push (rsvg->adapter, buffer);
@@ -352,8 +347,6 @@ gst_rsvg_dec_chain (GstPad * pad, GstBuffer * buffer)
     if (completed) {
       GstBuffer *outbuf = NULL;
 
-      GST_LOG_OBJECT (rsvg, "have complete svg of %u bytes", size);
-
       data = gst_adapter_peek (rsvg->adapter, size);
 
       ret = gst_rsvg_decode_image (rsvg, data, size, &outbuf);
@@ -361,33 +354,15 @@ gst_rsvg_dec_chain (GstPad * pad, GstBuffer * buffer)
         break;
 
 
-      if (rsvg->first_timestamp != GST_CLOCK_TIME_NONE) {
-        GST_BUFFER_TIMESTAMP (outbuf) = rsvg->first_timestamp;
-        GST_BUFFER_DURATION (outbuf) = GST_CLOCK_TIME_NONE;
-        if (GST_BUFFER_DURATION_IS_VALID (buffer)) {
-          GstClockTime end =
-              GST_BUFFER_TIMESTAMP_IS_VALID (buffer) ?
-              GST_BUFFER_TIMESTAMP (buffer) : rsvg->first_timestamp;
-          end += GST_BUFFER_DURATION (buffer);
-          GST_BUFFER_DURATION (outbuf) = end - GST_BUFFER_TIMESTAMP (outbuf);
-        }
-        if (rsvg->fps_n == 0) {
-          rsvg->first_timestamp = GST_CLOCK_TIME_NONE;
-        } else {
-          GST_BUFFER_DURATION (outbuf) =
-              gst_util_uint64_scale (rsvg->frame_count, rsvg->fps_d,
-              rsvg->fps_n * GST_SECOND);
-        }
-      } else if (rsvg->fps_n != 0) {
+      if (rsvg->fps_n != 0) {
         GST_BUFFER_TIMESTAMP (outbuf) =
-            rsvg->first_timestamp + gst_util_uint64_scale (rsvg->frame_count,
+            rsvg->timestamp_offset + gst_util_uint64_scale (rsvg->frame_count,
             rsvg->fps_d, rsvg->fps_n * GST_SECOND);
         GST_BUFFER_DURATION (outbuf) =
             gst_util_uint64_scale (rsvg->frame_count, rsvg->fps_d,
             rsvg->fps_n * GST_SECOND);
       } else {
-        GST_BUFFER_TIMESTAMP (outbuf) = rsvg->first_timestamp;
-        GST_BUFFER_DURATION (outbuf) = GST_CLOCK_TIME_NONE;
+        GST_BUFFER_TIMESTAMP (outbuf) = 0;
       }
       rsvg->frame_count++;
 
@@ -406,7 +381,10 @@ gst_rsvg_dec_chain (GstPad * pad, GstBuffer * buffer)
         rsvg->pending_events = NULL;
       }
 
-      GST_LOG_OBJECT (rsvg, "image rendered okay");
+      if (rsvg->pending_tags) {
+        gst_element_found_tags (GST_ELEMENT_CAST (rsvg), rsvg->pending_tags);
+        rsvg->pending_tags = NULL;
+      }
 
       ret = gst_pad_push (rsvg->srcpad, outbuf);
       if (ret != GST_FLOW_OK)
@@ -419,6 +397,8 @@ gst_rsvg_dec_chain (GstPad * pad, GstBuffer * buffer)
       break;
     }
   }
+
+  gst_object_unref (rsvg);
 
   return GST_FLOW_OK;
 }

@@ -34,10 +34,6 @@
 #include <X11/Xlib.h>
 #endif
 
-#ifdef G_OS_WIN32
-#include <winsock2.h>
-#endif
-
 enum
 {
   ARG_0,
@@ -59,6 +55,14 @@ GST_DEBUG_CATEGORY_STATIC (rfbsrc_debug);
 GST_DEBUG_CATEGORY (rfbdecoder_debug);
 #define GST_CAT_DEFAULT rfbsrc_debug
 
+static const GstElementDetails gst_rfb_src_details =
+GST_ELEMENT_DETAILS ("Rfb source",
+    "Source/Video",
+    "Creates a rfb video stream",
+    "David A. Schleef <ds@schleef.org>, "
+    "Andre Moreira Magalhaes <andre.magalhaes@indt.org.br>, "
+    "Thijs Vermeir <thijsvermeir@gmail.com>");
+
 static GstStaticPadTemplate gst_rfb_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -74,7 +78,9 @@ GST_STATIC_PAD_TEMPLATE ("src",
         "height = (int) [ 16, 4096 ], " "framerate = (fraction) 0/1")
     );
 
-static void gst_rfb_src_finalize (GObject * object);
+static void gst_rfb_src_base_init (gpointer g_class);
+static void gst_rfb_src_class_init (GstRfbSrcClass * klass);
+static void gst_rfb_src_dispose (GObject * object);
 static void gst_rfb_src_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_rfb_src_get_property (GObject * object, guint prop_id,
@@ -96,12 +102,7 @@ gst_rfb_src_base_init (gpointer g_class)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_rfb_src_template));
 
-  gst_element_class_set_static_metadata (element_class, "Rfb source",
-      "Source/Video",
-      "Creates a rfb video stream",
-      "David A. Schleef <ds@schleef.org>, "
-      "Andre Moreira Magalhaes <andre.magalhaes@indt.org.br>, "
-      "Thijs Vermeir <thijsvermeir@gmail.com>");
+  gst_element_class_set_details (element_class, &gst_rfb_src_details);
 }
 
 static void
@@ -118,54 +119,46 @@ gst_rfb_src_class_init (GstRfbSrcClass * klass)
   gstbasesrc_class = (GstBaseSrcClass *) klass;
   gstpushsrc_class = (GstPushSrcClass *) klass;
 
-  gobject_class->finalize = gst_rfb_src_finalize;
+  gobject_class->dispose = gst_rfb_src_dispose;
   gobject_class->set_property = gst_rfb_src_set_property;
   gobject_class->get_property = gst_rfb_src_get_property;
 
   g_object_class_install_property (gobject_class, ARG_HOST,
       g_param_spec_string ("host", "Host to connect to", "Host to connect to",
-          "127.0.0.1", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "127.0.0.1", G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_PORT,
       g_param_spec_int ("port", "Port", "Port",
-          1, 65535, 5900, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          1, 65535, 5900, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_VERSION,
       g_param_spec_string ("version", "RFB protocol version",
-          "RFB protocol version", "3.3",
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "RFB protocol version", "3.3", G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_PASSWORD,
       g_param_spec_string ("password", "Password for authentication",
-          "Password for authentication", "",
-          G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
+          "Password for authentication", "", G_PARAM_WRITABLE));
   g_object_class_install_property (gobject_class, ARG_OFFSET_X,
       g_param_spec_int ("offset-x", "x offset for screen scrapping",
-          "x offset for screen scrapping", 0, 65535, 0,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "x offset for screen scrapping", 0, 65535, 0, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_OFFSET_Y,
       g_param_spec_int ("offset-y", "y offset for screen scrapping",
-          "y offset for screen scrapping", 0, 65535, 0,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "y offset for screen scrapping", 0, 65535, 0, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_WIDTH,
       g_param_spec_int ("width", "width of screen", "width of screen", 0, 65535,
-          0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          0, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_HEIGHT,
       g_param_spec_int ("height", "height of screen", "height of screen", 0,
-          65535, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          65535, 0, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_INCREMENTAL,
       g_param_spec_boolean ("incremental", "Incremental updates",
-          "Incremental updates", TRUE,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "Incremental updates", TRUE, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_USE_COPYRECT,
       g_param_spec_boolean ("use-copyrect", "Use copyrect encoding",
-          "Use copyrect encoding", FALSE,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "Use copyrect encoding", FALSE, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_SHARED,
       g_param_spec_boolean ("shared", "Share desktop with other clients",
-          "Share desktop with other clients", TRUE,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "Share desktop with other clients", TRUE, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_VIEWONLY,
       g_param_spec_boolean ("view-only", "Only view the desktop",
-          "only view the desktop", FALSE,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "only view the desktop", FALSE, G_PARAM_READWRITE));
   gstbasesrc_class->start = GST_DEBUG_FUNCPTR (gst_rfb_src_start);
   gstbasesrc_class->stop = GST_DEBUG_FUNCPTR (gst_rfb_src_stop);
   gstbasesrc_class->event = GST_DEBUG_FUNCPTR (gst_rfb_src_event);
@@ -192,19 +185,10 @@ gst_rfb_src_init (GstRfbSrc * src, GstRfbSrcClass * klass)
 
   src->decoder = rfb_decoder_new ();
 
-#ifdef G_OS_WIN32
-  {
-    WSADATA wsa_data;
-
-    if (WSAStartup (MAKEWORD (2, 2), &wsa_data) != 0) {
-      GST_ERROR_OBJECT (src, "WSAStartup failed: 0x%08x", WSAGetLastError ());
-    }
-  }
-#endif
 }
 
 static void
-gst_rfb_src_finalize (GObject * object)
+gst_rfb_src_dispose (GObject * object)
 {
   GstRfbSrc *src = GST_RFB_SRC (object);
 
@@ -214,11 +198,8 @@ gst_rfb_src_finalize (GObject * object)
     g_free (src->decoder);
     src->decoder = NULL;
   }
-#ifdef G_OS_WIN32
-  WSACleanup ();
-#endif
 
-  G_OBJECT_CLASS (parent_class)->finalize (object);
+  G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
@@ -562,6 +543,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    rfbsrc,
+    "rfbsrc",
     "Connects to a VNC server and decodes RFB stream",
     plugin_init, VERSION, GST_LICENSE, GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

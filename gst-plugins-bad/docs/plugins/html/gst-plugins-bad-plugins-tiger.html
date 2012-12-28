@@ -1,0 +1,432 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>tiger</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-stereo.html" title="stereo">
+<link rel="next" href="gst-plugins-bad-plugins-timidity.html" title="timidity">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-stereo.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-timidity.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-tiger.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-tiger.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-tiger.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-tiger"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-tiger.top_of_page"></a>tiger</span></h2>
+<p>tiger — Decodes and renders Kate streams on top of a video</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-bad-plugins-tiger.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+                    <a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger" title="GstKateTiger">GstKateTiger</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-tiger.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--category" title='The "category" property'>category</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--default-background-alpha" title='The "default-background-alpha" property'>default-background-alpha</a>" <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--default-background-blue" title='The "default-background-blue" property'>default-background-blue</a>"  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--default-background-green" title='The "default-background-green" property'>default-background-green</a>" <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--default-background-red" title='The "default-background-red" property'>default-background-red</a>"   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--default-font-alpha" title='The "default-font-alpha" property'>default-font-alpha</a>"       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--default-font-blue" title='The "default-font-blue" property'>default-font-blue</a>"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--default-font-desc" title='The "default-font-desc" property'>default-font-desc</a>"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--default-font-effect" title='The "default-font-effect" property'>default-font-effect</a>"      GstFontEffect         : Read / Write / Construct
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--default-font-effect-strength" title='The "default-font-effect-strength" property'>default-font-effect-strength</a>" <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--default-font-green" title='The "default-font-green" property'>default-font-green</a>"       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--default-font-red" title='The "default-font-red" property'>default-font-red</a>"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--language" title='The "language" property'>language</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--original-canvas-height" title='The "original-canvas-height" property'>original-canvas-height</a>"   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--original-canvas-width" title='The "original-canvas-width" property'>original-canvas-width</a>"    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read
+  "<a class="link" href="gst-plugins-bad-plugins-tiger.html#GstKateTiger--quality" title='The "quality" property'>quality</a>"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-tiger.description"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2820293"></a><h3>Example pipeline</h3>
+<p>
+This element decodes and renders Kate streams
+<a class="ulink" href="http://libkate.googlecode.com/" target="_top">Kate</a> is a free codec
+for text based data, such as subtitles. Any number of kate streams can be
+embedded in an Ogg stream.
+</p>
+<p>
+libkate (see above url) and <a class="ulink" href="http://libtiger.googlecode.com/" target="_top">libtiger</a>
+are needed to build this element.
+</p>
+<p>
+This pipeline renders a Kate stream on top of a Theora video multiplexed
+in the same stream:
+</p>
+<pre class="programlisting">
+gst-launch \
+  filesrc location=video.ogg ! oggdemux name=demux \
+  demux. ! queue ! theoradec ! ffmpegcolorspace ! tiger name=tiger \
+  demux. ! queue ! kateparse ! tiger. \
+  tiger. ! ffmpegcolorspace ! autovideosink
+</pre>
+<p>
+</p>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2912705"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-kate.html#plugin-kate">kate</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Vincent Penquerc'h &lt;ogg.k.ogg.k@googlemail.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Decoder/Video/Overlay</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2912767"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>video_sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-rgb, bpp=(int)32, depth=(int)24</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>kate_sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>subtitle/x-kate</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> application/x-kate</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-raw-rgb, bpp=(int)32, depth=(int)24</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-tiger.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger"></a><h3>GstKateTiger</h3>
+<pre class="programlisting">typedef struct {
+  GstElement element;
+
+  GstPad *katesinkpad;
+  GstPad *videosinkpad;
+  GstPad *srcpad;
+
+  GstKateDecoderBase decoder;
+
+  tiger_renderer *tr;
+
+  gdouble quality;
+  gchar *default_font_desc;
+  gboolean default_font_effect;
+  gdouble default_font_effect_strength;
+  guchar default_font_r;
+  guchar default_font_g;
+  guchar default_font_b;
+  guchar default_font_a;
+  guchar default_background_r;
+  guchar default_background_g;
+  guchar default_background_b;
+  guchar default_background_a;
+
+  gint video_width;
+  gint video_height;
+
+  GMutex *mutex;
+} GstKateTiger;
+</pre>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-tiger.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--category"></a><h3>The <code class="literal">"category"</code> property</h3>
+<pre class="programlisting">  "category"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read</pre>
+<p>The category of the stream.</p>
+<p>Default value: ""</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--default-background-alpha"></a><h3>The <code class="literal">"default-background-alpha"</code> property</h3>
+<pre class="programlisting">  "default-background-alpha" <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Default background color (alpha component, between 0 and 255) to render text with.</p>
+<p>Allowed values: [0,255]</p>
+<p>Default value: 255</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--default-background-blue"></a><h3>The <code class="literal">"default-background-blue"</code> property</h3>
+<pre class="programlisting">  "default-background-blue"  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Default background color (blue component, between 0 and 255) to render text with.</p>
+<p>Allowed values: [0,255]</p>
+<p>Default value: 255</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--default-background-green"></a><h3>The <code class="literal">"default-background-green"</code> property</h3>
+<pre class="programlisting">  "default-background-green" <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Default background color (green component, between 0 and 255) to render text with.</p>
+<p>Allowed values: [0,255]</p>
+<p>Default value: 255</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--default-background-red"></a><h3>The <code class="literal">"default-background-red"</code> property</h3>
+<pre class="programlisting">  "default-background-red"   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Default background color (red component, between 0 and 255) to render text with.</p>
+<p>Allowed values: [0,255]</p>
+<p>Default value: 255</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--default-font-alpha"></a><h3>The <code class="literal">"default-font-alpha"</code> property</h3>
+<pre class="programlisting">  "default-font-alpha"       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Default font color (alpha component, between 0 and 255) to render text with.</p>
+<p>Allowed values: [0,255]</p>
+<p>Default value: 255</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--default-font-blue"></a><h3>The <code class="literal">"default-font-blue"</code> property</h3>
+<pre class="programlisting">  "default-font-blue"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Default font color (blue component, between 0 and 255) to render text with.</p>
+<p>Allowed values: [0,255]</p>
+<p>Default value: 255</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--default-font-desc"></a><h3>The <code class="literal">"default-font-desc"</code> property</h3>
+<pre class="programlisting">  "default-font-desc"        <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>Default font description (Pango style) to render text with.</p>
+<p>Default value: ""</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--default-font-effect"></a><h3>The <code class="literal">"default-font-effect"</code> property</h3>
+<pre class="programlisting">  "default-font-effect"      GstFontEffect         : Read / Write / Construct</pre>
+<p>Whether to apply an effect to text by default, for increased readability.</p>
+<p>Default value: none</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--default-font-effect-strength"></a><h3>The <code class="literal">"default-font-effect-strength"</code> property</h3>
+<pre class="programlisting">  "default-font-effect-strength" <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
+<p>How pronounced should the font effect be (effect dependent).</p>
+<p>Allowed values: [0,1]</p>
+<p>Default value: 0.5</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--default-font-green"></a><h3>The <code class="literal">"default-font-green"</code> property</h3>
+<pre class="programlisting">  "default-font-green"       <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Default font color (green component, between 0 and 255) to render text with.</p>
+<p>Allowed values: [0,255]</p>
+<p>Default value: 255</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--default-font-red"></a><h3>The <code class="literal">"default-font-red"</code> property</h3>
+<pre class="programlisting">  "default-font-red"         <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Default font color (red component, between 0 and 255) to render text with.</p>
+<p>Allowed values: [0,255]</p>
+<p>Default value: 255</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--language"></a><h3>The <code class="literal">"language"</code> property</h3>
+<pre class="programlisting">  "language"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read</pre>
+<p>The language of the stream.</p>
+<p>Default value: ""</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--original-canvas-height"></a><h3>The <code class="literal">"original-canvas-height"</code> property</h3>
+<pre class="programlisting">  "original-canvas-height"   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read</pre>
+<p>The canvas height this stream was authored for (0 is unspecified).</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--original-canvas-width"></a><h3>The <code class="literal">"original-canvas-width"</code> property</h3>
+<pre class="programlisting">  "original-canvas-width"    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read</pre>
+<p>The canvas width this stream was authored for.</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTiger--quality"></a><h3>The <code class="literal">"quality"</code> property</h3>
+<pre class="programlisting">  "quality"                  <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>               : Read / Write</pre>
+<p>Rendering quality (0 is faster, 1 is best and slower).</p>
+<p>Allowed values: [0,1]</p>
+<p>Default value: 1</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-tiger.see-also"></a><h2>See Also</h2>
+katedec
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

@@ -30,7 +30,6 @@
 #endif
 #include <stdlib.h>
 
-#include <gst/glib-compat-private.h>
 #include <gst/interfaces/xoverlay.h>
 #include <gst/interfaces/navigation.h>
 
@@ -51,6 +50,15 @@ GST_DEBUG_CATEGORY_EXTERN (sdl_debug);
 
 #define I420_SIZE(w,h)     (I420_V_OFFSET(w,h)+(I420_V_ROWSTRIDE(w)*GST_ROUND_UP_2(h)/2))
 
+/* elementfactory information */
+static const GstElementDetails gst_sdlvideosink_details =
+GST_ELEMENT_DETAILS ("SDL video sink",
+    "Sink/Video",
+    "An SDL-based videosink",
+    "Ronald Bultje <rbultje@ronald.bitfreak.net>\n"
+    "Edgard Lima <edgard.lima@indt.org.br>\n"
+    "Jan Schmidt <thaytan@mad.scientist.com>");
+
 
 enum
 {
@@ -64,8 +72,8 @@ static gboolean gst_sdlvideosink_supported (GstImplementsInterface * iface,
     GType type);
 
 static void gst_sdlvideosink_xoverlay_init (GstXOverlayClass * klass);
-static void gst_sdlvideosink_xoverlay_set_window_handle
-    (GstXOverlay * overlay, guintptr parent);
+static void gst_sdlvideosink_xoverlay_set_xwindow_id
+    (GstXOverlay * overlay, unsigned long parent);
 
 static gboolean gst_sdlvideosink_lock (GstSDLVideoSink * sdl);
 static void gst_sdlvideosink_unlock (GstSDLVideoSink * sdl);
@@ -132,9 +140,11 @@ gst_sdlvideosink_base_init (gpointer g_class)
   guint32 formats[] = {
     GST_MAKE_FOURCC ('I', '4', '2', '0'),
     GST_MAKE_FOURCC ('Y', 'V', '1', '2'),
-    GST_MAKE_FOURCC ('Y', 'U', 'Y', '2'),
-    GST_MAKE_FOURCC ('Y', 'V', 'Y', 'U'),
-    GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y')
+    GST_MAKE_FOURCC ('Y', 'U', 'Y', '2')
+        /*
+           GST_MAKE_FOURCC ('Y', 'V', 'Y', 'U'),
+           GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y')
+         */
   };
 
   /* make a list of all available caps */
@@ -152,11 +162,8 @@ gst_sdlvideosink_base_init (gpointer g_class)
       GST_PAD_SINK, GST_PAD_ALWAYS, capslist);
 
   gst_element_class_add_pad_template (element_class, sink_template);
-  gst_element_class_set_static_metadata (element_class, "SDL video sink",
-      "Sink/Video", "An SDL-based videosink",
-      "Ronald Bultje <rbultje@ronald.bitfreak.net>, "
-      "Edgard Lima <edgard.lima@indt.org.br>, "
-      "Jan Schmidt <thaytan@mad.scientist.com>");
+  gst_element_class_set_details (element_class, &gst_sdlvideosink_details);
+
 }
 
 static void
@@ -218,8 +225,7 @@ gst_sdlvideosink_class_init (GstSDLVideoSinkClass * klass)
 
   g_object_class_install_property (gobject_class, PROP_FULLSCREEN,
       g_param_spec_boolean ("fullscreen", "Fullscreen",
-          "If true it will be Full screen", FALSE,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "If true it will be Full screen", FALSE, G_PARAM_READWRITE));
 
   /*gstvs_class->set_video_out = gst_sdlvideosink_set_video_out;
      gstvs_class->push_ui_event = gst_sdlvideosink_push_ui_event;
@@ -363,15 +369,14 @@ gst_sdlvideosink_supported (GstImplementsInterface * interface,
 static void
 gst_sdlvideosink_xoverlay_init (GstXOverlayClass * klass)
 {
-  klass->set_window_handle = gst_sdlvideosink_xoverlay_set_window_handle;
+  klass->set_xwindow_id = gst_sdlvideosink_xoverlay_set_xwindow_id;
 }
 
 static void
-gst_sdlvideosink_xoverlay_set_window_handle (GstXOverlay * overlay,
-    guintptr handle)
+gst_sdlvideosink_xoverlay_set_xwindow_id (GstXOverlay * overlay,
+    unsigned long parent)
 {
   GstSDLVideoSink *sdlvideosink = GST_SDLVIDEOSINK (overlay);
-  unsigned long parent = (unsigned long) handle;
 
   if (sdlvideosink->xwindow_id == parent)
     return;

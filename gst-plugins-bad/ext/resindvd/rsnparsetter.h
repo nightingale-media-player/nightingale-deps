@@ -7,6 +7,8 @@
 
 #include <gst/gst.h>
 
+#include "rsnwrappedbuffer.h"
+
 G_BEGIN_DECLS
 
 #define RSN_TYPE_RSNPARSETTER \
@@ -34,6 +36,7 @@ struct _RsnParSetter
 
   gboolean is_widescreen;
 
+  GMutex *caps_lock;
   GstCaps *in_caps_last;
   gboolean in_caps_was_ok;
   GstCaps *in_caps_converted;

@@ -21,7 +21,6 @@
 #ifndef __GST_VIDEO_ZBAR_H__
 #define __GST_VIDEO_ZBAR_H__
 
-#include <gst/video/video.h>
 #include <gst/video/gstvideofilter.h>
 #include <zbar.h>
 
@@ -48,13 +47,15 @@ typedef struct _GstZBarClass GstZBarClass;
  */
 struct _GstZBar
 {
-  /*< private >*/
   GstVideoFilter videofilter;
+
+  /* format */
+  gint width;
+  gint height;
 
   /* properties */
   gboolean message;
-  gboolean cache;
-
+  
   /* internals */
   zbar_image_scanner_t *scanner;
 };

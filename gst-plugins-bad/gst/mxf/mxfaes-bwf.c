@@ -540,7 +540,7 @@ G_DEFINE_TYPE (MXFMetadataAES3AudioEssenceDescriptor,
     MXF_TYPE_METADATA_WAVE_AUDIO_ESSENCE_DESCRIPTOR);
 
 static void
-mxf_metadata_aes3_audio_essence_descriptor_finalize (GObject * object)
+mxf_metadata_aes3_audio_essence_descriptor_finalize (GstMiniObject * object)
 {
   MXFMetadataAES3AudioEssenceDescriptor *self =
       MXF_METADATA_AES3_AUDIO_ESSENCE_DESCRIPTOR (object);
@@ -554,7 +554,7 @@ mxf_metadata_aes3_audio_essence_descriptor_finalize (GObject * object)
   g_free (self->fixed_user_data);
   self->fixed_user_data = NULL;
 
-  G_OBJECT_CLASS
+  GST_MINI_OBJECT_CLASS
       (mxf_metadata_aes3_audio_essence_descriptor_parent_class)->finalize
       (object);
 }
@@ -1058,10 +1058,11 @@ static void
     (MXFMetadataAES3AudioEssenceDescriptorClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  object_class->finalize = mxf_metadata_aes3_audio_essence_descriptor_finalize;
+  miniobject_class->finalize =
+      mxf_metadata_aes3_audio_essence_descriptor_finalize;
   metadata_base_class->handle_tag =
       mxf_metadata_aes3_audio_essence_descriptor_handle_tag;
   metadata_base_class->name_quark = MXF_QUARK (AES3_AUDIO_ESSENCE_DESCRIPTOR);
@@ -1352,24 +1353,24 @@ mxf_aes_bwf_create_caps (MXFMetadataTimelineTrack * track, GstTagList ** tags,
     if (!track->parent.descriptor[i])
       continue;
 
-    if (MXF_IS_METADATA_GENERIC_SOUND_ESSENCE_DESCRIPTOR (track->parent.
-            descriptor[i])
+    if (MXF_IS_METADATA_GENERIC_SOUND_ESSENCE_DESCRIPTOR (track->
+            parent.descriptor[i])
         && (track->parent.descriptor[i]->essence_container.u[14] == 0x01
             || track->parent.descriptor[i]->essence_container.u[14] == 0x02
             || track->parent.descriptor[i]->essence_container.u[14] == 0x08)) {
-      s = (MXFMetadataGenericSoundEssenceDescriptor *) track->parent.
-          descriptor[i];
+      s = (MXFMetadataGenericSoundEssenceDescriptor *) track->
+          parent.descriptor[i];
       bwf = TRUE;
       break;
     } else
-        if (MXF_IS_METADATA_GENERIC_SOUND_ESSENCE_DESCRIPTOR (track->parent.
-            descriptor[i])
+        if (MXF_IS_METADATA_GENERIC_SOUND_ESSENCE_DESCRIPTOR (track->
+            parent.descriptor[i])
         && (track->parent.descriptor[i]->essence_container.u[14] == 0x03
             || track->parent.descriptor[i]->essence_container.u[14] == 0x04
             || track->parent.descriptor[i]->essence_container.u[14] == 0x09)) {
 
-      s = (MXFMetadataGenericSoundEssenceDescriptor *) track->parent.
-          descriptor[i];
+      s = (MXFMetadataGenericSoundEssenceDescriptor *) track->
+          parent.descriptor[i];
       bwf = FALSE;
       break;
     }
@@ -1460,7 +1461,7 @@ mxf_bwf_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
   }
 
   ret = (MXFMetadataWaveAudioEssenceDescriptor *)
-      g_object_new (MXF_TYPE_METADATA_WAVE_AUDIO_ESSENCE_DESCRIPTOR, NULL);
+      gst_mini_object_new (MXF_TYPE_METADATA_WAVE_AUDIO_ESSENCE_DESCRIPTOR);
 
   memcpy (&ret->parent.parent.essence_container, &bwf_essence_container_ul, 16);
   if (endianness == G_LITTLE_ENDIAN)
@@ -1476,7 +1477,7 @@ mxf_bwf_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
 
   if (!mxf_metadata_generic_sound_essence_descriptor_from_caps (&ret->parent,
           caps)) {
-    g_object_unref (ret);
+    gst_mini_object_unref (GST_MINI_OBJECT_CAST (ret));
     return NULL;
   }
 

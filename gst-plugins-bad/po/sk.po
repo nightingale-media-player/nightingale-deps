@@ -2,22 +2,21 @@
 # Czech translations of gst-plugins.
 # Copyright (C) 2004 gst-plugins' COPYRIGHT HOLDER
 # This file is put in the public domain.
-# Peter Tuhársky <tuharsky@misbb.sk>, 2007, 2008, 2009, 2010.
+# Peter Tuhársky <tuharsky@misbb.sk>, 2007, 2008, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-bad 0.10.17.2\n"
+"Project-Id-Version: gst-plugins-bad 0.10.13.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2012-12-18 01:24+0000\n"
-"PO-Revision-Date: 2010-03-08 09:20+0100\n"
+"POT-Creation-Date: 2009-10-23 23:15+0100\n"
+"PO-Revision-Date: 2009-09-21 10:23+0100\n"
 "Last-Translator: Peter Tuhársky <tuharsky@misbb.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
-"Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Poedit-Language: Slovak\n"
 "X-Poedit-Country: SLOVAKIA\n"
 
@@ -31,14 +30,11 @@ msgstr "Nepodarilo sa otvoriť zariadenie DVD '%s'."
 msgid "Failed to set PGC based seeking."
 msgstr "Nepodarilo sa nastaviť PGC posun."
 
-msgid ""
-"Could not read DVD. This may be because the DVD is encrypted and a DVD "
-"decryption library is not installed."
-msgstr ""
+msgid "Internal clock error."
+msgstr "Vnútorná chyba časovača."
 
-#, fuzzy
-msgid "Could not read DVD."
-msgstr "Nepodarilo sa prečítať titulok DVD."
+msgid "Internal data flow error."
+msgstr "Vnútorná chyba prúdu údajov."
 
 msgid "No file name specified for writing."
 msgstr "Nebolo zadané žiadne meno súboru pre zápis."
@@ -53,9 +49,6 @@ msgstr "Vnútorná chyba prúdu údajov."
 #, c-format
 msgid "Could not write to file \"%s\"."
 msgstr "Nepodarilo sa zapísať do súboru \"%s\"."
-
-msgid "Internal data flow error."
-msgstr "Vnútorná chyba prúdu údajov."
 
 #, c-format
 msgid "Device \"%s\" does not exist."
@@ -73,352 +66,357 @@ msgstr "Nepodarilo sa získať nastavenia od zariadenia \"%s\"."
 msgid "Could not open file \"%s\" for reading."
 msgstr "Nepodarilo sa otvoriť súbor \"%s\" na čítanie."
 
-#~ msgid "Could not open audio device for mixer control handling."
-#~ msgstr ""
-#~ "Nepodarilo sa otvoriť zvukové zariadenie pre obsluhu ovládania mixéra."
+msgid "Could not open audio device for mixer control handling."
+msgstr "Nepodarilo sa otvoriť zvukové zariadenie pre obsluhu ovládania mixéra."
 
-#~ msgid ""
-#~ "Could not open audio device for mixer control handling. This version of "
-#~ "the Open Sound System is not supported by this element."
-#~ msgstr ""
-#~ "Nepodarilo sa otvoriť zvukové zariadenie pre obsluhu ovládania mixéra. "
-#~ "Táto verzia Open Sound System nie je podporovaná týmto prvkom."
+msgid ""
+"Could not open audio device for mixer control handling. This version of the "
+"Open Sound System is not supported by this element."
+msgstr ""
+"Nepodarilo sa otvoriť zvukové zariadenie pre obsluhu ovládania mixéra. Táto "
+"verzia Open Sound System nie je podporovaná týmto prvkom."
 
-#~ msgid "Volume"
-#~ msgstr "Hlasitosť"
+msgid "Volume"
+msgstr "Hlasitosť"
 
-#~ msgid "Master"
-#~ msgstr "Hlavné"
+msgid "Master"
+msgstr "Hlavné"
 
-#~ msgid "Front"
-#~ msgstr "Predné"
+msgid "Front"
+msgstr "Predné"
 
-#~ msgid "Rear"
-#~ msgstr "Zadné"
+msgid "Rear"
+msgstr "Zadné"
 
-#~ msgid "Headphones"
-#~ msgstr "Slúchadlá"
+msgid "Headphones"
+msgstr "Slúchadlá"
 
-#~ msgid "Center"
-#~ msgstr "Stredné"
+msgid "Center"
+msgstr "Stredné"
 
-#~ msgid "LFE"
-#~ msgstr "LFE"
+msgid "LFE"
+msgstr "LFE"
 
-#~ msgid "Surround"
-#~ msgstr "Priestorové"
+msgid "Surround"
+msgstr "Priestorové"
 
-#~ msgid "Side"
-#~ msgstr "Postranné"
+msgid "Side"
+msgstr "Postranné"
 
-#~ msgid "Built-in Speaker"
-#~ msgstr "Zabudovaný reproduktor"
+msgid "Built-in Speaker"
+msgstr "Zabudovaný reproduktor"
 
-#~ msgid "AUX 1 Out"
-#~ msgstr "AUX 1 výstup"
+msgid "AUX 1 Out"
+msgstr "AUX 1 výstup"
 
-#~ msgid "AUX 2 Out"
-#~ msgstr "AUX 2 výstup"
+msgid "AUX 2 Out"
+msgstr "AUX 2 výstup"
 
-#~ msgid "AUX Out"
-#~ msgstr "AUX výstup"
+msgid "AUX Out"
+msgstr "AUX výstup"
 
-#~ msgid "Bass"
-#~ msgstr "Basy"
+msgid "Bass"
+msgstr "Basy"
 
-#~ msgid "Treble"
-#~ msgstr "Výšky"
+msgid "Treble"
+msgstr "Výšky"
 
-#~ msgid "3D Depth"
-#~ msgstr "3D hĺbka"
+msgid "3D Depth"
+msgstr "3D hĺbka"
 
-#~ msgid "3D Center"
-#~ msgstr "3D stred"
+msgid "3D Center"
+msgstr "3D stred"
 
-#~ msgid "3D Enhance"
-#~ msgstr "3D vylepšenie"
+msgid "3D Enhance"
+msgstr "3D vylepšenie"
 
-#~ msgid "Telephone"
-#~ msgstr "TelefónSlúchadlá"
+msgid "Telephone"
+msgstr "TelefónSlúchadlá"
 
-#~ msgid "Microphone"
-#~ msgstr "Mikrofón"
+msgid "Microphone"
+msgstr "Mikrofón"
 
-#~ msgid "Line Out"
-#~ msgstr "Linkový výstup"
+msgid "Line Out"
+msgstr "Linkový výstup"
 
-#~ msgid "Line In"
-#~ msgstr "Linkový vstup"
+msgid "Line In"
+msgstr "Linkový vstup"
 
-#~ msgid "Internal CD"
-#~ msgstr "Vnútorne CD"
+msgid "Internal CD"
+msgstr "Vnútorne CD"
 
-#~ msgid "Video In"
-#~ msgstr "Video vstup"
+msgid "Video In"
+msgstr "Video vstup"
 
-#~ msgid "AUX 1 In"
-#~ msgstr "AUX 1 vstup"
+msgid "AUX 1 In"
+msgstr "AUX 1 vstup"
 
-#~ msgid "AUX 2 In"
-#~ msgstr "AUX 2 vstup"
+msgid "AUX 2 In"
+msgstr "AUX 2 vstup"
 
-#~ msgid "AUX In"
-#~ msgstr "AUX vstup"
+msgid "AUX In"
+msgstr "AUX vstup"
 
-#~ msgid "PCM"
-#~ msgstr "PCM"
+msgid "PCM"
+msgstr "PCM"
 
-#~ msgid "Record Gain"
-#~ msgstr "Zisk záznamu"
+msgid "Record Gain"
+msgstr "Zisk záznamu"
 
-#~ msgid "Output Gain"
-#~ msgstr "Zisk výstupu"
+msgid "Output Gain"
+msgstr "Zisk výstupu"
 
-#~ msgid "Microphone Boost"
-#~ msgstr "Zosilnenie mikrofónu"
+msgid "Microphone Boost"
+msgstr "Zosilnenie mikrofónu"
 
-#~ msgid "Loopback"
-#~ msgstr "Spätná väzba"
+msgid "Loopback"
+msgstr "Spätná väzba"
 
-#~ msgid "Diagnostic"
-#~ msgstr "Diagnostika"
+msgid "Diagnostic"
+msgstr "Diagnostika"
 
-#~ msgid "Bass Boost"
-#~ msgstr "Zosilnenie basov"
+msgid "Bass Boost"
+msgstr "Zosilnenie basov"
 
-#~ msgid "Playback Ports"
-#~ msgstr "Prehrávacie porty"
+msgid "Playback Ports"
+msgstr "Prehrávacie porty"
 
-#~ msgid "Input"
-#~ msgstr "Vstup"
+msgid "Input"
+msgstr "Vstup"
 
-#~ msgid "Record Source"
-#~ msgstr "Zdroj záznamu"
+msgid "Record Source"
+msgstr "Zdroj záznamu"
 
-#~ msgid "Monitor Source"
-#~ msgstr "Zdroj monitora"
+msgid "Monitor Source"
+msgstr "Zdroj monitora"
 
-#~ msgid "Keyboard Beep"
-#~ msgstr "Pípanie klávesnice"
+msgid "Keyboard Beep"
+msgstr "Pípanie klávesnice"
 
-#~ msgid "Monitor"
-#~ msgstr "Monitor"
+msgid "Monitor"
+msgstr "Monitor"
 
-#~ msgid "Simulate Stereo"
-#~ msgstr "Napodobniť stereo"
+msgid "Simulate Stereo"
+msgstr "Napodobniť stereo"
 
-#~ msgid "Stereo"
-#~ msgstr "Stereo"
+msgid "Stereo"
+msgstr "Stereo"
 
-#~ msgid "Surround Sound"
-#~ msgstr "Priestorový zvuk"
+msgid "Surround Sound"
+msgstr "Priestorový zvuk"
 
-#~ msgid "Microphone Gain"
-#~ msgstr "Zisk mikrofónu"
+msgid "Microphone Gain"
+msgstr "Zisk mikrofónu"
 
-#~ msgid "Speaker Source"
-#~ msgstr "Zdroj reproduktora"
+msgid "Speaker Source"
+msgstr "Zdroj reproduktora"
 
-#~ msgid "Microphone Source"
-#~ msgstr "Zdroj mikrofónu"
+msgid "Microphone Source"
+msgstr "Zdroj mikrofónu"
 
-#~ msgid "Jack"
-#~ msgstr "Jack"
+msgid "Jack"
+msgstr "Jack"
 
-#~ msgid "Center / LFE"
-#~ msgstr "Stredné / LFE"
+msgid "Center / LFE"
+msgstr "Stredné / LFE"
 
-#~ msgid "Stereo Mix"
-#~ msgstr "Stereo mix"
+msgid "Stereo Mix"
+msgstr "Stereo mix"
 
-#~ msgid "Mono Mix"
-#~ msgstr "Mono mix"
+msgid "Mono Mix"
+msgstr "Mono mix"
 
-#~ msgid "Input Mix"
-#~ msgstr "Vstupný mix"
+#, fuzzy
+msgid "Input Mix"
+msgstr "Vstup mix"
 
-#~ msgid "SPDIF In"
-#~ msgstr "SPDIF vstup"
+msgid "SPDIF In"
+msgstr "SPDIF vstup"
 
-#~ msgid "SPDIF Out"
-#~ msgstr "SPDIF výstup"
+msgid "SPDIF Out"
+msgstr "SPDIF výstup"
 
-#~ msgid "Microphone 1"
-#~ msgstr "Mikrofón 1"
+msgid "Microphone 1"
+msgstr "Mikrofón 1"
 
-#~ msgid "Microphone 2"
-#~ msgstr "Mikrofón 2"
+msgid "Microphone 2"
+msgstr "Mikrofón 2"
 
-#~ msgid "Digital Out"
-#~ msgstr "Digitálny výstup"
+msgid "Digital Out"
+msgstr "Digitálny výstup"
 
-#~ msgid "Digital In"
-#~ msgstr "Digitálny vstup"
+msgid "Digital In"
+msgstr "Digitálny vstup"
 
-#~ msgid "HDMI"
-#~ msgstr "HDMI"
+msgid "HDMI"
+msgstr "HDMI"
 
-#~ msgid "Modem"
-#~ msgstr "Modem"
+msgid "Modem"
+msgstr "Modem"
 
-#~ msgid "Other"
-#~ msgstr "Iné"
+msgid "Handset"
+msgstr ""
 
-#~ msgid "None"
-#~ msgstr "Žiadne"
+msgid "Other"
+msgstr "Iné"
 
-#~ msgid "On"
-#~ msgstr "Zap"
+msgid "None"
+msgstr "Žiadne"
 
-#~ msgid "Off"
-#~ msgstr "Vyp"
+msgid "On"
+msgstr "Zap"
 
-#~ msgid "Mute"
-#~ msgstr "Potichu"
+msgid "Off"
+msgstr "Vyp"
 
-#~ msgid "Fast"
-#~ msgstr "Rýchla"
+msgid "Mute"
+msgstr "Potichu"
 
-#~ msgid "Very Low"
-#~ msgstr "Veľmi nízka"
+msgid "Fast"
+msgstr "Rýchla"
 
-#~ msgid "Low"
-#~ msgstr "Nízka"
+msgid "Very Low"
+msgstr "Veľmi nízka"
 
-#~ msgid "Medium"
-#~ msgstr "Stredná"
+msgid "Low"
+msgstr "Nízka"
 
-#~ msgid "High"
-#~ msgstr "Vysoká"
+msgid "Medium"
+msgstr "Stredná"
 
-#~ msgid "Very High"
-#~ msgstr "Veľmi vysoká"
+msgid "High"
+msgstr "Vysoká"
 
-#~ msgid "Production"
-#~ msgstr "Produkčná"
+msgid "Very High"
+msgstr "Veľmi vysoká"
 
-#~ msgid "Front Panel Microphone"
-#~ msgstr "Mikrofón na prednom paneli"
+msgid "Production"
+msgstr "Produkčná"
 
-#~ msgid "Front Panel Line In"
-#~ msgstr "Linkový vstup na prednom paneli"
+msgid "Front Panel Microphone"
+msgstr "Mikrofón na prednom paneli"
 
-#~ msgid "Front Panel Headphones"
-#~ msgstr "Slúchadlá na prednom paneli"
+msgid "Front Panel Line In"
+msgstr "Linkový vstup na prednom paneli"
 
-#~ msgid "Front Panel Line Out"
-#~ msgstr "Linkový výstup na prednom paneli"
+msgid "Front Panel Headphones"
+msgstr "Slúchadlá na prednom paneli"
 
-#~ msgid "Green Connector"
-#~ msgstr "Zelený konektor"
+msgid "Front Panel Line Out"
+msgstr "Linkový výstup na prednom paneli"
 
-#~ msgid "Pink Connector"
-#~ msgstr "Ružový konektor"
+msgid "Green Connector"
+msgstr "Zelený konektor"
 
-#~ msgid "Blue Connector"
-#~ msgstr "Modrý konektor"
+msgid "Pink Connector"
+msgstr "Ružový konektor"
 
-#~ msgid "White Connector"
-#~ msgstr "Biely konektor"
+msgid "Blue Connector"
+msgstr "Modrý konektor"
 
-#~ msgid "Black Connector"
-#~ msgstr "Čierny konektor"
+msgid "White Connector"
+msgstr "Biely konektor"
 
-#~ msgid "Gray Connector"
-#~ msgstr "Šedý konektor"
+msgid "Black Connector"
+msgstr "Čierny konektor"
 
-#~ msgid "Orange Connector"
-#~ msgstr "Oranžový konektor"
+msgid "Gray Connector"
+msgstr "Šedý konektor"
 
-#~ msgid "Red Connector"
-#~ msgstr "Červený konektor"
+msgid "Orange Connector"
+msgstr "Oranžový konektor"
 
-#~ msgid "Yellow Connector"
-#~ msgstr "Žltý konektor"
+msgid "Red Connector"
+msgstr "Červený konektor"
 
-#~ msgid "Green Front Panel Connector"
-#~ msgstr "Zelený konektor na prednom paneli"
+msgid "Yellow Connector"
+msgstr "Žltý konektor"
 
-#~ msgid "Pink Front Panel Connector"
-#~ msgstr "Ružový konektor na prednom paneli"
+msgid "Green Front Panel Connector"
+msgstr "Zelený konektor na prednom paneli"
 
-#~ msgid "Blue Front Panel Connector"
-#~ msgstr "Modrý konektor na prednom paneli"
+msgid "Pink Front Panel Connector"
+msgstr "Ružový konektor na prednom paneli"
 
-#~ msgid "White Front Panel Connector"
-#~ msgstr "Biely konektor na prednom paneli"
+msgid "Blue Front Panel Connector"
+msgstr "Modrý konektor na prednom paneli"
 
-#~ msgid "Black Front Panel Connector"
-#~ msgstr "Čierny konektor na prednom paneli"
+msgid "White Front Panel Connector"
+msgstr "Biely konektor na prednom paneli"
 
-#~ msgid "Gray Front Panel Connector"
-#~ msgstr "Šedý konektor na prednom paneli"
+msgid "Black Front Panel Connector"
+msgstr "Čierny konektor na prednom paneli"
 
-#~ msgid "Orange Front Panel Connector"
-#~ msgstr "Oranžový konektor na prednom paneli"
+msgid "Gray Front Panel Connector"
+msgstr "Šedý konektor na prednom paneli"
 
-#~ msgid "Red Front Panel Connector"
-#~ msgstr "Červený konektor na prednom paneli"
+msgid "Orange Front Panel Connector"
+msgstr "Oranžový konektor na prednom paneli"
 
-#~ msgid "Yellow Front Panel Connector"
-#~ msgstr "Žltý konektor na prednom paneli"
+msgid "Red Front Panel Connector"
+msgstr "Červený konektor na prednom paneli"
 
-#~ msgid "Downmix"
-#~ msgstr "Zmixovať"
+msgid "Yellow Front Panel Connector"
+msgstr "Žltý konektor na prednom paneli"
 
-#~ msgid "Virtual Mixer Input"
-#~ msgstr "Vstup virtuálneho mixéra"
+msgid "Spread Output"
+msgstr ""
 
-#~ msgid "Virtual Mixer Output"
-#~ msgstr "Výstup virtuálneho mixéra"
+msgid "Downmix"
+msgstr "Zmixovať"
 
-#~ msgid "Virtual Mixer Channels"
-#~ msgstr "Kanály virtuálneho mixéra"
+msgid "Virtual Mixer Input"
+msgstr "Vstup virtuálneho mixéra"
 
-#~ msgid "%s Function"
-#~ msgstr "%s Funkcia"
+msgid "Virtual Mixer Output"
+msgstr "Výstup virtuálneho mixéra"
 
-#~ msgid "%s %d"
-#~ msgstr "%s %d"
+msgid "Virtual Mixer Channels"
+msgstr "Kanály virtuálneho mixéra"
 
-#~ msgid ""
-#~ "Could not open audio device for playback. Device is being used by another "
-#~ "application."
-#~ msgstr ""
-#~ "Nepodarilo sa otvoriť zvukové zariadenie v režime prehrávania. Zariadenie "
-#~ "už používa iná aplikácia."
+#, c-format
+msgid "%s Function"
+msgstr "%s Funkcia"
 
-#~ msgid ""
-#~ "Could not open audio device for playback. You don't have permission to "
-#~ "open the device."
-#~ msgstr ""
-#~ "Nepodarilo sa otvoriť zvukové zariadenie v režime prehrávania. Nemáte "
-#~ "oprávnenie na otvorenie tohto zariadenia."
+#, c-format
+msgid "%s %d"
+msgstr "%s %d"
 
-#~ msgid "Could not open audio device for playback."
-#~ msgstr "Nepodarilo sa otvoriť zvukové zariadenie v režime prehrávania."
+msgid ""
+"Could not open audio device for playback. Device is being used by another "
+"application."
+msgstr ""
+"Nepodarilo sa otvoriť zvukové zariadenie v režime prehrávania. Zariadenie už "
+"používa iná aplikácia."
 
-#~ msgid ""
-#~ "Could not open audio device for playback. This version of the Open Sound "
-#~ "System is not supported by this element."
-#~ msgstr ""
-#~ "Nepodarilo sa otvoriť zvukové zariadenie v režime prehrávania. Túto "
-#~ "verziu Open Sound System nepodporuje tento prvok."
+msgid ""
+"Could not open audio device for playback. You don't have permission to open "
+"the device."
+msgstr ""
+"Nepodarilo sa otvoriť zvukové zariadenie v režime prehrávania. Nemáte "
+"oprávnenie na otvorenie tohto zariadenia."
 
-#~ msgid "Playback is not supported by this audio device."
-#~ msgstr "Toto zvukové zariadenie nepodporuje prehrávanie."
+msgid "Could not open audio device for playback."
+msgstr "Nepodarilo sa otvoriť zvukové zariadenie v režime prehrávania."
 
-#~ msgid "Audio playback error."
-#~ msgstr "Chyba prehrávania zvuku."
+msgid ""
+"Could not open audio device for playback. This version of the Open Sound "
+"System is not supported by this element."
+msgstr ""
+"Nepodarilo sa otvoriť zvukové zariadenie v režime prehrávania. Túto verziu "
+"Open Sound System nepodporuje tento prvok."
 
-#~ msgid "Recording is not supported by this audio device."
-#~ msgstr "Toto zvukové zariadenie nepodporuje záznam."
+msgid "Playback is not supported by this audio device."
+msgstr "Toto zvukové zariadenie nepodporuje prehrávanie."
 
-#~ msgid "Error recording from audio device."
-#~ msgstr "Chyba pri zázname zo zvukového zariadenia."
+msgid "Audio playback error."
+msgstr "Chyba prehrávania zvuku."
 
-#~ msgid "Internal clock error."
-#~ msgstr "Vnútorná chyba časovača."
+msgid "Recording is not supported by this audio device."
+msgstr "Toto zvukové zariadenie nepodporuje záznam."
+
+msgid "Error recording from audio device."
+msgstr "Chyba pri zázname zo zvukového zariadenia."
 
 #~ msgid "Failed to configure TwoLAME encoder. Check your encoding parameters."
 #~ msgstr ""

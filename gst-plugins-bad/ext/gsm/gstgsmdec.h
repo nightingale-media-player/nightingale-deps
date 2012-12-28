@@ -21,7 +21,7 @@
 #define __GST_GSMDEC_H__
 
 #include <gst/gst.h>
-#include <gst/audio/gstaudiodecoder.h>
+#include <gst/base/gstadapter.h>
 
 #ifdef GSM_HEADER_IN_SUBDIR
 #include <gsm/gsm.h>
@@ -47,16 +47,28 @@ typedef struct _GstGSMDecClass GstGSMDecClass;
 
 struct _GstGSMDec
 {
-  GstAudioDecoder element;
+  GstElement element;
+
+  /* pads */
+  GstPad *sinkpad, *srcpad;
 
   gsm state;
   gint use_wav49;
-  gint needed;
+  gint64 next_of;
+  GstClockTime next_ts;
+
+  GstAdapter *adapter;
+
+  GstSegment segment;
+
+  gint rate;
+
+  GstClockTime duration;
 };
 
 struct _GstGSMDecClass
 {
-  GstAudioDecoderClass parent_class;
+  GstElementClass parent_class;
 };
 
 GType gst_gsmdec_get_type (void);

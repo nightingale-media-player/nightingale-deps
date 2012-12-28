@@ -3,13 +3,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>dtsdec</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
-<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-dtmfsrc.html" title="dtmfsrc">
 <link rel="next" href="gst-plugins-bad-plugins-dvbsrc.html" title="dvbsrc">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -17,20 +20,20 @@
 <td><a accesskey="p" href="gst-plugins-bad-plugins-dtmfsrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Bad Plugins 1.0 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-bad-plugins-dvbsrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-bad-plugins-dtsdec.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-dtsdec.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-dtsdec.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-dtsdec.properties" class="shortcut">Properties</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-dtsdec.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-dtsdec.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-dtsdec.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry">
+<div class="refentry" lang="en">
 <a name="gst-plugins-bad-plugins-dtsdec"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -41,32 +44,53 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="gst-plugins-bad-plugins-dtsdec.synopsis"></a><h2>Synopsis</h2>
-<a name="GstDtsDec"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-bad-plugins-dtsdec.html#GstDtsDec-struct" title="struct GstDtsDec">GstDtsDec</a>;
+<a name="GstDtsDec"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-bad-plugins-dtsdec.html#GstDtsDec-struct" title="GstDtsDec">GstDtsDec</a>;
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-dtsdec.object-hierarchy"></a><h2>Object Hierarchy</h2>
 <pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudiodecoder.html#GstAudioDecoder">GstAudioDecoder</a>
-                           +----GstDtsDec
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----GstDtsDec
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-dtsdec.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-bad-plugins-dtsdec.html#GstDtsDec--drc" title='The "drc" property'>drc</a>"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-dtsdec.html#GstDtsDec--drc" title='The "drc" property'>drc</a>"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
 </pre>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-dtsdec.description"></a><h2>Description</h2>
+<p>
+Digital Theatre System (DTS) audio decoder
+</p>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2823384"></a><h3>Example launch line</h3>
+<div class="informalexample"><pre class="programlisting">
+gst-launch dvdreadsrc title=1 ! mpegpsdemux ! dtsdec ! audioresample ! audioconvert ! alsasink
+</pre></div> Play a DTS audio track from a dvd.
+<div class="informalexample"><pre class="programlisting">
+gst-launch filesrc location=abc.dts ! dtsdec ! audioresample ! audioconvert ! alsasink
+</pre></div> Decode a standalone file and play it.
+</div>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2">
-<a name="idp8036352"></a><h3>Element Information</h3>
+<div class="refsect2" lang="en">
+<a name="id2852732"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -78,7 +102,8 @@
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Jan Schmidt &lt;thaytan@noraisin.net&gt;, Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;</td>
+<td>Jan Schmidt &lt;thaytan@noraisin.net&gt;
+    Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -88,8 +113,29 @@
 </table></div>
 </div>
 <hr>
-<div class="refsect2">
-<a name="idp6024848"></a><h3>Element Pads</h3>
+<div class="refsect2" lang="en">
+<a name="id2872454"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw-float, endianness=(int)1234, width=(int)32, rate=(int)[ 4000, 96000 ], channels=(int)[ 1, 6 ]</td>
+</tr>
+</tbody>
+</table></div>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -115,6 +161,36 @@
 </tr>
 </tbody>
 </table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2872609"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-dtsdec.html#plugin-dtsdec">dtsdec</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Jan Schmidt &lt;thaytan@noraisin.net&gt;
+    Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Decoder/Audio</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2872673"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -132,7 +208,32 @@
 </tr>
 <tr>
 <td><p><span class="term">details</span></p></td>
-<td>audio/x-raw, format=(string)F32LE, layout=(string)interleaved, rate=(int)[ 4000, 96000 ], channels=(int)[ 1, 6 ]</td>
+<td>audio/x-raw-float, endianness=(int)1234, width=(int)32, rate=(int)[ 4000, 96000 ], channels=(int)[ 1, 6 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-dts</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-private1-dts</td>
 </tr>
 </tbody>
 </table></div>
@@ -141,20 +242,22 @@
 <p>
 </p>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-dtsdec.details"></a><h2>Details</h2>
-<div class="refsect2">
-<a name="GstDtsDec-struct"></a><h3>struct GstDtsDec</h3>
-<pre class="programlisting">struct GstDtsDec;</pre>
+<div class="refsect2" lang="en">
+<a name="GstDtsDec-struct"></a><h3>GstDtsDec</h3>
+<pre class="programlisting">typedef struct _GstDtsDec GstDtsDec;</pre>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1">
+<div class="refsect1" lang="en">
 <a name="gst-plugins-bad-plugins-dtsdec.property-details"></a><h2>Property Details</h2>
-<div class="refsect2">
+<div class="refsect2" lang="en">
 <a name="GstDtsDec--drc"></a><h3>The <code class="literal">"drc"</code> property</h3>
-<pre class="programlisting">  "drc"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<pre class="programlisting">  "drc"                      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
 <p>Use Dynamic Range Compression.</p>
 <p>Default value: FALSE</p>
 </div>
@@ -162,6 +265,6 @@
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.18</div>
+          Generated by GTK-Doc V1.11</div>
 </body>
 </html>

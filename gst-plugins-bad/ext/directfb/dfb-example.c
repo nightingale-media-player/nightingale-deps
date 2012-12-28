@@ -57,8 +57,7 @@ main (int argc, char *argv[])
 
   /* Adding elements to the pipeline */
   gst_bin_add_many (GST_BIN (pipeline), src, sink, NULL);
-  if (!gst_element_link (src, sink))
-    g_error ("Couldn't link videotestsrc and dfbvideosink");
+  g_assert (gst_element_link (src, sink));
 
   /* Let's play ! */
   gst_element_set_state (pipeline, GST_STATE_PLAYING);

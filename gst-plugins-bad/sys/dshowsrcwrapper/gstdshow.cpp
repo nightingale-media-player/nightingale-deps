@@ -123,10 +123,13 @@ gst_dshow_new_pin_mediatype_from_streamcaps (IPin * pin, gint id, IAMStreamConfi
 void
 gst_dshow_free_pins_mediatypes (GList * pins_mediatypes)
 {
-  while (pins_mediatypes != NULL) {
-    gst_dshow_free_pin_mediatype (pins_mediatypes->data);
-    pins_mediatypes = g_list_remove_link (pins_mediatypes, pins_mediatypes);
+  guint i = 0;
+  for (; i < g_list_length (pins_mediatypes); i++) {
+    GList *mylist = g_list_nth (pins_mediatypes, i);
+    if (mylist && mylist->data)
+      gst_dshow_free_pin_mediatype ((GstCapturePinMediaType *) mylist->data);
   }
+  g_list_free (pins_mediatypes);
 }
 
 gboolean
@@ -402,9 +405,6 @@ gst_dshow_guid_to_gst_video_format (AM_MEDIA_TYPE *mediatype)
   if (gst_dshow_check_mediatype (mediatype, MEDIASUBTYPE_RGB24, FORMAT_VideoInfo))
     return GST_VIDEO_FORMAT_BGR;
 
-  if (gst_dshow_check_mediatype (mediatype, MEDIASUBTYPE_YUY2, FORMAT_VideoInfo))
-    return GST_VIDEO_FORMAT_YUY2;
-
   return GST_VIDEO_FORMAT_UNKNOWN;
 }
 
@@ -414,9 +414,6 @@ gst_dshow_new_video_caps (GstVideoFormat video_format, const gchar * name,
 {
   GstCaps *video_caps = NULL;
   GstStructure *video_structure = NULL;
-  gint min_w, max_w;
-  gint min_h, max_h;
-  gint min_fr, max_fr;
 
   /* raw video format */
   switch (video_format) {
@@ -425,22 +422,18 @@ gst_dshow_new_video_caps (GstVideoFormat video_format, const gchar * name,
       break;
     case GST_VIDEO_FORMAT_I420:
       video_caps = gst_caps_from_string (GST_VIDEO_CAPS_YUV ("I420"));
-	  break;
-    case GST_VIDEO_FORMAT_YUY2:
-      video_caps = gst_caps_from_string (GST_VIDEO_CAPS_YUV ("YUY2"));
-      break;
     default:
       break;
   }
 
   /* other video format */
   if (!video_caps) {
-    if (g_ascii_strncasecmp (name, "video/x-dv, systemstream=FALSE", 31) == 0) {
+    if (g_strcasecmp (name, "video/x-dv, systemstream=FALSE") == 0) {
       video_caps = gst_caps_new_simple ("video/x-dv",
           "systemstream", G_TYPE_BOOLEAN, FALSE,
           "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('d', 'v', 's', 'd'),
           NULL);
-    } else if (g_ascii_strncasecmp (name, "video/x-dv, systemstream=TRUE", 31) == 0) {
+    } else if (g_strcasecmp (name, "video/x-dv, systemstream=TRUE") == 0) {
       video_caps = gst_caps_new_simple ("video/x-dv",
           "systemstream", G_TYPE_BOOLEAN, TRUE, NULL);
       return video_caps;
@@ -462,31 +455,14 @@ gst_dshow_new_video_caps (GstVideoFormat video_format, const gchar * name,
   /* "The IAMStreamConfig::SetFormat method will set the frame rate to the closest  */
   /* value that the filter supports" as it said in the VIDEO_STREAM_CONFIG_CAPS dshwo doc */
 
-  min_w = pin_mediatype->vscc.MinOutputSize.cx;
-  max_w = pin_mediatype->vscc.MaxOutputSize.cx;
-  min_h = pin_mediatype->vscc.MinOutputSize.cy;
-  max_h = pin_mediatype->vscc.MaxOutputSize.cy;
-  min_fr = (gint) (10000000 / pin_mediatype->vscc.MaxFrameInterval);
-  max_fr = (gint)(10000000 / pin_mediatype->vscc.MinFrameInterval);
-
-  if (min_w == max_w)
-    gst_structure_set (video_structure, "width", G_TYPE_INT, min_w, NULL);
-  else
-     gst_structure_set (video_structure,
-       "width", GST_TYPE_INT_RANGE, min_w, max_w, NULL);
-
-  if (min_h == max_h)
-    gst_structure_set (video_structure, "height", G_TYPE_INT, min_h, NULL);
-  else
-     gst_structure_set (video_structure,
-       "height", GST_TYPE_INT_RANGE, min_h, max_h, NULL);
-
-  if (min_fr == max_fr)
-    gst_structure_set (video_structure, "framerate",
-        GST_TYPE_FRACTION, min_fr, 1, NULL);
-  else
-     gst_structure_set (video_structure, "framerate",
-         GST_TYPE_FRACTION_RANGE, min_fr, 1, max_fr, 1, NULL);
+  gst_structure_set (video_structure,
+      "width", GST_TYPE_INT_RANGE, pin_mediatype->vscc.MinOutputSize.cx,
+      pin_mediatype->vscc.MaxOutputSize.cx, "height", GST_TYPE_INT_RANGE,
+      pin_mediatype->vscc.MinOutputSize.cy,
+      pin_mediatype->vscc.MaxOutputSize.cy, "framerate",
+      GST_TYPE_FRACTION_RANGE,
+      (gint) (10000000 / pin_mediatype->vscc.MaxFrameInterval), 1,
+      (gint) (10000000 / pin_mediatype->vscc.MinFrameInterval), 1, NULL);
 
   return video_caps;
 }

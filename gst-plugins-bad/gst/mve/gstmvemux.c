@@ -31,12 +31,18 @@ gst-launch-0.10 filesrc location=movie.mve ! mvedemux name=d !
 #include <string.h>
 
 #include <gst/gst.h>
-#include <gst/glib-compat-private.h>
 #include "gstmvemux.h"
 #include "mve.h"
 
 GST_DEBUG_CATEGORY_STATIC (mvemux_debug);
 #define GST_CAT_DEFAULT mvemux_debug
+
+extern GstFlowReturn mve_encode_frame8 (GstMveMux * mve,
+    GstBuffer * frame, const guint32 * palette, guint16 max_data);
+extern GstFlowReturn mve_encode_frame16 (GstMveMux * mve,
+    GstBuffer * frame, guint16 max_data);
+extern gint mve_compress_audio (guint8 * dest,
+    const guint8 * src, guint16 len, guint8 channels);
 
 static const char mve_preamble[] = MVE_PREAMBLE;
 
@@ -338,7 +344,7 @@ static void
 gst_mve_mux_palette_analyze (GstMveMux * mvemux, const GstBuffer * pal,
     guint16 * first, guint16 * last)
 {
-  gint i;
+  guint i;
   guint32 *col1;
 
   col1 = (guint32 *) GST_BUFFER_DATA (pal);
@@ -1347,6 +1353,11 @@ gst_mve_mux_release_pad (GstElement * element, GstPad * pad)
 static void
 gst_mve_mux_base_init (GstMveMuxClass * klass)
 {
+  static const GstElementDetails gst_mve_mux_details =
+      GST_ELEMENT_DETAILS ("MVE Multiplexer",
+      "Codec/Muxer",
+      "Muxes audio and video into an MVE stream",
+      "Jens Granseuer <jensgr@gmx.net>");
 
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
@@ -1357,10 +1368,7 @@ gst_mve_mux_base_init (GstMveMuxClass * klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&video_sink_factory));
 
-  gst_element_class_set_static_metadata (element_class, "MVE Multiplexer",
-      "Codec/Muxer",
-      "Muxes audio and video into an MVE stream",
-      "Jens Granseuer <jensgr@gmx.net>");
+  gst_element_class_set_details (element_class, &gst_mve_mux_details);
 }
 
 static void
@@ -1405,24 +1413,22 @@ gst_mve_mux_class_init (GstMveMuxClass * klass)
   g_object_class_install_property (gobject_class, ARG_AUDIO_COMPRESSION,
       g_param_spec_boolean ("compression", "Audio compression",
           "Whether to compress audio data", MVE_MUX_DEFAULT_COMPRESSION,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, ARG_VIDEO_QUICK_ENCODING,
       g_param_spec_boolean ("quick", "Quick encoding",
           "Whether to disable expensive encoding operations", TRUE,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, ARG_VIDEO_SCREEN_WIDTH,
       g_param_spec_uint ("screen-width", "Screen width",
           "Suggested screen width", 320, 1600,
-          MVE_MUX_DEFAULT_SCREEN_WIDTH,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          MVE_MUX_DEFAULT_SCREEN_WIDTH, G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, ARG_VIDEO_SCREEN_HEIGHT,
       g_param_spec_uint ("screen-height", "Screen height",
           "Suggested screen height", 200, 1200,
-          MVE_MUX_DEFAULT_SCREEN_HEIGHT,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          MVE_MUX_DEFAULT_SCREEN_HEIGHT, G_PARAM_READWRITE));
 
   gstelement_class->request_new_pad = gst_mve_mux_request_new_pad;
   gstelement_class->release_pad = gst_mve_mux_release_pad;

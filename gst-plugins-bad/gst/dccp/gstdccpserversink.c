@@ -78,6 +78,13 @@ static gboolean gst_dccp_server_sink_stop (GstBaseSink * bsink);
 
 GST_DEBUG_CATEGORY_STATIC (dccpserversink_debug);
 
+static const GstElementDetails gst_dccp_server_sink_details =
+GST_ELEMENT_DETAILS ("DCCP server sink",
+    "Sink/Network",
+    "Send data as a server over the network via DCCP",
+    "E-Phone Team at Federal University of Campina Grande <leandroal@gmail.com>");
+
+
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
@@ -168,13 +175,12 @@ static void *
 gst_dccp_server_delete_dead_clients (void *arg)
 {
   GstDCCPServerSink *sink = (GstDCCPServerSink *) arg;
+  int i;
   GList *tmp = NULL;
-  GList *l;
 
   pthread_mutex_lock (&lock);
-  for (l = sink->clients; l != NULL; l = l->next) {
-    Client *client = (Client *) l->data;
-
+  for (i = 0; i < g_list_length (sink->clients); i++) {
+    Client *client = (Client *) g_list_nth_data (sink->clients, i);
     if (client->flow_status == GST_FLOW_OK) {
       tmp = g_list_append (tmp, client);
     } else {
@@ -273,26 +279,20 @@ gst_dccp_server_sink_render (GstBaseSink * bsink, GstBuffer * buf)
   GstDCCPServerSink *sink = GST_DCCP_SERVER_SINK (bsink);
 
   pthread_t thread_id;
-  GList *l;
+  int i;
 
   pthread_mutex_lock (&lock);
 
-  for (l = sink->clients; l != NULL; l = l->next) {
-    Client *client = (Client *) l->data;
-
+  for (i = 0; i < g_list_length (sink->clients); i++) {
+    Client *client = (Client *) g_list_nth_data (sink->clients, i);
     client->buf = buf;
     client->server = sink;
 
-    /* FIXME: are we really creating a new thread here for every single buffer
-     * and every single client? */
     if (client->flow_status == GST_FLOW_OK) {
       pthread_create (&thread_id, NULL, gst_dccp_server_send_buffer,
           (void *) client);
       pthread_detach (thread_id);
     } else {
-      /* FIXME: what's the point of doing this in a separate thread if it
-       * keeps he global lock anyway while going through all the clients and
-       * waiting for close() to finish? */
       pthread_create (&thread_id, NULL, gst_dccp_server_delete_dead_clients,
           (void *) sink);
       pthread_detach (thread_id);
@@ -307,8 +307,7 @@ static gboolean
 gst_dccp_server_sink_stop (GstBaseSink * bsink)
 {
   GstDCCPServerSink *sink;
-  GList *l;
-
+  int i;
   sink = GST_DCCP_SERVER_SINK (bsink);
 
   if (sink->wait_connections == TRUE) {
@@ -318,9 +317,8 @@ gst_dccp_server_sink_stop (GstBaseSink * bsink)
   gst_dccp_socket_close (GST_ELEMENT (sink), &(sink->sock_fd));
 
   pthread_mutex_lock (&lock);
-  for (l = sink->clients; l != NULL; l = l->next) {
-    Client *client = (Client *) l->data;
-
+  for (i = 0; i < g_list_length (sink->clients); i++) {
+    Client *client = (Client *) g_list_nth_data (sink->clients, i);
     if (client->socket != DCCP_DEFAULT_CLIENT_SOCK_FD && sink->closed == TRUE) {
       gst_dccp_socket_close (GST_ELEMENT (sink), &(client->socket));
     }
@@ -339,10 +337,7 @@ gst_dccp_server_sink_base_init (gpointer g_class)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sinktemplate));
 
-  gst_element_class_set_static_metadata (element_class, "DCCP server sink",
-      "Sink/Network",
-      "Send data as a server over the network via DCCP",
-      "E-Phone Team at Federal University of Campina Grande <leandroal@gmail.com>");
+  gst_element_class_set_details (element_class, &gst_dccp_server_sink_details);
 }
 
 /*
@@ -419,29 +414,27 @@ gst_dccp_server_sink_class_init (GstDCCPServerSinkClass * klass)
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_PORT,
       g_param_spec_int ("port", "Port",
           "The port to listen to", 0, G_MAXUINT16,
-          DCCP_DEFAULT_PORT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          DCCP_DEFAULT_PORT, G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_CLIENT_SOCK_FD,
       g_param_spec_int ("sockfd", "Socket fd",
           "The client socket file descriptor", -1, G_MAXINT,
-          DCCP_DEFAULT_CLIENT_SOCK_FD,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          DCCP_DEFAULT_CLIENT_SOCK_FD, G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_CLOSED,
       g_param_spec_boolean ("close-socket", "Close",
           "Close the client sockets at end of stream",
-          DCCP_DEFAULT_CLOSED, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          DCCP_DEFAULT_CLOSED, G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_CCID,
       g_param_spec_int ("ccid", "CCID",
           "The Congestion Control IDentified to be used", 2, G_MAXINT,
-          DCCP_DEFAULT_CCID, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          DCCP_DEFAULT_CCID, G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_WAIT_CONNECTIONS,
       g_param_spec_boolean ("wait-connections", "Wait connections",
           "Wait for many client connections",
-          DCCP_DEFAULT_WAIT_CONNECTIONS,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          DCCP_DEFAULT_WAIT_CONNECTIONS, G_PARAM_READWRITE));
 
 
   /* signals */

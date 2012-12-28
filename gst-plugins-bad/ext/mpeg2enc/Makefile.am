@@ -8,10 +8,9 @@ libgstmpeg2enc_la_SOURCES = \
 	gstmpeg2encpicturereader.cc
 
 libgstmpeg2enc_la_CXXFLAGS = \
-	$(GST_PLUGINS_BAD_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) $(GST_CXXFLAGS) $(MPEG2ENC_CFLAGS)
+	$(GST_PLUGINS_BASE_CFLAGS) $(GST_CXXFLAGS) $(MPEG2ENC_CFLAGS)
 libgstmpeg2enc_la_LIBADD = \
-        $(GST_PLUGINS_BASE_LIBS) -lgstvideo-@GST_API_VERSION@ \
-        $(GST_LIBS) $(MPEG2ENC_LIBS)
+	$(GST_PLUGINS_BASE_LIBS) $(GST_LIBS) $(MPEG2ENC_LIBS)
 libgstmpeg2enc_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstmpeg2enc_la_LIBTOOLFLAGS = --tag=disable-static
 

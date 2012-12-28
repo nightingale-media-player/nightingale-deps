@@ -48,26 +48,20 @@ struct _GstFPSDisplaySink
   /* gstreamer components */
   GstElement *text_overlay;
   GstElement *video_sink;
+  GstQuery *query;
   GstPad *ghost_pad;
 
   /* statistics */
-  gint frames_rendered, frames_dropped;  /* ATOMIC */
-  guint64 last_frames_rendered, last_frames_dropped;
-
-  GstClockTime start_ts;
+  guint64 frames_rendered, last_frames_rendered;
+  guint64 frames_dropped, last_frames_dropped;
   GstClockTime last_ts;
-  GstClockTime interval_ts;
-  guint data_probe_id;
+  GstClockTime next_ts;
+
+  guint timeout_id;
 
   /* properties */
   gboolean sync;
   gboolean use_text_overlay;
-  gboolean signal_measurements;
-  GstClockTime fps_update_interval;
-  gdouble max_fps;
-  gdouble min_fps;
-  gboolean silent;
-  gchar *last_message;
 };
 
 struct _GstFPSDisplaySinkClass

@@ -23,13 +23,10 @@
 #endif
 
 #include <gst/gst.h>
-#include <gst/glib-compat-private.h>
 #include <gst/video/video.h>
 #include <string.h>
 #include <cog/cogframe.h>
-#ifdef HAVE_ORC
 #include <orc/orc.h>
-#endif
 #include <math.h>
 
 #include "gstcogutils.h"
@@ -77,8 +74,10 @@ struct _GstMSEClass
   GstElementClass parent;
 };
 
-GType gst_mse_get_type (void);
-
+static const GstElementDetails element_details = GST_ELEMENT_DETAILS ("FIXME",
+    "Filter/Effect",
+    "FIXME example filter",
+    "FIXME <fixme@fixme.com>");
 
 enum
 {
@@ -143,10 +142,7 @@ gst_mse_base_init (gpointer klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_framestore_sink_test_template));
 
-  gst_element_class_set_static_metadata (element_class, "Calculate MSE",
-      "Filter/Effect",
-      "Calculates mean squared error between two video streams",
-      "David Schleef <ds@schleef.org>");
+  gst_element_class_set_details (element_class, &element_details);
 }
 
 static void
@@ -162,10 +158,10 @@ gst_mse_class_init (GstMSEClass * klass)
 
   g_object_class_install_property (gobject_class, LUMA_PSNR,
       g_param_spec_double ("luma-psnr", "luma-psnr", "luma-psnr",
-          0, 70, 40, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+          0, 70, 40, G_PARAM_READABLE));
   g_object_class_install_property (gobject_class, CHROMA_PSNR,
       g_param_spec_double ("chroma-psnr", "chroma-psnr", "chroma-psnr",
-          0, 70, 40, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+          0, 70, 40, G_PARAM_READABLE));
 
 }
 
@@ -204,14 +200,8 @@ gst_mse_finalize (GObject * object)
 {
   GstMSE *fs = GST_MSE (object);
 
-  gst_object_unref (fs->srcpad);
-  gst_object_unref (fs->sinkpad_ref);
-  gst_object_unref (fs->sinkpad_test);
   g_mutex_free (fs->lock);
   g_cond_free (fs->cond);
-  gst_buffer_replace (&fs->buffer_ref, NULL);
-
-  GST_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static GstCaps *
@@ -247,7 +237,7 @@ gst_mse_getcaps (GstPad * pad)
   }
 
   if (pad != fs->sinkpad_test) {
-    peercaps = gst_pad_peer_get_caps (fs->sinkpad_test);
+    peercaps = gst_pad_peer_get_caps (fs->sinkpad_ref);
     if (peercaps) {
       icaps = gst_caps_intersect (caps, peercaps);
       gst_caps_unref (caps);
@@ -314,7 +304,6 @@ gst_mse_reset (GstMSE * fs)
   fs->luma_mse_sum = 0;
   fs->chroma_mse_sum = 0;
   fs->n_frames = 0;
-  fs->cancel = FALSE;
 
   if (fs->buffer_ref) {
     gst_buffer_unref (fs->buffer_ref);
@@ -338,8 +327,7 @@ gst_mse_chain_ref (GstPad * pad, GstBuffer * buffer)
     g_cond_wait (fs->cond, fs->lock);
     if (fs->cancel) {
       g_mutex_unlock (fs->lock);
-      gst_object_unref (fs);
-      return GST_FLOW_FLUSHING;
+      return GST_FLOW_WRONG_STATE;
     }
   }
 
@@ -370,8 +358,7 @@ gst_mse_chain_test (GstPad * pad, GstBuffer * buffer)
     g_cond_wait (fs->cond, fs->lock);
     if (fs->cancel) {
       g_mutex_unlock (fs->lock);
-      gst_object_unref (fs);
-      return GST_FLOW_FLUSHING;
+      return GST_FLOW_WRONG_STATE;
     }
   }
 
@@ -432,26 +419,22 @@ gst_mse_sink_event (GstPad * pad, GstEvent * event)
       gst_event_parse_new_segment_full (event, &update, &rate, &applied_rate,
           &format, &start, &stop, &position);
 
-      GST_DEBUG ("new_segment %d %g %g %d %" G_GINT64_FORMAT
-          " %" G_GINT64_FORMAT " %" G_GINT64_FORMAT,
+      GST_DEBUG ("new_segment %d %g %g %d %lld %lld %lld",
           update, rate, applied_rate, format, start, stop, position);
 
     }
       break;
     case GST_EVENT_FLUSH_START:
       GST_DEBUG ("flush start");
-      fs->cancel = TRUE;
       break;
     case GST_EVENT_FLUSH_STOP:
       GST_DEBUG ("flush stop");
-      fs->cancel = FALSE;
       break;
     default:
       break;
   }
 
   gst_pad_push_event (fs->srcpad, event);
-  gst_object_unref (fs);
 
   return TRUE;
 }
@@ -459,7 +442,7 @@ gst_mse_sink_event (GstPad * pad, GstEvent * event)
 static int
 sum_square_diff_u8 (uint8_t * s1, uint8_t * s2, int n)
 {
-#ifndef HAVE_ORC
+#if 0
   int sum = 0;
   int i;
   int x;
@@ -468,8 +451,8 @@ sum_square_diff_u8 (uint8_t * s1, uint8_t * s2, int n)
     x = s1[i] - s2[i];
     sum += x * x;
   }
-  return sum;
-#else
+  d_1[0] = sum;
+#endif
   static OrcProgram *p = NULL;
   OrcExecutor *ex;
   int val;
@@ -506,7 +489,6 @@ sum_square_diff_u8 (uint8_t * s1, uint8_t * s2, int n)
   orc_executor_free (ex);
 
   return val;
-#endif
 }
 
 static double

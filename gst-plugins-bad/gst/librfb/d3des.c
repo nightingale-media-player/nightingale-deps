@@ -27,7 +27,7 @@
  */
 
 #include "config.h"
-#include "_stdint.h"
+#include "stdint.h"
 
 #include "d3des.h"
 
@@ -81,8 +81,10 @@ static unsigned char pc2[48] = {
 };
 
 void
-deskey (unsigned char *key, int32_t edf)
-{                               /* Thanks to James Gillogly & Phil Karn! */
+deskey (key, edf)               /* Thanks to James Gillogly & Phil Karn! */
+     unsigned char *key;
+     int32_t edf;
+{
   register int32_t i, j, l, m, n;
   unsigned char pc1m[56], pcr[56];
   unsigned long kn[32];
@@ -125,7 +127,8 @@ deskey (unsigned char *key, int32_t edf)
 }
 
 static void
-cookey (register unsigned long *raw1)
+cookey (raw1)
+     register unsigned long *raw1;
 {
   register unsigned long *cook, *raw0;
   unsigned long dough[32];
@@ -148,7 +151,8 @@ cookey (register unsigned long *raw1)
 }
 
 void
-cpkey (register unsigned long *into)
+cpkey (into)
+     register unsigned long *into;
 {
   register unsigned long *from, *endp;
 
@@ -159,7 +163,8 @@ cpkey (register unsigned long *into)
 }
 
 void
-usekey (register unsigned long *from)
+usekey (from)
+     register unsigned long *from;
 {
   register unsigned long *to, *endp;
 
@@ -170,7 +175,8 @@ usekey (register unsigned long *from)
 }
 
 void
-des (unsigned char *inblock, unsigned char *outblock)
+des (inblock, outblock)
+     unsigned char *inblock, *outblock;
 {
   unsigned long work[2];
 
@@ -181,7 +187,9 @@ des (unsigned char *inblock, unsigned char *outblock)
 }
 
 static void
-scrunch (register unsigned char *outof, register unsigned long *into)
+scrunch (outof, into)
+     register unsigned char *outof;
+     register unsigned long *into;
 {
   *into = (*outof++ & 0xffL) << 24;
   *into |= (*outof++ & 0xffL) << 16;
@@ -195,7 +203,9 @@ scrunch (register unsigned char *outof, register unsigned long *into)
 }
 
 static void
-unscrun (register unsigned long *outof, register unsigned char *into)
+unscrun (outof, into)
+     register unsigned long *outof;
+     register unsigned char *into;
 {
   *into++ = (*outof >> 24) & 0xffL;
   *into++ = (*outof >> 16) & 0xffL;
@@ -361,7 +371,8 @@ static unsigned long SP8[64] = {
 };
 
 static void
-desfunc (register unsigned long *block, register unsigned long *keys)
+desfunc (block, keys)
+     register unsigned long *block, *keys;
 {
   register unsigned long fval, work, right, leftt;
   register int32_t round;

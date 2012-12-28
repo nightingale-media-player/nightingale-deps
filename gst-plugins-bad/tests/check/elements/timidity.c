@@ -59,7 +59,7 @@ GST_START_TEST (test_midi_typefind)
 GST_END_TEST;
 
 
-static Suite *
+Suite *
 timidity_suite (void)
 {
   Suite *s = suite_create ("timidity");

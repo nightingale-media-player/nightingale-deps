@@ -31,10 +31,11 @@
 GST_DEBUG_CATEGORY_EXTERN (mxf_debug);
 #define GST_CAT_DEFAULT mxf_debug
 
-G_DEFINE_ABSTRACT_TYPE (MXFMetadataBase, mxf_metadata_base, G_TYPE_OBJECT);
+G_DEFINE_ABSTRACT_TYPE (MXFMetadataBase, mxf_metadata_base,
+    GST_TYPE_MINI_OBJECT);
 
 static void
-mxf_metadata_base_finalize (GObject * object)
+mxf_metadata_base_finalize (GstMiniObject * object)
 {
   MXFMetadataBase *self = MXF_METADATA_BASE (object);
 
@@ -43,7 +44,7 @@ mxf_metadata_base_finalize (GObject * object)
     self->other_tags = NULL;
   }
 
-  G_OBJECT_CLASS (mxf_metadata_base_parent_class)->finalize (object);
+  GST_MINI_OBJECT_CLASS (mxf_metadata_base_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -130,9 +131,9 @@ mxf_metadata_base_init (MXFMetadataBase * self)
 static void
 mxf_metadata_base_class_init (MXFMetadataBaseClass * klass)
 {
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
 
-  object_class->finalize = mxf_metadata_base_finalize;
+  miniobject_class->finalize = mxf_metadata_base_finalize;
   klass->handle_tag = mxf_metadata_base_handle_tag;
   klass->resolve = mxf_metadata_base_resolve_default;
   klass->to_structure = mxf_metadata_base_to_structure_default;
@@ -489,7 +490,7 @@ mxf_metadata_new (guint16 type, MXFPrimerPack * primer, guint64 offset,
   ret = (MXFMetadata *) g_type_create_instance (t);
   if (!mxf_metadata_base_parse (MXF_METADATA_BASE (ret), primer, data, size)) {
     GST_ERROR ("Parsing metadata failed");
-    g_object_unref (ret);
+    gst_mini_object_unref ((GstMiniObject *) ret);
     return NULL;
   }
 
@@ -500,7 +501,7 @@ mxf_metadata_new (guint16 type, MXFPrimerPack * primer, guint64 offset,
 G_DEFINE_TYPE (MXFMetadataPreface, mxf_metadata_preface, MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_preface_finalize (GObject * object)
+mxf_metadata_preface_finalize (GstMiniObject * object)
 {
   MXFMetadataPreface *self = MXF_METADATA_PREFACE (object);
 
@@ -516,7 +517,7 @@ mxf_metadata_preface_finalize (GObject * object)
   g_free (self->dm_schemes);
   self->dm_schemes = NULL;
 
-  G_OBJECT_CLASS (mxf_metadata_preface_parent_class)->finalize (object);
+  GST_MINI_OBJECT_CLASS (mxf_metadata_preface_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -946,10 +947,10 @@ static void
 mxf_metadata_preface_class_init (MXFMetadataPrefaceClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  object_class->finalize = mxf_metadata_preface_finalize;
+  miniobject_class->finalize = mxf_metadata_preface_finalize;
   metadata_base_class->handle_tag = mxf_metadata_preface_handle_tag;
   metadata_base_class->resolve = mxf_metadata_preface_resolve;
   metadata_base_class->to_structure = mxf_metadata_preface_to_structure;
@@ -962,7 +963,7 @@ G_DEFINE_TYPE (MXFMetadataIdentification, mxf_metadata_identification,
     MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_identification_finalize (GObject * object)
+mxf_metadata_identification_finalize (GstMiniObject * object)
 {
   MXFMetadataIdentification *self = MXF_METADATA_IDENTIFICATION (object);
 
@@ -978,7 +979,8 @@ mxf_metadata_identification_finalize (GObject * object)
   g_free (self->platform);
   self->platform = NULL;
 
-  G_OBJECT_CLASS (mxf_metadata_identification_parent_class)->finalize (object);
+  GST_MINI_OBJECT_CLASS (mxf_metadata_identification_parent_class)->finalize
+      (object);
 }
 
 static gboolean
@@ -1235,10 +1237,10 @@ static void
 mxf_metadata_identification_class_init (MXFMetadataIdentificationClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  object_class->finalize = mxf_metadata_identification_finalize;
+  miniobject_class->finalize = mxf_metadata_identification_finalize;
   metadata_base_class->handle_tag = mxf_metadata_identification_handle_tag;
   metadata_base_class->name_quark = MXF_QUARK (IDENTIFICATION);
   metadata_base_class->to_structure = mxf_metadata_identification_to_structure;
@@ -1250,7 +1252,7 @@ G_DEFINE_TYPE (MXFMetadataContentStorage, mxf_metadata_content_storage,
     MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_content_storage_finalize (GObject * object)
+mxf_metadata_content_storage_finalize (GstMiniObject * object)
 {
   MXFMetadataContentStorage *self = MXF_METADATA_CONTENT_STORAGE (object);
 
@@ -1263,7 +1265,8 @@ mxf_metadata_content_storage_finalize (GObject * object)
   g_free (self->essence_container_data_uids);
   self->essence_container_data_uids = NULL;
 
-  G_OBJECT_CLASS (mxf_metadata_content_storage_parent_class)->finalize (object);
+  GST_MINI_OBJECT_CLASS (mxf_metadata_content_storage_parent_class)->finalize
+      (object);
 }
 
 static gboolean
@@ -1529,10 +1532,10 @@ static void
 mxf_metadata_content_storage_class_init (MXFMetadataContentStorageClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  object_class->finalize = mxf_metadata_content_storage_finalize;
+  miniobject_class->finalize = mxf_metadata_content_storage_finalize;
   metadata_base_class->handle_tag = mxf_metadata_content_storage_handle_tag;
   metadata_base_class->resolve = mxf_metadata_content_storage_resolve;
   metadata_base_class->name_quark = MXF_QUARK (CONTENT_STORAGE);
@@ -1726,7 +1729,7 @@ G_DEFINE_ABSTRACT_TYPE (MXFMetadataGenericPackage, mxf_metadata_generic_package,
     MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_generic_package_finalize (GObject * object)
+mxf_metadata_generic_package_finalize (GstMiniObject * object)
 {
   MXFMetadataGenericPackage *self = MXF_METADATA_GENERIC_PACKAGE (object);
 
@@ -1738,7 +1741,8 @@ mxf_metadata_generic_package_finalize (GObject * object)
   g_free (self->tracks);
   self->tracks = NULL;
 
-  G_OBJECT_CLASS (mxf_metadata_generic_package_parent_class)->finalize (object);
+  GST_MINI_OBJECT_CLASS (mxf_metadata_generic_package_parent_class)->finalize
+      (object);
 }
 
 static gboolean
@@ -1997,9 +2001,9 @@ static void
 mxf_metadata_generic_package_class_init (MXFMetadataGenericPackageClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
 
-  object_class->finalize = mxf_metadata_generic_package_finalize;
+  miniobject_class->finalize = mxf_metadata_generic_package_finalize;
   metadata_base_class->handle_tag = mxf_metadata_generic_package_handle_tag;
   metadata_base_class->resolve = mxf_metadata_generic_package_resolve;
   metadata_base_class->to_structure = mxf_metadata_generic_package_to_structure;
@@ -2066,8 +2070,8 @@ mxf_metadata_material_package_resolve (MXFMetadataBase * m,
         MXFMetadataTimelineTrack *tmp;
 
         if (!sc->source_package->parent.tracks[k] ||
-            !MXF_IS_METADATA_TIMELINE_TRACK (sc->source_package->
-                parent.tracks[k]))
+            !MXF_IS_METADATA_TIMELINE_TRACK (sc->source_package->parent.
+                tracks[k]))
           continue;
 
         tmp =
@@ -2320,7 +2324,7 @@ G_DEFINE_ABSTRACT_TYPE (MXFMetadataTrack, mxf_metadata_track,
     MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_track_finalize (GObject * object)
+mxf_metadata_track_finalize (GstMiniObject * object)
 {
   MXFMetadataTrack *self = MXF_METADATA_TRACK (object);
 
@@ -2329,7 +2333,7 @@ mxf_metadata_track_finalize (GObject * object)
   g_free (self->descriptor);
   self->descriptor = NULL;
 
-  G_OBJECT_CLASS (mxf_metadata_track_parent_class)->finalize (object);
+  GST_MINI_OBJECT_CLASS (mxf_metadata_track_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -2511,9 +2515,9 @@ static void
 mxf_metadata_track_class_init (MXFMetadataTrackClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
 
-  object_class->finalize = mxf_metadata_track_finalize;
+  miniobject_class->finalize = mxf_metadata_track_finalize;
   metadata_base_class->handle_tag = mxf_metadata_track_handle_tag;
   metadata_base_class->resolve = mxf_metadata_track_resolve;
   metadata_base_class->to_structure = mxf_metadata_track_to_structure;
@@ -2801,7 +2805,7 @@ mxf_metadata_static_track_class_init (MXFMetadataStaticTrackClass * klass)
 G_DEFINE_TYPE (MXFMetadataSequence, mxf_metadata_sequence, MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_sequence_finalize (GObject * object)
+mxf_metadata_sequence_finalize (GstMiniObject * object)
 {
   MXFMetadataSequence *self = MXF_METADATA_SEQUENCE (object);
 
@@ -2810,7 +2814,7 @@ mxf_metadata_sequence_finalize (GObject * object)
   g_free (self->structural_components);
   self->structural_components = NULL;
 
-  G_OBJECT_CLASS (mxf_metadata_sequence_parent_class)->finalize (object);
+  GST_MINI_OBJECT_CLASS (mxf_metadata_sequence_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -3018,10 +3022,10 @@ static void
 mxf_metadata_sequence_class_init (MXFMetadataSequenceClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  object_class->finalize = mxf_metadata_sequence_finalize;
+  miniobject_class->finalize = mxf_metadata_sequence_finalize;
   metadata_base_class->handle_tag = mxf_metadata_sequence_handle_tag;
   metadata_base_class->resolve = mxf_metadata_sequence_resolve;
   metadata_base_class->name_quark = MXF_QUARK (SEQUENCE);
@@ -3430,14 +3434,15 @@ G_DEFINE_TYPE (MXFMetadataDMSourceClip, mxf_metadata_dm_source_clip,
     MXF_TYPE_METADATA_SOURCE_CLIP);
 
 static void
-mxf_metadata_dm_source_clip_finalize (GObject * object)
+mxf_metadata_dm_source_clip_finalize (GstMiniObject * object)
 {
   MXFMetadataDMSourceClip *self = MXF_METADATA_DM_SOURCE_CLIP (object);
 
   g_free (self->track_ids);
   self->track_ids = NULL;
 
-  G_OBJECT_CLASS (mxf_metadata_dm_source_clip_parent_class)->finalize (object);
+  GST_MINI_OBJECT_CLASS (mxf_metadata_dm_source_clip_parent_class)->finalize
+      (object);
 }
 
 static gboolean
@@ -3572,10 +3577,10 @@ static void
 mxf_metadata_dm_source_clip_class_init (MXFMetadataDMSourceClipClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  object_class->finalize = mxf_metadata_dm_source_clip_finalize;
+  miniobject_class->finalize = mxf_metadata_dm_source_clip_finalize;
   metadata_base_class->handle_tag = mxf_metadata_dm_source_clip_handle_tag;
   metadata_base_class->name_quark = MXF_QUARK (DM_SOURCE_CLIP);
   metadata_base_class->to_structure = mxf_metadata_dm_source_clip_to_structure;
@@ -3587,7 +3592,7 @@ G_DEFINE_TYPE (MXFMetadataDMSegment, mxf_metadata_dm_segment,
     MXF_TYPE_METADATA_STRUCTURAL_COMPONENT);
 
 static void
-mxf_metadata_dm_segment_finalize (GObject * object)
+mxf_metadata_dm_segment_finalize (GstMiniObject * object)
 {
   MXFMetadataDMSegment *self = MXF_METADATA_DM_SEGMENT (object);
 
@@ -3597,7 +3602,8 @@ mxf_metadata_dm_segment_finalize (GObject * object)
   g_free (self->event_comment);
   self->event_comment = NULL;
 
-  G_OBJECT_CLASS (mxf_metadata_dm_segment_parent_class)->finalize (object);
+  GST_MINI_OBJECT_CLASS (mxf_metadata_dm_segment_parent_class)->finalize
+      (object);
 }
 
 static gboolean
@@ -3824,10 +3830,10 @@ static void
 mxf_metadata_dm_segment_class_init (MXFMetadataDMSegmentClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  object_class->finalize = mxf_metadata_dm_segment_finalize;
+  miniobject_class->finalize = mxf_metadata_dm_segment_finalize;
   metadata_base_class->handle_tag = mxf_metadata_dm_segment_handle_tag;
   metadata_base_class->resolve = mxf_metadata_dm_segment_resolve;
   metadata_base_class->name_quark = MXF_QUARK (DM_SEGMENT);
@@ -3840,7 +3846,7 @@ G_DEFINE_ABSTRACT_TYPE (MXFMetadataGenericDescriptor,
     mxf_metadata_generic_descriptor, MXF_TYPE_METADATA);
 
 static void
-mxf_metadata_generic_descriptor_finalize (GObject * object)
+mxf_metadata_generic_descriptor_finalize (GstMiniObject * object)
 {
   MXFMetadataGenericDescriptor *self = MXF_METADATA_GENERIC_DESCRIPTOR (object);
 
@@ -3850,7 +3856,7 @@ mxf_metadata_generic_descriptor_finalize (GObject * object)
   g_free (self->locators);
   self->locators = NULL;
 
-  G_OBJECT_CLASS (mxf_metadata_generic_descriptor_parent_class)->finalize
+  GST_MINI_OBJECT_CLASS (mxf_metadata_generic_descriptor_parent_class)->finalize
       (object);
 }
 
@@ -4023,9 +4029,9 @@ mxf_metadata_generic_descriptor_class_init (MXFMetadataGenericDescriptorClass *
     klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
 
-  object_class->finalize = mxf_metadata_generic_descriptor_finalize;
+  miniobject_class->finalize = mxf_metadata_generic_descriptor_finalize;
   metadata_base_class->handle_tag = mxf_metadata_generic_descriptor_handle_tag;
   metadata_base_class->resolve = mxf_metadata_generic_descriptor_resolve;
   metadata_base_class->to_structure =
@@ -4395,8 +4401,8 @@ mxf_metadata_generic_picture_essence_descriptor_handle_tag (MXFMetadataBase *
     default:
       ret =
           MXF_METADATA_BASE_CLASS
-          (mxf_metadata_generic_picture_essence_descriptor_parent_class)->
-          handle_tag (metadata, primer, tag, tag_data, tag_size);
+          (mxf_metadata_generic_picture_essence_descriptor_parent_class)->handle_tag
+          (metadata, primer, tag, tag_data, tag_size);
       break;
   }
 
@@ -4417,8 +4423,8 @@ mxf_metadata_generic_picture_essence_descriptor_to_structure (MXFMetadataBase *
 {
   GstStructure *ret =
       MXF_METADATA_BASE_CLASS
-      (mxf_metadata_generic_picture_essence_descriptor_parent_class)->
-      to_structure (m);
+      (mxf_metadata_generic_picture_essence_descriptor_parent_class)->to_structure
+      (m);
   MXFMetadataGenericPictureEssenceDescriptor *self =
       MXF_METADATA_GENERIC_PICTURE_ESSENCE_DESCRIPTOR (m);
   gchar str[48];
@@ -5012,8 +5018,8 @@ mxf_metadata_generic_sound_essence_descriptor_handle_tag (MXFMetadataBase *
     default:
       ret =
           MXF_METADATA_BASE_CLASS
-          (mxf_metadata_generic_sound_essence_descriptor_parent_class)->
-          handle_tag (metadata, primer, tag, tag_data, tag_size);
+          (mxf_metadata_generic_sound_essence_descriptor_parent_class)->handle_tag
+          (metadata, primer, tag, tag_data, tag_size);
       break;
   }
 
@@ -5333,8 +5339,8 @@ mxf_metadata_cdci_picture_essence_descriptor_handle_tag (MXFMetadataBase *
     default:
       ret =
           MXF_METADATA_BASE_CLASS
-          (mxf_metadata_cdci_picture_essence_descriptor_parent_class)->
-          handle_tag (metadata, primer, tag, tag_data, tag_size);
+          (mxf_metadata_cdci_picture_essence_descriptor_parent_class)->handle_tag
+          (metadata, primer, tag, tag_data, tag_size);
       break;
   }
 
@@ -5555,7 +5561,7 @@ G_DEFINE_TYPE (MXFMetadataRGBAPictureEssenceDescriptor,
     MXF_TYPE_METADATA_GENERIC_PICTURE_ESSENCE_DESCRIPTOR);
 
 static void
-mxf_metadata_rgba_picture_essence_descriptor_finalize (GObject * object)
+mxf_metadata_rgba_picture_essence_descriptor_finalize (GstMiniObject * object)
 {
   MXFMetadataRGBAPictureEssenceDescriptor *self =
       MXF_METADATA_RGBA_PICTURE_ESSENCE_DESCRIPTOR (object);
@@ -5563,7 +5569,7 @@ mxf_metadata_rgba_picture_essence_descriptor_finalize (GObject * object)
   g_free (self->pixel_layout);
   self->pixel_layout = NULL;
 
-  G_OBJECT_CLASS
+  GST_MINI_OBJECT_CLASS
       (mxf_metadata_rgba_picture_essence_descriptor_parent_class)->finalize
       (object);
 }
@@ -5643,8 +5649,8 @@ mxf_metadata_rgba_picture_essence_descriptor_handle_tag (MXFMetadataBase *
     default:
       ret =
           MXF_METADATA_BASE_CLASS
-          (mxf_metadata_rgba_picture_essence_descriptor_parent_class)->
-          handle_tag (metadata, primer, tag, tag_data, tag_size);
+          (mxf_metadata_rgba_picture_essence_descriptor_parent_class)->handle_tag
+          (metadata, primer, tag, tag_data, tag_size);
       break;
   }
 
@@ -5798,10 +5804,10 @@ static void
     (MXFMetadataRGBAPictureEssenceDescriptorClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  object_class->finalize =
+  miniobject_class->finalize =
       mxf_metadata_rgba_picture_essence_descriptor_finalize;
   metadata_base_class->handle_tag =
       mxf_metadata_rgba_picture_essence_descriptor_handle_tag;
@@ -5840,8 +5846,8 @@ mxf_metadata_generic_data_essence_descriptor_handle_tag (MXFMetadataBase *
     default:
       ret =
           MXF_METADATA_BASE_CLASS
-          (mxf_metadata_generic_data_essence_descriptor_parent_class)->
-          handle_tag (metadata, primer, tag, tag_data, tag_size);
+          (mxf_metadata_generic_data_essence_descriptor_parent_class)->handle_tag
+          (metadata, primer, tag, tag_data, tag_size);
       break;
   }
 
@@ -5930,7 +5936,7 @@ G_DEFINE_TYPE (MXFMetadataMultipleDescriptor, mxf_metadata_multiple_descriptor,
     MXF_TYPE_METADATA_FILE_DESCRIPTOR);
 
 static void
-mxf_metadata_multiple_descriptor_finalize (GObject * object)
+mxf_metadata_multiple_descriptor_finalize (GstMiniObject * object)
 {
   MXFMetadataMultipleDescriptor *self =
       MXF_METADATA_MULTIPLE_DESCRIPTOR (object);
@@ -5940,7 +5946,7 @@ mxf_metadata_multiple_descriptor_finalize (GObject * object)
   g_free (self->sub_descriptors);
   self->sub_descriptors = NULL;
 
-  G_OBJECT_CLASS
+  GST_MINI_OBJECT_CLASS
       (mxf_metadata_multiple_descriptor_parent_class)->finalize (object);
 }
 
@@ -6113,10 +6119,10 @@ mxf_metadata_multiple_descriptor_class_init (MXFMetadataMultipleDescriptorClass
     * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  object_class->finalize = mxf_metadata_multiple_descriptor_finalize;
+  miniobject_class->finalize = mxf_metadata_multiple_descriptor_finalize;
   metadata_base_class->handle_tag = mxf_metadata_multiple_descriptor_handle_tag;
   metadata_base_class->resolve = mxf_metadata_multiple_descriptor_resolve;
   metadata_base_class->name_quark = MXF_QUARK (MULTIPLE_DESCRIPTOR);
@@ -6143,14 +6149,15 @@ G_DEFINE_TYPE (MXFMetadataTextLocator, mxf_metadata_text_locator,
     MXF_TYPE_METADATA_LOCATOR);
 
 static void
-mxf_metadata_text_locator_finalize (GObject * object)
+mxf_metadata_text_locator_finalize (GstMiniObject * object)
 {
   MXFMetadataTextLocator *self = MXF_METADATA_TEXT_LOCATOR (object);
 
   g_free (self->locator_name);
   self->locator_name = NULL;
 
-  G_OBJECT_CLASS (mxf_metadata_text_locator_parent_class)->finalize (object);
+  GST_MINI_OBJECT_CLASS (mxf_metadata_text_locator_parent_class)->finalize
+      (object);
 }
 
 static gboolean
@@ -6222,10 +6229,10 @@ static void
 mxf_metadata_text_locator_class_init (MXFMetadataTextLocatorClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  object_class->finalize = mxf_metadata_text_locator_finalize;
+  miniobject_class->finalize = mxf_metadata_text_locator_finalize;
   metadata_base_class->handle_tag = mxf_metadata_text_locator_handle_tag;
   metadata_base_class->name_quark = MXF_QUARK (TEXT_LOCATOR);
   metadata_base_class->to_structure = mxf_metadata_text_locator_to_structure;
@@ -6237,14 +6244,15 @@ G_DEFINE_TYPE (MXFMetadataNetworkLocator, mxf_metadata_network_locator,
     MXF_TYPE_METADATA_LOCATOR);
 
 static void
-mxf_metadata_network_locator_finalize (GObject * object)
+mxf_metadata_network_locator_finalize (GstMiniObject * object)
 {
   MXFMetadataNetworkLocator *self = MXF_METADATA_NETWORK_LOCATOR (object);
 
   g_free (self->url_string);
   self->url_string = NULL;
 
-  G_OBJECT_CLASS (mxf_metadata_network_locator_parent_class)->finalize (object);
+  GST_MINI_OBJECT_CLASS (mxf_metadata_network_locator_parent_class)->finalize
+      (object);
 }
 
 static gboolean
@@ -6315,10 +6323,10 @@ static void
 mxf_metadata_network_locator_class_init (MXFMetadataNetworkLocatorClass * klass)
 {
   MXFMetadataBaseClass *metadata_base_class = (MXFMetadataBaseClass *) klass;
-  GObjectClass *object_class = (GObjectClass *) klass;
+  GstMiniObjectClass *miniobject_class = (GstMiniObjectClass *) klass;
   MXFMetadataClass *metadata_class = (MXFMetadataClass *) klass;
 
-  object_class->finalize = mxf_metadata_network_locator_finalize;
+  miniobject_class->finalize = mxf_metadata_network_locator_finalize;
   metadata_base_class->handle_tag = mxf_metadata_network_locator_handle_tag;
   metadata_base_class->name_quark = MXF_QUARK (NETWORK_LOCATOR);
   metadata_base_class->to_structure = mxf_metadata_network_locator_to_structure;
@@ -6371,12 +6379,8 @@ mxf_descriptive_metadata_new (guint8 scheme, guint32 type,
   _MXFDescriptiveMetadataScheme *s = NULL;
   MXFDescriptiveMetadata *ret = NULL;
 
+  g_return_val_if_fail (type != 0, NULL);
   g_return_val_if_fail (primer != NULL, NULL);
-
-  if (G_UNLIKELY (type == 0)) {
-    GST_WARNING ("Type 0 is invalid");
-    return NULL;
-  }
 
   for (i = 0; i < _dm_schemes->len; i++) {
     _MXFDescriptiveMetadataScheme *data =
@@ -6421,7 +6425,7 @@ mxf_descriptive_metadata_new (guint8 scheme, guint32 type,
   ret = (MXFDescriptiveMetadata *) g_type_create_instance (t);
   if (!mxf_metadata_base_parse (MXF_METADATA_BASE (ret), primer, data, size)) {
     GST_ERROR ("Parsing metadata failed");
-    g_object_unref (ret);
+    gst_mini_object_unref ((GstMiniObject *) ret);
     return NULL;
   }
 
@@ -6463,5 +6467,5 @@ mxf_metadata_hash_table_new (void)
 {
   return g_hash_table_new_full ((GHashFunc) mxf_uuid_hash,
       (GEqualFunc) mxf_uuid_is_equal, (GDestroyNotify) NULL,
-      (GDestroyNotify) g_object_unref);
+      (GDestroyNotify) gst_mini_object_unref);
 }

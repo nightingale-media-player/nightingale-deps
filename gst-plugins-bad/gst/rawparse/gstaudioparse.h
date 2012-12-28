@@ -25,7 +25,6 @@
 #include <gst/gst.h>
 #include <gst/base/gstbasetransform.h>
 #include <gst/base/gstadapter.h>
-#include <gst/audio/audio.h>
 
 #include "gstrawparse.h"
 
@@ -48,15 +47,12 @@ struct _GstAudioParse
   GstRawParse parent;
 
   /* properties */
-  gboolean use_sink_caps;
   gint format;
-  GstAudioFormat raw_format;
   gint channels;
-  gboolean interleaved;
-  GValueArray *channel_positions;
-
-  GstAudioChannelPosition *channel_pos;
-  GstAudioChannelPosition *channel_order;
+  gint width;
+  gint depth;
+  gint signedness;
+  gint endianness;
 };
 
 struct _GstAudioParseClass

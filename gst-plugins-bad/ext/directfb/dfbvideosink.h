@@ -35,25 +35,25 @@ G_BEGIN_DECLS
 typedef struct _GstDfbVideoSink GstDfbVideoSink;
 typedef struct _GstDfbVideoSinkClass GstDfbVideoSinkClass;
 
-typedef struct _GstMetaDfbSurface GstMetaDfbSurface;
+#define GST_TYPE_DFBSURFACE (gst_dfbsurface_get_type())
 
-const GstMetaInfo * gst_meta_dfbsurface_get_info (void);
+#define GST_IS_DFBSURFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_DFBSURFACE))
+#define GST_DFBSURFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_DFBSURFACE, GstDfbSurface))
 
-#define GST_META_DFBSURFACE_GET(buf) ((GstMetaDfbSurface *)gst_buffer_get_meta(buf,gst_meta_dfbsurface_get_info()))
-#define GST_META_DFBSURFACE_ADD(buf) ((GstMetaDfbSurface *)gst_buffer_add_meta(buf,gst_meta_dfbsurface_get_info(),NULL))
-
-struct _GstMetaDfbSurface {
-  GstMeta meta;
-
+typedef struct _GstDfbSurface GstDfbSurface;
+  
+struct _GstDfbSurface {
+  GstBuffer buffer; /* We extend GstBuffer */
+  
   IDirectFBSurface *surface;
-
+  
   gint width;
   gint height;
-
+  
   gboolean locked;
-
+  
   DFBSurfacePixelFormat pixel_format;
-
+  
   GstDfbVideoSink *dfbvideosink;
 };
 
@@ -123,6 +123,7 @@ struct _GstDfbVideoSinkClass {
 };
 
 GType gst_dfbvideosink_get_type (void);
+GType gst_dfbsurface_get_type (void);
 
 G_END_DECLS
 

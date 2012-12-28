@@ -138,8 +138,6 @@ enum TsMuxStreamType {
   TSMUX_ST_PS_AUDIO_AC3               = 0x81,
   TSMUX_ST_PS_AUDIO_DTS               = 0x8a,
   TSMUX_ST_PS_AUDIO_LPCM              = 0x8b,
-  TSMUX_ST_PS_DVB_SUBPICTURE          = 0x8c,
-  TSMUX_ST_PS_TELETEXT                = 0x8d,
   TSMUX_ST_PS_DVD_SUBPICTURE          = 0xff,
 
   /* Non-standard definitions */
@@ -151,55 +149,41 @@ enum TsMuxStreamState {
     TSMUX_STREAM_STATE_PACKET
 };
 
-/* TsMuxStream receives elementary streams for parsing */
+/* TsMuxStream receives elementary streams for parsing.
+ * Via the write_bytes() method, it can output a PES stream piecemeal */
 struct TsMuxStream {
   TsMuxStreamState state;
   TsMuxPacketInfo pi;
   TsMuxStreamType stream_type;
-
-  /* stream_id (13818-1) */
-  guint8 id;
-  /* extended stream id (13818-1 Amdt 2) */
-  guint8 id_extended;
+  guint8 id; /* stream id */
+  guint8 id_extended; /* extended stream id (13818-1 Amdt 2) */
 
   gboolean is_video_stream;
 
-  /* data available for writing out
-   * and total sum of sizes */
+  /* List of data buffers available for writing out */
   GList *buffers;
   guint32 bytes_avail;
 
-  /* current data buffer being consumed
-   * and amount already consumed */
+  /* Current data buffer being consumed */
   TsMuxStreamBuffer *cur_buffer;
   guint32 cur_buffer_consumed;
 
-  /* helper to release collected buffers */
   TsMuxStreamBufferReleaseFunc buffer_release;
 
-  /* optional fixed PES size for stream type */
   guint16 pes_payload_size;
-  /* current PES payload size being written */
   guint16 cur_pes_payload_size;
-  /* ... of which already this much written */
   guint16 pes_bytes_written;
 
   /* PTS/DTS to write if the flags in the packet info are set */
-  /* in MPEG PTS clock time */
   gint64 pts;
   gint64 dts;
 
-  /* last ts written, or maybe next one ... ?! */
-  gint64 last_dts;
   gint64 last_pts;
+  gint64 last_dts;
 
-  /* count of programs using this as PCR */
   gint   pcr_ref;
-  /* last time PCR written */
   gint64 last_pcr;
 
-  /* audio parameters for stream
-   * (used in stream descriptor) */
   gint audio_sampling;
   gint audio_channels;
   gint audio_bitrate;
@@ -217,8 +201,7 @@ void 		tsmux_stream_set_buffer_release_func 	(TsMuxStream *stream,
 /* Add a new buffer to the pool of available bytes. If pts or dts are not -1, they
  * indicate the PTS or DTS of the first access unit within this packet */
 void 		tsmux_stream_add_data 		(TsMuxStream *stream, guint8 *data, guint len, 
-       						 void *user_data, gint64 pts, gint64 dts,
-                                                 gboolean random_access);
+       						 void *user_data, gint64 pts, gint64 dts);
 
 void 		tsmux_stream_pcr_ref 		(TsMuxStream *stream);
 void 		tsmux_stream_pcr_unref  	(TsMuxStream *stream);
@@ -229,7 +212,6 @@ void 		tsmux_stream_get_es_descrs 	(TsMuxStream *stream, guint8 *buf, guint16 *l
 
 gint 		tsmux_stream_bytes_in_buffer 	(TsMuxStream *stream);
 gint 		tsmux_stream_bytes_avail 	(TsMuxStream *stream);
-gboolean 	tsmux_stream_initialize_pes_packet (TsMuxStream *stream);
 gboolean 	tsmux_stream_get_data 		(TsMuxStream *stream, guint8 *buf, guint len);
 
 guint64 	tsmux_stream_get_pts 		(TsMuxStream *stream);

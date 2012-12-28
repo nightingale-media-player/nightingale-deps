@@ -1,0 +1,349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>mythtvsrc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-mplex.html" title="mplex">
+<link rel="next" href="gst-plugins-bad-plugins-mxfdemux.html" title="mxfdemux">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-mplex.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-mxfdemux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-mythtvsrc.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mythtvsrc.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mythtvsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mythtvsrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-mythtvsrc.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-mythtvsrc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-mythtvsrc.top_of_page"></a>mythtvsrc</span></h2>
+<p>mythtvsrc — Control and receive data as a client over the network via raw socket connections using the MythTV protocol</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-bad-plugins-mythtvsrc.synopsis"></a><h2>Synopsis</h2>
+<a name="GstMythtvSrc"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-bad-plugins-mythtvsrc.html#GstMythtvSrc-struct" title="GstMythtvSrc">GstMythtvSrc</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-mythtvsrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstBaseSrc.html"
+>GstBaseSrc</a>
+                     +----<a
+href="/usr/share/gtk-doc/html/gstreamer-libs-0.10/GstPushSrc.html"
+>GstPushSrc</a>
+                           +----GstMythtvSrc
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-mythtvsrc.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstMythtvSrc implements
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/gstreamer-GstUriHandler.html#GstURIHandler"
+>GstURIHandler</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-mythtvsrc.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-bad-plugins-mythtvsrc.html#GstMythtvSrc--location" title='The "location" property'>location</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-mythtvsrc.html#GstMythtvSrc--mythtv-channel" title='The "mythtv-channel" property'>mythtv-channel</a>"           <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-mythtvsrc.html#GstMythtvSrc--mythtv-enable-timing-position" title='The "mythtv-enable-timing-position" property'>mythtv-enable-timing-position</a>" <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-mythtvsrc.html#GstMythtvSrc--mythtv-live" title='The "mythtv-live" property'>mythtv-live</a>"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-mythtvsrc.html#GstMythtvSrc--mythtv-live-chainid" title='The "mythtv-live-chainid" property'>mythtv-live-chainid</a>"      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-mythtvsrc.html#GstMythtvSrc--mythtv-live-id" title='The "mythtv-live-id" property'>mythtv-live-id</a>"           <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-mythtvsrc.html#GstMythtvSrc--mythtv-version" title='The "mythtv-version" property'>mythtv-version</a>"           <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-mythtvsrc.description"></a><h2>Description</h2>
+<p>
+MythTVSrc allows to access a remote MythTV backend streaming Video/Audio server,
+and to render audio and video content through a TCP/IP connection to a specific
+port on this server, and based on a known MythTV protocol that is based on 
+some message passing, such as REQUEST_BLOCK on a specified number of bytes, to get
+some chunk of remote file data.
+You should pass the information aboute the remote MythTV backend server 
+through the <a class="link" href="gst-plugins-bad-plugins-mythtvsrc.html#GstMythtvSrc--location" title='The "location" property'><span class="type">"location"</span></a> property.
+</p>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2893631"></a><h3>Examples</h3>
+<p>
+If you want to get the LiveTV content (set channel, TV tuner, RemoteEncoder, 
+Recorder), use the following URI:
+</p>
+<pre class="programlisting">
+ myth://xxx.xxx.xxx.xxx:6543/livetv?channel=BBC
+</pre>
+<p>
+</p>
+<p>
+This URI will configure the Recorder instance (used to change the channel,
+start the TV multimedia content transmition, etc.), using
+the IP address (xxx.xxx.xxx.xxx) and port number (6543) of the MythTV backend 
+server, and setting the channel name to "BBC". 
+</p>
+<p>
+To get a already recorded the MythTV NUV file, put the following URI:
+</p>
+<pre class="programlisting">
+ myth://xxx.xxx.xxx.xxx:6543/filename.nuv
+</pre>
+<p>
+</p>
+<p>
+Another possible way to use the LiveTV content, and just in the case you want to 
+use the mysql database, put the location URI in the following format:
+</p>
+<pre class="programlisting">
+ myth://mythtv:mythtv@xxx.xxx.xxx.xxx:6543/?mythconverg&amp;channel=9
+</pre>
+<p>
+</p>
+<p>
+Where the first field is the protocol (myth), the second and third are user 
+name (mythtv) and password (mythtv), then backend host name and port number, 
+and the last field is the database name (mythconverg).
+</p>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2893693"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            mythtv
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Rosfran Borges &lt;rosfran.borges@indt.org.br&gt;,Renato Filho &lt;renato.filho@indt.org.br&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Source/Network</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2893872"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2893949"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            mythtv
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Rosfran Borges &lt;rosfran.borges@indt.org.br&gt;,Renato Filho &lt;renato.filho@indt.org.br&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Source/Network</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2894012"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>ANY</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-mythtvsrc.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstMythtvSrc-struct"></a><h3>GstMythtvSrc</h3>
+<pre class="programlisting">typedef struct _GstMythtvSrc GstMythtvSrc;</pre>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-mythtvsrc.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstMythtvSrc--location"></a><h3>The <code class="literal">"location"</code> property</h3>
+<pre class="programlisting">  "location"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p></p>
+<p>Default value: ""</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstMythtvSrc--mythtv-channel"></a><h3>The <code class="literal">"mythtv-channel"</code> property</h3>
+<pre class="programlisting">  "mythtv-channel"           <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>Change MythTV channel number.</p>
+<p>Default value: ""</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstMythtvSrc--mythtv-enable-timing-position"></a><h3>The <code class="literal">"mythtv-enable-timing-position"</code> property</h3>
+<pre class="programlisting">  "mythtv-enable-timing-position" <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Enable MythTV Live TV content size continuous updating.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstMythtvSrc--mythtv-live"></a><h3>The <code class="literal">"mythtv-live"</code> property</h3>
+<pre class="programlisting">  "mythtv-live"              <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre>
+<p>Enable MythTV Live TV content streaming.</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstMythtvSrc--mythtv-live-chainid"></a><h3>The <code class="literal">"mythtv-live-chainid"</code> property</h3>
+<pre class="programlisting">  "mythtv-live-chainid"      <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>Sets the MythTV chain ID (from TV Chain).</p>
+<p>Default value: ""</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstMythtvSrc--mythtv-live-id"></a><h3>The <code class="literal">"mythtv-live-id"</code> property</h3>
+<pre class="programlisting">  "mythtv-live-id"           <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Change MythTV version.</p>
+<p>Allowed values: [0,200]</p>
+<p>Default value: 1</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstMythtvSrc--mythtv-version"></a><h3>The <code class="literal">"mythtv-version"</code> property</h3>
+<pre class="programlisting">  "mythtv-version"           <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Change MythTV version.</p>
+<p>Allowed values: [26,30]</p>
+<p>Default value: 26</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-mythtvsrc.see-also"></a><h2>See Also</h2>
+nuvdemux
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>

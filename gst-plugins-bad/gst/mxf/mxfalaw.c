@@ -210,14 +210,14 @@ mxf_alaw_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
   }
 
   ret = (MXFMetadataGenericSoundEssenceDescriptor *)
-      g_object_new (MXF_TYPE_METADATA_GENERIC_SOUND_ESSENCE_DESCRIPTOR, NULL);
+      gst_mini_object_new (MXF_TYPE_METADATA_GENERIC_SOUND_ESSENCE_DESCRIPTOR);
 
   memcpy (&ret->parent.essence_container, &alaw_essence_container_ul, 16);
   memcpy (&ret->sound_essence_compression, &mxf_sound_essence_compression_alaw,
       16);
 
   if (!mxf_metadata_generic_sound_essence_descriptor_from_caps (ret, caps)) {
-    g_object_unref (ret);
+    gst_mini_object_unref (GST_MINI_OBJECT_CAST (ret));
     return NULL;
   }
 

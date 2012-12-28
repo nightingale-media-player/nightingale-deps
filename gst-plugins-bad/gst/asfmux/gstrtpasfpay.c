@@ -34,6 +34,13 @@
 GST_DEBUG_CATEGORY_STATIC (rtpasfpay_debug);
 #define GST_CAT_DEFAULT (rtpasfpay_debug)
 
+/* elementfactory information */
+static const GstElementDetails gst_rtp_asf_pay_details =
+GST_ELEMENT_DETAILS ("RTP ASF payloader",
+    "Codec/Payloader/Network",
+    "Payload-encodes ASF into RTP packets (MS_RTSP)",
+    "Thiago Santos <thiagoss@embedded.ufcg.edu.br>");
+
 static GstStaticPadTemplate gst_rtp_asf_pay_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -51,15 +58,15 @@ GST_STATIC_PAD_TEMPLATE ("src",
     );
 
 static GstFlowReturn
-gst_rtp_asf_pay_handle_buffer (GstRTPBasePayload * rtppay, GstBuffer * buffer);
+gst_rtp_asf_pay_handle_buffer (GstBaseRTPPayload * rtppay, GstBuffer * buffer);
 static gboolean
-gst_rtp_asf_pay_set_caps (GstRTPBasePayload * rtppay, GstCaps * caps);
+gst_rtp_asf_pay_set_caps (GstBaseRTPPayload * rtppay, GstCaps * caps);
 
-#define gst_rtp_asf_pay_parent_class parent_class
-G_DEFINE_TYPE (GstRtpAsfPay, gst_rtp_asf_pay, GST_TYPE_RTP_BASE_PAYLOAD);
+GST_BOILERPLATE (GstRtpAsfPay, gst_rtp_asf_pay, GstBaseRTPPayload,
+    GST_TYPE_BASE_RTP_PAYLOAD);
 
 static void
-gst_rtp_asf_pay_init (GstRtpAsfPay * rtpasfpay)
+gst_rtp_asf_pay_init (GstRtpAsfPay * rtpasfpay, GstRtpAsfPayClass * klass)
 {
   rtpasfpay->first_ts = 0;
   rtpasfpay->config = NULL;
@@ -81,39 +88,40 @@ gst_rtp_asf_pay_finalize (GObject * object)
 }
 
 static void
+gst_rtp_asf_pay_base_init (gpointer klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_rtp_asf_pay_sink_template));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_rtp_asf_pay_src_template));
+  gst_element_class_set_details (element_class, &gst_rtp_asf_pay_details);
+}
+
+static void
 gst_rtp_asf_pay_class_init (GstRtpAsfPayClass * klass)
 {
   GObjectClass *gobject_class;
-  GstElementClass *gstelement_class;
-  GstRTPBasePayloadClass *gstbasertppayload_class;
+  GstBaseRTPPayloadClass *gstbasertppayload_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass *) klass;
-  gstbasertppayload_class = (GstRTPBasePayloadClass *) klass;
+  gstbasertppayload_class = (GstBaseRTPPayloadClass *) klass;
 
   gobject_class->finalize = gst_rtp_asf_pay_finalize;
 
   gstbasertppayload_class->handle_buffer = gst_rtp_asf_pay_handle_buffer;
   gstbasertppayload_class->set_caps = gst_rtp_asf_pay_set_caps;
 
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&gst_rtp_asf_pay_sink_template));
-  gst_element_class_add_pad_template (gstelement_class,
-      gst_static_pad_template_get (&gst_rtp_asf_pay_src_template));
-  gst_element_class_set_static_metadata (gstelement_class, "RTP ASF payloader",
-      "Codec/Payloader/Network",
-      "Payload-encodes ASF into RTP packets (MS_RTSP)",
-      "Thiago Santos <thiagoss@embedded.ufcg.edu.br>");
-
   GST_DEBUG_CATEGORY_INIT (rtpasfpay_debug, "rtpasfpay", 0,
       "ASF RTP Payloader");
 }
 
 static gboolean
-gst_rtp_asf_pay_set_caps (GstRTPBasePayload * rtppay, GstCaps * caps)
+gst_rtp_asf_pay_set_caps (GstBaseRTPPayload * rtppay, GstCaps * caps)
 {
   /* FIXME change application for the actual content */
-  gst_rtp_base_payload_set_options (rtppay, "application", TRUE, "X-ASF-PF",
+  gst_basertppayload_set_options (rtppay, "application", TRUE, "X-ASF-PF",
       1000);
   return TRUE;
 }
@@ -121,7 +129,7 @@ gst_rtp_asf_pay_set_caps (GstRTPBasePayload * rtppay, GstCaps * caps)
 static GstFlowReturn
 gst_rtp_asf_pay_handle_packet (GstRtpAsfPay * rtpasfpay, GstBuffer * buffer)
 {
-  GstRTPBasePayload *rtppay;
+  GstBaseRTPPayload *rtppay;
   GstAsfPacketInfo *packetinfo;
   guint8 flags;
   guint8 *data;
@@ -130,11 +138,10 @@ gst_rtp_asf_pay_handle_packet (GstRtpAsfPay * rtpasfpay, GstBuffer * buffer)
   guint32 size_left;
   GstFlowReturn ret = GST_FLOW_OK;
 
-  rtppay = GST_RTP_BASE_PAYLOAD (rtpasfpay);
+  rtppay = GST_BASE_RTP_PAYLOAD (rtpasfpay);
   packetinfo = &rtpasfpay->packetinfo;
 
-  if (!gst_asf_parse_packet (buffer, packetinfo, TRUE,
-          rtpasfpay->asfinfo.packet_size)) {
+  if (!gst_asf_parse_packet (buffer, packetinfo, TRUE)) {
     GST_ERROR_OBJECT (rtpasfpay, "Error while parsing asf packet");
     gst_buffer_unref (buffer);
     return GST_FLOW_ERROR;
@@ -157,25 +164,22 @@ gst_rtp_asf_pay_handle_packet (GstRtpAsfPay * rtpasfpay, GstBuffer * buffer)
     buffer = gst_buffer_make_writable (buffer);
     switch (packetinfo->padd_field_type) {
       case ASF_FIELD_TYPE_DWORD:
-        gst_buffer_memset (buffer, offset, 0, 4);
+        GST_WRITE_UINT32_LE (&(GST_BUFFER_DATA (buffer)[offset]), 0);
         break;
       case ASF_FIELD_TYPE_WORD:
-        gst_buffer_memset (buffer, offset, 0, 2);
+        GST_WRITE_UINT16_LE (&(GST_BUFFER_DATA (buffer)[offset]), 0);
         break;
       case ASF_FIELD_TYPE_BYTE:
-        gst_buffer_memset (buffer, offset, 0, 1);
+        GST_BUFFER_DATA (buffer)[offset] = 0;
         break;
       case ASF_FIELD_TYPE_NONE:
       default:
         break;
     }
-    gst_asf_parse_packet (buffer, &info, FALSE, 0);
+    gst_asf_parse_packet (buffer, &info, FALSE);
   }
 
-  if (packetinfo->padding != 0)
-    packet_util_size = rtpasfpay->asfinfo.packet_size - packetinfo->padding;
-  else
-    packet_util_size = packetinfo->packet_size;
+  packet_util_size = packetinfo->packet_size - packetinfo->padding;
   packet_offset = 0;
   while (packet_util_size > 0) {
     /* Even if we don't fill completely an output buffer we
@@ -185,26 +189,23 @@ gst_rtp_asf_pay_handle_packet (GstRtpAsfPay * rtpasfpay, GstBuffer * buffer)
      * This flag tells us to push the packet.
      */
     gboolean force_push = FALSE;
-    GstRTPBuffer rtp;
 
     /* we have no output buffer pending, create one */
     if (rtpasfpay->current == NULL) {
       GST_LOG_OBJECT (rtpasfpay, "Creating new output buffer");
       rtpasfpay->current =
-          gst_rtp_buffer_new_allocate_len (GST_RTP_BASE_PAYLOAD_MTU (rtpasfpay),
+          gst_rtp_buffer_new_allocate_len (GST_BASE_RTP_PAYLOAD_MTU (rtpasfpay),
           0, 0);
-      rtpasfpay->cur_off = 0;
+      rtpasfpay->cur_off = gst_rtp_buffer_get_header_len (rtpasfpay->current);
       rtpasfpay->has_ts = FALSE;
       rtpasfpay->marker = FALSE;
     }
-    gst_rtp_buffer_map (rtpasfpay->current, GST_MAP_READWRITE, &rtp);
-    data = gst_rtp_buffer_get_payload (&rtp);
-    data += rtpasfpay->cur_off;
-    size_left = gst_rtp_buffer_get_payload_len (&rtp) - rtpasfpay->cur_off;
+    data = GST_BUFFER_DATA (rtpasfpay->current) + rtpasfpay->cur_off;
+    size_left = GST_BUFFER_SIZE (rtpasfpay->current) - rtpasfpay->cur_off;
 
     GST_DEBUG_OBJECT (rtpasfpay, "Input buffer bytes consumed: %"
-        G_GUINT32_FORMAT "/%" G_GSIZE_FORMAT, packet_offset,
-        gst_buffer_get_size (buffer));
+        G_GUINT32_FORMAT "/%" G_GUINT32_FORMAT, packet_offset,
+        GST_BUFFER_SIZE (buffer));
 
     GST_DEBUG_OBJECT (rtpasfpay, "Output rtpbuffer status");
     GST_DEBUG_OBJECT (rtpasfpay, "Current offset: %" G_GUINT32_FORMAT,
@@ -229,7 +230,8 @@ gst_rtp_asf_pay_handle_packet (GstRtpAsfPay * rtpasfpay, GstBuffer * buffer)
       rtpasfpay->ts = packetinfo->send_time;
     }
 
-    if (size_left >= packet_util_size + 8) {
+    if (GST_BUFFER_SIZE (rtpasfpay->current) - rtpasfpay->cur_off >=
+        packet_util_size + 8) {
       /* enough space for the rest of the packet */
       if (packet_offset == 0) {
         flags = flags | 0x40;
@@ -241,7 +243,8 @@ gst_rtp_asf_pay_handle_packet (GstRtpAsfPay * rtpasfpay, GstBuffer * buffer)
       data[0] = flags;
       GST_WRITE_UINT32_BE (data + 4,
           (gint32) (packetinfo->send_time) - (gint32) rtpasfpay->ts);
-      gst_buffer_extract (buffer, packet_offset, data + 8, packet_util_size);
+      memcpy (data + 8, GST_BUFFER_DATA (buffer) + packet_offset,
+          packet_util_size);
 
       /* updating status variables */
       rtpasfpay->cur_off += 8 + packet_util_size;
@@ -255,7 +258,8 @@ gst_rtp_asf_pay_handle_packet (GstRtpAsfPay * rtpasfpay, GstBuffer * buffer)
       GST_WRITE_UINT24_BE (data + 1, packet_offset);
       GST_WRITE_UINT32_BE (data + 4,
           (gint32) (packetinfo->send_time) - (gint32) rtpasfpay->ts);
-      gst_buffer_extract (buffer, packet_offset, data + 8, size_left - 8);
+      memcpy (data + 8, GST_BUFFER_DATA (buffer) + packet_offset,
+          size_left - 8);
 
       /* updating status variables */
       rtpasfpay->cur_off += size_left;
@@ -268,27 +272,31 @@ gst_rtp_asf_pay_handle_packet (GstRtpAsfPay * rtpasfpay, GstBuffer * buffer)
     /* there is not enough room for any more buffers */
     if (force_push || size_left <= 8) {
 
-      gst_rtp_buffer_set_ssrc (&rtp, rtppay->current_ssrc);
-      gst_rtp_buffer_set_marker (&rtp, rtpasfpay->marker);
-      gst_rtp_buffer_set_payload_type (&rtp, GST_RTP_BASE_PAYLOAD_PT (rtppay));
-      gst_rtp_buffer_set_seq (&rtp, rtppay->seqnum + 1);
-      gst_rtp_buffer_set_timestamp (&rtp, packetinfo->send_time);
-      gst_rtp_buffer_unmap (&rtp);
-
-      /* trim remaining bytes not used */
       if (size_left != 0) {
-        gst_buffer_set_size (rtpasfpay->current,
-            gst_buffer_get_size (rtpasfpay->current) - size_left);
+        /* trim remaining bytes not used */
+        GstBuffer *aux = gst_buffer_create_sub (rtpasfpay->current, 0,
+            GST_BUFFER_SIZE (rtpasfpay->current) - size_left);
+        gst_buffer_unref (rtpasfpay->current);
+        rtpasfpay->current = aux;
       }
+      gst_rtp_buffer_set_ssrc (rtpasfpay->current, rtppay->current_ssrc);
+      gst_rtp_buffer_set_marker (rtpasfpay->current, rtpasfpay->marker);
+      gst_rtp_buffer_set_payload_type (rtpasfpay->current,
+          GST_BASE_RTP_PAYLOAD_PT (rtppay));
+      gst_rtp_buffer_set_seq (rtpasfpay->current, rtppay->seqnum + 1);
+      gst_rtp_buffer_set_timestamp (rtpasfpay->current, packetinfo->send_time);
 
       GST_BUFFER_TIMESTAMP (rtpasfpay->current) = GST_BUFFER_TIMESTAMP (buffer);
+
+      gst_buffer_set_caps (rtpasfpay->current,
+          GST_PAD_CAPS (GST_BASE_RTP_PAYLOAD_SRCPAD (rtppay)));
 
       rtppay->seqnum++;
       rtppay->timestamp = packetinfo->send_time;
 
       GST_DEBUG_OBJECT (rtpasfpay, "Pushing rtp buffer");
       ret =
-          gst_pad_push (GST_RTP_BASE_PAYLOAD_SRCPAD (rtppay),
+          gst_pad_push (GST_BASE_RTP_PAYLOAD_SRCPAD (rtppay),
           rtpasfpay->current);
       rtpasfpay->current = NULL;
       if (ret != GST_FLOW_OK) {
@@ -304,9 +312,8 @@ gst_rtp_asf_pay_handle_packet (GstRtpAsfPay * rtpasfpay, GstBuffer * buffer)
 static GstFlowReturn
 gst_rtp_asf_pay_parse_headers (GstRtpAsfPay * rtpasfpay)
 {
+  GstFlowReturn ret = GST_FLOW_OK;
   gchar *maxps;
-  GstMapInfo map;
-
   g_return_val_if_fail (rtpasfpay->headers, GST_FLOW_ERROR);
 
   if (!gst_asf_parse_headers (rtpasfpay->headers, &rtpasfpay->asfinfo))
@@ -321,9 +328,8 @@ gst_rtp_asf_pay_parse_headers (GstRtpAsfPay * rtpasfpay)
 
   /* get the config for caps */
   g_free (rtpasfpay->config);
-  gst_buffer_map (rtpasfpay->headers, &map, GST_MAP_READ);
-  rtpasfpay->config = g_base64_encode (map.data, map.size);
-  gst_buffer_unmap (rtpasfpay->headers, &map);
+  rtpasfpay->config = g_base64_encode (GST_BUFFER_DATA (rtpasfpay->headers),
+      GST_BUFFER_SIZE (rtpasfpay->headers));
   GST_DEBUG_OBJECT (rtpasfpay, "Serialized headers to base64 string %s",
       rtpasfpay->config);
 
@@ -333,22 +339,20 @@ gst_rtp_asf_pay_parse_headers (GstRtpAsfPay * rtpasfpay)
       rtpasfpay->config);
   maxps =
       g_strdup_printf ("%" G_GUINT32_FORMAT, rtpasfpay->asfinfo.packet_size);
-  gst_rtp_base_payload_set_outcaps (GST_RTP_BASE_PAYLOAD (rtpasfpay), "maxps",
+  gst_basertppayload_set_outcaps (GST_BASE_RTP_PAYLOAD (rtpasfpay), "maxps",
       G_TYPE_STRING, maxps, "config", G_TYPE_STRING, rtpasfpay->config, NULL);
   g_free (maxps);
 
   return GST_FLOW_OK;
 
 error:
-  {
-    GST_ELEMENT_ERROR (rtpasfpay, STREAM, DECODE, (NULL),
-        ("Error parsing headers"));
-    return GST_FLOW_ERROR;
-  }
+  ret = GST_FLOW_ERROR;
+  GST_ERROR_OBJECT (rtpasfpay, "Error while parsing headers");
+  return GST_FLOW_ERROR;
 }
 
 static GstFlowReturn
-gst_rtp_asf_pay_handle_buffer (GstRTPBasePayload * rtppay, GstBuffer * buffer)
+gst_rtp_asf_pay_handle_buffer (GstBaseRTPPayload * rtppay, GstBuffer * buffer)
 {
   GstRtpAsfPay *rtpasfpay = GST_RTP_ASF_PAY_CAST (rtppay);
 
@@ -356,7 +360,7 @@ gst_rtp_asf_pay_handle_buffer (GstRTPBasePayload * rtppay, GstBuffer * buffer)
     GST_LOG_OBJECT (rtpasfpay,
         "Dropping buffer as we already pushed all packets");
     gst_buffer_unref (buffer);
-    return GST_FLOW_EOS;        /* we already finished our job */
+    return GST_FLOW_UNEXPECTED; /* we already finished our job */
   }
 
   /* receive headers 
@@ -364,20 +368,20 @@ gst_rtp_asf_pay_handle_buffer (GstRTPBasePayload * rtppay, GstBuffer * buffer)
   if (G_UNLIKELY (rtpasfpay->state == ASF_NOT_STARTED)) {
     guint64 header_size;
 
-    if (gst_buffer_get_size (buffer) < 24) {    /* guid+object size size */
+    if (GST_BUFFER_SIZE (buffer) < 24) {        /* guid+object size size */
       GST_ERROR_OBJECT (rtpasfpay,
           "Buffer too small, smaller than a Guid and object size");
       gst_buffer_unref (buffer);
       return GST_FLOW_ERROR;
     }
 
-    header_size = gst_asf_match_and_peek_obj_size_buf (buffer,
+    header_size = gst_asf_match_and_peek_obj_size (GST_BUFFER_DATA (buffer),
         &(guids[ASF_HEADER_OBJECT_INDEX]));
     if (header_size > 0) {
       GST_DEBUG_OBJECT (rtpasfpay, "ASF header guid received, size %"
           G_GUINT64_FORMAT, header_size);
 
-      if (gst_buffer_get_size (buffer) < header_size) {
+      if (GST_BUFFER_SIZE (buffer) < header_size) {
         GST_ERROR_OBJECT (rtpasfpay, "Headers should be contained in a single"
             " buffer");
         gst_buffer_unref (buffer);
@@ -391,16 +395,14 @@ gst_rtp_asf_pay_handle_buffer (GstRTPBasePayload * rtppay, GstBuffer * buffer)
         }
 
         GST_DEBUG_OBJECT (rtpasfpay, "Storing headers");
-        if (gst_buffer_get_size (buffer) == header_size) {
+        if (GST_BUFFER_SIZE (buffer) == header_size) {
           rtpasfpay->headers = buffer;
           return GST_FLOW_OK;
         } else {
           /* headers are a subbuffer of thie buffer */
-          GstBuffer *aux = gst_buffer_copy_region (buffer,
-              GST_BUFFER_COPY_ALL, header_size,
-              gst_buffer_get_size (buffer) - header_size);
-          rtpasfpay->headers = gst_buffer_copy_region (buffer,
-              GST_BUFFER_COPY_ALL, 0, header_size);
+          GstBuffer *aux = gst_buffer_create_sub (buffer, header_size,
+              GST_BUFFER_SIZE (buffer) - header_size);
+          rtpasfpay->headers = gst_buffer_create_sub (buffer, 0, header_size);
           gst_buffer_replace (&buffer, aux);
         }
       }
@@ -412,25 +414,21 @@ gst_rtp_asf_pay_handle_buffer (GstRTPBasePayload * rtppay, GstBuffer * buffer)
   }
 
   if (G_UNLIKELY (rtpasfpay->state == ASF_DATA_OBJECT)) {
-    GstMapInfo map;
-
-    if (gst_buffer_get_size (buffer) != ASF_DATA_OBJECT_SIZE) {
+    if (GST_BUFFER_SIZE (buffer) != ASF_DATA_OBJECT_SIZE) {
       GST_ERROR_OBJECT (rtpasfpay, "Received buffer of different size of "
           "the data object header");
       gst_buffer_unref (buffer);
       return GST_FLOW_ERROR;
     }
 
-    gst_buffer_map (buffer, &map, GST_MAP_READ);
-    if (gst_asf_match_guid (map.data, &(guids[ASF_DATA_OBJECT_INDEX]))) {
-      gst_buffer_unmap (buffer, &map);
+    if (gst_asf_match_guid (GST_BUFFER_DATA (buffer),
+            &(guids[ASF_DATA_OBJECT_INDEX]))) {
       GST_DEBUG_OBJECT (rtpasfpay, "Received data object header");
-      rtpasfpay->headers = gst_buffer_append (rtpasfpay->headers, buffer);
+      rtpasfpay->headers = gst_buffer_join (rtpasfpay->headers, buffer);
       rtpasfpay->state = ASF_PACKETS;
 
       return gst_rtp_asf_pay_parse_headers (rtpasfpay);
     } else {
-      gst_buffer_unmap (buffer, &map);
       GST_ERROR_OBJECT (rtpasfpay, "Unexpected object received (was expecting "
           "data object)");
       gst_buffer_unref (buffer);
@@ -455,7 +453,7 @@ gst_rtp_asf_pay_handle_buffer (GstRTPBasePayload * rtppay, GstBuffer * buffer)
       GST_INFO_OBJECT (rtpasfpay, "Packets ended");
       rtpasfpay->state = ASF_END;
       gst_buffer_unref (buffer);
-      return GST_FLOW_EOS;
+      return GST_FLOW_UNEXPECTED;
     }
   }
 

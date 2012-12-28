@@ -39,15 +39,15 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <gst/gst.h>
 #include <gst/video/gstvideosink.h>
 
-#include "gstvdp/gstvdputils.h"
-#include "gstvdp/gstvdpoutputbuffer.h"
-#include "gstvdp/gstvdpoutputsrcpad.h"
+#include "gstvdputils.h"
+#include "gstvdpvideobuffer.h"
+#include "gstvdpoutputbuffer.h"
 
 #include "gstvdpvideopostprocess.h"
 
@@ -64,7 +64,6 @@ enum
 enum
 {
   PROP_0,
-  PROP_DISPLAY,
   PROP_FORCE_ASPECT_RATIO,
   PROP_DEINTERLACE_MODE,
   PROP_DEINTERLACE_METHOD,
@@ -72,6 +71,19 @@ enum
   PROP_SHARPENING,
   PROP_INVERSE_TELECINE
 };
+
+/* the capabilities of the inputs and outputs.
+ *
+ * describe the real formats here.
+ */
+static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_VDP_VIDEO_CAPS));
+static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_VDP_OUTPUT_CAPS));
 
 #define DEBUG_INIT(bla) \
 GST_DEBUG_CATEGORY_INIT (gst_vdp_vpp_debug, "vdpauvideopostprocess", 0, "VDPAU video surface to output surface");
@@ -175,7 +187,7 @@ static VdpVideoMixerFeature
 gst_vdp_feature_from_deinterlace_method (GstVdpDeinterlaceMethods method)
 {
   gint i;
-  VdpVideoMixerFeature feature = 0;
+  VdpVideoMixerFeature feature;
 
   typedef struct
   {
@@ -183,7 +195,7 @@ gst_vdp_feature_from_deinterlace_method (GstVdpDeinterlaceMethods method)
     VdpVideoMixerFeature feature;
   } VdpDeinterlaceMethod;
 
-  static const VdpDeinterlaceMethod deinterlace_methods[] = {
+  VdpDeinterlaceMethod deinterlace_methods[2] = {
     {GST_VDP_DEINTERLACE_METHOD_TEMPORAL,
         VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL},
     {GST_VDP_DEINTERLACE_METHOD_TEMPORAL_SPATIAL,
@@ -247,9 +259,6 @@ gst_vdp_vpp_get_required_pictures (GstVdpVideoPostProcess * vpp)
     case GST_VDP_DEINTERLACE_METHOD_TEMPORAL:
     case GST_VDP_DEINTERLACE_METHOD_TEMPORAL_SPATIAL:
       ret = 2;
-      break;
-    default:
-      g_assert_not_reached ();
       break;
   }
 
@@ -331,7 +340,7 @@ gst_vdp_vpp_add_buffer (GstVdpVideoPostProcess * vpp, GstVdpVideoBuffer * buf)
     pic2.structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
   } else {
     pic1.structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
-    pic2.structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
+    pic1.structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
   }
 
   pic1.timestamp = GST_BUFFER_TIMESTAMP (buf);
@@ -355,24 +364,17 @@ gst_vdp_vpp_add_buffer (GstVdpVideoPostProcess * vpp, GstVdpVideoBuffer * buf)
   }
 }
 
-static void
-gst_vdp_vpp_post_error (GstVdpVideoPostProcess * vpp, GError * error)
-{
-  GstMessage *message;
-
-  message = gst_message_new_error (GST_OBJECT (vpp), error, NULL);
-  gst_element_post_message (GST_ELEMENT (vpp), message);
-  g_error_free (error);
-}
-
 static GstFlowReturn
-gst_vdp_vpp_create_mixer (GstVdpVideoPostProcess * vpp)
+gst_vdp_vpp_create_mixer (GstVdpVideoPostProcess * vpp, GstVdpDevice * device)
 {
 #define VDP_NUM_MIXER_PARAMETER 3
 #define MAX_NUM_FEATURES 5
 
+  GstStructure *structure;
+  gint chroma_type;
+  gint width, height;
+
   VdpStatus status;
-  GstVdpDevice *device;
 
   VdpVideoMixerFeature features[5];
   guint n_features = 0;
@@ -383,9 +385,15 @@ gst_vdp_vpp_create_mixer (GstVdpVideoPostProcess * vpp)
   };
   const void *parameter_values[VDP_NUM_MIXER_PARAMETER];
 
-  parameter_values[0] = &vpp->width;
-  parameter_values[1] = &vpp->height;
-  parameter_values[2] = &vpp->chroma_type;
+  structure = gst_caps_get_structure (GST_PAD_CAPS (vpp->sinkpad), 0);
+  if (!gst_structure_get_int (structure, "chroma-type", &chroma_type) ||
+      !gst_structure_get_int (structure, "width", &width) ||
+      !gst_structure_get_int (structure, "height", &height))
+    return GST_FLOW_ERROR;
+
+  parameter_values[0] = &width;
+  parameter_values[1] = &height;
+  parameter_values[2] = &chroma_type;
 
   if (gst_vdp_vpp_is_interlaced (vpp)
       && vpp->method != GST_VDP_DEINTERLACE_METHOD_BOB) {
@@ -399,8 +407,6 @@ gst_vdp_vpp_create_mixer (GstVdpVideoPostProcess * vpp)
   if (vpp->inverse_telecine)
     features[n_features++] = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
 
-  device = vpp->device;
-
   status =
       device->vdp_video_mixer_create (device->device, n_features, features,
       VDP_NUM_MIXER_PARAMETER, parameters, parameter_values, &vpp->mixer);
@@ -412,6 +418,8 @@ gst_vdp_vpp_create_mixer (GstVdpVideoPostProcess * vpp)
     return GST_FLOW_ERROR;
   }
 
+  vpp->device = g_object_ref (device);
+
   if (vpp->noise_reduction > 0.0) {
     gst_vdp_vpp_set_attribute_float (vpp,
         VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL, vpp->noise_reduction);
@@ -422,6 +430,26 @@ gst_vdp_vpp_create_mixer (GstVdpVideoPostProcess * vpp)
   }
 
   return GST_FLOW_OK;
+}
+
+static GstFlowReturn
+gst_vdp_vpp_alloc_output_buffer (GstVdpVideoPostProcess * vpp, GstCaps * caps,
+    GstVdpOutputBuffer ** outbuf)
+{
+  GstFlowReturn ret;
+
+  ret = gst_pad_alloc_buffer_and_set_caps (vpp->srcpad, 0, 0,
+      caps, (GstBuffer **) outbuf);
+  if (ret != GST_FLOW_OK)
+    return ret;
+
+  if (!vpp->device) {
+    ret = gst_vdp_vpp_create_mixer (vpp, (*outbuf)->device);
+  }
+
+  if (ret != GST_FLOW_OK)
+    gst_buffer_unref (GST_BUFFER (*outbuf));
+  return ret;
 }
 
 static gint
@@ -474,112 +502,55 @@ gst_vdp_vpp_sink_setcaps (GstPad * pad, GstCaps * caps)
   GstVdpVideoPostProcess *vpp =
       GST_VDP_VIDEO_POST_PROCESS (gst_pad_get_parent (pad));
   GstStructure *structure;
-  GstCaps *video_caps = NULL;
-  gboolean res = FALSE;
+  GstCaps *output_caps, *allowed_caps, *src_caps;
+  gboolean res;
 
-  GstCaps *allowed_caps, *output_caps, *src_caps;
-
-  /* check if the input is non native */
+  /* extract interlaced flag */
   structure = gst_caps_get_structure (caps, 0);
-  if (gst_structure_has_name (structure, "video/x-raw-yuv")) {
-    if (!gst_structure_get_fourcc (structure, "format", &vpp->fourcc))
-      goto done;
-    vpp->native_input = FALSE;
-    video_caps = gst_vdp_yuv_to_video_caps (caps);
-    if (!video_caps)
-      goto done;
-
-    if (!vpp->vpool)
-      vpp->vpool = gst_vdp_video_buffer_pool_new (vpp->device);
-
-    gst_vdp_buffer_pool_set_caps (vpp->vpool, video_caps);
-
-  } else {
-    vpp->native_input = TRUE;
-    video_caps = gst_caps_ref (caps);
-
-    if (vpp->vpool) {
-      g_object_unref (vpp->vpool);
-      vpp->vpool = NULL;
-    }
-  }
-
-  structure = gst_caps_get_structure (video_caps, 0);
-  if (!gst_structure_get_int (structure, "width", &vpp->width) ||
-      !gst_structure_get_int (structure, "height", &vpp->height) ||
-      !gst_structure_get_int (structure, "chroma-type",
-          (gint *) & vpp->chroma_type))
-    goto done;
-
-
-  /* get interlaced flag */
   gst_structure_get_boolean (structure, "interlaced", &vpp->interlaced);
 
-  /* extract par */
-  if (gst_structure_has_field_typed (structure, "pixel-aspect-ratio",
-          GST_TYPE_FRACTION)) {
-    gst_structure_get_fraction (structure, "pixel-aspect-ratio", &vpp->par_n,
-        &vpp->par_d);
-    vpp->got_par = TRUE;
-  } else
-    vpp->got_par = FALSE;
-
   allowed_caps = gst_pad_get_allowed_caps (vpp->srcpad);
-  if (G_UNLIKELY (!allowed_caps))
-    goto null_allowed_caps;
-  if (G_UNLIKELY (gst_caps_is_empty (allowed_caps)))
-    goto empty_allowed_caps;
-  GST_DEBUG ("allowed_caps: %" GST_PTR_FORMAT, allowed_caps);
+  structure = gst_caps_get_structure (allowed_caps, 0);
+  output_caps = gst_vdp_video_to_output_caps (caps);
 
-  output_caps = gst_vdp_video_to_output_caps (video_caps);
   src_caps = gst_caps_intersect (output_caps, allowed_caps);
-  gst_caps_unref (allowed_caps);
-  gst_caps_unref (output_caps);
-
+  gst_caps_truncate (src_caps);
   if (gst_caps_is_empty (src_caps))
-    goto not_negotiated;
+    goto invalid_caps;
 
-  gst_pad_fixate_caps (vpp->srcpad, src_caps);
+  GST_DEBUG ("output_caps: %" GST_PTR_FORMAT " allowed_caps: %" GST_PTR_FORMAT
+      " src_caps: %" GST_PTR_FORMAT, output_caps, allowed_caps, src_caps);
 
+  gst_caps_unref (output_caps);
+  gst_caps_unref (allowed_caps);
 
   if (gst_vdp_vpp_is_interlaced (vpp)) {
     gint fps_n, fps_d;
 
-    if (gst_structure_get_fraction (structure, "framerate", &fps_n, &fps_d)) {
-      gst_fraction_double (&fps_n, &fps_d);
-      gst_caps_set_simple (src_caps, "framerate", GST_TYPE_FRACTION, fps_n,
-          fps_d, NULL);
-      vpp->field_duration = gst_util_uint64_scale (GST_SECOND, fps_d, fps_n);
+    structure = gst_caps_get_structure (src_caps, 0);
+
+    if (!gst_structure_get_fraction (structure, "framerate", &fps_n, &fps_d)) {
+      gst_caps_unref (src_caps);
+      goto invalid_caps;
     }
 
-    gst_caps_set_simple (src_caps, "interlaced", G_TYPE_BOOLEAN, FALSE, NULL);
+    gst_fraction_double (&fps_n, &fps_d);
+    gst_structure_set (structure, "framerate", GST_TYPE_FRACTION, fps_n, fps_d,
+        NULL);
+    gst_structure_remove_field (structure, "interlaced");
+
+    vpp->field_duration = gst_util_uint64_scale (GST_SECOND, fps_d, fps_n);
   }
 
-  GST_DEBUG ("src_caps: %" GST_PTR_FORMAT, src_caps);
-
   res = gst_pad_set_caps (vpp->srcpad, src_caps);
-  gst_caps_unref (src_caps);
 
 done:
   gst_object_unref (vpp);
-  if (video_caps)
-    gst_caps_unref (video_caps);
-
   return res;
 
-null_allowed_caps:
-  GST_ERROR_OBJECT (vpp, "Got null from gst_pad_get_allowed_caps");
-  goto done;
-
-empty_allowed_caps:
-  GST_ERROR_OBJECT (vpp, "Got EMPTY caps from gst_pad_get_allowed_caps");
-
-  gst_caps_unref (allowed_caps);
-  goto done;
-
-not_negotiated:
-  gst_caps_unref (src_caps);
-  GST_ERROR_OBJECT (vpp, "Couldn't find suitable output format");
+invalid_caps:
+  GST_ERROR_OBJECT (vpp, "invalid caps: %" GST_PTR_FORMAT, caps);
+  res = FALSE;
   goto done;
 }
 
@@ -599,20 +570,16 @@ gst_vdp_vpp_flush (GstVdpVideoPostProcess * vpp)
   vpp->n_past_pictures = 0;
 }
 
-static gboolean
+static void
 gst_vdp_vpp_start (GstVdpVideoPostProcess * vpp)
 {
   gint i;
-  GError *err;
 
   vpp->interlaced = FALSE;
   vpp->field_duration = GST_CLOCK_TIME_NONE;
 
-  vpp->earliest_time = GST_CLOCK_TIME_NONE;
-  vpp->discont = FALSE;
-
   vpp->mixer = VDP_INVALID_HANDLE;
-  vpp->vpool = NULL;
+  vpp->device = NULL;
 
   for (i = 0; i < MAX_PICTURES; i++) {
     vpp->future_pictures[i].buf = NULL;
@@ -620,49 +587,27 @@ gst_vdp_vpp_start (GstVdpVideoPostProcess * vpp)
   }
   vpp->n_future_pictures = 0;
   vpp->n_past_pictures = 0;
-
-  err = NULL;
-  vpp->device = gst_vdp_get_device (vpp->display, &err);
-  if (G_UNLIKELY (!vpp->device))
-    goto device_error;
-
-  g_object_set (G_OBJECT (vpp->srcpad), "device", vpp->device, NULL);
-
-  return TRUE;
-
-device_error:
-  gst_vdp_vpp_post_error (vpp, err);
-  return FALSE;
 }
 
-static gboolean
+static void
 gst_vdp_vpp_stop (GstVdpVideoPostProcess * vpp)
 {
+  if (vpp->mixer != VDP_INVALID_HANDLE)
+    vpp->device->vdp_video_mixer_destroy (vpp->mixer);
+  if (vpp->device)
+    g_object_unref (vpp->device);
+
   gst_vdp_vpp_flush (vpp);
-
-  if (vpp->vpool)
-    g_object_unref (vpp->vpool);
-
-  if (vpp->mixer != VDP_INVALID_HANDLE) {
-    GstVdpDevice *device = vpp->device;
-    VdpStatus status;
-
-    status = device->vdp_video_mixer_destroy (vpp->mixer);
-    if (status != VDP_STATUS_OK) {
-      GST_ELEMENT_ERROR (vpp, RESOURCE, READ,
-          ("Could not destroy vdpau decoder"),
-          ("Error returned from vdpau was: %s",
-              device->vdp_get_error_string (status)));
-      return FALSE;
-    }
-  }
-
-  return TRUE;
 }
 
 static GstFlowReturn
-gst_vdp_vpp_drain (GstVdpVideoPostProcess * vpp)
+gst_vdp_vpp_chain (GstPad * pad, GstBuffer * buffer)
 {
+  GstVdpVideoPostProcess *vpp =
+      GST_VDP_VIDEO_POST_PROCESS (gst_pad_get_parent (pad));
+
+  GstFlowReturn ret = GST_FLOW_OK;
+
   GstVdpPicture current_pic;
 
   guint32 video_surfaces_past_count;
@@ -671,37 +616,45 @@ gst_vdp_vpp_drain (GstVdpVideoPostProcess * vpp)
   guint32 video_surfaces_future_count;
   VdpVideoSurface video_surfaces_future[MAX_PICTURES];
 
-  GstFlowReturn ret;
+  if (G_UNLIKELY (GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_DISCONT))) {
+    GST_DEBUG_OBJECT (vpp, "Received discont buffer");
+    gst_vdp_vpp_flush (vpp);
+  }
+
+  gst_vdp_vpp_add_buffer (vpp, GST_VDP_VIDEO_BUFFER (buffer));
 
   while (gst_vdp_vpp_get_next_picture (vpp,
           &current_pic,
           &video_surfaces_past_count, video_surfaces_past,
           &video_surfaces_future_count, video_surfaces_future)) {
-    GError *err;
     GstVdpOutputBuffer *outbuf;
 
     GstStructure *structure;
     GstVideoRectangle src_r = { 0, }
     , dest_r = {
     0,};
+    gint par_n, par_d;
     VdpRect rect;
 
     GstVdpDevice *device;
     VdpStatus status;
 
-    err = NULL;
     ret =
-        gst_vdp_output_src_pad_alloc_buffer ((GstVdpOutputSrcPad *) vpp->srcpad,
-        &outbuf, &err);
+        gst_vdp_vpp_alloc_output_buffer (vpp, GST_PAD_CAPS (vpp->srcpad),
+        &outbuf);
     if (ret != GST_FLOW_OK)
-      goto output_pad_error;
+      break;
 
-    src_r.w = vpp->width;
-    src_r.h = vpp->height;
-    if (vpp->got_par) {
+    structure = gst_caps_get_structure (GST_BUFFER_CAPS (buffer), 0);
+    if (!gst_structure_get_int (structure, "width", &src_r.w) ||
+        !gst_structure_get_int (structure, "height", &src_r.h))
+      goto invalid_caps;
+
+    if (gst_structure_get_fraction (structure, "pixel-aspect-ratio", &par_n,
+            &par_d)) {
       gint new_width;
 
-      new_width = gst_util_uint64_scale_int (src_r.w, vpp->par_n, vpp->par_d);
+      new_width = gst_util_uint64_scale_int (src_r.w, par_n, par_d);
       src_r.x += (src_r.w - new_width) / 2;
       src_r.w = new_width;
     }
@@ -732,8 +685,14 @@ gst_vdp_vpp_drain (GstVdpVideoPostProcess * vpp)
         current_pic.structure, video_surfaces_past_count, video_surfaces_past,
         current_pic.buf->surface, video_surfaces_future_count,
         video_surfaces_future, NULL, outbuf->surface, NULL, &rect, 0, NULL);
-    if (status != VDP_STATUS_OK)
-      goto render_error;
+    if (status != VDP_STATUS_OK) {
+      GST_ELEMENT_ERROR (vpp, RESOURCE, READ,
+          ("Could not post process frame"),
+          ("Error returned from vdpau was: %s",
+              device->vdp_get_error_string (status)));
+      ret = GST_FLOW_ERROR;
+      goto done;
+    }
 
     GST_BUFFER_TIMESTAMP (outbuf) = current_pic.timestamp;
     if (gst_vdp_vpp_is_interlaced (vpp))
@@ -750,146 +709,22 @@ gst_vdp_vpp_drain (GstVdpVideoPostProcess * vpp)
     if (GST_BUFFER_FLAG_IS_SET (current_pic.buf, GST_BUFFER_FLAG_GAP))
       GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_GAP);
 
-    err = NULL;
-    ret =
-        gst_vdp_output_src_pad_push ((GstVdpOutputSrcPad *) vpp->srcpad,
-        outbuf, &err);
+    ret = gst_pad_push (vpp->srcpad, GST_BUFFER (outbuf));
     if (ret != GST_FLOW_OK)
-      goto output_pad_error;
+      break;
 
     continue;
 
   invalid_caps:
     gst_buffer_unref (GST_BUFFER (outbuf));
-    GST_ELEMENT_ERROR (vpp, STREAM, FAILED, ("Invalid output caps"), (NULL));
     ret = GST_FLOW_ERROR;
     break;
-
-  render_error:
-    gst_buffer_unref (GST_BUFFER (outbuf));
-    GST_ELEMENT_ERROR (vpp, RESOURCE, READ,
-        ("Could not postprocess frame"),
-        ("Error returned from vdpau was: %s",
-            device->vdp_get_error_string (status)));
-    ret = GST_FLOW_ERROR;
-    break;
-
-  output_pad_error:
-    if (ret == GST_FLOW_ERROR && err != NULL)
-      gst_vdp_vpp_post_error (vpp, err);
-    break;
   }
-
-  return ret;
-}
-
-static GstFlowReturn
-gst_vdp_vpp_chain (GstPad * pad, GstBuffer * buffer)
-{
-  GstVdpVideoPostProcess *vpp =
-      GST_VDP_VIDEO_POST_PROCESS (gst_pad_get_parent (pad));
-
-  GstClockTime qostime;
-  GstFlowReturn ret = GST_FLOW_OK;
-  GError *err;
-
-  GST_DEBUG ("chain");
-
-  /* can only do QoS if the segment is in TIME */
-  if (vpp->segment.format != GST_FORMAT_TIME)
-    goto no_qos;
-
-  /* QOS is done on the running time of the buffer, get it now */
-  qostime = gst_segment_to_running_time (&vpp->segment, GST_FORMAT_TIME,
-      GST_BUFFER_TIMESTAMP (buffer));
-
-  if (qostime != -1) {
-    gboolean need_skip;
-    GstClockTime earliest_time;
-
-    /* lock for getting the QoS parameters that are set (in a different thread)
-     * with the QOS events */
-    GST_OBJECT_LOCK (vpp);
-    earliest_time = vpp->earliest_time;
-    /* check for QoS, don't perform conversion for buffers
-     * that are known to be late. */
-    need_skip = GST_CLOCK_TIME_IS_VALID (earliest_time) && qostime != -1 &&
-        qostime <= earliest_time;
-
-    GST_OBJECT_UNLOCK (vpp);
-
-    if (need_skip) {
-      GST_DEBUG_OBJECT (vpp, "skipping transform: qostime %"
-          GST_TIME_FORMAT " <= %" GST_TIME_FORMAT,
-          GST_TIME_ARGS (qostime), GST_TIME_ARGS (earliest_time));
-      /* mark discont for next buffer */
-      vpp->discont = TRUE;
-      gst_buffer_unref (buffer);
-      return GST_FLOW_OK;
-    }
-  }
-
-no_qos:
-
-  if (vpp->discont) {
-    GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_DISCONT);
-    vpp->discont = FALSE;
-  }
-
-  if (G_UNLIKELY (GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_DISCONT))) {
-    GST_DEBUG_OBJECT (vpp, "Received discont buffer");
-    gst_vdp_vpp_flush (vpp);
-  }
-
-  if (!vpp->native_input) {
-    GstVdpVideoBuffer *video_buf;
-
-    err = NULL;
-    video_buf =
-        (GstVdpVideoBuffer *) gst_vdp_buffer_pool_get_buffer (vpp->vpool, &err);
-    if (G_UNLIKELY (!video_buf))
-      goto video_buf_error;
-
-    if (!gst_vdp_video_buffer_upload (video_buf, buffer, vpp->fourcc,
-            vpp->width, vpp->height)) {
-      gst_buffer_unref (GST_BUFFER (video_buf));
-      GST_ELEMENT_ERROR (vpp, RESOURCE, READ,
-          ("Couldn't upload YUV data to vdpau"), (NULL));
-      ret = GST_FLOW_ERROR;
-      goto error;
-    }
-
-    gst_buffer_copy_metadata (GST_BUFFER (video_buf), buffer,
-        GST_BUFFER_COPY_FLAGS | GST_BUFFER_COPY_TIMESTAMPS);
-
-    gst_buffer_unref (buffer);
-    buffer = GST_BUFFER (video_buf);
-  }
-
-  if (G_UNLIKELY (vpp->mixer == VDP_INVALID_HANDLE)) {
-    ret = gst_vdp_vpp_create_mixer (vpp);
-    if (ret != GST_FLOW_OK)
-      goto error;
-  }
-
-  gst_vdp_vpp_add_buffer (vpp, GST_VDP_VIDEO_BUFFER (buffer));
-
-  ret = gst_vdp_vpp_drain (vpp);
 
 done:
   gst_object_unref (vpp);
 
   return ret;
-
-error:
-  gst_buffer_unref (buffer);
-  goto done;
-
-video_buf_error:
-  gst_buffer_unref (GST_BUFFER (buffer));
-  gst_vdp_vpp_post_error (vpp, err);
-  ret = GST_FLOW_ERROR;
-  goto done;
 }
 
 static GstCaps *
@@ -899,52 +734,69 @@ gst_vdp_vpp_sink_getcaps (GstPad * pad)
       GST_VDP_VIDEO_POST_PROCESS (gst_pad_get_parent (pad));
   GstCaps *caps;
 
-  if (vpp->device) {
-    caps = gst_vdp_video_buffer_get_allowed_caps (vpp->device);
-  } else {
-    GstElementClass *element_class = GST_ELEMENT_GET_CLASS (vpp);
-    GstPadTemplate *sink_template;
-
-    sink_template = gst_element_class_get_pad_template (element_class, "sink");
-    caps = gst_caps_copy (gst_pad_template_get_caps (sink_template));
-  }
-  GST_DEBUG ("returning caps: %" GST_PTR_FORMAT, caps);
+  if (vpp->device)
+    caps = gst_vdp_video_buffer_get_allowed_video_caps (vpp->device);
+  else
+    caps = gst_static_pad_template_get_caps (&sink_template);
 
   gst_object_unref (vpp);
 
   return caps;
 }
 
-static gboolean
-gst_vdp_vpp_src_event (GstPad * pad, GstEvent * event)
+static GstFlowReturn
+gst_vdp_vpp_sink_bufferalloc (GstPad * pad, guint64 offset, guint size,
+    GstCaps * caps, GstBuffer ** buf)
 {
   GstVdpVideoPostProcess *vpp =
       GST_VDP_VIDEO_POST_PROCESS (gst_pad_get_parent (pad));
-  gboolean res;
+  GstVdpOutputBuffer *outbuf;
+  GstFlowReturn ret = GST_FLOW_ERROR;
+  GstVdpDevice *device = NULL;
+  GstStructure *structure;
+  gint width, height;
+  gint chroma_type;
 
-  switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_QOS:
-    {
-      gdouble proportion;
-      GstClockTimeDiff diff;
-      GstClockTime timestamp;
+  if (!vpp->device) {
+    /* if we haven't got a device yet we must alloc a buffer downstream to get it */
+    GstCaps *src_caps = gst_pad_get_allowed_caps (vpp->srcpad);
+    gst_pad_fixate_caps (vpp->srcpad, src_caps);
+    ret = gst_pad_alloc_buffer (vpp->srcpad, 0, 0, src_caps,
+        (GstBuffer **) & outbuf);
 
-      gst_event_parse_qos (event, &proportion, &diff, &timestamp);
+    gst_caps_unref (src_caps);
+    if (ret != GST_FLOW_OK)
+      goto error;
 
-      GST_OBJECT_LOCK (vpp);
-      vpp->earliest_time = timestamp + diff;
-      GST_OBJECT_UNLOCK (vpp);
+    device = outbuf->device;
+    gst_buffer_unref (GST_BUFFER (outbuf));
+  } else
+    device = vpp->device;
 
-      res = gst_pad_event_default (pad, event);
-      break;
-    }
-    default:
-      res = gst_pad_event_default (pad, event);
-  }
+  structure = gst_caps_get_structure (caps, 0);
+
+  if (!gst_structure_get_int (structure, "width", &width) ||
+      !gst_structure_get_int (structure, "height", &height) ||
+      !gst_structure_get_int (structure, "chroma-type", &chroma_type))
+    goto error;
+
+  *buf = GST_BUFFER (gst_vdp_video_buffer_new (device,
+          chroma_type, width, height));
+
+  if (*buf == NULL)
+    goto error;
+
+  GST_BUFFER_SIZE (*buf) = size;
+  GST_BUFFER_OFFSET (*buf) = offset;
+
+  gst_buffer_set_caps (*buf, caps);
+
+  ret = GST_FLOW_OK;
+
+error:
 
   gst_object_unref (vpp);
-
-  return res;
+  return ret;
 }
 
 static gboolean
@@ -960,26 +812,8 @@ gst_vdp_vpp_sink_event (GstPad * pad, GstEvent * event)
       GST_DEBUG_OBJECT (vpp, "flush stop");
 
       gst_vdp_vpp_flush (vpp);
+      res = gst_pad_push_event (vpp->srcpad, event);
 
-      res = gst_pad_event_default (pad, event);
-      break;
-    }
-    case GST_EVENT_NEWSEGMENT:
-    {
-      gboolean update;
-      gdouble rate, applied_rate;
-      GstFormat format;
-      gint64 start, stop, time;
-
-      gst_event_parse_new_segment_full (event, &update, &rate, &applied_rate,
-          &format, &start, &stop, &time);
-
-      GST_OBJECT_LOCK (vpp);
-      gst_segment_set_newsegment_full (&vpp->segment, update, rate,
-          applied_rate, format, start, stop, time);
-      GST_OBJECT_UNLOCK (vpp);
-
-      res = gst_pad_event_default (pad, event);
       break;
     }
     default:
@@ -1001,8 +835,7 @@ gst_vdp_vpp_change_state (GstElement * element, GstStateChange transition)
 
   switch (transition) {
     case GST_STATE_CHANGE_READY_TO_PAUSED:
-      if (!gst_vdp_vpp_start (vpp))
-        return GST_STATE_CHANGE_FAILURE;
+      gst_vdp_vpp_start (vpp);
       break;
     default:
       break;
@@ -1012,8 +845,7 @@ gst_vdp_vpp_change_state (GstElement * element, GstStateChange transition)
 
   switch (transition) {
     case GST_STATE_CHANGE_PAUSED_TO_READY:
-      if (!gst_vdp_vpp_stop (vpp))
-        ret = GST_STATE_CHANGE_FAILURE;
+      gst_vdp_vpp_stop (vpp);
       break;
     default:
       break;
@@ -1030,34 +862,24 @@ gst_vdp_vpp_get_property (GObject * object, guint property_id, GValue * value,
   GstVdpVideoPostProcess *vpp = GST_VDP_VIDEO_POST_PROCESS (object);
 
   switch (property_id) {
-    case PROP_DISPLAY:
-      g_value_set_string (value, vpp->display);
-      break;
-
     case PROP_FORCE_ASPECT_RATIO:
       g_value_set_boolean (value, vpp->force_aspect_ratio);
       break;
-
     case PROP_DEINTERLACE_MODE:
       g_value_set_enum (value, vpp->mode);
       break;
-
     case PROP_DEINTERLACE_METHOD:
       g_value_set_enum (value, vpp->method);
       break;
-
     case PROP_NOISE_REDUCTION:
       g_value_set_float (value, vpp->noise_reduction);
       break;
-
     case PROP_SHARPENING:
       g_value_set_float (value, vpp->sharpening);
       break;
-
     case PROP_INVERSE_TELECINE:
       g_value_set_boolean (value, vpp->inverse_telecine);
       break;
-
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -1072,19 +894,12 @@ gst_vdp_vpp_set_property (GObject * object, guint property_id,
   GstVdpVideoPostProcess *vpp = GST_VDP_VIDEO_POST_PROCESS (object);
 
   switch (property_id) {
-    case PROP_DISPLAY:
-      g_free (vpp->display);
-      vpp->display = g_value_dup_string (value);
-      break;
-
     case PROP_FORCE_ASPECT_RATIO:
       vpp->force_aspect_ratio = g_value_get_boolean (value);
       break;
-
     case PROP_DEINTERLACE_MODE:
       vpp->mode = g_value_get_enum (value);
       break;
-
     case PROP_DEINTERLACE_METHOD:
     {
       GstVdpDeinterlaceMethods oldvalue;
@@ -1094,16 +909,15 @@ gst_vdp_vpp_set_property (GObject * object, guint property_id,
       if (oldvalue == vpp->method)
         break;
 
-      if (vpp->mixer != VDP_INVALID_HANDLE) {
+      if (vpp->device) {
         if (oldvalue != GST_VDP_DEINTERLACE_METHOD_BOB)
           gst_vdp_vpp_activate_deinterlace_method (vpp, oldvalue, FALSE);
 
-        if (vpp->method != GST_VDP_DEINTERLACE_METHOD_BOB)
+        if (vpp->method != GST_VDP_DEINTERLACE_METHOD_BOB && vpp->device)
           gst_vdp_vpp_activate_deinterlace_method (vpp, oldvalue, TRUE);
       }
       break;
     }
-
     case PROP_NOISE_REDUCTION:
     {
       gfloat old_value;
@@ -1113,7 +927,7 @@ gst_vdp_vpp_set_property (GObject * object, guint property_id,
       if (vpp->noise_reduction == old_value)
         break;
 
-      if (vpp->mixer != VDP_INVALID_HANDLE) {
+      if (vpp->device) {
         if (vpp->noise_reduction == 0.0)
           gst_vdp_vpp_activate_feature (vpp,
               VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION, FALSE);
@@ -1128,7 +942,6 @@ gst_vdp_vpp_set_property (GObject * object, guint property_id,
       }
       break;
     }
-
     case PROP_SHARPENING:
     {
       gfloat old_value;
@@ -1138,7 +951,7 @@ gst_vdp_vpp_set_property (GObject * object, guint property_id,
       if (vpp->sharpening == old_value)
         break;
 
-      if (vpp->mixer != VDP_INVALID_HANDLE) {
+      if (vpp->device) {
         if (vpp->sharpening == 0.0)
           gst_vdp_vpp_activate_feature (vpp,
               VDP_VIDEO_MIXER_FEATURE_SHARPNESS, FALSE);
@@ -1152,18 +965,16 @@ gst_vdp_vpp_set_property (GObject * object, guint property_id,
       }
       break;
     }
-
     case PROP_INVERSE_TELECINE:
     {
       vpp->inverse_telecine = g_value_get_boolean (value);
 
-      if (vpp->mixer != VDP_INVALID_HANDLE) {
+      if (vpp->device) {
         gst_vdp_vpp_activate_feature (vpp,
             VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE, vpp->inverse_telecine);
       }
       break;
     }
-
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
       break;
@@ -1176,26 +987,17 @@ static void
 gst_vdp_vpp_base_init (gpointer gclass)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (gclass);
-  GstCaps *src_caps, *sink_caps;
-  GstPadTemplate *src_template, *sink_template;
 
-  gst_element_class_set_static_metadata (element_class,
-      "VdpauVideoPostProcess",
+  gst_element_class_set_details_simple (element_class,
+      "VDPAU Mpeg Decoder",
       "Filter/Converter/Decoder/Video",
       "Post process GstVdpVideoBuffers and output GstVdpOutputBuffers",
       "Carl-Anton Ingmarsson <ca.ingmarsson@gmail.com>");
 
-  /* SRC PAD */
-  src_caps = gst_vdp_output_buffer_get_template_caps ();
-  src_template = gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS,
-      src_caps);
-  gst_element_class_add_pad_template (element_class, src_template);
-
-  /* SINK PAD */
-  sink_caps = gst_vdp_video_buffer_get_caps (FALSE, 0);
-  sink_template = gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS,
-      sink_caps);
-  gst_element_class_add_pad_template (element_class, sink_template);
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_template));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_template));
 }
 
 /* initialize the vdpaumpegdecoder's class */
@@ -1212,14 +1014,10 @@ gst_vdp_vpp_class_init (GstVdpVideoPostProcessClass * klass)
   gobject_class->set_property = gst_vdp_vpp_set_property;
   gobject_class->finalize = gst_vdp_vpp_finalize;
 
-  g_object_class_install_property (gobject_class, PROP_DISPLAY,
-      g_param_spec_string ("display", "Display", "X Display name",
-          NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-
   g_object_class_install_property (gobject_class, PROP_FORCE_ASPECT_RATIO,
       g_param_spec_boolean ("force-aspect-ratio", "Force aspect ratio",
           "When enabled, the plugin will only scale up the input surface to the"
-          "maximum size where the aspect ratio can be preserved", TRUE,
+          "maximum size where the aspect ratio can be preserved", FALSE,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_DEINTERLACE_MODE,
@@ -1256,12 +1054,7 @@ static void
 gst_vdp_vpp_init (GstVdpVideoPostProcess * vpp,
     GstVdpVideoPostProcessClass * gclass)
 {
-  GstPadTemplate *src_template, *sink_template;
-
   vpp->device = NULL;
-  vpp->mixer = VDP_INVALID_HANDLE;
-
-  vpp->display = NULL;
 
   vpp->force_aspect_ratio = FALSE;
   vpp->mode = GST_VDP_DEINTERLACE_MODE_AUTO;
@@ -1271,19 +1064,11 @@ gst_vdp_vpp_init (GstVdpVideoPostProcess * vpp,
   vpp->sharpening = 0.0;
 
   /* SRC PAD */
-  src_template =
-      gst_element_class_get_pad_template (GST_ELEMENT_CLASS (gclass), "src");
-
-  vpp->srcpad = GST_PAD (gst_vdp_output_src_pad_new (src_template, "src"));
+  vpp->srcpad = gst_pad_new_from_static_template (&src_template, "src");
   gst_element_add_pad (GST_ELEMENT (vpp), vpp->srcpad);
 
-  gst_pad_set_event_function (vpp->srcpad,
-      GST_DEBUG_FUNCPTR (gst_vdp_vpp_src_event));
-
   /* SINK PAD */
-  sink_template =
-      gst_element_class_get_pad_template (GST_ELEMENT_CLASS (gclass), "sink");
-  vpp->sinkpad = gst_pad_new_from_template (sink_template, "sink");
+  vpp->sinkpad = gst_pad_new_from_static_template (&sink_template, "sink");
   gst_element_add_pad (GST_ELEMENT (vpp), vpp->sinkpad);
 
   gst_pad_set_getcaps_function (vpp->sinkpad, gst_vdp_vpp_sink_getcaps);
@@ -1292,6 +1077,7 @@ gst_vdp_vpp_init (GstVdpVideoPostProcess * vpp,
       GST_DEBUG_FUNCPTR (gst_vdp_vpp_chain));
   gst_pad_set_event_function (vpp->sinkpad,
       GST_DEBUG_FUNCPTR (gst_vdp_vpp_sink_event));
+  gst_pad_set_bufferalloc_function (vpp->sinkpad, gst_vdp_vpp_sink_bufferalloc);
 }
 
 static void

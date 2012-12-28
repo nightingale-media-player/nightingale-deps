@@ -58,7 +58,7 @@ GST_DEBUG_CATEGORY_STATIC (dshowaudiodec_debug);
 GST_BOILERPLATE (GstDshowAudioDec, gst_dshowaudiodec, GstElement,
     GST_TYPE_ELEMENT);
 
-static void gst_dshowaudiodec_finalize (GObject * object);
+static void gst_dshowaudiodec_dispose (GObject * object);
 static GstStateChangeReturn gst_dshowaudiodec_change_state
     (GstElement * element, GstStateChange transition);
 
@@ -357,7 +357,7 @@ gst_dshowaudiodec_class_init (GstDshowAudioDecClass * klass)
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
 
-  gobject_class->finalize = gst_dshowaudiodec_finalize;
+  gobject_class->dispose = GST_DEBUG_FUNCPTR (gst_dshowaudiodec_dispose);
 
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_dshowaudiodec_change_state);
@@ -461,7 +461,7 @@ gst_dshowaudiodec_init (GstDshowAudioDec * adec,
 }
 
 static void
-gst_dshowaudiodec_finalize (GObject * object)
+gst_dshowaudiodec_dispose (GObject * object)
 {
   GstDshowAudioDec *adec = (GstDshowAudioDec *) (object);
 
@@ -489,7 +489,7 @@ gst_dshowaudiodec_finalize (GObject * object)
   g_cond_free (adec->com_uninitialize);
   g_cond_free (adec->com_uninitialized);
 
-  G_OBJECT_CLASS (parent_class)->finalize (object);
+  G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 
@@ -579,11 +579,11 @@ gst_dshowaudiodec_chain (GstPad * pad, GstBuffer * buffer)
   if (!adec->setup) {
     /* we are not set up */
     GST_WARNING_OBJECT (adec, "Decoder not set up, failing");
-    adec->last_ret = GST_FLOW_FLUSHING;
+    adec->last_ret = GST_FLOW_WRONG_STATE;
     goto beach;
   }
 
-  if (GST_FLOW_IS_FATAL (adec->last_ret)) {
+  if (adec->last_ret < GST_FLOW_UNEXPECTED) {
     GST_DEBUG_OBJECT (adec, "last decoding iteration generated a fatal error "
         "%s", gst_flow_get_name (adec->last_ret));
     goto beach;
@@ -1171,7 +1171,7 @@ dshow_adec_register (GstPlugin * plugin)
           audio_dec_codecs[i].element_name, &info, (GTypeFlags)0);
       g_type_set_qdata (type, DSHOW_CODEC_QDATA, (gpointer) (audio_dec_codecs + i));
       if (!gst_element_register (plugin, audio_dec_codecs[i].element_name,
-              GST_RANK_MARGINAL, type)) {
+              GST_RANK_SECONDARY, type)) {
         return FALSE;
       }
       GST_CAT_DEBUG (dshowaudiodec_debug, "Registered %s",

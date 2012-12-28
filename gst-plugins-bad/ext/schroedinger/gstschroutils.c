@@ -21,8 +21,6 @@
 #include "config.h"
 #endif
 
-#include "gstschroutils.h"
-
 //#define SCHRO_ENABLE_UNSTABLE_API
 
 #include <gst/gst.h>
@@ -36,126 +34,72 @@
 GST_DEBUG_CATEGORY_EXTERN (schro_debug);
 #define GST_CAT_DEFAULT schro_debug
 
-typedef struct
-{
-  GstVideoFrame frame;
-} FrameData;
+
 
 
 static void
 gst_schro_frame_free (SchroFrame * frame, void *priv)
 {
-  FrameData *data = priv;
-
-  gst_video_frame_unmap (&data->frame);
-
-  g_slice_free (FrameData, data);
-}
-
-GstBuffer *
-gst_schro_frame_get_buffer (SchroFrame * frame)
-{
-  if (frame->priv)
-    return gst_buffer_ref (((FrameData *) frame->priv)->frame.buffer);
-
-  return NULL;
+  gst_buffer_unref (GST_BUFFER (priv));
 }
 
 SchroFrame *
-gst_schro_buffer_wrap (GstBuffer * buf, gboolean write, GstVideoInfo * vinfo)
+gst_schro_buffer_wrap (GstBuffer * buf, GstVideoFormat format, int width,
+    int height)
 {
   SchroFrame *frame;
-  GstVideoFrame vframe;
-  FrameData *data;
-  gint i;
 
-  if (!gst_video_frame_map (&vframe, vinfo, buf,
-          (write ? GST_MAP_READWRITE : GST_MAP_READ)))
-    return NULL;
-
-  frame = schro_frame_new ();
-
-  frame->width = GST_VIDEO_FRAME_WIDTH (&vframe);
-  frame->height = GST_VIDEO_FRAME_HEIGHT (&vframe);
-
-  switch (GST_VIDEO_FRAME_FORMAT (&vframe)) {
+  switch (format) {
     case GST_VIDEO_FORMAT_I420:
+      frame =
+          schro_frame_new_from_data_I420 (GST_BUFFER_DATA (buf), width, height);
+      break;
     case GST_VIDEO_FORMAT_YV12:
-      frame->format = SCHRO_FRAME_FORMAT_U8_420;
+      frame =
+          schro_frame_new_from_data_YV12 (GST_BUFFER_DATA (buf), width, height);
       break;
     case GST_VIDEO_FORMAT_YUY2:
-      frame->format = SCHRO_FRAME_FORMAT_YUYV;
+      frame =
+          schro_frame_new_from_data_YUY2 (GST_BUFFER_DATA (buf), width, height);
       break;
     case GST_VIDEO_FORMAT_UYVY:
-      frame->format = SCHRO_FRAME_FORMAT_UYVY;
+      frame =
+          schro_frame_new_from_data_UYVY (GST_BUFFER_DATA (buf), width, height);
       break;
     case GST_VIDEO_FORMAT_AYUV:
-      frame->format = SCHRO_FRAME_FORMAT_AYUV;
+      frame =
+          schro_frame_new_from_data_AYUV (GST_BUFFER_DATA (buf), width, height);
       break;
-#if SCHRO_CHECK_VERSION(1,0,12)
+#if 0
     case GST_VIDEO_FORMAT_ARGB:
-      frame->format = SCHRO_FRAME_FORMAT_ARGB;
-      break;
-#endif
-#if SCHRO_CHECK_VERSION(1,0,11)
-    case GST_VIDEO_FORMAT_Y42B:
-      frame->format = SCHRO_FRAME_FORMAT_U8_422;
-      break;
-    case GST_VIDEO_FORMAT_Y444:
-      frame->format = SCHRO_FRAME_FORMAT_U8_444;
-      break;
-    case GST_VIDEO_FORMAT_v210:
-      frame->format = SCHRO_FRAME_FORMAT_v210;
-      break;
-    case GST_VIDEO_FORMAT_v216:
-      frame->format = SCHRO_FRAME_FORMAT_v216;
-      break;
-    case GST_VIDEO_FORMAT_AYUV64:
-      frame->format = SCHRO_FRAME_FORMAT_AY64;
+    {
+      SchroFrame *rgbframe =
+          schro_frame_new_from_data_AYUV (GST_BUFFER_DATA (buf), width, height);
+      SchroFrame *vframe1;
+      SchroFrame *vframe2;
+      SchroFrame *vframe3;
+
+      vframe1 = schro_virt_frame_new_unpack (rgbframe);
+      vframe2 = schro_virt_frame_new_color_matrix (vframe1);
+      vframe3 =
+          schro_virt_frame_new_subsample (vframe2, SCHRO_FRAME_FORMAT_U8_420);
+
+      frame = schro_frame_new_and_alloc (NULL, SCHRO_FRAME_FORMAT_U8_420,
+          width, height);
+      schro_virt_frame_render (vframe3, frame);
+      schro_frame_unref (vframe3);
+    }
       break;
 #endif
     default:
       g_assert_not_reached ();
-      return NULL;
   }
-
-  if (SCHRO_FRAME_IS_PACKED (frame->format)) {
-    frame->components[0].format = frame->format;
-    frame->components[0].width = frame->width;
-    frame->components[0].height = frame->height;
-    frame->components[0].stride = GST_VIDEO_FRAME_COMP_STRIDE (&vframe, 0);
-    frame->components[0].length = frame->components[0].stride * frame->height;
-    frame->components[0].data = vframe.data[0];
-    frame->components[0].v_shift = 0;
-    frame->components[0].h_shift = 0;
-  } else {
-    for (i = 0; i < GST_VIDEO_FRAME_N_COMPONENTS (&vframe); i++) {
-      frame->components[i].format = frame->format;
-      frame->components[i].width = GST_VIDEO_FRAME_COMP_WIDTH (&vframe, i);
-      frame->components[i].height = GST_VIDEO_FRAME_COMP_HEIGHT (&vframe, i);
-      frame->components[i].stride = GST_VIDEO_FRAME_COMP_STRIDE (&vframe, i);
-      frame->components[i].length =
-          frame->components[i].stride * frame->components[i].height;
-      frame->components[i].data = GST_VIDEO_FRAME_COMP_DATA (&vframe, i);
-      if (i == 0) {
-        frame->components[i].v_shift = 0;
-        frame->components[i].h_shift = 0;
-      } else {
-        frame->components[i].v_shift =
-            SCHRO_FRAME_FORMAT_H_SHIFT (frame->format);
-        frame->components[i].h_shift =
-            SCHRO_FRAME_FORMAT_H_SHIFT (frame->format);
-      }
-    }
-  }
-
-  data = g_slice_new0 (FrameData);
-  data->frame = vframe;
-  schro_frame_set_free_callback (frame, gst_schro_frame_free, data);
+  schro_frame_set_free_callback (frame, gst_schro_frame_free, buf);
 
   return frame;
 }
 
+#ifdef GST_BUFFER_FREE_FUNC
 static void
 schro_buf_free_func (gpointer priv)
 {
@@ -163,62 +107,43 @@ schro_buf_free_func (gpointer priv)
 
   schro_buffer_unref (buffer);
 }
+#endif
 
 /* takes the reference */
 GstBuffer *
 gst_schro_wrap_schro_buffer (SchroBuffer * buffer)
 {
-  GstMemory *mem;
-  GstBuffer *buf;
+  GstBuffer *gstbuf;
 
-  mem =
-      gst_memory_new_wrapped (0, buffer->data, buffer->length, 0,
-      buffer->length, buffer, schro_buf_free_func);
-  buf = gst_buffer_new ();
-  gst_buffer_append_memory (buf, mem);
+#ifdef GST_BUFFER_FREE_FUNC
+  gstbuf = gst_buffer_new ();
+  GST_BUFFER_DATA (gstbuf) = buffer->data;
+  GST_BUFFER_SIZE (gstbuf) = buffer->length;
+  GST_BUFFER_MALLOCDATA (gstbuf) = (void *) buffer;
+  GST_BUFFER_FREE_FUNC (gstbuf) = schro_buf_free_func;
+#else
+  gstbuf = gst_buffer_new_and_alloc (buffer->length);
+  memcpy (GST_BUFFER_DATA (gstbuf), buffer->data, buffer->length);
+#endif
 
-  return buf;
+  return gstbuf;
 }
-
-typedef struct
-{
-  GstMemory *mem;
-  GstMapInfo info;
-} BufferData;
 
 static void
 gst_schro_buffer_free (SchroBuffer * buffer, void *priv)
 {
-  BufferData *data = priv;
-
-  gst_memory_unmap (data->mem, &data->info);
-  gst_memory_unref (data->mem);
-  g_slice_free (BufferData, priv);
+  gst_buffer_unref (GST_BUFFER (priv));
 }
 
 SchroBuffer *
 gst_schro_wrap_gst_buffer (GstBuffer * buffer)
 {
   SchroBuffer *schrobuf;
-  GstMemory *mem;
-  GstMapInfo info;
-  BufferData *data;
 
-  mem = gst_buffer_get_all_memory (buffer);
-  if (!gst_memory_map (mem, &info, GST_MAP_READ)) {
-    GST_ERROR ("Couldn't get readable memory from gstbuffer");
-    return NULL;
-  }
-
-  /* FIXME : We can't control if data won't be read/write outside
-   * of schro ... */
-  data = g_slice_new0 (BufferData);
-  data->info = info;
-  data->mem = mem;
-
-  schrobuf = schro_buffer_new_with_data (info.data, info.size);
+  schrobuf = schro_buffer_new_with_data (GST_BUFFER_DATA (buffer),
+      GST_BUFFER_SIZE (buffer));
   schrobuf->free = gst_schro_buffer_free;
-  schrobuf->priv = data;
+  schrobuf->priv = buffer;
 
   return schrobuf;
 }

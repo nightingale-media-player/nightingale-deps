@@ -59,7 +59,7 @@ GST_DEBUG_CATEGORY_STATIC (dshowvideodec_debug);
 GST_BOILERPLATE (GstDshowVideoDec, gst_dshowvideodec, GstElement,
     GST_TYPE_ELEMENT);
 
-static void gst_dshowvideodec_finalize (GObject * object);
+static void gst_dshowvideodec_dispose (GObject * object);
 static GstStateChangeReturn gst_dshowvideodec_change_state
     (GstElement * element, GstStateChange transition);
 
@@ -88,7 +88,6 @@ static gboolean gst_dshowvideodec_get_filter_output_format (GstDshowVideoDec *
 #define GUID_MEDIASUBTYPE_WMVV3 {0x33564d57, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_WMVP  {0x50564d57, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_WMVA  {0x41564d57, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
-#define GUID_MEDIASUBTYPE_WVC1  {0x31435657, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_CVID  {0x64697663, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_MP4S  {0x5334504d, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
 #define GUID_MEDIASUBTYPE_MP42  {0x3234504d, 0x0000, 0x0010, { 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 }}
@@ -161,7 +160,7 @@ static const VideoCodecEntry video_dec_codecs[] = {
   {"dshowvdec_wmv3", "Windows Media Video 9",
    GST_MAKE_FOURCC ('W', 'M', 'V', '3'),
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_WMVV3,
-   "video/x-wmv, wmvversion = (int) 3, " "format = (string) WMV3",
+   "video/x-wmv, wmvversion = (int) 3, " "format = (fourcc) WMV3",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
    preferred_wmv_filters},
@@ -169,7 +168,7 @@ static const VideoCodecEntry video_dec_codecs[] = {
   {"dshowvdec_wmvp", "Windows Media Video 9 Image",
    GST_MAKE_FOURCC ('W', 'M', 'V', 'P'),
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_WMVP,
-   "video/x-wmv, wmvversion = (int) 3, " "format = (string) { WMVP, MSS1 }",
+   "video/x-wmv, wmvversion = (int) 3, " "format = (fourcc) WMVP",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
    preferred_wmv_filters},
@@ -177,15 +176,7 @@ static const VideoCodecEntry video_dec_codecs[] = {
   {"dshowvdec_wmva", "Windows Media Video 9 Advanced",
    GST_MAKE_FOURCC ('W', 'M', 'V', 'A'),
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_WMVA,
-   "video/x-wmv, wmvversion = (int) 3, " "format = (string) WMVA",
-   GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
-   "video/x-raw-yuv, format=(fourcc)YUY2",
-   preferred_wmv_filters},
-
-   {"dshowvdec_wvc1", "Windows Media VC1 video",
-   GST_MAKE_FOURCC ('W', 'V', 'C', '1'),
-   GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_WVC1,
-   "video/x-wmv, wmvversion = (int) 3, " "format = (string) WVC1",
+   "video/x-wmv, wmvversion = (int) 3, " "format = (fourcc) WMVA",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2",
    preferred_wmv_filters},
@@ -275,7 +266,7 @@ static const VideoCodecEntry video_dec_codecs[] = {
 
   {"dshowvdec_divx3", "DIVX 3.0 Video",
    GST_MAKE_FOURCC ('D', 'I', 'V', '3'),
-   GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_MP43,
+   GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_DIV3,
    "video/x-divx, divxversion=(int)3",
    GUID_MEDIATYPE_VIDEO, GUID_MEDIASUBTYPE_YUY2,
    "video/x-raw-yuv, format=(fourcc)YUY2"}
@@ -418,7 +409,7 @@ gst_dshowvideodec_class_init (GstDshowVideoDecClass * klass)
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
 
-  gobject_class->finalize = gst_dshowvideodec_finalize;
+  gobject_class->dispose = GST_DEBUG_FUNCPTR (gst_dshowvideodec_dispose);
 
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_dshowvideodec_change_state);
@@ -518,7 +509,7 @@ gst_dshowvideodec_init (GstDshowVideoDec * vdec,
 }
 
 static void
-gst_dshowvideodec_finalize (GObject * object)
+gst_dshowvideodec_dispose (GObject * object)
 {
   GstDshowVideoDec *vdec = (GstDshowVideoDec *) (object);
 
@@ -541,7 +532,7 @@ gst_dshowvideodec_finalize (GObject * object)
   g_cond_free (vdec->com_uninitialize);
   g_cond_free (vdec->com_uninitialized);
 
-  G_OBJECT_CLASS (parent_class)->finalize (object);
+  G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static GstStateChangeReturn
@@ -862,11 +853,11 @@ gst_dshowvideodec_chain (GstPad * pad, GstBuffer * buffer)
   if (!vdec->setup) {
     /* we are not setup */
     GST_WARNING_OBJECT (vdec, "Decoder not set up, failing");
-    vdec->last_ret = GST_FLOW_FLUSHING;
+    vdec->last_ret = GST_FLOW_WRONG_STATE;
     goto beach;
   }
 
-  if (GST_FLOW_IS_FATAL (vdec->last_ret)) {
+  if (vdec->last_ret < GST_FLOW_UNEXPECTED) {
     GST_DEBUG_OBJECT (vdec, "last decoding iteration generated a fatal error "
         "%s", gst_flow_get_name (vdec->last_ret));
     goto beach;
@@ -997,6 +988,8 @@ gst_dshowvideodec_flush (GstDshowVideoDec * vdec)
 
   /* flush dshow decoder and reset timestamp */
   vdec->fakesrc->GetOutputPin()->Flush();
+
+  /* Reset the flow return state tracker */
   vdec->last_ret = GST_FLOW_OK;
 
   return TRUE;
@@ -1253,7 +1246,6 @@ dshow_vdec_register (GstPlugin * plugin)
   for (i = 0; i < sizeof (video_dec_codecs) / sizeof (VideoCodecEntry); i++) {
     GType type;
     CComPtr<IBaseFilter> filter;
-    guint rank = GST_RANK_MARGINAL;
 
     filter = gst_dshow_find_filter (
             video_dec_codecs[i].input_majortype,
@@ -1263,16 +1255,13 @@ dshow_vdec_register (GstPlugin * plugin)
             video_dec_codecs[i].preferred_filters);
     if (filter != NULL) {
 
-      if (video_dec_codecs[i].format == GST_MAKE_FOURCC ('W', 'V', 'C', '1')) {
-        /* FFMPEG WVC1 decoder sucks, get higher priority for ours */
-        rank = GST_RANK_MARGINAL + 2;
-      }
-      GST_DEBUG ("Registering %s with rank %u", video_dec_codecs[i].element_name, rank);
+      GST_DEBUG ("Registering %s", video_dec_codecs[i].element_name);
 
       type = g_type_register_static (GST_TYPE_ELEMENT,
           video_dec_codecs[i].element_name, &info, (GTypeFlags)0);
       g_type_set_qdata (type, DSHOW_CODEC_QDATA, (gpointer) (video_dec_codecs + i));
-      if (!gst_element_register (plugin, video_dec_codecs[i].element_name, rank, type)) {
+      if (!gst_element_register (plugin, video_dec_codecs[i].element_name,
+              GST_RANK_PRIMARY, type)) {
         return FALSE;
       }
       GST_DEBUG ("Registered %s", video_dec_codecs[i].element_name);

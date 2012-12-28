@@ -35,7 +35,7 @@ struct _CamApplicationInfo
   CamALApplication application;
 };
 
-CamApplicationInfo *cam_application_info_new (void);
+CamApplicationInfo *cam_application_info_new ();
 void cam_application_info_destroy (CamApplicationInfo *info);
 
 #endif /* CAM_APPLICATION_INFO_H */

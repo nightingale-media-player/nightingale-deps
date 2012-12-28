@@ -1,5 +1,5 @@
 /*
- * GStreamer
+ * Farsight Voice+Video library
  *
  *  Copyright 2008 Collabora Ltd
  *  Copyright 2008 Nokia Corporation
@@ -28,7 +28,6 @@
 #define __GST_LIVE_ADDER_H__
 
 #include <gst/gst.h>
-#include <gst/audio/audio.h>
 
 G_BEGIN_DECLS
 #define GST_TYPE_LIVE_ADDER            (gst_live_adder_get_type())
@@ -39,6 +38,13 @@ G_BEGIN_DECLS
 #define GST_LIVE_ADDER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj) ,GST_TYPE_LIVE_ADDER,GstLiveAdderClass))
 typedef struct _GstLiveAdder GstLiveAdder;
 typedef struct _GstLiveAdderClass GstLiveAdderClass;
+
+typedef enum
+{
+  GST_LIVE_ADDER_FORMAT_UNSET,
+  GST_LIVE_ADDER_FORMAT_INT,
+  GST_LIVE_ADDER_FORMAT_FLOAT
+} GstLiveAdderFormat;
 
 typedef void (*GstLiveAdderFunction) (gpointer out, gpointer in, guint size);
 
@@ -67,7 +73,18 @@ struct _GstLiveAdder
   GstClockTime next_timestamp;
 
   /* the next are valid for both int and float */
-  GstAudioInfo info;
+  GstLiveAdderFormat format;
+  gint rate;
+  gint channels;
+  gint width;
+  gint endianness;
+
+  /* the next are valid only for format == GST_LIVE_ADDER_FORMAT_INT */
+  gint depth;
+  gboolean is_signed;
+
+  /* number of bytes per sample, actually width/8 * channels */
+  gint bps;
 
   /* function to add samples */
   GstLiveAdderFunction func;

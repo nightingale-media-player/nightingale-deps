@@ -31,7 +31,7 @@
 static GList *elements = NULL;
 
 static void
-setup (void)
+setup ()
 {
   GList *features, *f;
   GList *plugins, *p;
@@ -39,13 +39,13 @@ setup (void)
   const gchar *STATE_IGNORE_ELEMENTS = NULL;
 
   GST_DEBUG ("getting elements for package %s", PACKAGE);
-  STATE_IGNORE_ELEMENTS = g_getenv ("GST_STATE_IGNORE_ELEMENTS");
-  if (!g_getenv ("GST_NO_STATE_IGNORE_ELEMENTS") && STATE_IGNORE_ELEMENTS) {
+  STATE_IGNORE_ELEMENTS = g_getenv ("STATE_IGNORE_ELEMENTS");
+  if (STATE_IGNORE_ELEMENTS) {
     GST_DEBUG ("Will ignore element factories: '%s'", STATE_IGNORE_ELEMENTS);
     ignorelist = g_strsplit (STATE_IGNORE_ELEMENTS, " ", 0);
   }
 
-  plugins = gst_registry_get_plugin_list (gst_registry_get ());
+  plugins = gst_registry_get_plugin_list (gst_registry_get_default ());
 
   for (p = plugins; p; p = p->next) {
     GstPlugin *plugin = p->data;
@@ -54,7 +54,7 @@ setup (void)
       continue;
 
     features =
-        gst_registry_get_feature_list_by_plugin (gst_registry_get (),
+        gst_registry_get_feature_list_by_plugin (gst_registry_get_default (),
         gst_plugin_get_name (plugin));
 
     for (f = features; f; f = f->next) {
@@ -88,7 +88,7 @@ setup (void)
 }
 
 static void
-teardown (void)
+teardown ()
 {
   GList *e;
 
@@ -213,18 +213,11 @@ GST_START_TEST (test_state_changes_down_seq)
 GST_END_TEST;
 
 
-static Suite *
+Suite *
 states_suite (void)
 {
   Suite *s = suite_create ("states");
   TCase *tc_chain = tcase_create ("general");
-
-#if defined(HAVE_LADSPA) || defined(HAVE_LV2)
-  /* timeout after 60s, not the default 3
-   * we have wrapper plugins enabled
-   */
-  tcase_set_timeout (tc_chain, 60);
-#endif
 
   suite_add_tcase (s, tc_chain);
   tcase_add_checked_fixture (tc_chain, setup, teardown);

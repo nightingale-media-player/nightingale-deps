@@ -64,7 +64,6 @@ struct _GstXvidEnc {
 
   /* encoding profile */
   gint profile;
-  gint used_profile;
 
   /* quantizer type; h263, MPEG */
   gint quant_type;

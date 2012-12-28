@@ -1,16 +1,16 @@
 
-Release notes for GStreamer Bad Plugins 1.0.4
+Release notes for GStreamer Bad Plug-ins 0.10.16 "Sensible Precaution"
+        
 
 
-The GStreamer team is proud to announce a new bug-fix release
-in the 1.x stable series of the
-core of the GStreamer streaming media framework.
+The GStreamer team is proud to announce a new release
+in the 0.10.x stable series of the
+GStreamer Bad Plug-ins.
 
 
-The 1.x series is a stable series targeted at end users.
-It is not API or ABI compatible with the stable 0.10.x series.
-It is, however, parallel installable with the 0.10.x series and
-will not affect an existing 0.10.x installation.
+The 0.10.x series is a stable series targeted at end users.
+It is not API or ABI compatible with the stable 0.8.x series.
+It is, however, parallel installable with the 0.8.x series.
 
 
 
@@ -18,7 +18,7 @@ will not affect an existing 0.10.x installation.
 
 
 No perfectly groomed moustache or any amount of fine clothing is going to
-cover up the truth - these plugins are Bad with a capital B.
+cover up the truth - these plug-ins are Bad with a capital B.
 They look fine on the outside, and might even appear to get the job done, but
 at the end of the day they're a black sheep. Without a golden-haired angel
 to watch over them, they'll probably land in an unmarked grave at the final
@@ -32,29 +32,27 @@ kinds of people, my friend: those with loaded guns and those who dig.
 You dig.
 
 
-This module contains a set of plugins that aren't up to par compared to the
+This module contains a set of plug-ins that aren't up to par compared to the
 rest.  They might be close to being good quality, but they're missing something
 - be it a good code review, some documentation, a set of tests, a real live
 maintainer, or some actual wide use.  If the blanks are filled in they might be
 upgraded to become part of either gst-plugins-good or gst-plugins-ugly,
 depending on the other factors.
-If the plugins break, you can't complain - instead, you can fix the
+If the plug-ins break, you can't complain - instead, you can fix the
 problem and send us a patch, or bribe someone into fixing them for you.
 New contributors can start here for things to work on.
 
 
-Other modules containing plugins are:
+Other modules containing plug-ins are:
 
 
 gst-plugins-base
-contains a basic set of well-supported plugins
+contains a basic set of well-supported plug-ins
 gst-plugins-good
-contains a set of well-supported plugins under our preferred license
+contains a set of well-supported plug-ins under our preferred license
 gst-plugins-ugly
-contains a set of well-supported plugins, but might pose problems for
+contains a set of well-supported plug-ins, but might pose problems for
     distributors
-gst-libav
-contains a set of codecs plugins based on libav (formerly gst-ffmpeg)
 
 
 
@@ -62,61 +60,48 @@ contains a set of codecs plugins based on libav (formerly gst-ffmpeg)
 
 Features of this release
     
-      * mpeg4videoparse: also parse divx 4/5
-      * mpeg4videoparse: export number of sprite warping points in caps (decoders might have no or only limited GMC support)
-      * mpegtsmux: propagate flow returns upstream; don't crash when reused
-      * rtmpsrc: disable seeking if the configured url specifies live=true
-      * build fixes for OS/X (shm) and Windows (d3dvideosink)
+      * Fix various bugs in the 0.10.15 release
+      * Fix a deadlock in starting DVD
+      * Fix compilation problems
+      * Allow libneon versions >= 29.x
 
 Bugs fixed in this release
      
-      * 688870 : mpegtsmux: does not propagate flow status
-      * 689107 : mpegtsmux: crashes when re-used
-      * 689183 : [shm] Modifications to get shm to compile on OSX
-      * 690031 : d3dvideosink makefile missing GST_PLUGINS_BASE_CFLAGS and GMODULE_NO_EXPORT_LIBS
-      * 690149 : [mpeg4videoparse] support divx and add GMC info in caps
+      * 599272 : faac check fails, undefined symbol
+      * 599332 : [neonhttpsrc] fails to compile with libneon 0.29.0
 
-==== Download ====
+Download
 
-You can find source releases of gst-plugins-bad in the download
-directory: http://gstreamer.freedesktop.org/src/gst-plugins-bad/
+You can find source releases of gst-plugins-bad in the download directory:
+http://gstreamer.freedesktop.org/src/gst-plugins-bad/
 
-The git repository and details how to clone it can be found at
-http://cgit.freedesktop.org/gstreamer/gst-plugins-bad/
+GStreamer Homepage
 
-==== Homepage ====
+More details can be found on the project's website:
+http://gstreamer.freedesktop.org/
 
-The project's website is http://gstreamer.freedesktop.org/
-
-==== Support and Bugs ====
+Support and Bugs
 
 We use GNOME's bugzilla for bug reports and feature requests:
 http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer
 
-Please submit patches via bugzilla as well.
+Developers
 
-For help and support, please subscribe to and send questions to the
-gstreamer-devel mailing list (see below for details).
-
-There is also a #gstreamer IRC channel on the Freenode IRC network.
-
-==== Developers ====
-
-GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned
-from there (see link above).
-
-Interested developers of the core library, plugins, and applications should
-subscribe to the gstreamer-devel list.
+GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned from there.
+Interested developers of the core library, plug-ins, and applications should
+subscribe to the gstreamer-devel list. If there is sufficient interest we
+will create more lists as necessary.
 
         
+Applications
+  
 Contributors to this release
     
-      * Alessandro Decina
-      * Arnaud Vrac
-      * Emmanuel Durand
-      * Krzysztof Konopko
-      * Michael Esemplare
+      * Edward Hervey
+      * Jan Schmidt
+      * Julien Isorce
+      * Kaj-Michael Lang
       * Sebastian Dröge
-      * Thijs Vermeir
+      * Thomas Green
       * Tim-Philipp Müller
  

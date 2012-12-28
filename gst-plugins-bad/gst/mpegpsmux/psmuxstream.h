@@ -86,8 +86,6 @@ struct PsMuxStreamBuffer
   guint8 *data;
   guint32 size;
 
-  gboolean keyunit;
-
   /* PTS & DTS associated with the contents of this buffer */
   GstClockTime pts;
   GstClockTime dts;
@@ -148,8 +146,7 @@ void 		psmux_stream_set_buffer_release_func 	(PsMuxStream *stream,
 /* Add a new buffer to the pool of available bytes. If pts or dts are not -1, they
  * indicate the PTS or DTS of the first access unit within this packet */
 void 		psmux_stream_add_data 		(PsMuxStream *stream, guint8 *data, guint len,
-						 void *user_data, gint64 pts, gint64 dts,
-						 gboolean keyunit);
+       						 void *user_data, gint64 pts, gint64 dts);
 
 /* total bytes in buffer */
 gint 		psmux_stream_bytes_in_buffer 	(PsMuxStream *stream);

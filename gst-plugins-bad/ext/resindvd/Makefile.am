@@ -1,36 +1,44 @@
 # plugindir is set in configure
 
-plugin_LTLIBRARIES = libgstresindvd.la
+plugin_LTLIBRARIES = libresindvd.la
 
-libgstresindvd_la_SOURCES = \
+libresindvd_la_SOURCES = \
         plugin.c \
         resindvdbin.c \
-        resindvdsrc.c  \
+	rsnaudiomunge.c \
 	rsndec.c \
+	rsnbasesrc.c \
+	rsnpushsrc.c \
+	rsnstreamselector.c \
+        resindvdsrc.c  \
         gstmpegdesc.c   \
         gstmpegdemux.c  \
         gstpesfilter.c \
-	rsninputselector.c \
-	rsnparsetter.c
+	rsnparsetter.c \
+	rsnwrappedbuffer.c
 
-libgstresindvd_la_CFLAGS = $(GST_PLUGINS_BAD_CFLAGS) \
-$(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) \
+libresindvd_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) \
 $(GST_CFLAGS) $(DVDNAV_CFLAGS)
-libgstresindvd_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) \
--lgstvideo-$(GST_API_VERSION) -lgstpbutils-$(GST_API_VERSION) \
+libresindvd_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) \
+-lgstinterfaces-$(GST_MAJORMINOR) -lgstvideo-$(GST_MAJORMINOR) \
+-lgstpbutils-$(GST_MAJORMINOR) \
 $(GST_BASE_LIBS) $(GST_LIBS) $(DVDNAV_LIBS)
-libgstresindvd_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
-libgstresindvd_la_LIBTOOLFLAGS = --tag=disable-static
+libresindvd_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+libresindvd_la_LIBTOOLFLAGS = --tag=disable-static
 
 noinst_HEADERS = resindvdbin.h \
+	rsnaudiomunge.h \
 	rsndec.h \
-	rsninputselector.h \
+	rsnbasesrc.h \
+	rsnpushsrc.h \
+	rsnstreamselector.h \
         resindvdsrc.h \
         gstmpegdefs.h \
         gstmpegdesc.h \
         gstmpegdemux.h \
         gstpesfilter.h \
-	rsnparsetter.h
+	rsnparsetter.h \
+	rsnwrappedbuffer.h
 
 EXTRA_DIST = resin-play resin-play2
 

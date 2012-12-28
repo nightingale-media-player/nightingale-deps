@@ -48,7 +48,6 @@ struct _RfbDecoder
 
   /* settable properties */
   gboolean shared_flag;
-  gboolean disconnected;
 
   /* readable properties */
   gboolean inited;

@@ -54,6 +54,12 @@ enum
 GST_DEBUG_CATEGORY_STATIC (measure_collector_debug);
 #define GST_CAT_DEFAULT measure_collector_debug
 
+static const GstElementDetails measure_collector_details =
+GST_ELEMENT_DETAILS ("Video measure collector",
+    "Filter/Effect/Video",
+    "Collect measurements from a measuring element",
+    "Руслан Ижбулатов <lrn _at_ gmail _dot_ com>");
+
 static GstStaticPadTemplate gst_measure_collector_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -120,8 +126,11 @@ gst_measure_collector_collect (GstMeasureCollector * mc, GstEvent * gstevent)
 static void
 gst_measure_collector_post_message (GstMeasureCollector * mc)
 {
+  GstBaseTransform *trans;
   GstMessage *m;
   guint64 i;
+
+  trans = GST_BASE_TRANSFORM_CAST (mc);
 
   g_return_if_fail (mc->metric);
 
@@ -318,10 +327,7 @@ gst_measure_collector_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_static_metadata (element_class,
-      "Video measure collector", "Filter/Effect/Video",
-      "Collect measurements from a measuring element",
-      "Руслан Ижбулатов <lrn _at_ gmail _dot_ com>");
+  gst_element_class_set_details (element_class, &measure_collector_details);
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_measure_collector_sink_template));
@@ -338,6 +344,8 @@ gst_measure_collector_class_init (GstMeasureCollectorClass * klass)
   gobject_class = G_OBJECT_CLASS (klass);
   trans_class = GST_BASE_TRANSFORM_CLASS (klass);
 
+  parent_class = g_type_class_peek_parent (klass);
+
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "measurecollect", 0,
       "measurement collector");
 
@@ -348,14 +356,12 @@ gst_measure_collector_class_init (GstMeasureCollectorClass * klass)
   g_object_class_install_property (gobject_class, PROP_FLAGS,
       g_param_spec_uint64 ("flags", "Flags",
           "Flags that control the operation of the element",
-          0, G_MAXUINT64, 0,
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+          0, G_MAXUINT64, 0, G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
   g_object_class_install_property (gobject_class, PROP_FILENAME,
       g_param_spec_string ("filename", "Output file name",
-          "A name of a file into which element will write the measurement"
-          " information", "",
-          G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+          "A name of a file into which element will write the measurement \
+information", "", G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
   trans_class->event = GST_DEBUG_FUNCPTR (gst_measure_collector_event);
 

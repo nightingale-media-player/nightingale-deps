@@ -185,13 +185,13 @@ mxf_vc3_get_descriptor (GstPadTemplate * tmpl, GstCaps * caps,
   }
 
   ret = (MXFMetadataCDCIPictureEssenceDescriptor *)
-      g_object_new (MXF_TYPE_METADATA_CDCI_PICTURE_ESSENCE_DESCRIPTOR, NULL);
+      gst_mini_object_new (MXF_TYPE_METADATA_CDCI_PICTURE_ESSENCE_DESCRIPTOR);
 
   memcpy (&ret->parent.parent.essence_container, &vc3_essence_container_ul, 16);
 
   if (!mxf_metadata_generic_picture_essence_descriptor_from_caps (&ret->parent,
           caps)) {
-    g_object_unref (ret);
+    gst_mini_object_unref (GST_MINI_OBJECT_CAST (ret));
     return NULL;
   }
 

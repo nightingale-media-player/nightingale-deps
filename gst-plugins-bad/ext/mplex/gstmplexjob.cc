@@ -41,7 +41,6 @@ enum
       /* FILL ME */
 };
 
-#define DEFAULT_FORMAT MPEG_FORMAT_DVD
 /*
  * Property enumeration types.
  */
@@ -56,20 +55,16 @@ gst_mplex_format_get_type (void)
 
   if (!mplex_format_type) {
     static const GEnumValue mplex_formats[] = {
-      {MPEG_FORMAT_MPEG1, "Generic MPEG-1", "mpeg-1"},
-      {MPEG_FORMAT_VCD, "Standard VCD", "vcd"},
-      {MPEG_FORMAT_VCD_NSR, "User VCD", "vcd-nsr"},
-      {MPEG_FORMAT_MPEG2, "Generic MPEG-2", "mpeg-2"},
-      {MPEG_FORMAT_SVCD, "Standard SVCD", "svcd"},
-      {MPEG_FORMAT_SVCD_NSR, "User SVCD", "svcd-nsr"},
-      {MPEG_FORMAT_VCD_STILL, "VCD Stills sequences", "vcd-still"},
-      {MPEG_FORMAT_SVCD_STILL, "SVCD Stills sequences", "svcd-still"},
-      {MPEG_FORMAT_DVD_NAV, "DVD MPEG-2 for dvdauthor", "dvd-nav"},
-      {MPEG_FORMAT_DVD, "DVD MPEG-2", "dvd"},
-      {MPEG_FORMAT_ATSC480i, "ATSC 480i", "atsc-480i"},
-      {MPEG_FORMAT_ATSC480p, "ATSC 480p", "atsc-480p"},
-      {MPEG_FORMAT_ATSC720p, "ATSC 720p", "atsc-720p"},
-      {MPEG_FORMAT_ATSC1080i, "ATSC 1080i", "atsc-1080i"},
+      {0, "Generic MPEG-1", "0"},
+      {1, "Standard VCD", "1"},
+      {2, "User VCD", "2"},
+      {3, "Generic MPEG-2", "3"},
+      {4, "Standard SVCD", "4"},
+      {5, "User SVCD", "5"},
+      {6, "VCD Stills sequences", "6"},
+      {7, "SVCD Stills sequences", "7"},
+      {8, "DVD MPEG-2 for dvdauthor", "8"},
+      {9, "DVD MPEG-2", "9"},
       {0, NULL, NULL},
     };
 
@@ -101,8 +96,7 @@ GstMplexJob::initProperties (GObjectClass * klass)
   /* encoding profile */
   g_object_class_install_property (klass, ARG_FORMAT,
       g_param_spec_enum ("format", "Format", "Encoding profile format",
-          GST_TYPE_MPLEX_FORMAT, DEFAULT_FORMAT,
-          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
+          GST_TYPE_MPLEX_FORMAT, 0, (GParamFlags) G_PARAM_READWRITE));
 
   /* total stream datarate. Normally, this shouldn't be needed, but
    * some DVD/VCD/SVCD players really need strict values to handle
@@ -110,57 +104,49 @@ GstMplexJob::initProperties (GObjectClass * klass)
   g_object_class_install_property (klass, ARG_MUX_BITRATE,
       g_param_spec_int ("mux-bitrate", "Mux. bitrate",
           "Bitrate of output stream in kbps (0 = autodetect)",
-          0, 15 * 1024, 0,
-          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
+          0, 15 * 1024, 0, (GParamFlags) G_PARAM_READWRITE));
 
   /* override decode buffer size otherwise determined by format */
   g_object_class_install_property (klass, ARG_BUFSIZE,
       g_param_spec_int ("bufsize", "Decoder buf. size",
           "Target decoders video buffer size (kB) "
           "[default determined by format if not explicitly set]",
-          20, 4000, 46,
-          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
+          20, 4000, 46, (GParamFlags) G_PARAM_READWRITE));
 
   /* some boolean stuff for headers */
   g_object_class_install_property (klass, ARG_VBR,
       g_param_spec_boolean ("vbr", "VBR",
           "Whether the input video stream is variable bitrate",
-          FALSE,
-          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
+          FALSE, (GParamFlags) G_PARAM_READWRITE));
   g_object_class_install_property (klass, ARG_SYSTEM_HEADERS,
       g_param_spec_boolean ("system-headers", "System headers",
           "Create system header in every pack for generic formats",
-          FALSE,
-          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
+          FALSE, (GParamFlags) G_PARAM_READWRITE));
 #if 0                           /* not supported */
   g_object_class_install_property (klass, ARG_SPLIT_SEQUENCE,
       g_param_spec_boolean ("split-sequence", "Split sequence",
           "Simply split a sequence across files "
           "(rather than building run-out/run-in)",
-          FALSE,
-          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
+          FALSE, (GParamFlags) G_PARAM_READWRITE));
 
   /* size of a segment */
   g_object_class_install_property (klass, ARG_SEGMENT_SIZE,
       g_param_spec_int ("max-segment-size", "Max. segment size",
           "Max. size per segment/file in MB (0 = unlimited)",
-          0, 10 * 1024, 0,
-          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
+          0, 10 * 1024, 0, (GParamFlags) G_PARAM_READWRITE));
 #endif
 
   /* packets per pack (generic formats) */
   g_object_class_install_property (klass, ARG_PACKETS_PER_PACK,
       g_param_spec_int ("packets-per-pack", "Packets per pack",
           "Number of packets per pack for generic formats",
-          1, 100, 1,
-          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
+          1, 100, 1, (GParamFlags) G_PARAM_READWRITE));
 
   /* size of one sector */
   g_object_class_install_property (klass, ARG_SECTOR_SIZE,
       g_param_spec_int ("sector-size", "Sector size",
           "Specify sector size in bytes for generic formats",
-          256, 16384, 2048,
-          (GParamFlags) (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
+          256, 16384, 2048, (GParamFlags) G_PARAM_READWRITE));
 }
 
 /*

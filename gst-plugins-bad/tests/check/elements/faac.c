@@ -23,43 +23,29 @@
 #include <unistd.h>
 
 #include <gst/check/gstcheck.h>
-#include <gst/audio/audio.h>
 
 /* For ease of programming we use globals to keep refs for our floating
  * src and sink pads we create; otherwise we always have to do get_pad,
  * get_peer, and then remove references in every test function */
 static GstPad *mysrcpad, *mysinkpad;
 
-#define AUDIO_CAPS_STRING "audio/x-raw, " \
-                           "format = (string) " GST_AUDIO_NE (S16) ", "\
-                           "layout = (string) interleaved, " \
+#define AUDIO_CAPS_STRING "audio/x-raw-int, " \
                            "rate = (int) 48000, " \
                            "channels = (int) 2, " \
-                           "channel-mask = (bitmask) 3"
+                           "width = (int) 16, " \
+                           "depth = (int) 16, " \
+                           "signed = (boolean) true, " \
+                           "endianness = (int) BYTE_ORDER "
 
-#define AAC_RAW_CAPS_STRING "audio/mpeg, " \
+#define AAC_CAPS_STRING "audio/mpeg, " \
                           "mpegversion = (int) 4, " \
                           "rate = (int) 48000, " \
-                          "channels = (int) 2, " \
-                          "stream-format = \"raw\"," \
-                          "base-profile = \"lc\""
+                          "channels = (int) 2 "
 
-#define AAC_ADTS_CAPS_STRING "audio/mpeg, " \
-                          "mpegversion = (int) 4, " \
-                          "rate = (int) 48000, " \
-                          "channels = (int) 2, " \
-                          "stream-format = \"adts\"," \
-                          "base-profile = \"lc\""
-
-static GstStaticPadTemplate sinktemplate_adts = GST_STATIC_PAD_TEMPLATE ("sink",
+static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (AAC_ADTS_CAPS_STRING));
-
-static GstStaticPadTemplate sinktemplate_raw = GST_STATIC_PAD_TEMPLATE ("sink",
-    GST_PAD_SINK,
-    GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (AAC_RAW_CAPS_STRING));
+    GST_STATIC_CAPS (AAC_CAPS_STRING));
 
 static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -67,27 +53,24 @@ static GstStaticPadTemplate srctemplate = GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS (AUDIO_CAPS_STRING));
 
 
-static GstElement *
+GstElement *
 setup_faac (gboolean adts)
 {
   GstElement *faac;
 
   GST_DEBUG ("setup_faac");
   faac = gst_check_setup_element ("faac");
-  mysrcpad = gst_check_setup_src_pad (faac, &srctemplate);
-
-  if (adts)
-    mysinkpad = gst_check_setup_sink_pad (faac, &sinktemplate_adts);
-  else
-    mysinkpad = gst_check_setup_sink_pad (faac, &sinktemplate_raw);
-
+  g_object_set (faac, "profile", 2, NULL);
+  g_object_set (faac, "outputformat", adts ? 1 : 0, NULL);
+  mysrcpad = gst_check_setup_src_pad (faac, &srctemplate, NULL);
+  mysinkpad = gst_check_setup_sink_pad (faac, &sinktemplate, NULL);
   gst_pad_set_active (mysrcpad, TRUE);
   gst_pad_set_active (mysinkpad, TRUE);
 
   return faac;
 }
 
-static void
+void
 cleanup_faac (GstElement * faac)
 {
   GST_DEBUG ("cleanup_faac");
@@ -100,7 +83,7 @@ cleanup_faac (GstElement * faac)
   gst_check_teardown_element (faac);
 }
 
-static void
+void
 do_test (gboolean adts)
 {
   GstElement *faac;
@@ -117,9 +100,9 @@ do_test (gboolean adts)
   /* corresponds to audio buffer mentioned in the caps */
   inbuffer = gst_buffer_new_and_alloc (1024 * nbuffers * 2 * 2);
   /* makes valgrind's memcheck happier */
-  gst_buffer_memset (inbuffer, 0, 0, 1024 * nbuffers * 2 * 2);
+  memset (GST_BUFFER_DATA (inbuffer), 0, GST_BUFFER_SIZE (inbuffer));
   caps = gst_caps_from_string (AUDIO_CAPS_STRING);
-  gst_pad_set_caps (mysrcpad, caps);
+  gst_buffer_set_caps (inbuffer, caps);
   gst_caps_unref (caps);
   GST_BUFFER_TIMESTAMP (inbuffer) = 0;
   ASSERT_BUFFER_REFCOUNT (inbuffer, "inbuffer", 1);
@@ -129,21 +112,18 @@ do_test (gboolean adts)
   fail_unless (gst_pad_push_event (mysrcpad, gst_event_new_eos ()) == TRUE);
 
   num_buffers = g_list_length (buffers);
-  fail_unless_equals_int (num_buffers, nbuffers + 1);
+  fail_unless (num_buffers == nbuffers);
 
   /* clean up buffers */
   for (i = 0; i < num_buffers; ++i) {
-    gint header = 0, id;
-    GstMapInfo map;
-    gsize size;
+    gint size, header = 0, id;
     guint8 *data;
 
     outbuffer = GST_BUFFER (buffers->data);
     fail_if (outbuffer == NULL);
 
-    gst_buffer_map (outbuffer, &map, GST_MAP_READ);
-    data = map.data;
-    size = map.size;
+    data = GST_BUFFER_DATA (outbuffer);
+    size = GST_BUFFER_SIZE (outbuffer);
 
     if (adts) {
       gboolean protection;
@@ -178,9 +158,8 @@ do_test (gboolean adts)
       const GValue *value;
       GstBuffer *buf;
       gint k;
-      GstMapInfo cmap;
 
-      caps = gst_pad_get_current_caps (mysinkpad);
+      caps = gst_buffer_get_caps (outbuffer);
       fail_if (caps == NULL);
       s = gst_caps_get_structure (caps, 0);
       fail_if (s == NULL);
@@ -188,10 +167,10 @@ do_test (gboolean adts)
       fail_if (value == NULL);
       buf = gst_value_get_buffer (value);
       fail_if (buf == NULL);
-      gst_buffer_map (buf, &cmap, GST_MAP_READ);
-      fail_if (cmap.size < 2);
-      k = GST_READ_UINT16_BE (cmap.data);
-      gst_buffer_unmap (buf, &cmap);
+      data = GST_BUFFER_DATA (buf);
+      size = GST_BUFFER_SIZE (buf);
+      fail_if (size < 2);
+      k = GST_READ_UINT16_BE (data);
       /* profile, rate, channels */
       fail_unless ((k & 0xFFF8) == ((0x02 << 11) | (0x3 << 7) | (0x02 << 3)));
       gst_caps_unref (caps);
@@ -201,7 +180,6 @@ do_test (gboolean adts)
     id = data[header] & (0x7 << 5);
     /* allow all but ID_END or ID_LFE */
     fail_if (id == 7 || id == 3);
-    gst_buffer_unmap (outbuffer, &map);
 
     buffers = g_list_remove (buffers, outbuffer);
 
@@ -229,7 +207,7 @@ GST_START_TEST (test_raw)
 
 GST_END_TEST;
 
-static Suite *
+Suite *
 faac_suite (void)
 {
   Suite *s = suite_create ("faac");

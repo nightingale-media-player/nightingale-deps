@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006, 2007, 2008, 2009, 2010 Fluendo S.A. 
+ * Copyright 2006, 2007, 2008 Fluendo S.A. 
  *  Authors: Jan Schmidt <jan@fluendo.com>
  *           Kapil Agrawal <kapil@fluendo.com>
  *           Julien Moutte <julien@fluendo.com>
@@ -94,35 +94,12 @@ G_BEGIN_DECLS
 #define GST_TYPE_MPEG_TSMUX  (mpegtsmux_get_type())
 #define GST_MPEG_TSMUX(obj)  (G_TYPE_CHECK_INSTANCE_CAST((obj), GST_TYPE_MPEG_TSMUX, MpegTsMux))
 
-#define CLOCK_BASE 9LL
-#define CLOCK_FREQ (CLOCK_BASE * 10000)   /* 90 kHz PTS clock */
-#define CLOCK_FREQ_SCR (CLOCK_FREQ * 300) /* 27 MHz SCR clock */
-
-#define MPEGTIME_TO_GSTTIME(time) (gst_util_uint64_scale ((time), \
-                        GST_MSECOND/10, CLOCK_BASE))
-#define GSTTIME_TO_MPEGTIME(time) (gst_util_uint64_scale ((time), \
-                        CLOCK_BASE, GST_MSECOND/10))
-
-/* 27 MHz SCR conversions: */
-#define MPEG_SYS_TIME_TO_GSTTIME(time) (gst_util_uint64_scale ((time), \
-                        GST_USECOND, CLOCK_FREQ_SCR / 1000000))
-#define GSTTIME_TO_MPEG_SYS_TIME(time) (gst_util_uint64_scale ((time), \
-                        CLOCK_FREQ_SCR / 1000000, GST_USECOND))
-
-#define NORMAL_TS_PACKET_LENGTH 188
-#define M2TS_PACKET_LENGTH      192
-
-#define MAX_PROG_NUMBER	32
-#define DEFAULT_PROG_ID	0
-
 typedef struct MpegTsMux MpegTsMux;
 typedef struct MpegTsMuxClass MpegTsMuxClass;
 typedef struct MpegTsPadData MpegTsPadData;
 
 typedef GstBuffer * (*MpegTsPadDataPrepareFunction) (GstBuffer * buf,
     MpegTsPadData * data, MpegTsMux * mux);
-
-typedef void (*MpegTsPadDataFreePrepareDataFunction) (gpointer prepare_data);
 
 struct MpegTsMux {
   GstElement parent;
@@ -132,86 +109,63 @@ struct MpegTsMux {
   GstCollectPads *collect;
 
   TsMux *tsmux;
-  TsMuxProgram *programs[MAX_PROG_NUMBER];
-
-  /* properties */
-  gboolean m2ts_mode;
+  TsMuxProgram **programs;
   GstStructure *prog_map;
-  guint pat_interval;
-  guint pmt_interval;
-  gint alignment;
 
-  /* state */
   gboolean first;
-  GstClockTime pending_key_unit_ts;
-  GstEvent *force_key_unit_event;
-
-  /* write callback handling/state */
   GstFlowReturn last_flow_ret;
-  GList *streamheader;
-  gboolean streamheader_sent;
-  gboolean is_delta;
-  GstClockTime last_ts;
-
-  /* m2ts specific */
-  gint64 previous_pcr;
-  gint64 previous_offset;
-  gint64 pcr_rate_num;
-  gint64 pcr_rate_den;
   GstAdapter *adapter;
-
-  /* output buffer aggregation */
-  GstAdapter *out_adapter;
-  GstBuffer *out_buffer;
-
-#if 0
-  /* SPN/PTS index handling */
-  GstIndex *element_index;
-  gint spn_count;
-#endif
+  gint64 previous_pcr;
+  gboolean m2ts_mode;
+  gboolean first_pcr;
+  
+  GstClockTime last_ts;
 };
 
-struct MpegTsMuxClass {
+struct MpegTsMuxClass  {
   GstElementClass parent_class;
 };
 
 #define MPEG_TS_PAD_DATA(data)  ((MpegTsPadData *)(data))
 
 struct MpegTsPadData {
-  /* parent */
-  GstCollectData collect;
+  GstCollectData collect; /* Parent */
 
   gint pid;
   TsMuxStream *stream;
 
-  /* most recent valid TS for this stream */
-  GstClockTime last_pts;
-  GstClockTime last_dts;
+  GstBuffer *queued_buf; /* Currently pulled buffer */
+  GstClockTime cur_ts; /* Adjusted TS for the pulled buffer */
+  GstClockTime last_ts; /* Most recent valid TS for this stream */
 
-#if 0
-  /* (optional) index writing */
-  gint element_index_writer_id;
-#endif
+  GstBuffer * codec_data; /* Optional codec data available in the caps */
 
-  /* optional codec data available in the caps */
-  GstBuffer *codec_data;
+  MpegTsPadDataPrepareFunction prepare_func; /* Handler to prepare input data */
 
-  /* Opaque data pointer to a structure used by the prepare function */
-  gpointer prepare_data;
+  gboolean eos;
 
-  /* handler to prepare input data */
-  MpegTsPadDataPrepareFunction prepare_func;
-  /* handler to free the private data */
-  MpegTsPadDataFreePrepareDataFunction free_func;
-
-  /* program id == idx to which it is attached to (not program pid) */
-  gint prog_id;
-  /* program this stream belongs to == mux->programs[prog_id] */
-  TsMuxProgram *prog;
+  gint prog_id; /* The program id to which it is attached to (not program pid) */ 
+  TsMuxProgram *prog; /* The program to which this stream belongs to */ 
 };
 
 GType mpegtsmux_get_type (void);
 
+#define CLOCK_BASE 9LL
+#define CLOCK_FREQ (CLOCK_BASE * 10000)
+
+#define MPEGTIME_TO_GSTTIME(time) (gst_util_uint64_scale ((time), \
+                        GST_MSECOND/10, CLOCK_BASE))
+#define GSTTIME_TO_MPEGTIME(time) (gst_util_uint64_scale ((time), \
+                        CLOCK_BASE, GST_MSECOND/10))
+
+#define NORMAL_TS_PACKET_LENGTH 188
+#define M2TS_PACKET_LENGTH      192
+#define STANDARD_TIME_CLOCK     27000000
+/*33 bits as 1 ie 0x1ffffffff*/
+#define TWO_POW_33_MINUS1     ((0xffffffff * 2) - 1) 
+
+#define MAX_PROG_NUMBER	32
+#define DEFAULT_PROG_ID	0
 
 G_END_DECLS
 

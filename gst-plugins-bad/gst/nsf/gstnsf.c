@@ -29,6 +29,12 @@
 #define GST_CAT_DEFAULT nsfdec_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
+static const GstElementDetails gst_nsfdec_details =
+GST_ELEMENT_DETAILS ("Nsf decoder",
+    "Codec/Decoder/Audio",
+    "Using nosefart to decode NSF audio tunes",
+    "Johan Dahlin <johan@gnome.org>");
+
 /* Nsfdec signals and args */
 enum
 {
@@ -136,10 +142,7 @@ gst_nsfdec_base_init (gpointer g_class)
 {
   GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
 
-  gst_element_class_set_static_metadata (element_class, "Nsf decoder",
-      "Codec/Decoder/Audio",
-      "Using nosefart to decode NSF audio tunes",
-      "Johan Dahlin <johan@gnome.org>");
+  gst_element_class_set_details (element_class, &gst_nsfdec_details);
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_templ));
@@ -151,8 +154,10 @@ static void
 gst_nsfdec_class_init (GstNsfDec * klass)
 {
   GObjectClass *gobject_class;
+  GstElementClass *gstelement_class;
 
   gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
 
   parent_class = GST_ELEMENT_CLASS (g_type_class_peek_parent (klass));
 
@@ -161,11 +166,10 @@ gst_nsfdec_class_init (GstNsfDec * klass)
   gobject_class->get_property = gst_nsfdec_get_property;
 
   g_object_class_install_property (gobject_class, PROP_TUNE,
-      g_param_spec_int ("tune", "tune", "tune", 1, 100, 1,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+      g_param_spec_int ("tune", "tune", "tune", 1, 100, 1, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, PROP_FILTER,
       g_param_spec_enum ("filter", "filter", "filter", GST_TYPE_NSF_FILTER,
-          NSF_FILTER_NONE, G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
+          NSF_FILTER_NONE, G_PARAM_WRITABLE));
 
   GST_DEBUG_CATEGORY_INIT (nsfdec_debug, "nsfdec", 0,
       "NES sound file (nsf) decoder");
@@ -211,7 +215,7 @@ gst_nsfdec_finalize (GObject * object)
     gst_buffer_unref (nsfdec->tune_buffer);
 
   if (nsfdec->taglist)
-    gst_tag_list_unref (nsfdec->taglist);
+    gst_tag_list_free (nsfdec->taglist);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -340,14 +344,16 @@ pause:
     GST_DEBUG_OBJECT (nsfdec, "pausing task, reason %s", reason);
     gst_pad_pause_task (pad);
 
-    if (ret == GST_FLOW_UNEXPECTED) {
-      /* perform EOS logic, FIXME, segment seek? */
-      gst_pad_push_event (pad, gst_event_new_eos ());
-    } else if (ret == GST_FLOW_NOT_LINKED || ret < GST_FLOW_UNEXPECTED) {
-      /* for fatal errors we post an error message */
-      GST_ELEMENT_ERROR (nsfdec, STREAM, FAILED,
-          (NULL), ("streaming task paused, reason %s", reason));
-      gst_pad_push_event (pad, gst_event_new_eos ());
+    if (GST_FLOW_IS_FATAL (ret) || ret == GST_FLOW_NOT_LINKED) {
+      if (ret == GST_FLOW_UNEXPECTED) {
+        /* perform EOS logic, FIXME, segment seek? */
+        gst_pad_push_event (pad, gst_event_new_eos ());
+      } else {
+        /* for fatal errors we post an error message */
+        GST_ELEMENT_ERROR (nsfdec, STREAM, FAILED,
+            (NULL), ("streaming task paused, reason %s", reason));
+        gst_pad_push_event (pad, gst_event_new_eos ());
+      }
     }
     goto done;
   }
@@ -397,7 +403,7 @@ start_play_tune (GstNsfDec * nsfdec)
       gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_TIME, 0, -1, 0));
 
   res = gst_pad_start_task (nsfdec->srcpad,
-      (GstTaskFunction) play_loop, nsfdec->srcpad, NULL);
+      (GstTaskFunction) play_loop, nsfdec->srcpad);
 
   return res;
 
@@ -451,7 +457,7 @@ gst_nsfdec_chain (GstPad * pad, GstBuffer * buffer)
   /* collect all data, we start doing something when we get an EOS
    * event */
   if (nsfdec->tune_buffer) {
-    nsfdec->tune_buffer = gst_buffer_append (nsfdec->tune_buffer, buffer);
+    nsfdec->tune_buffer = gst_buffer_join (nsfdec->tune_buffer, buffer);
   } else {
     nsfdec->tune_buffer = buffer;
   }
@@ -639,6 +645,6 @@ plugin_init (GstPlugin * plugin)
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR,
-    nsf,
+    "nsfdec",
     "Uses nosefart to decode .nsf files",
     plugin_init, VERSION, "GPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

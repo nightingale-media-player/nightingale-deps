@@ -37,15 +37,6 @@ G_BEGIN_DECLS enum
 
 typedef struct
 {
-  GstEvent * event;
-  gboolean (*handler)(GstPad *, GstEvent *);
-  GstPad *pad;
-} GstKateDecoderBaseQueuedEvent;
-
-typedef struct
-{
-  GstElement element;
-
   kate_state k;
 
   gboolean initialized;
@@ -58,17 +49,11 @@ typedef struct
   gint original_canvas_width;
   gint original_canvas_height;
 
-  GstSegment kate_segment;
-  gboolean kate_flushing;
-
-  gboolean delay_events;
-  GQueue *event_queue;
 } GstKateDecoderBase;
 
 extern GstCaps *gst_kate_util_set_header_on_caps (GstElement * element,
     GstCaps * caps, GList * headers);
-extern void gst_kate_util_decode_base_init (GstKateDecoderBase * decoder,
-    gboolean delay_events);
+extern void gst_kate_util_decode_base_init (GstKateDecoderBase * decoder);
 extern void gst_kate_util_install_decoder_base_properties (GObjectClass *
     gobject_class);
 extern gboolean gst_kate_util_decoder_base_get_property (GstKateDecoderBase *
@@ -77,16 +62,7 @@ extern gboolean gst_kate_util_decoder_base_get_property (GstKateDecoderBase *
 extern GstFlowReturn
 gst_kate_util_decoder_base_chain_kate_packet (GstKateDecoderBase * decoder,
     GstElement * element, GstPad * pad, GstBuffer * buffer, GstPad * srcpad,
-    GstPad * tagpad, GstCaps **src_caps, const kate_event ** ev);
-extern void
-gst_kate_util_decoder_base_set_flushing (GstKateDecoderBase * decoder,
-    gboolean flushing);
-extern void
-gst_kate_util_decoder_base_segment_event (GstKateDecoderBase * decoder,
-    GstEvent * event);
-extern gboolean
-gst_kate_util_decoder_base_update_segment (GstKateDecoderBase * decoder,
-    GstElement * element, GstBuffer * buf);
+    const kate_event ** ev);
 extern GstStateChangeReturn
 gst_kate_decoder_base_change_state (GstKateDecoderBase * decoder,
     GstElement * element, GstElementClass * parent_class,
@@ -96,10 +72,6 @@ extern gboolean gst_kate_decoder_base_convert (GstKateDecoderBase * decoder,
     GstFormat * dest_fmt, gint64 * dest_val);
 extern gboolean gst_kate_decoder_base_sink_query (GstKateDecoderBase * decoder,
     GstElement * element, GstPad * pad, GstQuery * query);
-extern gboolean
-gst_kate_util_decoder_base_queue_event (GstKateDecoderBase * decoder, GstEvent * event, gboolean (*handler)(GstPad *, GstEvent *), GstPad * pad);
-extern const char *
-gst_kate_util_get_error_message (int ret);
 
 G_END_DECLS
 #endif /* __GST_KATE_UTIL_H__ */

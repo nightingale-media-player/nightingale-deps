@@ -20,7 +20,6 @@
 #define __GSTSPU_COMMON_H__
 
 #include <glib.h>
-#include <gst/video/video.h>
 
 G_BEGIN_DECLS
 

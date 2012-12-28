@@ -3,10 +3,10 @@
   <description>DVB elements</description>
   <filename>../../sys/dvb/.libs/libgstdvb.so</filename>
   <basename>libgstdvb.so</basename>
-  <version>1.0.4</version>
+  <version>0.10.16</version>
   <license>LGPL</license>
   <source>gst-plugins-bad</source>
-  <package>GStreamer Bad Plug-ins source release</package>
+  <package>GStreamer Bad Plug-ins prerelease</package>
   <origin>Unknown package origin</origin>
   <elements>
     <element>
@@ -17,15 +17,15 @@
       <author>Alessandro Decina &lt;alessandro@nnva.org&gt;</author>
       <pads>
         <caps>
-          <name>src</name>
+          <name>src%d</name>
           <direction>source</direction>
-          <presence>always</presence>
+          <presence>request</presence>
           <details>video/mpegts, systemstream=(boolean)true</details>
         </caps>
         <caps>
-          <name>program_%u</name>
+          <name>program_%d</name>
           <direction>source</direction>
-          <presence>request</presence>
+          <presence>sometimes</presence>
           <details>video/mpegts, systemstream=(boolean)true</details>
         </caps>
       </pads>
@@ -35,7 +35,8 @@
       <longname>DVB Source</longname>
       <class>Source/Video</class>
       <description>Digital Video Broadcast Source</description>
-      <author>P2P-VCR, C-Lab, University of Paderborn,Zaheer Abbas Merali &lt;zaheerabbas at merali dot org&gt;</author>
+      <author>P2P-VCR, C-Lab, University of Paderborn
+    Zaheer Abbas Merali &lt;zaheerabbas at merali dot org&gt;</author>
       <pads>
         <caps>
           <name>src</name>

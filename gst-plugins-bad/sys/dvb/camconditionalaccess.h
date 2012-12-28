@@ -46,7 +46,7 @@ struct _CamConditionalAccess
   gboolean ready;
 };
 
-CamConditionalAccess *cam_conditional_access_new (void);
+CamConditionalAccess *cam_conditional_access_new ();
 void cam_conditional_access_destroy (CamConditionalAccess *cas);
 
 CamReturn cam_conditional_access_set_pmt (CamConditionalAccess *cas,

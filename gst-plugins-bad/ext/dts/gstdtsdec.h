@@ -22,7 +22,6 @@
 #define __GST_DTSDEC_H__
 
 #include <gst/gst.h>
-#include <gst/audio/gstaudiodecoder.h>
 
 G_BEGIN_DECLS
 
@@ -41,11 +40,16 @@ typedef struct _GstDtsDec GstDtsDec;
 typedef struct _GstDtsDecClass GstDtsDecClass;
 
 struct _GstDtsDec {
-  GstAudioDecoder	 element;
+  GstElement 	 element;
 
-  GstPadChainFunction base_chain;
+  /* pads */
+  GstPad        *sinkpad;
+  GstPad        *srcpad;
+  GstSegment     segment;
 
   gboolean       dvdmode;
+  gboolean       sent_segment;
+  gboolean       discont;
   gboolean       flag_update;
   gboolean       prev_flags;
 
@@ -55,8 +59,6 @@ struct _GstDtsDec {
   gint 	         stream_channels;
   gint 	         request_channels;
   gint 	         using_channels;
-
-  gint           channel_reorder_map[6];
 
   /* decoding properties */
   sample_t 	 level;
@@ -68,10 +70,18 @@ struct _GstDtsDec {
 #else
   dts_state_t 	*state;
 #endif
+
+
+  /* Data left over from the previous buffer */
+  GstBuffer		*cache;
+  GstClockTime	time;
+
+  /* reverse playback */
+  GList *queued;
 };
 
 struct _GstDtsDecClass {
-  GstAudioDecoderClass parent_class;
+  GstElementClass parent_class;
 
   guint32 dts_cpuflags;
 };

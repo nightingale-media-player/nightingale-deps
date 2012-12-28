@@ -67,12 +67,12 @@ typedef struct _GstKateDecClass GstKateDecClass;
 
 struct _GstKateDec
 {
-  GstKateDecoderBase decoder;
+  GstElement element;
 
   GstPad *sinkpad;
   GstPad *srcpad;
 
-  GstCaps *src_caps;
+  GstKateDecoderBase decoder;
 
   gboolean remove_markup;
 };

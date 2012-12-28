@@ -21,8 +21,8 @@
 #define __GST_FAAC_H__
 
 #include <gst/gst.h>
-#include <gst/audio/gstaudioencoder.h>
-
+#include <gst/base/gstadapter.h>
+#include <gst/audio/audio.h>
 #include <faac.h>
 
 G_BEGIN_DECLS
@@ -38,38 +38,38 @@ G_BEGIN_DECLS
 #define GST_IS_FAAC_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_FAAC))
 
-typedef struct _GstFaac GstFaac;
-typedef struct _GstFaacClass GstFaacClass;
+typedef struct _GstFaac {
+  GstElement element;
 
-struct _GstFaac {
-  GstAudioEncoder element;
+  /* pads */
+  GstPad *srcpad, *sinkpad;
 
-  /* input format */
-  gint format;
-  /* input frame size */
-  gint samples;
-  /* required output buffer size */
-  gint bytes;
-
-  /* negotiated */
-  gint mpegversion, outputformat;
-
-  /* properties */
-  gint bitrate,
+  /* stream properties */
+  gint samplerate,
+       channels,
+       format,
+       bps,
+       bitrate,
        profile,
-       quality,
-       brtype,
-       shortctl;
+       shortctl,
+       outputformat;
   gboolean tns,
            midside;
+  gulong bytes,
+         samples;
 
   /* FAAC object */
   faacEncHandle handle;
-};
 
-struct _GstFaacClass {
-  GstAudioEncoderClass parent_class;
-};
+  /* cache of the input */
+  GstAdapter *adapter;
+  /* offset of data to be encoded next */
+  guint offset;
+} GstFaac;
+
+typedef struct _GstFaacClass {
+  GstElementClass parent_class;
+} GstFaacClass;
 
 GType gst_faac_get_type (void);
 

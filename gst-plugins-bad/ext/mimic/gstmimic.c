@@ -30,9 +30,9 @@
 static gboolean
 plugin_init (GstPlugin * plugin)
 {
-  if (!gst_element_register (plugin, "mimenc", GST_RANK_NONE,
-          GST_TYPE_MIM_ENC) ||
-      !gst_element_register (plugin, "mimdec", GST_RANK_NONE, GST_TYPE_MIM_DEC)
+  if (!gst_element_register (plugin, "mimenc",
+          GST_RANK_NONE, GST_TYPE_MIMENC) ||
+      !gst_element_register (plugin, "mimdec", GST_RANK_NONE, GST_TYPE_MIMDEC)
       )
     return FALSE;
 
@@ -41,6 +41,6 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    mimic,
+    "mimic",
     "Mimic codec",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)

@@ -29,6 +29,13 @@
 
 #include "gstsfsrc.h"
 
+
+static const GstElementDetails sf_src_details =
+GST_ELEMENT_DETAILS ("Sndfile source",
+    "Source/Audio",
+    "Read audio streams from disk using libsndfile",
+    "Andy Wingo <wingo at pobox dot com>");
+
 enum
 {
   PROP_0,
@@ -86,10 +93,7 @@ gst_sf_src_base_init (gpointer g_class)
   gst_element_class_add_pad_template (gstelement_class,
       gst_static_pad_template_get (&sf_src_factory));
 
-  gst_element_class_set_static_metadata (gstelement_class, "Sndfile source",
-      "Source/Audio",
-      "Read audio streams from disk using libsndfile",
-      "Andy Wingo <wingo at pobox dot com>");
+  gst_element_class_set_details (gstelement_class, &sf_src_details);
   GST_DEBUG_CATEGORY_INIT (gst_sf_src_debug, "sfsrc", 0, "sfsrc element");
 }
 
@@ -200,10 +204,7 @@ gst_sf_src_create (GstBaseSrc * bsrc, guint64 offset, guint length,
 {
   GstSFSrc *this;
   GstBuffer *buf;
-/* FIXME discont is set but not used */
-#if 0
   gboolean discont = FALSE;
-#endif
   sf_count_t bytes_read;
 
   this = GST_SF_SRC (bsrc);
@@ -224,9 +225,7 @@ gst_sf_src_create (GstBaseSrc * bsrc, guint64 offset, guint length,
       goto seek_failed;
 
     this->offset = offset;
-#if 0
     discont = TRUE;
-#endif
   }
 
   buf = gst_buffer_new_and_alloc (length);

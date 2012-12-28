@@ -29,15 +29,17 @@
 #include <gst/video/video.h>
 #include "gstxviddec.h"
 
+/* elementfactory information */
+static const GstElementDetails gst_xviddec_details =
+GST_ELEMENT_DETAILS ("XviD video decoder",
+    "Codec/Decoder/Video",
+    "XviD decoder based on xvidcore",
+    "Ronald Bultje <rbultje@ronald.bitfreak.net>");
+
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("video/x-xvid, "
-        "width = (int) [ 0, MAX ], "
-        "height = (int) [ 0, MAX ], " "framerate = (fraction) [ 0/1, MAX ]; "
-        "video/mpeg, "
-        "mpegversion = (int) 4, "
-        "systemstream = (boolean) FALSE, "
         "width = (int) [ 0, MAX ], "
         "height = (int) [ 0, MAX ], " "framerate = (fraction) [ 0/1, MAX ]")
     );
@@ -105,10 +107,7 @@ gst_xviddec_base_init (GstXvidDecClass * klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_template));
 
-  gst_element_class_set_static_metadata (element_class, "XviD video decoder",
-      "Codec/Decoder/Video",
-      "XviD decoder based on xvidcore",
-      "Ronald Bultje <rbultje@ronald.bitfreak.net>");
+  gst_element_class_set_details (element_class, &gst_xviddec_details);
 }
 
 static void
@@ -315,7 +314,7 @@ gst_xviddec_chain (GstPad * pad, GstBuffer * buf)
   xvid_dec_frame_t xframe;
   xvid_dec_stats_t xstats;
   gint ret;
-  guint8 *data, *dupe = NULL;
+  guint8 *data;
   guint size;
   GstFlowReturn fret;
 
@@ -337,16 +336,6 @@ gst_xviddec_chain (GstPad * pad, GstBuffer * buf)
 
   data = GST_BUFFER_DATA (buf);
   size = GST_BUFFER_SIZE (buf);
-
-  /* xvidcore overreads the input buffer, we need to alloc some extra padding
-   * to make things work reliably */
-#define EXTRA_PADDING 16
-  if (EXTRA_PADDING > 0) {
-    dupe = g_malloc (size + EXTRA_PADDING);
-    memcpy (dupe, data, size);
-    memset (dupe + size, 0, EXTRA_PADDING);
-    data = dupe;
-  }
 
   do {                          /* loop needed because xvidcore may return vol information */
     /* decode and so ... */
@@ -427,7 +416,6 @@ gst_xviddec_chain (GstPad * pad, GstBuffer * buf)
   }
 
 done:
-  g_free (dupe);
   gst_buffer_unref (buf);
 
   return fret;

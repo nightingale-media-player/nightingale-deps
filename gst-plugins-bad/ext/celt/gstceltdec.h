@@ -22,7 +22,6 @@
 #define __GST_CELT_DEC_H__
 
 #include <gst/gst.h>
-#include <gst/audio/gstaudiodecoder.h>
 #include <celt/celt.h>
 #include <celt/celt_header.h>
 
@@ -43,22 +42,27 @@ typedef struct _GstCeltDec GstCeltDec;
 typedef struct _GstCeltDecClass GstCeltDecClass;
 
 struct _GstCeltDec {
-  GstAudioDecoder       element;
+  GstElement            element;
+
+  /* pads */
+  GstPad                *sinkpad;
+  GstPad                *srcpad;
 
   CELTDecoder          *state;
   CELTMode             *mode;
   CELTHeader            header;
 
   gint                  frame_size;
+  GstClockTime          frame_duration;
   guint64               packetno;
 
-  GstBuffer            *streamheader;
-  GstBuffer            *vorbiscomment;
-  GList                *extra_headers;
+  GstSegment            segment;    /* STREAM LOCK */
+  gint64                granulepos; /* -1 = needs to be set from current time */
+  gboolean              discont;
 };
 
 struct _GstCeltDecClass {
-  GstAudioDecoderClass parent_class;
+  GstElementClass parent_class;
 };
 
 GType gst_celt_dec_get_type (void);

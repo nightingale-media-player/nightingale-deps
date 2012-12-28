@@ -1,7 +1,6 @@
 /*
  * Copyright (C) 2007 Haakon Sporsheim <hakon.sporsheim@tandberg.com>
  *               2008 Ole André Vadla Ravnås <ole.andre.ravnas@tandberg.com>
- *               2009 Knut Inge Hvidsten <knut.inge.hvidsten@tandberg.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,7 +20,6 @@
 
 #include "ksvideohelpers.h"
 
-#include <math.h>
 #include <uuids.h>
 #include "kshelpers.h"
 
@@ -33,96 +31,10 @@ static const GUID MEDIASUBTYPE_FOURCC =
     0x38, 0x9B, 0x71}
 };
 
-typedef struct _KsVideoDeviceEntry KsVideoDeviceEntry;
-
-struct _KsVideoDeviceEntry
-{
-  KsDeviceEntry *device;
-  gint priority;
+extern const GUID MEDIASUBTYPE_I420 =
+    { 0x30323449, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B,
+    0x71}
 };
-
-static void
-ks_video_device_entry_decide_priority (KsVideoDeviceEntry * videodevice)
-{
-  HANDLE filter_handle;
-
-  videodevice->priority = 0;
-
-  filter_handle = CreateFile (videodevice->device->path,
-      GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING,
-      FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, NULL);
-  if (ks_is_valid_handle (filter_handle)) {
-    GUID *propsets = NULL;
-    gulong propsets_len;
-
-    if (ks_object_get_supported_property_sets (filter_handle, &propsets,
-            &propsets_len)) {
-      gulong i;
-
-      for (i = 0; i < propsets_len; i++) {
-        if (memcmp (&propsets[i], &PROPSETID_VIDCAP_CAMERACONTROL,
-                sizeof (GUID)) == 0) {
-          videodevice->priority++;
-          break;
-        }
-      }
-
-      g_free (propsets);
-    }
-  }
-
-  CloseHandle (filter_handle);
-}
-
-static gint
-ks_video_device_entry_compare (gconstpointer a, gconstpointer b)
-{
-  const KsVideoDeviceEntry *videodevice_a = a;
-  const KsVideoDeviceEntry *videodevice_b = b;
-
-  if (videodevice_a->priority > videodevice_b->priority)
-    return -1;
-  else if (videodevice_a->priority == videodevice_b->priority)
-    return 0;
-  else
-    return 1;
-}
-
-GList *
-ks_video_device_list_sort_cameras_first (GList * devices)
-{
-  GList *videodevices = NULL, *walk;
-  guint i;
-
-  for (walk = devices; walk != NULL; walk = walk->next) {
-    KsDeviceEntry *device = walk->data;
-    KsVideoDeviceEntry *videodevice;
-
-    videodevice = g_new (KsVideoDeviceEntry, 1);
-    videodevice->device = device;
-    ks_video_device_entry_decide_priority (videodevice);
-
-    videodevices = g_list_append (videodevices, videodevice);
-  }
-
-  videodevices = g_list_sort (videodevices, ks_video_device_entry_compare);
-
-  g_list_free (devices);
-  devices = NULL;
-
-  for (walk = videodevices, i = 0; walk != NULL; walk = walk->next, i++) {
-    KsVideoDeviceEntry *videodevice = walk->data;
-
-    videodevice->device->index = i;
-    devices = g_list_append (devices, videodevice->device);
-
-    g_free (videodevice);
-  }
-
-  g_list_free (videodevices);
-
-  return devices;
-}
 
 static GstStructure *
 ks_video_format_to_structure (GUID subtype_guid, GUID format_guid)
@@ -224,7 +136,7 @@ ks_video_format_to_structure (GUID subtype_guid, GUID format_guid)
           "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('d', 'v', 's', 'd'),
           NULL);
     }
-  } else if (memcmp (&subtype_guid.Data, &MEDIASUBTYPE_FOURCC.Data,
+  } else if (memcmp (&subtype_guid.Data2, &MEDIASUBTYPE_FOURCC.Data2,
           sizeof (subtype_guid) - sizeof (subtype_guid.Data1)) == 0) {
     guint8 *p = (guint8 *) & subtype_guid.Data1;
 
@@ -235,7 +147,7 @@ ks_video_format_to_structure (GUID subtype_guid, GUID format_guid)
 
   if (!structure) {
     GST_DEBUG ("Unknown DirectShow Video GUID %08x-%04x-%04x-%04x-%08x%04x",
-        subtype_guid.Data1, subtype_guid.Data, subtype_guid.Data3,
+        subtype_guid.Data1, subtype_guid.Data2, subtype_guid.Data3,
         *(WORD *) subtype_guid.Data4, *(DWORD *) & subtype_guid.Data4[2],
         *(WORD *) & subtype_guid.Data4[6]);
   }
@@ -243,70 +155,10 @@ ks_video_format_to_structure (GUID subtype_guid, GUID format_guid)
   return structure;
 }
 
-static void
-guess_aspect (gint width, gint height, gint * par_width, gint * par_height)
-{
-  /*
-   * As we dont have access to the actual pixel aspect, we will try to do a
-   * best-effort guess. The guess is based on most sensors being either 4/3
-   * or 16/9, and most pixel aspects being close to 1/1.
-   */
-  if ((width == 768) && (height == 448)) {      /* special case for w448p */
-    *par_width = 28;
-    *par_height = 27;
-  } else {
-    if (((float) width / (float) height) < 1.2778) {
-      *par_width = 12;
-      *par_height = 11;
-    } else {
-      *par_width = 1;
-      *par_height = 1;
-    }
-  }
-}
-
-/* NOTE: would probably be better to use a continued fractions approach here */
-static void
-compress_fraction (gint64 in_num, gint64 in_den, gint64 * out_num,
-    gint64 * out_den)
-{
-  gdouble on, od, orig;
-  guint denominators[] = { 1, 2, 3, 5, 7 }, i;
-  const gdouble max_loss = 0.1;
-
-  on = in_num;
-  od = in_den;
-  orig = on / od;
-
-  for (i = 0; i < G_N_ELEMENTS (denominators); i++) {
-    gint64 cur_n, cur_d;
-    gdouble cur, loss;
-
-    cur_n = floor ((on / (od / (gdouble) denominators[i])) + 0.5);
-    cur_d = denominators[i];
-    cur = (gdouble) cur_n / (gdouble) cur_d;
-    loss = fabs (cur - orig);
-
-    if (loss <= max_loss) {
-      *out_num = cur_n;
-      *out_den = cur_d;
-
-      return;
-    }
-  }
-
-  *out_num = in_num;
-  *out_den = in_den;
-}
-
 static gboolean
 ks_video_append_video_stream_cfg_fields (GstStructure * structure,
     const KS_VIDEO_STREAM_CONFIG_CAPS * vscc)
 {
-  GValue val = { 0, };
-  gint64 min_n, min_d;
-  gint64 max_n, max_d;
-
   g_return_val_if_fail (structure, FALSE);
   g_return_val_if_fail (vscc, FALSE);
 
@@ -331,28 +183,15 @@ ks_video_append_video_stream_cfg_fields (GstStructure * structure,
   }
 
   /* framerate */
-  compress_fraction (NANOSECONDS, vscc->MinFrameInterval, &min_n, &min_d);
-  compress_fraction (NANOSECONDS, vscc->MaxFrameInterval, &max_n, &max_d);
-
-  if (min_n == max_n && min_d == max_d) {
-    g_value_init (&val, GST_TYPE_FRACTION);
-    gst_value_set_fraction (&val, max_n, max_d);
-  } else {
-    g_value_init (&val, GST_TYPE_FRACTION_RANGE);
-    gst_value_set_fraction_range_full (&val, max_n, max_d, min_n, min_d);
-  }
-
-  gst_structure_set_value (structure, "framerate", &val);
-  g_value_unset (&val);
-
-  {
-    gint par_width, par_height;
-
-    guess_aspect (vscc->MaxOutputSize.cx, vscc->MaxOutputSize.cy,
-        &par_width, &par_height);
-
+  if (vscc->MinFrameInterval == vscc->MaxFrameInterval) {
     gst_structure_set (structure,
-        "pixel-aspect-ratio", GST_TYPE_FRACTION, par_width, par_height, NULL);
+        "framerate", GST_TYPE_FRACTION,
+        (gint) (10000000 / vscc->MaxFrameInterval), 1, NULL);
+  } else {
+    gst_structure_set (structure,
+        "framerate", GST_TYPE_FRACTION_RANGE,
+        (gint) (10000000 / vscc->MaxFrameInterval), 1,
+        (gint) (10000000 / vscc->MinFrameInterval), 1, NULL);
   }
 
   return TRUE;
@@ -464,10 +303,10 @@ ks_video_probe_filter_for_caps (HANDLE filter_handle)
   guint pin_id;
 
   if (!ks_filter_get_pin_property (filter_handle, 0, KSPROPSETID_Pin,
-          KSPROPERTY_PIN_CTYPES, &pin_count, sizeof (pin_count), NULL))
+          KSPROPERTY_PIN_CTYPES, &pin_count, sizeof (pin_count)))
     goto beach;
 
-  GST_DEBUG ("pin_count = %lu", pin_count);
+  GST_DEBUG ("pin_count = %d", pin_count);
 
   for (pin_id = 0; pin_id < pin_count; pin_id++) {
     KSPIN_COMMUNICATION pin_comm;
@@ -475,25 +314,25 @@ ks_video_probe_filter_for_caps (HANDLE filter_handle)
     GUID pin_cat;
 
     if (!ks_filter_get_pin_property (filter_handle, pin_id, KSPROPSETID_Pin,
-            KSPROPERTY_PIN_COMMUNICATION, &pin_comm, sizeof (pin_comm), NULL))
+            KSPROPERTY_PIN_COMMUNICATION, &pin_comm, sizeof (pin_comm)))
       continue;
 
     if (!ks_filter_get_pin_property (filter_handle, pin_id, KSPROPSETID_Pin,
-            KSPROPERTY_PIN_DATAFLOW, &pin_flow, sizeof (pin_flow), NULL))
+            KSPROPERTY_PIN_DATAFLOW, &pin_flow, sizeof (pin_flow)))
       continue;
 
     if (!ks_filter_get_pin_property (filter_handle, pin_id, KSPROPSETID_Pin,
-            KSPROPERTY_PIN_CATEGORY, &pin_cat, sizeof (pin_cat), NULL))
+            KSPROPERTY_PIN_CATEGORY, &pin_cat, sizeof (pin_cat)))
       continue;
 
-    GST_DEBUG ("pin[%u]: pin_comm=%d, pin_flow=%d", pin_id, pin_comm, pin_flow);
+    GST_DEBUG ("pin[%d]: pin_comm=%d, pin_flow=%d", pin_id, pin_comm, pin_flow);
 
     if (pin_flow == KSPIN_DATAFLOW_OUT &&
         memcmp (&pin_cat, &PINNAME_CAPTURE, sizeof (GUID)) == 0) {
       KSMULTIPLE_ITEM *items;
 
       if (ks_filter_get_pin_property_multi (filter_handle, pin_id,
-              KSPROPSETID_Pin, KSPROPERTY_PIN_DATARANGES, &items, NULL)) {
+              KSPROPSETID_Pin, KSPROPERTY_PIN_DATARANGES, &items)) {
         KSDATARANGE *range = (KSDATARANGE *) (items + 1);
         guint i;
 
@@ -547,48 +386,37 @@ ks_video_probe_filter_for_caps (HANDLE filter_handle)
               entry->format_size = sizeof (vr->VideoInfoHeader);
               entry->sample_size =
                   vr->VideoInfoHeader.hdr.bmiHeader.biSizeImage;
+            } else
+              g_assert_not_reached ();
+
+            g_assert (entry->sample_size != 0);
+
+            memcpy ((gpointer) & entry->vscc, src_vscc, sizeof (entry->vscc));
+
+            entry->format = g_malloc (entry->format_size);
+            memcpy (entry->format, src_format, entry->format_size);
+
+            media_structure =
+                ks_video_format_to_structure (range->SubFormat,
+                range->MajorFormat);
+
+            if (media_structure == NULL) {
+              g_warning ("ks_video_format_to_structure returned NULL");
+              ks_video_media_type_free (entry);
+              entry = NULL;
+            } else if (ks_video_append_video_stream_cfg_fields (media_structure,
+                    &entry->vscc)) {
+              entry->translated_caps = gst_caps_new_empty ();
+              gst_caps_append_structure (entry->translated_caps,
+                  media_structure);
             } else {
-              gchar *guid_str;
-
-              guid_str = ks_guid_to_string (&range->Specifier);
-              GST_DEBUG ("pin[%u]: ignoring unknown specifier GUID %s",
-                  pin_id, guid_str);
-              g_free (guid_str);
-
+              gst_structure_free (media_structure);
               ks_video_media_type_free (entry);
               entry = NULL;
             }
 
-            if (entry != NULL) {
-              g_assert (entry->sample_size != 0);
-
-              memcpy ((gpointer) & entry->vscc, src_vscc, sizeof (entry->vscc));
-
-              entry->format = g_malloc (entry->format_size);
-              memcpy (entry->format, src_format, entry->format_size);
-
-              media_structure =
-                  ks_video_format_to_structure (range->SubFormat,
-                  range->MajorFormat);
-
-              if (media_structure == NULL) {
-                g_warning ("ks_video_format_to_structure returned NULL");
-                ks_video_media_type_free (entry);
-                entry = NULL;
-              } else if (ks_video_append_video_stream_cfg_fields
-                  (media_structure, &entry->vscc)) {
-                entry->translated_caps = gst_caps_new_empty ();
-                gst_caps_append_structure (entry->translated_caps,
-                    media_structure);
-              } else {
-                gst_structure_free (media_structure);
-                ks_video_media_type_free (entry);
-                entry = NULL;
-              }
-
-              if (entry != NULL)
-                ret = g_list_prepend (ret, entry);
-            }
+            if (entry != NULL)
+              ret = g_list_prepend (ret, entry);
           }
 
           /* REVISIT: Each KSDATARANGE should start on a 64-bit boundary */
@@ -630,7 +458,7 @@ ks_video_create_pin_conn_from_media_type (KsVideoMediaType * media_type)
   conn->PinId = media_type->pin_id;
   conn->PinToHandle = NULL;
   conn->Priority.PriorityClass = KSPRIORITY_NORMAL;
-  conn->Priority.PrioritySubClass = KSPRIORITY_NORMAL;
+  conn->Priority.PrioritySubClass = 1;
 
   format = (KSDATAFORMAT *) (conn + 1);
   memcpy (format, media_type->range, sizeof (KSDATAFORMAT));
@@ -646,46 +474,49 @@ gboolean
 ks_video_fixate_media_type (const KSDATARANGE * range,
     guint8 * format, gint width, gint height, gint fps_n, gint fps_d)
 {
-  KS_DATARANGE_VIDEO *vr;
-  KS_VIDEOINFOHEADER *vih;
-  KS_BITMAPINFOHEADER *bih;
-  DWORD dwRate;
+  DWORD dwRate = (width * height * fps_n) / fps_d;
 
   g_return_val_if_fail (format != NULL, FALSE);
 
   if (IsEqualGUID (&range->Specifier, &FORMAT_VideoInfo)) {
-    bih = &((KS_VIDEOINFOHEADER *) format)->bmiHeader;
+    KS_VIDEOINFOHEADER *vih = (KS_VIDEOINFOHEADER *) format;
+
+    vih->AvgTimePerFrame = gst_util_uint64_scale_int (10000000, fps_d, fps_n);
+    vih->dwBitRate = dwRate * vih->bmiHeader.biBitCount;
+
+    g_assert (vih->bmiHeader.biWidth == width);
+    g_assert (vih->bmiHeader.biHeight == height);
   } else if (IsEqualGUID (&range->Specifier, &FORMAT_VideoInfo2)) {
-    bih = &((KS_VIDEOINFOHEADER2 *) format)->bmiHeader;
+    KS_VIDEOINFOHEADER2 *vih = (KS_VIDEOINFOHEADER2 *) format;
+
+    vih->AvgTimePerFrame = gst_util_uint64_scale_int (10000000, fps_d, fps_n);
+    vih->dwBitRate = dwRate * vih->bmiHeader.biBitCount;
+
+    g_assert (vih->bmiHeader.biWidth == width);
+    g_assert (vih->bmiHeader.biHeight == height);
   } else if (IsEqualGUID (&range->Specifier, &FORMAT_MPEGVideo)) {
-    bih = &((KS_MPEG1VIDEOINFO *) format)->hdr.bmiHeader;
+    KS_MPEG1VIDEOINFO *vih = (KS_MPEG1VIDEOINFO *) format;
+
+    vih->hdr.AvgTimePerFrame =
+        gst_util_uint64_scale_int (10000000, fps_d, fps_n);
+    vih->hdr.dwBitRate = dwRate * vih->hdr.bmiHeader.biBitCount;
+
+    /* FIXME: set height and width? */
+    g_assert (vih->hdr.bmiHeader.biWidth == width);
+    g_assert (vih->hdr.bmiHeader.biHeight == height);
   } else if (IsEqualGUID (&range->Specifier, &FORMAT_MPEG2Video)) {
-    bih = &((KS_MPEGVIDEOINFO2 *) format)->hdr.bmiHeader;
+    KS_MPEGVIDEOINFO2 *vih = (KS_MPEGVIDEOINFO2 *) format;
+
+    vih->hdr.AvgTimePerFrame =
+        gst_util_uint64_scale_int (10000000, fps_d, fps_n);
+    vih->hdr.dwBitRate = dwRate * vih->hdr.bmiHeader.biBitCount;
+
+    /* FIXME: set height and width? */
+    g_assert (vih->hdr.bmiHeader.biWidth == width);
+    g_assert (vih->hdr.bmiHeader.biHeight == height);
   } else {
     return FALSE;
   }
-
-  /* These formats' structures share the most basic stuff */
-  vr = (KS_DATARANGE_VIDEO *) range;
-  vih = (KS_VIDEOINFOHEADER *) format;
-
-  /* FIXME: Need to figure out how to properly handle ranges */
-  if (bih->biWidth != width || bih->biHeight != height)
-    return FALSE;
-
-  /* Framerate, clamped because of fraction conversion rounding errors */
-  vih->AvgTimePerFrame =
-      gst_util_uint64_scale_int_round (NANOSECONDS, fps_d, fps_n);
-  vih->AvgTimePerFrame =
-      MAX (vih->AvgTimePerFrame, vr->ConfigCaps.MinFrameInterval);
-  vih->AvgTimePerFrame =
-      MIN (vih->AvgTimePerFrame, vr->ConfigCaps.MaxFrameInterval);
-
-  /* Bitrate, clamped for the same reason as framerate */
-  dwRate = (width * height * fps_n) / fps_d;
-  vih->dwBitRate = dwRate * bih->biBitCount;
-  vih->dwBitRate = MAX (vih->dwBitRate, vr->ConfigCaps.MinBitsPerSecond);
-  vih->dwBitRate = MIN (vih->dwBitRate, vr->ConfigCaps.MaxBitsPerSecond);
 
   return TRUE;
 }

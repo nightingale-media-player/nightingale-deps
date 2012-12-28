@@ -48,8 +48,8 @@
 #include "gstmpegdefs.h"
 #include "gstpesfilter.h"
 
-GST_DEBUG_CATEGORY (mpegpspesfilter_debug);
-#define GST_CAT_DEFAULT (mpegpspesfilter_debug)
+GST_DEBUG_CATEGORY (gstflupesfilter_debug);
+#define GST_CAT_DEFAULT (gstflupesfilter_debug)
 
 static GstFlowReturn gst_pes_filter_data_push (GstPESFilter * filter,
     gboolean first, GstBuffer * buffer);
@@ -112,20 +112,15 @@ gst_pes_filter_parse (GstPESFilter * filter)
   GstFlowReturn ret;
   guint32 start_code;
 
-  gboolean STD_buffer_bound_scale G_GNUC_UNUSED;
+  gboolean STD_buffer_bound_scale;
   guint16 STD_buffer_size_bound;
   const guint8 *data;
   gint avail, datalen;
   gboolean have_size = FALSE;
 
-  avail = gst_adapter_available (filter->adapter);
-
-  if (avail < 6)
-    goto need_more_data;
-
-  data = gst_adapter_map (filter->adapter, 6);
-
   /* read start code and length */
+  if (!(data = gst_adapter_peek (filter->adapter, 6)))
+    goto need_more_data;
 
   /* get start code */
   start_code = GST_READ_UINT32_BE (data);
@@ -140,6 +135,9 @@ gst_pes_filter_parse (GstPESFilter * filter)
 
   /* start parsing length */
   filter->length = GST_READ_UINT16_BE (data);
+
+  /* see how much is available */
+  avail = gst_adapter_available (filter->adapter);
 
   GST_DEBUG ("id 0x%02x length %d, avail %d start code 0x%02x", filter->id,
       filter->length, avail, filter->start_code);
@@ -170,14 +168,13 @@ gst_pes_filter_parse (GstPESFilter * filter)
     avail = MIN (avail, filter->length + 6);
   }
 
-  if (avail < 6)
+  if (avail < 7)
     goto need_more_data;
-
-  gst_adapter_unmap (filter->adapter);
 
   /* read more data, either the whole packet if there is a length
    * or whatever we have available if this in an unbounded packet. */
-  data = gst_adapter_map (filter->adapter, avail);
+  if (!(data = gst_adapter_peek (filter->adapter, avail)))
+    goto need_more_data;
 
   /* This will make us flag LOST_SYNC if we run out of data from here onward */
   have_size = TRUE;
@@ -205,8 +202,6 @@ gst_pes_filter_parse (GstPESFilter * filter)
       break;
   }
 
-  if (datalen == 0)
-    goto need_more_data;
   filter->pts = filter->dts = -1;
 
   /* stuffing bits, first two bits are '10' for mpeg2 pes so this code is
@@ -472,8 +467,11 @@ push_out:
     }
 
     if (datalen > 0) {
-      out = gst_buffer_new_allocate (NULL, datalen, NULL);
-      gst_buffer_fill (out, 0, data, datalen);
+      out = gst_buffer_new ();
+      GST_BUFFER_DATA (out) = g_memdup (data, datalen);
+      GST_BUFFER_SIZE (out) = datalen;
+      GST_BUFFER_MALLOCDATA (out) = GST_BUFFER_DATA (out);
+
       ret = gst_pes_filter_data_push (filter, TRUE, out);
       filter->first = FALSE;
     } else {
@@ -486,7 +484,6 @@ push_out:
       filter->state = STATE_DATA_PUSH;
   }
 
-  gst_adapter_unmap (filter->adapter);
   gst_adapter_flush (filter->adapter, avail);
   ADAPTER_OFFSET_FLUSH (avail);
 
@@ -496,26 +493,24 @@ need_more_data:
   {
     if (filter->unbounded_packet == FALSE) {
       if (have_size == TRUE) {
-        GST_DEBUG ("bounded need more data %" G_GSIZE_FORMAT " , lost sync",
+        GST_DEBUG ("bounded need more data %d, lost sync",
             gst_adapter_available (filter->adapter));
         ret = GST_FLOW_LOST_SYNC;
       } else {
-        GST_DEBUG ("bounded need more data %" G_GSIZE_FORMAT
-            ", breaking for more", gst_adapter_available (filter->adapter));
+        GST_DEBUG ("bounded need more data %d, breaking for more",
+            gst_adapter_available (filter->adapter));
         ret = GST_FLOW_NEED_MORE_DATA;
       }
     } else {
-      GST_DEBUG ("unbounded need more data %" G_GSIZE_FORMAT,
+      GST_DEBUG ("unbounded need more data %d",
           gst_adapter_available (filter->adapter));
       ret = GST_FLOW_NEED_MORE_DATA;
     }
-    gst_adapter_unmap (filter->adapter);
+
     return ret;
   }
 skip:
   {
-    gst_adapter_unmap (filter->adapter);
-
     GST_DEBUG ("skipping 0x%02x", filter->id);
     gst_adapter_flush (filter->adapter, avail);
     ADAPTER_OFFSET_FLUSH (avail);
@@ -527,7 +522,6 @@ skip:
   }
 lost_sync:
   {
-    gst_adapter_unmap (filter->adapter);
     GST_DEBUG ("lost sync");
     gst_adapter_flush (filter->adapter, 4);
     ADAPTER_OFFSET_FLUSH (4);

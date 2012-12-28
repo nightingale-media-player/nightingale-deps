@@ -19,10 +19,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/* FIXME 0.11: suppress warnings for deprecated API such as GStaticRecMutex
- * with newer GLib versions (>= 2.31.0) */
-#define GLIB_DISABLE_DEPRECATION_WARNINGS
-
 #include <gst/gst.h>
 
 #include <math.h>
@@ -89,16 +85,18 @@ gst_tta_parse_get_type (void)
 static void
 gst_tta_parse_base_init (GstTtaParseClass * klass)
 {
-
+  static const GstElementDetails plugin_details =
+      GST_ELEMENT_DETAILS ("TTA file parser",
+      "Codec/Demuxer/Audio",
+      "Parses TTA files",
+      "Arwed v. Merkatz <v.merkatz@gmx.net>");
   GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
 
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&src_factory));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&sink_factory));
-  gst_element_class_set_static_metadata (element_class, "TTA file parser",
-      "Codec/Demuxer/Audio",
-      "Parses TTA files", "Arwed v. Merkatz <v.merkatz@gmx.net>");
+  gst_element_class_set_details (element_class, &plugin_details);
 }
 
 static void
@@ -215,7 +213,7 @@ gst_tta_parse_src_event (GstPad * pad, GstEvent * event)
                 ttaparse->num_frames * FRAME_TIME * GST_SECOND, 0));
 
         gst_pad_start_task (ttaparse->sinkpad,
-            (GstTaskFunction) gst_tta_parse_loop, ttaparse, NULL);
+            (GstTaskFunction) gst_tta_parse_loop, ttaparse);
 
         GST_PAD_STREAM_UNLOCK (ttaparse->sinkpad);
 
@@ -312,8 +310,7 @@ gst_tta_parse_activate_pull (GstPad * pad, gboolean active)
   GstTtaParse *ttaparse = GST_TTA_PARSE (GST_OBJECT_PARENT (pad));
 
   if (active) {
-    gst_pad_start_task (pad, (GstTaskFunction) gst_tta_parse_loop, ttaparse,
-        NULL);
+    gst_pad_start_task (pad, (GstTaskFunction) gst_tta_parse_loop, ttaparse);
   } else {
     gst_pad_stop_task (pad);
   }
@@ -324,6 +321,7 @@ gst_tta_parse_activate_pull (GstPad * pad, gboolean active)
 static GstFlowReturn
 gst_tta_parse_parse_header (GstTtaParse * ttaparse)
 {
+  GstFlowReturn res;
   guchar *data;
   GstBuffer *buf = NULL;
   guint32 crc;
@@ -334,7 +332,8 @@ gst_tta_parse_parse_header (GstTtaParse * ttaparse)
   guint32 offset;
   GstEvent *discont;
 
-  if (gst_pad_pull_range (ttaparse->sinkpad, 0, 22, &buf) != GST_FLOW_OK)
+  if ((res = gst_pad_pull_range (ttaparse->sinkpad,
+              0, 22, &buf)) != GST_FLOW_OK)
     goto pull_fail;
   data = GST_BUFFER_DATA (buf);
   ttaparse->channels = GST_READ_UINT16_LE (data + 6);
@@ -352,8 +351,8 @@ gst_tta_parse_parse_header (GstTtaParse * ttaparse)
 
   ttaparse->index =
       (GstTtaIndex *) g_malloc (num_frames * sizeof (GstTtaIndex));
-  if (gst_pad_pull_range (ttaparse->sinkpad,
-          22, num_frames * 4 + 4, &buf) != GST_FLOW_OK)
+  if ((res = gst_pad_pull_range (ttaparse->sinkpad,
+              22, num_frames * 4 + 4, &buf)) != GST_FLOW_OK)
     goto pull_fail;
   data = GST_BUFFER_DATA (buf);
 
@@ -437,7 +436,7 @@ found_eos:
   {
     GST_DEBUG ("found EOS");
     gst_pad_push_event (ttaparse->srcpad, gst_event_new_eos ());
-    return GST_FLOW_FLUSHING;
+    return GST_FLOW_WRONG_STATE;
   }
 pull_error:
   {
@@ -467,9 +466,7 @@ gst_tta_parse_loop (GstTtaParse * ttaparse)
 pause:
   GST_LOG_OBJECT (ttaparse, "pausing task, %s", gst_flow_get_name (ret));
   gst_pad_pause_task (ttaparse->sinkpad);
-  if (ret == GST_FLOW_UNEXPECTED) {
-    gst_pad_push_event (ttaparse->srcpad, gst_event_new_eos ());
-  } else if (ret < GST_FLOW_UNEXPECTED || ret == GST_FLOW_NOT_LINKED) {
+  if (GST_FLOW_IS_FATAL (ret) || ret == GST_FLOW_NOT_LINKED) {
     GST_ELEMENT_ERROR (ttaparse, STREAM, FAILED,
         ("Internal data stream error."),
         ("streaming stopped, reason %s", gst_flow_get_name (ret)));
@@ -500,7 +497,7 @@ gboolean
 gst_tta_parse_plugin_init (GstPlugin * plugin)
 {
   if (!gst_element_register (plugin, "ttaparse",
-          GST_RANK_NONE, GST_TYPE_TTA_PARSE)) {
+          GST_RANK_PRIMARY, GST_TYPE_TTA_PARSE)) {
     return FALSE;
   }
 

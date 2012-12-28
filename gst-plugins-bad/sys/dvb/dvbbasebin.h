@@ -47,9 +47,11 @@ typedef struct _DvbBaseBinClass DvbBaseBinClass;
 struct _DvbBaseBin {
   GstBin bin;
 
+  GstPad *ts_pad;
+
   GstElement *dvbsrc;
   GstElement *buffer_queue;
-  GstElement *tsparse;
+  GstElement *mpegtsparse;
   CamDevice *hwcam;
   GList *pmtlist;
   gboolean pmtlist_changed;
@@ -57,9 +59,6 @@ struct _DvbBaseBin {
   GHashTable *streams;
   GHashTable *programs;
   gboolean disposed;
-
-  /* Cached value */
-  gchar *program_numbers;
 };
 
 struct _DvbBaseBinClass {
@@ -68,7 +67,7 @@ struct _DvbBaseBinClass {
   /* signals */
 };
 
-GType dvb_base_bin_get_type(void);
+GType gst_dvb_base_bin_get_type(void);
 gboolean gst_dvb_base_bin_plugin_init (GstPlugin *plugin);
 
 G_END_DECLS

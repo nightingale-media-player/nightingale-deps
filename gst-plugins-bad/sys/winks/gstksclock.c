@@ -24,7 +24,7 @@
 GST_DEBUG_CATEGORY_EXTERN (gst_ks_debug);
 #define GST_CAT_DEFAULT gst_ks_debug
 
-struct _GstKsClockPrivate
+typedef struct
 {
   GMutex *mutex;
   GCond *client_cond;
@@ -41,9 +41,11 @@ struct _GstKsClockPrivate
   gboolean worker_initialized;
 
   GstClock *master_clock;
-};
+} GstKsClockPrivate;
 
-#define GST_KS_CLOCK_GET_PRIVATE(o) ((o)->priv)
+#define GST_KS_CLOCK_GET_PRIVATE(o) \
+    (G_TYPE_INSTANCE_GET_PRIVATE ((o), GST_TYPE_KS_CLOCK, \
+    GstKsClockPrivate))
 
 #define GST_KS_CLOCK_LOCK() g_mutex_lock (priv->mutex)
 #define GST_KS_CLOCK_UNLOCK() g_mutex_unlock (priv->mutex)
@@ -72,12 +74,7 @@ gst_ks_clock_class_init (GstKsClockClass * klass)
 static void
 gst_ks_clock_init (GstKsClock * self, GstKsClockClass * gclass)
 {
-  GstKsClockPrivate *priv;
-
-  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GST_TYPE_KS_CLOCK,
-      GstKsClockPrivate);
-
-  priv = GST_KS_CLOCK_GET_PRIVATE (self);
+  GstKsClockPrivate *priv = GST_KS_CLOCK_GET_PRIVATE (self);
 
   priv->mutex = g_mutex_new ();
   priv->client_cond = g_cond_new ();
@@ -99,7 +96,10 @@ gst_ks_clock_init (GstKsClock * self, GstKsClockClass * gclass)
 static void
 gst_ks_clock_dispose (GObject * object)
 {
-  g_assert (!GST_KS_CLOCK_GET_PRIVATE (GST_KS_CLOCK (object))->open);
+  GstKsClock *self = GST_KS_CLOCK (object);
+  GstKsClockPrivate *priv = GST_KS_CLOCK_GET_PRIVATE (self);
+
+  g_assert (!priv->open);
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -123,6 +123,7 @@ gboolean
 gst_ks_clock_open (GstKsClock * self)
 {
   GstKsClockPrivate *priv = GST_KS_CLOCK_GET_PRIVATE (self);
+  gboolean ret = FALSE;
   GList *devices;
   KsDeviceEntry *device;
   KSSTATE state;
@@ -147,7 +148,7 @@ gst_ks_clock_open (GstKsClock * self)
 
   state = KSSTATE_STOP;
   if (!ks_object_set_property (priv->clock_handle, KSPROPSETID_Clock,
-          KSPROPERTY_CLOCK_STATE, &state, sizeof (state), NULL))
+          KSPROPERTY_CLOCK_STATE, &state, sizeof (state)))
     goto error;
 
   ks_device_list_free (devices);
@@ -189,7 +190,7 @@ gst_ks_clock_set_state_unlocked (GstKsClock * self, KSSTATE state)
         ks_state_to_string (priv->state), ks_state_to_string (next_state));
 
     if (ks_object_set_property (priv->clock_handle, KSPROPSETID_Clock,
-            KSPROPERTY_CLOCK_STATE, &next_state, sizeof (next_state), NULL)) {
+            KSPROPERTY_CLOCK_STATE, &next_state, sizeof (next_state))) {
       priv->state = next_state;
 
       GST_DEBUG ("Changed clock state to %s", ks_state_to_string (priv->state));
@@ -226,8 +227,7 @@ gst_ks_clock_close_unlocked (GstKsClock * self)
     GST_KS_CLOCK_LOCK ();
   }
 
-  if (priv->open)
-    gst_ks_clock_set_state_unlocked (self, KSSTATE_STOP);
+  gst_ks_clock_set_state_unlocked (self, KSSTATE_STOP);
 
   if (ks_is_valid_handle (priv->clock_handle)) {
     CloseHandle (priv->clock_handle);
@@ -294,7 +294,7 @@ gst_ks_clock_worker_thread_func (gpointer data)
       now /= 100;
 
       if (ks_object_set_property (priv->clock_handle, KSPROPSETID_Clock,
-              KSPROPERTY_CLOCK_TIME, &now, sizeof (now), NULL)) {
+              KSPROPERTY_CLOCK_TIME, &now, sizeof (now))) {
         GST_DEBUG ("clock synchronized");
         gst_object_unref (priv->master_clock);
         priv->master_clock = NULL;

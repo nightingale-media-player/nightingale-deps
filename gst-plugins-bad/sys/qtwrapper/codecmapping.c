@@ -42,18 +42,17 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "qtwrapper.h"
 #include "codecmapping.h"
 #include "qtutils.h"
 
 static GstCaps *
-audio_caps_from_string (const gchar * str)
+audio_caps_from_string (gchar * str)
 {
   GstCaps *res;
 
   res = gst_caps_from_string (str);
   gst_caps_set_simple (res,
-      "rate", GST_TYPE_INT_RANGE, 8000, 96000,
+      "rate", GST_TYPE_INT_RANGE, 1, 192000,
       "channels", GST_TYPE_INT_RANGE, 1, 2, NULL);
 
   return res;
@@ -128,7 +127,11 @@ fourcc_to_caps (guint32 fourcc)
       break;
     case QT_MAKE_FOURCC_LE ('m', 'p', '4', 'a'):
     case QT_MAKE_FOURCC_LE ('a', 'a', 'c', ' '):
-      caps = audio_caps_from_string ("audio/mpeg,mpegversion=4");
+      caps = gst_caps_new_simple ("audio/mpeg",
+          "mpegversion", G_TYPE_INT, 4,
+          "rate", GST_TYPE_INT_RANGE, 1, 192000,
+          "channels", GST_TYPE_INT_RANGE, 1, 7,
+          NULL);
       break;
     case QT_MAKE_FOURCC_LE ('s', 'a', 'm', 'r'):
       caps = audio_caps_from_string ("audio/AMR");

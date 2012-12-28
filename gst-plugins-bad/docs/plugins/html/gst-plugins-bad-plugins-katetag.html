@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>katetag</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
+<link rel="start" href="index.html" title="GStreamer Bad Plugins 0.10 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="prev" href="gst-plugins-bad-plugins-kateparse.html" title="kateparse">
+<link rel="next" href="gst-plugins-bad-plugins-ladspa.html" title="ladspa">
+<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="chapter" href="ch01.html" title="gst-plugins-bad Elements">
+<link rel="chapter" href="ch02.html" title="gst-plugins-bad Plugins">
+<link rel="chapter" href="ch03.html" title="gst-plugins-bad Classes">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-plugins-kateparse.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 0.10 Plugins Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-ladspa.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-plugins-katetag.synopsis" class="shortcut">Top</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-katetag.description" class="shortcut">Description</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-katetag.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-katetag.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
+                 | 
+                <a href="#gst-plugins-bad-plugins-katetag.properties" class="shortcut">Properties</a>
+</td></tr>
+</table>
+<div class="refentry" lang="en">
+<a name="gst-plugins-bad-plugins-katetag"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-katetag.top_of_page"></a>katetag</span></h2>
+<p>katetag — retags kate streams</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-bad-plugins-katetag.synopsis"></a><h2>Synopsis</h2>
+<a name="GstKateTag"></a><pre class="synopsis">
+                    <a class="link" href="gst-plugins-bad-plugins-katetag.html#GstKateTag-struct" title="GstKateTag">GstKateTag</a>;
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-katetag.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a
+href="/usr/share/gtk-doc/html/gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstObject.html"
+>GstObject</a>
+         +----<a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstElement.html"
+>GstElement</a>
+               +----<a class="link" href="gst-plugins-bad-plugins-kateparse.html#GstKateParse">GstKateParse</a>
+                     +----GstKateTag
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-katetag.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstKateTag implements
+ <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstTagSetter.html"
+>GstTagSetter</a>.</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-katetag.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="gst-plugins-bad-plugins-katetag.html#GstKateTag--category" title='The "category" property'>category</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-katetag.html#GstKateTag--language" title='The "language" property'>language</a>"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-katetag.html#GstKateTag--original-canvas-height" title='The "original-canvas-height" property'>original-canvas-height</a>"   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+  "<a class="link" href="gst-plugins-bad-plugins-katetag.html#GstKateTag--original-canvas-width" title='The "original-canvas-width" property'>original-canvas-width</a>"    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write
+</pre>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-katetag.description"></a><h2>Description</h2>
+<p>
+</p>
+<div class="refsect2" lang="en">
+<a name="id2842146"></a><h3>Example pipelines</h3>
+<p>
+The katetag element can change the tag contained within a raw
+kate stream. Specifically, it modifies the comments header packet
+of the kate stream, as well as the language and category of the
+kate stream.
+</p>
+<p>
+The element will also process the stream as the <span class="type">kateparse</span> element does
+so it can be used when remuxing an Ogg Kate stream, without additional
+elements.
+</p>
+<p>
+Applications can set the tags to write using the <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstTagSetter.html"
+><span class="type">GstTagSetter</span></a> interface.
+Tags contained within the kate stream will be picked up
+automatically (and merged according to the merge mode set via the tag
+setter interface).
+</p>
+<p>
+This element is only useful with gst-launch for modifying the language
+and/or category (which are properties of the stream located in the kate
+beginning of stream header), because it does not support setting the tags
+on a <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstTagSetter.html"
+><span class="type">GstTagSetter</span></a> interface. Conceptually, the element will usually be
+used like:
+</p>
+<pre class="programlisting">
+gst-launch -v filesrc location=foo.ogg ! oggdemux ! katetag ! oggmux ! filesink location=bar.ogg
+</pre>
+<p>
+</p>
+<p>
+This pipeline will set the language and category of the stream to the
+given values:
+</p>
+<pre class="programlisting">
+gst-launch -v filesrc location=foo.ogg ! oggdemux ! katetag language=pt_BR category=subtitles ! oggmux ! filesink location=bar.ogg
+</pre>
+<p>
+</p>
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2" lang="en">
+<a name="id2883890"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-bad-plugins-plugin-kate.html#plugin-kate">kate</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Vincent Penquerc'h &lt;ogg.k.ogg.k@googlemail.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Formatter/Metadata</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="id2883953"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>subtitle/x-kate</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> application/x-kate</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>subtitle/x-kate</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> application/x-kate</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-katetag.details"></a><h2>Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstKateTag-struct"></a><h3>GstKateTag</h3>
+<pre class="programlisting">typedef struct _GstKateTag GstKateTag;</pre>
+<p>
+Opaque data structure.</p>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-katetag.property-details"></a><h2>Property Details</h2>
+<div class="refsect2" lang="en">
+<a name="GstKateTag--category"></a><h3>The <code class="literal">"category"</code> property</h3>
+<pre class="programlisting">  "category"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>Set the category of the stream.</p>
+<p>Default value: ""</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTag--language"></a><h3>The <code class="literal">"language"</code> property</h3>
+<pre class="programlisting">  "language"                 <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gchar"
+>gchar</a>*                : Read / Write</pre>
+<p>Set the language of the stream.</p>
+<p>Default value: ""</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTag--original-canvas-height"></a><h3>The <code class="literal">"original-canvas-height"</code> property</h3>
+<pre class="programlisting">  "original-canvas-height"   <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Set the height of the canvas this stream was authored for (0 is unspecified).</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2" lang="en">
+<a name="GstKateTag--original-canvas-width"></a><h3>The <code class="literal">"original-canvas-width"</code> property</h3>
+<pre class="programlisting">  "original-canvas-width"    <a
+href="/usr/share/gtk-doc/html/glib/glib-Basic-Types.html#gint"
+>gint</a>                  : Read / Write</pre>
+<p>Set the width of the canvas this stream was authored for (0 is unspecified).</p>
+<p>Allowed values: &gt;= 0</p>
+<p>Default value: 0</p>
+</div>
+</div>
+<div class="refsect1" lang="en">
+<a name="gst-plugins-bad-plugins-katetag.see-also"></a><h2>See Also</h2>
+#oggdemux, <span class="type">oggmux</span>, <span class="type">kateparse</span>, <a
+href="/usr/share/gtk-doc/html/gstreamer-0.10/GstTagSetter.html"
+><span class="type">GstTagSetter</span></a>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.11</div>
+</body>
+</html>
