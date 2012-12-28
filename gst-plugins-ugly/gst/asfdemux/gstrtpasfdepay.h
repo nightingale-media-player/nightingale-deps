@@ -24,7 +24,7 @@
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
 
-#include <gst/rtp/gstbasertpdepayload.h>
+#include <gst/rtp/gstrtpbasedepayload.h>
 
 G_BEGIN_DECLS
 
@@ -44,18 +44,17 @@ typedef struct _GstRtpAsfDepayClass GstRtpAsfDepayClass;
 
 struct _GstRtpAsfDepay
 {
-  GstBaseRTPDepayload depayload;
+  GstRTPBaseDepayload depayload;
 
   guint packet_size;
 
   GstAdapter *adapter;
   gboolean    discont;
-  gboolean    wait_start;
 };
 
 struct _GstRtpAsfDepayClass
 {
-  GstBaseRTPDepayloadClass depayload_class;
+  GstRTPBaseDepayloadClass depayload_class;
 };
 
 GType    gst_rtp_asf_depay_get_type (void);

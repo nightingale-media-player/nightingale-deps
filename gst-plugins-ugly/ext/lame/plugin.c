@@ -24,8 +24,7 @@
 #include <gst/gst.h>
 #include <gst/gst-i18n-plugin.h>
 
-gboolean gst_lamemp3enc_register (GstPlugin * plugin);
-gboolean gst_lame_register (GstPlugin * plugin);
+#include "gstlamemp3enc.h"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -35,14 +34,11 @@ plugin_init (GstPlugin * plugin)
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif /* ENABLE_NLS */
 
-  if (!gst_lamemp3enc_register (plugin) || !gst_lame_register (plugin))
-    return FALSE;
-
-  return TRUE;
+  return gst_lamemp3enc_register (plugin);
 }
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "lame",
+    lame,
     "Encode MP3s with LAME",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN);

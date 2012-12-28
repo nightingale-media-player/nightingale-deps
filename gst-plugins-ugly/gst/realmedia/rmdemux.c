@@ -42,6 +42,8 @@
 
 #define MAX_FRAGS 256
 
+static const guint8 sipr_subpk_size[4] = { 29, 19, 37, 20 };
+
 typedef struct _GstRMDemuxIndex GstRMDemuxIndex;
 
 struct _GstRMDemuxStream
@@ -75,6 +77,7 @@ struct _GstRMDemuxStream
   guint16 version;
   guint32 extra_data_size;      /* codec_data_length  */
   guint8 *extra_data;           /* extras             */
+  guint32 bitrate;
 
   gboolean needs_descrambling;
   guint subpackets_needed;      /* subpackets needed for descrambling    */
@@ -101,13 +104,6 @@ struct _GstRMDemuxIndex
   GstClockTime timestamp;
 };
 
-static GstElementDetails gst_rmdemux_details = {
-  "RealMedia Demuxer",
-  "Codec/Demuxer",
-  "Demultiplex a RealMedia file into audio and video streams",
-  "David Schleef <ds@schleef.org>"
-};
-
 static GstStaticPadTemplate gst_rmdemux_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -116,13 +112,13 @@ GST_STATIC_PAD_TEMPLATE ("sink",
     );
 
 static GstStaticPadTemplate gst_rmdemux_videosrc_template =
-GST_STATIC_PAD_TEMPLATE ("video_%02d",
+GST_STATIC_PAD_TEMPLATE ("video_%u",
     GST_PAD_SRC,
     GST_PAD_SOMETIMES,
     GST_STATIC_CAPS_ANY);
 
 static GstStaticPadTemplate gst_rmdemux_audiosrc_template =
-GST_STATIC_PAD_TEMPLATE ("audio_%02d",
+GST_STATIC_PAD_TEMPLATE ("audio_%u",
     GST_PAD_SRC,
     GST_PAD_SOMETIMES,
     GST_STATIC_CAPS_ANY);
@@ -138,18 +134,20 @@ static void gst_rmdemux_init (GstRMDemux * rmdemux);
 static void gst_rmdemux_finalize (GObject * object);
 static GstStateChangeReturn gst_rmdemux_change_state (GstElement * element,
     GstStateChange transition);
-static GstFlowReturn gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer);
+static GstFlowReturn gst_rmdemux_chain (GstPad * pad, GstObject * parent,
+    GstBuffer * buffer);
 static void gst_rmdemux_loop (GstPad * pad);
-static gboolean gst_rmdemux_sink_activate (GstPad * sinkpad);
-static gboolean gst_rmdemux_sink_activate_push (GstPad * sinkpad,
-    gboolean active);
-static gboolean gst_rmdemux_sink_activate_pull (GstPad * sinkpad,
-    gboolean active);
-static gboolean gst_rmdemux_sink_event (GstPad * pad, GstEvent * event);
-static gboolean gst_rmdemux_src_event (GstPad * pad, GstEvent * event);
+static gboolean gst_rmdemux_sink_activate (GstPad * sinkpad,
+    GstObject * parent);
+static gboolean gst_rmdemux_sink_activate_mode (GstPad * sinkpad,
+    GstObject * parent, GstPadMode mode, gboolean active);
+static gboolean gst_rmdemux_sink_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
+static gboolean gst_rmdemux_src_event (GstPad * pad, GstObject * parent,
+    GstEvent * event);
 static void gst_rmdemux_send_event (GstRMDemux * rmdemux, GstEvent * event);
-static const GstQueryType *gst_rmdemux_src_query_types (GstPad * pad);
-static gboolean gst_rmdemux_src_query (GstPad * pad, GstQuery * query);
+static gboolean gst_rmdemux_src_query (GstPad * pad, GstObject * parent,
+    GstQuery * query);
 static gboolean gst_rmdemux_perform_seek (GstRMDemux * rmdemux,
     GstEvent * event);
 
@@ -206,7 +204,10 @@ gst_rmdemux_base_init (GstRMDemuxClass * klass)
       gst_static_pad_template_get (&gst_rmdemux_videosrc_template));
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_rmdemux_audiosrc_template));
-  gst_element_class_set_details (element_class, &gst_rmdemux_details);
+  gst_element_class_set_static_metadata (element_class, "RealMedia Demuxer",
+      "Codec/Demuxer",
+      "Demultiplex a RealMedia file into audio and video streams",
+      "David Schleef <ds@schleef.org>");
 }
 
 static void
@@ -252,10 +253,8 @@ gst_rmdemux_init (GstRMDemux * rmdemux)
       GST_DEBUG_FUNCPTR (gst_rmdemux_chain));
   gst_pad_set_activate_function (rmdemux->sinkpad,
       GST_DEBUG_FUNCPTR (gst_rmdemux_sink_activate));
-  gst_pad_set_activatepull_function (rmdemux->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_rmdemux_sink_activate_pull));
-  gst_pad_set_activatepush_function (rmdemux->sinkpad,
-      GST_DEBUG_FUNCPTR (gst_rmdemux_sink_activate_push));
+  gst_pad_set_activatemode_function (rmdemux->sinkpad,
+      GST_DEBUG_FUNCPTR (gst_rmdemux_sink_activate_mode));
 
   gst_element_add_pad (GST_ELEMENT (rmdemux), rmdemux->sinkpad);
 
@@ -263,38 +262,33 @@ gst_rmdemux_init (GstRMDemux * rmdemux)
   rmdemux->first_ts = GST_CLOCK_TIME_NONE;
   rmdemux->base_ts = GST_CLOCK_TIME_NONE;
   rmdemux->need_newsegment = TRUE;
+
+  gst_rm_utils_run_tests ();
 }
 
 static gboolean
-gst_rmdemux_sink_event (GstPad * pad, GstEvent * event)
+gst_rmdemux_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
-  GstRMDemux *rmdemux;
   gboolean ret;
 
-  rmdemux = GST_RMDEMUX (gst_pad_get_parent (pad));
-
-  GST_LOG_OBJECT (pad, "%s event", GST_EVENT_TYPE_NAME (event));
-
   switch (GST_EVENT_TYPE (event)) {
-    case GST_EVENT_NEWSEGMENT:
+    case GST_EVENT_SEGMENT:
       gst_event_unref (event);
       ret = TRUE;
       break;
     default:
-      ret = gst_pad_event_default (pad, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
   }
-
-  gst_object_unref (rmdemux);
   return ret;
 }
 
 static gboolean
-gst_rmdemux_src_event (GstPad * pad, GstEvent * event)
+gst_rmdemux_src_event (GstPad * pad, GstObject * parent, GstEvent * event)
 {
   gboolean ret = TRUE;
 
-  GstRMDemux *rmdemux = GST_RMDEMUX (GST_PAD_PARENT (pad));
+  GstRMDemux *rmdemux = GST_RMDEMUX (parent);
 
   GST_LOG_OBJECT (rmdemux, "handling src event");
 
@@ -329,7 +323,7 @@ gst_rmdemux_src_event (GstPad * pad, GstEvent * event)
     }
     default:
       GST_LOG_OBJECT (rmdemux, "Event on src: type=%d", GST_EVENT_TYPE (event));
-      ret = gst_pad_event_default (pad, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
   }
 
@@ -349,7 +343,9 @@ gst_rmdemux_validate_offset (GstRMDemux * rmdemux)
   GstFlowReturn flowret;
   guint16 version, length;
   gboolean ret = TRUE;
+  GstMapInfo map;
 
+  buffer = NULL;
   flowret = gst_pad_pull_range (rmdemux->sinkpad, rmdemux->offset, 4, &buffer);
 
   if (flowret != GST_FLOW_OK) {
@@ -366,19 +362,21 @@ gst_rmdemux_validate_offset (GstRMDemux * rmdemux)
    * 4 bytes, and we can check that it won't take us past our known total size
    */
 
-  version = RMDEMUX_GUINT16_GET (GST_BUFFER_DATA (buffer));
+  gst_buffer_map (buffer, &map, GST_MAP_READ);
+  version = RMDEMUX_GUINT16_GET (map.data);
   if (version != 0 && version != 1) {
     GST_DEBUG_OBJECT (rmdemux, "Expected version 0 or 1, got %d",
         (int) version);
     ret = FALSE;
   }
 
-  length = RMDEMUX_GUINT16_GET (GST_BUFFER_DATA (buffer) + 2);
+  length = RMDEMUX_GUINT16_GET (map.data + 2);
   /* TODO: Also check against total stream length */
   if (length < 4) {
     GST_DEBUG_OBJECT (rmdemux, "Expected length >= 4, got %d", (int) length);
     ret = FALSE;
   }
+  gst_buffer_unmap (buffer, &map);
 
   if (ret) {
     rmdemux->offset += 4;
@@ -387,6 +385,7 @@ gst_rmdemux_validate_offset (GstRMDemux * rmdemux)
   } else {
     GST_WARNING_OBJECT (rmdemux, "Failed to validate seek offset at %d",
         rmdemux->offset);
+    gst_buffer_unref (buffer);
   }
 
   return ret;
@@ -398,9 +397,6 @@ find_seek_offset_bytes (GstRMDemux * rmdemux, guint target)
   int i;
   GSList *cur;
   gboolean ret = FALSE;
-
-  if (target < 0)
-    return FALSE;
 
   for (cur = rmdemux->streams; cur; cur = cur->next) {
     GstRMDemuxStream *stream = cur->data;
@@ -524,19 +520,8 @@ gst_rmdemux_perform_seek (GstRMDemux * rmdemux, GstEvent * event)
 
   GST_LOG_OBJECT (rmdemux, "Took streamlock");
 
-  /* close current segment first */
-  if (rmdemux->segment_running && !flush) {
-    GstEvent *newseg;
-
-    newseg = gst_event_new_new_segment (TRUE, rmdemux->segment.rate,
-        GST_FORMAT_TIME, rmdemux->segment.start,
-        rmdemux->segment.last_stop, rmdemux->segment.time);
-
-    gst_rmdemux_send_event (rmdemux, newseg);
-  }
-
   if (event) {
-    gst_segment_set_seek (&rmdemux->segment, rate, format, flags,
+    gst_segment_do_seek (&rmdemux->segment, rate, format, flags,
         cur_type, cur, stop_type, stop, &update);
   }
 
@@ -546,7 +531,7 @@ gst_rmdemux_perform_seek (GstRMDemux * rmdemux, GstEvent * event)
 
   /* we need to stop flushing on the sinkpad as we're going to use it
    * next. We can do this as we have the STREAM lock now. */
-  gst_pad_push_event (rmdemux->sinkpad, gst_event_new_flush_stop ());
+  gst_pad_push_event (rmdemux->sinkpad, gst_event_new_flush_stop (TRUE));
 
   GST_LOG_OBJECT (rmdemux, "Pushed FLUSH_STOP event");
 
@@ -559,7 +544,7 @@ gst_rmdemux_perform_seek (GstRMDemux * rmdemux, GstEvent * event)
    * offset we just tried. If we run out of places to try, treat that as a fatal
    * error.
    */
-  if (!find_seek_offset_time (rmdemux, rmdemux->segment.last_stop)) {
+  if (!find_seek_offset_time (rmdemux, rmdemux->segment.position)) {
     GST_LOG_OBJECT (rmdemux, "Failed to find seek offset by time");
     ret = FALSE;
     goto done;
@@ -585,7 +570,7 @@ gst_rmdemux_perform_seek (GstRMDemux * rmdemux, GstEvent * event)
     rmdemux->state = RMDEMUX_STATE_DATA_PACKET;
 
     if (flush)
-      gst_rmdemux_send_event (rmdemux, gst_event_new_flush_stop ());
+      gst_rmdemux_send_event (rmdemux, gst_event_new_flush_stop (TRUE));
 
     /* must send newsegment event from streaming thread, so just set flag */
     rmdemux->need_newsegment = TRUE;
@@ -594,13 +579,13 @@ gst_rmdemux_perform_seek (GstRMDemux * rmdemux, GstEvent * event)
     if (rmdemux->segment.flags & GST_SEEK_FLAG_SEGMENT) {
       gst_element_post_message (GST_ELEMENT_CAST (rmdemux),
           gst_message_new_segment_start (GST_OBJECT_CAST (rmdemux),
-              GST_FORMAT_TIME, rmdemux->segment.last_stop));
+              GST_FORMAT_TIME, rmdemux->segment.position));
     }
 
     /* restart our task since it might have been stopped when we did the 
      * flush. */
     gst_pad_start_task (rmdemux->sinkpad, (GstTaskFunction) gst_rmdemux_loop,
-        rmdemux->sinkpad);
+        rmdemux->sinkpad, NULL);
   }
 
 done:
@@ -618,12 +603,12 @@ error:
 
 
 static gboolean
-gst_rmdemux_src_query (GstPad * pad, GstQuery * query)
+gst_rmdemux_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
 {
   gboolean res = FALSE;
   GstRMDemux *rmdemux;
 
-  rmdemux = GST_RMDEMUX (gst_pad_get_parent (pad));
+  rmdemux = GST_RMDEMUX (parent);
 
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_POSITION:
@@ -661,25 +646,11 @@ gst_rmdemux_src_query (GstPad * pad, GstQuery * query)
       break;
     }
     default:
-      res = gst_pad_query_default (pad, query);
+      res = gst_pad_query_default (pad, parent, query);
       break;
   }
 
-  gst_object_unref (rmdemux);
   return res;
-}
-
-static const GstQueryType *
-gst_rmdemux_src_query_types (GstPad * pad)
-{
-  static const GstQueryType query_types[] = {
-    GST_QUERY_POSITION,
-    GST_QUERY_DURATION,
-    GST_QUERY_SEEKING,
-    0
-  };
-
-  return query_types;
 }
 
 static void
@@ -698,7 +669,7 @@ gst_rmdemux_reset (GstRMDemux * rmdemux)
     gst_rmdemux_stream_clear_cached_subpackets (rmdemux, stream);
     gst_element_remove_pad (GST_ELEMENT (rmdemux), stream->pad);
     if (stream->pending_tags)
-      gst_tag_list_free (stream->pending_tags);
+      gst_tag_list_unref (stream->pending_tags);
     if (stream->subpackets)
       g_ptr_array_free (stream->subpackets, TRUE);
     g_free (stream->index);
@@ -708,6 +679,11 @@ gst_rmdemux_reset (GstRMDemux * rmdemux)
   rmdemux->streams = NULL;
   rmdemux->n_audio_streams = 0;
   rmdemux->n_video_streams = 0;
+
+  if (rmdemux->pending_tags != NULL) {
+    gst_tag_list_unref (rmdemux->pending_tags);
+    rmdemux->pending_tags = NULL;
+  }
 
   gst_adapter_clear (rmdemux->adapter);
   rmdemux->state = RMDEMUX_STATE_HEADER;
@@ -765,54 +741,69 @@ gst_rmdemux_change_state (GstElement * element, GstStateChange transition)
  * pull based.
  */
 static gboolean
-gst_rmdemux_sink_activate (GstPad * sinkpad)
+gst_rmdemux_sink_activate (GstPad * sinkpad, GstObject * parent)
 {
-  if (gst_pad_check_pull_range (sinkpad)) {
-    return gst_pad_activate_pull (sinkpad, TRUE);
-  } else {
-    return gst_pad_activate_push (sinkpad, TRUE);
+  GstQuery *query;
+  gboolean pull_mode;
+
+  query = gst_query_new_scheduling ();
+
+  if (!gst_pad_peer_query (sinkpad, query)) {
+    gst_query_unref (query);
+    goto activate_push;
+  }
+
+  pull_mode = gst_query_has_scheduling_mode_with_flags (query,
+      GST_PAD_MODE_PULL, GST_SCHEDULING_FLAG_SEEKABLE);
+  gst_query_unref (query);
+
+  if (!pull_mode)
+    goto activate_push;
+
+  GST_DEBUG_OBJECT (sinkpad, "activating pull");
+  return gst_pad_activate_mode (sinkpad, GST_PAD_MODE_PULL, TRUE);
+
+activate_push:
+  {
+    GST_DEBUG_OBJECT (sinkpad, "activating push");
+    return gst_pad_activate_mode (sinkpad, GST_PAD_MODE_PUSH, TRUE);
   }
 }
 
-/* this function gets called when we activate ourselves in push mode.
- * We cannot seek (ourselves) in the stream */
 static gboolean
-gst_rmdemux_sink_activate_push (GstPad * pad, gboolean active)
+gst_rmdemux_sink_activate_mode (GstPad * sinkpad, GstObject * parent,
+    GstPadMode mode, gboolean active)
 {
-  GstRMDemux *rmdemux;
+  gboolean res;
+  GstRMDemux *demux;
 
-  rmdemux = GST_RMDEMUX (GST_PAD_PARENT (pad));
+  demux = GST_RMDEMUX (parent);
 
-  GST_DEBUG_OBJECT (rmdemux, "activate_push");
-
-  rmdemux->seekable = FALSE;
-
-  return TRUE;
-}
-
-/* this function gets called when we activate ourselves in pull mode.
- * We can perform  random access to the resource and we start a task
- * to start reading */
-static gboolean
-gst_rmdemux_sink_activate_pull (GstPad * pad, gboolean active)
-{
-  GstRMDemux *rmdemux;
-
-  rmdemux = GST_RMDEMUX (GST_PAD_PARENT (pad));
-
-  GST_DEBUG_OBJECT (rmdemux, "activate_pull");
-
-  if (active) {
-    rmdemux->seekable = TRUE;
-    rmdemux->offset = 0;
-    rmdemux->loop_state = RMDEMUX_LOOP_STATE_HEADER;
-    rmdemux->data_offset = G_MAXUINT;
-
-    return gst_pad_start_task (pad, (GstTaskFunction) gst_rmdemux_loop, pad);
-  } else {
-    return gst_pad_stop_task (pad);
+  switch (mode) {
+    case GST_PAD_MODE_PUSH:
+      demux->seekable = FALSE;
+      res = TRUE;
+      break;
+    case GST_PAD_MODE_PULL:
+      if (active) {
+        demux->seekable = TRUE;
+        demux->offset = 0;
+        demux->loop_state = RMDEMUX_LOOP_STATE_HEADER;
+        demux->data_offset = G_MAXUINT;
+        res =
+            gst_pad_start_task (sinkpad, (GstTaskFunction) gst_rmdemux_loop,
+            sinkpad, NULL);
+      } else {
+        res = gst_pad_stop_task (sinkpad);
+      }
+      break;
+    default:
+      res = FALSE;
+      break;
   }
+  return res;
 }
+
 
 /* random access mode - just pass over to our chain function */
 static void
@@ -840,7 +831,7 @@ gst_rmdemux_loop (GstPad * pad)
       break;
     case RMDEMUX_STATE_EOS:
       GST_LOG_OBJECT (rmdemux, "At EOS, pausing task");
-      ret = GST_FLOW_UNEXPECTED;
+      ret = GST_FLOW_EOS;
       goto need_pause;
     default:
       GST_LOG_OBJECT (rmdemux, "Default: requires %d bytes (state is %d)",
@@ -848,6 +839,7 @@ gst_rmdemux_loop (GstPad * pad)
       size = rmdemux->size;
   }
 
+  buffer = NULL;
   ret = gst_pad_pull_range (pad, rmdemux->offset, size, &buffer);
   if (ret != GST_FLOW_OK) {
     if (rmdemux->offset == rmdemux->index_offset) {
@@ -867,10 +859,10 @@ gst_rmdemux_loop (GstPad * pad)
     }
   }
 
-  size = GST_BUFFER_SIZE (buffer);
+  size = gst_buffer_get_size (buffer);
 
   /* Defer to the chain function */
-  ret = gst_rmdemux_chain (pad, buffer);
+  ret = gst_rmdemux_chain (pad, GST_OBJECT_CAST (rmdemux), buffer);
   if (ret != GST_FLOW_OK) {
     GST_DEBUG_OBJECT (rmdemux, "Chain flow failed at offset 0x%08x",
         rmdemux->offset);
@@ -917,31 +909,31 @@ need_pause:
     rmdemux->segment_running = FALSE;
     gst_pad_pause_task (rmdemux->sinkpad);
 
-    if (GST_FLOW_IS_FATAL (ret) || ret == GST_FLOW_NOT_LINKED) {
-      if (ret == GST_FLOW_UNEXPECTED) {
-        /* perform EOS logic */
-        if (rmdemux->segment.flags & GST_SEEK_FLAG_SEGMENT) {
-          gint64 stop;
+    if (ret == GST_FLOW_EOS) {
+      /* perform EOS logic */
+      if (rmdemux->segment.flags & GST_SEEK_FLAG_SEGMENT) {
+        gint64 stop;
 
-          /* for segment playback we need to post when (in stream time)
-           * we stopped, this is either stop (when set) or the duration. */
-          if ((stop = rmdemux->segment.stop) == -1)
-            stop = rmdemux->segment.duration;
+        /* for segment playback we need to post when (in stream time)
+         * we stopped, this is either stop (when set) or the duration. */
+        if ((stop = rmdemux->segment.stop) == -1)
+          stop = rmdemux->segment.duration;
 
-          GST_LOG_OBJECT (rmdemux, "Sending segment done, at end of segment");
-          gst_element_post_message (GST_ELEMENT (rmdemux),
-              gst_message_new_segment_done (GST_OBJECT (rmdemux),
-                  GST_FORMAT_TIME, stop));
-        } else {
-          /* normal playback, send EOS to all linked pads */
-          GST_LOG_OBJECT (rmdemux, "Sending EOS, at end of stream");
-          gst_rmdemux_send_event (rmdemux, gst_event_new_eos ());
-        }
+        GST_LOG_OBJECT (rmdemux, "Sending segment done, at end of segment");
+        gst_element_post_message (GST_ELEMENT (rmdemux),
+            gst_message_new_segment_done (GST_OBJECT (rmdemux),
+                GST_FORMAT_TIME, stop));
+        gst_rmdemux_send_event (rmdemux,
+            gst_event_new_segment_done (GST_FORMAT_TIME, stop));
       } else {
-        GST_ELEMENT_ERROR (rmdemux, STREAM, FAILED,
-            (NULL), ("stream stopped, reason %s", reason));
+        /* normal playback, send EOS to all linked pads */
+        GST_LOG_OBJECT (rmdemux, "Sending EOS, at end of stream");
         gst_rmdemux_send_event (rmdemux, gst_event_new_eos ());
       }
+    } else if (ret == GST_FLOW_NOT_LINKED || ret < GST_FLOW_EOS) {
+      GST_ELEMENT_ERROR (rmdemux, STREAM, FAILED,
+          (NULL), ("stream stopped, reason %s", reason));
+      gst_rmdemux_send_event (rmdemux, gst_event_new_eos ());
     }
     return;
   }
@@ -961,25 +953,29 @@ gst_rmdemux_fourcc_isplausible (guint32 fourcc)
 }
 
 static GstFlowReturn
-gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
+gst_rmdemux_chain (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 {
   GstFlowReturn ret = GST_FLOW_OK;
   const guint8 *data;
   guint16 version;
   guint avail;
 
-  GstRMDemux *rmdemux = GST_RMDEMUX (GST_PAD_PARENT (pad));
+  GstRMDemux *rmdemux = GST_RMDEMUX (parent);
 
   if (rmdemux->base_ts == -1) {
-    rmdemux->base_ts = GST_BUFFER_TIMESTAMP (buffer);
+    if (GST_BUFFER_DTS_IS_VALID (buffer))
+      rmdemux->base_ts = GST_BUFFER_DTS (buffer);
+    else
+      rmdemux->base_ts = GST_BUFFER_PTS (buffer);
+
     GST_LOG_OBJECT (rmdemux, "base_ts %" GST_TIME_FORMAT,
         GST_TIME_ARGS (rmdemux->base_ts));
   }
 
   gst_adapter_push (rmdemux->adapter, buffer);
 
-  GST_LOG_OBJECT (rmdemux, "Chaining buffer of size %d",
-      GST_BUFFER_SIZE (buffer));
+  GST_LOG_OBJECT (rmdemux, "Chaining buffer of size %" G_GSIZE_FORMAT,
+      gst_buffer_get_size (buffer));
 
   while (TRUE) {
     avail = gst_adapter_available (rmdemux->adapter);
@@ -991,7 +987,7 @@ gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
         if (gst_adapter_available (rmdemux->adapter) < HEADER_SIZE)
           goto unlock;
 
-        data = gst_adapter_peek (rmdemux->adapter, HEADER_SIZE);
+        data = gst_adapter_map (rmdemux->adapter, HEADER_SIZE);
 
         rmdemux->object_id = RMDEMUX_FOURCC_GET (data + 0);
         rmdemux->size = RMDEMUX_GUINT32_GET (data + 4) - HEADER_SIZE;
@@ -1005,6 +1001,7 @@ gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
            * happen. */
           GST_WARNING_OBJECT (rmdemux, "Bogus looking header, unprintable "
               "FOURCC");
+          gst_adapter_unmap (rmdemux->adapter);
           gst_adapter_flush (rmdemux->adapter, 4);
 
           break;
@@ -1016,6 +1013,7 @@ gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
             GST_FOURCC_ARGS (rmdemux->object_id), rmdemux->size,
             rmdemux->object_version);
 
+        gst_adapter_unmap (rmdemux->adapter);
         gst_adapter_flush (rmdemux->adapter, HEADER_SIZE);
 
         switch (rmdemux->object_id) {
@@ -1061,12 +1059,13 @@ gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
           goto unlock;
 
         if ((rmdemux->object_version == 0) || (rmdemux->object_version == 1)) {
-          data = gst_adapter_peek (rmdemux->adapter, rmdemux->size);
-
+          data = gst_adapter_map (rmdemux->adapter, rmdemux->size);
           gst_rmdemux_parse__rmf (rmdemux, data, rmdemux->size);
+          gst_adapter_unmap (rmdemux->adapter);
+          gst_adapter_flush (rmdemux->adapter, rmdemux->size);
+        } else {
+          gst_adapter_flush (rmdemux->adapter, rmdemux->size);
         }
-
-        gst_adapter_flush (rmdemux->adapter, rmdemux->size);
         rmdemux->state = RMDEMUX_STATE_HEADER;
         break;
       }
@@ -1074,11 +1073,12 @@ gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
       {
         if (gst_adapter_available (rmdemux->adapter) < rmdemux->size)
           goto unlock;
-        data = gst_adapter_peek (rmdemux->adapter, rmdemux->size);
 
+        data = gst_adapter_map (rmdemux->adapter, rmdemux->size);
         gst_rmdemux_parse_prop (rmdemux, data, rmdemux->size);
-
+        gst_adapter_unmap (rmdemux->adapter);
         gst_adapter_flush (rmdemux->adapter, rmdemux->size);
+
         rmdemux->state = RMDEMUX_STATE_HEADER;
         break;
       }
@@ -1086,11 +1086,12 @@ gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
       {
         if (gst_adapter_available (rmdemux->adapter) < rmdemux->size)
           goto unlock;
-        data = gst_adapter_peek (rmdemux->adapter, rmdemux->size);
 
+        data = gst_adapter_map (rmdemux->adapter, rmdemux->size);
         gst_rmdemux_parse_mdpr (rmdemux, data, rmdemux->size);
-
+        gst_adapter_unmap (rmdemux->adapter);
         gst_adapter_flush (rmdemux->adapter, rmdemux->size);
+
         rmdemux->state = RMDEMUX_STATE_HEADER;
         break;
       }
@@ -1098,11 +1099,12 @@ gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
       {
         if (gst_adapter_available (rmdemux->adapter) < rmdemux->size)
           goto unlock;
-        data = gst_adapter_peek (rmdemux->adapter, rmdemux->size);
 
+        data = gst_adapter_map (rmdemux->adapter, rmdemux->size);
         gst_rmdemux_parse_cont (rmdemux, data, rmdemux->size);
-
+        gst_adapter_unmap (rmdemux->adapter);
         gst_adapter_flush (rmdemux->adapter, rmdemux->size);
+
         rmdemux->state = RMDEMUX_STATE_HEADER;
         break;
       }
@@ -1117,15 +1119,14 @@ gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
 
         /* The actual header is only 8 bytes */
         rmdemux->size = DATA_SIZE;
-        GST_LOG_OBJECT (rmdemux, "data available %d",
+        GST_LOG_OBJECT (rmdemux, "data available %" G_GSIZE_FORMAT,
             gst_adapter_available (rmdemux->adapter));
         if (gst_adapter_available (rmdemux->adapter) < rmdemux->size)
           goto unlock;
 
-        data = gst_adapter_peek (rmdemux->adapter, rmdemux->size);
-
+        data = gst_adapter_map (rmdemux->adapter, rmdemux->size);
         gst_rmdemux_parse_data (rmdemux, data, rmdemux->size);
-
+        gst_adapter_unmap (rmdemux->adapter);
         gst_adapter_flush (rmdemux->adapter, rmdemux->size);
 
         rmdemux->state = RMDEMUX_STATE_DATA_PACKET;
@@ -1135,11 +1136,11 @@ gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
       {
         if (gst_adapter_available (rmdemux->adapter) < rmdemux->size)
           goto unlock;
-        data = gst_adapter_peek (rmdemux->adapter, rmdemux->size);
 
+        data = gst_adapter_map (rmdemux->adapter, rmdemux->size);
         rmdemux->size = gst_rmdemux_parse_indx (rmdemux, data, rmdemux->size);
-
         /* Only flush the header */
+        gst_adapter_unmap (rmdemux->adapter);
         gst_adapter_flush (rmdemux->adapter, HEADER_SIZE);
 
         rmdemux->state = RMDEMUX_STATE_INDX_DATA;
@@ -1152,10 +1153,9 @@ gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
           if (gst_adapter_available (rmdemux->adapter) < rmdemux->size)
             goto unlock;
 
-          data = gst_adapter_peek (rmdemux->adapter, rmdemux->size);
-
+          data = gst_adapter_map (rmdemux->adapter, rmdemux->size);
           gst_rmdemux_parse_indx_data (rmdemux, data, rmdemux->size);
-
+          gst_adapter_unmap (rmdemux->adapter);
           gst_adapter_flush (rmdemux->adapter, rmdemux->size);
         }
 
@@ -1164,11 +1164,13 @@ gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
       }
       case RMDEMUX_STATE_DATA_PACKET:
       {
+        guint8 header[4];
+
         if (gst_adapter_available (rmdemux->adapter) < 2)
           goto unlock;
 
-        data = gst_adapter_peek (rmdemux->adapter, 2);
-        version = RMDEMUX_GUINT16_GET (data);
+        gst_adapter_copy (rmdemux->adapter, header, 0, 2);
+        version = RMDEMUX_GUINT16_GET (header);
         GST_LOG_OBJECT (rmdemux, "Data packet with version=%d", version);
 
         if (version == 0 || version == 1) {
@@ -1176,9 +1178,10 @@ gst_rmdemux_chain (GstPad * pad, GstBuffer * buffer)
 
           if (gst_adapter_available (rmdemux->adapter) < 4)
             goto unlock;
-          data = gst_adapter_peek (rmdemux->adapter, 4);
 
-          length = RMDEMUX_GUINT16_GET (data + 2);
+          gst_adapter_copy (rmdemux->adapter, header, 0, 4);
+
+          length = RMDEMUX_GUINT16_GET (header + 2);
           GST_LOG_OBJECT (rmdemux, "Got length %d", length);
 
           if (length < 4) {
@@ -1282,11 +1285,12 @@ gst_rmdemux_add_stream (GstRMDemux * rmdemux, GstRMDemuxStream * stream)
 {
   GstCaps *stream_caps = NULL;
   const gchar *codec_tag = NULL;
-  const gchar *codec_name = NULL;
+  gchar *codec_name = NULL;
+  gchar *stream_id;
   int version = 0;
 
   if (stream->subtype == GST_RMDEMUX_STREAM_VIDEO) {
-    char *name = g_strdup_printf ("video_%02d", rmdemux->n_video_streams);
+    char *name = g_strdup_printf ("video_%u", rmdemux->n_video_streams);
 
     stream->pad =
         gst_pad_new_from_static_template (&gst_rmdemux_videosrc_template, name);
@@ -1296,24 +1300,20 @@ gst_rmdemux_add_stream (GstRMDemux * rmdemux, GstRMDemuxStream * stream)
 
     switch (stream->fourcc) {
       case GST_RM_VDO_RV10:
-        codec_name = "Real Video 1.0";
         version = 1;
         break;
       case GST_RM_VDO_RV20:
-        codec_name = "Real Video 2.0";
         version = 2;
         break;
       case GST_RM_VDO_RV30:
-        codec_name = "Real Video 3.0";
         version = 3;
         break;
       case GST_RM_VDO_RV40:
-        codec_name = "Real Video 4.0";
         version = 4;
         break;
       default:
         stream_caps = gst_caps_new_simple ("video/x-unknown-fourcc",
-            "fourcc", GST_TYPE_FOURCC, stream->fourcc, NULL);
+            "fourcc", G_TYPE_UINT, stream->fourcc, NULL);
         GST_WARNING_OBJECT (rmdemux,
             "Unknown video FOURCC code \"%" GST_FOURCC_FORMAT "\" (%08x)",
             GST_FOURCC_ARGS (stream->fourcc), stream->fourcc);
@@ -1338,7 +1338,7 @@ gst_rmdemux_add_stream (GstRMDemux * rmdemux, GstRMDemuxStream * stream)
     rmdemux->n_video_streams++;
 
   } else if (stream->subtype == GST_RMDEMUX_STREAM_AUDIO) {
-    char *name = g_strdup_printf ("audio_%02d", rmdemux->n_audio_streams);
+    char *name = g_strdup_printf ("audio_%u", rmdemux->n_audio_streams);
 
     stream->pad =
         gst_pad_new_from_static_template (&gst_rmdemux_audiosrc_template, name);
@@ -1350,18 +1350,15 @@ gst_rmdemux_add_stream (GstRMDemux * rmdemux, GstRMDemuxStream * stream)
     switch (stream->fourcc) {
         /* Older RealAudio Codecs */
       case GST_RM_AUD_14_4:
-        codec_name = "Real Audio 14.4kbps";
         version = 1;
         break;
 
       case GST_RM_AUD_28_8:
-        codec_name = "Real Audio 28.8kbps";
         version = 2;
         break;
 
         /* DolbyNet (Dolby AC3, low bitrate) */
       case GST_RM_AUD_DNET:
-        codec_name = "AC-3 audio";
         stream_caps =
             gst_caps_new_simple ("audio/x-ac3", "rate", G_TYPE_INT,
             (int) stream->rate, NULL);
@@ -1373,7 +1370,6 @@ gst_rmdemux_add_stream (GstRMDemux * rmdemux, GstRMDemuxStream * stream)
         /* MPEG-4 based */
       case GST_RM_AUD_RAAC:
       case GST_RM_AUD_RACP:
-        codec_name = "MPEG4 audio";
         stream_caps =
             gst_caps_new_simple ("audio/mpeg", "mpegversion", G_TYPE_INT,
             (int) 4, "framed", G_TYPE_BOOLEAN, TRUE, NULL);
@@ -1389,13 +1385,14 @@ gst_rmdemux_add_stream (GstRMDemux * rmdemux, GstRMDemuxStream * stream)
 
         /* Sony ATRAC3 */
       case GST_RM_AUD_ATRC:
-        codec_name = "Sony ATRAC3";
-        stream_caps = gst_caps_new_simple ("audio/x-vnd.sony.atrac3", NULL);
+        stream_caps = gst_caps_new_empty_simple ("audio/x-vnd.sony.atrac3");
+        stream->needs_descrambling = TRUE;
+        stream->subpackets_needed = stream->height;
+        stream->subpackets = NULL;
         break;
 
         /* RealAudio G2 audio */
       case GST_RM_AUD_COOK:
-        codec_name = "Real Audio G2 (Cook)";
         version = 8;
         stream->needs_descrambling = TRUE;
         stream->subpackets_needed = stream->height;
@@ -1404,20 +1401,31 @@ gst_rmdemux_add_stream (GstRMDemux * rmdemux, GstRMDemuxStream * stream)
 
         /* RALF is lossless */
       case GST_RM_AUD_RALF:
-        /* FIXME: codec_name = */
         GST_DEBUG_OBJECT (rmdemux, "RALF");
-        stream_caps = gst_caps_new_simple ("audio/x-ralf-mpeg4-generic", NULL);
+        stream_caps = gst_caps_new_empty_simple ("audio/x-ralf-mpeg4-generic");
         break;
 
-        /* Sipro/ACELP.NET Voice Codec (MIME unknown) */
       case GST_RM_AUD_SIPR:
-        /* FIXME: codec_name = */
-        stream_caps = gst_caps_new_simple ("audio/x-sipro", NULL);
+
+        if (stream->flavor > 3) {
+          GST_WARNING_OBJECT (rmdemux, "bad SIPR flavor %d, freeing it",
+              stream->flavor);
+          g_free (stream);
+          goto beach;
+        }
+
+        GST_DEBUG_OBJECT (rmdemux, "SIPR");
+        stream_caps = gst_caps_new_empty_simple ("audio/x-sipro");
+        stream->needs_descrambling = TRUE;
+        stream->subpackets_needed = stream->height;
+        stream->subpackets = NULL;
+        stream->leaf_size = sipr_subpk_size[stream->flavor];
+
         break;
 
       default:
         stream_caps = gst_caps_new_simple ("video/x-unknown-fourcc",
-            "fourcc", GST_TYPE_FOURCC, stream->fourcc, NULL);
+            "fourcc", G_TYPE_UINT, stream->fourcc, NULL);
         GST_WARNING_OBJECT (rmdemux,
             "Unknown audio FOURCC code \"%" GST_FOURCC_FORMAT "\" (%08x)",
             GST_FOURCC_ARGS (stream->fourcc), stream->fourcc);
@@ -1438,6 +1446,7 @@ gst_rmdemux_add_stream (GstRMDemux * rmdemux, GstRMDemuxStream * stream)
           "width", G_TYPE_INT, (int) stream->sample_width,
           "leaf_size", G_TYPE_INT, (int) stream->leaf_size,
           "packet_size", G_TYPE_INT, (int) stream->packet_size,
+          "bitrate", G_TYPE_INT, (int) stream->bitrate,
           "height", G_TYPE_INT, (int) stream->height, NULL);
     }
     rmdemux->n_audio_streams++;
@@ -1466,8 +1475,7 @@ gst_rmdemux_add_stream (GstRMDemux * rmdemux, GstRMDemuxStream * stream)
       GstBuffer *buffer;
 
       buffer = gst_buffer_new_and_alloc (stream->extra_data_size);
-      memcpy (GST_BUFFER_DATA (buffer), stream->extra_data,
-          stream->extra_data_size);
+      gst_buffer_fill (buffer, 0, stream->extra_data, stream->extra_data_size);
 
       gst_caps_set_simple (stream_caps, "codec_data", GST_TYPE_BUFFER,
           buffer, NULL);
@@ -1477,25 +1485,34 @@ gst_rmdemux_add_stream (GstRMDemux * rmdemux, GstRMDemuxStream * stream)
 
     gst_pad_use_fixed_caps (stream->pad);
 
-    gst_pad_set_caps (stream->pad, stream_caps);
     gst_pad_set_event_function (stream->pad,
         GST_DEBUG_FUNCPTR (gst_rmdemux_src_event));
-    gst_pad_set_query_type_function (stream->pad,
-        GST_DEBUG_FUNCPTR (gst_rmdemux_src_query_types));
     gst_pad_set_query_function (stream->pad,
         GST_DEBUG_FUNCPTR (gst_rmdemux_src_query));
 
     GST_DEBUG_OBJECT (rmdemux, "adding pad %s with caps %" GST_PTR_FORMAT
         ", stream_id=%d", GST_PAD_NAME (stream->pad), stream_caps, stream->id);
     gst_pad_set_active (stream->pad, TRUE);
-    gst_element_add_pad (GST_ELEMENT_CAST (rmdemux), stream->pad);
+
+    stream_id =
+        gst_pad_create_stream_id_printf (stream->pad,
+        GST_ELEMENT_CAST (rmdemux), "%u", stream->id);
+    gst_pad_push_event (stream->pad, gst_event_new_stream_start (stream_id));
+    g_free (stream_id);
+
+    gst_pad_set_caps (stream->pad, stream_caps);
+
+    codec_name = gst_pb_utils_get_codec_description (stream_caps);
 
     /* save for later, we must send the tags after the newsegment event */
-    if (codec_name != NULL && codec_tag != NULL) {
-      stream->pending_tags = gst_tag_list_new ();
+    if (codec_tag != NULL && codec_name != NULL) {
+      if (stream->pending_tags == NULL)
+        stream->pending_tags = gst_tag_list_new_empty ();
       gst_tag_list_add (stream->pending_tags, GST_TAG_MERGE_KEEP,
           codec_tag, codec_name, NULL);
+      g_free (codec_name);
     }
+    gst_element_add_pad (GST_ELEMENT_CAST (rmdemux), stream->pad);
   }
 
 beach:
@@ -1556,6 +1573,8 @@ gst_rmdemux_parse_mdpr (GstRMDemux * rmdemux, const guint8 * data, int length)
   guint str_len = 0;
   int stream_type;
   int offset;
+  guint32 max_bitrate;
+  guint32 avg_bitrate;
 
   stream = g_new0 (GstRMDemuxStream, 1);
 
@@ -1568,6 +1587,25 @@ gst_rmdemux_parse_mdpr (GstRMDemux * rmdemux, const guint8 * data, int length)
   stream->discont = TRUE;
   stream->adapter = gst_adapter_new ();
   GST_LOG_OBJECT (rmdemux, "stream_number=%d", stream->id);
+
+  /* parse the bitrates */
+  max_bitrate = RMDEMUX_GUINT32_GET (data + 2);
+  avg_bitrate = RMDEMUX_GUINT32_GET (data + 6);
+  stream->bitrate = avg_bitrate;
+  GST_LOG_OBJECT (rmdemux, "Stream max bitrate=%u", max_bitrate);
+  GST_LOG_OBJECT (rmdemux, "Stream avg bitrate=%u", avg_bitrate);
+  if (max_bitrate != 0) {
+    if (stream->pending_tags == NULL)
+      stream->pending_tags = gst_tag_list_new_empty ();
+    gst_tag_list_add (stream->pending_tags, GST_TAG_MERGE_REPLACE,
+        GST_TAG_MAXIMUM_BITRATE, max_bitrate, NULL);
+  }
+  if (avg_bitrate != 0) {
+    if (stream->pending_tags == NULL)
+      stream->pending_tags = gst_tag_list_new_empty ();
+    gst_tag_list_add (stream->pending_tags, GST_TAG_MERGE_REPLACE,
+        GST_TAG_BITRATE, avg_bitrate, NULL);
+  }
 
   offset = 30;
   stream1_type_string = gst_rm_utils_read_string8 (data + offset,
@@ -1713,7 +1751,6 @@ gst_rmdemux_parse_mdpr (GstRMDemux * rmdemux, const guint8 * data, int length)
           break;
         }
       }
-
       /*  14_4, 28_8, cook, dnet, sipr, raac, racp, ralf, atrc */
       GST_DEBUG_OBJECT (rmdemux,
           "Audio stream with rate=%d sample_width=%d n_channels=%d",
@@ -1836,9 +1873,11 @@ gst_rmdemux_parse_cont (GstRMDemux * rmdemux, const guint8 * data, int length)
   GstTagList *tags;
 
   tags = gst_rm_utils_read_tags (data, length, gst_rm_utils_read_string16);
-  if (tags) {
-    gst_element_found_tags (GST_ELEMENT (rmdemux), tags);
-  }
+
+  GST_LOG_OBJECT (rmdemux, "tags: %" GST_PTR_FORMAT, tags);
+
+  rmdemux->pending_tags =
+      gst_tag_list_merge (rmdemux->pending_tags, tags, GST_TAG_MERGE_APPEND);
 }
 
 static GstFlowReturn
@@ -1851,7 +1890,7 @@ gst_rmdemux_combine_flows (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
   stream->last_flow = ret;
 
   /* if it's success we can return the value right away */
-  if (GST_FLOW_IS_SUCCESS (ret))
+  if (ret == GST_FLOW_OK)
     goto done;
 
   /* any other error that is not-linked can be returned right
@@ -1888,11 +1927,11 @@ gst_rmdemux_stream_clear_cached_subpackets (GstRMDemux * rmdemux,
 }
 
 static GstFlowReturn
-gst_rmdemux_descramble_cook_audio (GstRMDemux * rmdemux,
-    GstRMDemuxStream * stream)
+gst_rmdemux_descramble_audio (GstRMDemux * rmdemux, GstRMDemuxStream * stream)
 {
-  GstFlowReturn ret;
+  GstFlowReturn ret = GST_FLOW_ERROR;
   GstBuffer *outbuf;
+  GstMapInfo outmap;
   guint packet_size = stream->packet_size;
   guint height = stream->subpackets->len;
   guint leaf_size = stream->leaf_size;
@@ -1903,53 +1942,56 @@ gst_rmdemux_descramble_cook_audio (GstRMDemux * rmdemux,
   GST_LOG ("packet_size = %u, leaf_size = %u, height= %u", packet_size,
       leaf_size, height);
 
-  ret = gst_pad_alloc_buffer_and_set_caps (stream->pad,
-      GST_BUFFER_OFFSET_NONE, height * packet_size,
-      GST_PAD_CAPS (stream->pad), &outbuf);
-
-  if (ret != GST_FLOW_OK)
-    goto done;
+  outbuf = gst_buffer_new_and_alloc (height * packet_size);
+  gst_buffer_map (outbuf, &outmap, GST_MAP_WRITE);
 
   for (p = 0; p < height; ++p) {
     GstBuffer *b = g_ptr_array_index (stream->subpackets, p);
-    guint8 *b_data = GST_BUFFER_DATA (b);
+    GstMapInfo map;
 
-    if (p == 0)
-      GST_BUFFER_TIMESTAMP (outbuf) = GST_BUFFER_TIMESTAMP (b);
+    gst_buffer_map (b, &map, GST_MAP_READ);
+
+    if (p == 0) {
+      GST_BUFFER_PTS (outbuf) = GST_BUFFER_PTS (b);
+      GST_BUFFER_DTS (outbuf) = GST_BUFFER_DTS (b);
+    }
 
     for (x = 0; x < packet_size / leaf_size; ++x) {
       guint idx;
 
       idx = height * x + ((height + 1) / 2) * (p % 2) + (p / 2);
+
       /* GST_LOG ("%3u => %3u", (height * p) + x, idx); */
-      memcpy (GST_BUFFER_DATA (outbuf) + leaf_size * idx, b_data, leaf_size);
-      b_data += leaf_size;
+      memcpy (outmap.data + leaf_size * idx, map.data + leaf_size * x,
+          leaf_size);
     }
+    gst_buffer_unmap (b, &map);
   }
+  gst_buffer_unmap (outbuf, &outmap);
 
   /* some decoders, such as realaudiodec, need to be fed in packet units */
   for (p = 0; p < height; ++p) {
     GstBuffer *subbuf;
 
-    subbuf = gst_buffer_create_sub (outbuf, p * packet_size, packet_size);
+    subbuf =
+        gst_buffer_copy_region (outbuf, GST_BUFFER_COPY_ALL, p * packet_size,
+        packet_size);
 
-    GST_LOG_OBJECT (rmdemux, "pushing buffer timestamp %" GST_TIME_FORMAT,
-        GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (subbuf)));
+    GST_LOG_OBJECT (rmdemux, "pushing buffer dts %" GST_TIME_FORMAT ", pts %"
+        GST_TIME_FORMAT, GST_TIME_ARGS (GST_BUFFER_DTS (subbuf)),
+        GST_TIME_ARGS (GST_BUFFER_PTS (subbuf)));
 
     if (stream->discont) {
       GST_BUFFER_FLAG_SET (subbuf, GST_BUFFER_FLAG_DISCONT);
       stream->discont = FALSE;
     }
 
-    gst_buffer_set_caps (subbuf, GST_PAD_CAPS (stream->pad));
     ret = gst_pad_push (stream->pad, subbuf);
     if (ret != GST_FLOW_OK)
       break;
   }
 
   gst_buffer_unref (outbuf);
-
-done:
 
   gst_rmdemux_stream_clear_cached_subpackets (rmdemux, stream);
 
@@ -1982,7 +2024,7 @@ gst_rmdemux_descramble_mp4a_audio (GstRMDemux * rmdemux,
   GstFlowReturn res;
   GstBuffer *buf, *outbuf;
   guint frames, index, i;
-  guint8 *data;
+  GstMapInfo map;
   GstClockTime timestamp;
 
   res = GST_FLOW_OK;
@@ -1991,19 +2033,20 @@ gst_rmdemux_descramble_mp4a_audio (GstRMDemux * rmdemux,
   g_ptr_array_index (stream->subpackets, 0) = NULL;
   g_ptr_array_set_size (stream->subpackets, 0);
 
-  data = GST_BUFFER_DATA (buf);
-  timestamp = GST_BUFFER_TIMESTAMP (buf);
+  gst_buffer_map (buf, &map, GST_MAP_READ);
+  timestamp = GST_BUFFER_PTS (buf);
 
-  frames = (data[1] & 0xf0) >> 4;
+  frames = (map.data[1] & 0xf0) >> 4;
   index = 2 * frames + 2;
 
   for (i = 0; i < frames; i++) {
-    guint len = (data[i * 2 + 2] << 8) | data[i * 2 + 3];
+    guint len = (map.data[i * 2 + 2] << 8) | map.data[i * 2 + 3];
 
-    outbuf = gst_buffer_create_sub (buf, index, len);
-    if (i == 0)
-      GST_BUFFER_TIMESTAMP (outbuf) = timestamp;
-    gst_buffer_set_caps (outbuf, GST_PAD_CAPS (stream->pad));
+    outbuf = gst_buffer_copy_region (buf, GST_BUFFER_COPY_ALL, index, len);
+    if (i == 0) {
+      GST_BUFFER_PTS (outbuf) = timestamp;
+      GST_BUFFER_DTS (outbuf) = timestamp;
+    }
 
     index += len;
 
@@ -2015,8 +2058,58 @@ gst_rmdemux_descramble_mp4a_audio (GstRMDemux * rmdemux,
     if (res != GST_FLOW_OK)
       break;
   }
+  gst_buffer_unmap (buf, &map);
   gst_buffer_unref (buf);
   return res;
+}
+
+static GstFlowReturn
+gst_rmdemux_descramble_sipr_audio (GstRMDemux * rmdemux,
+    GstRMDemuxStream * stream)
+{
+  GstFlowReturn ret;
+  GstBuffer *outbuf;
+  GstMapInfo outmap;
+  guint packet_size = stream->packet_size;
+  guint height = stream->subpackets->len;
+  guint p;
+
+  g_assert (stream->height == height);
+
+  GST_LOG ("packet_size = %u, leaf_size = %u, height= %u", packet_size,
+      stream->leaf_size, height);
+
+  outbuf = gst_buffer_new_and_alloc (height * packet_size);
+  gst_buffer_map (outbuf, &outmap, GST_MAP_WRITE);
+
+  for (p = 0; p < height; ++p) {
+    GstBuffer *b = g_ptr_array_index (stream->subpackets, p);
+
+    if (p == 0) {
+      GST_BUFFER_DTS (outbuf) = GST_BUFFER_DTS (b);
+      GST_BUFFER_PTS (outbuf) = GST_BUFFER_PTS (b);
+    }
+
+    gst_buffer_extract (b, 0, outmap.data + packet_size * p, packet_size);
+  }
+  gst_buffer_unmap (outbuf, &outmap);
+
+  GST_LOG_OBJECT (rmdemux, "pushing buffer dts %" GST_TIME_FORMAT ", pts %"
+      GST_TIME_FORMAT, GST_TIME_ARGS (GST_BUFFER_DTS (outbuf)),
+      GST_TIME_ARGS (GST_BUFFER_PTS (outbuf)));
+
+  if (stream->discont) {
+    GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
+    stream->discont = FALSE;
+  }
+
+  outbuf = gst_rm_utils_descramble_sipr_buffer (outbuf);
+
+  ret = gst_pad_push (stream->pad, outbuf);
+
+  gst_rmdemux_stream_clear_cached_subpackets (rmdemux, stream);
+
+  return ret;
 }
 
 static GstFlowReturn
@@ -2028,8 +2121,9 @@ gst_rmdemux_handle_scrambled_packet (GstRMDemux * rmdemux,
   if (stream->subpackets == NULL)
     stream->subpackets = g_ptr_array_sized_new (stream->subpackets_needed);
 
-  GST_LOG ("Got subpacket %u/%u, len=%u, key=%d", stream->subpackets->len + 1,
-      stream->subpackets_needed, GST_BUFFER_SIZE (buf), keyframe);
+  GST_LOG ("Got subpacket %u/%u, len=%" G_GSIZE_FORMAT ", key=%d",
+      stream->subpackets->len + 1, stream->subpackets_needed,
+      gst_buffer_get_size (buf), keyframe);
 
   if (keyframe && stream->subpackets->len > 0) {
     gst_rmdemux_stream_clear_cached_subpackets (rmdemux, stream);
@@ -2047,147 +2141,22 @@ gst_rmdemux_handle_scrambled_packet (GstRMDemux * rmdemux,
       ret = gst_rmdemux_descramble_dnet_audio (rmdemux, stream);
       break;
     case GST_RM_AUD_COOK:
-      ret = gst_rmdemux_descramble_cook_audio (rmdemux, stream);
+    case GST_RM_AUD_ATRC:
+      ret = gst_rmdemux_descramble_audio (rmdemux, stream);
       break;
     case GST_RM_AUD_RAAC:
     case GST_RM_AUD_RACP:
       ret = gst_rmdemux_descramble_mp4a_audio (rmdemux, stream);
       break;
+    case GST_RM_AUD_SIPR:
+      ret = gst_rmdemux_descramble_sipr_audio (rmdemux, stream);
+      break;
     default:
+      ret = GST_FLOW_ERROR;
       g_assert_not_reached ();
   }
 
   return ret;
-}
-
-static GstClockTime
-gst_rmdemux_fix_timestamp (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
-    guint8 * data, GstClockTime timestamp)
-{
-  guint8 frame_type;
-  guint16 seq;
-  GstClockTime ts = timestamp;
-
-  if (timestamp == GST_CLOCK_TIME_NONE)
-    goto done;
-
-  /* only adjust when we have a stream with B frames */
-  if (stream->format < 0x20200002)
-    goto done;
-
-  /* Fix timestamp. */
-  switch (stream->fourcc) {
-    case GST_RM_VDO_RV10:
-      goto done;
-    case GST_RM_VDO_RV20:
-    {
-      /*
-       * Bit  1- 2: frame type
-       * Bit  3- 9: ?
-       * Bit 10-22: sequence number
-       * Bit 23-32: ?
-       */
-      frame_type = (data[0] >> 6) & 0x03;
-      seq = ((data[1] & 0x7f) << 6) + ((data[2] & 0xfc) >> 2);
-      break;
-    }
-    case GST_RM_VDO_RV30:
-    {
-      /*
-       * Bit  1- 2: ?
-       * Bit     3: skip packet if 1
-       * Bit  4- 5: frame type
-       * Bit  6-12: ?
-       * Bit 13-25: sequence number
-       * Bit 26-32: ?
-       */
-      frame_type = (data[0] >> 3) & 0x03;
-      seq = ((data[1] & 0x0f) << 9) + (data[2] << 1) + ((data[3] & 0x80) >> 7);
-      break;
-    }
-    case GST_RM_VDO_RV40:
-    {
-      /*
-       * Bit     1: skip packet if 1
-       * Bit  2- 3: frame type
-       * Bit  4-13: ?
-       * Bit 14-26: sequence number
-       * Bit 27-32: ?
-       */
-      frame_type = (data[0] >> 5) & 0x03;
-      seq = ((data[1] & 0x07) << 10) + (data[2] << 2) + ((data[3] & 0xc0) >> 6);
-      break;
-    }
-    default:
-      goto unknown_version;
-  }
-
-  switch (frame_type) {
-    case 0:
-    case 1:
-    {
-      GST_LOG_OBJECT (rmdemux, "I frame %d", frame_type);
-      /* I frame */
-      if (stream->next_ts == -1)
-        stream->next_ts = timestamp;
-      else
-        timestamp = stream->next_ts;
-      stream->last_ts = stream->next_ts;
-      stream->next_ts = ts;
-      stream->last_seq = stream->next_seq;
-      stream->next_seq = seq;
-      break;
-    }
-    case 2:
-    {
-      GST_LOG_OBJECT (rmdemux, "P frame");
-      /* P frame */
-      timestamp = stream->last_ts = stream->next_ts;
-      if (seq < stream->next_seq)
-        stream->next_ts += (seq + 0x2000 - stream->next_seq) * GST_MSECOND;
-      else
-        stream->next_ts += (seq - stream->next_seq) * GST_MSECOND;
-      stream->last_seq = stream->next_seq;
-      stream->next_seq = seq;
-      break;
-    }
-    case 3:
-    {
-      GST_LOG_OBJECT (rmdemux, "B frame");
-      /* B frame */
-      if (seq < stream->last_seq) {
-        timestamp =
-            (seq + 0x2000 - stream->last_seq) * GST_MSECOND + stream->last_ts;
-      } else {
-        timestamp = (seq - stream->last_seq) * GST_MSECOND + stream->last_ts;
-      }
-      break;
-    }
-    default:
-      goto unknown_frame_type;
-  }
-
-done:
-  GST_LOG_OBJECT (rmdemux,
-      "timestamp %" GST_TIME_FORMAT " -> %" GST_TIME_FORMAT, GST_TIME_ARGS (ts),
-      GST_TIME_ARGS (timestamp));
-
-  return timestamp;
-
-  /* Errors */
-unknown_version:
-  {
-    GST_ELEMENT_ERROR (rmdemux, STREAM, DECODE,
-        ("Unknown version: %i.", stream->version), (NULL));
-    return GST_FLOW_ERROR;
-  }
-
-unknown_frame_type:
-  {
-    GST_ELEMENT_ERROR (rmdemux, STREAM, DECODE, ("Unknown frame type %d.",
-            frame_type), (NULL));
-    return GST_FLOW_ERROR;
-  }
 }
 
 #define PARSE_NUMBER(data, size, number, label) \
@@ -2214,12 +2183,15 @@ gst_rmdemux_parse_video_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
     GstClockTime timestamp, gboolean key)
 {
   GstFlowReturn ret;
-  const guint8 *data, *base;
-  guint size;
+  GstMapInfo map;
+  const guint8 *data;
+  gsize size;
 
-  base = GST_BUFFER_DATA (in);
-  data = base + offset;
-  size = GST_BUFFER_SIZE (in) - offset;
+  gst_buffer_map (in, &map, GST_MAP_READ);
+
+  data = map.data + offset;
+  size = map.size - offset;
+
   /* if size <= 2, we want this method to return the same GstFlowReturn as it
    * was previously for that given stream. */
   ret = stream->last_flow;
@@ -2268,8 +2240,9 @@ gst_rmdemux_parse_video_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
     }
 
     GST_DEBUG_OBJECT (rmdemux,
-        "seq %d, subseq %d, offset %d, length %d, size %d, header %02x",
-        pkg_seqnum, pkg_subseq, pkg_offset, pkg_length, size, pkg_header);
+        "seq %d, subseq %d, offset %d, length %d, size %" G_GSIZE_FORMAT
+        ", header %02x", pkg_seqnum, pkg_subseq, pkg_offset, pkg_length, size,
+        pkg_header);
 
     /* calc size of fragment */
     if ((pkg_header & 0xc0) == 0x80) {
@@ -2283,7 +2256,9 @@ gst_rmdemux_parse_video_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
     GST_DEBUG_OBJECT (rmdemux, "fragment size %d", fragment_size);
 
     /* get the fragment */
-    fragment = gst_buffer_create_sub (in, data - base, fragment_size);
+    fragment =
+        gst_buffer_copy_region (in, GST_BUFFER_COPY_ALL, data - map.data,
+        fragment_size);
 
     if (pkg_subseq == 1) {
       GST_DEBUG_OBJECT (rmdemux, "start new fragment");
@@ -2313,6 +2288,7 @@ gst_rmdemux_parse_video_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
     /* flush fragment when complete */
     if (stream->frag_current >= stream->frag_length) {
       GstBuffer *out;
+      GstMapInfo outmap;
       guint8 *outdata;
       guint header_size;
       gint i, avail;
@@ -2336,7 +2312,8 @@ gst_rmdemux_parse_video_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
       avail = gst_adapter_available (stream->adapter);
 
       out = gst_buffer_new_and_alloc (header_size + avail);
-      outdata = GST_BUFFER_DATA (out);
+      gst_buffer_map (out, &outmap, GST_MAP_WRITE);
+      outdata = outmap.data;
 
       /* create header */
       *outdata++ = stream->frag_count - 1;
@@ -2355,8 +2332,6 @@ gst_rmdemux_parse_video_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
       stream->frag_count = 0;
       stream->frag_length = 0;
 
-      gst_buffer_set_caps (out, GST_PAD_CAPS (stream->pad));
-
       if (timestamp != -1) {
         if (rmdemux->first_ts != -1 && timestamp > rmdemux->first_ts)
           timestamp -= rmdemux->first_ts;
@@ -2366,10 +2341,11 @@ gst_rmdemux_parse_video_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
         if (rmdemux->base_ts != -1)
           timestamp += rmdemux->base_ts;
       }
-      timestamp =
-          gst_rmdemux_fix_timestamp (rmdemux, stream, outdata, timestamp);
+      gst_buffer_unmap (out, &outmap);
 
-      GST_BUFFER_TIMESTAMP (out) = timestamp;
+      /* video has DTS */
+      GST_BUFFER_DTS (out) = timestamp;
+      GST_BUFFER_PTS (out) = GST_CLOCK_TIME_NONE;
 
       GST_LOG_OBJECT (rmdemux, "pushing timestamp %" GST_TIME_FORMAT,
           GST_TIME_ARGS (timestamp));
@@ -2377,6 +2353,10 @@ gst_rmdemux_parse_video_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
       if (stream->discont) {
         GST_BUFFER_FLAG_SET (out, GST_BUFFER_FLAG_DISCONT);
         stream->discont = FALSE;
+      }
+
+      if (!key) {
+        GST_BUFFER_FLAG_SET (out, GST_BUFFER_FLAG_DELTA_UNIT);
       }
 
       ret = gst_pad_push (stream->pad, out);
@@ -2389,8 +2369,10 @@ gst_rmdemux_parse_video_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
     data += fragment_size;
     size -= fragment_size;
   }
-  GST_DEBUG_OBJECT (rmdemux, "%d bytes left", size);
+  GST_DEBUG_OBJECT (rmdemux, "%" G_GSIZE_FORMAT " bytes left", size);
 
+done:
+  gst_buffer_unmap (in, &map);
   gst_buffer_unref (in);
 
   return ret;
@@ -2400,16 +2382,16 @@ not_enough_data:
   {
     GST_ELEMENT_WARNING (rmdemux, STREAM, DECODE, ("Skipping bad packet."),
         (NULL));
-    gst_buffer_unref (in);
-    return GST_FLOW_OK;
+    ret = GST_FLOW_OK;
+    goto done;
   }
 too_many_fragments:
   {
     GST_ELEMENT_ERROR (rmdemux, STREAM, DECODE,
         ("Got more fragments (%u) than can be handled (%u)",
             stream->frag_count, MAX_FRAGS), (NULL));
-    gst_buffer_unref (in);
-    return GST_FLOW_ERROR;
+    ret = GST_FLOW_ERROR;
+    goto done;
   }
 }
 
@@ -2418,22 +2400,10 @@ gst_rmdemux_parse_audio_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
     GstBuffer * in, guint offset, guint16 version,
     GstClockTime timestamp, gboolean key)
 {
-  GstFlowReturn ret, cret;
+  GstFlowReturn ret;
   GstBuffer *buffer;
-  const guint8 *data;
-  guint size;
 
-  data = GST_BUFFER_DATA (in) + offset;
-  size = GST_BUFFER_SIZE (in) - offset;
-
-  ret = gst_pad_alloc_buffer_and_set_caps (stream->pad,
-      GST_BUFFER_OFFSET_NONE, size, GST_PAD_CAPS (stream->pad), &buffer);
-
-  cret = gst_rmdemux_combine_flows (rmdemux, stream, ret);
-  if (ret != GST_FLOW_OK)
-    goto alloc_failed;
-
-  memcpy (GST_BUFFER_DATA (buffer), (guint8 *) data, size);
+  buffer = gst_buffer_copy_region (in, GST_BUFFER_COPY_MEMORY, offset, -1);
 
   if (rmdemux->first_ts != -1 && timestamp > rmdemux->first_ts)
     timestamp -= rmdemux->first_ts;
@@ -2443,7 +2413,8 @@ gst_rmdemux_parse_audio_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
   if (rmdemux->base_ts != -1)
     timestamp += rmdemux->base_ts;
 
-  GST_BUFFER_TIMESTAMP (buffer) = timestamp;
+  GST_BUFFER_PTS (buffer) = timestamp;
+  GST_BUFFER_DTS (buffer) = timestamp;
 
   if (stream->needs_descrambling) {
     GST_LOG_OBJECT (rmdemux, "descramble timestamp %" GST_TIME_FORMAT,
@@ -2451,9 +2422,9 @@ gst_rmdemux_parse_audio_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
     ret = gst_rmdemux_handle_scrambled_packet (rmdemux, stream, buffer, key);
   } else {
     GST_LOG_OBJECT (rmdemux,
-        "Pushing buffer of size %d, timestamp %" GST_TIME_FORMAT "to pad %s",
-        GST_BUFFER_SIZE (buffer), GST_TIME_ARGS (timestamp),
-        GST_PAD_NAME (stream->pad));
+        "Pushing buffer of size %" G_GSIZE_FORMAT ", timestamp %"
+        GST_TIME_FORMAT "to pad %s", gst_buffer_get_size (buffer),
+        GST_TIME_ARGS (timestamp), GST_PAD_NAME (stream->pad));
 
     if (stream->discont) {
       GST_BUFFER_FLAG_SET (buffer, GST_BUFFER_FLAG_DISCONT);
@@ -2465,14 +2436,6 @@ gst_rmdemux_parse_audio_packet (GstRMDemux * rmdemux, GstRMDemuxStream * stream,
   gst_buffer_unref (in);
 
   return ret;
-
-  /* ERRORS */
-alloc_failed:
-  {
-    GST_DEBUG_OBJECT (rmdemux, "pad alloc returned %d", ret);
-    gst_buffer_unref (in);
-    return cret;
-  }
 }
 
 static GstFlowReturn
@@ -2480,16 +2443,18 @@ gst_rmdemux_parse_packet (GstRMDemux * rmdemux, GstBuffer * in, guint16 version)
 {
   guint16 id;
   GstRMDemuxStream *stream;
-  guint size;
+  gsize size, offset;
   GstFlowReturn cret, ret;
   GstClockTime timestamp;
   gboolean key;
-  guint8 *data, *base;
+  GstMapInfo map;
+  guint8 *data;
   guint8 flags;
   guint32 ts;
 
-  base = data = GST_BUFFER_DATA (in);
-  size = GST_BUFFER_SIZE (in);
+  gst_buffer_map (in, &map, GST_MAP_READ);
+  data = map.data;
+  size = map.size;
 
   /* stream number */
   id = RMDEMUX_GUINT16_GET (data);
@@ -2502,10 +2467,10 @@ gst_rmdemux_parse_packet (GstRMDemux * rmdemux, GstBuffer * in, guint16 version)
   ts = RMDEMUX_GUINT32_GET (data + 2);
   timestamp = ts * GST_MSECOND;
 
-  gst_segment_set_last_stop (&rmdemux->segment, GST_FORMAT_TIME, timestamp);
+  rmdemux->segment.position = timestamp;
 
   GST_LOG_OBJECT (rmdemux, "Parsing a packet for stream=%d, timestamp=%"
-      GST_TIME_FORMAT ", size %u, version=%d, ts=%u", id,
+      GST_TIME_FORMAT ", size %" G_GSIZE_FORMAT ", version=%d, ts=%u", id,
       GST_TIME_ARGS (timestamp), size, version, ts);
 
   if (rmdemux->first_ts == GST_CLOCK_TIME_NONE) {
@@ -2529,49 +2494,58 @@ gst_rmdemux_parse_packet (GstRMDemux * rmdemux, GstBuffer * in, guint16 version)
     data += 1;
     size -= 1;
   }
+  offset = data - map.data;
+  gst_buffer_unmap (in, &map);
+
   key = (flags & 0x02) != 0;
   GST_DEBUG_OBJECT (rmdemux, "flags %d, Keyframe %d", flags, key);
 
   if (rmdemux->need_newsegment) {
     GstEvent *event;
 
-    event = gst_event_new_new_segment (FALSE, rmdemux->segment.rate,
-        rmdemux->segment.format, rmdemux->segment.start,
-        rmdemux->segment.stop, rmdemux->segment.time);
+    event = gst_event_new_segment (&rmdemux->segment);
 
     GST_DEBUG_OBJECT (rmdemux, "sending NEWSEGMENT event, segment.start= %"
         GST_TIME_FORMAT, GST_TIME_ARGS (rmdemux->segment.start));
 
     gst_rmdemux_send_event (rmdemux, event);
     rmdemux->need_newsegment = FALSE;
+
+    if (rmdemux->pending_tags != NULL) {
+      gst_rmdemux_send_event (rmdemux,
+          gst_event_new_tag (rmdemux->pending_tags));
+      rmdemux->pending_tags = NULL;
+    }
   }
 
   if (stream->pending_tags != NULL) {
     GST_LOG_OBJECT (stream->pad, "tags %" GST_PTR_FORMAT, stream->pending_tags);
-    gst_element_found_tags_for_pad (GST_ELEMENT_CAST (rmdemux), stream->pad,
-        stream->pending_tags);
+    gst_pad_push_event (stream->pad, gst_event_new_tag (stream->pending_tags));
     stream->pending_tags = NULL;
   }
 
   if ((rmdemux->offset + size) <= stream->seek_offset) {
     GST_DEBUG_OBJECT (rmdemux,
-        "Stream %d is skipping: seek_offset=%d, offset=%d, size=%u",
-        stream->id, stream->seek_offset, rmdemux->offset, size);
+        "Stream %d is skipping: seek_offset=%d, offset=%d, size=%"
+        G_GSIZE_FORMAT, stream->id, stream->seek_offset, rmdemux->offset, size);
     cret = GST_FLOW_OK;
+    gst_buffer_unref (in);
     goto beach;
   }
 
   /* do special headers */
   if (stream->subtype == GST_RMDEMUX_STREAM_VIDEO) {
     ret =
-        gst_rmdemux_parse_video_packet (rmdemux, stream, in, data - base,
+        gst_rmdemux_parse_video_packet (rmdemux, stream, in, offset,
         version, timestamp, key);
   } else if (stream->subtype == GST_RMDEMUX_STREAM_AUDIO) {
     ret =
-        gst_rmdemux_parse_audio_packet (rmdemux, stream, in, data - base,
+        gst_rmdemux_parse_audio_packet (rmdemux, stream, in, offset,
         version, timestamp, key);
-  } else
+  } else {
+    gst_buffer_unref (in);
     ret = GST_FLOW_OK;
+  }
 
   cret = gst_rmdemux_combine_flows (rmdemux, stream, ret);
 
@@ -2583,6 +2557,8 @@ unknown_stream:
   {
     GST_WARNING_OBJECT (rmdemux, "No stream for stream id %d in parsing "
         "data packet", id);
+    gst_buffer_unmap (in, &map);
+    gst_buffer_unref (in);
     return GST_FLOW_OK;
   }
 }

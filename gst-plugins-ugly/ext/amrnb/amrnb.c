@@ -30,13 +30,13 @@ plugin_init (GstPlugin * plugin)
   return gst_element_register (plugin, "amrnbdec",
       GST_RANK_PRIMARY, GST_TYPE_AMRNBDEC) &&
       gst_element_register (plugin, "amrnbenc",
-      GST_RANK_NONE, GST_TYPE_AMRNBENC);
+      GST_RANK_SECONDARY, GST_TYPE_AMRNBENC);
 }
 
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "amrnb",
+    amrnb,
     "Adaptive Multi-Rate Narrow-Band",
     plugin_init, VERSION, GST_LICENSE_UNKNOWN, GST_PACKAGE_NAME,
     GST_PACKAGE_ORIGIN);

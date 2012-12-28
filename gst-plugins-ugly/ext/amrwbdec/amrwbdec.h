@@ -21,11 +21,15 @@
 #define __GST_AMRWBDEC_H__
 
 #include <gst/gst.h>
-#include <gst/base/gstadapter.h>
+#include <gst/audio/gstaudiodecoder.h>
+
+#ifdef HAVE_OPENCORE_AMRWB_0_1_3_OR_LATER
 #include <opencore-amrwb/dec_if.h>
 #include <opencore-amrwb/if_rom.h>
-
-#define L_FRAME16k      320   /* Frame size at 16kHz  */
+#else
+#include <dec_if.h>
+#include <if_rom.h>
+#endif
 
 G_BEGIN_DECLS
 
@@ -49,27 +53,17 @@ typedef struct _GstAmrwbDecClass GstAmrwbDecClass;
  * Opaque data structure.
  */
 struct _GstAmrwbDec {
-  GstElement element;
-
-  /* pads */
-  GstPad *sinkpad, *srcpad;
-  guint64 ts;
-
-  GstAdapter *adapter;
+  GstAudioDecoder element;
 
   /* library handle */
   void *handle;
 
   /* output settings */
   gint channels, rate;
-  gint duration;
-
-  GstSegment        segment;
-  gboolean          discont;
 };
 
 struct _GstAmrwbDecClass {
-  GstElementClass parent_class;
+  GstAudioDecoderClass parent_class;
 };
 
 GType gst_amrwbdec_get_type (void);

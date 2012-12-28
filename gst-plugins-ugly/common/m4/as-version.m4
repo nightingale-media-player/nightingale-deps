@@ -32,7 +32,7 @@ AC_DEFUN([AS_VERSION],
   AC_SUBST(PACKAGE_VERSION_MICRO)
 ])
 
-dnl AS_NANO(ACTION-IF-NO-NANO, [ACTION-IF-NANO])
+dnl AS_NANO(ACTION-IF-NANO-NON-NULL, [ACTION-IF-NANO-NULL])
 
 dnl requires AC_INIT to be called before
 dnl For projects using a fourth or nano number in your versioning to indicate
@@ -44,7 +44,7 @@ dnl - parses AC_PACKAGE_VERSION, set by AC_INIT, and extracts the nano number
 dnl - sets the variable PACKAGE_VERSION_NANO
 dnl - sets the variable PACKAGE_VERSION_RELEASE, which can be used
 dnl   for rpm release fields
-dnl - executes ACTION-IF-NO-NANO or ACTION-IF-NANO
+dnl - executes ACTION-IF-NANO-NON-NULL or ACTION-IF-NANO-NULL
 
 dnl example:
 dnl AS_NANO(RELEASE="yes", RELEASE="no")
@@ -63,7 +63,11 @@ AC_DEFUN([AS_NANO],
   else
     AC_MSG_RESULT($NANO)
     PACKAGE_VERSION_RELEASE=0.`date +%Y%m%d.%H%M%S`
-    ifelse([$2], , :, [$2])
+    if test "x$NANO" != "x1" ; then
+       ifelse([$1], , :, [$1])
+    else
+       ifelse([$2], , :, [$2])
+    fi
   fi
   PACKAGE_VERSION_NANO=$NANO
   AC_SUBST(PACKAGE_VERSION_NANO)

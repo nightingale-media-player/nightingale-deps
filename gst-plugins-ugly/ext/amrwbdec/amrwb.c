@@ -27,13 +27,13 @@ static gboolean
 plugin_init (GstPlugin * plugin)
 {
   return gst_element_register (plugin, "amrwbdec",
-      GST_RANK_NONE, GST_TYPE_AMRWBDEC);
+      GST_RANK_PRIMARY, GST_TYPE_AMRWBDEC);
 }
 
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    "amrwbdec",
+    amrwbdec,
     "Adaptive Multi-Rate Wide-Band Decoder",
     plugin_init, VERSION, GST_LICENSE_UNKNOWN, GST_PACKAGE_NAME,
     GST_PACKAGE_ORIGIN);

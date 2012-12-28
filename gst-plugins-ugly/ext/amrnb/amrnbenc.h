@@ -21,8 +21,13 @@
 #define __GST_AMRNBENC_H__
 
 #include <gst/gst.h>
+#include <gst/audio/gstaudioencoder.h>
+
+#ifdef HAVE_OPENCORE_AMRNB_0_1_3_OR_LATER
 #include <opencore-amrnb/interf_enc.h>
-#include <gst/base/gstadapter.h>
+#else
+#include <interf_enc.h>
+#endif
 
 G_BEGIN_DECLS
 
@@ -41,26 +46,21 @@ typedef struct _GstAmrnbEnc GstAmrnbEnc;
 typedef struct _GstAmrnbEncClass GstAmrnbEncClass;
 
 struct _GstAmrnbEnc {
-  GstElement element;
-
-  /* pads */
-  GstPad *sinkpad, *srcpad;
-  guint64 ts;
-  gboolean discont;
-
-  GstAdapter *adapter;
+  GstAudioEncoder element;
 
   /* library handle */
   void *handle;
 
   /* input settings */
-  enum Mode bandmode;
   gint channels, rate;
   gint duration;
+
+  /* property */
+  enum Mode bandmode;
 };
 
 struct _GstAmrnbEncClass {
-  GstElementClass parent_class;
+  GstAudioEncoderClass parent_class;
 };
 
 GType gst_amrnbenc_get_type (void);

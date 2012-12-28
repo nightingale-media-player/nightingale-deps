@@ -35,13 +35,6 @@
 GST_DEBUG_CATEGORY_STATIC (rtspwms_debug);
 #define GST_CAT_DEFAULT (rtspwms_debug)
 
-/* elementfactory information */
-static const GstElementDetails rtspwms_details =
-GST_ELEMENT_DETAILS ("WMS RTSP Extension",
-    "Network/Extension/Protocol",
-    "Extends RTSP so that it can handle WMS setup",
-    "Wim Taymans <wim.taymans@gmail.com>");
-
 #define SERVER_PREFIX "WMServer/"
 #define HEADER_PREFIX "data:application/vnd.ms.wms-hdr.asfv1;base64,"
 #define EXTENSION_CMD "application/x-wms-extension-cmd"
@@ -210,38 +203,25 @@ send_error:
 
 static void gst_rtsp_wms_extension_init (gpointer g_iface, gpointer iface_data);
 
-static void
-_do_init (GType rtspwms_type)
-{
-  static const GInterfaceInfo rtspextension_info = {
-    gst_rtsp_wms_extension_init,
-    NULL,
-    NULL
-  };
-
-  g_type_add_interface_static (rtspwms_type, GST_TYPE_RTSP_EXTENSION,
-      &rtspextension_info);
-}
-
-GST_BOILERPLATE_FULL (GstRTSPWMS, gst_rtsp_wms, GstElement, GST_TYPE_ELEMENT,
-    _do_init);
-
-static void
-gst_rtsp_wms_base_init (gpointer klass)
-{
-  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
-
-  gst_element_class_set_details (element_class, &rtspwms_details);
-}
+G_DEFINE_TYPE_WITH_CODE (GstRTSPWMS, gst_rtsp_wms, GST_TYPE_ELEMENT,
+    G_IMPLEMENT_INTERFACE (GST_TYPE_RTSP_EXTENSION,
+        gst_rtsp_wms_extension_init));
 
 static void
 gst_rtsp_wms_class_init (GstRTSPWMSClass * g_class)
 {
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
   GST_DEBUG_CATEGORY_INIT (rtspwms_debug, "rtspwms", 0, "WMS RTSP extension");
+
+  gst_element_class_set_static_metadata (element_class, "WMS RTSP Extension",
+      "Network/Extension/Protocol",
+      "Extends RTSP so that it can handle WMS setup",
+      "Wim Taymans <wim.taymans@gmail.com>");
 }
 
 static void
-gst_rtsp_wms_init (GstRTSPWMS * rtspwms, GstRTSPWMSClass * klass)
+gst_rtsp_wms_init (GstRTSPWMS * rtspwms)
 {
 }
 

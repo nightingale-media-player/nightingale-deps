@@ -3,15 +3,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>amrnbdec</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.73.2">
-<link rel="start" href="index.html" title="GStreamer Ugly Plugins 0.10 Plugins Reference Manual">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="GStreamer Ugly Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-ugly Elements">
 <link rel="prev" href="gst-plugins-ugly-plugins-a52dec.html" title="a52dec">
 <link rel="next" href="gst-plugins-ugly-plugins-amrnbenc.html" title="amrnbenc">
-<meta name="generator" content="GTK-Doc V1.11 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="chapter" href="ch01.html" title="gst-plugins-ugly Elements">
-<link rel="chapter" href="ch02.html" title="gst-plugins-ugly Plugins">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
@@ -19,18 +17,20 @@
 <td><a accesskey="p" href="gst-plugins-ugly-plugins-a52dec.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
 <td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Ugly Plugins 0.10 Plugins Reference Manual</th>
+<th width="100%" align="center">GStreamer Ugly Plugins 1.0 Plugins Reference Manual</th>
 <td><a accesskey="n" href="gst-plugins-ugly-plugins-amrnbenc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#gst-plugins-ugly-plugins-amrnbdec.synopsis" class="shortcut">Top</a>
-                 | 
-                <a href="#gst-plugins-ugly-plugins-amrnbdec.description" class="shortcut">Description</a>
-                 | 
-                <a href="#gst-plugins-ugly-plugins-amrnbdec.properties" class="shortcut">Properties</a>
+                   | 
+                  <a href="#gst-plugins-ugly-plugins-amrnbdec.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-ugly-plugins-amrnbdec.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#gst-plugins-ugly-plugins-amrnbdec.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
-<div class="refentry" lang="en">
+<div class="refentry">
 <a name="gst-plugins-ugly-plugins-amrnbdec"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
@@ -41,34 +41,32 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="gst-plugins-ugly-plugins-amrnbdec.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-                    <a class="link" href="gst-plugins-ugly-plugins-amrnbdec.html#GstAmrnbDec" title="GstAmrnbDec">GstAmrnbDec</a>;
+<a name="GstAmrnbDec"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-ugly-plugins-amrnbdec.html#GstAmrnbDec-struct" title="struct GstAmrnbDec">GstAmrnbDec</a>;
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
+<a name="gst-plugins-ugly-plugins-amrnbdec.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudiodecoder.html#GstAudioDecoder">GstAudioDecoder</a>
+                           +----GstAmrnbDec
+</pre>
+</div>
+<div class="refsect1">
 <a name="gst-plugins-ugly-plugins-amrnbdec.properties"></a><h2>Properties</h2>
 <pre class="synopsis">
-  "<a class="link" href="gst-plugins-ugly-plugins-amrnbdec.html#GstAmrnbDec--variant" title='The "variant" property'>variant</a>"                  GstAmrnbVariant       : Read / Write / Construct
+  "<a class="link" href="gst-plugins-ugly-plugins-amrnbdec.html#GstAmrnbDec--variant" title='The "variant" property'>variant</a>"                  <span class="type">GstAmrnbVariant</span>       : Read / Write / Construct
 </pre>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-ugly-plugins-amrnbdec.description"></a><h2>Description</h2>
-<p>
-AMR narrowband decoder based on the 
-<a class="ulink" href="http://sourceforge.net/projects/opencore-amr" target="_top">opencore codec implementation</a>.
-</p>
-<p>
-</p>
-<div class="refsect2" lang="en">
-<a name="id2975712"></a><h3>Example launch line</h3>
-<div class="informalexample"><pre class="programlisting">
-gst-launch filesrc location=abc.amr ! amrparse ! amrnbdec ! audioresample ! audioconvert ! alsasink
-</pre></div>
-</div>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
-<div class="refsect2" lang="en">
-<a name="id2961661"></a><h3>Element Information</h3>
+<div class="refsect2">
+<a name="idp7187376"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -80,7 +78,7 @@ gst-launch filesrc location=abc.amr ! amrparse ! amrnbdec ! audioresample ! audi
 </tr>
 <tr>
 <td><p><span class="term">author</span></p></td>
-<td>Ronald Bultje &lt;rbultje@ronald.bitfreak.net&gt;</td>
+<td>GStreamer maintainers &lt;gstreamer-devel@lists.sourceforge.net&gt;</td>
 </tr>
 <tr>
 <td><p><span class="term">class</span></p></td>
@@ -90,29 +88,8 @@ gst-launch filesrc location=abc.amr ! amrparse ! amrnbdec ! audioresample ! audi
 </table></div>
 </div>
 <hr>
-<div class="refsect2" lang="en">
-<a name="id2962053"></a><h3>Element Pads</h3>
-<div class="variablelist"><table border="0">
-<col align="left" valign="top">
-<tbody>
-<tr>
-<td><p><span class="term">name</span></p></td>
-<td>src</td>
-</tr>
-<tr>
-<td><p><span class="term">direction</span></p></td>
-<td>source</td>
-</tr>
-<tr>
-<td><p><span class="term">presence</span></p></td>
-<td>always</td>
-</tr>
-<tr>
-<td><p><span class="term">details</span></p></td>
-<td>audio/x-raw-int, width=(int)16, depth=(int)16, signed=(boolean)true, endianness=(int)1234, rate=(int)8000, channels=(int)1</td>
-</tr>
-</tbody>
-</table></div>
+<div class="refsect2">
+<a name="idp5904800"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -134,59 +111,53 @@ gst-launch filesrc location=abc.amr ! amrparse ! amrnbdec ! audioresample ! audi
 </tr>
 </tbody>
 </table></div>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-raw, format=(string)S16LE, layout=(string)interleaved, rate=(int)8000, channels=(int)1</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 <p>
 </p>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-ugly-plugins-amrnbdec.details"></a><h2>Details</h2>
-<div class="refsect2" lang="en">
-<a name="GstAmrnbDec"></a><h3>GstAmrnbDec</h3>
-<pre class="programlisting">typedef struct {
-  GstElement element;
-
-  /* pads */
-  GstPad *sinkpad, *srcpad;
-  guint64 ts;
-
-  GstAmrnbVariant variant;
-
-  GstAdapter *adapter;
-
-  /* library handle */
-  void *handle;
-
-  /* output settings */
-  gint channels, rate;
-  gint duration;
-
-  GstSegment        segment;
-  gboolean          discont;
-} GstAmrnbDec;
-</pre>
+<div class="refsect2">
+<a name="GstAmrnbDec-struct"></a><h3>struct GstAmrnbDec</h3>
+<pre class="programlisting">struct GstAmrnbDec;</pre>
 <p>
 </p>
 </div>
 </div>
-<div class="refsect1" lang="en">
+<div class="refsect1">
 <a name="gst-plugins-ugly-plugins-amrnbdec.property-details"></a><h2>Property Details</h2>
-<div class="refsect2" lang="en">
+<div class="refsect2">
 <a name="GstAmrnbDec--variant"></a><h3>The <code class="literal">"variant"</code> property</h3>
-<pre class="programlisting">  "variant"                  GstAmrnbVariant       : Read / Write / Construct</pre>
+<pre class="programlisting">  "variant"                  <span class="type">GstAmrnbVariant</span>       : Read / Write / Construct</pre>
 <p>The decoder variant.</p>
 <p>Default value: IF1</p>
 </div>
 </div>
-<div class="refsect1" lang="en">
-<a name="gst-plugins-ugly-plugins-amrnbdec.see-also"></a><h2>See Also</h2>
-#GstAmrnbEnc, <a
-href="../gst-plugins-bad-plugins-0.10/gst-plugins-bad-plugins-amrparse.html#GstAmrParse"
-><span class="type">GstAmrParse</span></a>
-</div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.11</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>
