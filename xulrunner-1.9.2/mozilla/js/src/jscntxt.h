@@ -284,9 +284,6 @@ struct JSThreadData {
     /* Property cache for faster call/get/set invocation. */
     JSPropertyCache     propertyCache;
 
-    /* Random number generator state, used by jsmath.cpp. */
-    int64               rngSeed;
-
 #ifdef JS_TRACER
     /* Trace-tree JIT recorder/interpreter state. */
     JSTraceMonitor      traceMonitor;
@@ -1126,6 +1123,9 @@ struct JSContext {
     /* Stored here to avoid passing it around as a parameter. */
     uintN               resolveFlags;
 
+    /* Random number generator state, used by jsmath.cpp. */
+    int64               rngSeed;
+
 #ifdef JS_TRACER
     /*
      * State for the current tree execution.  bailExit is valid if the tree has
@@ -1343,6 +1343,11 @@ class JSAutoTempValueRooter
 
     jsval value() { return mTvr.u.value; }
     jsval *addr() { return &mTvr.u.value; }
+
+    void set(jsval v) {
+        JS_ASSERT(mTvr.count == JSTVU_SINGLE);
+        mTvr.u.value = v;
+    }
 
   protected:
     JSContext *mContext;
@@ -1666,7 +1671,7 @@ js_ReportOutOfMemory(JSContext *cx);
 extern void
 js_ReportOutOfScriptQuota(JSContext *cx);
 
-extern void
+extern JS_FRIEND_API(void)
 js_ReportOverRecursed(JSContext *cx);
 
 extern void

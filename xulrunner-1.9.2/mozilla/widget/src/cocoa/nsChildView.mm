@@ -68,6 +68,7 @@
 #include "nsIMenuRollup.h"
 #include "nsIDOMSimpleGestureEvent.h"
 #include "nsIPluginInstance.h"
+#include "nsITimer.h"
 
 #include "nsDragService.h"
 #include "nsClipboard.h"
@@ -134,6 +135,8 @@ PRBool nsTSMManager::sIgnoreCommit = PR_FALSE;
 NSView<mozView>* nsTSMManager::sComposingView = nsnull;
 TSMDocumentID nsTSMManager::sDocumentID = nsnull;
 NSString* nsTSMManager::sComposingString = nsnull;
+nsITimer* nsTSMManager::sSyncKeyScriptTimer = nsnull;
+PRUint32 nsTSMManager::sIMEEnabledStatus = nsIWidget::IME_STATUS_ENABLED;
 
 static NS_DEFINE_CID(kRegionCID, NS_REGION_CID);
 static NSView* sLastViewEntered = nil;
@@ -196,6 +199,10 @@ PRUint32 nsChildView::sLastInputEventCount = 0;
 
 - (void)maybeInvalidateShadow;
 - (void)invalidateShadow;
+
+// Called using performSelector:withObject:afterDelay:0 to release
+// aWidgetArray (and its contents) the next time through the run loop.
+- (void)releaseWidgets:(NSArray*)aWidgetArray;
 
 #if USE_CLICK_HOLD_CONTEXTMENU
  // called on a timer two seconds after a mouse down to see if we should display
@@ -502,6 +509,7 @@ nsChildView::nsChildView() : nsBaseWidget()
 , mLiveResizeInProgress(PR_FALSE)
 , mPluginDrawing(PR_FALSE)
 , mPluginIsCG(PR_FALSE)
+, mPluginInstanceOwner(nsnull)
 {
 #ifdef PR_LOGGING
   if (!sCocoaLog) {
@@ -511,6 +519,8 @@ nsChildView::nsChildView() : nsBaseWidget()
 #endif // DEBUG
   }
 #endif
+
+  memset(&mPluginPort, 0, sizeof(mPluginPort));
 
   SetBackgroundColor(NS_RGB(255, 255, 255));
   SetForegroundColor(NS_RGB(0, 0, 0));
@@ -571,6 +581,11 @@ nsresult nsChildView::Create(nsIWidget *aParent,
                              nsWidgetInitData *aInitData)
 {
   NS_OBJC_BEGIN_TRY_ABORT_BLOCK_NSRESULT;
+
+  // Because the hidden window is created outside of an event loop,
+  // we need to provide an autorelease pool to avoid leaking cocoa objects
+  // (see bug 559075).
+  nsAutoreleasePool localPool;
 
   // See NSView (MethodSwizzling) below.
   if (nsToolkit::OnLeopardOrLater() && !gChildViewMethodsSwizzled) {
@@ -947,6 +962,11 @@ NS_IMETHODIMP nsChildView::Show(PRBool aState)
   NS_OBJC_BEGIN_TRY_ABORT_BLOCK_NSRESULT;
 
   if (aState != mVisible) {
+    // Provide an autorelease pool because this gets called during startup
+    // on the "hidden window", resulting in cocoa object leakage if there's
+    // no pool in place.
+    nsAutoreleasePool localPool;
+
     [mView setHidden:!aState];
     mVisible = aState;
     if (!mVisible)
@@ -1734,9 +1754,11 @@ void nsChildView::Scroll(const nsIntPoint& aDelta,
   if (mVisible && !aDestRects.IsEmpty()) {
     viewWasDirty = [mView needsDisplay];
 
-    for (PRUint32 i = 0; i < aDestRects.Length(); ++i) {
+    nsIntRect destRect; // keep the last rect
+    for (BlitRectIter iter(aDelta, aDestRects); !iter.IsDone(); ++iter) {
+      destRect = iter.Rect();
       NSRect rect;
-      GeckoRectToNSRect(aDestRects[i] - aDelta, rect);
+      GeckoRectToNSRect(destRect - aDelta, rect);
       NSSize scrollVector = {aDelta.x, aDelta.y};
       [mView scrollRect:rect by:scrollVector];
     }
@@ -1748,7 +1770,7 @@ void nsChildView::Scroll(const nsIntPoint& aDelta,
     // So let's invalidate one pixel. We'll pick a pixel on the trailing edge
     // of the last destination rectangle, since in most situations that's going
     // to be invalidated anyway.
-    nsIntRect lastRect = aDestRects[aDestRects.Length() - 1] + aDelta;
+    nsIntRect lastRect = destRect + aDelta;
     nsIntPoint pointToInvalidate(
       PickValueForSign(aDelta.x, lastRect.XMost(), lastRect.x, lastRect.x - 1),
       PickValueForSign(aDelta.y, lastRect.YMost(), lastRect.y, lastRect.y - 1));
@@ -1993,24 +2015,7 @@ NS_IMETHODIMP nsChildView::SetIMEEnabled(PRUint32 aState)
   NSLog(@"**** SetIMEEnabled aState = %d", aState);
 #endif
 
-  switch (aState) {
-    case nsIWidget::IME_STATUS_ENABLED:
-    case nsIWidget::IME_STATUS_PLUGIN:
-      nsTSMManager::SetRomanKeyboardsOnly(PR_FALSE);
-      nsTSMManager::EnableIME(PR_TRUE);
-      break;
-    case nsIWidget::IME_STATUS_DISABLED:
-      nsTSMManager::SetRomanKeyboardsOnly(PR_FALSE);
-      nsTSMManager::EnableIME(PR_FALSE);
-      break;
-    case nsIWidget::IME_STATUS_PASSWORD:
-      nsTSMManager::SetRomanKeyboardsOnly(PR_TRUE);
-      nsTSMManager::EnableIME(PR_FALSE);
-      break;
-    default:
-      NS_ERROR("not implemented!");
-  }
-  return NS_OK;
+  return nsTSMManager::SetIMEEnabled(aState);
 }
 
 NS_IMETHODIMP nsChildView::GetIMEEnabled(PRUint32* aState)
@@ -2019,12 +2024,7 @@ NS_IMETHODIMP nsChildView::GetIMEEnabled(PRUint32* aState)
   NSLog(@"**** GetIMEEnabled");
 #endif
 
-  if (nsTSMManager::IsIMEEnabled())
-    *aState = nsIWidget::IME_STATUS_ENABLED;
-  else if (nsTSMManager::IsRomanKeyboardsOnly())
-    *aState = nsIWidget::IME_STATUS_PASSWORD;
-  else
-    *aState = nsIWidget::IME_STATUS_DISABLED;
+  *aState = nsTSMManager::GetIMEEnabled();
   return NS_OK;
 }
 
@@ -2648,9 +2648,42 @@ static const PRInt32 sShadowInvalidationInterval = 100;
   NS_OBJC_END_TRY_ABORT_BLOCK;
 }
 
+- (void)releaseWidgets:(NSArray*)aWidgetArray
+{
+  if (!aWidgetArray)
+    return;
+  NSInteger count = [aWidgetArray count];
+  for (NSInteger i = 0; i < count; ++i) {
+    NSNumber* pointer = (NSNumber*) [aWidgetArray objectAtIndex:i];
+    nsIWidget* widget = (nsIWidget*) [pointer unsignedIntegerValue];
+    NS_RELEASE(widget);
+  }
+}
+
 - (void)viewWillDraw
 {
   if (mGeckoChild) {
+    // The OS normally *will* draw our NSWindow, no matter what we do here.
+    // But Gecko can delete our parent widget(s) (along with mGeckoChild)
+    // while processing an NS_WILL_PAINT event, which closes our NSWindow and
+    // makes the OS throw an NSInternalInconsistencyException assertion when
+    // it tries to draw it.  Sometimes the OS also aborts the browser process.
+    // So we need to retain our parent(s) here and not release it/them until
+    // the next time through the main thread's run loop.  See bug 550392.
+    NSMutableArray* widgetArray = nil;
+    nsIWidget* parent = mGeckoChild->GetParent();
+    if (parent)
+      widgetArray = [NSMutableArray arrayWithCapacity:2];
+    while (parent) {
+      NS_ADDREF(parent);
+      [widgetArray addObject:[NSNumber numberWithUnsignedInteger:(NSUInteger)parent]];
+      parent = parent->GetParent();
+    }
+    if (widgetArray) {
+      [self performSelector:@selector(releaseWidgets:)
+                 withObject:widgetArray
+                 afterDelay:0];
+    }
     nsPaintEvent paintEvent(PR_TRUE, NS_WILL_PAINT, mGeckoChild);
     mGeckoChild->DispatchWindowEvent(paintEvent);
   }
@@ -3076,65 +3109,9 @@ static const PRInt32 sShadowInvalidationInterval = 100;
   NS_OBJC_END_TRY_ABORT_BLOCK;
 }
 
-- (void)setViewDisabled:(BOOL)inIsDisabled
-{
-  NS_OBJC_BEGIN_TRY_ABORT_BLOCK;
-  
-  mDisableView = inIsDisabled;
-  
-  NSEnumerator *subviewsEnum = [[self subviews] objectEnumerator];
-  id curSubview = nil;
-  while ((curSubview = [subviewsEnum nextObject])) {
-    if ([curSubview isKindOfClass:[ChildView class]]) {
-      [(ChildView *)curSubview setViewDisabled:inIsDisabled]; 
-    }
-  }
-  
-  NS_OBJC_END_TRY_ABORT_BLOCK;
-}
-
-
-- (BOOL)shouldDelayWindowOrderingForEvent:(NSEvent *)theEvent
-{
-  NS_OBJC_BEGIN_TRY_ABORT_BLOCK_RETURN;
-  
-  if (mDisableView) {
-    // If the app is not active, re-activate the application here.
-    if (![NSApp isActive]) {
-      [NSApp activateIgnoringOtherApps:YES];
-      [NSApp arrangeInFront:nil];
-    }
-    
-    return YES;
-  }
-  
-  return [super shouldDelayWindowOrderingForEvent:theEvent];
-  
-  NS_OBJC_END_TRY_ABORT_BLOCK_RETURN(NO);
-}
-
-
-- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
-{
-  NS_OBJC_BEGIN_TRY_ABORT_BLOCK_RETURN;
-  
-  if (mDisableView)
-    return YES;
-  
-  return [super acceptsFirstMouse:theEvent];
-  
-  NS_OBJC_END_TRY_ABORT_BLOCK_RETURN(NO);
-}
-
-
 - (void)mouseDown:(NSEvent*)theEvent
 {
   NS_OBJC_BEGIN_TRY_ABORT_BLOCK;
- 
-  if (mDisableView) {
-    [NSApp preventWindowOrdering];
-    return;
-  }
 
   // If we've already seen this event due to direct dispatch from menuForEvent:
   // just bail; if not, remember it.
@@ -4841,6 +4818,10 @@ GetUSLayoutCharFromKeyTranslate(UInt32 aKeyCode, UInt32 aModifiers)
   NSLog(@" aString = '%@'", aString);
 #endif
 
+  if (!mGeckoChild) {
+    return;
+  }
+
   nsAutoRetainCocoaObject kungFuDeathGrip(self);
 
   if (![aString isKindOfClass:[NSAttributedString class]])
@@ -5338,7 +5319,20 @@ static const char* ToEscapedString(NSString* aString, nsCAutoString& aBuf)
     return;
   }
 
+#ifdef MOZ_MACBROWSER
+  PRBool handled = [self processKeyDownEvent:theEvent keyEquiv:NO];
+  if (!handled) {
+    NSResponder* targetResponder = self;
+    do {
+      targetResponder = [targetResponder nextResponder];
+      if (!targetResponder || (targetResponder == self))
+        return;
+    } while ([targetResponder class] == [ChildView class]);
+    [targetResponder keyDown:theEvent];
+  }
+#else
   [self processKeyDownEvent:theEvent keyEquiv:NO];
+#endif
 
   NS_OBJC_END_TRY_ABORT_BLOCK;
 }
@@ -6376,15 +6370,82 @@ nsTSMManager::SetIMEOpenState(PRBool aOpen)
   KeyScript(aOpen ? smKeySwapScript : smKeyRoman);
 }
 
+nsresult
+nsTSMManager::SetIMEEnabled(PRUint32 aEnabled)
+{
+  switch (aEnabled) {
+    case nsIWidget::IME_STATUS_ENABLED:
+    case nsIWidget::IME_STATUS_PLUGIN:
+      SetRomanKeyboardsOnly(PR_FALSE);
+      EnableIME(PR_TRUE);
+      break;
+    case nsIWidget::IME_STATUS_DISABLED:
+      SetRomanKeyboardsOnly(PR_FALSE);
+      EnableIME(PR_FALSE);
+      break;
+    case nsIWidget::IME_STATUS_PASSWORD:
+      SetRomanKeyboardsOnly(PR_TRUE);
+      EnableIME(PR_FALSE);
+      break;
+    default:
+      NS_ERROR("not implemented!");
+      return NS_ERROR_UNEXPECTED;
+  }
+  sIMEEnabledStatus = aEnabled;
+  return NS_OK;
+}
+
 #define ENABLE_ROMAN_KYBDS_ONLY -23
 void
 nsTSMManager::SetRomanKeyboardsOnly(PRBool aRomanOnly)
 {
-  if (aRomanOnly == sIsRomanKeyboardsOnly)
-    return;
   CommitIME();
-  KeyScript(aRomanOnly ? ENABLE_ROMAN_KYBDS_ONLY : smKeyEnableKybds);
+
+  if (sIMEEnabledStatus != nsIWidget::IME_STATUS_PLUGIN &&
+      sIsRomanKeyboardsOnly == aRomanOnly) {
+    return;
+  }
+
   sIsRomanKeyboardsOnly = aRomanOnly;
+  CallKeyScriptAPI();
+}
+
+void
+nsTSMManager::CallKeyScriptAPI()
+{
+  // If timer has been alreay enabled, we don't need to recreate it.
+  if (sSyncKeyScriptTimer) {
+    return;
+  }
+
+  nsCOMPtr<nsITimer> timer = do_CreateInstance(NS_TIMER_CONTRACTID);
+  NS_ENSURE_TRUE(timer, );
+  NS_ADDREF(sSyncKeyScriptTimer = timer);
+  sSyncKeyScriptTimer->InitWithFuncCallback(SyncKeyScript, nsnull, 0,
+                                            nsITimer::TYPE_ONE_SHOT);
+}
+
+void
+nsTSMManager::SyncKeyScript(nsITimer* aTimer, void* aClosure)
+{
+  // This is a workaround of Bug 548480 for Snow Leopard.
+  //
+  // KeyScript may cause the crash in CFHash.  We need call
+  // [NSInputManager currentInputManager] before it.
+  [NSInputManager currentInputManager];
+
+  KeyScript(sIsRomanKeyboardsOnly ? ENABLE_ROMAN_KYBDS_ONLY : smKeyEnableKybds);
+  NS_RELEASE(sSyncKeyScriptTimer);
+}
+
+void
+nsTSMManager::Shutdown()
+{
+  if (!sSyncKeyScriptTimer) {
+    return;
+  }
+  sSyncKeyScriptTimer->Cancel();
+  NS_RELEASE(sSyncKeyScriptTimer);
 }
 
 void
@@ -6454,11 +6515,10 @@ nsTSMManager::CancelIME()
 OSStatus PluginKeyEventsHandler(EventHandlerCallRef inHandlerRef,
                                 EventRef inEvent, void *userData)
 {
-  id arp = [[NSAutoreleasePool alloc] init];
+  nsAutoreleasePool localPool;
 
   TSMDocumentID activeDoc = ::TSMGetActiveDocument();
   if (!activeDoc) {
-    [arp release];
     return eventNotHandledErr;
   }
 
@@ -6468,7 +6528,6 @@ OSStatus PluginKeyEventsHandler(EventHandlerCallRef inHandlerRef,
   if (status != noErr)
     target = nil;
   if (!target) {
-    [arp release];
     return eventNotHandledErr;
   }
 
@@ -6476,13 +6535,11 @@ OSStatus PluginKeyEventsHandler(EventHandlerCallRef inHandlerRef,
   status = ::GetEventParameter(inEvent, kEventParamTextInputSendKeyboardEvent,
                                typeEventRef, NULL, sizeof(EventRef), NULL, &keyEvent);
   if ((status != noErr) || !keyEvent) {
-    [arp release];
     return eventNotHandledErr;
   }
 
   [target processPluginKeyEvent:keyEvent];
 
-  [arp release];
   return noErr;
 }
 

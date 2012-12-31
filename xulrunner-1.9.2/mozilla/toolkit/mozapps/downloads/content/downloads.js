@@ -466,6 +466,7 @@ function Startup()
             getService(Ci.nsIObserverService);
   obs.addObserver(gDownloadObserver, "download-manager-remove-download", false);
   obs.addObserver(gDownloadObserver, "private-browsing", false);
+  obs.addObserver(gDownloadObserver, "browser-lastwindow-close-granted", false);
 
   // Clear the search box and move focus to the list on escape from the box
   gSearchBox.addEventListener("keypress", function(e) {
@@ -485,6 +486,7 @@ function Shutdown()
             getService(Ci.nsIObserverService);
   obs.removeObserver(gDownloadObserver, "private-browsing");
   obs.removeObserver(gDownloadObserver, "download-manager-remove-download");
+  obs.removeObserver(gDownloadObserver, "browser-lastwindow-close-granted");
 
   clearTimeout(gBuilder);
   gStmt.reset();
@@ -527,6 +529,13 @@ let gDownloadObserver = {
             buildDownloadList(true);
           }, 0);
         }
+        break;
+      case "browser-lastwindow-close-granted":
+#ifndef XP_MACOSX
+        if (gDownloadManager.activeDownloadCount == 0) {
+          setTimeout(gCloseDownloadManager, 0);
+        }
+#endif
         break;
     }
   }
@@ -1162,7 +1171,6 @@ function buildDownloadList(aForceBuild)
   gBuilder = setTimeout(function() {
     // Start building the list and select the first item
     stepListBuilder(1);
-    gDownloadsView.selectedIndex = 0;
 
     // We just tried to add a single item, so we probably need to enable
     updateClearListButton();

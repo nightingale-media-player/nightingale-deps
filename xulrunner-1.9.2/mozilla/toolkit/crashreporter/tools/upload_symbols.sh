@@ -44,36 +44,33 @@
 # And will use the following optional environment variables if set:
 # SYMBOL_SERVER_SSH_KEY : path to a ssh private key to use
 # SYMBOL_SERVER_PORT    : port to use for ssh
+# POST_SYMBOL_UPLOAD_CMD: a commandline to run on the remote host after
+#                         uploading. The full path of the symbol index
+#                         file will be appended to the commandline.
 #
 set -e
 
 : ${SYMBOL_SERVER_HOST?} ${SYMBOL_SERVER_USER?} ${SYMBOL_SERVER_PATH?} ${1?"You must specify a symbol archive to upload"}
 hash=`openssl dgst -sha1 "$1" | sed 's/^.*)=//' | sed 's/\ //g'`
 archive="${hash}-"`basename "$1" | sed 's/\ //g'`
-
-SERVER_PATH=$2
-if test -z $SERVER_PATH; then
-  SERVER_PATH=$SYMBOL_SERVER_PATH
-fi
-
-echo "Transferring symbol package ${1}..."
-ssh -2 ${SYMBOL_SERVER_PORT:+-p $SYMBOL_SERVER_PORT} \
-  ${SYMBOL_SERVER_SSH_KEY:+-i "$SYMBOL_SERVER_SSH_KEY"} \
-  -l ${SYMBOL_SERVER_USER} ${SYMBOL_SERVER_HOST} \
-  "set -e; 
-   umask 0022; 
-   mkdir -pv ${SERVER_PATH};"
-
+echo "Transferring symbols... $1"
 scp ${SYMBOL_SERVER_PORT:+-P $SYMBOL_SERVER_PORT} \
   ${SYMBOL_SERVER_SSH_KEY:+-i "$SYMBOL_SERVER_SSH_KEY"} "$1" \
-  ${SYMBOL_SERVER_USER}@${SYMBOL_SERVER_HOST}:"${SERVER_PATH}/${archive}"
-echo "Unpacking symbols on remote host in directory ${SERVER_PATH}..."
+  ${SYMBOL_SERVER_USER}@${SYMBOL_SERVER_HOST}:"${SYMBOL_SERVER_PATH}/${archive}"
+echo "Unpacking symbols on remote host..."
 ssh -2 ${SYMBOL_SERVER_PORT:+-p $SYMBOL_SERVER_PORT} \
   ${SYMBOL_SERVER_SSH_KEY:+-i "$SYMBOL_SERVER_SSH_KEY"} \
   -l ${SYMBOL_SERVER_USER} ${SYMBOL_SERVER_HOST} \
   "set -e;
    umask 0022;
-   cd ${SERVER_PATH};
+   cd ${SYMBOL_SERVER_PATH};
    unzip -o '$archive';
    rm -v '$archive';"
+if test -n "$POST_SYMBOL_UPLOAD_CMD"; then
+  echo "${POST_SYMBOL_UPLOAD_CMD} \"${SYMBOL_SERVER_PATH}/${SYMBOL_INDEX_NAME}\""
+  ssh -2 ${SYMBOL_SERVER_PORT:+-p $SYMBOL_SERVER_PORT} \
+  ${SYMBOL_SERVER_SSH_KEY:+-i "$SYMBOL_SERVER_SSH_KEY"} \
+  -l ${SYMBOL_SERVER_USER} ${SYMBOL_SERVER_HOST} \
+  "${POST_SYMBOL_UPLOAD_CMD} \"${SYMBOL_SERVER_PATH}/${SYMBOL_INDEX_NAME}\""
+fi
 echo "Symbol transfer completed"

@@ -1576,7 +1576,7 @@ JS_ResolveStandardClass(JSContext *cx, JSObject *obj, jsval id,
                 if (!atom)
                     return JS_FALSE;
                 if (idstr == ATOM_TO_STRING(atom)) {
-                    stdnm = &standard_class_names[i];
+                    stdnm = &object_prototype_names[i];
                     break;
                 }
             }
@@ -3942,6 +3942,8 @@ JS_ClearScope(JSContext *cx, JSObject *obj)
         for (key = JSProto_Null; key < JSProto_LIMIT; key++)
             JS_SetReservedSlot(cx, obj, key, JSVAL_VOID);
     }
+
+    js_InitRandom(cx);
 }
 
 JS_PUBLIC_API(JSIdArray *)
@@ -4365,12 +4367,11 @@ js_generic_fast_native_method_dispatcher(JSContext *cx, uintN argc, jsval *vp)
     fs = (JSFunctionSpec *) JSVAL_TO_PRIVATE(fsv);
     JS_ASSERT((~fs->flags & (JSFUN_FAST_NATIVE | JSFUN_GENERIC_NATIVE)) == 0);
 
-    /*
-     * We know that vp[2] is valid because JS_DefineFunctions, which is our
-     * only (indirect) referrer, defined us as requiring at least one argument
-     * (notice how it passes fs->nargs + 1 as the next-to-last argument to
-     * JS_DefineFunction).
-     */
+    if (argc < 1) {
+        js_ReportMissingArg(cx, vp, 0);
+        return JS_FALSE;
+    }
+
     if (JSVAL_IS_PRIMITIVE(vp[2])) {
         /*
          * Make sure that this is an object or null, as required by the generic
@@ -4395,15 +4396,9 @@ js_generic_fast_native_method_dispatcher(JSContext *cx, uintN argc, jsval *vp)
      */
     if (!js_ComputeThis(cx, JS_FALSE, vp + 2))
         return JS_FALSE;
-    /*
-     * Protect against argc underflowing. By calling js_ComputeThis, we made
-     * it as if the static was called with one parameter, the explicit |this|
-     * object.
-     */
-    if (argc != 0) {
-        /* Clear the last parameter in case too few arguments were passed. */
-        vp[2 + --argc] = JSVAL_VOID;
-    }
+
+    /* Clear the last parameter in case too few arguments were passed. */
+    vp[2 + --argc] = JSVAL_VOID;
 
     native =
 #ifdef JS_TRACER
@@ -4429,12 +4424,11 @@ js_generic_native_method_dispatcher(JSContext *cx, JSObject *obj,
     JS_ASSERT((fs->flags & (JSFUN_FAST_NATIVE | JSFUN_GENERIC_NATIVE)) ==
               JSFUN_GENERIC_NATIVE);
 
-    /*
-     * We know that argv[0] is valid because JS_DefineFunctions, which is our
-     * only (indirect) referrer, defined us as requiring at least one argument
-     * (notice how it passes fs->nargs + 1 as the next-to-last argument to
-     * JS_DefineFunction).
-     */
+    if (argc < 1) {
+        js_ReportMissingArg(cx, argv - 2, 0);
+        return JS_FALSE;
+    }
+
     if (JSVAL_IS_PRIMITIVE(argv[0])) {
         /*
          * Make sure that this is an object or null, as required by the generic
@@ -4462,15 +4456,8 @@ js_generic_native_method_dispatcher(JSContext *cx, JSObject *obj,
     js_GetTopStackFrame(cx)->thisp = JSVAL_TO_OBJECT(argv[-1]);
     JS_ASSERT(cx->fp->argv == argv);
 
-    /*
-     * Protect against argc underflowing. By calling js_ComputeThis, we made
-     * it as if the static was called with one parameter, the explicit |this|
-     * object.
-     */
-    if (argc != 0) {
-        /* Clear the last parameter in case too few arguments were passed. */
-        argv[--argc] = JSVAL_VOID;
-    }
+    /* Clear the last parameter in case too few arguments were passed. */
+    argv[--argc] = JSVAL_VOID;
 
     return fs->call(cx, JSVAL_TO_OBJECT(argv[-1]), argc, argv, rval);
 }
@@ -5671,7 +5658,7 @@ JS_SetRegExpInput(JSContext *cx, JSString *input, JSBool multiline)
     CHECK_REQUEST(cx);
     /* No locking required, cx is thread-private and input must be live. */
     res = &cx->regExpStatics;
-    res->input = input;
+    res->pendingInput = input;
     res->multiline = multiline;
     cx->runtime->gcPoke = JS_TRUE;
 }
@@ -5683,15 +5670,7 @@ JS_ClearRegExpStatics(JSContext *cx)
 
     /* No locking required, cx is thread-private and input must be live. */
     res = &cx->regExpStatics;
-    res->input = NULL;
-    res->multiline = JS_FALSE;
-    res->parenCount = 0;
-    res->lastMatch = res->lastParen = js_EmptySubString;
-    res->leftContext = res->rightContext = js_EmptySubString;
-    if (res->moreParens) {
-        cx->free(res->moreParens);
-        res->moreParens = NULL;
-    }
+    res->clear(cx);
     cx->runtime->gcPoke = JS_TRUE;
 }
 
@@ -5703,6 +5682,7 @@ JS_ClearRegExpRoots(JSContext *cx)
     /* No locking required, cx is thread-private and input must be live. */
     res = &cx->regExpStatics;
     res->input = NULL;
+    res->pendingInput = NULL;
     cx->runtime->gcPoke = JS_TRUE;
 }
 

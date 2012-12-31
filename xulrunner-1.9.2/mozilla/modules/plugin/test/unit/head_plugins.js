@@ -64,3 +64,8 @@ function get_test_plugin() {
   }
   return null;
 }
+
+var gPrefs = Components.classes["@mozilla.org/preferences;1"]
+                   .getService(Components.interfaces.nsIPrefBranch);
+// Ensure plugins are globally enabled
+gPrefs.setBoolPref("plugin.disable", false);

@@ -264,3 +264,5 @@ var gPrefs = Components.classes["@mozilla.org/preferences;1"]
                    .getService(Components.interfaces.nsIPrefBranch);
 // Enable more extensive EM logging
 gPrefs.setBoolPref("extensions.logging.enabled", true);
+// Ensure plugins are globally enabled
+gPrefs.setBoolPref("plugin.disable", false);

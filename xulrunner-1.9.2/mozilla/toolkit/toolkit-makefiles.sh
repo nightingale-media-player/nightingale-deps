@@ -48,6 +48,11 @@ MAKEFILES_db="
 "
 
 MAKEFILES_dom="
+  ipc/Makefile
+  ipc/chromium/Makefile
+  ipc/glue/Makefile
+  ipc/ipdl/Makefile
+  ipc/testshell/Makefile
   dom/Makefile
   dom/public/coreEvents/Makefile
   dom/interfaces/base/Makefile
@@ -80,6 +85,8 @@ MAKEFILES_dom="
   dom/src/storage/Makefile
   dom/src/threads/Makefile
   dom/locales/Makefile
+  dom/plugins/Makefile
+  dom/ipc/Makefile
 "
 
 MAKEFILES_editor="
@@ -695,6 +702,7 @@ MAKEFILES_xulapp="
   toolkit/crashreporter/client/Makefile
   toolkit/crashreporter/google-breakpad/src/client/Makefile
   toolkit/crashreporter/google-breakpad/src/client/linux/handler/Makefile
+  toolkit/crashreporter/google-breakpad/src/client/linux/minidump_writer/Makefile
   toolkit/crashreporter/google-breakpad/src/client/mac/handler/Makefile
   toolkit/crashreporter/google-breakpad/src/client/solaris/handler/Makefile
   toolkit/crashreporter/google-breakpad/src/client/windows/crash_generation/Makefile
@@ -1032,6 +1040,10 @@ if [ "$ENABLE_TESTS" ]; then
     testing/mochitest/ssltunnel/Makefile
     testing/mochitest/static/Makefile
     testing/mochitest/tests/Makefile
+    testing/mochitest/tests/MochiKit-1.4.2/Makefile
+    testing/mochitest/tests/MochiKit-1.4.2/MochiKit/Makefile
+    testing/mochitest/tests/MochiKit-1.4.2/tests/Makefile
+    testing/mochitest/tests/MochiKit-1.4.2/tests/SimpleTest/Makefile
     testing/mochitest/tests/SimpleTest/Makefile
     testing/mochitest/tests/browser/Makefile
     testing/xpcshell/Makefile

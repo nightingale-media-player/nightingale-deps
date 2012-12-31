@@ -42,6 +42,7 @@
 #include "nsIDOMNSEvent.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsDOMWindowUtils.h"
+#include "nsQueryContentEventResult.h"
 #include "nsGlobalWindow.h"
 #include "nsIDocument.h"
 #include "nsFocusManager.h"
@@ -64,6 +65,12 @@
 #include "gfxContext.h"
 #include "gfxImageSurface.h"
 
+#include "nsICSSLoader.h"
+#include "nsICSSParser.h"
+#include "nsICSSStyleSheet.h"
+#include "nsUnicharInputStream.h"
+#include "nsNetUtil.h"
+
 #if defined(MOZ_X11) && defined(MOZ_WIDGET_GTK2)
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
@@ -74,6 +81,7 @@ NS_INTERFACE_MAP_BEGIN(nsDOMWindowUtils)
   NS_INTERFACE_MAP_ENTRY(nsIDOMWindowUtils)
   NS_INTERFACE_MAP_ENTRY(nsISupportsWeakReference)
   NS_INTERFACE_MAP_ENTRY(nsIDOMWindowUtils_1_9_2)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMWindowUtils_1_9_2_5)
   NS_DOM_INTERFACE_MAP_ENTRY_CLASSINFO(WindowUtils)
 NS_INTERFACE_MAP_END
 
@@ -576,6 +584,21 @@ nsDOMWindowUtils::ElementFromPoint(PRInt32 aX, PRInt32 aY,
                                      aReturn);
 }
 
+NS_IMETHODIMP
+nsDOMWindowUtils::NodesFromRect(float aX, float aY,
+                                float aTopSize, float aRightSize,
+                                float aBottomSize, float aLeftSize,
+                                PRBool aIgnoreRootScrollFrame,
+                                PRBool aFlushLayout,
+                                nsIDOMNodeList** aReturn)
+{
+  nsCOMPtr<nsIDocument_MOZILLA_1_9_2_5_BRANCH> doc(do_QueryInterface(mWindow->GetExtantDocument()));
+  NS_ENSURE_STATE(doc);
+
+  return doc->NodesFromRectHelper(aX, aY, aTopSize, aRightSize, aBottomSize, aLeftSize, 
+                                  aIgnoreRootScrollFrame, aFlushLayout, aReturn);
+}
+
 static already_AddRefed<gfxImageSurface>
 CanvasToImageSurface(nsIDOMHTMLCanvasElement *canvas)
 {
@@ -907,3 +930,125 @@ nsDOMWindowUtils::DispatchDOMEventViaPresShell(nsIDOMNode* aTarget,
   *aRetVal = (status != nsEventStatus_eConsumeNoDefault);
   return NS_OK;
 }
+
+NS_IMETHODIMP
+nsDOMWindowUtils::CssInitialSyntaxIsValid(const nsAString& aSheet,
+                                          PRBool *aRetVal)
+{
+  PRBool hasCap = PR_FALSE;
+  if (NS_FAILED(nsContentUtils::GetSecurityManager()->
+                IsCapabilityEnabled("UniversalXPConnect", &hasCap)) || !hasCap)
+    return NS_ERROR_DOM_SECURITY_ERR;
+
+  nsCOMPtr<nsIUnicharInputStream> stream;
+  nsresult rv = nsSimpleUnicharStreamFactory::GetInstance()->
+    CreateInstanceFromString(aSheet, getter_AddRefs(stream));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIURI> uri;
+  nsCAutoString uriContents("data:text/css,");
+  AppendUTF16toUTF8(aSheet, uriContents);
+  rv = NS_NewURI(getter_AddRefs(uri), uriContents.get());
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIPrincipal> principal;
+  rv = nsContentUtils::GetSecurityManager()->
+    GetCodebasePrincipal(uri, getter_AddRefs(principal));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsICSSStyleSheet> parsedSheet;
+  rv = NS_NewCSSStyleSheet(getter_AddRefs(parsedSheet));
+  NS_ENSURE_SUCCESS(rv, rv);
+  parsedSheet->SetURIs(uri, uri, uri);
+  parsedSheet->SetPrincipal(principal);
+
+  nsCOMPtr<nsICSSLoader> loader;
+  rv = NS_NewCSSLoader(getter_AddRefs(loader));
+  NS_ENSURE_SUCCESS(rv, rv);
+  loader->SetCompatibilityMode(eCompatibility_NavQuirks);
+
+  nsCOMPtr<nsICSSParser> parser;
+  rv = loader->GetParserFor(parsedSheet, getter_AddRefs(parser));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsICSSParser_1_9_2> pext(do_QueryInterface(parser));
+  NS_ABORT_IF_FALSE(pext, "nsICSSParser_1_9_2 missing from parser impl");
+
+  rv = pext->ParseWithInitialSyntaxCheck(stream, uri, uri, principal, 0,
+                                         PR_FALSE);
+  loader->RecycleParser(parser);
+
+  // In CheckInitialSyntax mode, the parser will return
+  // NS_ERROR_DOM_SYNTAX_ERR when the sheet has been rejected.
+  if (rv == NS_OK) {
+    *aRetVal = PR_TRUE;
+    return NS_OK;
+  } else if (rv == NS_ERROR_DOM_SYNTAX_ERR) {
+    *aRetVal = PR_FALSE;
+    return NS_OK;
+  } else {
+    NS_ABORT_IF_FALSE(NS_FAILED(rv),
+                      "CSS parser produced a success code other than NS_OK?!");
+    return rv;
+  }
+}
+
+static void
+InitEvent(nsGUIEvent &aEvent, nsIntPoint *aPt = nsnull)
+{
+  if (aPt) {
+    aEvent.refPoint = *aPt;
+  }
+  aEvent.time = PR_IntervalNow();
+}
+
+NS_IMETHODIMP
+nsDOMWindowUtils::SendQueryContentEvent(PRUint32 aType,
+                                        PRUint32 aOffset, PRUint32 aLength,
+                                        PRInt32 aX, PRInt32 aY,
+                                        nsIQueryContentEventResult **aResult)
+{
+  *aResult = nsnull;
+
+  PRBool hasCap = PR_FALSE;
+  if (NS_FAILED(nsContentUtils::GetSecurityManager()->IsCapabilityEnabled("UniversalXPConnect", &hasCap))
+      || !hasCap)
+    return NS_ERROR_DOM_SECURITY_ERR;
+
+  // get the widget to send the event to
+  nsCOMPtr<nsIWidget> widget = GetWidget();
+  if (!widget) {
+    return NS_ERROR_FAILURE;
+  }
+
+  if (aType != NS_QUERY_SELECTED_TEXT &&
+      aType != NS_QUERY_TEXT_CONTENT &&
+      aType != NS_QUERY_CARET_RECT &&
+      aType != NS_QUERY_TEXT_RECT &&
+      aType != NS_QUERY_EDITOR_RECT) {
+    return NS_ERROR_INVALID_ARG;
+  }
+
+  if (aType != NS_QUERY_CARET_RECT)
+    return NS_ERROR_NOT_IMPLEMENTED;
+
+  nsCOMPtr<nsIWidget> targetWidget = widget;
+  nsIntPoint pt(aX, aY);
+
+  pt += widget->WidgetToScreenOffset() - targetWidget->WidgetToScreenOffset();
+
+  nsQueryContentEvent queryEvent(PR_TRUE, aType, targetWidget);
+  InitEvent(queryEvent, &pt);
+  queryEvent.InitForQueryCaretRect(aOffset);
+
+  nsEventStatus status;
+  nsresult rv = targetWidget->DispatchEvent(&queryEvent, status);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsQueryContentEventResult* result = new nsQueryContentEventResult();
+  NS_ENSURE_TRUE(result, NS_ERROR_OUT_OF_MEMORY);
+  result->SetEventResult(widget, queryEvent);
+  NS_ADDREF(*aResult = result);
+  return NS_OK;
+}
+

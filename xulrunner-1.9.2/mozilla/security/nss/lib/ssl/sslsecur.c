@@ -37,7 +37,7 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-/* $Id: sslsecur.c,v 1.43 2010/01/14 22:15:25 alexei.volkov.bugs%sun.com Exp $ */
+/* $Id: sslsecur.c,v 1.43.2.2 2010/08/26 18:06:55 wtc%google.com Exp $ */
 #include "cert.h"
 #include "secitem.h"
 #include "keyhi.h"
@@ -1199,8 +1199,17 @@ ssl_SecureSend(sslSocket *ss, const unsigned char *buf, int len, int flags)
     	ss->writerThread = PR_GetCurrentThread();
     /* If any of these is non-zero, the initial handshake is not done. */
     if (!ss->firstHsDone) {
+	PRBool canFalseStart = PR_FALSE;
 	ssl_Get1stHandshakeLock(ss);
-	if (ss->handshake || ss->nextHandshake || ss->securityHandshake) {
+	if (ss->version >= SSL_LIBRARY_VERSION_3_0 &&
+	    (ss->ssl3.hs.ws == wait_change_cipher ||
+	     ss->ssl3.hs.ws == wait_finished ||
+	     ss->ssl3.hs.ws == wait_new_session_ticket) &&
+	    ssl3_CanFalseStart(ss)) {
+	    canFalseStart = PR_TRUE;
+	}
+	if (!canFalseStart &&
+	    (ss->handshake || ss->nextHandshake || ss->securityHandshake)) {
 	    rv = ssl_Do1stHandshake(ss);
 	}
 	ssl_Release1stHandshakeLock(ss);
@@ -1349,16 +1358,9 @@ SSL_DataPending(PRFileDesc *fd)
     ss = ssl_FindSocket(fd);
 
     if (ss && ss->opt.useSecurity) {
-
-	ssl_Get1stHandshakeLock(ss);
-	ssl_GetSSL3HandshakeLock(ss);
-
 	ssl_GetRecvBufLock(ss);
 	rv = ss->gs.writeOffset - ss->gs.readOffset;
 	ssl_ReleaseRecvBufLock(ss);
-
-	ssl_ReleaseSSL3HandshakeLock(ss);
-	ssl_Release1stHandshakeLock(ss);
     }
 
     return rv;

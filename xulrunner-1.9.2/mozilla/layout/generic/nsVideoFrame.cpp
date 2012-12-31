@@ -103,7 +103,13 @@ nsVideoFrame::CreateAnonymousContent(nsTArray<nsIContent*>& aElements)
     NS_ENSURE_TRUE(nodeInfo, NS_ERROR_OUT_OF_MEMORY);
     mPosterImage = NS_NewHTMLImageElement(nodeInfo);
     NS_ENSURE_TRUE(mPosterImage, NS_ERROR_OUT_OF_MEMORY);
-    
+
+    // Push a null JSContext on the stack so that code that runs
+    // within the below code doesn't think it's being called by
+    // JS. See bug 604262.
+    nsCxPusher pusher;
+    pusher.PushNull();
+
     // Set the nsImageLoadingContent::ImageState() to 0. This means that the
     // image will always report its state as 0, so it will never be reframed
     // to show frames for loading or the broken image icon. This is important,

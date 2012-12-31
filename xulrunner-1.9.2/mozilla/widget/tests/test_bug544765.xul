@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<?xml-stylesheet href="chrome://mochikit/content/tests/SimpleTest/test.css"
+                 type="text/css"?>
+
+<!--
+https://bugzilla.mozilla.org/show_bug.cgi?id=544765
+-->
+<window title="Mozilla bug 544765"
+  onload="start();"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/javascript"
+          src="chrome://mochikit/content/MochiKit/packed.js"/>
+  <script type="application/javascript"
+          src="chrome://mochikit/content/tests/SimpleTest/SimpleTest.js" />
+  <script type="application/javascript"
+          src="chrome://mochikit/content/tests/SimpleTest/EventUtils.js" />
+
+
+  <body  xmlns="http://www.w3.org/1999/xhtml">
+    <textarea id="textarea">test caret position</textarea>
+  </body>
+
+  <script class="testbody" type="application/javascript"><![CDATA[
+
+  SimpleTest.waitForExplicitFinish();
+
+  function synthesizeQueryCaretRect(aOffset) {
+    netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+    var utils = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                      .getInterface(Components.interfaces.nsIDOMWindowUtils);
+
+    return utils.sendQueryContentEvent(utils.QUERY_CARET_RECT, aOffset, 0, 0, 0);
+  }
+
+  function checkRectContainsRect(aRect, aContainer, aMessage) {
+    var container = { left: Math.ceil(aContainer.left),
+                      top:  Math.ceil(aContainer.top),
+                      width: Math.floor(aContainer.width),
+                      height: Math.floor(aContainer.height) };
+
+    var ret = container.left <= aRect.left &&
+              container.top <= aRect.top &&
+              container.left + container.width >= aRect.left + aRect.width &&
+              container.top + container.height >= aRect.top + aRect.height;
+    ret = ret && aMessage;
+    ok(ret, aMessage + " container={ left=" + container.left + ", top="
+            + container.top + ", width=" + container.width + ", height="
+            + container.height + " } rect={ left=" + aRect.left + ", top="
+            + aRect.top + ", width=" + aRect.width + ", height=" + aRect.height 
+            + " }");
+    return ret;
+  }
+
+  function start() {
+    var textarea = document.getElementById("textarea");
+    textarea.focus();
+
+    let rect = synthesizeQueryCaretRect(0);
+    checkRectContainsRect(rect, textarea.getBoundingClientRect(), "Textarea contains caret rect");
+    SimpleTest.finish();
+  }
+
+  ]]></script>
+</window>
+

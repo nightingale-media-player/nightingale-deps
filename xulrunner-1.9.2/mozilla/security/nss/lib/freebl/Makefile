@@ -60,7 +60,7 @@ include $(CORE_DEPTH)/coreconf/config.mk
 # (4) Include "local" platform-dependent assignments (OPTIONAL).      #
 #######################################################################
 
--include config.mk
+include config.mk
 
 # default for all platforms
 # unset this on those that have multiple freebl libraries
@@ -74,8 +74,13 @@ ifdef USE_ABI32_FPU
 	DEFINES += -DNSS_USE_ABI32_FPU
 endif
 
-ifdef FREEBL_NO_DEPEND
+ifeq ($(FREEBL_NO_DEPEND),1)
 	DEFINES += -DFREEBL_NO_DEPEND
+	LOWHASH_SRCS = stubs.c nsslowhash.c
+	LOWHASH_EXPORTS = nsslowhash.h
+	MAPFILE_SOURCE = freebl_hash.def
+else
+	MAPFILE_SOURCE = freebl.def
 endif
 # NSS_X86 means the target is a 32-bits x86 CPU architecture
 # NSS_X64 means the target is a 64-bits x64 CPU architecture
@@ -163,8 +168,8 @@ ifeq ($(CPU_ARCH),x86_64)
     DEFINES += -DMP_CHAR_STORE_SLOW -DMP_IS_LITTLE_ENDIAN
 #   DEFINES += -DMPI_AMD64_ADD
     # comment the next two lines to turn off intel HW accelleration
-#    DEFINES += -DUSE_HW_AES
-#    ASFILES += intel-aes.s
+    DEFINES += -DUSE_HW_AES
+    ASFILES += intel-aes.s
     MPI_SRCS += mpi_amd64.c mp_comba.c
 endif
 ifeq ($(CPU_ARCH),x86)
@@ -410,8 +415,8 @@ else
 	DEFINES += -DNSS_BEVAND_ARCFOUR -DMPI_AMD64 -DMP_ASSEMBLY_MULTIPLY
 	DEFINES += -DNSS_USE_COMBA -DMP_CHAR_STORE_SLOW -DMP_IS_LITTLE_ENDIAN
 	# comment the next two lines to turn off intel HW accelleration
-#	DEFINES += -DUSE_HW_AES
-#	ASFILES += intel-aes.s
+	DEFINES += -DUSE_HW_AES
+	ASFILES += intel-aes.s
 	MPI_SRCS += mpi_amd64.c
     else
 	# Solaris x86

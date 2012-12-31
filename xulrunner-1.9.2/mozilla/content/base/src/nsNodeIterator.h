@@ -55,7 +55,7 @@ class nsIDOMNodeFilter;
 
 class nsNodeIterator : public nsIDOMNodeIterator,
                        public nsTraversal,
-                       public nsStubMutationObserver
+                       public nsStubMutationObserver2
 {
 public:
     NS_DECL_CYCLE_COLLECTING_ISUPPORTS
@@ -69,6 +69,7 @@ public:
 
     NS_DECL_NSIMUTATIONOBSERVER_CONTENTINSERTED
     NS_DECL_NSIMUTATIONOBSERVER_CONTENTREMOVED
+    NS_DECL_NSIMUTATIONOBSERVER2_ATTRIBUTECHILDREMOVED
 
     NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsNodeIterator, nsIDOMNodeIterator)
 
@@ -77,6 +78,7 @@ private:
         NodePointer() : mNode(nsnull) {};
         NodePointer(nsINode *aNode, PRBool aBeforeNode);
 
+        typedef PRBool (NodePointer::*MoveToMethodType)(nsINode*);
         PRBool MoveToNext(nsINode *aRoot);
         PRBool MoveToPrevious(nsINode *aRoot);
 
@@ -94,6 +96,10 @@ private:
         PRBool mBeforeNode;
         PRInt32 mIndexInParent;
     };
+
+    inline nsresult
+    NextOrPrevNode(NodePointer::MoveToMethodType aMove,
+                   nsIDOMNode **_retval);
 
     PRBool mDetached;
     NodePointer mPointer;

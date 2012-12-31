@@ -39,7 +39,7 @@
 /*
  * Certificate handling code
  *
- * $Id: certdb.c,v 1.102 2010/02/10 02:00:57 wtc%google.com Exp $
+ * $Id: certdb.c,v 1.104.2.2 2010/09/02 00:52:02 wtc%google.com Exp $
  */
 
 #include "nssilock.h"
@@ -569,7 +569,7 @@ cert_GetCertType(CERTCertificate *cert)
 
     /* Assert that it is safe to cast &cert->nsCertType to "PRInt32 *" */
     PORT_Assert(sizeof(cert->nsCertType) == sizeof(PRInt32));
-    PR_AtomicSet((PRInt32 *)&cert->nsCertType, nsCertType);
+    PR_ATOMIC_SET((PRInt32 *)&cert->nsCertType, nsCertType);
     return SECSuccess;
 }
 
@@ -1415,6 +1415,15 @@ sec_lower_string(char *s)
     return;
 }
 
+static PRBool
+cert_IsIPAddr(const char *hn)
+{
+    PRBool            isIPaddr       = PR_FALSE;
+    PRNetAddr         netAddr;
+    isIPaddr = (PR_SUCCESS == PR_StringToNetAddr(hn, &netAddr));
+    return isIPaddr;
+}
+
 /*
 ** Add a domain name to the list of names that the user has explicitly
 ** allowed (despite cert name mismatches) for use with a server cert.
@@ -1829,13 +1838,7 @@ CERT_GetValidDNSPatternsFromCert(CERTCertificate *cert)
     }
 
     /* no SAN extension or no names found in extension */
-    /* now try the NS cert name extension first, then the common name */
-    singleName = 
-      CERT_FindNSStringExtension(cert, SEC_OID_NS_CERT_EXT_SSL_SERVER_NAME);
-    if (!singleName) {
-      singleName = CERT_GetCommonName(&cert->subject);
-    }
-
+    singleName = CERT_GetCommonName(&cert->subject);
     if (singleName) {
       nickNames->numnicknames = 1;
       nickNames->nicknames = PORT_ArenaAlloc(arena, sizeof(char *));
@@ -1884,13 +1887,19 @@ CERT_VerifyCertName(CERTCertificate *cert, const char *hn)
     if (rv == SECSuccess || PORT_GetError() != SEC_ERROR_EXTENSION_NOT_FOUND)
     	return rv;
 
-    /* try the cert extension first, then the common name */
-    cn = CERT_FindNSStringExtension(cert, SEC_OID_NS_CERT_EXT_SSL_SERVER_NAME);
-    if ( !cn ) {
-	cn = CERT_GetCommonName(&cert->subject);
-    }
+    cn = CERT_GetCommonName(&cert->subject);
     if ( cn ) {
-	rv = cert_TestHostName(cn, hn);
+        PRBool isIPaddr = cert_IsIPAddr(hn);
+        if (isIPaddr) {
+            if (PORT_Strcasecmp(hn, cn) == 0) {
+                rv =  SECSuccess;
+            } else {
+                PORT_SetError(SSL_ERROR_BAD_CERT_DOMAIN);
+                rv = SECFailure;
+            }
+        } else {
+            rv = cert_TestHostName(cn, hn);
+        }
 	PORT_Free(cn);
     } else 
 	PORT_SetError(SSL_ERROR_BAD_CERT_DOMAIN);
@@ -2120,7 +2129,7 @@ loser:
 	PORT_Free(nickname);
     }
 
-    nickname = "";
+    nickname = NULL;
     
 done:
     if ( firstname ) {

@@ -74,6 +74,7 @@
 #include "nsRootAccessible.h"
 #include "nsIDOMNSEventTarget.h"
 #include "nsIDOMDocumentEvent.h"
+#include "nsIPrivateDOMEvent.h"
 #include "nsFocusManager.h"
 
 #ifdef MOZ_XUL
@@ -220,22 +221,17 @@ nsRootAccessible::GetStateInternal(PRUint32 *aState, PRUint32 *aExtraState)
   if (!aExtraState)
     return NS_OK;
 
-  nsCOMPtr<nsIDOMWindow> domWin;
-  GetWindow(getter_AddRefs(domWin));
-  nsCOMPtr<nsIDocShellTreeItem> dsti = do_GetInterface(domWin);
-  if (dsti) {
-    nsCOMPtr<nsIDocShellTreeItem> root;
-    dsti->GetRootTreeItem(getter_AddRefs(root));
-    nsCOMPtr<nsIDOMWindow> rootWindow = do_GetInterface(root);
+  nsCOMPtr<nsIFocusManager> fm = do_GetService(FOCUSMANAGER_CONTRACTID);
+  if (fm) {
+    nsCOMPtr<nsIDOMWindow> rootWindow;
+    GetWindow(getter_AddRefs(rootWindow));
 
-    nsCOMPtr<nsIFocusManager> fm = do_GetService(FOCUSMANAGER_CONTRACTID);
-    if (fm && rootWindow) {
-      nsCOMPtr<nsIDOMWindow> activeWindow;
-      fm->GetActiveWindow(getter_AddRefs(activeWindow));
-      if (activeWindow == rootWindow)
-        *aExtraState |= nsIAccessibleStates::EXT_STATE_ACTIVE;
-    }
+    nsCOMPtr<nsIDOMWindow> activeWindow;
+    fm->GetActiveWindow(getter_AddRefs(activeWindow));
+    if (activeWindow == rootWindow)
+      *aExtraState |= nsIAccessibleStates::EXT_STATE_ACTIVE;
   }
+
 #ifdef MOZ_XUL
   if (GetChromeFlags() & nsIWebBrowserChrome::CHROME_MODAL) {
     *aExtraState |= nsIAccessibleStates::EXT_STATE_MODAL;
@@ -575,8 +571,11 @@ void nsRootAccessible::FireCurrentFocusEvent()
       if (accService) {
         nsCOMPtr<nsIDOMNode> targetNode;
         accService->GetRelevantContentNodeFor(focusedNode,
-                                            getter_AddRefs(targetNode));
+                                              getter_AddRefs(targetNode));
         if (targetNode) {
+          nsCOMPtr<nsIPrivateDOMEvent> privateEvent(do_QueryInterface(event));
+          nsCOMPtr<nsIDOMEventTarget> target(do_QueryInterface(focusedNode));
+          privateEvent->SetTarget(target);
           HandleEventWithTarget(event, targetNode);
         }
       }

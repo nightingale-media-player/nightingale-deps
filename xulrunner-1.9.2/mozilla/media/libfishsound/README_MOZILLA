@@ -16,3 +16,5 @@ trac497.patch: Annodex trac ticket 497 fix and mozilla bug 462141.
 fishsound_reset.patch: Fixes bug 516323.
 bug520500.patch: Don't reject files with vorbis comments with name or
                  values of length 0.
+
+bug524429.patch: Fixes vararg macro syntax for IBM XLC compiler on AIX

@@ -433,6 +433,10 @@ nsHTMLTableHeaderCellAccessible::GetRoleInternal(PRUint32 *aRole)
     }
   }
 
+  // No elements in siblings what means the table has one column only. Therefore
+  // it should be column header.
+  *aRole = nsIAccessibleRole::ROLE_COLUMNHEADER;
+
   return NS_OK;
 }
 

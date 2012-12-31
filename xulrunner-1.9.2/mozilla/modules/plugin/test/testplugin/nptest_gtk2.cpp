@@ -42,6 +42,8 @@
 #endif
 #include <gtk/gtk.h>
 
+ using namespace std;
+
 struct _PlatformData {
 #ifdef MOZ_X11
   Display* display;
@@ -154,13 +156,12 @@ pluginDrawWindow(InstanceData* instanceData, GdkDrawable* gdkWindow,
   int width = window.width;
   int height = window.height;
 
-  ++instanceData->paintCount;
-
   if (instanceData->scriptableObject->drawMode == DM_SOLID_COLOR) {
     // drawing a solid color for reftests
     pluginDrawSolid(instanceData, gdkWindow,
                     invalidRect.x, invalidRect.y,
                     invalidRect.width, invalidRect.height);
+    notifyDidPaint(instanceData);
     return;
   }
 
@@ -206,6 +207,8 @@ pluginDrawWindow(InstanceData* instanceData, GdkDrawable* gdkWindow,
   g_object_unref(pangoTextLayout);
 
   g_object_unref(gdkContext);
+
+  notifyDidPaint(instanceData);
 }
 
 static gboolean
@@ -278,6 +281,10 @@ pluginWidgetInit(InstanceData* instanceData, void* oldWindow)
 
   /* create a GtkPlug container */
   GtkWidget* plug = gtk_plug_new(nativeWinId);
+
+  // Test for bugs 539138 and 561308
+  if (!plug->window)
+    g_error("Plug has no window"); // aborts
 
   /* make sure the widget is capable of receiving focus */
   GTK_WIDGET_SET_FLAGS (GTK_WIDGET(plug), GTK_CAN_FOCUS);
@@ -617,4 +624,18 @@ int32_t pluginGetClipRegionRectEdge(InstanceData* instanceData,
 
 void pluginDoInternalConsistencyCheck(InstanceData* instanceData, string& error)
 {
+}
+
+string
+pluginGetClipboardText(InstanceData* instanceData)
+{
+  GtkClipboard* cb = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+  // XXX this is a BAD WAY to interact with GtkClipboard.  We use this
+  // deprecated interface only to test nested event loop handling.
+  gchar* text = gtk_clipboard_wait_for_text(cb);
+  string retText = text ? text : "";
+
+  g_free(text);
+
+  return retText;
 }

@@ -152,6 +152,23 @@ public:
     RebuildAll() = 0; // must be implemented by subclasses
 
     void RunnableRebuild() { Rebuild(); }
+    void RunnableLoadAndRebuild() {
+      Uninit(PR_FALSE);  // Reset results
+
+      nsCOMPtr<nsIDocument> doc = mRoot ? mRoot->GetDocument() : nsnull;
+      if (doc) {
+        PRBool shouldDelay;
+        LoadDataSources(doc, &shouldDelay);
+        if (!shouldDelay) {
+          Rebuild();
+        }
+      }
+    }
+
+    // mRoot should not be cleared until after Uninit is finished so that
+    // generated content can be removed during uninitialization.
+    void UninitFalse() { Uninit(PR_FALSE); mRoot = nsnull; }
+    void UninitTrue() { Uninit(PR_TRUE); mRoot = nsnull; }
 
     /**
      * Find the <template> tag that applies for this builder

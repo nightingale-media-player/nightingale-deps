@@ -39,6 +39,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #ifdef MOZ_PLATFORM_MAEMO
+// needed to include hildon parts in gtk.h
 #define MAEMO_CHANGES
 #endif
 
@@ -63,7 +64,14 @@
 #include <gtk/gtk.h>
 #ifdef MOZ_X11
 #include <gdk/gdkx.h>
+#include <X11/Xatom.h>
+
+#ifdef AIX
+#include <X11/keysym.h>
+#else
 #include <X11/XF86keysym.h>
+#endif
+
 #include "gtk2xtbin.h"
 #endif /* MOZ_X11 */
 #include <gdk/gdkkeysyms.h>
@@ -84,6 +92,7 @@
 #include "nsIObserverService.h"
 
 #include "nsIdleService.h"
+#include "nsIPropertyBag2.h"
 
 #ifdef ACCESSIBILITY
 #include "nsIAccessibilityService.h"
@@ -114,6 +123,9 @@ static const char sAccessibilityKey [] = "config.use_system_prefs.accessibility"
 #include "nsIInterfaceRequestorUtils.h"
 #include "nsAutoPtr.h"
 
+extern "C" {
+#include "pixman.h"
+}
 #include "gfxPlatformGtk.h"
 #include "gfxContext.h"
 #include "gfxImageSurface.h"
@@ -274,10 +286,10 @@ PRBool nsWindow::sIsDraggingOutOf = PR_FALSE;
 
 // This is the time of the last button press event.  The drag service
 // uses it as the time to start drags.
-guint32   nsWindow::mLastButtonPressTime = 0;
+guint32   nsWindow::sLastButtonPressTime = 0;
 // Time of the last button release event. We use it to detect when the
 // drag ended before we could properly setup drag and drop.
-guint32   nsWindow::mLastButtonReleaseTime = 0;
+guint32   nsWindow::sLastButtonReleaseTime = 0;
 
 static NS_DEFINE_IID(kCDragServiceCID,  NS_DRAGSERVICE_CID);
 
@@ -364,9 +376,13 @@ static PRBool gForce24bpp = PR_FALSE;
 
 static GtkWidget *gInvisibleContainer = NULL;
 
+// Sometimes this actually also includes the state of the modifier keys, but
+// only the button state bits are used.
+static guint gButtonState;
+
 // Some gobject functions expect functions for gpointer arguments.
 // gpointer is void* but C++ doesn't like casting functions to void*.
-template<class T> gpointer
+template<class T> static inline gpointer
 FuncToGpointer(T aFunction)
 {
     return reinterpret_cast<gpointer>
@@ -374,6 +390,25 @@ FuncToGpointer(T aFunction)
          // This cast just provides a warning if T is not a function.
          (reinterpret_cast<void (*)()>(aFunction)));
 }
+
+// nsAutoRef<pixman_region32> uses nsSimpleRef<> to know how to automatically
+// destroy regions.
+template <>
+class nsSimpleRef<pixman_region32> : public pixman_region32 {
+protected:
+    typedef pixman_region32 RawRef;
+
+    nsSimpleRef() { data = nsnull; }
+    nsSimpleRef(const RawRef &aRawRef) : pixman_region32(aRawRef) { }
+
+    static void Release(pixman_region32& region) {
+        pixman_region32_fini(&region);
+    }
+    // Whether this needs to be released:
+    PRBool HaveResource() const { return data != nsnull; }
+
+    pixman_region32& get() { return *this; }
+};
 
 nsWindow::nsWindow()
 {
@@ -976,7 +1011,7 @@ nsWindow::ConstrainPosition(PRBool aAllowSlop, PRInt32 *aX, PRInt32 *aY)
 NS_IMETHODIMP
 nsWindow::Show(PRBool aState)
 {
-#ifndef MOZ_PLATFORM_HILDON
+#ifndef MOZ_PLATFORM_MAEMO
     // XXX Bug 534981: work around to fix a large initial paint delay in Fennec
     if (aState == mIsShown) {
         return NS_OK;
@@ -1738,7 +1773,132 @@ nsWindow::Update()
     LOGDRAW(("Update [%p] %p\n", this, mGdkWindow));
 
     gdk_window_process_updates(mGdkWindow, FALSE);
+    // Send the updates to the server.
+    gdk_display_flush(gdk_drawable_get_display(GDK_DRAWABLE(mGdkWindow)));
     return NS_OK;
+}
+
+static pixman_box32
+ToPixmanBox(const nsIntRect& aRect)
+{
+    pixman_box32_t result;
+    result.x1 = aRect.x;
+    result.y1 = aRect.y;
+    result.x2 = aRect.XMost();
+    result.y2 = aRect.YMost();
+    return result;
+}
+
+static nsIntRect
+ToIntRect(const pixman_box32& aBox)
+{
+    nsIntRect result;
+    result.x = aBox.x1;
+    result.y = aBox.y1;
+    result.width = aBox.x2 - aBox.x1;
+    result.height = aBox.y2 - aBox.y1;
+    return result;
+}
+
+static void
+InitRegion(pixman_region32* aRegion,
+           const nsTArray<nsIntRect>& aRects)
+{
+    nsAutoTArray<pixman_box32,10> rects;
+    rects.SetCapacity(aRects.Length());
+    for (PRUint32 i = 0; i < aRects.Length (); ++i) {
+        if (!aRects[i].IsEmpty()) {
+            rects.AppendElement(ToPixmanBox(aRects[i]));
+        }
+    }
+
+    pixman_region32_init_rects(aRegion,
+                               rects.Elements(), rects.Length());
+}
+
+static void
+GetIntRects(pixman_region32& aRegion, nsTArray<nsIntRect>* aRects)
+{
+    int nRects;
+    pixman_box32* boxes = pixman_region32_rectangles(&aRegion, &nRects);
+    aRects->SetCapacity(aRects->Length() + nRects);
+    for (int i = 0; i < nRects; ++i) {
+        aRects->AppendElement(ToIntRect(boxes[i]));
+    }
+}
+
+/**
+ * ScrollItemIter uses ScrollRectIterBase to order blit rectangles and
+ * rectangular child clip regions in a way such that moving the items in this
+ * order will avoid conflicts of blit rectangles.  Conflicts with child
+ * windows are also avoided in situations with simple child window
+ * arrangements.
+ *
+ * The blit rectangles must not intersect with any other rectangles (of either
+ * blits or children).  Note that child clip regions are not guaranteed to be
+ * exclusive of other child clip regions, so ScrollItemIter may not
+ * necessarily provide an optimal order (if a child rectangle intersects
+ * another child rectangle).
+ */
+class ScrollItemIter : public ScrollRectIterBase {
+public:
+    // Each aChildRects[i] corresponds to
+    ScrollItemIter(const nsIntPoint& aDelta,
+                   const nsTArray<nsIntRect>& aBlitRects,
+                   const nsTArray<const nsIWidget::Configuration*>aChildConfs,
+                   const nsTArray<nsIntRect>& aChildSubRects);
+
+    PRBool IsBlit() const { return !Configuration(); };
+
+private:
+    struct ScrollItem : public ScrollRect {
+        ScrollItem(const nsIntRect& aIntRect) : ScrollRect(aIntRect) {}
+
+        const nsIWidget::Configuration *mChildConf;
+    };
+
+public:
+    const nsIWidget::Configuration* Configuration() const
+    {
+        return static_cast<const ScrollItem&>(Rect()).mChildConf;
+    }
+
+private:
+    // Copying is not supported.
+    ScrollItemIter(const ScrollItemIter&);
+    void operator=(const ScrollItemIter&);
+
+    nsTArray<ScrollItem> mRects;
+};
+
+ScrollItemIter::ScrollItemIter(const nsIntPoint& aDelta,
+                               const nsTArray<nsIntRect>& aBlitRects,
+                               const nsTArray<const nsIWidget::Configuration*>aChildConfs,
+                               const nsTArray<nsIntRect>& aChildSubRects)
+  : mRects(aBlitRects.Length() + aChildConfs.Length())
+{
+    for (PRUint32 i = 0; i < aBlitRects.Length(); ++i) {
+        if (ScrollItem* item = mRects.AppendElement(aBlitRects[i])) {
+            item->mChildConf = nsnull;
+        }
+    }
+
+    PRUint32 numChildren =
+        NS_MIN(aChildConfs.Length(), aChildSubRects.Length());
+    for (PRUint32 i = 0; i < numChildren; ++i) {
+        if (ScrollItem* item = mRects.AppendElement(aChildSubRects[i])) {
+            item->mChildConf = aChildConfs[i];
+        }
+    }
+
+    // Link items into a chain.
+    ScrollRect *next = nsnull;
+    for (PRUint32 i = mRects.Length(); i--; ) {
+        mRects[i].mNext = next;
+        next = &mRects[i];
+    }
+
+    BaseInit(aDelta, next);
 }
 
 void
@@ -1751,87 +1911,158 @@ nsWindow::Scroll(const nsIntPoint& aDelta,
         return;
     }
 
-    nsAutoTArray<nsWindow*,1> windowsToShow;
-    // Hide any widgets that are becoming invisible or that are moving.
-    // Moving widgets are hidden for the duration of the scroll so that
-    // the XCopyArea treats their drawn pixels as part of the window
-    // that should be scrolled. This works well when the widgets are
-    // moving because they're being scrolled, which is normally true.
+    // Empty Xlib's request buffer to reduce the likelihood of it getting
+    // emptied mid way through the scroll, in the hope that the server gets
+    // all the requests at once.
+    gdk_display_flush(gdk_drawable_get_display(GDK_DRAWABLE(mGdkWindow)));
+
+    // Collect the destination positions of moving child windows where they
+    // will eventually obscure their parent.
+    nsTArray<const Configuration*> movingChildren;
+    nsTArray<nsIntRect> movingChildSubRects;
+
     for (PRUint32 i = 0; i < aConfigurations.Length(); ++i) {
-        const Configuration& configuration = aConfigurations[i];
-        nsWindow* w = static_cast<nsWindow*>(configuration.mChild);
+        const Configuration* conf = &aConfigurations[i];
+        nsWindow* w = static_cast<nsWindow*>(conf->mChild);
         NS_ASSERTION(w->GetParent() == this,
                      "Configured widget is not a child");
-        if (w->mIsShown &&
-            (configuration.mClipRegion.IsEmpty() ||
-             configuration.mBounds != w->mBounds)) {
-            w->NativeShow(PR_FALSE);
-            windowsToShow.AppendElement(w);
-        }
+
+        if (!w->mIsShown)
+            continue;
+
+        // Set the clip region of all visible windows to the intersection of
+        // the current and new region.  This reduces the conflict area with
+        // other objects (including stationary objects).
+        w->SetWindowClipRegion(conf->mClipRegion, PR_TRUE);
+
+        if (conf->mBounds.TopLeft() == w->mBounds.TopLeft())
+            continue; // window is not moving
+
+        nsAutoTArray<nsIntRect,1> rects; // of clip region intersection
+        w->GetWindowClipRegion(&rects);
+
+        // ScrollItemIter is designed only for rectangular scroll items.
+        //
+        // It is not suitable to use the bounding rectangle of complex child
+        // clip regions because that rectangle may intersect with blit
+        // rectangles and ScrollItemIter would then not necessarily provide
+        // the correct order for any such blit rectangles.  If child windows
+        // are not moved in the optimal order there will be some flicker
+        // during the scroll, which will be corrected through invalidations,
+        // but, if blit rectangles were moved in the wrong order, then some
+        // parts would get moved twice, which would not be corrected through
+        // invalidations.
+        //
+        // Choosing a sub-rectangle for the scroll item would make some parts
+        // of the child window scroll nicely but not others.  This can
+        // actually look worse than the whole window being moved out of order,
+        // so moving of child windows with complex clip regions is simply
+        // delayed until after blitting.
+        if (rects.Length() != 1)
+            continue; // no moving content or non-rectangular clip-region
+
+        movingChildren.AppendElement(conf);
+
+        // Destination position wrt mGdkWindow top left.
+        nsIntRect subRect = rects[0] + conf->mBounds.TopLeft();
+        movingChildSubRects.AppendElement(subRect);
     }
 
-    // The parts of source regions not covered by their destination get marked
-    // invalid (by GDK).  This is necessary (until covered by another blit)
-    // because GDK translates any pending expose events to the destination,
-    // and so doesn't know whether an expose event might have been due on the
-    // source.
+    nsAutoRef<pixman_region32> blitRegion;
+    InitRegion(&blitRegion, aDestRects);
+
+    // Remove some parts of the moving parent region that will be covered by
+    // moving child widgets.  These parts won't need drawing anyway, and it
+    // breaks up the blit rectangles so that we have a chance of moving them
+    // without conflicts with child rectangles.
     //
-    // However, GDK 2.18 does not subtract the invalid regions at the
-    // destinations from the update_area, so the seams between different moves
-    // remain invalid.  GDK 2.18 also delays and queues move operations.  If
-    // gdk_window_process_updates is called before the moves are flushed, GDK
-    // 2.18 removes the invalid seams from the move regions, so the seams are
-    // left with their old content until they get redrawn.  Therefore, the
-    // subtraction of destination invalid regions is performed here.
-    GdkRegion* updateArea = gdk_window_get_update_area(mGdkWindow);
-    if (!updateArea) {
-        updateArea = gdk_region_new(); // Aborts on OOM.
+    // Also, subtracting the child sub-rectangles from the blit region ensures
+    // that the blit rectangles will not overlap with any blit or child
+    // rectangles, so ScrollItemIter will ensure that blit rectangles do not
+    // conflict with each other.
+    {
+        nsAutoRef<pixman_region32> childRegion;
+        InitRegion(&childRegion, movingChildSubRects);
+
+        pixman_region32_subtract(&blitRegion, &blitRegion, &childRegion);
     }
 
-    // gdk_window_move_region, up to GDK 2.16, has a ghastly bug where it
-    // doesn't restrict blitting to the given region, and blits its full
-    // bounding box. So we have to work around that by blitting one rectangle
-    // at a time.
-    for (PRUint32 i = 0; i < aDestRects.Length(); ++i) {
-        const nsIntRect& r = aDestRects[i];
-        GdkRectangle gdkSource =
-            { r.x - aDelta.x, r.y - aDelta.y, r.width, r.height };
-        GdkRegion* rectRegion = gdk_region_rectangle(&gdkSource);
-        gdk_window_move_region(GDK_WINDOW(mGdkWindow), rectRegion,
-                               aDelta.x, aDelta.y);
+    nsTArray<nsIntRect> blitRects;
+    GetIntRects(blitRegion, &blitRects);
 
-        // The part of the old invalid region that is moving.
-        GdkRegion* updateChanges = gdk_region_copy(rectRegion);
-        gdk_region_intersect(updateChanges, updateArea);
-        gdk_region_offset(updateChanges, aDelta.x, aDelta.y);
+    GdkRegion* updateArea = gdk_region_new(); // aborts on OOM
 
-        // Make |rectRegion| the destination
-        gdk_region_offset(rectRegion, aDelta.x, aDelta.y);
-        // Remove any old invalid areas covered at the destination.
-        gdk_region_subtract(updateArea, rectRegion);
-        gdk_region_destroy(rectRegion);
+    for (ScrollItemIter iter(aDelta, blitRects,
+                             movingChildren, movingChildSubRects);
+         !iter.IsDone(); ++iter) {
+        if (iter.IsBlit()) {
+            // The parts of source regions not covered by their destination
+            // get marked invalid by gdk_window_move_region.  This is
+            // necessary (until covered by another blit) because GDK
+            // translates any pending expose events to the destination, and so
+            // doesn't know whether an expose event might have been due on the
+            // source.
+            //
+            // However, GDK 2.18 does not subtract the invalid regions at the
+            // destinations from the update_area, so the seams between
+            // different moves remain invalid.  GDK 2.18 also delays and
+            // queues move operations.  If gdk_window_process_updates is
+            // called before the moves are flushed, GDK 2.18 removes the
+            // invalid seams from the move regions, so the seams are left with
+            // their old content until they get redrawn.  Therefore, the
+            // subtraction of destination invalid regions is performed here.
+            GdkRegion* recentUpdates = gdk_window_get_update_area(mGdkWindow);
+            if (recentUpdates) {
+                gdk_region_union(updateArea, recentUpdates);
+                gdk_region_destroy(recentUpdates);
+            } 
 
-        // The update_area from the move_region contains:
-        // 1. The part of the source region not covered by the destination.
-        // 2. Any destination regions for which the source was obscured by
-        //    parent window clips or child windows.
-        GdkRegion* newUpdates = gdk_window_get_update_area(mGdkWindow);
-        if (newUpdates) {
-            gdk_region_union(updateChanges, newUpdates);
-            gdk_region_destroy(newUpdates);
+            // We don't attempt to collect rects into regions because
+            // gdk_window_move_region, up to GDK 2.16, has a bug where it
+            // doesn't restrict blitting to the given region, and blits its
+            // full bounding box.
+            nsIntRect source = iter.Rect() - aDelta;
+            GdkRectangle gdkSource =
+                { source.x, source.y, source.width, source.height };
+            GdkRegion* rectRegion = gdk_region_rectangle(&gdkSource);
+            gdk_window_move_region(mGdkWindow, rectRegion,
+                                   aDelta.x, aDelta.y);
+
+            // The update_area on mGdkWindow from the move_region contains
+            // invalidations from the move:
+            // 1. The part of the source region not covered by the destination.
+            // 2. Any destination regions for which the source was obscured by
+            //    parent window clips or child windows.
+            //
+            // Our copy of the old invalid region needs adjusting.
+
+            // The part of the old invalid region that is moving.
+            GdkRegion* updateChanges = gdk_region_copy(rectRegion);
+            gdk_region_intersect(updateChanges, updateArea);
+            gdk_region_offset(updateChanges, aDelta.x, aDelta.y);
+
+            // Make |rectRegion| the destination
+            gdk_region_offset(rectRegion, aDelta.x, aDelta.y);
+            // Remove any old invalid areas covered at the destination.
+            gdk_region_subtract(updateArea, rectRegion);
+            gdk_region_union(updateArea, updateChanges);
+
+            gdk_region_destroy(updateChanges);
+            gdk_region_destroy(rectRegion);
+        } else {
+            const Configuration *conf = iter.Configuration();
+            nsWindow* w = static_cast<nsWindow*>(conf->mChild);
+            const nsIntRect& newBounds = conf->mBounds;
+            // (This move will modify the invalid_area on mGdkWindow to
+            // include areas that are uncovered when the child moves.)
+            w->Move(newBounds.x, newBounds.y);
         }
-        gdk_region_union(updateArea, updateChanges);
-        gdk_region_destroy(updateChanges);
     }
 
     gdk_window_invalidate_region(mGdkWindow, updateArea, FALSE);
     gdk_region_destroy(updateArea);
 
     ConfigureChildren(aConfigurations);
-
-    for (PRUint32 i = 0; i < windowsToShow.Length(); ++i) {
-        windowsToShow[i]->NativeShow(PR_TRUE);
-    }
 }
 
 void*
@@ -2533,8 +2764,19 @@ nsWindow::OnDeleteEvent(GtkWidget *aWidget, GdkEventAny *aEvent)
 void
 nsWindow::OnEnterNotifyEvent(GtkWidget *aWidget, GdkEventCrossing *aEvent)
 {
-    // XXXldb Is this the right test for embedding cases?
+    // This skips NotifyVirtual and NotifyNonlinearVirtual enter notify events
+    // when the pointer enters a child window.  If the destination window is a
+    // Gecko window then we'll catch the corresponding event on that window,
+    // but we won't notice when the pointer directly enters a foreign (plugin)
+    // child window without passing over a visible portion of a Gecko window.
     if (aEvent->subwindow != NULL)
+        return;
+
+    // Check before is_parent_ungrab_enter() as the button state may have
+    // changed while a non-Gecko ancestor window had a pointer grab.
+    DispatchMissedButtonReleases(aEvent);
+
+    if (is_parent_ungrab_enter(aEvent))
         return;
 
     nsMouseEvent event(PR_TRUE, NS_MOUSE_ENTER, this, nsMouseEvent::eReal);
@@ -2550,6 +2792,7 @@ nsWindow::OnEnterNotifyEvent(GtkWidget *aWidget, GdkEventCrossing *aEvent)
     DispatchEvent(&event, status);
 }
 
+// XXX Is this the right test for embedding cases?
 static PRBool
 is_top_level_mouse_exit(GdkWindow* aWindow, GdkEventCrossing *aEvent)
 {
@@ -2567,7 +2810,14 @@ is_top_level_mouse_exit(GdkWindow* aWindow, GdkEventCrossing *aEvent)
 void
 nsWindow::OnLeaveNotifyEvent(GtkWidget *aWidget, GdkEventCrossing *aEvent)
 {
-    // XXXldb Is this the right test for embedding cases?
+    // This ignores NotifyVirtual and NotifyNonlinearVirtual leave notify
+    // events when the pointer leaves a child window.  If the destination
+    // window is a Gecko window then we'll catch the corresponding event on
+    // that window.
+    //
+    // XXXkt However, we will miss toplevel exits when the pointer directly
+    // leaves a foreign (plugin) child window without passing over a visible
+    // portion of a Gecko window.
     if (aEvent->subwindow != NULL)
         return;
 
@@ -2743,6 +2993,61 @@ nsWindow::OnMotionNotifyEvent(GtkWidget *aWidget, GdkEventMotion *aEvent)
 }
 #endif
 
+// If the automatic pointer grab on ButtonPress has deactivated before
+// ButtonRelease, and the mouse button is released while the pointer is not
+// over any a Gecko window, then the ButtonRelease event will not be received.
+// (A similar situation exists when the pointer is grabbed with owner_events
+// True as the ButtonRelease may be received on a foreign [plugin] window).
+// Use this method to check for released buttons when the pointer returns to a
+// Gecko window.
+void
+nsWindow::DispatchMissedButtonReleases(GdkEventCrossing *aGdkEvent)
+{
+    guint changed = aGdkEvent->state ^ gButtonState;
+    // Only consider button releases.
+    // (Ignore button presses that occurred outside Gecko.)
+    guint released = changed & gButtonState;
+    gButtonState = aGdkEvent->state;
+
+    // Loop over each button, excluding mouse wheel buttons 4 and 5 for which
+    // GDK ignores releases.
+    for (guint buttonMask = GDK_BUTTON1_MASK;
+         buttonMask <= GDK_BUTTON3_MASK;
+         buttonMask <<= 1) {
+
+        if (released & buttonMask) {
+            PRInt16 buttonType;
+            switch (buttonMask) {
+            case GDK_BUTTON1_MASK:
+                buttonType = nsMouseEvent::eLeftButton;
+                break;
+            case GDK_BUTTON2_MASK:
+                buttonType = nsMouseEvent::eMiddleButton;
+                break;
+            default:
+                NS_ASSERTION(buttonMask == GDK_BUTTON3_MASK,
+                             "Unexpected button mask");
+                buttonType = nsMouseEvent::eRightButton;
+            }
+
+            LOG(("Synthesized button %u release on %p\n",
+                 guint(buttonType + 1), (void *)this));
+
+            // Dispatch a synthesized button up event to tell Gecko about the
+            // change in state.  This event is marked as synthesized so that
+            // it is not dispatched as a DOM event, because we don't know the
+            // position, widget, modifiers, or time/order.
+            nsMouseEvent synthEvent(PR_TRUE, NS_MOUSE_BUTTON_UP, this,
+                                    nsMouseEvent::eSynthesized);
+            synthEvent.button = buttonType;
+            nsEventStatus status;
+            DispatchEvent(&synthEvent, status);
+
+            sLastButtonReleaseTime = aGdkEvent->time;
+        }
+    }
+}
+
 void
 nsWindow::InitButtonEvent(nsMouseEvent &aEvent,
                           GdkEventButton *aGdkEvent)
@@ -2776,13 +3081,20 @@ nsWindow::InitButtonEvent(nsMouseEvent &aEvent,
     }
 }
 
+static guint ButtonMaskFromGDKButton(guint button)
+{
+    return GDK_BUTTON1_MASK << (button - 1);
+}
+
 void
 nsWindow::OnButtonPressEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
 {
+    LOG(("Button %u press on %p\n", aEvent->button, (void *)this));
+
     nsEventStatus status;
 
-    // If you double click in GDK, it will actually generate a single
-    // click event before sending the double click event, and this is
+    // If you double click in GDK, it will actually generate a second
+    // GDK_BUTTON_PRESS before sending the GDK_2BUTTON_PRESS, and this is
     // different than the DOM spec.  GDK puts this in the queue
     // programatically, so it's safe to assume that if there's a
     // double click in the queue, it was generated so we can just drop
@@ -2796,8 +3108,8 @@ nsWindow::OnButtonPressEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
     }
 
     // Always save the time of this event
-    mLastButtonPressTime = aEvent->time;
-    mLastButtonReleaseTime = 0;
+    sLastButtonPressTime = aEvent->time;
+    sLastButtonReleaseTime = 0;
 
     nsWindow *containerWindow = GetContainerWindow();
     if (!gFocusWindow && containerWindow) {
@@ -2860,6 +3172,8 @@ nsWindow::OnButtonPressEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
         return;
     }
 
+    gButtonState |= ButtonMaskFromGDKButton(aEvent->button);
+
     nsMouseEvent event(PR_TRUE, NS_MOUSE_BUTTON_DOWN, this, nsMouseEvent::eReal);
     event.button = domButton;
     InitButtonEvent(event, aEvent);
@@ -2881,8 +3195,10 @@ nsWindow::OnButtonPressEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
 void
 nsWindow::OnButtonReleaseEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
 {
+    LOG(("Button %u release on %p\n", aEvent->button, (void *)this));
+
     PRUint16 domButton;
-    mLastButtonReleaseTime = aEvent->time;
+    sLastButtonReleaseTime = aEvent->time;
 
     switch (aEvent->button) {
     case 1:
@@ -2897,6 +3213,8 @@ nsWindow::OnButtonReleaseEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
     default:
         return;
     }
+
+    gButtonState &= ~ButtonMaskFromGDKButton(aEvent->button);
 
     nsMouseEvent event(PR_TRUE, NS_MOUSE_BUTTON_UP, this, nsMouseEvent::eReal);
     event.button = domButton;
@@ -3101,6 +3419,7 @@ nsWindow::OnKeyPressEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
     }
 
 #ifdef MOZ_X11
+#if ! defined AIX // no XFree86 on AIX 5L
     // Look for specialized app-command keys
     switch (aEvent->keyval) {
         case XF86XK_Back:
@@ -3118,6 +3437,7 @@ nsWindow::OnKeyPressEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
         case XF86XK_HomePage:
             return DispatchCommandEvent(nsWidgetAtoms::Home);
     }
+#endif /* ! AIX */
 #endif /* MOZ_X11 */
 
     nsKeyEvent event(PR_TRUE, NS_KEY_PRESS, this);
@@ -3450,7 +3770,7 @@ nsWindow::OnDragMotionEvent(GtkWidget *aWidget,
 {
     LOGDRAG(("nsWindow::OnDragMotionSignal\n"));
 
-    if (mLastButtonReleaseTime) {
+    if (sLastButtonReleaseTime) {
       // The drag ended before it was even setup to handle the end of the drag
       // So, we fake the button getting released again to release the drag
       GtkWidget *widget = gtk_grab_get_current();
@@ -3458,9 +3778,9 @@ nsWindow::OnDragMotionEvent(GtkWidget *aWidget,
       gboolean retval;
       memset(&event, 0, sizeof(event));
       event.type = GDK_BUTTON_RELEASE;
-      event.button.time = mLastButtonReleaseTime;
+      event.button.time = sLastButtonReleaseTime;
       event.button.button = 1;
-      mLastButtonReleaseTime = 0;
+      sLastButtonReleaseTime = 0;
       if (widget) {
         g_signal_emit_by_name(widget, "button_release_event", &event, &retval);
         return TRUE;
@@ -4065,6 +4385,25 @@ nsWindow::Create(nsIWidget        *aParent,
         g_signal_connect_after(default_settings,
                                "notify::gtk-font-name",
                                G_CALLBACK(theme_changed_cb), this);
+
+#ifdef MOZ_PLATFORM_MAEMO
+        if (mWindowType == eWindowType_toplevel) {
+            GdkWindow *gdkwin = mShell->window;
+
+            // Tell the Hildon desktop that we support being rotated
+            gulong portrait_set = 1;
+            GdkAtom support = gdk_atom_intern("_HILDON_PORTRAIT_MODE_SUPPORT", FALSE);
+            gdk_property_change(gdkwin, support, gdk_x11_xatom_to_atom(XA_CARDINAL),
+                                32, GDK_PROP_MODE_REPLACE,
+                                (const guchar *) &portrait_set, 1);
+
+            // Tell maemo-status-volume daemon to ungrab keys
+            gulong volume_set = 1;
+            GdkAtom keys = gdk_atom_intern("_HILDON_ZOOM_KEY_ATOM", FALSE);
+            gdk_property_change(gdkwin, keys, gdk_x11_xatom_to_atom(XA_INTEGER),
+                                32, GDK_PROP_MODE_REPLACE, (const guchar *) &volume_set, 1);
+        }
+#endif
     }
 
     if (mContainer) {
@@ -4526,8 +4865,7 @@ nsWindow::ConfigureChildren(const nsTArray<Configuration>& aConfigurations)
         nsWindow* w = static_cast<nsWindow*>(configuration.mChild);
         NS_ASSERTION(w->GetParent() == this,
                      "Configured widget is not a child");
-        nsresult rv = w->SetWindowClipRegion(configuration.mClipRegion);
-        NS_ENSURE_SUCCESS(rv, rv);
+        w->SetWindowClipRegion(configuration.mClipRegion, PR_TRUE);
         if (w->mBounds.Size() != configuration.mBounds.Size()) {
             w->Resize(configuration.mBounds.x, configuration.mBounds.y,
                       configuration.mBounds.width, configuration.mBounds.height,
@@ -4535,24 +4873,49 @@ nsWindow::ConfigureChildren(const nsTArray<Configuration>& aConfigurations)
         } else if (w->mBounds.TopLeft() != configuration.mBounds.TopLeft()) {
             w->Move(configuration.mBounds.x, configuration.mBounds.y);
         } 
+        w->SetWindowClipRegion(configuration.mClipRegion, PR_FALSE);
     }
     return NS_OK;
 }
 
-nsresult
-nsWindow::SetWindowClipRegion(const nsTArray<nsIntRect>& aRects)
+void
+nsWindow::SetWindowClipRegion(const nsTArray<nsIntRect>& aRects,
+                              PRBool aIntersectWithExisting)
 {
-    if (!StoreWindowClipRegion(aRects))
-        return NS_OK;
+    const nsTArray<nsIntRect>* newRects = &aRects;
+
+    nsAutoTArray<nsIntRect,1> intersectRects;
+    if (aIntersectWithExisting) {
+        nsAutoTArray<nsIntRect,1> existingRects;
+        GetWindowClipRegion(&existingRects);
+
+        nsAutoRef<pixman_region32> existingRegion;
+        InitRegion(&existingRegion, existingRects);
+        nsAutoRef<pixman_region32> newRegion;
+        InitRegion(&newRegion, aRects);
+        nsAutoRef<pixman_region32> intersectRegion;
+        pixman_region32_init(&intersectRegion);
+        pixman_region32_intersect(&intersectRegion,
+                                  &newRegion, &existingRegion);
+
+        if (pixman_region32_equal(&intersectRegion, &existingRegion))
+            return;
+
+        if (!pixman_region32_equal(&intersectRegion, &newRegion)) {
+            GetIntRects(intersectRegion, &intersectRects);
+            newRects = &intersectRects;
+        }
+    }
+
+    if (!StoreWindowClipRegion(*newRects))
+        return;
 
     if (!mGdkWindow)
-        return NS_OK;
+        return;
 
-    GdkRegion *region = gdk_region_new();
-    if (!region)
-        return NS_ERROR_OUT_OF_MEMORY;
-    for (PRUint32 i = 0; i < aRects.Length(); ++i) {
-        const nsIntRect& r = aRects[i];
+    GdkRegion *region = gdk_region_new(); // aborts on OOM
+    for (PRUint32 i = 0; i < newRects->Length(); ++i) {
+        const nsIntRect& r = newRects->ElementAt(i);
         GdkRectangle rect = { r.x, r.y, r.width, r.height };
         gdk_region_union_with_rect(region, &rect);
     }
@@ -4560,7 +4923,7 @@ nsWindow::SetWindowClipRegion(const nsTArray<nsIntRect>& aRects)
     gdk_window_shape_combine_region(mGdkWindow, region, 0, 0);
     gdk_region_destroy(region);
 
-    return NS_OK;
+    return;
 }
 
 void
@@ -5518,10 +5881,6 @@ gboolean
 enter_notify_event_cb(GtkWidget *widget,
                       GdkEventCrossing *event)
 {
-    if (is_parent_ungrab_enter(event)) {
-        return TRUE;
-    }
-
     nsRefPtr<nsWindow> window = get_window_for_gdk_window(event->window);
     if (!window)
         return TRUE;

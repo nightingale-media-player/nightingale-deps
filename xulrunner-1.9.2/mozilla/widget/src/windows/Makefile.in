@@ -143,6 +143,7 @@ LOCAL_INCLUDES	= \
 		-I$(srcdir)/../xpwidgets \
 		-I$(srcdir) \
 		-I$(topsrcdir)/toolkit/xre \
+		-I$(topsrcdir)/toolkit/crashreporter \
 		$(NULL)
 
 FORCE_STATIC_LIB = 1
@@ -153,6 +154,11 @@ endif
 
 ifndef WINCE
 ENABLE_CXX_EXCEPTIONS = 1
+endif
+
+ifdef MOZ_IPC
+include $(topsrcdir)/config/config.mk
+include $(topsrcdir)/ipc/chromium/chromium-config.mk
 endif
 
 include $(topsrcdir)/config/rules.mk

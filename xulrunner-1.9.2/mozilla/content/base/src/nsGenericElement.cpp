@@ -3169,6 +3169,29 @@ nsGenericElement::InsertChildAt(nsIContent* aKid,
                          mAttrsAndChildren);
 }
 
+static nsresult
+AdoptNodeIntoOwnerDoc(nsINode *aParent, nsIDOMNode *aNode)
+{
+  nsIDocument *doc = aParent->GetOwnerDoc();
+
+  nsresult rv;
+  nsCOMPtr<nsIDOM3Document> domDoc = do_QueryInterface(doc, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIDOMNode> adoptedNode;
+  rv = domDoc->AdoptNode(aNode, getter_AddRefs(adoptedNode));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  if (doc != aParent->GetOwnerDoc()) {
+    return NS_ERROR_DOM_WRONG_DOCUMENT_ERR;
+  }
+
+  NS_ASSERTION(adoptedNode == aNode, "Uh, adopt node changed nodes?");
+  NS_ASSERTION(aParent->HasSameOwnerDoc(nsCOMPtr<nsINode>(do_QueryInterface(aNode))),
+               "ownerDocument changed again after adopting!");
+
+  return NS_OK;
+}
 
 /* static */
 nsresult
@@ -3192,31 +3215,24 @@ nsGenericElement::doInsertChildAt(nsIContent* aKid, PRUint32 aIndex,
     rv = kid->GetNodeType(&nodeType);
     NS_ENSURE_SUCCESS(rv, rv);
 
-    nsCOMPtr<nsIDOM3Document> domDoc =
-      do_QueryInterface(container->GetOwnerDoc());
-
     // DocumentType nodes are the only nodes that can have a null
     // ownerDocument according to the DOM spec, and we need to allow
     // inserting them w/o calling AdoptNode().
 
-    if (domDoc && (nodeType != nsIDOMNode::DOCUMENT_TYPE_NODE ||
-                   aKid->GetOwnerDoc())) {
-      nsCOMPtr<nsIDOMNode> adoptedKid;
-      rv = domDoc->AdoptNode(kid, getter_AddRefs(adoptedKid));
+    if (nodeType != nsIDOMNode::DOCUMENT_TYPE_NODE || aKid->GetOwnerDoc()) {
+      rv = AdoptNodeIntoOwnerDoc(container, kid);
       NS_ENSURE_SUCCESS(rv, rv);
-
-      NS_ASSERTION(adoptedKid == kid, "Uh, adopt node changed nodes?");
     }
   }
 
-  PRUint32 childCount = aChildArray.ChildCount();
-  NS_ENSURE_TRUE(aIndex <= childCount, NS_ERROR_ILLEGAL_VALUE);
-
   nsMutationGuard::DidMutate();
 
-  PRBool isAppend = (aIndex == childCount);
-
+  // Do this before checking the child-count since this could cause mutations
   mozAutoDocUpdate updateBatch(aDocument, UPDATE_CONTENT_MODEL, aNotify);
+
+  PRUint32 childCount = aChildArray.ChildCount();
+  NS_ENSURE_TRUE(aIndex <= childCount, NS_ERROR_ILLEGAL_VALUE);
+  PRBool isAppend = (aIndex == childCount);
 
   rv = aChildArray.InsertChildAt(aKid, aIndex);
   NS_ENSURE_SUCCESS(rv, rv);
@@ -3725,27 +3741,32 @@ nsGenericElement::doReplaceOrInsertBefore(PRBool aReplace,
     return NS_ERROR_DOM_HIERARCHY_REQUEST_ERR;
   }
 
+  nsMutationGuard guard;
+
   // DocumentType nodes are the only nodes that can have a null
   // ownerDocument according to the DOM spec, and we need to allow
   // inserting them w/o calling AdoptNode().
   if (!container->HasSameOwnerDoc(newContent) &&
       (nodeType != nsIDOMNode::DOCUMENT_TYPE_NODE ||
        newContent->GetOwnerDoc())) {
-    nsCOMPtr<nsIDOM3Document> domDoc = do_QueryInterface(aDocument);
+    res = AdoptNodeIntoOwnerDoc(container, aNewChild);
+    NS_ENSURE_SUCCESS(res, res);
+  }
+  
+  if (guard.Mutated(0)) {
+    insPos = refContent ? container->IndexOf(refContent) :
+                          container->GetChildCount();
+    if (insPos < 0) {
+      return NS_ERROR_DOM_NOT_FOUND_ERR;
+    }
 
-    if (domDoc) {
-      nsCOMPtr<nsIDOMNode> adoptedKid;
-      nsresult rv = domDoc->AdoptNode(aNewChild, getter_AddRefs(adoptedKid));
-      NS_ENSURE_SUCCESS(rv, rv);
-
-      NS_ASSERTION(adoptedKid == aNewChild, "Uh, adopt node changed nodes?");
+    if (!IsAllowedAsChild(newContent, nodeType, aParent, aDocument, aReplace,
+                          refContent)) {
+      return NS_ERROR_DOM_HIERARCHY_REQUEST_ERR;
     }
   }
 
-  // We want an update batch when we expect several mutations to be performed,
-  // which is when we're replacing a node, or when we're inserting a fragment.
-  mozAutoDocConditionalContentUpdateBatch batch(aDocument,
-    aReplace || nodeType == nsIDOMNode::DOCUMENT_FRAGMENT_NODE);
+  mozAutoDocConditionalContentUpdateBatch batch(aDocument, PR_TRUE);
 
   // If we're replacing
   if (aReplace) {
@@ -3848,6 +3869,10 @@ nsGenericElement::doReplaceOrInsertBefore(PRBool aReplace,
     for (i = 0; i < count; ++i, ++insPos) {
       nsIContent* childContent = fragChildren[i];
 
+      if (!container->HasSameOwnerDoc(childContent)) {
+        return NS_ERROR_DOM_HIERARCHY_REQUEST_ERR;
+      }
+
       // XXXbz how come no reparenting here?  That seems odd...
       // Insert the child.
       res = container->InsertChildAt(childContent, insPos, PR_FALSE);
@@ -3942,6 +3967,12 @@ nsGenericElement::doReplaceOrInsertBefore(PRBool aReplace,
           return NS_ERROR_DOM_HIERARCHY_REQUEST_ERR;
         }
       }
+    }
+
+    if (!container->HasSameOwnerDoc(newContent) &&
+        (nodeType != nsIDOMNode::DOCUMENT_TYPE_NODE ||
+         newContent->GetOwnerDoc())) {
+      return NS_ERROR_DOM_HIERARCHY_REQUEST_ERR;
     }
 
     if (!newContent->IsNodeOfType(eXUL)) {
@@ -5132,9 +5163,9 @@ TryMatchingElementsInSubtree(nsINode* aRoot,
    * cheaper than heap-allocating all the datas and keeping track of them all,
    * and helps a good bit in the common cases.  We also keep track of the whole
    * parent data chain, since we have those Around anyway */
-  char databuf[2 * sizeof(RuleProcessorData)];
+  union { char c[2 * sizeof(RuleProcessorData)]; void *p; } databuf;
   RuleProcessorData* prevSibling = nsnull;
-  RuleProcessorData* data = reinterpret_cast<RuleProcessorData*>(databuf);
+  RuleProcessorData* data = reinterpret_cast<RuleProcessorData*>(databuf.c);
 
   PRBool continueIteration = PR_TRUE;
   for (nsINode::ChildIterator iter(aRoot); !iter.IsDone(); iter.Next()) {

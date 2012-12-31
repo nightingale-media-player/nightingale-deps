@@ -64,29 +64,50 @@ nsHttpHeaderArray::SetHeader(nsHttpAtom header,
 
     // Create a new entry, or...
     if (!entry) {
+        entry = mHeaders.AppendElement(); // new nsEntry()
+        if (!entry)
+            return NS_ERROR_OUT_OF_MEMORY;
+        entry->header = header;
+        entry->value = value;
+    } else if (merge && !IsSingletonHeader(header)) {
+        MergeHeader(header, entry, value);
+    } else {
+        // Replace the existing string with the new value
+        entry->value = value;
+    }
+
+    return NS_OK;
+}
+
+nsresult
+nsHttpHeaderArray::SetHeaderFromNet(nsHttpAtom header, const nsACString &value)
+{
+    nsEntry *entry = nsnull;
+    PRInt32 index;
+
+    index = LookupEntry(header, &entry);
+
+    if (!entry) {
+        if (value.IsEmpty())
+            return NS_OK; // ignore empty headers
         entry = mHeaders.AppendElement(); //new nsEntry(header, value);
         if (!entry)
             return NS_ERROR_OUT_OF_MEMORY;
         entry->header = header;
         entry->value = value;
+    } else if (!IsSingletonHeader(header)) {
+        MergeHeader(header, entry, value);
+    } else {
+        // Multiple instances of non-mergeable header received from network
+        // - ignore if same value
+        if (!entry->value.Equals(value)) {
+            if (IsSuspectDuplicateHeader(header)) {
+                // reply may be corrupt/hacked (ex: CLRF injection attacks)
+                return NS_ERROR_CORRUPTED_CONTENT;
+            } // else silently drop value: keep value from 1st header seen
+        }
     }
-    // Append the new value to the existing value iff...
-    else if (merge && CanAppendToHeader(header)) {
-        if (header == nsHttp::Set_Cookie ||
-            header == nsHttp::WWW_Authenticate ||
-            header == nsHttp::Proxy_Authenticate)
-            // Special case these headers and use a newline delimiter to
-            // delimit the values from one another as commas may appear
-            // in the values of these headers contrary to what the spec says.
-            entry->value.Append('\n');
-        else
-            // Delimit each value from the others using a comma (per HTTP spec)
-            entry->value.AppendLiteral(", ");
-        entry->value.Append(value);
-    }
-    // Replace the existing string with the new value
-    else
-        entry->value = value;
+
     return NS_OK;
 }
 
@@ -129,8 +150,8 @@ nsHttpHeaderArray::VisitHeaders(nsIHttpHeaderVisitor *visitor)
     return NS_OK;
 }
 
-void
-nsHttpHeaderArray::ParseHeaderLine(char *line, nsHttpAtom *hdr, char **val)
+nsresult
+nsHttpHeaderArray::ParseHeaderLine(const char *line, nsHttpAtom *hdr, char **val)
 {
     //
     // BNF from section 4.2 of RFC 2616:
@@ -149,13 +170,13 @@ nsHttpHeaderArray::ParseHeaderLine(char *line, nsHttpAtom *hdr, char **val)
     char *p = (char *) strchr(line, ':');
     if (!p) {
         LOG(("malformed header [%s]: no colon\n", line));
-        return;
+        return NS_OK;
     }
 
     // make sure we have a valid token for the field-name
     if (!nsHttp::IsValidToken(line, p)) {
         LOG(("malformed header [%s]: field-name not a token\n", line));
-        return;
+        return NS_OK;
     }
     
     *p = 0; // null terminate field-name
@@ -163,7 +184,7 @@ nsHttpHeaderArray::ParseHeaderLine(char *line, nsHttpAtom *hdr, char **val)
     nsHttpAtom atom = nsHttp::ResolveAtom(line);
     if (!atom) {
         LOG(("failed to resolve atom [%s]\n", line));
-        return;
+        return NS_OK;
     }
 
     // skip over whitespace
@@ -181,7 +202,7 @@ nsHttpHeaderArray::ParseHeaderLine(char *line, nsHttpAtom *hdr, char **val)
     if (val) *val = p;
 
     // assign response header
-    SetHeader(atom, nsDependentCString(p, p2 - p), PR_TRUE);
+    return SetHeaderFromNet(atom, nsDependentCString(p, p2 - p));
 }
 
 void
@@ -214,34 +235,4 @@ void
 nsHttpHeaderArray::Clear()
 {
     mHeaders.Clear();
-}
-
-//-----------------------------------------------------------------------------
-// nsHttpHeaderArray <private>
-//-----------------------------------------------------------------------------
-
-PRInt32
-nsHttpHeaderArray::LookupEntry(nsHttpAtom header, nsEntry **entry)
-{
-    PRUint32 index = mHeaders.IndexOf(header, 0, nsEntry::MatchHeader());
-    if (index != PR_UINT32_MAX)
-      *entry = &mHeaders[index];
-    return index;
-}
-
-PRBool
-nsHttpHeaderArray::CanAppendToHeader(nsHttpAtom header)
-{
-    return header != nsHttp::Content_Type        &&
-           header != nsHttp::Content_Length      &&
-           header != nsHttp::User_Agent          &&
-           header != nsHttp::Referer             &&
-           header != nsHttp::Host                &&
-           header != nsHttp::Authorization       &&
-           header != nsHttp::Proxy_Authorization &&
-           header != nsHttp::If_Modified_Since   &&
-           header != nsHttp::If_Unmodified_Since &&
-           header != nsHttp::From                &&
-           header != nsHttp::Location            &&
-           header != nsHttp::Max_Forwards;
 }

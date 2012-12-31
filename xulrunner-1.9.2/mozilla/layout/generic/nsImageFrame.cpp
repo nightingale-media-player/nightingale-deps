@@ -210,6 +210,12 @@ nsImageFrame::Destroy()
   if (mListener) {
     nsCOMPtr<nsIImageLoadingContent> imageLoader = do_QueryInterface(mContent);
     if (imageLoader) {
+      // Push a null JSContext on the stack so that code that runs
+      // within the below code doesn't think it's being called by
+      // JS. See bug 604262.
+      nsCxPusher pusher;
+      pusher.PushNull();
+
       imageLoader->RemoveObserver(mListener);
     }
     
@@ -240,7 +246,16 @@ nsImageFrame::Init(nsIContent*      aContent,
 
   nsCOMPtr<nsIImageLoadingContent> imageLoader = do_QueryInterface(aContent);
   NS_ENSURE_TRUE(imageLoader, NS_ERROR_UNEXPECTED);
-  imageLoader->AddObserver(mListener);
+
+  {
+    // Push a null JSContext on the stack so that code that runs
+    // within the below code doesn't think it's being called by
+    // JS. See bug 604262.
+    nsCxPusher pusher;
+    pusher.PushNull();
+
+    imageLoader->AddObserver(mListener);
+  }
 
   nsPresContext *aPresContext = PresContext();
   
@@ -987,9 +1002,6 @@ nsImageFrame::DisplayAltFeedback(nsIRenderingContext& aRenderingContext,
   // We should definitely have a gIconLoad here.
   NS_ABORT_IF_FALSE(gIconLoad, "How did we succeed in Init then?");
 
-  // We always call this function with an image
-  NS_ABORT_IF_FALSE(aRequest, "Calling DisplayAltFeedback without an image");
-
   // Calculate the inner area
   nsRect  inner = GetInnerArea() + aPt;
 
@@ -1035,15 +1047,16 @@ nsImageFrame::DisplayAltFeedback(nsIRenderingContext& aRenderingContext,
     // If we weren't previously displaying an icon, register ourselves
     // as an observer for load and animation updates and flag that we're
     // doing so now.
-    if (!mDisplayingIcon) {
+    if (aRequest && !mDisplayingIcon) {
       gIconLoad->AddIconObserver(this);
       mDisplayingIcon = PR_TRUE;
     }
 
 
     // If the image in question is loaded and decoded, draw it
-    PRUint32 imageStatus;
-    aRequest->GetImageStatus(&imageStatus);
+    PRUint32 imageStatus = 0;
+    if (aRequest)
+      aRequest->GetImageStatus(&imageStatus);
     if (imageStatus & imgIRequest::STATUS_FRAME_COMPLETE) {
       nsCOMPtr<imgIContainer> imgCon;
       aRequest->GetImage(getter_AddRefs(imgCon));

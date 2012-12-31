@@ -1,0 +1,29 @@
+diff -r 4f1faaaa0388 media/libfishsound/src/libfishsound/debug.h
+--- a/media/libfishsound/src/libfishsound/debug.h	Thu Dec 17 00:32:44 2009 -0600
++++ b/media/libfishsound/src/libfishsound/debug.h	Fri Dec 18 14:43:51 2009 -0600
+@@ -74,19 +74,25 @@ debug_print_err (const char * func, int 
+   va_end (ap);
+ }
+ 
+ /*
+  * debug_printf (level, fmt)
+  *
+  * Print a formatted debugging message of level 'level' to stderr
+  */
++#if defined AIX
++#define debug_printf(x,...) {if (x <= DEBUG_LEVEL) debug_print_err (__func__,__LINE__, __VA_ARGS__);}
++#else
+ #define debug_printf(x,y...) {if (x <= DEBUG_LEVEL) debug_print_err (__func__, __LINE__, y);}
++#endif
+ 
+ #undef MAXLINE
+ 
++#elif defined AIX
++#define debug_printf(x,...)
+ #else
+ #define debug_printf(x,y...)
+ #endif
+ 
+ #endif /* non-C99 */
+ 
+ #endif /* __DEBUG_H__ */

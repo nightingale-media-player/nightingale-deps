@@ -9,11 +9,26 @@ const charset = "x-mac-hebrew";
 function run_test() {
     var ScriptableUnicodeConverter =
 	Components.Constructor("@mozilla.org/intl/scriptableunicodeconverter",
-			       "nsIScriptableUnicodeConverter");
+			       "nsIScriptableUnicodeConverter_1_9_BRANCH");
 
     var converter = new ScriptableUnicodeConverter();
+    try {
+	converter.charset = charset;
+    } catch(e) {
+	// expected to throw before we set isInternal
+	converter.charset = "iso-8859-1";
+    }
+
+    var outString = converter.ConvertToUnicode(inString) + converter.Finish();
+    // expected to fail
+    do_check_neq(outString, expectedString);
+
+    // Set isInternal and try again
+    converter.isInternal = true;
+
     converter.charset = charset;
 
     var outString = converter.ConvertToUnicode(inString) + converter.Finish();
+    // expected to pass this time
     do_check_eq(outString, expectedString);
 }

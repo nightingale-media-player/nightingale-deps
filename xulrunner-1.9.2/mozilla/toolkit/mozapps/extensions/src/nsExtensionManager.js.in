@@ -1227,10 +1227,11 @@ DirectoryInstallLocation.prototype = {
               linkedDirectory.isDirectory()) {
             locations.push(linkedDirectory);
             this._locationToIDMap[linkedDirectory.persistentDescriptor] = entry.leafName;
+            continue;
           }
         }
-        else
-          locations.push(entry);
+
+        locations.push(entry);
       }
       entries.close();
     }
@@ -1794,7 +1795,7 @@ function safeInstallOperation(itemID, installLocation, file) {
           continue;
 
         zipReader.extract(entryName, target);
-        target.permissions = PERMS_FILE;
+        target.permissions |= PERMS_FILE;
       }
     }
     catch (e) {
@@ -1843,7 +1844,6 @@ var PendingOperations = {
    *          "locationKey"   The name of the Install Location where the item
    *                          is installed.
    *          "id"            The GUID of the item.
-   *          "version"       The version of the item
    */
   addItem: function PendingOperations_addItem(opType, entry) {
     if (opType == OP_NONE)
@@ -1851,7 +1851,7 @@ var PendingOperations = {
     else {
       if (!(opType in this._ops))
         this._ops[opType] = { };
-      this._ops[opType][entry.id] = entry;
+      this._ops[opType][entry.id] = entry.locationKey;
     }
   },
 
@@ -1897,7 +1897,10 @@ var PendingOperations = {
   getOperations: function PendingOperations_getOperations(opType) {
     if (!(opType in this._ops))
       return [];
-    return [op for each (op in this._ops[opType])];
+    var ops = [];
+    for (var id in this._ops[opType])
+      ops.push( {id: id, locationKey: this._ops[opType][id] } );
+    return ops;
   },
 
   /**
@@ -1962,7 +1965,6 @@ var StartupCache = {
    *  "mtime"         The time the location was last modified
    *  "op"            Any pending operations on this item.
    *  "location"      The Install Location name where the item is installed.
-   *  "version"       The addon version as found in <em:version>
    */
   entries: { },
 
@@ -1974,13 +1976,11 @@ var StartupCache = {
    *          The GUID of the item
    * @param   op
    *          The name of the operation to be performed
-   * @param version
-   *        String, indicating the extension version
    * @param   shouldCreate
    *          Whether or not we should create a new entry for this item
    *          in the cache if one does not already exist.
    */
-  put: function StartupCache_put(installLocation, id, op, version, shouldCreate) {
+  put: function StartupCache_put(installLocation, id, op, shouldCreate) {
     var itemLocation = installLocation.getItemLocation(id);
 
     var descriptor = null;
@@ -1992,7 +1992,7 @@ var StartupCache = {
         mtime = Math.floor(itemLocation.lastModifiedTime / 1000);
     }
 
-    this._putRaw(installLocation.name, id, descriptor, mtime, op, version, shouldCreate);
+    this._putRaw(installLocation.name, id, descriptor, mtime, op, shouldCreate);
   },
 
   /**
@@ -2012,12 +2012,10 @@ var StartupCache = {
    *        descriptor field is not updated.
    * @param op
    *        The OP code to store with the entry.
-   * @param version
-   *        String, indicating the extension version
    * @param shouldCreate
    *        Boolean value indicating whether to create or delete the entry.
    */
-  _putRaw: function StartupCache__putRaw(key, id, descriptor, mtime, op, version, shouldCreate) {
+  _putRaw: function StartupCache__putRaw(key, id, descriptor, mtime, op, shouldCreate) {
     if (!(key in this.entries))
       this.entries[key] = { };
     if (!(id in this.entries[key]))
@@ -2034,7 +2032,6 @@ var StartupCache = {
         entry.mtime = mtime;
       entry.op = op;
       entry.location = key;
-      entry.version = version;
     }
     else
       this.entries[key][id] = null;
@@ -2071,8 +2068,7 @@ var StartupCache = {
   /**
    * Read the Item-Change manifest file into a hash of properties.
    * The Item-Change manifest currently holds a list of paths, with the last
-   * mtime for each path, and the GUID of the item at that path, plus the last
-   * known addon version at that location
+   * mtime for each path, and the GUID of the item at that path.
    */
   read: function StartupCache_read() {
     var itemChangeManifest = getFile(KEY_PROFILEDIR, [FILE_EXTENSIONS_STARTUP_CACHE]);
@@ -2094,8 +2090,8 @@ var StartupCache = {
         if (line.value) {
           // The Item-Change manifest is formatted like so:
           //  (pd = descriptor)
-          // location-key\tguid-of-item\tpd-to-extension1\tmtime-of-pd\tpending-op\tversion
-          // location-key\tguid-of-item\tpd-to-extension2\tmtime-of-pd\tpending-op\tversion
+          // location-key\tguid-of-item\tpd-to-extension1\tmtime-of-pd\tpending-op
+          // location-key\tguid-of-item\tpd-to-extension2\tmtime-of-pd\tpending-op
           // ...
           // We hash on location-key first, because we don't want to have to
           // spin up the main extensions datasource on every start to determine
@@ -2106,48 +2102,10 @@ var StartupCache = {
           // Silently drop any entries in unknown install locations
           if (!InstallLocations.get(parts[0]))
             continue;
-          // If the entry doesn't have the addon version, this was from before
-          // Songbird 1.9 and needs to be refreshed.  We want to make sure we
-          // read it in, though, so that we don't attempt to re-install the
-          // (now possibly incompatible) addon - see songbird bug 22877 
-          if (parts.length < 6) {
-            LOG("upgrading extensions.cache for " + parts[1] + "...");
-            var location = InstallLocations.get(parts[0]);
-            if (!location) {
-              LOG("Failed to find location " + parts[0]);
-              continue;
-            }
-            var installRDF = location.getItemFile(parts[1], FILE_INSTALL_MANIFEST);
-            if (!installRDF) {
-              LOG("Failed to get install.RDF from " + parts[1]);
-              continue;
-            }
-            if (!installRDF.exists()) {
-              LOG("install.rdf " + installRDF.path + " does not exist");
-              continue;
-            }
-            var installManifest = getInstallManifest(installRDF);
-            if (!installManifest) {
-              LOG("Failed to parse manifest");
-              continue;
-            }
-            parts[5] = getManifestProperty(installManifest, "version");
-          }
-          else {
-            try {
-              // the version string was escaped; unescape it.
-              parts[5] = decodeURIComponent(parts[5]);
-            }
-            catch (e) {
-              // failed to decode the version string; ignore the entry
-              continue;
-            }
-          }
           var op = parts[4];
-          this._putRaw(parts[0], parts[1], parts[2], parts[3], op, parts[5], true);
+          this._putRaw(parts[0], parts[1], parts[2], parts[3], op, true);
           if (op)
-            PendingOperations.addItem(op, { locationKey: parts[0], id: parts[1],
-                                            version: parts[5] });
+            PendingOperations.addItem(op, { locationKey: parts[0], id: parts[1] });
         }
       }
       while (more);
@@ -2175,12 +2133,9 @@ var StartupCache = {
               itemMTime = Math.floor(itemLocation.lastModifiedTime / 1000);
 
             // Each line in the startup cache manifest is in this form:
-            // location-key\tid-of-item\tpd-to-extension1\tmtime-of-pd\tpending-op\tversion
-            // The version string needs to be escaped because it may contain an
-            // arbitrary number of tabs or spaces.
-            let version = encodeURIComponent(entry.version);
+            // location-key\tid-of-item\tpd-to-extension1\tmtime-of-pd\tpending-op
             var line = locationKey + "\t" + id + "\t" + entry.descriptor + "\t" +
-                       itemMTime + "\t" + entry.op + "\t" + version + "\r\n";
+                       itemMTime + "\t" + entry.op + "\r\n";
             fos.write(line, line.length);
           }
           catch (e) {}
@@ -2766,7 +2721,6 @@ ExtensionManager.prototype = {
       var installData = this._getInstallData(installManifest);
       if (installData.error == INSTALLERROR_SUCCESS) {
         LOG("... success, item is compatible");
-        StartupCache.put(location, installData.id, OP_NONE, installData.version, true);
         callback(installManifest, installData.id, location, installData.type);
       }
       else if (installData.error == INSTALLERROR_INCOMPATIBLE_VERSION) {
@@ -2811,7 +2765,7 @@ ExtensionManager.prototype = {
 
         // Add the item to the Startup Cache anyway, so we don't re-detect it
         // every time the app starts.
-        StartupCache.put(location, id, OP_NONE, "0", true);
+        StartupCache.put(location, id, OP_NONE, true);
       }
     }
   },
@@ -2835,19 +2789,11 @@ ExtensionManager.prototype = {
      * @returns true if the item can be installed at that location, false
      *          otherwise.
      */
-    function canUse(id, location, version) {
+    function canUse(id, location) {
       for (var locationKey in StartupCache.entries) {
         if (locationKey != location.name &&
             id in StartupCache.entries[locationKey]) {
           if (StartupCache.entries[locationKey][id]) {
-            let otherVersion = StartupCache.entries[locationKey][id].version;
-            let compareResult = getVersionChecker().compare(version, otherVersion);
-            if (compareResult < 0)
-              // the existing one is a newer version, skip the new location
-              return false;
-            if (compareResult > 0)
-              // the new location is a *newer* version, always use it
-              return true;
             var oldInstallLocation = InstallLocations.get(locationKey);
             if (oldInstallLocation.priority <= location.priority)
               return false;
@@ -3030,7 +2976,7 @@ ExtensionManager.prototype = {
             // install location, but it no longer exists in the Install Location.
             // We can infer from this that the item has been removed, so uninstall
             // it properly.
-            if (canUse(id, location, StartupCache.entries[location.name][id].version)) {
+            if (canUse(id, location)) {
               LOG("Item Uninstalled via file removal from: " + StartupCache.entries[location.name][id].descriptor +
                   " Item ID: " + id + " Location Key: " + location.name + ", uninstalling item.");
 
@@ -3059,46 +3005,14 @@ ExtensionManager.prototype = {
               if (actualMTime != StartupCache.entries[location.name][id].mtime) {
                 LOG("Item Location path changed: " + lf.path + " Item ID: " +
                     id + " Location Key: " + location.name + ", attempting to upgrade item...");
-                let version = null;
-                let installRDF = location.getItemFile(id, FILE_INSTALL_MANIFEST);
-                if (installRDF.exists()) {
-                  let installManifest = getInstallManifest(installRDF);
-                  version = getManifestProperty(installManifest, "version");
-                  StartupCache.entries[location.name][id].version = version;
-                }
-                if (version && canUse(id, location, version)) {
+                if (canUse(id, location)) {
                   this.installItem(id, location,
                                    function(installManifest, id, location, type) {
                                      em._upgradeItem(installManifest, id, location,
                                                      type);
                                    });
+                  isDirty = true;
                 }
-                else {
-                  let oldLocation = this.datasource.getItemProperty(id, "installLocation");
-                  if (oldLocation == location.name) {
-                    // The previously-installed addon has been updated to
-                    // something inappropriate (e.g. updated to a version older
-                    // than the one shipped with the app); find the best one and
-                    // go install that instead
-                    let bestEntry = null;
-                    for each (let entry in StartupCache.findEntries(id)) {
-                      if (!bestEntry || canUse(id, entry.location, entry.version)) {
-                        bestEntry = entry;
-                      }
-                    }
-                    if (bestEntry) {
-                      this.installItem(id, InstallLocations.get(bestEntry.location),
-                                       function(installManifest, id, location, type) {
-                                         em._upgradeItem(installManifest, id,
-                                                         location, type);
-                                       });
-                    }
-                  }
-                }
-                // regardless of whether we installed the new item, the mTime
-                // has changed and we need to write out the startup cache so we
-                // don't have to go down this path the next time
-                isDirty = true;
               }
             }
             else {
@@ -3106,7 +3020,7 @@ ExtensionManager.prototype = {
               LOG("Install Location returned a missing or malformed item path! " +
                   "Item Path: " + lf.path + ", Location Key: " + location.name +
                   " Item ID: " + id);
-              if (canUse(id, location, StartupCache.entries[location.name][id].version)) {
+              if (canUse(id, location)) {
                 // Load the Extensions Datasource and force this item into the visible
                 // items list if it is not already. This allows us to handle the case
                 // where there is an entry for an item in the Startup Cache but not
@@ -3126,18 +3040,10 @@ ExtensionManager.prototype = {
         if (!(location.name in StartupCache.entries) ||
             !(id in StartupCache.entries[location.name]) ||
             !StartupCache.entries[location.name][id]) {
-          // Manually read the addon version so we can dump it into the
-          // startup cache :(
-          let version = null;
-          let installRDF = location.getItemFile(id, FILE_INSTALL_MANIFEST);
-          if (installRDF.exists()) {
-            let installManifest = getInstallManifest(installRDF);
-            version = getManifestProperty(installManifest, "version");
-          }
           // Remember that we've seen this item
-          StartupCache.put(location, id, OP_NONE, version, true);
+          StartupCache.put(location, id, OP_NONE, true);
           // Push it on the stack of items to maybe install later
-          newItems.push({location: location, id: id, version: version});
+          newItems.push({location: location, id: id});
         }
       }
     }
@@ -3148,7 +3054,7 @@ ExtensionManager.prototype = {
     for (var i = 0; i < newItems.length; ++i) {
       var id = newItems[i].id;
       var location = newItems[i].location;
-      if (canUse(id, location, newItems[i].version)) {
+      if (canUse(id, location)) {
         LOG("Item Installed via directory addition to Install Location: " +
             location.name + " Item ID: " + id + ", attempting to register...");
         this.installItem(id, location,
@@ -3237,7 +3143,7 @@ ExtensionManager.prototype = {
         for (var i = items.length - 1; i >= 0; --i) {
           var id = items[i].id;
           var installLocation = this.getInstallLocation(id);
-          StartupCache.put(installLocation, id, OP_NONE, items[i].version, true);
+          StartupCache.put(installLocation, id, OP_NONE, true);
           PendingOperations.clearItem(OP_NEEDS_ENABLE, id);
           needsRestart = true;
         }
@@ -3248,7 +3154,7 @@ ExtensionManager.prototype = {
         for (i = items.length - 1; i >= 0; --i) {
           id = items[i].id;
           installLocation = this.getInstallLocation(id);
-          StartupCache.put(installLocation, id, OP_NONE, items[i].version, true);
+          StartupCache.put(installLocation, id, OP_NONE, true);
           PendingOperations.clearItem(OP_NEEDS_DISABLE, id);
           needsRestart = true;
         }
@@ -3495,17 +3401,9 @@ ExtensionManager.prototype = {
       var entries = StartupCache.findEntries(id);
       if (entries.length > 0) {
         var newLocation = InstallLocations.get(entries[0].location);
-        let newVersion = entries[0].version;
         for (var j = 1; j < entries.length; j++) {
           location = InstallLocations.get(entries[j].location);
-          let version = entries[j].version;
-          let versionResult = gVersionChecker.compare(newVersion, version);
-          if (versionResult < 0) {
-            // we found a better location
-            newLocation = location;
-            newVersion = version;
-          }
-          if (versionResult == 0 && newLocation.priority < location.priority)
+          if (newLocation.priority < location.priority)
             newLocation = location;
         }
         LOG("Activating item " + id + " in " + newLocation.name);
@@ -4499,7 +4397,7 @@ ExtensionManager.prototype = {
     // Don't change any props that would need to be reset if the install fails.
     // They will be reset as appropriate by the upgrade/install process.
     var ds = this.datasource;
-    ds.updateVisibleList(id, installLocation.name, true);
+    ds.updateVisibleList(id, installLocation.name, false);
     var props = { installLocation : EM_L(installLocation.name),
                   type            : EM_I(type),
                   newVersion      : EM_L(getManifestProperty(installManifest, "version")),
@@ -4572,8 +4470,7 @@ ExtensionManager.prototype = {
       installLocation.removeFile(file);
 
     // Clear the op flag from the Startup Cache and Pending Operations sets
-    let version = ds.getItemProperty(id, "version");
-    StartupCache.put(installLocation, id, OP_NONE, version, true);
+    StartupCache.put(installLocation, id, OP_NONE, true);
     PendingOperations.clearItem(OP_NEEDS_INSTALL, id);
   },
 
@@ -4646,8 +4543,7 @@ ExtensionManager.prototype = {
           // Removal of the files failed, reset the uninstalled flag and rewrite
           // the install manifests so this item's components are registered.
           // Clear the op flag from the Startup Cache
-          let version = getManifestProperty(manifest, "version");
-          StartupCache.put(installLocation, id, OP_NONE, version, true);
+          StartupCache.put(installLocation, id, OP_NONE, true);
           var restartRequired = this.installRequiresRestart(id, ds.getItemProperty(id, "type"))
           this._updateManifests(restartRequired);
           return;
@@ -4807,19 +4703,9 @@ ExtensionManager.prototype = {
    */
   _setOp: function EM__setOp(id, op) {
     var location = this.getInstallLocation(id);
-    /* can't read version from the ds because that's the currently installed
-     * version, rather than the version at the specified location
-     */
+    StartupCache.put(location, id, op, true);
+    PendingOperations.addItem(op, { locationKey: location.name, id: id });
     var ds = this.datasource;
-    let version = ds.getItemProperty(id, "version");
-    if ((location.name in StartupCache.entries) &&
-        (id in StartupCache.entries[location.name]))
-    {
-      version = StartupCache.entries[location.name][id].version;
-    }
-    StartupCache.put(location, id, op, version, true);
-    PendingOperations.addItem(op, { locationKey: location.name, id: id,
-                                    version: version });
     if (op == OP_NEEDS_INSTALL || op == OP_NEEDS_UPGRADE)
       ds.updateDownloadState(PREFIX_ITEM_URI + id, "success");
 
@@ -5551,14 +5437,14 @@ ExtensionManager.prototype = {
    * ... it should NOT be called on every startup!
    */
   _ensureDS: function EM__ensureDS() {
-    if (!this._ds) {
-      this._ds = new ExtensionsDataSource(this);
-      if (this._ds) {
-        this._ds.loadExtensions();
-        this._ptr = getContainer(this._ds, this._ds._itemRoot).DataSource;
-        gRDF.RegisterDataSource(this._ptr, true);
-      }
-    }
+    if (this._ds)
+      return;
+
+    var ds = new ExtensionsDataSource(this);
+    ds.loadExtensions();
+    this._ds = ds;
+    this._ptr = getContainer(this._ds, this._ds._itemRoot).DataSource;
+    gRDF.RegisterDataSource(this._ptr, true);
   },
 
   /**
@@ -5829,7 +5715,6 @@ ExtensionItemUpdater.prototype = {
   _updateType         : 0,
   _items              : [],
   _listener           : null,
-  _requiredItems      : [],
 
   /* ExtensionItemUpdater
 #
@@ -5866,30 +5751,6 @@ ExtensionItemUpdater.prototype = {
                                                                  aUpdateType,
                                                                  aAppVersion,
                                                                  aPlatformVersion) {
-
-    // XXX Songbird: force update addons listed in distribution.ini
-
-    { /* for scope (let) */
-      function enumerate(UTF8Enumerator) {
-        while (UTF8Enumerator.hasMore())
-          yield UTF8Enumerator.getNext();
-      }
-
-      let iniFile = getDirNoCreate("resource:app", ["distribution"]);
-      iniFile.append("distribution.ini");
-      if (iniFile.exists()) {
-        let ini = Cc["@mozilla.org/xpcom/ini-parser-factory;1"]
-                    .getService(Ci.nsIINIParserFactory)
-                    .createINIParser(iniFile);
-        this._requiredItems = [];
-        for each (let key in enumerate(ini.getKeys("Update"))) {
-          if (/^addon.required.\d+/(key)) {
-            this._requiredItems.push(ini.getString("Update", key));
-          }
-        }
-      }
-    } /* end let scope */
-
     if (aUpdateCheckType == Ci.nsIExtensionManager.UPDATE_NOTIFY_NEWVERSION) {
       this._listener = aListener;
       this._appVersion = aAppVersion ? aAppVersion : gApp.version;
@@ -6016,18 +5877,7 @@ ExtensionItemUpdater.prototype = {
   },
 
   checkForDone: function ExtensionItemUpdater_checkForDone(item, status) {
-    // XXX Songbird: keep track of required addons with available updates
-    let requiredIndex = this._requiredItems.indexOf(item.id);
-    if (requiredIndex != -1) {
-      // this is a required addon, don't invoke any listeners, just update it
-      if (status & Ci.nsIAddonUpdateCheckListener.STATUS_UPDATE) {
-        // we need to keep track of the item
-        this._requiredItems[requiredIndex] = item;
-      } else {
-        // don't care
-        this._requiredItems.splice(requiredIndex, 1);
-      }
-    } else if (this._listener) {
+    if (this._listener) {
       try {
         this._listener.onAddonUpdateEnded(item, status);
       }
@@ -6041,38 +5891,6 @@ ExtensionItemUpdater.prototype = {
       }
       catch (e) {
         LOG("ExtensionItemUpdater:checkForDone: Failure in listener's onUpdateEnded: " + e);
-      }
-
-      // XXX Songbird:  go through and install updates for the "required" addons
-      let urls = [], hashes = [];
-      for each (let item in this._requiredItems) {
-        if (!("id" in item)) {
-          LOG("Didn't have any information on " + item);
-          continue;
-        }
-        LOG("Forcing update for " + item.id);
-  
-        // manually have the install manager download things, don't go through
-        // nsIExtensionManager::addDownload(); this way we won't get prompted
-        // to abort when attempting to quit, etc.
-        urls.push(item.xpiURL);
-        hashes.push(item.xpiHash ? item.xpiHash : null);
-        // if this is an update remove the update metadata to prevent it from
-        // being updated during an install.
-        this._emDS.setItemProperties(item.id, {
-          availableUpdateURL: null,
-          availableUpdateHash: null,
-          availableUpdateVersion: null,
-          availableUpdateInfo: null
-        });
-        this._emDS.updateProperty(item.id, "availableUpdateURL");
-        this._emDS.updateProperty(item.id, "updateable");
-      }
-      LOG("Forcing updates for " + urls.length + " items: " + urls + " / " + hashes);
-      if (urls.length > 0) {
-        let xpimgr = Cc["@mozilla.org/xpinstall/install-manager;1"]
-                       .createInstance(Ci.nsIXPInstallManager);
-        xpimgr.initManagerWithHashes(urls, hashes, urls.length, null);
       }
     }
   },
@@ -6108,10 +5926,18 @@ function escapeAddonURI(aItem, aAppVersion, aUpdateType, aURI, aDS)
 
   if (aDS.getItemProperty(aItem.id, "compatible") == "false")
     itemStatus += ",incompatible";
-  if (aDS.getItemProperty(aItem.id, "blocklisted") == "true")
-    itemStatus += ",blocklisted";
   if (aDS.getItemProperty(aItem.id, "satisfiesDependencies") == "false")
     itemStatus += ",needsDependencies";
+
+  var version = aDS.getItemProperty(aItem.id, "version");
+  if (!gBlocklist)
+    gBlocklist = Cc["@mozilla.org/extensions/blocklist;1"].
+                 getService(Ci.nsIBlocklistService);
+  var blockState = gBlocklist.getAddonBlocklistState(aItem.id, version);
+  if (blockState == Ci.nsIBlocklistService.STATE_BLOCKED)
+    itemStatus += ",blocklisted";
+  else if (blockState == Ci.nsIBlocklistService.STATE_SOFTBLOCKED)
+    itemStatus += ",softblocked";
 
   aURI = aURI.replace(/%ITEM_ID%/g, aItem.id);
   aURI = aURI.replace(/%ITEM_VERSION%/g, aItem.version);

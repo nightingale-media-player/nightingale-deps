@@ -63,8 +63,8 @@ var WindowWatcher = {
     var unsigned = findXPI(dpb, "unsigned.xpi");
     var signed = findXPI(dpb, "signed.xpi");
     var untrusted = findXPI(dpb, "signed-untrusted.xpi");
-    var no_o = findXPI(dpb, "signed-no-o.xpi");
-    var no_cn = findXPI(dpb, "signed-no-cn.xpi");
+    var no_o = findXPI(dpb, "signed-no-o@tests.mozilla.org.xpi");
+    var no_cn = findXPI(dpb, "signed-no-cn@tests.mozilla.org.jar");
 
     // Test the names and certs are correct
     do_check_eq(dpb.GetString(unsigned), "XPI Test");
@@ -126,8 +126,8 @@ function run_test()
   do_get_file("data/signed.xpi").copyTo(il, null);
   do_get_file("data/signed-untrusted.xpi").copyTo(il, null);
   do_get_file("data/signed-tampered.xpi").copyTo(il, null);
-  do_get_file("data/signed-no-o.xpi").copyTo(il, null);
-  do_get_file("data/signed-no-cn.xpi").copyTo(il, null);
+  do_get_file("data/signed-no-o.xpi").copyTo(il, "signed-no-o@tests.mozilla.org.xpi");
+  do_get_file("data/signed-no-cn.xpi").copyTo(il, "signed-no-cn@tests.mozilla.org.jar");
 
   // Starting the EM will detect and attempt to install the xpis
   startupEM();

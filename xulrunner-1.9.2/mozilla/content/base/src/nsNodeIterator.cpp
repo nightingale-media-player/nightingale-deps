@@ -217,7 +217,7 @@ NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
 // QueryInterface implementation for nsNodeIterator
 NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsNodeIterator)
     NS_INTERFACE_MAP_ENTRY(nsIDOMNodeIterator)
-    NS_INTERFACE_MAP_ENTRY(nsIMutationObserver)
+    NS_INTERFACE_MAP_ENTRY(nsIMutationObserver2)
     NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMNodeIterator)
     NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(NodeIterator)
 NS_INTERFACE_MAP_END
@@ -264,34 +264,18 @@ NS_IMETHODIMP nsNodeIterator::GetExpandEntityReferences(PRBool *aExpandEntityRef
 /* nsIDOMNode nextNode ()  raises (DOMException); */
 NS_IMETHODIMP nsNodeIterator::NextNode(nsIDOMNode **_retval)
 {
-    nsresult rv;
-    PRInt16 filtered;
-
-    *_retval = nsnull;
-
-    if (mDetached)
-        return NS_ERROR_DOM_INVALID_STATE_ERR;
-
-    mWorkingPointer = mPointer;
-
-    while (mWorkingPointer.MoveToNext(mRoot)) {
-        nsCOMPtr<nsINode> testNode = mWorkingPointer.mNode;
-        rv = TestNode(testNode, &filtered);
-        NS_ENSURE_SUCCESS(rv, rv);
-
-        if (filtered == nsIDOMNodeFilter::FILTER_ACCEPT) {
-            mPointer = mWorkingPointer;
-            mWorkingPointer.Clear();
-            return CallQueryInterface(testNode, _retval);
-        }
-    }
-
-    mWorkingPointer.Clear();
-    return NS_OK;
+    return NextOrPrevNode(&NodePointer::MoveToNext, _retval);
 }
 
 /* nsIDOMNode previousNode ()  raises (DOMException); */
 NS_IMETHODIMP nsNodeIterator::PreviousNode(nsIDOMNode **_retval)
+{
+    return NextOrPrevNode(&NodePointer::MoveToPrevious, _retval);
+}
+
+nsresult
+nsNodeIterator::NextOrPrevNode(NodePointer::MoveToMethodType aMove,
+                               nsIDOMNode **_retval)
 {
     nsresult rv;
     PRInt16 filtered;
@@ -303,19 +287,25 @@ NS_IMETHODIMP nsNodeIterator::PreviousNode(nsIDOMNode **_retval)
 
     mWorkingPointer = mPointer;
 
-    while (mWorkingPointer.MoveToPrevious(mRoot)) {
+    const struct AutoClear {
+        NodePointer* mPtr;
+       ~AutoClear() { mPtr->Clear(); }
+    } ac = { &mWorkingPointer };
+
+    while ((mWorkingPointer.*aMove)(mRoot)) {
         nsCOMPtr<nsINode> testNode = mWorkingPointer.mNode;
         rv = TestNode(testNode, &filtered);
         NS_ENSURE_SUCCESS(rv, rv);
 
+        if (mDetached)
+            return NS_ERROR_DOM_INVALID_STATE_ERR;
+
         if (filtered == nsIDOMNodeFilter::FILTER_ACCEPT) {
-            mPointer = mWorkingPointer;
-            mWorkingPointer.Clear();
+            mPointer = *ac.mPtr;
             return CallQueryInterface(testNode, _retval);
         }
     }
 
-    mWorkingPointer.Clear();
     return NS_OK;
 }
 
@@ -376,3 +366,11 @@ void nsNodeIterator::ContentRemoved(nsIDocument *aDocument,
     mPointer.AdjustAfterRemoval(mRoot, container, aChild, aIndexInContainer);
     mWorkingPointer.AdjustAfterRemoval(mRoot, container, aChild, aIndexInContainer);
 }
+
+void nsNodeIterator::AttributeChildRemoved(nsINode* aAttribute,
+                                           nsIContent* aChild)
+{
+  mPointer.AdjustAfterRemoval(mRoot, aAttribute, aChild, 0);
+  mWorkingPointer.AdjustAfterRemoval(mRoot, aAttribute, aChild, 0);
+}
+

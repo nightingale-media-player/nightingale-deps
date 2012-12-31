@@ -54,6 +54,8 @@ REQUIRES	= xpcom \
 		  necko \
 		  $(NULL)
 
+LOCAL_INCLUDES	+= -I$(srcdir)/../src
+
 CPPSRCS		= mozJSComponentLoader.cpp mozJSSubScriptLoader.cpp
 
 EXTRA_JS_MODULES = XPCOMUtils.jsm ISO8601DateUtils.jsm

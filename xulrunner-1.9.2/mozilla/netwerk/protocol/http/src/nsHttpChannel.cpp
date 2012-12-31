@@ -83,7 +83,6 @@
 #include "nsAuthInformationHolder.h"
 #include "nsICacheService.h"
 #include "nsDNSPrefetch.h"
-#include "nsNetSegmentUtils.h"
 
 // True if the local cache should be bypassed when processing a request.
 #define BYPASS_LOCAL_CACHE(loadFlags) \
@@ -791,8 +790,12 @@ nsHttpChannel::CallOnStartRequest()
     mTracingEnabled = PR_FALSE;
 
     if (mResponseHead && mResponseHead->ContentType().IsEmpty()) {
+        NS_ASSERTION(mConnectionInfo, "Should have connection info here");
         if (!mContentTypeHint.IsEmpty())
             mResponseHead->SetContentType(mContentTypeHint);
+        else if (mResponseHead->Version() == NS_HTTP_VERSION_0_9 &&
+                 mConnectionInfo->Port() != mConnectionInfo->DefaultPort())
+            mResponseHead->SetContentType(NS_LITERAL_CSTRING(TEXT_PLAIN));
         else {
             // Uh-oh.  We had better find out what type we are!
 
@@ -948,6 +951,7 @@ nsHttpChannel::ProcessFailedSSLConnect(PRUint32 httpStatus)
     LOG(("Cancelling failed SSL proxy connection [this=%p httpStatus=%u]\n",
          this, httpStatus)); 
     Cancel(rv);
+    CallOnStartRequest();
     return rv;
 }
 
@@ -2836,6 +2840,9 @@ nsHttpChannel::SetupReplacementChannel(nsIURI       *newURI,
 
     nsCOMPtr<nsIHttpChannelInternal> httpInternal = do_QueryInterface(newChannel);
     if (httpInternal) {
+        // convey the mForceAllowThirdPartyCookie flag
+        httpInternal->SetForceAllowThirdPartyCookie(mForceAllowThirdPartyCookie);
+
         // update the DocumentURI indicator since we are being redirected.
         // if this was a top-level document channel, then the new channel
         // should have its mDocumentURI point to newURI; otherwise, we

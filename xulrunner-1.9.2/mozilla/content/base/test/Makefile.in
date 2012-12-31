@@ -85,7 +85,7 @@ _TEST_FILES = 	test_bug5141.html \
 		test_bug276037-2.xhtml \
 		test_bug298064.html \
 		bug298064-subframe.html \
-		test_bug308484.html \
+		test_xhr_forbidden_headers.html \
 		test_bug311681.xml \
 		test_bug322317.html \
 		test_bug330925.xhtml \
@@ -188,6 +188,7 @@ _TEST_FILES = 	test_bug5141.html \
 		file_htmlserializer_1_sibling_body.html \
 		file_htmlserializer_1_sibling_body_only_body.html \
 		file_htmlserializer_1_no_body.html \
+		file_htmlserializer_1_wrap.html \
 		test_bug424359-2.html \
 		file_htmlserializer_2.html \
 		test_bug431082.html \
@@ -284,6 +285,7 @@ _TEST_FILES = 	test_bug5141.html \
 		file_xhtmlserializer_1_sibling_body.xhtml \
 		file_xhtmlserializer_1_sibling_body_only_body.xhtml \
 		file_xhtmlserializer_1_no_body.xhtml \
+		file_xhtmlserializer_1_wrap.xhtml \
 		test_bug422403-2.xhtml \
 		file_xhtmlserializer_2.xhtml \
 		file_xhtmlserializer_2_basic.xhtml \
@@ -332,6 +334,17 @@ _TEST_FILES = 	test_bug5141.html \
 		file_bug503481.sjs \
 		test_bug503481b.html \
 		file_bug503481b_inner.html \
+		test_bug545644.html \
+		test_bug545644.xhtml \
+		test_bug541937.html \
+		file_bug541937.html \
+		file_bug541937.xhtml \
+		test_x-frame-options.html \
+		file_x-frame-options_main.html \
+		file_x-frame-options_page.sjs \
+		test_bug590771.html \
+		test_bug631615.html \
+		test_bug626262.html \
 		$(NULL)
 # Disabled; see bug 492181
 #		test_plugin_freezing.html
@@ -340,5 +353,12 @@ _TEST_FILES = 	test_bug5141.html \
 # test_bug444546.html \
 # bug444546.sjs \
 
+_BROWSER_TEST_FILES = \
+		browser_bug593387.js \
+		$(NULL)
+
 libs:: $(_TEST_FILES)
 	$(INSTALL) $(foreach f,$^,"$f") $(DEPTH)/_tests/testing/mochitest/tests/$(relativesrcdir)
+
+libs:: $(_BROWSER_TEST_FILES)
+	$(INSTALL) $(foreach f,$^,"$f") $(DEPTH)/_tests/testing/mochitest/browser/$(relativesrcdir)

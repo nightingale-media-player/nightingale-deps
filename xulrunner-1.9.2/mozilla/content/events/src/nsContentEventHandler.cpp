@@ -744,7 +744,10 @@ nsContentEventHandler::OnQueryCharacterAtPoint(nsQueryContentEvent* aEvent)
   nsPoint ptInRoot =
     nsLayoutUtils::GetEventCoordinatesRelativeTo(aEvent, rootFrame);
   nsIFrame* targetFrame = nsLayoutUtils::GetFrameForPoint(rootFrame, ptInRoot);
-  if (!targetFrame || targetFrame->GetType() != nsGkAtoms::textFrame) {
+  if (!targetFrame || targetFrame->GetType() != nsGkAtoms::textFrame ||
+      !targetFrame->GetContent() ||
+      !nsContentUtils::ContentIsDescendantOf(targetFrame->GetContent(),
+                                             mRootContent)) {
     // there is no character at the point.
     aEvent->mReply.mOffset = nsQueryContentEvent::NOT_FOUND;
     aEvent->mSucceeded = PR_TRUE;

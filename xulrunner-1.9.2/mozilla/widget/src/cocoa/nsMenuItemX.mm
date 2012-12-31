@@ -41,6 +41,8 @@
 #include "nsMenuX.h"
 #include "nsMenuItemIconX.h"
 #include "nsMenuUtilsX.h"
+#include "nsToolkit.h"
+#include "nsCocoaUtils.h"
 
 #include "nsObjCExceptions.h"
 
@@ -339,10 +341,39 @@ nsMenuItemX::ObserveAttributeChanged(nsIDocument *aDocument, nsIContent *aConten
       SetupIcon();
     }
     else if (aAttribute == nsWidgetAtoms::disabled) {
-      if (aContent->AttrValueIs(kNameSpaceID_None, nsWidgetAtoms::disabled, nsWidgetAtoms::_true, eCaseMatters))
+      BOOL cocoaEnabled = NO;
+      if (aContent->AttrValueIs(kNameSpaceID_None, nsWidgetAtoms::disabled, nsWidgetAtoms::_true, eCaseMatters)) {
         [mNativeMenuItem setEnabled:NO];
-      else
+        cocoaEnabled = NO;
+      } else {
         [mNativeMenuItem setEnabled:YES];
+        cocoaEnabled = YES;
+      }
+
+      // On SnowLeopard, our Help menu items often get disabled when the user
+      // enters a password after waking from sleep or the screen saver.
+      // Whether or not the user is prompted for a password is governed by the
+      // "Require password" setting in the Security pref panel.  For more
+      // information see bugs 513048 and 530633, and the comments above
+      // similar code in nsMenuX.mm's MyMenuEventHandler() and AddMenuItem().
+      if (nsToolkit::OnSnowLeopardOrLater() && mMenuParent &&
+          nsMenuX::IsXULHelpMenu(mMenuParent->Content())) {
+        NSMenu *nativeParent = static_cast<NSMenu*>(mMenuParent->NativeData());
+        if (nativeParent) {
+          MenuRef helpMenuRef = _NSGetCarbonMenu(nativeParent);
+          if (helpMenuRef) {
+            NSInteger index = [nativeParent indexOfItem:mNativeMenuItem];
+            Boolean carbonEnabled = ::IsMenuItemEnabled(helpMenuRef, index + 1);
+            if (carbonEnabled != cocoaEnabled) {
+              if (!carbonEnabled) {
+                ::EnableMenuItem(helpMenuRef, index + 1);
+              } else {
+                ::DisableMenuItem(helpMenuRef, index + 1);
+              }
+            }
+          }
+        }
+      }
     }
   }
   else if (aContent == mCommandContent) {

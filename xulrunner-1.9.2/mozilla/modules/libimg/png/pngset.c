@@ -1073,6 +1073,21 @@ png_set_next_frame_fcTL(png_structp png_ptr, png_infop info_ptr,
     png_ensure_fcTL_is_valid(png_ptr, width, height, x_offset, y_offset, 
                              delay_num, delay_den, dispose_op, blend_op);
     
+    /* For efficiency, ignore BLEND_OP_OVER when image is opaque.
+     * See bug #441971 and #455140.
+     */
+    if (blend_op == PNG_BLEND_OP_OVER)
+    {
+       if (!(png_ptr->color_type & PNG_COLOR_MASK_ALPHA) &&
+            !(png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)))
+       {
+          png_warning(png_ptr,
+                      "PNG_BLEND_OP_OVER is meaningless and wasteful "
+                      "for opaque images, ignored");
+          blend_op = PNG_BLEND_OP_SOURCE;
+       }
+    }
+
     info_ptr->next_frame_width = width;
     info_ptr->next_frame_height = height;
     info_ptr->next_frame_x_offset = x_offset;
@@ -1115,16 +1130,6 @@ png_ensure_fcTL_is_valid(png_structp png_ptr,
     if (blend_op != PNG_BLEND_OP_SOURCE &&
 	blend_op != PNG_BLEND_OP_OVER)
         png_error(png_ptr, "invalid blend_op in fcTL");
-
-    if (blend_op == PNG_BLEND_OP_OVER) {
-        if (png_ptr->color_type == PNG_COLOR_TYPE_GRAY)
-            png_error(png_ptr, "PNG_BLEND_OP_OVER is not valid for "
-                               "color type 'greyscale without alpha'");
-        else if ((png_ptr->color_type & PNG_COLOR_MASK_COLOR) &&
-		 !(png_ptr->color_type & PNG_COLOR_MASK_ALPHA))
-            png_error(png_ptr, "PNG_BLEND_OP_OVER is not valid for "
-                               "color type 'truecolor without alpha'");
-    }
 }
 
 png_uint_32 PNGAPI

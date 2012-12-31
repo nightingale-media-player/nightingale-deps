@@ -213,6 +213,8 @@
 static PRLogModuleInfo* gDOMLeakPRLog;
 #endif
 
+static const char kStorageEnabled[] = "dom.storage.enabled";
+
 nsIDOMStorageList *nsGlobalWindow::sGlobalStorageList  = nsnull;
 
 static nsIEntropyCollector *gEntropyCollector          = nsnull;
@@ -455,6 +457,12 @@ nsDummyJavaPluginOwner::Destroy()
 NS_IMETHODIMP
 nsDummyJavaPluginOwner::SetInstance(nsIPluginInstance *aInstance)
 {
+  // If we're going to null out mInstance after use, be sure to call
+  // mInstance->InvalidateOwner() here, since it now won't be called
+  // from nsDummyJavaPluginOwner::Destroy().
+  if (mInstance && !aInstance)
+    mInstance->InvalidateOwner();
+
   mInstance = aInstance;
 
   return NS_OK;
@@ -2079,12 +2087,42 @@ nsGlobalWindow::SetNewDocument(nsIDocument* aDocument,
         this_ctx->DidInitializeContext();
       }
     }
+
+    nsContentUtils::AddScriptRunner(
+      NS_NEW_RUNNABLE_METHOD(nsGlobalWindow, this, DispatchDOMWindowCreated));
   }
 
   // Clear our mutation bitfield.
   mMutationBits = 0;
 
   return NS_OK;
+}
+
+void
+nsGlobalWindow::DispatchDOMWindowCreated()
+{
+  if (!mDoc || !mDocument) {
+    return;
+  }
+
+  // Fire DOMWindowCreated at chrome event listeners
+  nsContentUtils::DispatchChromeEvent(mDoc, mDocument, NS_LITERAL_STRING("DOMWindowCreated"),
+                                      PR_TRUE /* bubbles */,
+                                      PR_FALSE /* not cancellable */);
+
+  nsCOMPtr<nsIObserverService> observerService =
+    do_GetService("@mozilla.org/observer-service;1");
+  if (observerService) {
+    nsAutoString origin;
+    nsIPrincipal* principal = mDoc->NodePrincipal();
+    nsContentUtils::GetUTFOrigin(principal, origin);
+    observerService->
+      NotifyObservers(static_cast<nsIDOMWindow*>(this),
+                      nsContentUtils::IsSystemPrincipal(principal) ?
+                        "chrome-document-global-created" :
+                        "content-document-global-created",
+                      origin.get());
+  }
 }
 
 void
@@ -2196,12 +2234,6 @@ nsGlobalWindow::SetDocShell(nsIDocShell* aDocShell)
     mScreen->SetDocShell(aDocShell);
 
   if (mDocShell) {
-    // tell our member elements about the new browserwindow
-    if (mMenubar) {
-      nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-      GetWebBrowserChrome(getter_AddRefs(browserChrome));
-      mMenubar->SetWebBrowserChrome(browserChrome);
-    }
 
     // Get our enclosing chrome shell and retrieve its global window impl, so
     // that we can do some forwarding to the chrome document.
@@ -2405,8 +2437,9 @@ nsGlobalWindow::SetScriptsEnabled(PRBool aEnabled, PRBool aFireTimeouts)
   if (aEnabled && aFireTimeouts) {
     // Scripts are enabled (again?) on this context, run timeouts that
     // fired on this context while scripts were disabled.
-
-    RunTimeout(nsnull);
+    nsCOMPtr<nsIRunnable> event =
+      NS_NEW_RUNNABLE_METHOD(nsGlobalWindow, this, RunTimeout);
+    NS_DispatchToCurrentThread(event);
   }
 }
 
@@ -2723,15 +2756,10 @@ nsGlobalWindow::GetMenubar(nsIDOMBarProp** aMenubar)
   *aMenubar = nsnull;
 
   if (!mMenubar) {
-    mMenubar = new nsMenubarProp();
+    mMenubar = new nsMenubarProp(this);
     if (!mMenubar) {
       return NS_ERROR_OUT_OF_MEMORY;
     }
-
-    nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-    GetWebBrowserChrome(getter_AddRefs(browserChrome));
-
-    mMenubar->SetWebBrowserChrome(browserChrome);
   }
 
   NS_ADDREF(*aMenubar = mMenubar);
@@ -2747,15 +2775,10 @@ nsGlobalWindow::GetToolbar(nsIDOMBarProp** aToolbar)
   *aToolbar = nsnull;
 
   if (!mToolbar) {
-    mToolbar = new nsToolbarProp();
+    mToolbar = new nsToolbarProp(this);
     if (!mToolbar) {
       return NS_ERROR_OUT_OF_MEMORY;
     }
-
-    nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-    GetWebBrowserChrome(getter_AddRefs(browserChrome));
-
-    mToolbar->SetWebBrowserChrome(browserChrome);
   }
 
   NS_ADDREF(*aToolbar = mToolbar);
@@ -2771,15 +2794,10 @@ nsGlobalWindow::GetLocationbar(nsIDOMBarProp** aLocationbar)
   *aLocationbar = nsnull;
 
   if (!mLocationbar) {
-    mLocationbar = new nsLocationbarProp();
+    mLocationbar = new nsLocationbarProp(this);
     if (!mLocationbar) {
       return NS_ERROR_OUT_OF_MEMORY;
     }
-
-    nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-    GetWebBrowserChrome(getter_AddRefs(browserChrome));
-
-    mLocationbar->SetWebBrowserChrome(browserChrome);
   }
 
   NS_ADDREF(*aLocationbar = mLocationbar);
@@ -2795,15 +2813,10 @@ nsGlobalWindow::GetPersonalbar(nsIDOMBarProp** aPersonalbar)
   *aPersonalbar = nsnull;
 
   if (!mPersonalbar) {
-    mPersonalbar = new nsPersonalbarProp();
+    mPersonalbar = new nsPersonalbarProp(this);
     if (!mPersonalbar) {
       return NS_ERROR_OUT_OF_MEMORY;
     }
-
-    nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-    GetWebBrowserChrome(getter_AddRefs(browserChrome));
-
-    mPersonalbar->SetWebBrowserChrome(browserChrome);
   }
 
   NS_ADDREF(*aPersonalbar = mPersonalbar);
@@ -2819,15 +2832,10 @@ nsGlobalWindow::GetStatusbar(nsIDOMBarProp** aStatusbar)
   *aStatusbar = nsnull;
 
   if (!mStatusbar) {
-    mStatusbar = new nsStatusbarProp();
+    mStatusbar = new nsStatusbarProp(this);
     if (!mStatusbar) {
       return NS_ERROR_OUT_OF_MEMORY;
     }
-
-    nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-    GetWebBrowserChrome(getter_AddRefs(browserChrome));
-
-    mStatusbar->SetWebBrowserChrome(browserChrome);
   }
 
   NS_ADDREF(*aStatusbar = mStatusbar);
@@ -2847,11 +2855,6 @@ nsGlobalWindow::GetScrollbars(nsIDOMBarProp** aScrollbars)
     if (!mScrollbars) {
       return NS_ERROR_OUT_OF_MEMORY;
     }
-
-    nsCOMPtr<nsIWebBrowserChrome> browserChrome;
-    GetWebBrowserChrome(getter_AddRefs(browserChrome));
-
-    mScrollbars->SetWebBrowserChrome(browserChrome);
   }
 
   NS_ADDREF(*aScrollbars = mScrollbars);
@@ -6263,6 +6266,22 @@ nsGlobalWindow::ShowModalDialog(const nsAString& aURI, nsIVariant *aArgs,
   return NS_OK;
 }
 
+class CommandDispatcher : public nsRunnable
+{
+public:
+  CommandDispatcher(nsIDOMXULCommandDispatcher* aDispatcher,
+                    const nsAString& aAction)
+  : mDispatcher(aDispatcher), mAction(aAction) {}
+
+  NS_IMETHOD Run()
+  {
+    return mDispatcher->UpdateCommands(mAction);
+  }
+
+  nsCOMPtr<nsIDOMXULCommandDispatcher> mDispatcher;
+  nsString                             mAction;
+};
+
 NS_IMETHODIMP
 nsGlobalWindow::UpdateCommands(const nsAString& anAction)
 {
@@ -6277,7 +6296,10 @@ nsGlobalWindow::UpdateCommands(const nsAString& anAction)
     // Retrieve the command dispatcher and call updateCommands on it.
     nsCOMPtr<nsIDOMXULCommandDispatcher> xulCommandDispatcher;
     xulDoc->GetCommandDispatcher(getter_AddRefs(xulCommandDispatcher));
-    xulCommandDispatcher->UpdateCommands(anAction);
+    if (xulCommandDispatcher) {
+      nsContentUtils::AddScriptRunner(new CommandDispatcher(xulCommandDispatcher,
+                                                            anAction));
+    }
   }
 
   return NS_OK;
@@ -7129,6 +7151,12 @@ nsGlobalWindow::GetSessionStorage(nsIDOMStorage ** aSessionStorage)
   nsIDocShell* docShell = GetDocShell();
 
   if (!principal || !docShell) {
+    *aSessionStorage = nsnull;
+    return NS_OK;
+  }
+
+  if (!nsContentUtils::GetBoolPref(kStorageEnabled)) {
+    *aSessionStorage = nsnull;
     return NS_OK;
   }
 
@@ -7150,6 +7178,11 @@ nsGlobalWindow::GetGlobalStorage(nsIDOMStorageList ** aGlobalStorage)
   NS_ENSURE_ARG_POINTER(aGlobalStorage);
 
 #ifdef MOZ_STORAGE
+  if (!nsContentUtils::GetBoolPref(kStorageEnabled)) {
+    *aGlobalStorage = nsnull;
+    return NS_OK;
+  }
+
   if (!sGlobalStorageList) {
     nsresult rv = NS_NewDOMStorageList(&sGlobalStorageList);
     NS_ENSURE_SUCCESS(rv, rv);
@@ -7170,6 +7203,11 @@ nsGlobalWindow::GetLocalStorage(nsIDOMStorage ** aLocalStorage)
   FORWARD_TO_INNER(GetLocalStorage, (aLocalStorage), NS_ERROR_UNEXPECTED);
 
   NS_ENSURE_ARG(aLocalStorage);
+
+  if (!nsContentUtils::GetBoolPref(kStorageEnabled)) {
+    *aLocalStorage = nsnull;
+    return NS_OK;
+  }
 
   if (!mLocalStorage) {
     *aLocalStorage = nsnull;
@@ -9259,6 +9297,10 @@ NS_NewScriptGlobalObject(PRBool aIsChrome, PRBool aIsModalContentWindow,
 nsNavigator::nsNavigator(nsIDocShell *aDocShell)
   : mDocShell(aDocShell)
 {
+  if (mMimeTypes)
+    mMimeTypes->Invalidate();
+  if (mPlugins)
+    mPlugins->Invalidate();
 }
 
 nsNavigator::~nsNavigator()
@@ -9834,8 +9876,15 @@ nsNavigator::LoadingNewDocument()
   // Release these so that they will be recreated for the
   // new document (if requested).  The plugins or mime types
   // arrays may have changed.  See bug 150087.
-  mMimeTypes = nsnull;
-  mPlugins = nsnull;
+  if (mMimeTypes) {
+    mMimeTypes->Invalidate();
+    mMimeTypes = nsnull;
+  }
+
+  if (mPlugins) {
+    mPlugins->Invalidate();
+    mPlugins = nsnull;
+  }
 
   if (mGeolocation)
   {

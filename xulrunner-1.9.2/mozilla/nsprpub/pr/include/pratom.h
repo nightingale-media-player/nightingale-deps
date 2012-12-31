@@ -111,30 +111,34 @@ NSPR_API(PRInt32)	PR_AtomicAdd(PRInt32 *ptr, PRInt32 val);
 **    interchangeably.
 */
 #if defined(_WIN32) && !defined(_WIN32_WCE) && \
-    defined(_MSC_VER) && (_MSC_VER >= 1310)
+    (!defined(_MSC_VER) || (_MSC_VER >= 1310))
 
 long __cdecl _InterlockedIncrement(long volatile *Addend);
-#pragma intrinsic(_InterlockedIncrement)
-
 long __cdecl _InterlockedDecrement(long volatile *Addend);
-#pragma intrinsic(_InterlockedDecrement)
-
 long __cdecl _InterlockedExchange(long volatile *Target, long Value);
-#pragma intrinsic(_InterlockedExchange)
-
 long __cdecl _InterlockedExchangeAdd(long volatile *Addend, long Value);
-#pragma intrinsic(_InterlockedExchangeAdd)
 
-#define PR_ATOMIC_INCREMENT(val) _InterlockedIncrement(val)
-#define PR_ATOMIC_DECREMENT(val) _InterlockedDecrement(val)
-#define PR_ATOMIC_SET(val, newval) _InterlockedExchange(val, newval)
-#define PR_ATOMIC_ADD(ptr, val) (_InterlockedExchangeAdd(ptr, val) + (val))
+#ifdef _MSC_VER
+#pragma intrinsic(_InterlockedIncrement)
+#pragma intrinsic(_InterlockedDecrement)
+#pragma intrinsic(_InterlockedExchange)
+#pragma intrinsic(_InterlockedExchangeAdd)
+#endif
+
+#define PR_ATOMIC_INCREMENT(val) _InterlockedIncrement((long volatile *)(val))
+#define PR_ATOMIC_DECREMENT(val) _InterlockedDecrement((long volatile *)(val))
+#define PR_ATOMIC_SET(val, newval) \
+        _InterlockedExchange((long volatile *)(val), (long)(newval))
+#define PR_ATOMIC_ADD(ptr, val) \
+        (_InterlockedExchangeAdd((long volatile *)(ptr), (long)(val)) + (val))
 
 #elif ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1)) && \
       ((defined(DARWIN) && \
-           (defined(__ppc__) || defined(__i386__))) || \
+           (defined(__ppc__) || defined(__i386__) || defined(__x86_64__))) || \
        (defined(LINUX) && \
-           (defined(__i386__) || defined(__ia64__) || defined(__x86_64__) || \
+           ((defined(__i386__) && \
+           defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)) || \
+           defined(__ia64__) || defined(__x86_64__) || \
            (defined(__powerpc__) && !defined(__powerpc64__)) || \
            defined(__alpha))))
 

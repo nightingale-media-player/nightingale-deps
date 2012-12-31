@@ -164,17 +164,21 @@
       <li><a href="about:license#breakpad">Breakpad License</a></li>
       <li><a href="about:license#bspatch">bspatch License</a></li>
       <li><a href="about:license#cairo">Cairo Component Licenses</a></li>
+      <li><a href="about:license#chromium">Chromium License</a></li>
       <li><a href="about:license#csiro">CSIRO Australia License</a></li>
       <li><a href="about:license#hunspell-nl">Dutch Spellchecking Dictionary License</a></li>
       <li><a href="about:license#expat">Expat License</a></li>
+      <li><a href="about:license#gfx-font-list">gfxFontList License</a></li>
       <li><a href="about:license#gears">Google Gears License</a></li>
       <li><a href="about:license#gears-istumbler">Google Gears/iStumbler License</a></li>
       <li><a href="about:license#growl">Growl License</a></li>
       <li><a href="about:license#jpnic">Japan Network Information Center License</a></li>
       <li><a href="about:license#jep">Java Embedding Plugin License</a></li>
       <li><a href="about:license#jemalloc">jemalloc License</a></li>
+      <li><a href="about:license#libevent">libevent License</a></li>
       <li><a href="about:license#libffi">libffi License</a></li>      
       <li><a href="about:license#hunspell-lt">Lithuanian Spellchecking Dictionary License</a></li>
+      <li><a href="about:license#maattachedwindow">MAAttachedWindow</a></li>
       <li><a href="about:license#openvision">OpenVision License</a></li>
       <li><a href="about:license#qcms">qcms License</a></li>
       <li><a href="about:license#xdg">Red Hat xdg_user_dir_lookup License</a></li>
@@ -753,6 +757,7 @@ under either the MPL or the [___] License."
 
 Aaron Leventhal,
 Aaron Nowack,
+Aaron Schulman,
 Aaron Train,
 ActiveState Tool Corp,
 Adam Barth,
@@ -772,6 +777,7 @@ Axel Hecht,
 Ben Bucksch,
 Ben Goodger,
 Ben Turner,
+Ben Willmore,
 Benjamin Smedberg,
 Berend Cornelius,
 Bernd Mielke,
@@ -786,16 +792,20 @@ Brian Birtles,
 Brian Bober,
 Brian Crowder,
 Brian Ryner,
+Bruce Davidson,
 Bruno Browning,
 Bruno Escherl,
 Bruno Haible,
+Bryan Atwood,
 Caio Tiago Oliveira,
+Calum Robinson,
 Chinmay Deepakbhai Patel,
 Chris Double,
 Chris McAfee,
 Christian Biesinger,
 Christopher A. Aillon,
 Christopher Blizzard,
+Christopher Henderson,
 Christopher Hoess,
 Christopher Seawood,
 Craig Topper,
@@ -810,6 +820,7 @@ Daniel Boelzle,
 Daniel Brooks,
 Daniel Glazman,
 Daniel Kouril,
+Daniel Weber,
 Daniel Witte,
 Dantifer Dang,
 Darin Fisher,
@@ -839,6 +850,7 @@ Frank Sch&ouml;nheit,
 Fred Jendrzejewski,
 Fredrik Holmqvist,
 Gavin Sharp,
+Geoff Beier,
 Gervase Markham,
 Gijs Kruitbosch,
 Giorgio Maone,
@@ -849,6 +861,7 @@ Heriot-Watt University,
 Hewlett-Packard Company,
 i-DNS.net International,
 Ian Hickson,
+Ian Leue,
 Ian Neal,
 Ian Oeschger,
 IBM Corporation,
@@ -863,6 +876,7 @@ Jan Wrobel,
 Jason Barnabe,
 Jason Orendorff,
 Jean-Francois Ducarroz,
+Jeff Dlouhy,
 Jeff Tsai,
 Jeff Walden,
 Jim Blandy,
@@ -905,6 +919,7 @@ Mark Mentovai,
 Markus G. Kuhn,
 Markus Stange,
 Mats Palmgren,
+Matt Judy,
 Matthew Willis,
 Merike Sell,
 Michael J. Fromberger,
@@ -955,6 +970,7 @@ Peter Weilbacher,
 Petr Kostka,
 Phil Ringnalda,
 Philipp Kewisch,
+Philippe Wittenbergh,
 Pierre Chanial,
 POTI Inc,
 Qualcomm Inc,
@@ -981,6 +997,7 @@ Ryan VanderMeulen,
 Samphan Raruenrom,
 Scooter Morris,
 Scott MacGregor,
+Sean Murphy,
 Sebastian Schwieger,
 Sergei Dolgov,
 Seth Spitzer,
@@ -990,15 +1007,18 @@ Siddharth Agarwal,
 Simdesk Technologies Inc,
 Simmule Turner,
 Simon B&uuml;nzli,
+Simon Fraser,
 Simon Montagu,
 Simon Paquet,
 Simon Wilkinson,
+Smokey Ardisson,
 Sqlite Project,
 Srilatha Moturi,
 Stanford University,
 Stefan Sitter,
 Stephen Horlander,
 Steve Swanson,
+Stuart Morgan,
 Stuart Parmenter,
 Sun Microsystems Inc,
 Sylvain Pasche,
@@ -1043,7 +1063,7 @@ software--to make sure the software is free for all its users.  This
 General Public License applies to most of the Free Software
 Foundation's software and to any other program whose authors commit to
 using it.  (Some other Free Software Foundation software is covered by
-the GNU Library General Public License instead.)  You can apply it to
+the GNU Lesser General Public License instead.)  You can apply it to
 your programs, too.
 
 <p>  When we speak of free software, we are referring to freedom, not
@@ -1345,9 +1365,9 @@ the "copyright" line and a pointer to where the full notice is found.
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </pre>
 
 <p>Also add information on how to contact you by electronic and paper mail.
@@ -1382,7 +1402,7 @@ necessary.  Here is a sample; alter the names:
 <p>This General Public License does not permit incorporating your program into
 proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
-library.  If this is what you want to do, use the GNU Library General
+library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
 
 
@@ -1961,7 +1981,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <h1><a name="breakpad"></a>Breakpad License</h1>
 
     <p class="correctme">This license applies to files in the directory 
-    <span class="path">toolkit/crashreporter/google-breakpad/</span>.</p>
+    <span class="path">toolkit/crashreporter/google-breakpad/</span> and
+    <span class="path">camino/google-breakpad/</span>.</p>
 
 <pre>
 Copyright (c) 2006, Google Inc.
@@ -2083,6 +2104,45 @@ NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 </pre>
 
+
+    <hr>
+
+    <h1><a name="chromium"></a>Chromium License</h1>
+
+    <p class="correctme">This license applies to some files in the directories
+      <span class="path">ipc/chromium/</span> and
+      <span class="path">gfx/ots/</span>.
+    </p>
+
+<pre>
+Copyright (c) 2006-2008 The Chromium Authors. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+   * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</pre>
 
 
     <hr>
@@ -2209,6 +2269,45 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <hr>
 
+    <h1><a name="gfx-font-list"></a>gfxFontList License</h1>
+
+    <p class="correctme">This license applies to the files 
+    <span class="path">gfx/thebes/src/gfxMacPlatformFontList.mm</span> and
+    <span class="path">gfx/thebes/src/gfxPlatformFontList.cpp</span>.
+    </p>
+
+<pre>
+Copyright (C) 2006 Apple Computer, Inc.  All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1.  Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+2.  Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
+    its contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL APPLE OR ITS CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</pre>
+
+
+
+    <hr>
+
     <h1><a name="gears"></a>Google Gears</h1>
 
     <p class="correctme">This license applies to the file 
@@ -2318,11 +2417,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     <p class="correctme">This license applies to certain files in the directory
     <span class="path">toolkit/components/alerts/src/mac/growl/</span> and
-    <span class="path">camino/src/extensions/</span>. (This code only ships in 
-    the Mac OS X version of the product.)
+    <span class="path">camino/growl/</span>. (This code only ships in the Mac
+    OS X version of the product.)
 
 <pre>
-Copyright (c) The Growl Project, 2004-2007
+Copyright (c) The Growl Project, 2004-2009
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -2472,6 +2571,42 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 </pre>
 
 
+    <hr>
+    
+
+    <h1><a name="libevent"></a>libevent License</h1>
+
+    <p class="correctme">This license applies to files in the directory
+    <span class="path">ipc/chromium/src/third_party/libevent/</span>.
+    </p>
+
+<pre>
+Copyright 2000-2002 Niels Provos &lt;provos@citi.umich.edu&gt;
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</pre>
+
 
     <hr>
 
@@ -2548,6 +2683,55 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
 </pre>
 
+
+
+    <hr>
+
+    <h1><a name="maattachedwindow"></a>MAAttachedWindow License</h1>
+
+    <p class="correctme">This license applies to the files 
+    <span class="path">camino/src/extensions/MAAttachedWindow.h</span> and
+    <span class="path">camino/src/extensions/MAAttachedWindow.mm</span>. (This
+    code only ships in the Camino browser or products based on it.)</p>
+
+<pre>
+		This software is supplied to you by Matt Gemmell in consideration of
+your agreement to the following terms, and your use, installation, modification
+or redistribution of this software constitutes acceptance of these terms. If
+you do not agree with these terms, please do not use, install, modify or
+redistribute this software.
+
+		In consideration of your agreement to abide by the following terms, and
+subject to these terms, Matt Gemmell grants you a personal, non-exclusive
+license, to use, reproduce, modify and redistribute the software, with or
+without modifications, in source and/or binary forms; provided that if you
+redistribute the software in its entirety and without modifications, you must
+retain this notice and the following text and disclaimers in all such
+redistributions of the software, and that in all cases attribution of Matt
+Gemmell as the original author of the source code shall be included in all such
+resulting software products or distributions.
+Neither the name, trademarks, service marks or logos of Matt Gemmell may be
+used to endorse or promote products derived from the software without specific
+prior written permission from Matt Gemmell. Except as expressly stated in this
+notice, no other rights or licenses, express or implied, are granted by Matt
+Gemmell herein, including but not limited to any patent rights that may be
+infringed by your derivative works or by other works in which the software may
+be incorporated.
+
+		The software is provided by Matt Gemmell on an "AS IS" basis. MATT
+GEMMELL MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION
+THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE, REGARDING THE SOFTWARE OR ITS USE AND OPERATION ALONE OR IN
+COMBINATION WITH YOUR PRODUCTS.
+
+		IN NO EVENT SHALL MATT GEMMELL BE LIABLE FOR ANY SPECIAL, INDIRECT,
+INCIDENTAL OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, MODIFICATION
+AND/OR DISTRIBUTION OF THE SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER THEORY OF
+CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR OTHERWISE, EVEN IF
+MATT GEMMELL HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</pre>
 
 
     <hr>

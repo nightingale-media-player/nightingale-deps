@@ -44,11 +44,12 @@
 #include "nsICharsetConverterManager.h"
 #include "nsIScriptableUConv.h"
 
-class nsScriptableUnicodeConverter : public nsIScriptableUnicodeConverter
+class nsScriptableUnicodeConverter : public nsIScriptableUnicodeConverter_1_9_BRANCH
 {
 public:
   NS_DECL_ISUPPORTS
   NS_DECL_NSISCRIPTABLEUNICODECONVERTER
+  NS_DECL_NSISCRIPTABLEUNICODECONVERTER_1_9_BRANCH
 
   nsScriptableUnicodeConverter();
   virtual ~nsScriptableUnicodeConverter();
@@ -57,6 +58,7 @@ protected:
   nsCString mCharset;
   nsCOMPtr<nsIUnicodeEncoder> mEncoder;
   nsCOMPtr<nsIUnicodeDecoder> mDecoder;
+  PRPackedBool mIsInternal;
 
   nsresult FinishWithLength(char **_retval, PRInt32* aLength);
   nsresult ConvertFromUnicodeWithLength(const nsAString& aSrc,

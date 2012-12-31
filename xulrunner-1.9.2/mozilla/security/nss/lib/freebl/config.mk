@@ -65,6 +65,7 @@ ALL_TRASH :=    $(TARGETS) $(OBJS) $(OBJDIR) LOGS TAGS $(GARBAGE) \
   PROGRAM        =
 
 else
+
 # This is a recursive child make. We build the shared lib.
 
 TARGETS      = $(SHARED_LIBRARY)
@@ -85,7 +86,11 @@ RES     = $(OBJDIR)/$(LIBRARY_NAME).res
 RESNAME = freebl.rc
 
 ifndef WINCE
+ifdef NS_USE_GCC
+OS_LIBS += -lshell32
+else
 OS_LIBS += shell32.lib
+endif
 endif
 
 ifdef NS_USE_GCC
@@ -105,7 +110,10 @@ endif # NS_USE_GCC
 
 else
 
-ifndef FREEBL_NO_DEPEND
+ifeq ($(FREEBL_NO_DEPEND),1)
+#drop pthreads as well
+OS_PTHREAD=
+else
 EXTRA_SHARED_LIBS += \
 	-L$(DIST)/lib \
 	-L$(NSSUTIL_LIB_DIR) \
@@ -113,9 +121,6 @@ EXTRA_SHARED_LIBS += \
 	-L$(NSPR_LIB_DIR) \
 	-lnspr4 \
 	$(NULL)
-else
-#drop pthreads as well
-OS_PTHREAD=
 endif
 endif
 

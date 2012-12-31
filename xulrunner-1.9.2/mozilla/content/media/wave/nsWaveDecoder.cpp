@@ -69,7 +69,7 @@ static PRLogModuleInfo* gWaveDecoderLog;
 // audio buffered to allow time to refill before the backend underruns.
 // Should be a multiple of 10 to deal with poor timer granularity on some
 // platforms.
-#define AUDIO_BUFFER_WAKEUP 100
+#define AUDIO_BUFFER_WAKEUP 250
 #define AUDIO_BUFFER_LENGTH (2 * AUDIO_BUFFER_WAKEUP)
 
 // Magic values that identify RIFF chunks we're interested in.

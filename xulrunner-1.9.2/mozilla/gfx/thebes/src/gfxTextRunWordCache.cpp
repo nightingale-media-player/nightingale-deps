@@ -615,6 +615,8 @@ TextRunWordCache::MakeTextRun(const PRUnichar *aText, PRUint32 aLength,
                 PRUint32 length = i - wordStart;
                 nsAutoArrayPtr<PRUnichar> numString;
                 numString = new PRUnichar[length];
+                if (!numString)
+                  return nsnull;
                 for (PRUint32 j = 0; j < length; ++j) {
                     numString[j] = HandleNumberInChar(aText[wordStart+j],
                                                       !!(j > 0 ?
@@ -739,6 +741,8 @@ TextRunWordCache::MakeTextRun(const PRUint8 *aText, PRUint32 aLength,
                 PRUint32 length = i - wordStart;
                 nsAutoArrayPtr<PRUnichar> numString;
                 numString = new PRUnichar[length];
+                if (!numString)
+                  return nsnull;
                 for (PRUint32 j = 0; j < length; ++j) {
                     numString[j] = HandleNumberInChar(aText[wordStart+j],
                                                       !!(j > 0 ?

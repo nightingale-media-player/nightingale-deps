@@ -1,30 +1,4 @@
-/**
- * General
- */
-.heed {
-  font-weight: bold;
-}
-
-link {
-  color: -moz-nativehyperlinktext;
-  border: 1px solid transparent;
-  margin-top: 1px;
-  margin-bottom: 4px;
-  -moz-margin-start: 5px;
-  -moz-margin-end: 5px;
-  text-decoration: underline !important;
-}
-
-link > label {
-  margin: 0px;
-  padding: 1px;
-  text-decoration: underline !important;
-}
-
-link:focus {
-  border: 1px dotted -moz-DialogText;
-}
-
+/* General */
 .wizard-page-box {
   padding: 15px 10px 15px 10px;
 }
@@ -38,25 +12,42 @@ remotecontent {
   padding-bottom: 1px;
 }
 
-/**
- * License Page
- */
 .loadingBox {
   padding: 3px 5px 3px 5px;
 }
+
 .remoteLoadingThrobber {
   margin-top: 3px;
 }
+
 .remoteLoadingThrobber[state="loading"] {
   list-style-image: url("chrome://global/skin/icons/loading_16.png");
 }
+
 .remoteLoadingThrobber[state="error"] {
   list-style-image: url("chrome://global/skin/icons/notfound.png");
 }
 
-/**
- * Update Found Page
- */
+#incompatibleListbox, #finishedBackgroundMore, #acceptDeclineLicense {
+  margin-bottom: 6px;
+}
+
+#licenseContent, #incompatibleListbox {
+  -moz-margin-start: 6px;
+  -moz-margin-end: 6px;
+}
+
+#separatorGroove {
+  display: none;
+}
+
+/* Update Found Basic Page */
+#updateName, #updateFinishedName {
+  font-weight: bold;
+  font-size: larger;
+  -moz-margin-start: 0px;
+}
+
 #updatesfoundContent {
   -moz-margin-start: 8px;
   -moz-margin-end: 8px;
@@ -66,60 +57,19 @@ wizard[currentpageid="updatesfound"] .wizard-page-box {
   margin: 0px;
 }
 
-#moreDetails {
-  margin: 1px 0px 4px 3px;
-}
-
 #updateMoreInfoURL, #updateMoreInfoURLLabel {
   -moz-margin-start: 0px;
   -moz-margin-end: 0px;
 }
 
-#downloadNow {
-  font-weight: bold;
+/* License Page */
+#licenseContent {
+  -moz-appearance: listbox;
 }
 
-#downloadNow, #downloadLater {
-  margin: 0px;
-}
-
-#updateName, #updateFinishedName {
-  font-weight: bold;
-  font-size: larger;
-  -moz-margin-start: 0px;
-}
-
-#separatorGroove {
-  display: none;
-}
-
-#alertImage {
-  list-style-image: url("chrome://global/skin/icons/Warning.png");
-  margin-right: 5px;
-}
-
-#incompatibleWarning {
-  background-color: InfoBackground;
-  color: InfoText;
-  border: 1px outset InfoBackground;
-  padding: 3px;
-  margin: 1px 5px 4px 5px;
-}
-
-/**
- * Downloading Page
- */
+/* Downloading Page */
 #downloadStatusTop, #downloadStatusLine {
   -moz-box-align: center;
-}
-
-#downloadThrobber {
-  margin-left: 5px;
-  list-style-image: url("chrome://global/skin/icons/notloading_16.png");
-}
-
-#downloadThrobber[state="loading"] {
-  list-style-image: url("chrome://global/skin/icons/loading_16.png");
 }
 
 #downloadStatusProgress {
@@ -136,8 +86,8 @@ wizard[currentpageid="updatesfound"] .wizard-page-box {
   min-width: 16px;
   max-height: 16px;
   max-width: 16px;
-  padding: 0;
   margin: 0 1px 0 1px;
+  padding: 0;
 }
 
 /* !Important must be used otherwise this won't immediately take affect */
@@ -174,9 +124,7 @@ wizard[currentpageid="updatesfound"] .wizard-page-box {
   list-style-image: url("chrome://global/skin/icons/notfound.png");
 }
 
-/**
- * Error Page
- */
+/* Error Page */
 #errorReason {
   margin-top: 1px;
   margin-bottom: 2px;
@@ -185,9 +133,7 @@ wizard[currentpageid="updatesfound"] .wizard-page-box {
   font-weight: bold;
 }
 
-/**
- * Update History Window
- */
+/* Update History Window */
 update {
   border-bottom: 1px dotted #C0C0C0;
 }
@@ -198,10 +144,6 @@ update {
 
 .update-label-column {
   -moz-box-align: end;
-}
-
-.update-details-link {
-  margin: 0px;
 }
 
 .update-type {
@@ -217,15 +159,4 @@ update {
 
 #historyItems > scrollbox {
   margin-bottom: 1px;
-}
-
-/**
- * Advanced Preferences
- */
-.updatePrefsInfo {
-  font-size: smaller;
-  margin-top: 5px;
-  margin-bottom: 10px;
-  -moz-margin-start: 22px;
-  -moz-margin-end: 10px;
 }

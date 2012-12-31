@@ -585,15 +585,60 @@ net_FilterURIString(const char *str, nsACString& result)
         p++;
     }
 
+    // Don't strip from the scheme, because other code assumes everything
+    // up to the ':' is the scheme, and it's bad not to have it match.
+    // If there's no ':', strip.
+    PRBool found_colon = PR_FALSE;
+    const char *first = nsnull;
     while (*p) {
-        if (*p == '\t' || *p == '\r' || *p == '\n') {
-            writing = PR_TRUE;
-            // append chars up to but not including *p
-            if (p > str)
-                result.Append(str, p - str);
-            str = p + 1;
+        switch (*p) {
+            case '\t': 
+            case '\r': 
+            case '\n':
+                if (found_colon) {
+                    writing = PR_TRUE;
+                    // append chars up to but not including *p
+                    if (p > str)
+                        result.Append(str, p - str);
+                    str = p + 1;
+                } else {
+                    // remember where the first \t\r\n was in case we find no scheme
+                    if (!first)
+                        first = p;
+                }
+                break;
+
+            case ':':
+                found_colon = PR_TRUE;
+                break;
+
+            case '/':
+            case '@':
+                if (!found_colon) {
+                    // colon also has to precede / or @ to be a scheme
+                    found_colon = PR_TRUE; // not really, but means ok to strip
+                    if (first) {
+                        // go back and replace
+                        p = first;
+                        continue; // process *p again
+                    }
+                }
+                break;
+
+            default:
+                break;
         }
         p++;
+
+        // At end, if there was no scheme, and we hit a control char, fix
+        // it up now.
+        if (!*p && first != nsnull && !found_colon) {
+            // TRICKY - to avoid duplicating code, we reset the loop back
+            // to the point we found something to do
+            p = first;
+            // This also stops us from looping after we finish
+            found_colon = PR_TRUE; // so we'll replace \t\r\n
+        }
     }
 
     // Remove trailing spaces if any
@@ -989,4 +1034,95 @@ net_IsValidHostName(const nsCSubstring &host)
     nsCAutoString strhost(host);
     PRNetAddr addr;
     return PR_StringToNetAddr(strhost.get(), &addr) == PR_SUCCESS;
+}
+
+PRBool
+net_IsValidIPv4Addr(const char *addr, PRInt32 addrLen)
+{
+    const char *p;
+
+    PRInt32 octet = -1;   // means no digit yet
+    PRInt32 dotCount = 0; // number of dots in the address
+
+    for (p = addr; addrLen; ++p, --addrLen) {
+        if (*p == '.') {
+            dotCount++;
+            if (octet == -1) {
+                // invalid octet
+                return PR_FALSE;
+            }
+            octet = -1;
+        } else if (*p >= '0' && *p <='9') {
+            if (octet == 0) {
+                // leading 0 is not allowed
+                return PR_FALSE;
+            } else if (octet == -1) {
+                octet = *p - '0';
+            } else {
+                octet *= 10;
+                octet += *p - '0';
+                if (octet > 255)
+                    return PR_FALSE;
+            }
+        } else {
+            // invalid character
+            return PR_FALSE;
+        }
+    }
+
+    return (dotCount == 3 && octet != -1);
+}
+
+PRBool
+net_IsValidIPv6Addr(const char *addr, PRInt32 addrLen)
+{
+    const char *p;
+
+    PRInt32 digits = 0; // number of digits in current block
+    PRInt32 colons = 0; // number of colons in a row during parsing
+    PRInt32 blocks = 0; // number of hexadecimal blocks
+    PRBool haveZeros = PR_FALSE; // true if double colon is present in the address
+
+    for (p = addr; addrLen; ++p, --addrLen) {
+        if (*p == ':') {
+            if (colons == 0) {
+                if (digits != 0) {
+                    digits = 0;
+                    blocks++;
+                }
+            } else if (colons == 1) {
+                if (haveZeros)
+                    return PR_FALSE; // only one occurrence is allowed
+                haveZeros = PR_TRUE;
+            } else {
+                // too many colons in a row
+                return PR_FALSE;
+            }
+            colons++;
+        } else if ((*p >= '0' && *p <= '9') || (*p >= 'a' && *p <= 'f') ||
+                   (*p >= 'A' && *p <= 'F')) {
+            if (colons == 1 && blocks == 0) // starts with a single colon
+                return PR_FALSE;
+            if (digits == 4) // too many digits
+                return PR_FALSE;
+            colons = 0;
+            digits++;
+        } else if (*p == '.') {
+            // check valid IPv4 from the beginning of the last block
+            if (!net_IsValidIPv4Addr(p - digits, addrLen + digits))
+                return PR_FALSE;
+            return (haveZeros && blocks < 6) || (!haveZeros && blocks == 6);
+        } else {
+            // invalid character
+            return PR_FALSE;
+        }
+    }
+
+    if (colons == 1) // ends with a single colon
+        return PR_FALSE;
+
+    if (digits) // there is a block at the end
+        blocks++;
+
+    return (haveZeros && blocks < 8) || (!haveZeros && blocks == 8);
 }

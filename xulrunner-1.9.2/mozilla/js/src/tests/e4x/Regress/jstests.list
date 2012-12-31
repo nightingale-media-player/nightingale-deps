@@ -92,3 +92,4 @@ script regress-470619.js
 script regress-473709.js
 skip-if(isDebugBuild) script regress-474319.js # bug 511740
 script regress-477053.js
+script regress-561031.js

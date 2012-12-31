@@ -11,15 +11,15 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is the Application Update Service.
+ * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Robert Strong <robert.bugzilla@gmail.com>.
- *
- * Portions created by the Initial Developer are Copyright (C) 2008
- * the Mozilla Foundation <http://www.mozilla.org/>. All Rights Reserved.
+ * the Mozilla Foundation.
+ * Portions created by the Initial Developer are Copyright (C) 2010
+ * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Robert Strong <robert.bugzilla@gmail.com> (Original Author)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -33,61 +33,67 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
- * ***** END LICENSE BLOCK *****
- */
+ * ***** END LICENSE BLOCK ***** */
 
-// const Cc, Ci, and Cr are defined in netwerk/test/httpserver/httpd.js so we
-// need to define unique ones.
-const AUS_Cc = Components.classes;
-const AUS_Ci = Components.interfaces;
-const AUS_Cr = Components.results;
+const INSTALL_LOCALE = "@AB_CD@";
+const APP_BIN_NAME = "@MOZ_APP_NAME@";
+const BIN_SUFFIX = "@BIN_SUFFIX@";
 
-const NS_APP_PROFILE_DIR_STARTUP   = "ProfDS";
-const NS_APP_USER_PROFILE_50_DIR   = "ProfD";
-const NS_GRE_DIR                   = "GreD";
-const NS_XPCOM_CURRENT_PROCESS_DIR = "XCurProcD";
-const XRE_UPDATE_ROOT_DIR          = "UpdRootD";
+#ifdef XP_UNIX
+const APP_BIN_SUFFIX = "-bin";
+#else
+const APP_BIN_SUFFIX = "@BIN_SUFFIX@";
+#endif
 
-const PREF_APP_UPDATE_URL_OVERRIDE      = "app.update.url.override";
-const PREF_APP_UPDATE_SHOW_INSTALLED_UI = "app.update.showInstalledUI";
+#ifdef XP_WIN
+const IS_WIN = true;
+#else
+const IS_WIN = false;
+#endif
 
-const URI_UPDATES_PROPERTIES = "chrome://mozapps/locale/update/updates.properties";
-const gUpdateBundle = AUS_Cc["@mozilla.org/intl/stringbundle;1"].
-                      getService(AUS_Ci.nsIStringBundleService).
-                      createBundle(URI_UPDATES_PROPERTIES);
+#ifdef WINCE
+const IS_WINCE = true;
+#else
+const IS_WINCE = false;
+#endif
 
-const STATE_NONE            = "null";
-const STATE_DOWNLOADING     = "downloading";
-const STATE_PENDING         = "pending";
-const STATE_APPLYING        = "applying";
-const STATE_SUCCEEDED       = "succeeded";
-const STATE_DOWNLOAD_FAILED = "download-failed";
-const STATE_FAILED          = "failed";
+#ifdef XP_OS2
+const IS_OS2 = true;
+#else
+const IS_OS2 = false;
+#endif
 
-const FILE_UPDATES_DB     = "updates.xml";
-const FILE_UPDATE_ACTIVE  = "active-update.xml";
-const FILE_UPDATE_LOG     = "update.log";
-const FILE_LAST_LOG       = "last-update.log";
-const FILE_BACKUP_LOG     = "backup-update.log";
+#ifdef XP_MACOSX
+const IS_MACOSX = true;
+#else
+const IS_MACOSX = false;
+#endif
 
-const MODE_RDONLY   = 0x01;
-const MODE_WRONLY   = 0x02;
-const MODE_CREATE   = 0x08;
-const MODE_APPEND   = 0x10;
-const MODE_TRUNCATE = 0x20;
+#ifdef XP_UNIX
+const IS_UNIX = true;
+#else
+const IS_UNIX = false;
+#endif
 
-const PERMS_FILE      = 0644;
-const PERMS_DIRECTORY = 0755;
+#ifdef ANDROID
+const IS_ANDROID = true;
+#else
+const IS_ANDROID = false;
+#endif
 
 const URL_HOST = "http://localhost:4444/";
-const DIR_DATA = "data";
+const URL_PATH = "data";
 
-var gDirSvc = AUS_Cc["@mozilla.org/file/directory_service;1"].
-              getService(AUS_Ci.nsIProperties);
+const AFTER_APPLY_DIR = "afterApplyDir";
+const APPLY_TO_DIR_SUFFIX = "_applyToDir";
+const HELPER_BIN_FILE = "TestAUSHelper" + BIN_SUFFIX;
+const MAR_COMPLETE_FILE = "data/complete.mar";
+const MAR_PARTIAL_FILE = "data/partial.mar";
+const UPDATER_BIN_FILE = "updater" + BIN_SUFFIX;
+const UPDATES_DIR_SUFFIX = "_mar";
 
-var gAUS;
-var gUpdateChecker;
-var gUpdateManager;
+const CALLBACK_BIN_FILE = "callback_app" + BIN_SUFFIX;
+const CALLBACK_ARGS = [AFTER_APPLY_DIR + "/output.log", "Test Arg 2", "Test Arg 3"];
 
 var gTestserver;
 
@@ -103,28 +109,31 @@ var gUpdates;
 var gStatusCode;
 var gStatusText;
 
+// Set to true to log additional information for debugging. To log additional
+// information for an individual test set DEBUG_AUS_TEST to true in the test's
+// run_test function.
+var DEBUG_AUS_TEST = true;
 
-function getPrefBranch() {
-  return AUS_Cc["@mozilla.org/preferences;1"].getService(AUS_Ci.nsIPrefBranch);
-}
+#include ../shared.js
 
 /**
  * Nulls out the most commonly used global vars used by tests as appropriate.
- * This was moved here from the tail file due to check-interactive executing
- * the tail file prior to _execute_test(); (bug 384339). It hasn't been moved
- * back since it is easier to comment out the call to cleanUp when needed.
  */
 function cleanUp() {
-  // Always call app update's observe method passing xpcom-shutdown to test that
-  // the shutdown of app update runs without throwing or leaking. The observer
+  removeUpdateDirsAndFiles();
+
+  // Force the update manager to reload the update data to prevent it from
+  // writing the old data to the files that have just been removed.
+  reloadUpdateManagerData();
+
+  // Call app update's observe method passing xpcom-shutdown to test that the
+  // shutdown of app update runs without throwing or leaking. The observer
   // method is used directly instead of calling notifyObservers so components
   // outside of the scope of this test don't assert and thereby cause app update
   // tests to fail.
-  if (gAUS)
-    gAUS.observe(null, "xpcom-shutdown", "");
+  gAUS.observe(null, "xpcom-shutdown", "");
 
-  removeUpdateDirsAndFiles();
-  gDirSvc.unregisterProvider(gDirProvider);
+  Services.dirsvc.unregisterProvider(gDirProvider);
 
   if (gXHR) {
     gXHRCallback     = null;
@@ -138,9 +147,6 @@ function cleanUp() {
     gXHR             = null;
   }
 
-  gUpdateManager = null;
-  gUpdateChecker = null;
-  gAUS           = null;
   gTestserver    = null;
 }
 
@@ -148,351 +154,23 @@ function cleanUp() {
  * Sets the most commonly used preferences used by tests
  */
 function setDefaultPrefs() {
-  var pb = getPrefBranch();
+  Services.prefs.setBoolPref(PREF_APP_UPDATE_ENABLED, true);
   // Don't display UI for a successful installation. Some apps may not set this
   // pref to false like Firefox does.
-  pb.setBoolPref(PREF_APP_UPDATE_SHOW_INSTALLED_UI, false);
+  Services.prefs.setBoolPref(PREF_APP_UPDATE_SHOW_INSTALLED_UI, false);
   // Enable Update logging
-  pb.setBoolPref("app.update.log", true);
+  Services.prefs.setBoolPref(PREF_APP_UPDATE_LOG, true);
 }
 
 /**
- * Initializes nsIApplicationUpdateService and the most commonly used global
- * vars used by tests.
+ * Initializes the most commonly used settings and creates an instance of the
+ * update service stub.
  */
-function startAUS() {
+function standardInit() {
   createAppInfo("xpcshell@tests.mozilla.org", "XPCShell", "1.0", "2.0");
   setDefaultPrefs();
   // Initialize the update service stub component
-  AUS_Cc["@mozilla.org/updates/update-service-stub;1"].
-  createInstance(AUS_Ci.nsISupports);
-  gAUS = AUS_Cc["@mozilla.org/updates/update-service;1"].
-         getService(AUS_Ci.nsIApplicationUpdateService).
-         QueryInterface(AUS_Ci.nsIObserver);
-}
-
-/* Initializes nsIUpdateChecker */
-function startUpdateChecker() {
-  gUpdateChecker = AUS_Cc["@mozilla.org/updates/update-checker;1"].
-                   createInstance(AUS_Ci.nsIUpdateChecker);
-}
-
-/* Initializes nsIUpdateManager */
-function startUpdateManager() {
-  gUpdateManager = AUS_Cc["@mozilla.org/updates/update-manager;1"].
-                   getService(AUS_Ci.nsIUpdateManager);
-}
-
-/**
- * Constructs a string representing a remote update xml file.
- * @param   aUpdates
- *          The string representing the update elements.
- * @returns The string representing a remote update xml file.
- */
-function getRemoteUpdatesXMLString(aUpdates) {
-  return "<?xml version=\"1.0\"?>\n" +
-         "<updates>\n" +
-           aUpdates +
-         "</updates>\n";
-}
-
-/**
- * Constructs a string representing an update element for a remote update xml
- * file.
- * See getUpdateString
- * @returns The string representing an update element for an update xml file.
- */
-function getRemoteUpdateString(aPatches, aName, aType, aVersion,
-                               aPlatformVersion, aExtensionVersion, aBuildID,
-                               aLicenseURL, aDetailsURL) {
-  return  getUpdateString(aName, aType, aVersion, aPlatformVersion,
-                         aExtensionVersion, aBuildID, aLicenseURL,
-                         aDetailsURL) + ">\n" +
-              aPatches + 
-         "  </update>\n";
-}
-
-/**
- * Constructs a string representing a patch element for a remote update xml
- * file
- * See getPatchString
- * @returns The string representing a patch element for a remote update xml
- *          file.
- */
-function getRemotePatchString(aType, aURL, aHashFunction, aHashValue, aSize) {
-  return getPatchString(aType, aURL, aHashFunction, aHashValue, aSize) +
-         "/>\n";
-}
-
-/**
- * Constructs a string representing a local update xml file.
- * @param   aUpdates
- *          The string representing the update elements.
- * @returns The string representing a local update xml file.
- */
-function getLocalUpdatesXMLString(aUpdates) {
-  if (!aUpdates || aUpdates == "")
-    return "<updates xmlns=\"http://www.mozilla.org/2005/app-update\"/>"
-  return ("<updates xmlns=\"http://www.mozilla.org/2005/app-update\">" +
-           aUpdates +
-         "</updates>").replace(/>\s+\n*</g,'><');
-}
-
-/**
- * Constructs a string representing an update element for a local update xml
- * file.
- * See getUpdateString
- * @param   aServiceURL
- *          The update's xml url.
- *          If null this will default to 'http://dummyservice/'.
- * @param   aIsCompleteUpdate
- *          The string 'true' if this update was a complete update or the string
- *          'false' if this update was a partial update.
- *          If null this will default to 'true'.
- * @param   aChannel
- *          The update channel name.
- *          If null this will default to 'bogus_channel'.
- * @param   aForegroundDownload
- *          The string 'true' if this update was manually downloaded or the
- *          string 'false' if this update was automatically downloaded.
- *          If null this will default to 'true'.
- * @returns The string representing an update element for an update xml file.
- */
-function getLocalUpdateString(aPatches, aName, aType, aVersion, aPlatformVersion,
-                              aExtensionVersion, aBuildID, aLicenseURL,
-                              aDetailsURL, aServiceURL, aInstallDate, aStatusText,
-                              aIsCompleteUpdate, aChannel, aForegroundDownload) {
-  var serviceURL = aServiceURL ? aServiceURL : "http://dummyservice/";
-  var installDate = aInstallDate ? aInstallDate : "1238441400314";
-  var statusText = aStatusText ? aStatusText : "Install Pending";
-  var isCompleteUpdate =
-    typeof(aIsCompleteUpdate) == "string" ? aIsCompleteUpdate : "true";
-  var channel = aChannel ? aChannel : "bogus_channel";
-  var foregroundDownload =
-    typeof(aForegroundDownload) == "string" ? aForegroundDownload : "true";
-  return getUpdateString(aName, aType, aVersion, aPlatformVersion,
-                         aExtensionVersion, aBuildID, aLicenseURL,
-                         aDetailsURL) + " " +
-                   "serviceURL=\"" + serviceURL + "\" " +
-                   "installDate=\"" + installDate + "\" " +
-                   "statusText=\"" + statusText + "\" " +
-                   "isCompleteUpdate=\"" + isCompleteUpdate + "\" " +
-                   "channel=\"" + channel + "\" " +
-                   "foregroundDownload=\"" + foregroundDownload + "\">"  +
-              aPatches + 
-         "  </update>";
-}
-
-/**
- * Constructs a string representing a patch element for a local update xml file.
- * See getPatchString
- * @param   aSelected
- *          Whether this patch is selected represented or not. The string 'true'
- *          denotes selected and the string 'false' denotes not selected.
- *          If null this will default to the string 'true'.
- * @param   aState
- *          The patch's state.
- *          If null this will default to STATE_SUCCEEDED (e.g. 'succeeded').
- * @returns The string representing a patch element for a local update xml file.
- */
-function getLocalPatchString(aType, aURL, aHashFunction, aHashValue, aSize,
-                             aSelected, aState) {
-  var selected = typeof(aSelected) == "string" ? aSelected : "true";
-  var state = aState ? aState : STATE_SUCCEEDED;
-  return getPatchString(aType, aURL, aHashFunction, aHashValue, aSize) + " " +
-         "selected=\"" + selected + "\" " +
-         "state=\"" + state + "\"/>\n";
-}
-
-/**
- * Constructs a string representing an update element for a remote update xml
- * file.
- * @param   aPatches
- *          The string representing the update's patches.
- * @param   aName
- *          The update's name.
- *          If null this will default to 'XPCShell App Update Test'.
- * @param   aType
- *          The update's type which should be major or minor.
- *          If null this will default to 'major'.
- * @param   aVersion
- *          The update's app version.
- *          If null this will default to '4.0'.
- * @param   aPlatformVersion
- *          The update's platform version.
- *          If null this will default to '4.0'.
- * @param   aExtensionVersion
- *          The update's extension version.
- *          If null this will default to '4.0'.
- * @param   aBuildID
- *          The update's build id.
- *          If null this will default to '20080811053724'.
- * @param   aLicenseURL
- *          The update's license url.
- *          If null this will default to 'http://dummylicense/'.
- * @param   aDetailsURL
- *          The update's details url.
- *          If null this will default to 'http://dummydetails/'.
- * @returns The string representing an update element for an update xml file.
- */
-function getUpdateString(aName, aType, aVersion, aPlatformVersion,
-                         aExtensionVersion, aBuildID, aLicenseURL, aDetailsURL) {
-  var name = aName ? aName : "XPCShell App Update Test";
-  var type = aType ? aType : "major";
-  var version = aVersion ? aVersion : "4.0";
-  var platformVersion = aPlatformVersion ? aPlatformVersion : "4.0";
-  var extensionVersion = aExtensionVersion ? aExtensionVersion : "4.0";
-  var buildID = aBuildID ? aBuildID : "20080811053724";
-  var licenseURL = aLicenseURL ? aLicenseURL : "http://dummylicense/";
-  var detailsURL = aDetailsURL ? aDetailsURL : "http://dummydetails/";
-  return "  <update name=\"" + name + "\" " +
-                   "type=\"" + type + "\" " +
-                   "version=\"" + version + "\" " +
-                   "platformVersion=\"" + platformVersion + "\" " +
-                   "extensionVersion=\"" + extensionVersion + "\" " +
-                   "buildID=\"" + buildID + "\" " +
-                   "licenseURL=\"" + licenseURL + "\" " +
-                   "detailsURL=\"" + detailsURL + "\"";
-}
-
-/**
- * Constructs a string representing a patch element for an update xml file.
- * @param   aType
- *          The patch's type which should be complete or partial.
- *          If null this will default to 'complete'.
- * @param   aURL
- *          The patch's url to the mar file.
- *          If null this will default to 'http://localhost:4444/data/empty.mar'.
- * @param   aHashFunction
- *          The patch's hash function used to verify the mar file.
- *          If null this will default to 'MD5'.
- * @param   aHashValue
- *          The patch's hash value used to verify the mar file.
- *          If null this will default to '6232cd43a1c77e30191c53a329a3f99d'
- *          which is the MD5 hash value for the empty.mar.
- * @param   aSize
- *          The patch's file size for the mar file.
- *          If null this will default to '775' which is the file size for the
- *          empty.mar.
- * @returns The string representing a patch element for an update xml file.
- */
-function getPatchString(aType, aURL, aHashFunction, aHashValue, aSize) {
-  var type = aType ? aType : "complete";
-  var url = aURL ? aURL : URL_HOST + DIR_DATA + "/empty.mar";
-  var hashFunction = aHashFunction ? aHashFunction : "MD5";
-  var hashValue = aHashValue ? aHashValue : "6232cd43a1c77e30191c53a329a3f99d";
-  var size = aSize ? aSize : "775";
-  return "    <patch type=\"" + type + "\" " +
-                     "URL=\"" + url + "\" " +
-                     "hashFunction=\"" + hashFunction + "\" " +
-                     "hashValue=\"" + hashValue + "\" " +
-                     "size=\"" + size + "\"";
-}
-
-/**
- * Writes the updates specified to either the active-update.xml or the
- * updates.xml.
- * @param   updates
- *          The updates represented as a string to write to the XML file.
- * @param   isActiveUpdate
- *          If true this will write to the active-update.xml otherwise it will
- *          write to the updates.xml file.
- */
-function writeUpdatesToXMLFile(aContent, aIsActiveUpdate) {
-  var file = getCurrentProcessDir();
-  file.append(aIsActiveUpdate ? FILE_UPDATE_ACTIVE : FILE_UPDATES_DB);
-  writeFile(file, aContent);
-}
-
-/**
- * Writes the current update operation/state to a file in the patch
- * directory, indicating to the patching system that operations need
- * to be performed.
- * @param   aStatus
- *          The status value to write.
- */
-function writeStatusFile(aStatus) {
-  var file = getUpdatesDir();
-  file.append("0");
-  file.append("update.status");
-  aStatus += "\n";
-  writeFile(file, aStatus);
-}
-
-/**
- * Gets the updates directory.
- * @returns The updates directory.
- */
-function getUpdatesDir() {
-  var dir = getCurrentProcessDir();
-  dir.append("updates");
-  return dir;
-}
-
-/**
- * Writes text to a file. This will replace existing text if the file exists
- * and create the file if it doesn't exist.
- * @param   aFile
- *          The file to write to. Will be created if it doesn't exist.
- * @param   aText
- *          The text to write to the file. If there is existing text it will be
- *          replaced.
- */
-function writeFile(aFile, aText) {
-  var fos = AUS_Cc["@mozilla.org/network/file-output-stream;1"].
-            createInstance(AUS_Ci.nsIFileOutputStream);
-  if (!aFile.exists())
-    aFile.create(AUS_Ci.nsILocalFile.NORMAL_FILE_TYPE, PERMS_FILE);
-  fos.init(aFile, MODE_WRONLY | MODE_CREATE | MODE_TRUNCATE, PERMS_FILE, 0);
-  fos.write(aText, aText.length);
-  fos.close();
-}
-
-/**
- * Reads text from a file and returns the string.
- * @param   aFile
- *          The file to read from.
- * @returns The string of text read from the file.
- */
-function readFile(aFile) {
-  var fis = AUS_Cc["@mozilla.org/network/file-input-stream;1"].
-            createInstance(AUS_Ci.nsIFileInputStream);
-  if (!aFile.exists())
-    return null;
-  fis.init(aFile, MODE_RDONLY, PERMS_FILE, 0);
-  var sis = AUS_Cc["@mozilla.org/scriptableinputstream;1"].
-            createInstance(AUS_Ci.nsIScriptableInputStream);
-  sis.init(fis);
-  var text = sis.read(sis.available());
-  sis.close();
-  return text;
-}
-
-/**
- * Reads the binary contents of a file and returns is as a string.
- * @param   aFile
- *          The file to read from.
- * @returns The contents of the file as a string.
- */
-function readFileBytes(aFile) {
-  var fis = AUS_Cc["@mozilla.org/network/file-input-stream;1"].
-            createInstance(AUS_Ci.nsIFileInputStream);
-  fis.init(aFile, -1, -1, false);
-   var bis = AUS_Cc["@mozilla.org/binaryinputstream;1"].
-             createInstance(AUS_Ci.nsIBinaryInputStream);
-   bis.setInputStream(fis);
-   var data = [];
-   var count = fis.available();
-   while (count > 0) {
-     var bytes = bis.readByteArray(Math.min(65535, count));
-     data.push(String.fromCharCode.apply(null, bytes));
-     count -= bytes.length;
-     if (bytes.length == 0)
-       do_throw("Nothing read from input stream!");
-   }
-  data.join('');
-  fis.close();
-  return data.toString();
+  initUpdateServiceStub();
 }
 
 /* Custom path handler for the http server */
@@ -502,38 +180,31 @@ function pathHandler(metadata, response) {
   response.bodyOutputStream.write(gResponseBody, gResponseBody.length);
 }
 
-/* Returns human readable status text from the updates.properties bundle */
-function getStatusText(aErrCode) {
-  return getString("check_error-" + aErrCode);
-}
-
-/* Returns a string from the updates.properties bundle */
-function getString(aName) {
-  try {
-    return gUpdateBundle.GetStringFromName(aName);
-  }
-  catch (e) {
-  }
-  return null;
-}
-
 /**
- * Launches the updater binary to apply a mar file using the current working
- * directory for the location to apply the mar.
- * @param   aUpdatesDir
- *          The directory to copy the update mar, binary, etc.
- * @param   aUpdater
- *          The updater binary binary to copy to aUpdatesDir.
- * @returns The exit value returned from the updater binary.
+ * Helper function for updater tests for launching the updater binary to apply
+ * a mar file.
+ *
+ * @param   aTestID
+ *          A string used to identify the name of directories for a test.
+ * @return  The exit value returned from the updater binary.
  */
-function runUpdate(aUpdatesDir, aUpdater) {
-  // Copy the updater binary to the update directory so the updater.ini is not
-  // in the same directory as it is. This prevents the PostUpdate executable
-  // which is defined in the updater.ini from launching and the updater ui from
-  // displaying.
-  aUpdater.copyTo(aUpdatesDir, aUpdater.leafName);
-  var updateBin = aUpdatesDir.clone();
-  updateBin.append(aUpdater.leafName);
+function runUpdate(aTestID) {
+  // Copy the updater binary to the updates directory.
+  let binDir = getGREDir();
+  let updater = binDir.clone();
+  updater.append("updater.app");
+  if (!updater.exists()) {
+    updater = binDir.clone();
+    updater.append(UPDATER_BIN_FILE);
+    if (!updater.exists()) {
+      do_throw("Unable to find updater binary!");
+    }
+  }
+
+  let updatesDir = do_get_file(aTestID + UPDATES_DIR_SUFFIX, true);
+  updater.copyTo(updatesDir, updater.leafName);
+  let updateBin = updatesDir.clone();
+  updateBin.append(updater.leafName);
   if (updateBin.leafName == "updater.app") {
     updateBin.append("Contents");
     updateBin.append("MacOS");
@@ -542,20 +213,406 @@ function runUpdate(aUpdatesDir, aUpdater) {
       do_throw("Unable to find the updater executable!");
   }
 
-  var updatesDirPath = aUpdatesDir.path;
+  let updateBinPath = updateBin.path;
+  if (/ /.test(updateBinPath))
+    updateBinPath = '"' + updateBinPath + '"';
+
+  let updatesDirPath = updatesDir.path;
   if (/ /.test(updatesDirPath))
     updatesDirPath = '"' + updatesDirPath + '"';
 
-  var cwdPath = do_get_file("/", true).path;
+  let applyToDir = do_get_file(aTestID + APPLY_TO_DIR_SUFFIX, true);
+  let applyToDirPath = applyToDir.path;
+  if (/ /.test(applyToDirPath))
+    applyToDirPath = '"' + applyToDirPath + '"';
+
+  // The current working directory is set to the directory that doesn't contain
+  // files to test bug 600098 on Mac OS X. On trunk the directory to apply the
+  // update to is passed to the updater when it is launched.
+  let cwdPath = applyToDir.path;
   if (/ /.test(cwdPath))
     cwdPath = '"' + cwdPath + '"';
 
-  var process = AUS_Cc["@mozilla.org/process/util;1"].
+  let callbackApp = applyToDir.clone();
+  callbackApp.append(AFTER_APPLY_DIR);
+  callbackApp.append(CALLBACK_BIN_FILE);
+  callbackApp.permissions = PERMS_DIRECTORY;
+
+  let callbackAppPath = callbackApp.path;
+  if (/ /.test(callbackAppPath))
+    callbackAppPath = '"' + callbackAppPath + '"';
+
+  let launchBin = getLaunchBin();
+  let args;
+  if (IS_WIN) {
+    args = ["/D", "/Q", "/C", "cd", applyToDirPath, "&&", updateBinPath,
+            updatesDirPath, "0", cwdPath, callbackAppPath].concat(CALLBACK_ARGS);
+  }
+  else {
+    let arg2 = "cd " + applyToDirPath + "; " + updateBinPath + " " +
+               updatesDirPath + " 0 " + cwdPath + " " + callbackAppPath;
+    CALLBACK_ARGS.forEach(function(aArg) {
+      if (/ /.test(aArg))
+        arg2 += " \"" + aArg + "\"";
+      else
+        arg2 += " " + aArg;
+    });
+    args = ["-c", arg2];
+  }
+  logTestInfo("launching " + launchBin.path + " " + args.join(" "));
+  let process = AUS_Cc["@mozilla.org/process/util;1"].
                 createInstance(AUS_Ci.nsIProcess);
-  process.init(updateBin);
-  var args = [updatesDirPath, 0, cwdPath];
+  process.init(launchBin);
   process.run(true, args, args.length);
   return process.exitValue;
+}
+
+/**
+ * Gets the platform specific shell binary that is launched using nsIProcess and
+ * in turn launches the updater.
+ *
+ * @return  nsIFile for the shell binary to launch using nsIProcess.
+ * @throws  if the shell binary doesn't exist.
+ */
+function getLaunchBin() {
+  let launchBin;
+  if (IS_WIN) {
+    launchBin = Services.dirsvc.get("WinD", AUS_Ci.nsIFile);
+    launchBin.append("System32");
+    launchBin.append("cmd.exe");
+  }
+  else {
+    launchBin = AUS_Cc["@mozilla.org/file/local;1"].
+                createInstance(AUS_Ci.nsILocalFile);
+    launchBin.initWithPath("/bin/sh");
+  }
+
+  if (!launchBin.exists())
+    do_throw(launchBin.path + " must exist to run this test!");
+
+  return launchBin;
+}
+
+/**
+ * Helper function for updater tests for setting up the files and directories
+ * used by the updater tests.
+ *
+ * @param   aTestID
+ *          A string used to identify the name of directories for a test.
+ * @param   aMarFile
+ *          The mar file to copy the update mar to.
+ * @param   aTestFiles
+ *          An array of JavaScript objects representing the test files to create
+ *          for the test.
+ */
+function setupUpdaterTest(aTestID, aMarFile, aTestFiles) {
+  // Remove the directory where the updater, mar file, etc. will be copied to
+  let updatesDir = do_get_file(aTestID + UPDATES_DIR_SUFFIX, true);
+  try {
+    removeDirRecursive(updatesDir);
+  }
+  catch (e) {
+    dump("Unable to remove directory\n" +
+         "path: " + updatesDir.path + "\n" +
+         "Exception: " + e + "\n");
+  }
+  if (!updatesDir.exists()) {
+    updatesDir.create(AUS_Ci.nsIFile.DIRECTORY_TYPE, PERMS_DIRECTORY);
+  }
+
+  // Remove the directory where the update will be applied if it exists.
+  let applyToDir = do_get_file(aTestID + APPLY_TO_DIR_SUFFIX, true);
+  try {
+    removeDirRecursive(applyToDir);
+  }
+  catch (e) {
+    dump("Unable to remove directory\n" +
+         "path: " + applyToDir.path + "\n" +
+         "Exception: " + e + "\n");
+  }
+  logTestInfo("testing successful removal of the directory used to apply the " +
+              "mar file");
+  do_check_false(applyToDir.exists());
+
+  // Add the test files that will be updated for a successful update or left in
+  // the initial state for a failed update.
+  for (let i = 0; i < aTestFiles.length; i++) {
+    let f = aTestFiles[i];
+    if (f.originalFile || f.originalContents) {
+      let testDir = do_get_file(f.destinationDir, true);
+      if (!testDir.exists())
+        testDir.create(AUS_Ci.nsIFile.DIRECTORY_TYPE, PERMS_DIRECTORY);
+
+      let testFile;
+      if (f.originalFile) {
+        testFile = do_get_file(f.originalFile);
+        testFile.copyTo(testDir, f.fileName);
+        testFile = do_get_file(f.destinationDir + f.fileName);
+      }
+      else {
+        testFile = do_get_file(f.destinationDir + f.fileName, true);
+        writeFile(testFile, f.originalContents);
+      }
+
+      // Skip these tests on Windows (includes WinCE) and OS/2 since their
+      // implementaions of chmod doesn't really set permissions.
+      if (!IS_WIN && !IS_OS2 && f.originalPerms) {
+        testFile.permissions = f.originalPerms;
+        // Store the actual permissions on the file for reference later after
+        // setting the permissions.
+        if (!f.comparePerms)
+          f.comparePerms = testFile.permissions;
+      }
+    }
+  }
+
+  let afterApplyBinDir = applyToDir.clone();
+  afterApplyBinDir.append(AFTER_APPLY_DIR);
+
+  let helperBin = do_get_file(HELPER_BIN_FILE);
+  helperBin.copyTo(afterApplyBinDir, CALLBACK_BIN_FILE);
+
+  let updaterIniContents = "[Strings]\n" +
+                           "Title=Update XPCShell Test\n" +
+                           "Info=Application Update Test - " + aTestID + "\n";
+  let updaterIni = updatesDir.clone();
+  updaterIni.append(FILE_UPDATER_INI);
+  writeFile(updaterIni, updaterIniContents);
+  updaterIni.copyTo(afterApplyBinDir, FILE_UPDATER_INI);
+
+  // Copy the mar that will be applied
+  let mar = do_get_file(aMarFile);
+  mar.copyTo(updatesDir, FILE_UPDATE_ARCHIVE);
+}
+
+/**
+ * Helper function for updater tests for cleaning up the state after an updater
+ * test has finished.
+ *
+ * @param   aTestID
+ *          A string used to identify the name of directories for a test.
+ */
+function cleanupUpdaterTest(aTestID) {
+  let updatesDir = do_get_file(aTestID + UPDATES_DIR_SUFFIX, true);
+  try {
+    removeDirRecursive(updatesDir);
+  }
+  catch (e) {
+    dump("Unable to remove directory\n" +
+         "path: " + updatesDir.path + "\n" +
+         "Exception: " + e + "\n");
+  }
+
+  // Try to remove the updates and the apply to directories.
+  let applyToDir = do_get_file(aTestID + APPLY_TO_DIR_SUFFIX, true);
+  try {
+    removeDirRecursive(applyToDir);
+  }
+  catch (e) {
+    dump("Unable to remove directory\n" +
+         "path: " + applyToDir.path + "\n" +
+         "Exception: " + e + "\n");
+  }
+
+  cleanUp();
+}
+
+/**
+ * Helper function for updater tests for verifying the state of files and
+ * directories after a successful update.
+ *
+ * @param   aTestID
+ *          A string used to identify the name of directories for a test.
+ * @param   aTestFiles
+ *          An array of JavaScript objects representing the test files to create
+ *          for the test.
+ */
+function checkFilesAfterUpdateSuccess(aTestID, aTestFiles) {
+  logTestInfo("testing contents of files after a successful update");
+  for (let i = 0; i < aTestFiles.length; i++) {
+    let f = aTestFiles[i];
+    let testFile = do_get_file(f.destinationDir + f.fileName, true);
+    logTestInfo("testing file: " + testFile.path);
+    if (f.compareFile || f.compareContents) {
+      do_check_true(testFile.exists());
+
+      // Skip these tests on Windows (includes WinCE) and OS/2 since their
+      // implementaions of chmod doesn't really set permissions.
+      if (!IS_WIN && !IS_OS2 && f.comparePerms) {
+        // Check if the permssions as set in the complete mar file are correct.
+        let logPerms = "testing file permissions - ";
+        if (f.originalPerms) {
+          logPerms += "original permissions: " + f.originalPerms.toString(8) + ", ";
+        }
+        logPerms += "compare permissions : " + f.comparePerms.toString(8) + ", ";
+        logPerms += "updated permissions : " + testFile.permissions.toString(8);
+        logTestInfo(logPerms);
+        do_check_eq(testFile.permissions & 0xfff, f.comparePerms & 0xfff);
+      }
+
+      if (f.compareFile) {
+        do_check_eq(readFileBytes(testFile),
+                    readFileBytes(do_get_file(f.compareFile)));
+        if (f.originalFile) {
+          // Verify that readFileBytes returned the entire contents by checking
+          // the contents against the original file.
+          do_check_neq(readFileBytes(testFile),
+                       readFileBytes(do_get_file(f.originalFile)));
+        }
+      }
+      else {
+        do_check_eq(readFileBytes(testFile), f.compareContents);
+      }
+    }
+    else {
+      do_check_false(testFile.exists());
+    }
+  }
+
+  checkFilesAfterUpdateCommon(aTestID);
+}
+
+/**
+ * Helper function for updater tests for verifying the state of files and
+ * directories after a failed update.
+ *
+ * @param   aTestID
+ *          A string used to identify the name of directories for a test.
+ * @param   aTestFiles
+ *          An array of JavaScript objects representing the test files to create
+ *          for the test.
+ */
+function checkFilesAfterUpdateFailure(aTestID, aTestFiles) {
+  logTestInfo("testing contents of files after a failed update");
+  for (let i = 0; i < aTestFiles.length; i++) {
+    let f = aTestFiles[i];
+    let testFile = do_get_file(f.destinationDir + f.fileName, true);
+    logTestInfo("testing file: " + testFile.path);
+    if (f.compareFile || f.compareContents) {
+      do_check_true(testFile.exists());
+
+      // Skip these tests on Windows (includes WinCE) and OS/2 since their
+      // implementaions of chmod doesn't really set permissions.
+      if (!IS_WIN && !IS_OS2 && f.comparePerms) {
+        // Check the original permssions are retained on the file.
+        let logPerms = "testing file permissions - ";
+        if (f.originalPerms) {
+          logPerms += "original permissions: " + f.originalPerms.toString(8) + ", ";
+        }
+        logPerms += "compare permissions : " + f.comparePerms.toString(8) + ", ";
+        logPerms += "updated permissions : " + testFile.permissions.toString(8);
+        logTestInfo(logPerms);
+        do_check_eq(testFile.permissions & 0xfff, f.comparePerms & 0xfff);
+      }
+
+      if (f.compareFile) {
+        do_check_eq(readFileBytes(testFile),
+                    readFileBytes(do_get_file(f.compareFile)));
+      }
+      else {
+        do_check_eq(readFileBytes(testFile), f.compareContents);
+      }
+    }
+    else {
+      do_check_false(testFile.exists());
+    }
+  }
+
+  checkFilesAfterUpdateCommon(aTestID);
+}
+
+/**
+ * Helper function for updater tests for verifying patch files and moz-backup
+ * files aren't left behind after a successful or failed update.
+ *
+ * @param   aTestID
+ *          A string used to identify the name of directories for a test.
+ */
+function checkFilesAfterUpdateCommon(aTestID) {
+  logTestInfo("testing patch files should not be left behind");
+  let updatesDir = do_get_file(aTestID + UPDATES_DIR_SUFFIX, true);
+  let entries = updatesDir.QueryInterface(AUS_Ci.nsIFile).directoryEntries;
+  while (entries.hasMoreElements()) {
+    let entry = entries.getNext().QueryInterface(AUS_Ci.nsIFile);
+    do_check_neq(getFileExtension(entry), "patch");
+  }
+
+  logTestInfo("testing backup files should not be left behind");
+  let applyToDir = do_get_file(aTestID + APPLY_TO_DIR_SUFFIX, true);
+  checkFilesInDirRecursive(applyToDir, checkForBackupFiles);
+}
+
+/**
+ * Helper function for updater tests for verifying the contents of the updater
+ * callback application log which should contain the string executed and the
+ * arguments passed to the callback application.
+ */
+function checkCallbackAppLog(aTestID) {
+  let appLaunchLog = do_get_file(aTestID + APPLY_TO_DIR_SUFFIX + "/" +
+                                 CALLBACK_ARGS[0], true);
+  if (!appLaunchLog.exists()) {
+    do_execute_soon(function() {
+      checkCallbackAppLog(aTestID);
+    });
+    return;
+  }
+
+  let expectedLogContents = "executed\n" + CALLBACK_ARGS.join("\n") + "\n";
+  let logContents = readFile(appLaunchLog).replace(/\r\n/g, "\n");
+  // It is possible for the log file contents check to occur before the log file
+  // contents are completely written so wait until the contents are the expected
+  // value. If the contents are never the expected value then the test will
+  // fail by timing out.
+  if (logContents != expectedLogContents) {
+    do_execute_soon(function() {
+      checkCallbackAppLog(aTestID);
+    });
+    return;
+  }
+
+  logTestInfo("testing that the callback application successfully launched " +
+              "and the expected command line arguments passed to it");
+  do_check_eq(logContents, expectedLogContents);
+
+  do_test_finished();
+}
+
+/**
+ * Helper function for updater tests for verifying there are no update backup
+ * files left behind after an update.
+ *
+ * @param   aFile
+ *          An nsIFile to check if it has moz-backup for its extension.
+ */
+function checkForBackupFiles(aFile) {
+  do_check_neq(getFileExtension(aFile), "moz-backup");
+}
+
+/**
+ * Helper function for updater tests for recursively enumerating a directory and
+ * calls a callback function with the file as a parameter for each file found.
+ *
+ * @param   aDir
+ *          A nsIFile for the directory to be deleted
+ * @param   aCallback
+ *          A callback function that will be called with the file as a
+ *          parameter for each file found.
+ */
+function checkFilesInDirRecursive(aDir, aCallback) {
+  if (!aDir.exists())
+    do_throw("Directory must exist!");
+
+  let dirEntries = aDir.directoryEntries;
+  while (dirEntries.hasMoreElements()) {
+    let entry = dirEntries.getNext().QueryInterface(AUS_Ci.nsIFile);
+
+    if (entry.isDirectory()) {
+      checkFilesInDirRecursive(entry, aCallback);
+    }
+    else {
+      aCallback(entry);
+    }
+  }
 }
 
 /**
@@ -595,15 +652,13 @@ xhr.prototype = {
   _url: null,
   _method: null,
   open: function (method, url) {
-    gXHR.channel.originalURI = AUS_Cc["@mozilla.org/network/io-service;1"].
-                               getService(AUS_Ci.nsIIOService).
-                               newURI(url, null, null);
+    gXHR.channel.originalURI = Services.io.newURI(url, null, null);
     gXHR._method = method; gXHR._url = url;
   },
   responseXML: null,
   responseText: null,
   send: function(body) {
-    do_timeout(0, "gXHRCallback()"); // Use a timeout so the XHR completes
+    do_execute_soon(gXHRCallback); // Use a timeout so the XHR completes
   },
   _onprogress: null,
   set onprogress(val) { gXHR._onprogress = val; },
@@ -644,30 +699,30 @@ xhr.prototype = {
 
 /* Update check listener */
 const updateCheckListener = {
-  onProgress: function(request, position, totalSize) {
+  onProgress: function UCL_onProgress(request, position, totalSize) {
   },
 
-  onCheckComplete: function(request, updates, updateCount) {
+  onCheckComplete: function UCL_onCheckComplete(request, updates, updateCount) {
     gRequestURL = request.channel.originalURI.spec;
     gUpdateCount = updateCount;
     gUpdates = updates;
-    dump("onError: url = " + gRequestURL + ", " +
-         "request.status = " + request.status + ", " +
-         "update.statusText = " + request.statusText + ", " +
-         "updateCount = " + updateCount + "\n");
+    logTestInfo("url = " + gRequestURL + ", " +
+                "request.status = " + request.status + ", " +
+                "update.statusText = " + request.statusText + ", " +
+                "updateCount = " + updateCount);
     // Use a timeout to allow the XHR to complete
-    do_timeout(0, "gCheckFunc()");
+    do_execute_soon(gCheckFunc);
   },
 
-  onError: function(request, update) {
+  onError: function UCL_onError(request, update) {
     gRequestURL = request.channel.originalURI.spec;
     gStatusCode = request.status;
     gStatusText = update.statusText;
-    dump("onError: url = " + gRequestURL + ", " +
-         "request.status = " + gStatusCode + ", " +
-         "update.statusText = " + gStatusText + "\n");
+    logTestInfo("url = " + gRequestURL + ", " +
+                "request.status = " + gStatusCode + ", " +
+                "update.statusText = " + gStatusText);
     // Use a timeout to allow the XHR to complete
-    do_timeout(0, "gCheckFunc()");
+    do_execute_soon(gCheckFunc);
   },
 
   QueryInterface: function(aIID) {
@@ -679,105 +734,8 @@ const updateCheckListener = {
 };
 
 /**
- * Removes the updates directory, updates.xml file, and active-update.xml file
- * if they exist. This prevents some tests from failing due to files being left
- * behind when the tests are interrupted.
- */
-function removeUpdateDirsAndFiles() {
-  var appDir = getCurrentProcessDir();
-  var file = appDir.clone();
-  file.append("active-update.xml");
-  try {
-    if (file.exists())
-      file.remove(false);
-  }
-  catch (e) {
-    dump("Unable to remove file\npath: " + file.path +
-         "\nException: " + e + "\n");
-  }
-
-  file = appDir.clone();
-  file.append("updates.xml");
-  try {
-    if (file.exists())
-      file.remove(false);
-  }
-  catch (e) {
-    dump("Unable to remove file\npath: " + file.path +
-         "\nException: " + e + "\n");
-  }
-
-  file = appDir.clone();
-  file.append("updates");
-  file.append(FILE_LAST_LOG);
-  try {
-    if (file.exists())
-      file.remove(false);
-  }
-  catch (e) {
-    dump("Unable to remove file\npath: " + file.path +
-         "\nException: " + e + "\n");
-  }
-
-  file = appDir.clone();
-  file.append("updates");
-  file.append(FILE_BACKUP_LOG);
-  try {
-    if (file.exists())
-      file.remove(false);
-  }
-  catch (e) {
-    dump("Unable to remove file\npath: " + file.path +
-         "\nException: " + e + "\n");
-  }
-
-  // This fails sporadically on Mac OS X so wrap it in a try catch
-  var updatesDir = appDir.clone();
-  updatesDir.append("updates");
-  try {
-    removeDirRecursive(updatesDir);
-  }
-  catch (e) {
-    dump("Unable to remove directory\npath: " + updatesDir.path +
-         "\nException: " + e + "\n");
-  }
-}
-
-/**
- * Deletes a directory and its children. First it tries nsIFile::Remove(true).
- * If that fails it will fall back to recursing, setting the appropriate
- * permissions, and deleting the current entry.
- * @param   dir
- *          A nsIFile for the directory to be deleted
- */
-function removeDirRecursive(aDir) {
-  if (!aDir.exists())
-    return;
-  try {
-    aDir.remove(true);
-    return;
-  }
-  catch (e) {
-  }
-
-  var dirEntries = aDir.directoryEntries;
-  while (dirEntries.hasMoreElements()) {
-    var entry = dirEntries.getNext().QueryInterface(AUS_Ci.nsIFile);
-
-    if (entry.isDirectory()) {
-      removeDirRecursive(entry);
-    }
-    else {
-      entry.permissions = PERMS_FILE;
-      entry.remove(false);
-    }
-  }
-  aDir.permissions = PERMS_DIRECTORY;
-  aDir.remove(true);
-}
-
-/**
  * Helper for starting the http server used by the tests
+ *
  * @param   aRelativeDirName
  *          The directory name to register relative to
  *          toolkit/mozapps/update/test/unit/
@@ -806,6 +764,7 @@ function stop_httpserver(callback) {
 
 /**
  * Creates an nsIXULAppInfo
+ *
  * @param   id
  *          The ID of the test application
  * @param   name
@@ -853,30 +812,11 @@ function createAppInfo(id, name, version, platformVersion) {
                             XULAPPINFO_CONTRACTID, XULAppInfoFactory);
 }
 
-/**
- * Returns the Gecko Runtime Engine directory. This is used to locate the the
- * updater binary (Windows and Linux) or updater package (Mac OS X). For
- * XULRunner applications this is different than the currently running process
- * directory.
- */
-function getGREDir() {
-  return gDirSvc.get(NS_GRE_DIR, AUS_Ci.nsIFile);
-}
-
-/**
- * Returns the directory for the currently running process. This is used to
- * clean up after the tests and to locate the active-update.xml and updates.xml
- * files.
- */
-function getCurrentProcessDir() {
-  return gDirSvc.get(NS_XPCOM_CURRENT_PROCESS_DIR, AUS_Ci.nsIFile);
-}
-
 // On Vista XRE_UPDATE_ROOT_DIR can be a directory other than the one in the
 // application directory. This will reroute it back to the one in the
 // application directory.
 var gDirProvider = {
-  getFile: function(prop, persistent) {
+  getFile: function DP_getFile(prop, persistent) {
     persistent.value = true;
     if (prop == XRE_UPDATE_ROOT_DIR)
       return getCurrentProcessDir();
@@ -889,26 +829,4 @@ var gDirProvider = {
     throw AUS_Cr.NS_ERROR_NO_INTERFACE;
   }
 };
-gDirSvc.QueryInterface(AUS_Ci.nsIDirectoryService).registerProvider(gDirProvider);
-
-const INSTALL_LOCALE = "@AB_CD@";
-
-// These are placed at the end so they don't mess up line numbering
-
-#ifdef XP_WIN
-const IS_WIN = true;
-#else
-const IS_WIN = false;
-#endif
-
-#ifdef XP_OS2
-const IS_OS2 = true;
-#else
-const IS_OS2 = false;
-#endif
-
-#ifdef XP_MACOSX
-const IS_MACOSX = true;
-#else
-const IS_MACOSX = false;
-#endif
+Services.dirsvc.QueryInterface(AUS_Ci.nsIDirectoryService).registerProvider(gDirProvider);

@@ -215,6 +215,28 @@ nsresult nsMenuX::AddMenuItem(nsMenuItemX* aMenuItem)
   // set its command. we get the unique command id from the menubar
   [newNativeMenuItem setTag:mMenuBar->RegisterForCommand(aMenuItem)];
 
+  // On SnowLeopard, our Help menu items often get disabled when the user
+  // enters a password after waking from sleep or the screen saver.  Whether
+  // or not the user is prompted for a password is governed by the "Require
+  // password" setting in the Security pref panel.  For more information see
+  // bugs 513048 and 530633, and the comments above similar code in
+  // MyMenuEventHandler() below and nsMenuItemX::ObserveAttributeChanged().
+  if (nsToolkit::OnSnowLeopardOrLater() && nsMenuX::IsXULHelpMenu(mContent)) {
+    MenuRef helpMenuRef = _NSGetCarbonMenu(mNativeMenu);
+    if (helpMenuRef) {
+      NSInteger index = [mNativeMenu indexOfItem:newNativeMenuItem];
+      BOOL cocoaEnabled = [newNativeMenuItem isEnabled];
+      Boolean carbonEnabled = ::IsMenuItemEnabled(helpMenuRef, index + 1);
+      if (carbonEnabled != cocoaEnabled) {
+        if (!carbonEnabled) {
+          ::EnableMenuItem(helpMenuRef, index + 1);
+        } else {
+          ::DisableMenuItem(helpMenuRef, index + 1);
+        }
+      }
+    }
+  }
+
   return NS_OK;
 
   NS_OBJC_END_TRY_ABORT_BLOCK_NSRESULT;
@@ -735,6 +757,18 @@ NSMenuItem* nsMenuX::NativeMenuItem()
   return mNativeMenuItem;
 }
 
+PRBool nsMenuX::IsXULHelpMenu(nsIContent* aMenuContent)
+{
+  PRBool retval = PR_FALSE;
+  if (aMenuContent) {
+    nsAutoString id;
+    aMenuContent->GetAttr(kNameSpaceID_None, nsWidgetAtoms::id, id);
+    if (id.Equals(NS_LITERAL_STRING("helpMenu")))
+      retval = PR_TRUE;
+  }
+  return retval;
+}
+
 //
 // nsChangeObserver
 //
@@ -874,31 +908,27 @@ static pascal OSStatus MyMenuEventHandler(EventHandlerCallRef myHandler, EventRe
   // even though they're turned on in Cocoa.  (On SnowLeopard, system menus
   // are still implemented in Carbon (at least for for 32-bit apps), using the
   // undocumented NSCarbonMenuImpl class.)  The workaround for this is to do
-  // the following whenever a menu is opened:  If it's the Help menu, check
-  // Carbon and Cocoa enabled states of all its menu items.  If any of these
-  // states don't match, change the Carbon enabled state to match the Cocoa
-  // enabled state.
-  if (nsToolkit::OnSnowLeopardOrLater() && targetMenu && (kind == kEventMenuOpening)) {
-    nsCOMPtr<nsIContent> content(targetMenu->Content());
+  // the following whenever the Help menu is opened, or a Help menu item is
+  // added or changed:  Check the Carbon and Cocoa enabled states of each menu
+  // item.  If the states don't match, change the Carbon enabled state to
+  // match the Cocoa enabled state.
+  if (nsToolkit::OnSnowLeopardOrLater() && (kind == kEventMenuOpening) &&
+      targetMenu && nsMenuX::IsXULHelpMenu(targetMenu->Content())) {
     NSMenu *nativeMenu = static_cast<NSMenu*>(targetMenu->NativeData());
-    if (content && nativeMenu) {
-      nsAutoString id;
-      content->GetAttr(kNameSpaceID_None, nsWidgetAtoms::id, id);
-      if (id.Equals(NS_LITERAL_STRING("helpMenu"))) {
-        MenuRef helpMenuRef = _NSGetCarbonMenu(nativeMenu);
-        if (helpMenuRef) {
-          NSArray *items = [nativeMenu itemArray];
-          NSUInteger count = [items count];
-          for (NSUInteger i = 0; i < count; ++i) {
-            NSMenuItem *anItem = (NSMenuItem *) [items objectAtIndex:i];
-            BOOL cocoaEnabled = [anItem isEnabled];
-            Boolean carbonEnabled = ::IsMenuItemEnabled(helpMenuRef, i+1);
-            if (carbonEnabled != cocoaEnabled) {
-              if (!carbonEnabled) {
-                ::EnableMenuItem(helpMenuRef, i+1);
-              } else {
-                ::DisableMenuItem(helpMenuRef, i+1);
-              }
+    if (nativeMenu) {
+      MenuRef helpMenuRef = _NSGetCarbonMenu(nativeMenu);
+      if (helpMenuRef) {
+        NSArray *items = [nativeMenu itemArray];
+        NSUInteger count = [items count];
+        for (NSUInteger i = 0; i < count; ++i) {
+          NSMenuItem *anItem = (NSMenuItem *) [items objectAtIndex:i];
+          BOOL cocoaEnabled = [anItem isEnabled];
+          Boolean carbonEnabled = ::IsMenuItemEnabled(helpMenuRef, i + 1);
+          if (carbonEnabled != cocoaEnabled) {
+            if (!carbonEnabled) {
+              ::EnableMenuItem(helpMenuRef, i + 1);
+            } else {
+              ::DisableMenuItem(helpMenuRef, i + 1);
             }
           }
         }
@@ -914,13 +944,11 @@ static pascal OSStatus MyMenuEventHandler(EventHandlerCallRef myHandler, EventRe
     
     // don't request a menu item that doesn't exist or we crash
     // this might happen just due to some random quirks in the event system
-    PRUint32 itemCount;
-    targetMenu->GetVisibleItemCount(itemCount);
-    if (aPos >= itemCount)
+    nsMenuObjectX* target = targetMenu->GetVisibleItemAt((PRUint32)aPos);
+    if (!target)
       return eventNotHandledErr;
 
     // Send DOM event if we're over a menu item
-    nsMenuObjectX* target = targetMenu->GetVisibleItemAt((PRUint32)aPos);
     if (target->MenuObjectType() == eMenuItemObjectType) {
       nsMenuItemX* targetMenuItem = static_cast<nsMenuItemX*>(target);
       PRBool handlerCalledPreventDefault; // but we don't actually care

@@ -102,3 +102,16 @@ interface nsIScriptableUnicodeConverter : nsISupports
    */
   attribute string charset;
 };
+
+[scriptable, uuid(f7ed6618-5ff5-4f0b-bb83-48ce63eb289b)]
+interface nsIScriptableUnicodeConverter_1_9_BRANCH : nsIScriptableUnicodeConverter
+{
+  /**
+   * Internal use
+   *
+   * When this attribute is set, all charsets may be accessed.
+   * When it is not set (the default), charsets with the isXSSVulnerable flag
+   *  may not be accessed
+   */
+  attribute boolean isInternal;
+};

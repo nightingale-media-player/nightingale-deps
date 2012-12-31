@@ -22,6 +22,7 @@
 #
 # Contributor(s):
 #   Ben Goodger <ben@mozilla.org>
+#   Robert Strong <robert.bugzilla@gmail.com>
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -60,7 +61,8 @@
         onwizardfinish="gUpdates.onWizardFinish();"
         onwizardcancel="gUpdates.onWizardCancel();"
         onwizardnext="gUpdates.onWizardNext();"
-        onload="gUpdates.onLoad();">
+        onload="gUpdates.onLoad();"
+        onunload="gUpdates.onUnload();">
 
   <script type="application/javascript" src="chrome://global/content/contentAreaUtils.js"/>
   <script type="application/javascript" src="chrome://mozapps/content/update/updates.js"/>
@@ -77,7 +79,7 @@
               onpageshow="gCheckingPage.onPageShow();">
     <label>&updateCheck.label;</label>
     <separator class="thin"/>
-    <progressmeter id="checkingProgress" mode="undetermined" hidden="true"/>
+    <progressmeter id="checkingProgress" mode="undetermined"/>
   </wizardpage>
 
   <wizardpage id="pluginupdatesfound" pageid="pluginupdatesfound"
@@ -96,19 +98,10 @@
     <label id="noUpdatesAutoDisabled" hidden="true">&noupdatesautodisabled.intro;</label>
   </wizardpage>
 
-  <wizardpage id="incompatibleCheck" pageid="incompatibleCheck"
-              next="updatesfound" label="&incompatibleCheck.title;"
-              object="gIncompatibleCheckPage"
-              onpageshow="gIncompatibleCheckPage.onPageShow();">
-    <label>&incompatibleCheck.label;</label>
-    <separator class="thin"/>
-    <progressmeter id="incompatibleCheckProgress" mode="undetermined" hidden="true"/>
-  </wizardpage>
-
-  <wizardpage id="manualUpdate" pageid="manualUpdate"
-              label="&manualUpdate.title;" object="gManualUpdatePage"
+  <wizardpage id="manualUpdate" pageid="manualUpdate" object="gManualUpdatePage"
+              label="&manualUpdate.title;"
               onpageshow="gManualUpdatePage.onPageShow();">
-    <description>&manualUpdate.desc;</description>
+    <label>&manualUpdate.desc;</label>
     <separator class="thin"/>
     <label>&manualUpdateGetMsg.label;</label>
     <hbox>
@@ -117,32 +110,49 @@
     </hbox>
   </wizardpage>
 
-  <wizardpage id="updatesfound" pageid="updatesfound" next="license"
-              object="gUpdatesAvailablePage" label=""
-              onpageshow="gUpdatesAvailablePage.onPageShow();"
-              onextra1="gUpdatesAvailablePage.onExtra1();"
-              onextra2="gUpdatesAvailablePage.onExtra2();">
-    <description id="updateType"/>
+  <wizardpage id="incompatibleCheck" pageid="incompatibleCheck"
+              next="updatesfound" label="&incompatibleCheck.title;"
+              object="gIncompatibleCheckPage"
+              onpageshow="gIncompatibleCheckPage.onPageShow();">
+    <label>&incompatibleCheck.label;</label>
+    <separator class="thin"/>
+    <progressmeter id="incompatibleCheckProgress" mode="undetermined"/>
+  </wizardpage>
+
+  <wizardpage id="updatesfoundbasic" pageid="updatesfoundbasic"
+              object="gUpdatesFoundBasicPage" next="downloading" label=""
+              onpageshow="gUpdatesFoundBasicPage.onPageShow();"
+              onextra1="gUpdatesFoundBasicPage.onExtra1();"
+              onextra2="gUpdatesFoundBasicPage.onExtra2();">
+    <label id="updatesFoundInto"/>
     <separator class="thin"/>
     <label id="updateName" crop="right" value=""/>
     <separator id="updateNameSep" class="thin"/>
-    <description id="upgradeEvangelism">&evangelism.desc;</description>
+    <label id="upgradeEvangelism">&evangelism.desc;</label>
     <separator id="upgradeEvangelismSep" flex="1"/>
     <vbox flex="1">
-      <vbox id="moreInfoContent" flex="1">
-        <!-- note, the localized properties for this are prefixed by 
-             the id.  examples:  updateMoreInfoContentNotFound
-             and updateMoreInfoContentDownloading -->
-        <remotecontent id="updateMoreInfoContent" flex="1"/>
-      </vbox>
       <hbox id="moreInfoURL">
         <label class="text-link" id="updateMoreInfoURL" 
                value="&clickHere.label;" onclick="openUpdateURL(event);"/> 
       </hbox>
     </vbox>
   </wizardpage>
+
+  <wizardpage id="updatesfoundbillboard" pageid="updatesfoundbillboard"
+              object="gUpdatesFoundBillboardPage" next="downloading" label=""
+              onpageshow="gUpdatesFoundBillboardPage.onPageShow();"
+              onextra1="gUpdatesFoundBillboardPage.onExtra1();"
+              onextra2="gUpdatesFoundBillboardPage.onExtra2();">
+    <label id="updateType"/>
+    <vbox id="moreInfoContent" flex="1">
+      <!-- note, the localized properties for this are prefixed by 
+           the id.  examples:  updateMoreInfoContentNotFound
+           and updateMoreInfoContentDownloading -->
+      <remotecontent id="updateMoreInfoContent" flex="1"/>
+    </vbox>
+  </wizardpage>
   
-  <wizardpage id="license" pageid="license" next="incompatibleList"
+  <wizardpage id="license" pageid="license" next="downloading"
               object="gLicensePage" label="&license.titleText;"
               onpageshow="gLicensePage.onPageShow();"
               onextra1="gLicensePage.onExtra1();">
@@ -168,17 +178,16 @@
               object="gIncompatibleListPage"
               onpageshow="gIncompatibleListPage.onPageShow();"
               onextra1="gIncompatibleListPage.onExtra1();">
-    <description id="incompatibleListDesc"/>
+    <label id="incompatibleListDesc"/>
     <separator class="thin"/>
-    <listbox id="incompatibleList.listbox" flex="1"/>
+    <listbox id="incompatibleListbox" flex="1"/>
   </wizardpage>
 
-  <wizardpage id="downloading" pageid="downloading" next="finished"
+  <wizardpage id="downloading" pageid="downloading"
               object="gDownloadingPage" label="&downloading.title;"
               onpageshow="gDownloadingPage.onPageShow();"
               onextra1="gDownloadingPage.onHide();">
     <hbox id="downloadStatusTop">
-      <image id="downloadThrobber"/>
       <label id="downloadName" crop="right">&downloading.intro;</label>
       <spacer flex="1"/>
       <label id="downloadDetailsLink" class="text-link"
@@ -186,18 +195,18 @@
     </hbox>
     <separator class="thin"/>
     <hbox id="downloadStatusProgress">
-      <progressmeter id="downloadProgress" mode="undetermined" flex="1" hidden="true"/>
+      <progressmeter id="downloadProgress" mode="undetermined" flex="1"/>
       <button id="pauseButton" oncommand="gDownloadingPage.onPause();"
               paused="false"/>
     </hbox>
     <separator class="thin"/>
     <hbox id="downloadStatusLine">
-      <description id="downloadStatus" flex="1">&connecting.label;</description>
+      <label id="downloadStatus" flex="1">&connecting.label;</label>
     </hbox>
     <separator/>
     <hbox id="verificationFailed" align="start" hidden="true">
       <image id="verificationFailedIcon"/>
-      <description flex="1">&verificationFailedText.label;</description>
+      <label flex="1">&verificationFailedText.label;</label>
     </hbox>
   </wizardpage>
   
@@ -216,7 +225,8 @@
   </wizardpage>
   
   <wizardpage id="errorpatching" pageid="errorpatching" next="downloading"
-              label="&errorpatching.title;" object="gErrorsPage">
+              label="&errorpatching.title;" object="gErrorPatchingPage"
+              onpageshow="gErrorPatchingPage.onPageShow();">
     <label>&errorpatching.intro;</label>
   </wizardpage>
   

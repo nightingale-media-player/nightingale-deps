@@ -1,0 +1,10 @@
+#include "nsISupports.idl"
+
+[scriptable, uuid(95464a04-6949-46cb-b621-d167790704a0)]
+interface nsITestCrasher : nsISupports
+{
+  void crash(in short how);
+
+  const short CRASH_INVALID_POINTER_DEREF  = 0;
+  const short CRASH_PURE_VIRTUAL_CALL      = 1;
+};

@@ -1,0 +1,16 @@
+<html>
+<head>
+<title>Untitled</title>
+</head>
+<body>
+
+
+<iframe id="content" src="data:application/vnd.mozilla.xul+xml;charset=utf-8,%3C%3Fxml-stylesheet%20href%3D%22chrome%3A//browser/skin/%22%20type%3D%22text/css%22%3F%3E%0A%3Cwindow%20xmlns%3D%22http%3A//www.mozilla.org/keymaster/gatekeeper/there.is.only.xul%22%20xmlns%3Ahtml%3D%22http%3A//www.w3.org/1999/xhtml%22%3E%0A%3Ciframe%20type%3D%22a%22%3E%3C/iframe%3E%0A%0A%3Cscript%3E%3C%21%5BCDATA%5B%0AsetTimeout%28function%28%29%20%7B%0Aparent.document.getElementById%28%27content2%27%29.contentDocument.documentElement.appendChild%28document.documentElement%29%3B%0Aparent.document.getElementById%28%27content2%27%29.contentWindow.location.reload%28%29%3B%0A%7D%2C%20100%29%3B%0A%0AsetInterval%28function%28%29%20%7B%0Afor%20%28var%20i%3D0%3Bi%20%3C%206%3B%20i++%29%20%7Bthrow%28%27t%27%29%3B%7D%0A%7D%2C30%29%3B%0A%0Avar%20all%20%3D%20document.getElementsByTagName%28%27*%27%29%3B%0Avar%20iframe%20%3D%20all%5B1%5D%3B%0A%0Afunction%20doe%28node%29%20%7B%0Anode.removeAttributeNode%28node.attributes%5B0%5D%29%3B%0A%7D%0A%0AsetTimeout%28function%28%29%20%7B%0Adoe%28iframe%29%3B%0A%7D%2C150%29%3B%0A%0A%5D%5D%3E%3C/script%3E%0A%3C/window%3E"></iframe><br><br>
+<iframe id="content2"></iframe><br><br>
+
+<script>
+setInterval(function() {window.frames[0].location.reload();}, 500);
+setInterval(function() {window.location.reload();}, 5000);
+</script>
+</body>
+</html>

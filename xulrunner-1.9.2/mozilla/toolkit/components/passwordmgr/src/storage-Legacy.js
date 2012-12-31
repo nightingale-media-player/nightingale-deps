@@ -827,7 +827,16 @@ LoginManagerStorage_legacy.prototype = {
         // (Don't do this if it's a form login, though.)
         if (username && !isFormLogin) {
             if (isMailNews.test(aLogin.hostname))
-                username = decodeURIComponent(username);
+                try {
+                    username = decodeURIComponent(username);
+                }
+                catch (ex) {
+                    // It has been seen that some usernames cannot be decoded
+                    // on upgrade, so if hit the case, log it and re-throw so
+                    // that we can handle it in the caller.
+                    this.log("Error decoding \"" + username + "\": " + ex);
+                    throw(ex);
+                }
 
             var [encUsername, userCanceled] = this._encrypt(username);
             if (!userCanceled)
@@ -1071,9 +1080,17 @@ LoginManagerStorage_legacy.prototype = {
                 // Upgrading an entry to 2E can sometimes result in the need
                 // to create an extra login.
                 var entries = [entry];
-                if (formatVersion < 0x2e)
-                    entries = this._upgrade_entry_to_2E(entry);
-
+                if (formatVersion < 0x2e) {
+                    try {
+                      entries = this._upgrade_entry_to_2E(entry);
+                    }
+                    catch (ex) {
+                      // For some reason we couldn't decode this entry,
+                      // therefore, drop it and carry on so that we can
+                      // hopefully translate the other entries.
+                      entries = [];
+                    }
+                }
 
                 for each (var e in entries) {
                     if (!this._logins[e.hostname])

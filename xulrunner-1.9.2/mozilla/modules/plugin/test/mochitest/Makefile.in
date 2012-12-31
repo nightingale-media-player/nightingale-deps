@@ -45,28 +45,88 @@ include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/rules.mk
 
 _MOCHITEST_FILES = \
-		test_npobject_getters.html \
-		loremipsum.txt \
-		loremipsum_file.txt \
-		post.sjs \
-		pluginstream.js \
-		test_painting.html \
-		test_pluginstream_src.html \
-		test_pluginstream_geturl.html \
-		test_pluginstream_geturlnotify.html \
-		test_pluginstream_asfile.html \
-		test_pluginstream_asfileonly.html \
-		test_pluginstream_post.html \
-		test_pluginstream_poststream.html \
-		test_pluginstream_seek.html \
-		$(NULL)
+  test_getauthenticationinfo.html \
+  test_npobject_getters.html \
+  test_npruntime_npnevaluate.html \
+  test_npruntime_npninvoke.html \
+  test_npruntime_npninvokedefault.html \
+  test_npruntime_identifiers.html \
+  loremipsum.txt \
+  loremipsum_file.txt \
+  loremipsum_nocache.txt \
+  loremipsum_nocache.txt^headers^ \
+  post.sjs \
+  pluginstream.js \
+  plugin_window.html \
+  test_painting.html \
+  test_pluginstream_err.html \
+  test_pluginstream_src.html \
+  test_pluginstream_geturl.html \
+  test_pluginstream_geturlnotify.html \
+  test_pluginstream_asfile.html \
+  test_pluginstream_asfileonly.html \
+  test_pluginstream_post.html \
+  test_pluginstream_poststream.html \
+  test_pluginstream_seek.html \
+  test_pluginstream_newstream.html \
+  test_fullpage.html \
+  loremipsum.xtest \
+  loremipsum.xtest^headers^ \
+  test_multipleinstanceobjects.html \
+  test_streamNotify.html \
+  test_instantiation.html \
+  test_cookies.html \
+  test_npn_asynccall.html \
+  test_bug532208.html \
+  large-pic.jpg \
+  test_twostreams.html \
+  test_streamatclose.html \
+  neverending.sjs \
+  test_newstreamondestroy.html \
+  test_propertyAndMethod.html \
+  test_enumerate.html \
+  $(NULL)
+
+#  test_npruntime_npnsetexception.html \ Disabled for e10s
+
+ifdef MOZ_IPC
+_MOCHITEST_FILES += \
+  test_crashing.html \
+  test_crashing2.html \
+  test_hanging.html \
+  crashing_subpage.html \
+  test_GCrace.html \
+  $(NULL)
+endif
+
+ifeq ($(OS_ARCH),WINNT)
+_MOCHITEST_FILES += \
+  test_windowed_invalidate.html \
+  $(NULL)
+endif
 
 _MOCHICHROME_FILES = \
-		test_bug479979.xul \
-		test_npruntime.xul   \
-		test_privatemode.xul \
-		test_wmode.xul \
+  test_bug479979.xul \
+  test_npruntime.xul   \
+  test_privatemode.xul \
+  test_wmode.xul \
+  $(NULL)
+
+ifeq (gtk2,$(MOZ_WIDGET_TOOLKIT))
+_MOCHITEST_FILES += \
+		test_copyText.html \
 		$(NULL)
+endif
+
+ifdef MOZ_IPC
+ifdef MOZ_CRASHREPORTER
+_MOCHICHROME_FILES += \
+  test_crash_notify.xul \
+  test_crash_notify_no_report.xul \
+  test_crash_submit.xul \
+  $(NULL)
+endif
+endif
 
 libs:: $(_MOCHICHROME_FILES)
 	$(INSTALL) $^ $(DEPTH)/_tests/testing/mochitest/chrome/$(relativesrcdir)

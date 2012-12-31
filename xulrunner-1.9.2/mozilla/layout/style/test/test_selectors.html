@@ -647,6 +647,13 @@ function run() {
     test_parseable(":-moz-lwtheme-brighttext");
     test_parseable(":-moz-lwtheme-darktext");
 
+    // Plugin pseudoclasses
+    test_parseable(":-moz-type-unsupported");
+    test_parseable(":-moz-handler-disabled");
+    test_parseable(":-moz-handler-blocked");
+    test_parseable(":-moz-handler-crashed");
+    test_parseable(":-moz-has-handlerref");
+
     run_deferred_tests();
 }
 

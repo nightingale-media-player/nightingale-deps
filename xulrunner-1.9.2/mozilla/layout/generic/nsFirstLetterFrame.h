@@ -47,6 +47,8 @@
 class nsFirstLetterFrame : public nsFirstLetterFrameSuper {
 public:
   NS_DECL_FRAMEARENA_HELPERS
+  NS_DECL_QUERYFRAME_TARGET(nsFirstLetterFrame)
+  NS_DECL_QUERYFRAME
 
   nsFirstLetterFrame(nsStyleContext* aContext) : nsHTMLContainerFrame(aContext) {}
 
@@ -92,6 +94,15 @@ public:
                                            nsIFrame **outChildFrame);
 
   nscoord GetFirstLetterBaseline() const { return mBaseline; }
+
+  // For floating first letter frames, create a continuation for aChild and
+  // place it in the correct place. aContinuation is an outparam for the
+  // continuation that is created. aIsFluid determines if the continuation is
+  // fluid or not.
+  nsresult CreateContinuationForFloatingParent(nsPresContext* aPresContext,
+                                               nsIFrame* aChild,
+                                               nsIFrame** aContinuation,
+                                               PRBool aIsFluid);
 
 protected:
   nscoord mBaseline;

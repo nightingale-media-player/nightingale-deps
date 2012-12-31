@@ -2159,6 +2159,15 @@ nsChromeRegistry::ProcessManifestBuffer(char *buf, PRInt32 length,
       rv = rph->SetSubstitution(host, resolved);
       NS_ENSURE_SUCCESS(rv, rv);
     }
+    else if (!strcmp(token, "binary-component") ||
+             !strcmp(token, "interfaces") ||
+             !strcmp(token, "component") ||
+             !strcmp(token, "contract") ||
+             !strcmp(token, "category") ||
+             !strcmp(token, "manifest")){
+      // Ignore directives used only in Gecko 2.0
+      continue;
+    }
     else {
       LogMessageWithContext(manifestURI, line, nsIScriptError::warningFlag,
                             "Warning: Ignoring unrecognized chrome manifest instruction.");

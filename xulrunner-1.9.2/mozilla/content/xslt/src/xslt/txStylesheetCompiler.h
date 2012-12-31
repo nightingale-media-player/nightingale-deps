@@ -118,6 +118,18 @@ public:
     }
 
     // Stack functions
+    enum enumStackType
+    {
+      eElementHandler,
+      eHandlerTable,
+      eVariableItem,
+      eCopy,
+      eInstruction,
+      ePushNewContext,
+      eConditionalGoto,
+      eCheckParam,
+      ePushNullTemplateRule
+    };
     nsresult pushHandlerTable(txHandlerTable* aTable);
     void popHandlerTable();
     nsresult pushSorter(txPushNewContext* aSorter);
@@ -126,8 +138,8 @@ public:
     void popChooseGotoList();
     nsresult pushObject(TxObject* aObject);
     TxObject* popObject();
-    nsresult pushPtr(void* aPtr);
-    void* popPtr();
+    nsresult pushPtr(void* aPtr, enumStackType aType);
+    void* popPtr(enumStackType aType);
 
     // stylesheet functions
     nsresult addToplevelItem(txToplevelItem* aItem);
@@ -187,6 +199,7 @@ protected:
     PRPackedBool mDoneWithThisStylesheet;
     txStack mObjectStack;
     txStack mOtherStack;
+    nsTArray<enumStackType> mTypeStack;
 
 private:
     txInstruction** mNextInstrPtr;

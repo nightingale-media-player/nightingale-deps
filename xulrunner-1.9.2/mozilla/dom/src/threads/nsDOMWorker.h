@@ -64,6 +64,7 @@ class nsDOMWorkerTimeout;
 class nsICancelable;
 class nsIDOMEventListener;
 class nsIEventTarget;
+class nsIRunnable;
 class nsIScriptGlobalObject;
 class nsIXPConnectWrappedNative;
 
@@ -112,16 +113,12 @@ class nsDOMWorker : public nsDOMWorkerMessageHandler,
   friend class nsDOMWorkerXHR;
   friend class nsDOMWorkerXHRProxy;
   friend class nsReportErrorRunnable;
+  friend class nsDOMFireEventRunnable;
 
   friend JSBool DOMWorkerOperationCallback(JSContext* aCx);
   friend void DOMWorkerErrorReporter(JSContext* aCx,
                                      const char* aMessage,
                                      JSErrorReport* aReport);
-
-#ifdef DEBUG
-  // For fun assertions.
-  friend class nsDOMFireEventRunnable;
-#endif
 
 public:
   NS_DECL_ISUPPORTS_INHERITED
@@ -153,7 +150,9 @@ public:
   void Suspend();
   void Resume();
 
+  // This just calls IsCanceledNoLock with an autolock around the call.
   PRBool IsCanceled();
+
   PRBool IsClosing();
   PRBool IsSuspended();
 
@@ -276,6 +275,12 @@ private:
     return mLocation;
   }
 
+  PRBool QueueSuspendedRunnable(nsIRunnable* aRunnable);
+
+  // Determines if the worker should be considered "canceled". See the large
+  // comment in the implementation for more details.
+  PRBool IsCanceledNoLock();
+
 private:
 
   // mParent will live as long as mParentWN but only mParentWN will keep the JS
@@ -314,6 +319,8 @@ private:
   nsCOMPtr<nsITimer> mKillTimer;
 
   nsCOMPtr<nsIWorkerLocation> mLocation;
+
+  nsTArray<nsCOMPtr<nsIRunnable> > mQueuedRunnables;
 
   PRPackedBool mSuspended;
   PRPackedBool mCompileAttempted;

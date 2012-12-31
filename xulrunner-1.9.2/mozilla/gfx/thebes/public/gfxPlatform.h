@@ -226,6 +226,16 @@ public:
      */
     virtual PRBool DownloadableFontsEnabled();
 
+    /**
+     * Whether to sanitize downloaded fonts using the OTS library
+     */
+    PRBool SanitizeDownloadedFonts();
+
+    /**
+     * Whether to preserve OpenType layout tables when sanitizing
+     */
+    PRBool PreserveOTLTablesWhenSanitizing();
+
     // check whether format is supported on a platform or not (if unclear, returns true)
     virtual PRBool IsFontFormatSupported(nsIURI *aFontURI, PRUint32 aFormatFlags) { return PR_FALSE; }
 

@@ -4,12 +4,13 @@
 
 #include "config.h"
 
-#ifdef HAVE_STDINT_H
+#if defined AIX && HAVE_SYS_INTTYPES_H
+#include <sys/types.h>
+#elif defined HAVE_STDINT_H
 #include <stdint.h>
 #endif
 
 #include "dirac.h"
-
 
 typedef struct
 dirac_bs_s

@@ -68,6 +68,31 @@
 typedef NS_NPAPIPLUGIN_CALLBACK(const char *, NP_GETMIMEDESCRIPTION) ();
 typedef NS_NPAPIPLUGIN_CALLBACK(OSErr, BP_GETSUPPORTEDMIMETYPES) (BPSupportedMIMETypes *mimeInfo, UInt32 flags);
 
+#define MAC_OS_X_VERSION_10_4_HEX 0x00001040
+#define MAC_OS_X_VERSION_10_5_HEX 0x00001050
+#define MAC_OS_X_VERSION_10_6_HEX 0x00001060
+#define MAC_OS_X_VERSION_10_7_HEX 0x00001070
+
+static PRInt32 OSXVersion()
+{
+  static PRInt32 gOSXVersion = 0x0;
+  if (gOSXVersion == 0x0) {
+    OSErr err = ::Gestalt(gestaltSystemVersion, (SInt32*)&gOSXVersion);
+    if (err != noErr) {
+      // This should probably be changed when our minimum version changes
+      NS_ERROR("Couldn't determine OS X version, assuming 10.4");
+      gOSXVersion = MAC_OS_X_VERSION_10_4_HEX;
+    } else {
+      gOSXVersion &= 0xFFFF; // The system version is in the low order word
+    }
+  }
+  return gOSXVersion;
+}
+
+static PRBool OnLionOrLater()
+{
+    return (OSXVersion() >= MAC_OS_X_VERSION_10_7_HEX) ? PR_TRUE : PR_FALSE;
+}
 
 /*
 ** Returns a CFBundleRef if the path refers to a Mac OS X bundle directory.
@@ -139,7 +164,14 @@ PRBool nsPluginsDir::IsPluginFile(nsIFile* file)
     NS_WARNING("Preventing load of VerifiedDownloadPlugin.plugin (see bug 436575)");
     return PR_FALSE;
   }
-    
+  // If we're running on OS X Lion (10.7) or later, don't load the Java Embedding
+  // Plugin (any version).  If/when Steven Michaud releases a version of the JEP that
+  // works on Lion, we'll need to revise this code.  See bug 670655.
+  if (OnLionOrLater() && !strcmp(temp.get(), "MRJPlugin.plugin")) {
+    NS_WARNING("Preventing load of Java Embedding Plugin (MRJPlugin.plugin) on OS X Lion (see bug 670655)");
+    return PR_FALSE;
+  }
+
   CFURLRef pluginURL = NULL;
   if (NS_FAILED(toCFURLRef(file, pluginURL)))
     return PR_FALSE;

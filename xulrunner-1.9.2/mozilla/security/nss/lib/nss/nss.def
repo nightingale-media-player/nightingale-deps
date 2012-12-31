@@ -997,3 +997,19 @@ CERT_DupDistNames;
 ;+    local:
 ;+       *;
 ;+};
+;+NSS_3.12.7 { 	# NSS 3.12.7 release
+;+    global:
+CERT_GetConstrainedCertificateNames;
+;+    local:
+;+       *;
+;+};
+;+NSS_3.12.9 {  # NSS 3.12.9 release
+;+    global:
+CERT_FindCertByNicknameOrEmailAddrForUsage;
+PK11_DeriveWithTemplate;
+PK11_FindCertsFromEmailAddress;
+PK11_KeyGenWithTemplate;
+SECMOD_RestartModules;
+;+    local:
+;+       *;
+;+};

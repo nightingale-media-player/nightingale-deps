@@ -653,6 +653,82 @@ loser:
     return NULL;
 }
 
+/* Traverse slots callback */
+typedef struct FindCertsEmailArgStr {
+    char         *email;
+    CERTCertList *certList;
+} FindCertsEmailArg;
+
+SECStatus 
+FindCertsEmailCallback(CERTCertificate *cert, SECItem *item, void *arg)
+{
+    FindCertsEmailArg *cbparam = (FindCertsEmailArg *) arg;	
+    const char *cert_email = CERT_GetFirstEmailAddress(cert);
+    PRBool found = PR_FALSE;
+
+    /* Email address present in certificate? */
+    if (cert_email == NULL){
+	return SECSuccess;
+    }
+ 
+    /* Parameter correctly set? */
+    if (cbparam->email == NULL) {
+	return SECFailure;
+    }
+
+    /* Loop over all email addresses */
+    do {
+	if (!strcmp(cert_email, cbparam->email)) {
+	    /* found one matching email address */
+	    PRTime now = PR_Now();
+	    found = PR_TRUE;
+	    CERT_AddCertToListSorted(cbparam->certList, 
+	                             CERT_DupCertificate(cert),
+			             CERT_SortCBValidity, &now);
+	}
+	cert_email = CERT_GetNextEmailAddress(cert, cert_email);
+    } while (cert_email && !found);   
+
+    return SECSuccess;
+}
+
+/* Find all certificates with matching email address */
+CERTCertList *
+PK11_FindCertsFromEmailAddress(const char *email, void *wincx) 
+{
+    FindCertsEmailArg cbparam;
+    SECStatus rv;
+
+    cbparam.certList = CERT_NewCertList();
+    if (cbparam.certList == NULL) {
+	return NULL;
+    }
+
+    cbparam.email = CERT_FixupEmailAddr(email);
+    if (cbparam.email == NULL) {
+	CERT_DestroyCertList(cbparam.certList);
+	return NULL;
+    }
+
+    rv = PK11_TraverseSlotCerts(FindCertsEmailCallback, &cbparam, NULL); 	
+    if (rv != SECSuccess) {
+	CERT_DestroyCertList(cbparam.certList);
+	PORT_Free(cbparam.email);
+	return NULL;
+    }
+
+    /* empty list? */
+    if (CERT_LIST_HEAD(cbparam.certList) == NULL || 
+        CERT_LIST_END(CERT_LIST_HEAD(cbparam.certList), cbparam.certList)) {
+	CERT_DestroyCertList(cbparam.certList);
+	cbparam.certList = NULL;
+    }
+
+    PORT_Free(cbparam.email);
+    return cbparam.certList;
+}
+
+
 CERTCertList *
 PK11_FindCertsFromNickname(const char *nickname, void *wincx) 
 {
@@ -2477,11 +2553,10 @@ PK11_ListCertsInSlot(PK11SlotInfo *slot)
 PK11SlotList *
 PK11_GetAllSlotsForCert(CERTCertificate *cert, void *arg)
 {
-    NSSCertificate *c = STAN_GetNSSCertificate(cert);
-    /* add multiple instances to the cert list */
     nssCryptokiObject **ip;
-    nssCryptokiObject **instances = nssPKIObject_GetInstances(&c->object);
     PK11SlotList *slotList;
+    NSSCertificate *c;
+    nssCryptokiObject **instances;
     PRBool found = PR_FALSE;
 
     if (!cert) {
@@ -2489,6 +2564,14 @@ PK11_GetAllSlotsForCert(CERTCertificate *cert, void *arg)
 	return NULL;
     }
 
+    c = STAN_GetNSSCertificate(cert);
+    if (!c) {
+	CERT_MapStanError();
+	return NULL;
+    }
+
+    /* add multiple instances to the cert list */
+    instances = nssPKIObject_GetInstances(&c->object);
     if (!instances) {
 	PORT_SetError(SEC_ERROR_NO_TOKEN);
 	return NULL;

@@ -1,0 +1,22 @@
+diff --git a/media/liboggplay/src/liboggplay/oggplay_data.c b/media/liboggplay/src/liboggplay/oggplay_data.c
+--- a/media/liboggplay/src/liboggplay/oggplay_data.c
++++ b/media/liboggplay/src/liboggplay/oggplay_data.c
+@@ -404,17 +404,17 @@ get_uv_offset(OggPlayTheoraDecode *decod
+   if (decode->y_height != 0 &&
+       decode->uv_height != 0 &&
+       decode->y_height/decode->uv_height != 0) {
+     yo = (buffer->uv_stride)*(decode->video_info.offset_y/(decode->y_height/decode->uv_height));
+   }
+   return xo + yo;
+ }
+ 
+-int
++OggPlayErrorCode
+ oggplay_data_handle_theora_frame (OggPlayTheoraDecode *decode,
+                                   const yuv_buffer *buffer) {
+ 
+   size_t                size = sizeof (OggPlayVideoRecord);
+   int                   i, ret;
+   long                  y_size, uv_size, y_offset, uv_offset;
+   unsigned char       * p;
+   unsigned char       * q;

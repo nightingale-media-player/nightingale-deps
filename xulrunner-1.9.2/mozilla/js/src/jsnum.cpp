@@ -518,8 +518,11 @@ num_toLocaleString(JSContext *cx, uintN argc, jsval *vp)
         strcpy(tmpDest, nint);
     }
 
-    if (cx->localeCallbacks && cx->localeCallbacks->localeToUnicode)
-        return cx->localeCallbacks->localeToUnicode(cx, buf, vp);
+    if (cx->localeCallbacks && cx->localeCallbacks->localeToUnicode) {
+        JSBool ok = cx->localeCallbacks->localeToUnicode(cx, buf, vp);
+        cx->free(buf);
+        return ok;
+    }
 
     str = JS_NewString(cx, buf, size);
     if (!str) {

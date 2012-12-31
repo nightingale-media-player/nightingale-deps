@@ -154,13 +154,18 @@ function expectFocusShift(callback, expectedWindow, expectedElement, focusChange
     if (testid == "mouse on html label with content inside")
       expectedEvents += " commandupdate: cu";
 
-    if (expectedElement && expectedElement.id != "t" + kChildDocumentRootIndex &&
+    if (expectedElement &&
         (!gNewExpectedWindow || gNewExpectedWindow.document.documentElement != expectedElement)) {
-      if (expectedEvents)
-        expectedEvents += " ";
-      if (!gNewExpectedWindow)
-        expectedEvents += "commandupdate: cu ";
-      expectedEvents += "focus: " + expectedElement.id;
+      if (!gNewExpectedWindow) {
+        if (expectedEvents)
+          expectedEvents += " ";
+        expectedEvents += "commandupdate: cu";
+      }
+      if (expectedElement.id != "t" + kChildDocumentRootIndex) {
+        if (expectedEvents)
+          expectedEvents += " ";
+        expectedEvents += "focus: " + expectedElement.id;
+      }
     }
     else if (expectedWindow && gLastFocusWindow != expectedWindow &&
              !expectedElement) {
@@ -908,6 +913,10 @@ function testMoveFocus()
   var selection = gChildWindow.getSelection();
   selection.removeAllRanges();
 
+  newFocus = fm.moveFocus(gChildWindow, null, fm.MOVEFOCUS_CARET, 0);
+  is(newFocus, null, "move caret when at document root");
+  is(fm.focusedElement, null, "move caret when at document root");
+
   var node = getById("t16").firstChild;
   var range = gChildWindow.document.createRange();
   range.setStart(node, 3);
@@ -918,11 +927,11 @@ function testMoveFocus()
   is(newFocus, null, "move caret to non-link return value");
   is(fm.focusedElement, null, "move caret to non-link");
 
-  var t25 = getById("t25")
+  var t25 = getById("t25");
   var node = t25.firstChild;
   range.setStart(node, 1);
   range.setEnd(node, 1);
-  var newFocus = fm.moveFocus(gChildWindow, null, fm.MOVEFOCUS_CARET, 0);
+  newFocus = fm.moveFocus(gChildWindow, null, fm.MOVEFOCUS_CARET, 0);
 
   is(newFocus, t25, "move caret to link return value");
   is(fm.focusedElement, t25, "move caret to link focusedElement");
@@ -1428,7 +1437,6 @@ function doFrameHistoryTests()
   var t20 = getById("t20");
   t20.focus();
 
-  addEventListener("message", function() { $("childframe").goBack(); }, true);
   gChildWindow.addEventListener("focus",
     function(event) {
       if (event.target == t20) {
@@ -1437,11 +1445,7 @@ function doFrameHistoryTests()
   }, true);
 
   // make sure that loading a new page and then going back maintains the focus
-  gChildWindow.location = "data:text/html,<html><body onload='window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)." +
-                          "getInterface(Components.interfaces.nsIWebNavigation)." +
-                          "QueryInterface(Components.interfaces.nsIDocShellTreeItem).rootTreeItem." +
-                          "QueryInterface(Components.interfaces.nsIInterfaceRequestor)." +
-                          "getInterface(Components.interfaces.nsIDOMWindow).postMessage(\"content loaded\", \"*\");'>Next</body></html>";
+  gChildWindow.location = "data:text/html,<script>window.onload=function() {setTimeout(function () {window.back();}, 0);}</script>";
 }
 
 function addFrameSwitchingListeners(frame)

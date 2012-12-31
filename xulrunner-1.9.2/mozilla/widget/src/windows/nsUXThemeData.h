@@ -117,6 +117,10 @@ public:
   static void Teardown();
   static void Invalidate();
   static HANDLE GetTheme(nsUXThemeClass cls);
+  static HMODULE GetThemeDLL();
+#if MOZ_WINSDK_TARGETVER >= MOZ_NTDDI_LONGHORN
+   static HMODULE GetDwmDLL();
+#endif
 
   static inline BOOL IsAppThemed() {
     return isAppThemed && isAppThemed();

@@ -99,8 +99,8 @@ libs:: bloatcycle.html
 	$(INSTALL) $< $(DIST)/bin/res
 
 ifeq ($(OS_ARCH),Darwin)
-libs:: $(topsrcdir)/tools/rb/fix-macosx-stack.pl
-	$(INSTALL) $< $(DIST)/bin
+libs:: $(topsrcdir)/tools/rb/fix-macosx-stack.pl $(topsrcdir)/tools/rb/fix_macosx_stack.py
+	$(INSTALL) $^ $(DIST)/bin
 
 # Basic unit tests for some stuff in the unify script
 check::
@@ -121,7 +121,7 @@ check::
           echo "TEST-UNEXPECTED-FAIL | build/ | unify failed to produce a universal binary!"; \
           false; \
         else \
-          echo "TEST-PASS | build/ | unify produced a universal binary"; \
+          echo "TEST-PASS | build/ | unify produced a universal binary!"; \
         fi
 # try unifying two identical Java class files
 	rm -f unifytesta.class unifytestb.class unifytestc.class
@@ -140,7 +140,7 @@ check::
           echo "TEST-UNEXPECTED-FAIL | build/ | unify failed to unify a Java class file!"; \
           false; \
         else \
-          echo "TEST-PASS | build/ | unify unified a Java class file"; \
+          echo "TEST-PASS | build/ | unify unified a Java class file!"; \
         fi
 # try unifying some files that differ only in line ordering
 	rm -rf unify-sort-test
@@ -151,14 +151,14 @@ check::
 	@if ! $(srcdir)/macosx/universal/unify --unify-with-sort "\.foo$$" \
           ./unify-sort-test/a ./unify-sort-test/b \
           ./unify-sort-test/c; then \
-          echo "TEST-UNEXPECTED-FAIL | build/ | unify failed to unify files wit differing line ordering!"; \
+          echo "TEST-UNEXPECTED-FAIL | build/ | unify failed to unify files with differing line ordering!"; \
           false; \
         fi
 	@if ! diff -q ./unify-sort-test/expected-result ./unify-sort-test/c/file.foo; then \
-          echo "TEST-UNEXPECTED-FAIL | build/ | unify failed to unify files wit differing line ordering!"; \
+          echo "TEST-UNEXPECTED-FAIL | build/ | unify failed to unify files with differing line ordering!"; \
           false; \
         else \
-          echo "TEST-PASS | build/ | unify unified files with differing line orering!"; \
+          echo "TEST-PASS | build/ | unify unified files with differing line ordering!"; \
         fi
 endif
 

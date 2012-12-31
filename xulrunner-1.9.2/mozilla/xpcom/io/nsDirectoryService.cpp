@@ -174,8 +174,10 @@ nsDirectoryService::GetCurrentProcessDirectory(nsILocalFile** aFile)
                     printf("nsDirectoryService - CurrentProcessDir is: %s\n", buffer);
 #endif
                     rv = localFile->InitWithNativePath(nsDependentCString(buffer));
-                    if (NS_SUCCEEDED(rv))
+                    if (NS_SUCCEEDED(rv)) {
+                        localFile->Normalize();
                         *aFile = localFile;
+                    }
                 }
                 CFRelease(parentURL);
             }

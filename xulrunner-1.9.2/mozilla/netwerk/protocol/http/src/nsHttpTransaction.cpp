@@ -38,13 +38,13 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#include "nsIOService.h"
 #include "nsHttpHandler.h"
 #include "nsHttpTransaction.h"
 #include "nsHttpConnection.h"
 #include "nsHttpRequestHead.h"
 #include "nsHttpResponseHead.h"
 #include "nsHttpChunkedDecoder.h"
-#include "nsNetSegmentUtils.h"
 #include "nsTransportUtils.h"
 #include "nsNetUtil.h"
 #include "nsProxyRelease.h"
@@ -285,7 +285,7 @@ nsHttpTransaction::Init(PRUint8 caps,
         // that we write data in the largest chunks possible.  this is actually
         // necessary to workaround some common server bugs (see bug 137155).
         rv = NS_NewBufferedInputStream(getter_AddRefs(mRequestStream), multi,
-                                       NET_DEFAULT_SEGMENT_SIZE);
+                                       nsIOService::gDefaultSegmentSize);
         if (NS_FAILED(rv)) return rv;
     }
     else
@@ -298,8 +298,8 @@ nsHttpTransaction::Init(PRUint8 caps,
     rv = NS_NewPipe2(getter_AddRefs(mPipeIn),
                      getter_AddRefs(mPipeOut),
                      PR_TRUE, PR_TRUE,
-                     NS_HTTP_SEGMENT_SIZE,
-                     NS_HTTP_SEGMENT_COUNT,
+                     nsIOService::gDefaultSegmentSize,
+                     nsIOService::gDefaultSegmentCount,
                      nsIOService::gBufferCache);
     if (NS_FAILED(rv)) return rv;
 
@@ -678,10 +678,12 @@ nsHttpTransaction::Restart()
     return gHttpHandler->InitiateTransaction(this, mPriority);
 }
 
-void
+nsresult
 nsHttpTransaction::ParseLine(char *line)
 {
     LOG(("nsHttpTransaction::ParseLine [%s]\n", line));
+
+    nsresult rv = NS_OK;
 
     if (!mHaveStatusLine) {
         mResponseHead->ParseStatusLine(line);
@@ -690,8 +692,10 @@ nsHttpTransaction::ParseLine(char *line)
         if (mResponseHead->Version() == NS_HTTP_VERSION_0_9)
             mHaveAllHeaders = PR_TRUE;
     }
-    else
-        mResponseHead->ParseHeaderLine(line);
+    else {
+        rv = mResponseHead->ParseHeaderLine(line);
+    }
+    return rv;
 }
 
 nsresult
@@ -706,8 +710,11 @@ nsHttpTransaction::ParseLineSegment(char *segment, PRUint32 len)
         // of mLineBuf.
         mLineBuf.Truncate(mLineBuf.Length() - 1);
         if (!mHaveStatusLine || (*segment != ' ' && *segment != '\t')) {
-            ParseLine(mLineBuf.BeginWriting());
+            nsresult rv = ParseLine(mLineBuf.BeginWriting());
             mLineBuf.Truncate();
+            if (NS_FAILED(rv)) {
+                return rv;
+            }
         }
     }
 
@@ -1078,9 +1085,10 @@ nsHttpTransaction::DeleteSelfOnConsumerThread()
     LOG(("nsHttpTransaction::DeleteSelfOnConsumerThread [this=%x]\n", this));
     
     PRBool val;
-    if (NS_SUCCEEDED(mConsumerTarget->IsOnCurrentThread(&val)) && val)
+    if (!mConsumerTarget ||
+        (NS_SUCCEEDED(mConsumerTarget->IsOnCurrentThread(&val)) && val)) {
         delete this;
-    else {
+    } else {
         LOG(("proxying delete to consumer thread...\n"));
         nsCOMPtr<nsIRunnable> event = new nsDeleteHttpTransaction(this);
         if (NS_FAILED(mConsumerTarget->Dispatch(event, NS_DISPATCH_NORMAL)))

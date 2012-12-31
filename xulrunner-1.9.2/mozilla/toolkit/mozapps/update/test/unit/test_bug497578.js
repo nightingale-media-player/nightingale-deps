@@ -49,80 +49,79 @@ function run_test() {
     return;
 
   do_test_pending();
-  dump("Testing: Bug 497578 - begin download of a complete update after a " +
-       "failure to apply a partial update with " +
-       "browser.privatebrowsing.autostart set to true\n");
+  do_register_cleanup(end_test);
+
+  logTestInfo("testing Bug 497578 - begin download of a complete update " +
+              "after a failure to apply a partial update with " +
+              "browser.privatebrowsing.autostart set to true");
 
   removeUpdateDirsAndFiles();
+  setUpdateChannel();
 
-  var registrar = Components.manager.QueryInterface(AUS_Ci.nsIComponentRegistrar);
+  let registrar = Components.manager.QueryInterface(AUS_Ci.nsIComponentRegistrar);
   registrar.registerFactory(Components.ID("{1dfeb90a-2193-45d5-9cb8-864928b2af55}"),
                             "Fake Window Watcher",
                             "@mozilla.org/embedcomp/window-watcher;1",
                              WindowWatcherFactory);
 
-  var pb = getPrefBranch();
   // Enable automatic app update so that after the failed partial is found the
   // complete update will start to download automatically.
-  pb.setBoolPref("app.update.enabled", true);
-  pb.setBoolPref("browser.privatebrowsing.autostart", true);
+  Services.prefs.setBoolPref(PREF_APP_UPDATE_ENABLED, true);
+  Services.prefs.setBoolPref("browser.privatebrowsing.autostart", true);
 
-  var defaults = pb.QueryInterface(AUS_Ci.nsIPrefService).getDefaultBranch(null);
-  defaults.setCharPref("app.update.channel", "bogus_channel");
-
-  createAppInfo("xpcshell@tests.mozilla.org", "XPCShell", "1.0", "2.0");
-  setDefaultPrefs();
-  do_timeout(0, "run_test_pt1()");
+  do_execute_soon(run_test_pt1);
 }
 
 function end_test() {
-  do_test_finished();
+  let registrar = Components.manager.QueryInterface(AUS_Ci.nsIComponentRegistrar);
+  registrar.unregisterFactory(Components.ID("{1dfeb90a-2193-45d5-9cb8-864928b2af55}"),
+                              WindowWatcherFactory);
   cleanUp();
 }
 
 function run_test_pt1() {
   writeUpdatesToXMLFile(getLocalUpdatesXMLString(""), false);
-  var url = URL_HOST + DIR_DATA + "/partial.mar";
-  var patches = getLocalPatchString("partial", url, null, null, null, null,
+  let url = URL_HOST + URL_PATH + "/partial.mar";
+  let patches = getLocalPatchString("partial", url, null, null, null, null,
                                     STATE_FAILED) +
                 getLocalPatchString(null, null, null, null, null, null,
                                     STATE_NONE);
-  var updates = getLocalUpdateString(patches, false, null, "1.0", null, "1.0",
-                                     null, null, null,
-                                     URL_HOST + DIR_DATA + "/partial.mar");
+  let updates = getLocalUpdateString(patches, null, null, "version 1.0", "1.0",
+                                     null, null, null, null, url);
   writeUpdatesToXMLFile(getLocalUpdatesXMLString(updates), true);
   writeStatusFile(STATE_FAILED);
 
-  startAUS();
-  startUpdateManager();
-  dump("Testing: activeUpdate.state should equal STATE_DOWNLOADING prior to " +
-       "entering private browsing\n");
+  standardInit();
+
+  logTestInfo("testing activeUpdate.state should equal STATE_DOWNLOADING " +
+              "prior to entering private browsing");
   do_check_eq(gUpdateManager.activeUpdate.state, STATE_DOWNLOADING);
 
-  var privBrowsing = AUS_Cc[PRIVATEBROWSING_CONTRACT_ID].
+  let privBrowsing = AUS_Cc[PRIVATEBROWSING_CONTRACT_ID].
                      getService(AUS_Ci.nsIPrivateBrowsingService).
                      QueryInterface(AUS_Ci.nsIObserver);
 
   privBrowsing.observe(null, "profile-after-change", "");
-  dump("Testing: private mode should be entered automatically\n");
+  logTestInfo("Testing: private mode should be entered automatically");
   do_check_true(privBrowsing.privateBrowsingEnabled);
 
-  dump("Testing: private browsing is auto-started\n");
+  logTestInfo("Testing: private browsing is auto-started");
   do_check_true(privBrowsing.autoStarted);
 
-  // Use a timeout to give private browsing time to reset necko.
-  do_timeout(0, "run_test_pt2()");
+  // Give private browsing time to reset necko.
+  do_execute_soon(run_test_pt2);
 }
 function run_test_pt2() {
-  dump("Testing: update count should equal 1\n");
+  logTestInfo("Testing: update count should equal 1");
   do_check_eq(gUpdateManager.updateCount, 1);
-  dump("Testing: activeUpdate should not equal null\n");
+  logTestInfo("Testing: activeUpdate should not equal null");
   do_check_neq(gUpdateManager.activeUpdate, null);
-  dump("Testing: activeUpdate.state should not equal null\n");
+  logTestInfo("Testing: activeUpdate.state should not equal null");
   do_check_neq(gUpdateManager.activeUpdate.state, null);
-  dump("Testing: activeUpdate.state should equal STATE_DOWNLOADING\n");
+  logTestInfo("Testing: activeUpdate.state should equal STATE_DOWNLOADING");
   do_check_eq(gUpdateManager.activeUpdate.state, STATE_DOWNLOADING);
-  end_test();
+
+  do_test_finished();
 }
 
 // Prevent the attempt to display the Update wizard for the failed update
@@ -131,8 +130,8 @@ var WindowWatcher = {
   },
 
   QueryInterface: function(iid) {
-    if (iid.equals(AUS_Ci.nsIWindowWatcher)
-     || iid.equals(AUS_Ci.nsISupports))
+    if (iid.equals(AUS_Ci.nsIWindowWatcher) ||
+        iid.equals(AUS_Ci.nsISupports))
       return this;
 
     throw AUS_Cr.NS_ERROR_NO_INTERFACE;

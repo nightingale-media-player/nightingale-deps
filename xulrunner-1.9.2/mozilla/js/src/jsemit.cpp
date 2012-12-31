@@ -2050,6 +2050,14 @@ BindNameToSlot(JSContext *cx, JSCodeGenerator *cg, JSParseNode *pn)
             if (op != JSOP_NAME)
                 return JS_TRUE;
 
+            /*
+             * Generator functions may be resumed from any call stack, which
+             * defeats the display optimization to static link searching used
+             * by JSOP_{GET,CALL}UPVAR.
+             */
+            if (cg->flags & TCF_FUN_IS_GENERATOR)
+                return JS_TRUE;
+
             return MakeUpvarForEval(pn, cg);
         }
         return JS_TRUE;
@@ -2197,10 +2205,9 @@ BindNameToSlot(JSContext *cx, JSCodeGenerator *cg, JSParseNode *pn)
             JS_ASSERT(index == cg->upvarList.count - 1);
 
             uint32 *vector = cg->upvarMap.vector;
-            if (!vector) {
-                uint32 length = cg->lexdeps.count;
-
-                vector = (uint32 *) js_calloc(length * sizeof *vector);
+            uint32 length = cg->lexdeps.count;
+            if (!vector || cg->upvarMap.length != length) {
+                vector = (uint32 *) js_realloc(vector, length * sizeof *vector);
                 if (!vector) {
                     JS_ReportOutOfMemory(cx);
                     return JS_FALSE;
@@ -2219,6 +2226,7 @@ BindNameToSlot(JSContext *cx, JSCodeGenerator *cg, JSParseNode *pn)
                     slot += tc->fun->nargs;
             }
 
+            JS_ASSERT(index < cg->upvarMap.length);
             vector[index] = MAKE_UPVAR_COOKIE(skip, slot);
         }
 
@@ -6178,7 +6186,7 @@ js_EmitTree(JSContext *cx, JSCodeGenerator *cg, JSParseNode *pn)
       case TOK_FILTER:
         if (!js_EmitTree(cx, cg, pn->pn_left))
             return JS_FALSE;
-        jmp = js_Emit3(cx, cg, JSOP_FILTER, 0, 0);
+        jmp = EmitJump(cx, cg, JSOP_FILTER, 0);
         if (jmp < 0)
             return JS_FALSE;
         top = js_Emit1(cx, cg, JSOP_TRACE);

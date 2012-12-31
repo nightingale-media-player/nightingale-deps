@@ -1,0 +1,12 @@
+<html class="reftest-wait">
+<head><title>crash test for bug 589635</title></head>
+<body>
+
+
+<iframe src="589635-iframe.html"></iframe>
+
+<script>
+setTimeout(function() {document.documentElement.removeAttribute("class");}, 2000);
+</script>
+</body>
+</html>

@@ -78,11 +78,16 @@
   -moz-margin-start: 17px;
 }
 
-#copyright {
+#copyright, #charlton {
   margin-top: 0;
   -moz-margin-end: 16px;
   margin-bottom: 3px;
   -moz-margin-start: 16px;
+}
+
+#charlton {
+  direction: ltr;
+  unicode-bidi: bidi-override;
 }
 
 button[dlgtype="extra2"] {

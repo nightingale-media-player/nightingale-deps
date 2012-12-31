@@ -44,3 +44,4 @@ patch -p3 <bug487519.patch
 patch -p3 <trac497.patch
 patch -p3 <fishsound_reset.patch
 patch -p3 <bug520500.patch
+patch -p3 <bug524429.patch

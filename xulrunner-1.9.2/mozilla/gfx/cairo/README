@@ -70,7 +70,7 @@ premultiply-alpha-solid-gradients.patch: bug 539165; multiply the solid color by
 
 pixman-neon.patch: add ARM NEON optimized compositing functions
 
-endian.patch: include cairo-platform.h for endian macros
+pixman-rename-and-endian.patch: include cairo-platform.h for renaming of external symbols and endian macros
 
 ==== disable printing patch ====
 

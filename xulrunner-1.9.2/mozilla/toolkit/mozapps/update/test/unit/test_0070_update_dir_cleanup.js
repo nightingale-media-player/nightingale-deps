@@ -39,10 +39,11 @@
 /* General Update Directory Cleanup Tests */
 
 function run_test() {
+  do_test_pending();
+  do_register_cleanup(end_test);
+
   removeUpdateDirsAndFiles();
-  var defaults = getPrefBranch().QueryInterface(AUS_Ci.nsIPrefService).
-                 getDefaultBranch(null);
-  defaults.setCharPref("app.update.channel", "bogus_channel");
+  setUpdateChannel();
 
   writeUpdatesToXMLFile(getLocalUpdatesXMLString(""), false);
   var patches = getLocalPatchString(null, null, null, null, null, null,
@@ -57,27 +58,31 @@ function run_test() {
   log.append(FILE_UPDATE_LOG);
   writeFile(log, "Last Update Log");
 
-  startAUS();
+  standardInit();
 
-  dump("Testing: " + FILE_UPDATE_LOG + " doesn't exist\n");
+  logTestInfo("testing " + log.path + " shouldn't exist");
   do_check_false(log.exists());
 
-  dump("Testing: " + FILE_LAST_LOG + " exists\n");
   log = dir.clone();
   log.append(FILE_LAST_LOG);
+  logTestInfo("testing " + log.path + " should exist");
   do_check_true(log.exists());
 
-  dump("Testing: " + FILE_LAST_LOG + " contents\n");
+  logTestInfo("testing " + log.path + " contents");
   do_check_eq(readFile(log), "Last Update Log");
 
-  dump("Testing: " + FILE_BACKUP_LOG + " doesn't exist\n");
   log = dir.clone();
   log.append(FILE_BACKUP_LOG);
+  logTestInfo("testing " + log.path + " shouldn't exist");
   do_check_false(log.exists());
 
-  dump("Testing: " + dir.path + " exists (bug 512994)\n");
   dir.append("0");
+  logTestInfo("testing " + dir.path + " should exist (bug 512994)");
   do_check_true(dir.exists());
 
+  do_test_finished();
+}
+
+function end_test() {
   cleanUp();
 }

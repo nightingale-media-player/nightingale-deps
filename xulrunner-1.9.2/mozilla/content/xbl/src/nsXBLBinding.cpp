@@ -1119,7 +1119,9 @@ nsXBLBinding::ChangeDocument(nsIDocument* aOldDocument, nsIDocument* aNewDocumen
               if (!clazz ||
                   (~clazz->flags &
                    (JSCLASS_HAS_PRIVATE | JSCLASS_PRIVATE_IS_NSISUPPORTS)) ||
-                  JSCLASS_RESERVED_SLOTS(clazz) != 1) {
+                  JSCLASS_RESERVED_SLOTS(clazz) != 1 ||
+                  clazz->resolve != (JSResolveOp)XBLResolve ||
+                  clazz->finalize != XBLFinalize) {
                 // Clearly not the right class
                 continue;
               }
@@ -1338,6 +1340,10 @@ nsXBLBinding::DoInitJSClass(JSContext *cx, JSObject *global, JSObject *obj,
 
     // Keep this proto binding alive while we're alive.  Do this first so that
     // we can guarantee that in XBLFinalize this will be non-null.
+    // Note that we can't just store aProtoBinding in the private and
+    // addref/release the nsXBLDocumentInfo through it, because cycle
+    // collection doesn't seem to work right if the private is not an
+    // nsISupports.
     nsIXBLDocumentInfo* docInfo = aProtoBinding->XBLDocumentInfo();
     ::JS_SetPrivate(cx, proto, docInfo);
     NS_ADDREF(docInfo);
@@ -1383,7 +1389,7 @@ nsXBLBinding::AllowScripts()
     return PR_FALSE;
   }
 
-  nsIDocument* doc = mBoundElement->GetOwnerDoc();
+  nsIDocument* doc = mBoundElement ? mBoundElement->GetOwnerDoc() : nsnull;
   if (!doc) {
     return PR_FALSE;
   }

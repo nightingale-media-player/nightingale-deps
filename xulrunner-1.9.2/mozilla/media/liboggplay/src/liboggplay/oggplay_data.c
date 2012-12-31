@@ -409,7 +409,7 @@ get_uv_offset(OggPlayTheoraDecode *decode, yuv_buffer *buffer)
   return xo + yo;
 }
 
-int
+OggPlayErrorCode
 oggplay_data_handle_theora_frame (OggPlayTheoraDecode *decode,
                                   const yuv_buffer *buffer) {
 

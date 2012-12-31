@@ -68,6 +68,7 @@
 #include "nsITimelineService.h"
 #include "nsIHttpChannel.h"
 #include "nsIScriptError.h"
+#include "nsIConsoleService.h"
 #include "nsMimeTypes.h"
 #include "nsIAtom.h"
 #include "nsIDOM3Node.h"
@@ -91,6 +92,7 @@
 #include "nsIDOMCSSStyleSheet.h"
 #include "nsIDOMCSSImportRule.h"
 #include "nsContentErrors.h"
+#include "nsDOMError.h"
 
 #ifdef MOZ_LOGGING
 // #define FORCE_PR_LOG /* Allow logging in the release build */
@@ -167,6 +169,7 @@ SheetLoadData::SheetLoadData(CSSLoaderImpl* aLoader,
     mWasAlternate(aIsAlternate),
     mAllowUnsafeRules(PR_FALSE),
     mUseSystemPrincipal(PR_FALSE),
+    mCheckInitialSyntax(PR_FALSE),
     mOwningElement(aOwningElement),
     mObserver(aObserver),
     mLoaderPrincipal(aLoaderPrincipal)
@@ -196,6 +199,7 @@ SheetLoadData::SheetLoadData(CSSLoaderImpl* aLoader,
     mWasAlternate(PR_FALSE),
     mAllowUnsafeRules(PR_FALSE),
     mUseSystemPrincipal(PR_FALSE),
+    mCheckInitialSyntax(PR_FALSE),
     mOwningElement(nsnull),
     mObserver(aObserver),
     mLoaderPrincipal(aLoaderPrincipal)
@@ -239,6 +243,7 @@ SheetLoadData::SheetLoadData(CSSLoaderImpl* aLoader,
     mWasAlternate(PR_FALSE),
     mAllowUnsafeRules(aAllowUnsafeRules),
     mUseSystemPrincipal(aUseSystemPrincipal),
+    mCheckInitialSyntax(PR_FALSE),
     mOwningElement(nsnull),
     mObserver(aObserver),
     mLoaderPrincipal(aLoaderPrincipal),
@@ -714,6 +719,76 @@ SheetLoadData::GetReferrerURI()
   return uri;
 }
 
+/* Subroutine of SheetLoadData::OnStreamComplete and CSSLoaderImpl::ParseSheet.
+ * Note that we can't just use nsContentUtils::ReportToConsole, because two
+ * of the messages were added after string freeze.
+ */
+void
+SheetLoadData::ReportMimeProblem(MimeProblem aProblem, nsIURI* aURI)
+{
+  nsCAutoString spec;
+  aURI->GetSpec(spec);
+  const nsAFlatString& specUTF16 = NS_ConvertUTF8toUTF16(spec);
+  const nsAFlatString& ctypeUTF16 = NS_ConvertASCIItoUTF16(mContentType);
+  const PRUnichar *strings[] = { specUTF16.get(), ctypeUTF16.get() };
+
+  PRUint32 errorFlag;
+  nsXPIDLString formattedMessage;
+  nsresult rv;
+
+  switch (aProblem) {
+  case MimeProblem_rejected:
+    errorFlag = nsIScriptError::errorFlag;
+    rv = nsContentUtils::FormatLocalizedString(nsContentUtils::eCSS_PROPERTIES,
+                                               "MimeNotCss",
+                                               strings, 2, formattedMessage);
+    if (NS_FAILED(rv)) return;
+    break;
+
+  case MimeProblem_quirksload:
+  case MimeProblem_quirksload_xd:
+    errorFlag = nsIScriptError::warningFlag;
+    rv = nsContentUtils::FormatLocalizedString(nsContentUtils::eCSS_PROPERTIES,
+                                               "MimeNotCssWarn",
+                                               strings, 2, formattedMessage);
+    if (NS_FAILED(rv)) return;
+    if (aProblem == MimeProblem_quirksload_xd) {
+      formattedMessage.AppendLiteral("  This cross-domain request will be "
+                                     "ignored by the next major release of "
+                                     "this browser.");
+    }
+    break;
+
+  case MimeProblem_abandoned:
+    errorFlag = nsIScriptError::errorFlag;
+    formattedMessage.AppendLiteral("Cross-domain stylesheet ");
+    AppendUTF8toUTF16(spec, formattedMessage);
+    formattedMessage.AppendLiteral(", with improper MIME type, abandoned "
+                                   "because of syntax errors.");
+    break;
+  }
+
+  nsCOMPtr<nsIConsoleService> console =
+    do_GetService(NS_CONSOLESERVICE_CONTRACTID);
+  if (!console) return;
+
+  nsCOMPtr<nsIScriptError> errObj =
+    do_CreateInstance(NS_SCRIPTERROR_CONTRACTID);
+  if (!errObj) return;
+
+  nsCAutoString referrer;
+  nsCOMPtr<nsIURI> referrerURI = GetReferrerURI();
+  if (referrerURI)
+    referrerURI->GetSpec(referrer);
+
+  rv = errObj->Init(formattedMessage.get(),
+                    NS_ConvertUTF8toUTF16(referrer).get(),
+                    nsnull, 0, 0, errorFlag, "CSS Loader");
+  if (NS_FAILED(rv)) return;
+
+  console->LogMessage(errObj);
+}
+
 /*
  * Here we need to check that the load did not give us an http error
  * page and check the mimetype on the channel to make sure we're not
@@ -807,56 +882,56 @@ SheetLoadData::OnStreamComplete(nsIUnicharStreamLoader* aLoader,
     }
   }
 
-  if (aDataStream) {
-    nsCAutoString contentType;
-    if (channel) {
-      channel->GetContentType(contentType);
-    }
-    
-    PRBool validType = contentType.EqualsLiteral("text/css") ||
-      contentType.EqualsLiteral(UNKNOWN_CONTENT_TYPE) ||
-      contentType.IsEmpty();
-                                          
-    if (!validType) {
-      nsCAutoString spec;
-      channelURI->GetSpec(spec);
-
-      const nsAFlatString& specUTF16 = NS_ConvertUTF8toUTF16(spec);
-      const nsAFlatString& ctypeUTF16 = NS_ConvertASCIItoUTF16(contentType);
-      const PRUnichar *strings[] = { specUTF16.get(), ctypeUTF16.get() };
-
-      const char *errorMessage;
-      PRUint32 errorFlag;
-
-      if (mLoader->mCompatMode == eCompatibility_NavQuirks) {
-        errorMessage = "MimeNotCssWarn";
-        errorFlag = nsIScriptError::warningFlag;
-      } else {
-        // Drop the data stream so that we do not load it
-        aDataStream = nsnull;
-
-        errorMessage = "MimeNotCss";
-        errorFlag = nsIScriptError::errorFlag;
-      }
-      nsCOMPtr<nsIURI> referrer = GetReferrerURI();
-      nsContentUtils::ReportToConsole(nsContentUtils::eCSS_PROPERTIES,
-                                      errorMessage,
-                                      strings, NS_ARRAY_LENGTH(strings),
-                                      referrer, EmptyString(), 0, 0, errorFlag,
-                                      "CSS Loader");
-    }
-  }
-  
   if (!aDataStream) {
     LOG_WARN(("  No data stream; bailing"));
     mLoader->SheetComplete(this, NS_ERROR_NOT_AVAILABLE);
     return NS_OK;
-  }    
+  }
+
+  if (channel) {
+    channel->GetContentType(mContentType);
+  }
+
+  // In standards mode, a style sheet must have one of these MIME
+  // types to be processed at all.  In quirks mode, we accept any
+  // MIME type, but only if the style sheet is same-origin with the
+  // requesting document or parent sheet, or (as a compatibility hack
+  // for 1.9.2 *only*), if the first thing in the file does appear
+  // to be a syntactically valid CSS construct.  See bug 524223.
+
+  PRBool validType = mContentType.EqualsLiteral("text/css") ||
+    mContentType.EqualsLiteral(UNKNOWN_CONTENT_TYPE) ||
+    mContentType.IsEmpty();
+
+  mCheckInitialSyntax = PR_FALSE;
+  if (!validType) {
+    MimeProblem problem = MimeProblem_rejected;
+
+    if (mLoader->mCompatMode == eCompatibility_NavQuirks) {
+      problem = MimeProblem_quirksload;
+      if (mLoaderPrincipal) {
+        PRBool subsumed;
+        result = mLoaderPrincipal->Subsumes(principal, &subsumed);
+        if (NS_FAILED(result) || !subsumed) {
+          problem = MimeProblem_quirksload_xd;
+          mCheckInitialSyntax = PR_TRUE;
+        }
+      }
+    }
+
+    ReportMimeProblem(problem, channelURI);
+    if (problem == MimeProblem_rejected) {
+      LOG_WARN(("  Ignoring sheet with improper MIME type %s",
+                mContentType.get()));
+      mLoader->SheetComplete(this, NS_ERROR_NOT_AVAILABLE);
+      return NS_OK;
+    }
+  }
 
   // Enough to set the URIs on mSheet, since any sibling datas we have share
   // the same mInner as mSheet and will thus get the same URI.
   mSheet->SetURIs(channelURI, originalURI, channelURI);
-  
+
   PRBool completed;
   return mLoader->ParseSheet(aDataStream, this, completed);
 }
@@ -1545,11 +1620,28 @@ CSSLoaderImpl::ParseSheet(nsIUnicharInputStream* aStream,
   nsCOMPtr<nsIURI> sheetURI, baseURI;
   aLoadData->mSheet->GetSheetURI(getter_AddRefs(sheetURI));
   aLoadData->mSheet->GetBaseURI(getter_AddRefs(baseURI));
-  rv = parser->Parse(aStream, sheetURI, baseURI,
-                     aLoadData->mSheet->Principal(), aLoadData->mLineNumber,
-                     aLoadData->mAllowUnsafeRules);
+  if (aLoadData->mCheckInitialSyntax) {
+    nsCOMPtr<nsICSSParser_1_9_2> pext(do_QueryInterface(parser));
+    NS_ABORT_IF_FALSE(pext, "nsICSSParser_1_9_2 missing from parser impl");
+    rv = pext->ParseWithInitialSyntaxCheck(aStream, sheetURI, baseURI,
+                                           aLoadData->mSheet->Principal(),
+                                           aLoadData->mLineNumber,
+                                           aLoadData->mAllowUnsafeRules);
+  } else {
+    rv = parser->Parse(aStream, sheetURI, baseURI,
+                       aLoadData->mSheet->Principal(),
+                       aLoadData->mLineNumber,
+                       aLoadData->mAllowUnsafeRules);
+  }
   mParsingDatas.RemoveElementAt(mParsingDatas.Length() - 1);
   RecycleParser(parser);
+
+  if (rv == NS_ERROR_DOM_SYNTAX_ERR) {
+    NS_ASSERTION(aLoadData->mCheckInitialSyntax,
+                 "don't care about syntax errors but got told anyway");
+    aLoadData->ReportMimeProblem(SheetLoadData::MimeProblem_abandoned,
+                                 sheetURI);
+  }
 
   NS_ASSERTION(aLoadData->mPendingChildren == 0 || !aLoadData->mSyncLoad,
                "Sync load has leftover pending children!");

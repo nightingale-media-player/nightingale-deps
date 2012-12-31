@@ -117,6 +117,20 @@ function pathHandler(metadata, response) {
 }
 
 function run_test() {
+  // Write out an empty blocklist.xml file to the profile to ensure nothing
+  // is blocklisted by default
+  var blockFile = gProfD.clone();
+  blockFile.append("blocklist.xml");
+  var stream = Components.classes["@mozilla.org/network/file-output-stream;1"].
+               createInstance(Components.interfaces.nsIFileOutputStream);
+  stream.init(blockFile, 0x02 | 0x08 | 0x20, 0644, 0);
+
+  var data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+             "<blocklist xmlns=\"http://www.mozilla.org/2006/addons-blocklist\">\n" +
+             "</blocklist>\n";
+  stream.write(data, data.length);
+  stream.close();
+
   var osVersion;
   var sysInfo = Components.classes["@mozilla.org/system-info;1"]
                           .getService(Components.interfaces.nsIPropertyBag2);

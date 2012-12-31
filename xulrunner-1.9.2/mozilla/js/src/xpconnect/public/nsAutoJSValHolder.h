@@ -42,6 +42,8 @@
 
 #include "jsapi.h"
 
+#include "nsDebug.h"
+
 /**
  * Simple class that looks and acts like a jsval except that it unroots
  * itself automatically if Root() is ever called. Designed to be rooted on the
@@ -54,7 +56,6 @@ public:
   nsAutoJSValHolder()
     : mRt(NULL)
     , mVal(JSVAL_NULL)
-    , mGCThing(NULL)
     , mHeld(JS_FALSE)
   {
     // nothing to do
@@ -76,11 +77,11 @@ public:
 
   /**
    * Hold by rooting on the runtime.
-   * Note that mGCThing may be JSVAL_NULL, which is not a problem.
+   * Note that mVal may be JSVAL_NULL, which is not a problem.
    */
   JSBool Hold(JSRuntime* aRt) {
     if (!mHeld) {
-      if (JS_AddNamedRootRT(aRt, &mGCThing, "nsAutoJSValHolder")) {
+      if (JS_AddNamedRootRT(aRt, &mVal, "nsAutoJSValHolder")) {
         mRt = aRt;
         mHeld = JS_TRUE;
       } else {
@@ -91,7 +92,7 @@ public:
   }
 
   /**
-   * Manually release, nullifying mVal, mGCThing, and mRt, but returning
+   * Manually release, nullifying mVal and mRt, but returning
    * the original jsval.
    */
   jsval Release() {
@@ -100,12 +101,11 @@ public:
     jsval oldval = mVal;
 
     if (mHeld) {
-      JS_RemoveRootRT(mRt, &mGCThing); // infallible
+      JS_RemoveRootRT(mRt, &mVal); // infallible
       mHeld = JS_FALSE;
     }
 
     mVal = JSVAL_NULL;
-    mGCThing = NULL;
     mRt = NULL;
 
     return oldval;
@@ -152,16 +152,12 @@ public:
     }
 #endif
     mVal = aOther;
-    mGCThing = JSVAL_IS_GCTHING(aOther)
-             ? JSVAL_TO_GCTHING(aOther)
-             : NULL;
     return *this;
   }
 
 private:
   JSRuntime* mRt;
   jsval mVal;
-  void* mGCThing;
   JSBool mHeld;
 };
 

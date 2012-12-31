@@ -213,6 +213,9 @@ enum { XKeyPress = KeyPress };
 #ifdef XP_WIN
 #include <wtypes.h>
 #include <winuser.h>
+#ifdef MOZ_IPC
+#define NS_OOPP_DOUBLEPASS_MSGID TEXT("MozDoublePassMsg")
+#endif
 #endif
 
 #ifdef CreateEvent // Thank you MS.
@@ -487,7 +490,8 @@ public:
   PRBool SendNativeEvents()
   {
 #ifdef XP_WIN
-    return MatchPluginName("Shockwave Flash");
+    return mPluginWindow->type == NPWindowTypeDrawable &&
+           MatchPluginName("Shockwave Flash");
 #else
     return PR_FALSE;
 #endif
@@ -676,6 +680,10 @@ nsObjectFrame::Init(nsIContent*      aContent,
   NS_PRECONDITION(aContent, "How did that happen?");
   mPreventInstantiation =
     (aContent->GetCurrentDoc()->GetDisplayDocument() != nsnull);
+
+#ifdef XP_WIN
+  mDoublePassEvent = 0;
+#endif
 
   PR_LOG(nsObjectFrameLM, PR_LOG_DEBUG,
          ("Initializing nsObjectFrame %p for content %p\n", this, aContent));
@@ -1330,16 +1338,23 @@ nsObjectFrame::IsOpaque() const
 #if defined(XP_MACOSX)
   return PR_FALSE;
 #else
-  if (mInstanceOwner) {
-    nsPluginWindow * window;
-    mInstanceOwner->GetWindow(window);
-    if (window->type == nsPluginWindowType_Drawable) {
-      // XXX we possibly should call nsPluginInstanceVariable_TransparentBool
-      // here to optimize for windowless but opaque plugins
-      return PR_FALSE;
-    }
-  }
-  return PR_TRUE;
+  if (!mInstanceOwner)
+    return PR_FALSE;
+
+  nsPluginWindow *window;
+  mInstanceOwner->GetWindow(window);
+  if (window->type != NPWindowTypeDrawable)
+    return PR_TRUE;
+
+  nsresult rv;
+  nsCOMPtr<nsIPluginInstance> pi;
+  rv = mInstanceOwner->GetInstance(*getter_AddRefs(pi));
+  if (NS_FAILED(rv) || !pi)
+    return PR_FALSE;
+
+  PRUint32 transparent = PR_FALSE;
+  pi->GetValue(nsPluginInstanceVariable_TransparentBool, &transparent);
+  return !transparent;
 #endif
 }
 
@@ -1731,8 +1746,26 @@ nsObjectFrame::PaintPlugin(nsIRenderingContext& aRenderingContext,
       PRBool doupdatewindow = PR_FALSE;
       // the offset of the DC
       nsPoint origin;
-      
+
       gfxWindowsNativeDrawing nativeDraw(ctx, frameGfxRect);
+#ifdef MOZ_IPC
+      if (nativeDraw.IsDoublePass()) {
+        // OOP plugin specific: let the shim know before we paint if we are doing a
+        // double pass render. If this plugin isn't oop, the register window message
+        // will be ignored.
+        if (!mDoublePassEvent)
+          mDoublePassEvent = ::RegisterWindowMessage(NS_OOPP_DOUBLEPASS_MSGID);
+        if (mDoublePassEvent) {
+          nsPluginEvent pluginEvent;
+          pluginEvent.event = mDoublePassEvent;
+          pluginEvent.wParam = 0;
+          pluginEvent.lParam = 0;
+          PRBool eventHandled = PR_FALSE;
+
+          inst->HandleEvent(&pluginEvent, &eventHandled);
+        }
+      }
+#endif
       do {
         HDC hdc = nativeDraw.BeginNativeDrawing();
         if (!hdc)
@@ -1751,17 +1784,21 @@ nsObjectFrame::PaintPlugin(nsIRenderingContext& aRenderingContext,
           window->x = dest.left;
           window->y = dest.top;
 
-          // Windowless plugins on windows need a special event to update their location, see bug 135737
+          // Windowless plugins on windows need a special event to update their location,
+          // see bug 135737.
+          //
           // bug 271442: note, the rectangle we send is now purely the bounds of the plugin
-          // relative to the window it is contained in, which is useful for the plugin to correctly translate mouse coordinates
+          // relative to the window it is contained in, which is useful for the plugin to
+          // correctly translate mouse coordinates.
           //
           // this does not mesh with the comments for bug 135737 which imply that the rectangle
           // must be clipped in some way to prevent the plugin attempting to paint over areas it shouldn't;
           //
-          // since the two uses of the rectangle are mutually exclusive in some cases,
-          // and since I don't see any incorrect painting (at least with Flash and ViewPoint - the originator of 135737),
-          // it seems that windowless plugins are not relying on information here for clipping their drawing,
-          // and we can safely use this message to tell the plugin exactly where it is in all cases.
+          // since the two uses of the rectangle are mutually exclusive in some cases, and
+          // since I don't see any incorrect painting (at least with Flash and ViewPoint -
+          // the originator of bug 135737), it seems that windowless plugins are not relying
+          // on information here for clipping their drawing, and we can safely use this message
+          // to tell the plugin exactly where it is in all cases.
 
           nsIntPoint origin = GetWindowOriginInPixels(PR_TRUE);
           nsIntRect winlessRect = nsIntRect(origin, nsIntSize(window->width, window->height));
@@ -1790,13 +1827,11 @@ nsObjectFrame::PaintPlugin(nsIRenderingContext& aRenderingContext,
             inst->HandleEvent(&pluginEvent, &eventHandled);
           }
 
-          inst->SetWindow(window);        
+          inst->SetWindow(window);
         }
-
         mInstanceOwner->Paint(dirty, hdc);
         nativeDraw.EndNativeDrawing();
       } while (nativeDraw.ShouldRenderAgain());
-
       nativeDraw.PaintToContext();
     } else if (!(ctx->GetFlags() & gfxContext::FLAG_DESTINED_FOR_SCREEN)) {
       // Get PrintWindow dynamically since it's not present on Win2K,
@@ -2060,6 +2095,10 @@ nsObjectFrame::Instantiate(const char* aMimeType, nsIURI* aURI)
     return NS_OK;
   }
 
+  // XXXbz can aMimeType ever actually be null here?  If not, either
+  // the callers are wrong (and passing "" instead of null) or we can
+  // remove the codepaths dealing with null aMimeType in
+  // InstantiateEmbeddedPlugin.
   NS_ASSERTION(aMimeType || aURI, "Need a type or a URI!");
 
   // Note: If PrepareInstanceOwner() returns an error, |this| may very
@@ -2564,12 +2603,12 @@ nsPluginInstanceOwner::~nsPluginInstanceOwner()
   }
 
   if (mCachedAttrParamNames) {
-    PR_Free(mCachedAttrParamNames);
+    NS_Free(mCachedAttrParamNames);
     mCachedAttrParamNames = nsnull;
   }
 
   if (mCachedAttrParamValues) {
-    PR_Free(mCachedAttrParamValues);
+    NS_Free(mCachedAttrParamValues);
     mCachedAttrParamValues = nsnull;
   }
 
@@ -2627,7 +2666,13 @@ NS_INTERFACE_MAP_END
 NS_IMETHODIMP
 nsPluginInstanceOwner::SetInstance(nsIPluginInstance *aInstance)
 {
-  NS_ASSERTION(!mInstance || !aInstance, "mInstance should only be set once!");
+  NS_ASSERTION(!mInstance || !aInstance, "mInstance should only be set or unset!");
+
+  // If we're going to null out mInstance after use, be sure to call
+  // mInstance->InvalidateOwner() here, since it now won't be called
+  // from our destructor.
+  if (mInstance && !aInstance)
+    mInstance->InvalidateOwner();
 
   mInstance = aInstance;
 
@@ -3451,11 +3496,12 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
 
   PRUint32 cattrs = mContent->GetAttrCount();
 
-  if (cattrs < 0x0000FFFF) {
+  // minus two in case we add an extra "src" or "wmode" entry
+  if (cattrs < 0x0000FFFD) {
     // unsigned 32 bits to unsigned 16 bits conversion
     mNumCachedAttrs = static_cast<PRUint16>(cattrs);
   } else {
-    mNumCachedAttrs = 0xFFFE;  // minus one in case we add an extra "src" entry below
+    mNumCachedAttrs = 0xFFFD;
   }
 
   // now, we need to find all the PARAM tags that are children of us
@@ -3550,11 +3596,12 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
   // Nav 4.x would simply replace the "data" with "src". Because some plugins correctly
   // look for "data", lets instead copy the "data" attribute and add another entry
   // to the bottom of the array if there isn't already a "src" specified.
-  PRInt16 numRealAttrs = mNumCachedAttrs;
+  PRUint16 numRealAttrs = mNumCachedAttrs;
   nsAutoString data;
-  if (mContent->Tag() == nsGkAtoms::object
-    && !mContent->HasAttr(kNameSpaceID_None, nsGkAtoms::src)
-    && mContent->GetAttr(kNameSpaceID_None, nsGkAtoms::data, data)) {
+  if (mContent->Tag() == nsGkAtoms::object &&
+      !mContent->HasAttr(kNameSpaceID_None, nsGkAtoms::src) &&
+      mContent->GetAttr(kNameSpaceID_None, nsGkAtoms::data, data) &&
+      !data.IsEmpty()) {
       mNumCachedAttrs++;
   }
 
@@ -3564,13 +3611,13 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
   if (!wmodeType.IsEmpty())
     mNumCachedAttrs++;
   // now lets make the arrays
-  mCachedAttrParamNames  = (char **)PR_Calloc(sizeof(char *) * (mNumCachedAttrs + 1 + mNumCachedParams), 1);
+  mCachedAttrParamNames  = (char **)NS_Alloc(sizeof(char *) * (mNumCachedAttrs + 1 + mNumCachedParams));
   NS_ENSURE_TRUE(mCachedAttrParamNames,  NS_ERROR_OUT_OF_MEMORY);
-  mCachedAttrParamValues = (char **)PR_Calloc(sizeof(char *) * (mNumCachedAttrs + 1 + mNumCachedParams), 1);
+  mCachedAttrParamValues = (char **)NS_Alloc(sizeof(char *) * (mNumCachedAttrs + 1 + mNumCachedParams));
   NS_ENSURE_TRUE(mCachedAttrParamValues, NS_ERROR_OUT_OF_MEMORY);
 
   // let's fill in our attributes
-  PRInt16 c = 0;
+  PRUint32 nextAttrParamIndex = 0;
 
   // Some plugins (eg Flash, see bug 234675.) are actually sensitive to the
   // attribute order.  So we want to make sure we give the plugin the
@@ -3578,7 +3625,7 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
   // other browsers.  Now in HTML, the storage order is the reverse of the
   // source order, while in XML and XHTML it's the same as the source order
   // (see the AddAttributes functions in the HTML and XML content sinks).
-  PRInt16 start, end, increment;
+  PRInt32 start, end, increment;
   if (mContent->IsNodeOfType(nsINode::eHTML) &&
       mContent->IsInHTMLDocument()) {
     // HTML.  Walk attributes in reverse order.
@@ -3592,11 +3639,11 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
     increment = 1;
   }
   if (!wmodeType.IsEmpty()) {
-    mCachedAttrParamNames [c] = ToNewUTF8String(NS_LITERAL_STRING("wmode"));
-    mCachedAttrParamValues[c] = ToNewUTF8String(NS_ConvertUTF8toUTF16(wmodeType));
-    c++;
+    mCachedAttrParamNames [nextAttrParamIndex] = ToNewUTF8String(NS_LITERAL_STRING("wmode"));
+    mCachedAttrParamValues[nextAttrParamIndex] = ToNewUTF8String(NS_ConvertUTF8toUTF16(wmodeType));
+    nextAttrParamIndex++;
   }
-  for (PRInt16 index = start; index != end; index += increment) {
+  for (PRInt32 index = start; index != end; index += increment) {
     const nsAttrName* attrName = mContent->GetAttrNameAt(index);
     nsIAtom* atom = attrName->LocalName();
     nsAutoString value;
@@ -3606,24 +3653,25 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
 
     FixUpURLS(name, value);
 
-    mCachedAttrParamNames [c] = ToNewUTF8String(name);
-    mCachedAttrParamValues[c] = ToNewUTF8String(value);
-    c++;
+    mCachedAttrParamNames [nextAttrParamIndex] = ToNewUTF8String(name);
+    mCachedAttrParamValues[nextAttrParamIndex] = ToNewUTF8String(value);
+    nextAttrParamIndex++;
   }
 
   // if the conditions above were met, copy the "data" attribute to a "src" array entry
-  if (data.Length()) {
-    mCachedAttrParamNames [mNumCachedAttrs-1] = ToNewUTF8String(NS_LITERAL_STRING("SRC"));
-    mCachedAttrParamValues[mNumCachedAttrs-1] = ToNewUTF8String(data);
+  if (!data.IsEmpty()) {
+    mCachedAttrParamNames [nextAttrParamIndex] = ToNewUTF8String(NS_LITERAL_STRING("SRC"));
+    mCachedAttrParamValues[nextAttrParamIndex] = ToNewUTF8String(data);
+    nextAttrParamIndex++;
   }
 
   // add our PARAM and null separator
-  mCachedAttrParamNames [mNumCachedAttrs] = ToNewUTF8String(NS_LITERAL_STRING("PARAM"));
-  mCachedAttrParamValues[mNumCachedAttrs] = nsnull;
+  mCachedAttrParamNames [nextAttrParamIndex] = ToNewUTF8String(NS_LITERAL_STRING("PARAM"));
+  mCachedAttrParamValues[nextAttrParamIndex] = nsnull;
+  nextAttrParamIndex++;
 
   // now fill in the PARAM name/value pairs from the cached DOM nodes
-  c = 0;
-  for (PRInt16 idx = 0; idx < mNumCachedParams; idx++) {
+  for (PRUint16 idx = 0; idx < mNumCachedParams; idx++) {
     nsIDOMElement* param = ourParams.ObjectAt(idx);
     if (param) {
      nsAutoString name;
@@ -3645,9 +3693,9 @@ nsresult nsPluginInstanceOwner::EnsureCachedAttrParamArrays()
       */            
      name.Trim(" \n\r\t\b", PR_TRUE, PR_TRUE, PR_FALSE);
      value.Trim(" \n\r\t\b", PR_TRUE, PR_TRUE, PR_FALSE);
-     mCachedAttrParamNames [mNumCachedAttrs + 1 + c] = ToNewUTF8String(name);
-     mCachedAttrParamValues[mNumCachedAttrs + 1 + c] = ToNewUTF8String(value);
-     c++;                                                      // rules!
+     mCachedAttrParamNames [nextAttrParamIndex] = ToNewUTF8String(name);
+     mCachedAttrParamValues[nextAttrParamIndex] = ToNewUTF8String(value);
+     nextAttrParamIndex++;
     }
   }
 
@@ -4419,7 +4467,8 @@ nsEventStatus nsPluginInstanceOwner::ProcessEvent(const nsGUIEvent& anEvent)
         nsPresContext* presContext = mOwner->PresContext();
         nsIntPoint ptPx(presContext->AppUnitsToDevPixels(pt.x),
                         presContext->AppUnitsToDevPixels(pt.y));
-        Point carbonPt = { ptPx.y + mPluginWindow->y, ptPx.x + mPluginWindow->x };
+        nsIntPoint geckoScreenCoords = mWidget->WidgetToScreenOffset();
+        Point carbonPt = { ptPx.y + geckoScreenCoords.y, ptPx.x + geckoScreenCoords.x };
         InitializeEventRecord(&carbonEvent, &carbonPt);
 
         switch (anEvent.message) {
@@ -4558,6 +4607,12 @@ nsEventStatus nsPluginInstanceOwner::ProcessEvent(const nsGUIEvent& anEvent)
         pPluginEvent = &pluginEvent;
         break;
     }
+  }
+
+  if (pPluginEvent && !pPluginEvent->event) {
+    // Don't send null events to plugins.
+    NS_WARNING("nsObjectFrame ProcessEvent: trying to send null event to plugin.");
+    return rv;
   }
 
   if (pPluginEvent) {

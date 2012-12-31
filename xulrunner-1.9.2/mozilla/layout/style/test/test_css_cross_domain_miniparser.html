@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html>
+<!-- https://bugzilla.mozilla.org/show_bug.cgi?id=524223 -->
+<head>
+  <title>Test cross-domain CSS loading (invalid-initial rule)</title>
+  <script type="application/javascript" src="/MochiKit/packed.js"></script>
+  <script type="application/javascript"
+	  src="/tests/SimpleTest/SimpleTest.js"></script>
+  <link rel="stylesheet" type="text/css"
+        href="/tests/SimpleTest/test.css"/>
+</head>
+<body>
+<a target="_blank"
+   href="https://bugzilla.mozilla.org/show_bug.cgi?id=524223">Mozilla
+   Bug 524223</a>
+
+<hr>
+<script type="application/javascript">
+
+// XPCOM must die
+const utils = window.
+    QueryInterface(Components.interfaces.nsIInterfaceRequestor).
+    getInterface(Components.interfaces.nsIDOMWindowUtils).
+    QueryInterface(Components.interfaces.nsIDOMWindowUtils_1_9_2);
+
+function isValid(x) {
+  netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+  return utils.cssInitialSyntaxIsValid(x);
+}
+
+// We generate a bunch of selector combinations programmatically.
+// We can't test prefixed element or attribute names (foo|bar)
+// because they'll be rejected without an @namespace declaration
+// in scope, and providing one would make the construct we're trying
+// to test not the first thing in the file.  We can, however, test
+// empty and * prefixes.
+const good_tu_selectors = [
+    "foo", "*", "|bar", "*|bar", "*|*"
+];
+
+const bad_tu_selectors = [
+    "|", "foo|", "foo|bar", "*|", "<html>", "<!"
+];
+
+const good_mod_selectors = [
+    "#foo", ".foo",
+
+    "[a]", "[a=b]", "[ a = b ]", "[a='b c']", "[ a = 'b c' ]",
+    "[|a=b]", "[ |a = b ]", "[|a='b c']", "[ |a = 'b c' ]",
+    "[*|a=b]", "[ *|a = b ]", "[*|a='b c']", "[ *|a = 'b c' ]",
+
+    ":hover", ":lang(en)", ":not( bar )", ":not([a='b c'])"
+    // we don't test pseudo-elements because honoring the last-thing-
+    // in-the-selector rule is too much trouble
+];
+
+const bad_mod_selectors = [
+    "#", "#*", "#@foo", ".", ".*", ".@foo",
+
+    "[", "[a", "[a=", "[a=b", "[a='b'",
+    "[]", "[a=]", "[a b]", "[a=b c]", "[a='b' c]", "[a=*]",
+    "[a| = b]", "[a|* = b]",
+    "[z|a=b]", "[ z|a = b ]", "[z|a='b c']", "[ z|a = 'b c' ]",
+
+    ":", ":*", "::*", ":::", ":::foo", ":::*", ":f([)", ":f[]"
+];
+
+// "good combinators" also includes grouping commas (to test selector lists).
+const good_combinators = [
+    " ", " + ", "+", "+ ", " +",
+    ",", ", ", " ,", " , "
+];
+
+const bad_combinators = [ "<", " < ", "< ", " <" ];
+
+function test_selector(good, s) {
+    var sheet = s + '{}';
+    if (good) {
+	ok(isValid(sheet), "expected valid: " + sheet);
+    } else {
+	ok(!isValid(sheet), "expected invalid: " + sheet);
+    }
+}
+
+function test_modified_selector(good, s, m) {
+    var c;
+    test_selector(good, s + m); // modified selector
+    for each (c in good_combinators) {
+	test_selector(good, s + c + m);
+	test_selector(good, m + c + s);
+    }
+    for each (c in bad_combinators) {
+	test_selector(false, s + c + m);
+	test_selector(false, m + c + s);
+    }
+}
+
+function test_selectors() {
+    var a, b;
+
+    // Isolated selector constructs
+    for each (a in good_tu_selectors) {
+	test_selector(true, a);
+    }
+    for each (a in good_mod_selectors) {
+	test_selector(true, a);
+    }
+    for each (a in bad_tu_selectors) {
+	test_selector(false, a);
+    }
+    for each (a in bad_mod_selectors) {
+	test_selector(false, a);
+    }
+
+    // Pairs of selectors
+    for each (a in good_tu_selectors) {
+	for each (b in good_mod_selectors) {
+	    test_modified_selector(true, a, b);
+	}
+    }
+
+    for each (a in good_tu_selectors) {
+	for each (b in bad_mod_selectors) {
+	    test_modified_selector(false, a, b);
+	}
+    }
+
+    for each (a in bad_tu_selectors) {
+	for each (b in good_mod_selectors) {
+	    test_modified_selector(false, a, b);
+	}
+    }
+}
+
+// Also exercise the declaration block and at-rule parsing a little.
+// We are far less picky about this since the grammar is far more lax.
+const good_sheets = [
+    "x{}", "x{ a : b }", "x{a:b}", "x { a: b }",
+    "x {a:b; c:d; e:f}", "x {a:b; c:d; e:f;}",
+    "x{", " x{a:b", // EOF closes brace groups
+    "x {a: 123 }", "x{a: [](){}<fnord>}", "x{a: url(!@#@$FJEC)}",
+
+    "@charset 'utf-8';",
+    "@media print { x { a: b; c:d; e:f; } }",
+    "@page { a:b; } x {c : d}"
+];
+
+const bad_sheets = [
+    "{}", "@charset",
+    "@foo;", "@foo 'bar';", "@foo { a: b; c:d; e:f; }", "@foo bar { baz }"
+    // syntax errors inside a declaration block with a valid selector
+    // are not trapped
+];
+
+function test_sheets() {
+    var a;
+    for each (a in good_sheets) {
+	ok(isValid(a), "expected valid: " + a);
+    }
+    for each (a in bad_sheets) {
+	ok(!isValid(a), "expected invalid: " + a);
+    }
+}
+
+test_selectors();
+test_sheets();
+</script>
+</body>
+</html>

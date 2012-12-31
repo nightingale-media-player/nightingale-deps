@@ -44,6 +44,8 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
+MOZ_APP_VERSION="1.9.2"
+
 NO_PKG_FILES = \
 	xulrunner-config \
 	regchrome* \
@@ -121,6 +123,7 @@ endif
 	-e "s|%includedir%|$(includedir)|" \
 	-e "s|%idldir%|$(idldir)|" \
 	-e "s|%sdkdir%|$(sdkdir)|" \
+	-e "s|%libdir%|$(installdir)|" \
 	-e "s|%MOZ_APP_NAME%|$(MOZ_APP_NAME)|" \
 	-e "s|%MOZILLA_VERSION%|$(MOZ_APP_VERSION)|" \
 	-e "s|%WCHAR_CFLAGS%|$(WCHAR_CFLAGS)|" \

@@ -87,6 +87,10 @@ public:
   // nsIDOMHTMLCanvasElement
   NS_DECL_NSIDOMHTMLCANVASELEMENT
 
+  // CC
+  NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED_NO_UNLINK(nsHTMLCanvasElement,
+                                                     nsGenericHTMLElement)
+
   // nsICanvasElement
   NS_IMETHOD GetPrimaryCanvasFrame(nsIFrame **aFrame);
   NS_IMETHOD GetSize(PRUint32 *width, PRUint32 *height);
@@ -151,17 +155,18 @@ nsHTMLCanvasElement::nsHTMLCanvasElement(nsINodeInfo *aNodeInfo)
 
 nsHTMLCanvasElement::~nsHTMLCanvasElement()
 {
-  if (mCurrentContext) {
-    nsCOMPtr<nsICanvasRenderingContextInternal> internalctx(do_QueryInterface(mCurrentContext));
-    internalctx->SetCanvasElement(nsnull);
-    mCurrentContext = nsnull;
-  }
 }
+
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsHTMLCanvasElement)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_INHERITED(nsHTMLCanvasElement,
+                                                  nsGenericHTMLElement)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mCurrentContext)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
 
 NS_IMPL_ADDREF_INHERITED(nsHTMLCanvasElement, nsGenericElement)
 NS_IMPL_RELEASE_INHERITED(nsHTMLCanvasElement, nsGenericElement)
 
-NS_INTERFACE_TABLE_HEAD(nsHTMLCanvasElement)
+NS_INTERFACE_TABLE_HEAD_CYCLE_COLLECTION_INHERITED(nsHTMLCanvasElement)
   NS_HTML_CONTENT_INTERFACE_TABLE2(nsHTMLCanvasElement,
                                    nsIDOMHTMLCanvasElement,
                                    nsICanvasElement)
@@ -469,6 +474,15 @@ nsHTMLCanvasElement::GetContext(const nsAString& aContextId,
     if (NS_FAILED(rv))
       // XXX ERRMSG we need to report an error to developers here! (bug 329026)
       return NS_ERROR_INVALID_ARG;
+
+    // Ensure that the context participates in CC.  Note that returning a
+    // CC participant from QI doesn't addref.
+    nsXPCOMCycleCollectionParticipant *cp = nsnull;
+    CallQueryInterface(mCurrentContext, &cp);
+    if (!cp) {
+      mCurrentContext = nsnull;
+      return NS_ERROR_FAILURE;
+    }
 
     rv = mCurrentContext->SetCanvasElement(this);
     if (NS_FAILED(rv)) {

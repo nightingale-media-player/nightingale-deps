@@ -86,7 +86,7 @@ static PRLogModuleInfo* gOggDecoderLog;
 
 // Offset into Ogg buffer containing audio information. This value
 // is the one used by the oggplay examples.
-#define OGGPLAY_AUDIO_OFFSET 250L
+#define OGGPLAY_AUDIO_OFFSET 500L
 
 // Wait this number of seconds when buffering, then leave and play
 // as best as we can if the required amount of data hasn't been

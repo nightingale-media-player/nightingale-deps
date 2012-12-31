@@ -259,16 +259,30 @@ nsSVGNumberList::ReplaceItem(nsIDOMSVGNumber *newItem,
                              PRUint32 index,
                              nsIDOMSVGNumber **_retval)
 {
+  *_retval = nsnull;
+
   if (!newItem) {
-    *_retval = nsnull;
     return NS_ERROR_DOM_SVG_WRONG_TYPE_ERR;
   }
 
-  nsresult rv = RemoveItem(index, _retval);
-  if (NS_FAILED(rv))
-    return rv;
+  if (index >= mNumbers.Length()) {
+    return NS_ERROR_DOM_INDEX_SIZE_ERR;
+  }
 
-  return InsertElementAt(newItem, index);
+  // The following is equivalent to RemoveItem() followed by InsertElementAt(),
+  // but with the WillModify() / DidModify() notifications collapsed.
+
+  WillModify();
+  NS_REMOVE_SVGVALUE_OBSERVER(mNumbers[index]);
+  NS_RELEASE(mNumbers[index]);
+  mNumbers[index] = newItem;
+  NS_ADDREF(newItem);
+  NS_ADD_SVGVALUE_OBSERVER(newItem);
+  DidModify();
+
+  NS_ADDREF(*_retval = newItem);
+
+  return NS_OK;
 }
 
 /* nsIDOMSVGNumberList removeItem (in unsigned long index); */

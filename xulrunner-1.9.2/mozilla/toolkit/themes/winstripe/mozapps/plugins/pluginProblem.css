@@ -1,0 +1,16 @@
+/*
+ * Note to themers:
+ *
+ * This CSS (and associated XBL/XUL) was added/changed for the landing of
+ * the new UI for crashed plugins in Gecko 1.9.2.3 (aka Firefox 3.6.3). To
+ * avoid the new UI from breaking when using existing themes, we've shipped
+ * the new CSS and images in /content instead of /skin.
+ *
+ * If you wish to theme this UI, you should add your CSS to this file and
+ * override the rules set by the /content CSS:
+ *   chrome://mozapps/content/plugins/pluginProblemLorentz.css.
+ *
+ * The next major release (Gecko 1.9.3.x) will not have the /content
+ * pluginProblemLorentz.css; it's contents will be in this file, in /skin
+ * along with the images it references.
+ */

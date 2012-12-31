@@ -662,43 +662,21 @@ nsToolkitProfileService::CreateProfile(nsILocalFile* aRootDir,
     nsCOMPtr<nsILocalFile> localDir (aLocalDir);
 
     if (!localDir) {
-        // Get NS_APP_USER_PROFILES_ROOT_DIR
-        nsCOMPtr<nsIFile> file;
-        PRBool dummy;
-        rv = gDirServiceProvider->GetFile(NS_APP_USER_PROFILES_ROOT_DIR,
-                                          &dummy,
-                                          getter_AddRefs(file));
-        NS_ENSURE_SUCCESS(rv, rv);
-        nsCOMPtr<nsILocalFile> profilesRoot = do_QueryInterface(file);
-        NS_ENSURE_TRUE(profilesRoot, NS_ERROR_UNEXPECTED);
-
-        // if profilesRoot contains rootDir
-        PRBool isRelative;
-        rv = profilesRoot->Contains(rootDir, PR_TRUE, &isRelative);
-        if (NS_SUCCEEDED(rv) && isRelative) {
-            // Get relative descriptor from profilesRoot to rootDir
-            nsCString relativeDesc;
-            rv = rootDir->GetRelativeDescriptor(profilesRoot, relativeDesc);
-            NS_ENSURE_SUCCESS(rv, rv);
-
-            // Get NS_APP_USER_PROFILES_LOCAL_ROOT_DIR
-            rv = gDirServiceProvider->GetFile(NS_APP_USER_PROFILES_LOCAL_ROOT_DIR,
-                                              &dummy,
-                                              getter_AddRefs(file));
-            NS_ENSURE_SUCCESS(rv, rv);
-            nsCOMPtr<nsILocalFile> localProfilesRoot = do_QueryInterface(file);
-            NS_ENSURE_TRUE(localProfilesRoot, NS_ERROR_UNEXPECTED);
-
-            // Set localDir to NS_APP_USER_PROFILES_LOCAL_ROOT_DIR to rel. desc.
-            rv = NS_NewNativeLocalFile(EmptyCString(), PR_TRUE,
-                                       getter_AddRefs(localDir));
-            NS_ENSURE_SUCCESS(rv, rv);
-            rv = localDir->SetRelativeDescriptor(localProfilesRoot,
-                                                 relativeDesc);
-            NS_ENSURE_SUCCESS(rv, rv);
+        if (aRootDir) {
+            localDir = aRootDir;
         }
         else {
-            localDir = rootDir;
+            nsCOMPtr<nsIFile> file;
+            PRBool dummy;
+            rv = gDirServiceProvider->GetFile(NS_APP_USER_PROFILES_LOCAL_ROOT_DIR,
+                                              &dummy, getter_AddRefs(file));
+            NS_ENSURE_SUCCESS(rv, rv);
+
+            localDir = do_QueryInterface(file);
+            NS_ENSURE_TRUE(localDir, NS_ERROR_UNEXPECTED);
+
+            // use same salting
+            localDir->AppendNative(dirName);
         }
     }
 

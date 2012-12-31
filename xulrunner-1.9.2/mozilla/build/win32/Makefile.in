@@ -42,10 +42,18 @@ VPATH = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
+ifdef ENABLE_TESTS
+DIRS += crashinjectdll
+
+PROGRAM = crashinject$(BIN_SUFFIX)
+USE_STATIC_LIBS = 1
+CPPSRCS = crashinject.cpp
+
+endif
+
 include $(topsrcdir)/config/rules.mk
 
 ifdef WIN32_REDIST_DIR
-ifndef MOZ_MEMORY
 
 ifeq (1400,$(_MSC_VER))
 REDIST_FILES = \
@@ -65,14 +73,18 @@ REDIST_FILES = \
 	$(NULL)
 endif
 
-endif # MOZ_MEMORY
-endif # WIN32_REDIST_DIR
+ifeq (1600,$(_MSC_VER))
+REDIST_FILES = \
+	msvcp100.dll \
+	msvcr100.dll \
+	$(NULL)
+endif
+
+endif
 
 ifdef REDIST_FILES
 libs::
 	mkdir -p $(FINAL_TARGET)
-	for file in $(REDIST_FILES) ; do \
-	  install --preserve-timestamps "$(WIN32_REDIST_DIR)"/$$file $(FINAL_TARGET) ; \
-	done
+	install --preserve-timestamps $(foreach f,$(REDIST_FILES),"$(WIN32_REDIST_DIR)"/$(f)) $(FINAL_TARGET)
 endif
 

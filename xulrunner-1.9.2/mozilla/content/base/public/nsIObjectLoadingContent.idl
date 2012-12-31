@@ -39,6 +39,7 @@
 
 interface nsIObjectFrame;
 interface nsIPluginInstance;
+interface nsIPluginTag;
 interface nsIDOMElement;
 interface nsIDOMClientRect;
 
@@ -80,7 +81,6 @@ interface nsIObjectLoadingContent : nsISupports
    */
   [noscript] readonly attribute nsIPluginInstance pluginInstance;
 
-
   /**
    * Makes sure that a frame for this object exists, and that the plugin is
    * instantiated. This method does nothing if the type is not #TYPE_PLUGIN.
@@ -112,7 +112,7 @@ interface nsIObjectLoadingContent : nsISupports
 /**
  * This interface extends the nsIObjectLoadingContent for the 1.9.2 branch
  */
-[scriptable, uuid(f91247a2-fb8b-42d3-a9b6-8f1f49685c43)]
+[scriptable, uuid(2725a137-db4b-4e43-a096-a084aeaa8b0b)]
 interface nsIObjectLoadingContent_MOZILLA_1_9_2_BRANCH : nsISupports
 {
   /**
@@ -122,4 +122,9 @@ interface nsIObjectLoadingContent_MOZILLA_1_9_2_BRANCH : nsISupports
   void setAbsoluteScreenPosition(in nsIDOMElement element,
                                  in nsIDOMClientRect position,
                                  in nsIDOMClientRect clip);
+
+  [noscript] void pluginCrashed(in nsIPluginTag pluginTag,
+                                in AString pluginDumpID,
+                                in AString browserDumpID,
+                                in boolean submittedCrashReport);
 };

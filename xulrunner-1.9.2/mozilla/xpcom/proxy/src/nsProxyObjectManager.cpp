@@ -96,21 +96,9 @@ protected:
 // nsProxyObjectManager
 /////////////////////////////////////////////////////////////////////////
 
-nsProxyObjectManager* nsProxyObjectManager::gInstance = nsnull;
+nsProxyObjectManager* nsProxyObjectManager::mInstance = nsnull;
 
-NS_IMPL_QUERY_INTERFACE1(nsProxyObjectManager, nsIProxyObjectManager)
-
-NS_IMETHODIMP_(nsrefcnt)
-nsProxyObjectManager::AddRef()
-{
-    return 2;
-}
-
-NS_IMETHODIMP_(nsrefcnt)
-nsProxyObjectManager::Release()
-{
-    return 1;
-}
+NS_IMPL_THREADSAFE_ISUPPORTS1(nsProxyObjectManager, nsIProxyObjectManager)
 
 nsProxyObjectManager::nsProxyObjectManager()
     : mProxyObjectMap(256, PR_FALSE)
@@ -126,28 +114,27 @@ nsProxyObjectManager::~nsProxyObjectManager()
     if (mProxyCreationLock)
         PR_DestroyLock(mProxyCreationLock);
 
-    nsProxyObjectManager::gInstance = nsnull;
+    nsProxyObjectManager::mInstance = nsnull;
 }
 
 PRBool
 nsProxyObjectManager::IsManagerShutdown()
 {
-    return gInstance == nsnull;
+    return mInstance == nsnull;
 }
 
 nsProxyObjectManager *
 nsProxyObjectManager::GetInstance()
 {
-    if (!gInstance) 
-        gInstance = new nsProxyObjectManager();
-    return gInstance;
+    if (!mInstance) 
+        mInstance = new nsProxyObjectManager();
+    return mInstance;
 }
 
 void
 nsProxyObjectManager::Shutdown()
 {
-    delete gInstance;
-    NS_ASSERTION(!gInstance, "Destructor didn't null gInstance?");
+    mInstance = nsnull;
 }
 
 NS_IMETHODIMP 

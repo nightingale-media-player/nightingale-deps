@@ -256,6 +256,10 @@ nsresult nsCocoaWindow::Create(nsIWidget *aParent,
 {
   NS_OBJC_BEGIN_TRY_ABORT_BLOCK_NSRESULT;
 
+  // Because the hidden window is created outside of an event loop,
+  // we have to provide an autorelease pool (see bug 559075).
+  nsAutoreleasePool localPool;
+
   if (!WindowSizeAllowed(aRect.width, aRect.height))
     return NS_ERROR_FAILURE;
 
@@ -298,20 +302,6 @@ static unsigned int WindowMaskForBorderStyle(nsBorderStyle aBorderStyle)
     return NSBorderlessWindowMask;
 
   unsigned int mask = NSTitledWindowMask | NSMiniaturizableWindowMask;
-  if (!allOrDefault) {
-    // SONGBIRD HACK:
-    // For feathers that are using the songbird-global-package
-    // and do not use operating system chrome, we don't want to
-    // add the |NSTitledWindowMask| to the dialog.
-    char *showChrome = nsnull;
-    nsCOMPtr<nsIPrefBranch> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
-    if (prefs)
-      prefs->GetCharPref("songbird.accessibility.enabled", &showChrome);
-    if (!showChrome || strcmp(showChrome, "0") == 0)
-      mask &= ~NSTitledWindowMask; 
-    if (showChrome)
-      NS_Free(showChrome);
-  }
   if (allOrDefault || aBorderStyle & eBorderStyle_close)
     mask |= NSClosableWindowMask;
   if (allOrDefault || aBorderStyle & eBorderStyle_resizeh)
@@ -410,24 +400,10 @@ nsresult nsCocoaWindow::CreateNativeWindow(const NSRect &aRect,
   // If we're a popup window we need to use the PopupWindow class.
   else if (mWindowType == eWindowType_popup)
     windowClass = [PopupWindow class];
-
-  // XXXmatt: If we use a borderless window the OS makes
-  // assumptions about what the window should be able to do.
-  // What we really want is a normal window in which
-  // the XUL takes responsibility for drawing the titlebar
-  // and resizer.
-  else if (features == NSBorderlessWindowMask) {
-    windowClass = [SongbirdWindow class];
-    features |= NSClosableWindowMask;
-    features |= NSTitledWindowMask;
-    features |= NSMiniaturizableWindowMask;
-    
-    // If the window was opened with resizable=yes, then 
-    // enable to OS resizer.
-    if (aBorderStyle & eBorderStyle_resizeh) {
-      features |= NSResizableWindowMask;
-    }
-  }
+  // If we're a non-popup borderless window we need to use the
+  // BorderlessWindow class.
+  else if (features == NSBorderlessWindowMask)
+    windowClass = [BorderlessWindow class];
 
   // Create the window
   mWindow = [[windowClass alloc] initWithContentRect:contentRect styleMask:features 
@@ -448,11 +424,7 @@ nsresult nsCocoaWindow::CreateNativeWindow(const NSRect &aRect,
   }
 
   [mWindow setBackgroundColor:[NSColor whiteColor]];
-  
-  // XXXmatt: Modifying the arbitrary min size so that it 
-  // doesn't interfere with the Songbird miniplayer.
-  [mWindow setContentMinSize:NSMakeSize(60, 20)];
-  
+  [mWindow setContentMinSize:NSMakeSize(60, 60)];
   [mWindow disableCursorRects];
 
   // setup our notification delegate. Note that setDelegate: does NOT retain.
@@ -575,18 +547,14 @@ NS_IMETHODIMP nsCocoaWindow::SetModal(PRBool aState)
         if (aParent->mNumModalDescendents++ == 0) {
           NSWindow *aWindow = aParent->GetCocoaWindow();
           if (aParent->mWindowType != eWindowType_invisible) {
-            SetModalLockWindow(aWindow, PR_TRUE);
+            [[aWindow standardWindowButton:NSWindowCloseButton] setEnabled:NO];
+            [[aWindow standardWindowButton:NSWindowMiniaturizeButton] setEnabled:NO];
+            [[aWindow standardWindowButton:NSWindowZoomButton] setEnabled:NO];
           }
         }
         aParent = static_cast<nsCocoaWindow*>(aParent->mParent);
       }
-      // Despite the fact this window will be opened as a "modal" dialog, the
-      // flag should still be set as |NSNormalWindowLevel| to prevent it from
-      // floating on top of every other window in the OS. 
-      [mWindow setLevel:NSNormalWindowLevel];
-      [[mWindow standardWindowButton:NSWindowMiniaturizeButton] setEnabled:NO];
-      [[mWindow standardWindowButton:NSWindowZoomButton] setEnabled:NO];
-
+      [mWindow setLevel:NSModalPanelWindowLevel];
       nsCocoaWindowList *windowList = new nsCocoaWindowList;
       if (windowList) {
         windowList->window = this; // Don't ADDREF
@@ -594,11 +562,6 @@ NS_IMETHODIMP nsCocoaWindow::SetModal(PRBool aState)
         gGeckoAppModalWindowList = windowList;
       }
     }
-      
-    // Since the |[NSApp delegate]| builds and populates the dock window menu,
-    // it needs to be informed that a gecko modal session is about to begin.
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"GeckoStartModal" 
-                                                        object:nil];
   }
   else {
     --gXULModalLevel;
@@ -610,7 +573,9 @@ NS_IMETHODIMP nsCocoaWindow::SetModal(PRBool aState)
         if (--aParent->mNumModalDescendents == 0) {
           NSWindow *aWindow = aParent->GetCocoaWindow();
           if (aParent->mWindowType != eWindowType_invisible) {
-            SetModalLockWindow(aWindow, PR_FALSE);
+            [[aWindow standardWindowButton:NSWindowCloseButton] setEnabled:YES];
+            [[aWindow standardWindowButton:NSWindowMiniaturizeButton] setEnabled:YES];
+            [[aWindow standardWindowButton:NSWindowZoomButton] setEnabled:YES];
           }
         }
         NS_ASSERTION(aParent->mNumModalDescendents >= 0, "Widget hierarchy changed while modal!");
@@ -627,10 +592,6 @@ NS_IMETHODIMP nsCocoaWindow::SetModal(PRBool aState)
       else
         [mWindow setLevel:NSNormalWindowLevel];
     }
-      
-    // Inform the |[NSApp delegate]| that the modal session has ended.
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"GeckoEndModal" 
-                                                        object:nil];
   }
   return NS_OK;
 }
@@ -1072,11 +1033,13 @@ NS_METHOD nsCocoaWindow::MakeFullScreen(PRBool aFullScreen)
   NS_ASSERTION(mFullScreen != aFullScreen, "Unnecessary MakeFullScreen call");
 
   NSDisableScreenUpdates();
+  // The order here matters. When we exit full screen mode, we need to show the
+  // Dock first, otherwise the newly-created window won't have its minimize
+  // button enabled. See bug 526282.
+  nsCocoaUtils::HideOSChromeOnScreen(aFullScreen, [mWindow screen]);
   nsresult rv = nsBaseWidget::MakeFullScreen(aFullScreen);
   NSEnableScreenUpdates();
   NS_ENSURE_SUCCESS(rv, rv);
-
-  nsCocoaUtils::HideOSChromeOnScreen(aFullScreen, [mWindow screen]);
 
   mFullScreen = aFullScreen;
 
@@ -1377,8 +1340,7 @@ NS_IMETHODIMP nsCocoaWindow::SetFocus(PRBool aState)
   if (mPopupContentView) {
     mPopupContentView->SetFocus(aState);
   }
-  else if (aState && [mWindow isVisible]) {
-    // if the window is shown, move it to the front
+  else if (aState && ([mWindow isVisible] || [mWindow isMiniaturized])) {
     [mWindow setAcceptsMouseMovedEvents:YES];
     [mWindow makeKeyAndOrderFront:nil];
     SendSetZLevelEvent();
@@ -1515,34 +1477,6 @@ NS_IMETHODIMP nsCocoaWindow::SetWindowTitlebarColor(nscolor aColor, PRBool aActi
 
   NS_OBJC_END_TRY_ABORT_BLOCK_NSRESULT;
 }
-
-NS_IMETHODIMP
-nsCocoaWindow::SetModalLockWindow(NSWindow *aWindow, PRBool aShouldLock)
-{
-  [[aWindow standardWindowButton:NSWindowCloseButton] setEnabled:!aShouldLock];
-  [[aWindow standardWindowButton:NSWindowMiniaturizeButton] setEnabled:!aShouldLock];
-  [[aWindow standardWindowButton:NSWindowZoomButton] setEnabled:!aShouldLock];
-  
-  // If the window isn't already using the native resizer, it should be hidden
-  // to try and prevent the user from clicking on it to rearrange windows.
-  BOOL hideResizer = YES;
-  if ([aWindow respondsToSelector:@selector(usesNativeResizer)]) 
-    hideResizer = [aWindow usesNativeResizer];
-  
-  if (hideResizer)
-    [aWindow setShowsResizeIndicator:!aShouldLock];
-
-  NSEnumerator *subviewsEnum = [[[aWindow contentView] subviews] objectEnumerator];
-  id curSubview = nil;
-  while ((curSubview = [subviewsEnum nextObject])) {
-    if ([curSubview isKindOfClass:[ChildView class]]) {
-      [(ChildView *)curSubview setViewDisabled:aShouldLock];
-    }
-  }
-  
-  return NS_OK;
-}
-
 
 gfxASurface* nsCocoaWindow::GetThebesSurface()
 {
@@ -2073,13 +2007,9 @@ static const NSString* kStateInactiveTitlebarColorKey = @"inactiveTitlebarColor"
   NSEventType type = [anEvent type];
   
   switch (type) {
+    case NSScrollWheel:
     case NSLeftMouseDown:
     case NSLeftMouseUp:
-      // These events should always be sent to make sure that the subviews
-      // can cancel the click through to prevent window re-ordering during 
-      // a Gecko-Cocoa modal session.
-      break;
-    case NSScrollWheel:
     case NSRightMouseDown:
     case NSRightMouseUp:
     case NSOtherMouseDown:
@@ -2109,11 +2039,6 @@ static const NSString* kStateInactiveTitlebarColorKey = @"inactiveTitlebarColor"
   }
 
   [super sendEvent:anEvent];
-}
-
-- (BOOL)usesNativeResizer
-{
-  return YES;
 }
 
 @end
@@ -2411,10 +2336,9 @@ void patternDraw(void* aInfo, CGContextRef aContext)
   NSEventType type = [anEvent type];
   
   switch (type) {
+    case NSScrollWheel:
     case NSLeftMouseDown:
     case NSLeftMouseUp:
-      break;
-    case NSScrollWheel:
     case NSRightMouseDown:
     case NSRightMouseUp:
     case NSOtherMouseDown:
@@ -2478,295 +2402,3 @@ void patternDraw(void* aInfo, CGContextRef aContext)
 }
 
 @end
-
-/*************************************************************************
- * BEGIN SONGBIRD HACK
- *
- * If you want to draw your own window decorations like iPhoto or
- * Aperature, you have to use the unsupported NSThemeFrame view.
- *
- * See http://andymatuschak.org/articles/2006/01/11/ for gory details.
- *
- * In Songbird we like to draw all window decorations using XUL, so we
- * subclass NSThemeFrame and make the content area 100% of the window. 
- * BorderlessWindow would work, but causes the OS to make assumptions
- * about things like resizing and zooming.
- *
- * In order to maintain compatibility with 10.4, each private AppKit class
- * is implemented as a union of the 10.4 and later versions of the class.
- * This ensures that the SongbirdThemeFrame class is sized correctly.
- * Trying to access any particular fields will probably fail on both 10.4
- * and 10.5.
- *
- *************************************************************************/
-
-@class NSDocumentDragButton, NSButton, NSCell, NSImage, NSString;
-
-@interface NSFrameView : NSView
-{
-  union {
-    struct {
-      unsigned int styleMask;
-      NSString *_title;
-      NSCell *titleCell;
-      NSButton *closeButton;
-      NSButton *zoomButton;
-      NSButton *minimizeButton;
-      char resizeByIncrement;
-      char frameNeedsDisplay;
-      unsigned char tabViewCount;
-      struct _NSSize resizeParameter;
-      int shadowState; 
-    } nsFrameView;
-
-    struct {
-      unsigned int styleMask;
-      NSString *_title;
-      NSCell *titleCell;
-      NSButton *closeButton;
-      NSButton *zoomButton;
-      NSButton *minimizeButton;
-      BOOL resizeByIncrement;
-      BOOL unused;
-      unsigned char tabViewCount;
-      struct _NSSize resizeParameter;
-      int shadowState;
-    } nsFrameView_10_4;
-  } nsFrameView;
-}
-
-- (id)initWithFrame:(struct _NSRect)fp8 styleMask:(unsigned int)fp24 owner:(id)fp28;
-- (id)initWithFrame:(struct _NSRect)fp8;
-
-@end
-
-@interface NSTitledFrame : NSFrameView
-{
-  union {
-    struct {
-      int resizeFlags;
-      id fileButton;    
-      struct _NSSize titleCellSize;
-    } nsTitledFrame;
-
-    struct {
-      int resizeFlags;
-      NSDocumentDragButton *fileButton;
-      struct _NSSize titleCellSize;
-    } nsTitledFrame_10_4;
-  } nsTitledFrame;
-}
-
-- (id)initWithFrame:(struct _NSRect)fp8 styleMask:(unsigned int)fp24 owner:(id)fp28;
-- (float)_titlebarHeight;
-+ (float)_titlebarHeight:(unsigned int)fp8;
-- (int)_numberOfTitlebarLines;
-+ (float)_windowTitlebarTitleMinHeight:(unsigned int)fp8;
-- (float)_windowTitlebarTitleMinHeight;
-
-@end
-
-@interface NSThemeFrame : NSTitledFrame
-{
-  union {
-    struct {
-      NSButton *toolbarButton;
-      int toolbarVisibleStatus;
-      NSImage *showToolbarTransitionImage;
-      struct _NSSize showToolbarPreWindowSize;
-      NSButton *modeButton;
-      int leftGroupTrackingTagNum;
-      int rightGroupTrackingTagNum;
-      char mouseInsideLeftGroup;
-      char mouseInsideRightGroup;
-      int widgetState;
-      NSString *displayName; 
-    } nsThemeFrame;
-
-    struct {
-      NSButton *toolbarButton;
-      int toolbarVisibleStatus;
-      struct CGLayer *showToolbarTransitionLayer;
-      struct _NSSize showToolbarPreWindowSize;
-      NSButton *modeButton;
-      int leftGroupTrackingTagNum;
-      int rightGroupTrackingTagNum;
-      struct {
-          unsigned int mouseInsideLeftGroup:1;
-          unsigned int mouseInsideRightGroup:1;
-          unsigned int bottomCornerRounded:2;
-          unsigned int reserved:28;
-      } _tFlags;
-      int widgetState;
-      NSString *displayName;
-      NSButton *lockButton;
-      float topBorderThickness;
-      float bottomBorderThickness;
-    } nsThemeFrame_10_4;
-  } nsThemeFrame;
-}
-
-- (id)initWithFrame:(struct _NSRect)fp8 styleMask:(unsigned int)fp24 owner:(id)fp28;
-- (float)_titlebarHeight;
-+ (float)_titlebarHeight:(unsigned int)fp8;
-- (float)_windowTitlebarTitleMinHeight;
-+ (float)_windowTitlebarTitleMinHeight:(unsigned int)fp8;
-
-@end
-
-
-// A ThemeFrame with no titlebar or resize indicator,
-
-@interface SongbirdThemeFrame : NSThemeFrame {}
-@end
-
-@implementation SongbirdThemeFrame
-
-- initWithFrame:(NSRect)frame styleMask:(int)sm owner:owner
-{
-  self = [super initWithFrame:frame styleMask:sm owner:owner];
-
-  if (self) {
-    NSWindow *window = [self window];
-    
-    // Turn off the standard window controls
-    [[window standardWindowButton:NSWindowMiniaturizeButton] setHidden:YES];
-    [[window standardWindowButton:NSWindowZoomButton] setHidden:YES];
-    [[window standardWindowButton:NSWindowCloseButton] setHidden:YES];
-
-    // Let the window paint its own resize indicator.
-    // Note that we are suppressing the graphic, and
-    // the resizer may still be functional.
-    [window setShowsResizeIndicator:NO];
-
-    [window setHasShadow:YES];
-  }
-  return self;
-}
-
-// Crush the titlebar, since the window will paint its own
-
-+ (float)_windowTitlebarTitleMinHeight:(unsigned int)fp8 
-{
-  return 0;
-}
-
-- (int)titlebarHeight
-{
-  return 0;
-}
-
-- (float)_titlebarHeight
-{
-  return 0.0;
-}
-
-- (int)_numberOfTitlebarLines 
-{
-  return 0;
-}
-
-@end
-
-
-// Create a window that uses our special frame
-
-@interface NSWindow (Private)
-+ (Class)frameViewClassForStyleMask:(unsigned int)mask;
-@end
-
-@implementation SongbirdWindow
-
-+ (Class)frameViewClassForStyleMask:(unsigned int)styleMask
-{
-  return [SongbirdThemeFrame class];
-}
-
-- (id)initWithContentRect:(NSRect)contentRect 
-                styleMask:(unsigned int)aStyle 
-                  backing:(NSBackingStoreType)bufferingType 
-                    defer:(BOOL)flag
-{
-  if ((self = [super initWithContentRect:contentRect 
-                               styleMask:aStyle 
-                                 backing:bufferingType 
-                                   defer:flag])) 
-  {
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(windowDidMove:)
-                                                 name:NSWindowDidMoveNotification 
-                                               object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(windowDidBecomeMain:)
-                                                 name:NSWindowDidBecomeMainNotification 
-                                               object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(windowDidResignMain:)
-                                                 name:NSWindowDidResignMainNotification 
-                                               object:self];
-  }
-  
-  return self;
-}
-
-- (void)dealloc
-{
-  [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                  name:NSWindowDidMoveNotification
-                                                object:self];
-  [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                  name:NSWindowDidBecomeMainNotification
-                                                object:self];
-  [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                  name:NSWindowDidResignMainNotification
-                                                object:self];
-  [super dealloc];
-}
-
-- (BOOL)usesNativeResizer
-{
-  return NO;
-}
-
-- (void)windowDidMove:(NSNotification *)notification
-{
-  NSRect newFrame = [self frame];
-  NSRect screenFrame = [[NSScreen mainScreen] visibleFrame];
-  
-  // Prevent the window from going under the menubar:
-  if ((newFrame.origin.y + newFrame.size.height) > 
-      (screenFrame.origin.y + screenFrame.size.height))
-  {
-    newFrame.origin.y = 
-      screenFrame.origin.y + (screenFrame.size.height - newFrame.size.height);
-    [self setFrameOrigin:newFrame.origin];
-  }
-}
-
-// This is the un-documented function that enables any window to display the 
-// normal drop shadow to it. All borderless-windows (like |SongbirdWindow|) 
-// will never return |YES| here unless we override it.
-- (BOOL)_hasDarkShadow
-{
-  return YES;
-}
-
-- (void)windowDidBecomeMain:(NSNotification *)notification
-{
-  // since we are a borderless window - we need to send this event ourselves
-  // so that our shadow is updated correctly.
-  [self display];
-}
- 
-- (void)windowDidResignMain:(NSNotification *)notification
-{
-  // since we are a borderless window - we need to send this event ourselves
-  // so that our shadow is updated correctly.
-  [self display];
-}
-
-@end
-
-/*************************************************************************
- * END SONGBIRD HACK
- ************************************************************************/

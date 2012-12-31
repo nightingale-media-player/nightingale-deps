@@ -299,7 +299,7 @@ public:
 private:
     ~nsProxyObjectManager();
 
-    static nsProxyObjectManager* gInstance;
+    static nsProxyObjectManager* mInstance;
     nsHashtable  mProxyObjectMap;
     nsClassHashtable<nsIDHashKey, nsProxyEventClass> mProxyClassMap;
     PRLock *mProxyCreationLock;

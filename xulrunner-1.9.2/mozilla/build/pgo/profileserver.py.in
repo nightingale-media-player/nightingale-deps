@@ -46,7 +46,7 @@ import os
 import sys
 import shutil
 from datetime import datetime
-import automation
+from automation import Automation
 
 PORT = 8888
 SCRIPT_DIR = os.path.abspath(os.path.realpath(os.path.dirname(sys.argv[0])))
@@ -57,23 +57,20 @@ class EasyServer(SocketServer.TCPServer):
   allow_reuse_address = True
 
 if __name__ == '__main__':
+  automation = Automation()
   httpd = EasyServer(("", PORT), SimpleHTTPServer.SimpleHTTPRequestHandler)
   t = threading.Thread(target=httpd.serve_forever)
   t.setDaemon(True) # don't hang on exit
   t.start()
 
   automation.initializeProfile(PROFILE_DIRECTORY)
-  browserEnv = dict(os.environ)
-
-  # These variables are necessary for correct application startup; change
-  # via the commandline at your own risk.
-  browserEnv["NO_EM_RESTART"] = "1"
+  browserEnv = automation.environment()
   browserEnv["XPCOM_DEBUG_BREAK"] = "warn"
-  if automation.UNIXISH:
-    browserEnv["LD_LIBRARY_PATH"] = os.path.join(SCRIPT_DIR, automation.DIST_BIN)
-    browserEnv["MOZILLA_FIVE_HOME"] = os.path.join(SCRIPT_DIR, automation.DIST_BIN)
 
   url = "http://localhost:%d/index.html" % PORT
   appPath = os.path.join(SCRIPT_DIR, automation.DEFAULT_APP)
-  status = automation.runApp(url, browserEnv, appPath, PROFILE_DIRECTORY, {})
+  status = automation.runApp(url, browserEnv, appPath, PROFILE_DIRECTORY, {},
+                             # the profiling HTML doesn't output anything,
+                             # so let's just run this without a timeout
+                             timeout = None)
   sys.exit(status)

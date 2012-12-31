@@ -1347,12 +1347,6 @@ nsTreeBodyFrame::GetRowAt(PRInt32 aX, PRInt32 aY)
   return row;
 }
 
-PRBool
-nsTreeBodyFrame::IsInVisibleSpace(PRInt32 aX, PRInt32 aY)
-{
-  return (aY <= (mRowHeight * mPageLength));
-}
-
 void
 nsTreeBodyFrame::CheckTextForBidi(nsAutoString& aText)
 {
@@ -2525,18 +2519,8 @@ nsTreeBodyFrame::CalcHorzWidth(const ScrollParts& aParts)
 {
   // Compute the adjustment to the last column. This varies depending on the
   // visibility of the columnpicker and the scrollbar.
-  if (aParts.mColumnsFrame) {    
-    // Only compute the adjustment if the columns view width is overlowing into the scrollbar
-    // frame. Also, only allow the max offset for the adjustment to be the width of the column frame.
-    PRInt32 colViewWidth = nsPresContext::CSSPixelsToAppUnits(mColumns->GetColumnsWidth());
-    PRInt32 widthOffset =  mRect.width - colViewWidth;
-    if (widthOffset < 0) {
-      PRInt32 colFrameOffset = mRect.width - aParts.mColumnsFrame->GetRect().width;
-      mAdjustWidth = PR_MAX(widthOffset, colFrameOffset); 
-    }
-    else
-      mAdjustWidth = 0;
-  }
+  if (aParts.mColumnsFrame)
+    mAdjustWidth = mRect.width - aParts.mColumnsFrame->GetRect().width;
   else
     mAdjustWidth = 0;
 
@@ -2710,9 +2694,7 @@ nsTreeBodyFrame::HandleEvent(nsPresContext* aPresContext,
         mSlots->mTimer = nsnull;
       }
 
-      if ((mSlots->mDropRow >= 0) ||
-          ((mSlots->mDropRow == -1) &&
-           (mSlots->mDropOrient == nsITreeView::DROP_AFTER))) {
+      if (mSlots->mDropRow >= 0) {
         if (!mSlots->mTimer && mSlots->mDropOrient == nsITreeView::DROP_ON) {
           // Either there wasn't a timer running or it was just killed above.
           // If over a folder, start up a timer to open the folder.
@@ -4444,14 +4426,6 @@ nsTreeBodyFrame::ComputeDropPosition(nsGUIEvent* aEvent, PRInt32* aRow, PRInt16*
       else
         *aOrient = nsITreeView::DROP_AFTER;
     }
-  }
-  else if (IsInVisibleSpace(xTwips, yTwips)) {
-    // Drop after last row.  Return with drop after even if there are no rows.
-    if (mRowCount > 0)
-      *aRow = mRowCount - 1;
-    else
-      *aRow = -1;
-    *aOrient = nsITreeView::DROP_AFTER;
   }
 
   if (CanAutoScroll(*aRow)) {

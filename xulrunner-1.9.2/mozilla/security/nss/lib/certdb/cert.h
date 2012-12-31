@@ -37,7 +37,7 @@
 /*
  * cert.h - public data structures and prototypes for the certificate library
  *
- * $Id: cert.h,v 1.79 2010/01/14 22:15:23 alexei.volkov.bugs%sun.com Exp $
+ * $Id: cert.h,v 1.80.2.1 2010/09/24 13:31:57 kaie%kuix.de Exp $
  */
 
 #ifndef _CERT_H_
@@ -605,6 +605,16 @@ CERT_FindCertByEmailAddr(CERTCertDBHandle *handle, char *emailAddr);
 */
 CERTCertificate *
 CERT_FindCertByNicknameOrEmailAddr(CERTCertDBHandle *handle, const char *name);
+
+/*
+** Find a certificate in the database by a email address or nickname
+** and require it to have the given usage.
+**      "name" is the email address or nickname to look up
+*/
+CERTCertificate *
+CERT_FindCertByNicknameOrEmailAddrForUsage(CERTCertDBHandle *handle,
+                                           const char *name, 
+                                           SECCertUsage lookingForUsage);
 
 /*
 ** Find a certificate in the database by a digest of a subject public key
@@ -1291,6 +1301,10 @@ CERT_CheckForEvilCert(CERTCertificate *cert);
 
 CERTGeneralName *
 CERT_GetCertificateNames(CERTCertificate *cert, PLArenaPool *arena);
+
+CERTGeneralName *
+CERT_GetConstrainedCertificateNames(CERTCertificate *cert, PLArenaPool *arena,
+                                    PRBool includeSubjectCommonName);
 
 char *
 CERT_GetNickName(CERTCertificate   *cert, CERTCertDBHandle *handle, PLArenaPool *nicknameArena);

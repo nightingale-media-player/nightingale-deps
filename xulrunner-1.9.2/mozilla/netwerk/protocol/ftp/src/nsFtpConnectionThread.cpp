@@ -45,6 +45,7 @@
 #include "prlog.h"
 #include "prtime.h"
 
+#include "nsIOService.h"
 #include "nsFTPChannel.h"
 #include "nsFtpConnectionThread.h"
 #include "nsFtpControlConnection.h"
@@ -1500,8 +1501,8 @@ nsFtpState::R_pasv() {
         // open a buffered, asynchronous socket input stream
         nsCOMPtr<nsIInputStream> input;
         rv = mDataTransport->OpenInputStream(0,
-                                             FTP_DATA_CHANNEL_SEG_SIZE,
-                                             FTP_DATA_CHANNEL_SEG_COUNT,
+                                             nsIOService::gDefaultSegmentSize,
+                                             nsIOService::gDefaultSegmentCount,
                                              getter_AddRefs(input));
         NS_ENSURE_SUCCESS(rv, FTP_ERROR);
         mDataStream = do_QueryInterface(input);
@@ -1627,9 +1628,10 @@ nsFtpState::OpenCacheDataStream()
 
     // Open a non-blocking, buffered input stream...
     nsCOMPtr<nsIInputStream> transportInput;
-    transport->OpenInputStream(0, FTP_DATA_CHANNEL_SEG_SIZE,
-                                  FTP_DATA_CHANNEL_SEG_COUNT,
-                                  getter_AddRefs(transportInput));
+    transport->OpenInputStream(0,
+                               nsIOService::gDefaultSegmentSize,
+                               nsIOService::gDefaultSegmentCount,
+                               getter_AddRefs(transportInput));
     NS_ENSURE_STATE(transportInput);
 
     mDataStream = do_QueryInterface(transportInput);

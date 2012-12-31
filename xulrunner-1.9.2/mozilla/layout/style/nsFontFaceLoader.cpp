@@ -82,6 +82,7 @@ nsFontFaceLoader::nsFontFaceLoader(gfxFontEntry *aFontToLoad, nsIURI *aFontURI,
   : mFontEntry(aFontToLoad), mFontURI(aFontURI), mFontSet(aFontSet),
     mChannel(aChannel)
 {
+  mFontFamily = aFontToLoad->Family();
 }
 
 nsFontFaceLoader::~nsFontFaceLoader()

@@ -113,10 +113,11 @@ interface nsICharsetConverterManager : nsISupports
      * character encoding may be used for certain purposes, if it is 
      * multi-byte, and the language code for it. See charsetData.properties
      * for the source of this data. Some known property names:
-     *    notForBrowser  - not to be used in the bowser.
+     *    notForBrowser  - not to be used in the browser.
      *    notForOutgoing - not to be used for exporting files.
      *    LangGroup      - language code for charset, e.g. 'he' and 'zh-CN'.
      *    isMultibyte    - is this a multi-byte charset?
+     *    isXSSVulnerable - not to be used in untrusted web content
      * 
      * @param charset name of the character encoding, e.g. 'iso-8859-15'.
      * @param prop property desired for the character encoding.
@@ -134,4 +135,17 @@ interface nsICharsetConverterManager : nsISupports
      */
     nsIAtom getCharsetLangGroup(in string charset);
     nsIAtom getCharsetLangGroupRaw(in string charset);
+};
+
+[scriptable, uuid(36982132-707c-4d77-b27f-958e76e022de)]
+interface nsICharsetConverterManager_1_9_BRANCH : nsICharsetConverterManager
+{
+    /**
+     * "Internal" versions of getUnicodeDecoder* will return a decoder for any
+     *  charset; the other versions will return NS_ERROR_UCONV_NOCONV if the
+     *  requested charset is vulnerable to XSS attacks and should not be used
+     * with untrusted input
+     */
+    nsIUnicodeDecoder getUnicodeDecoderInternal(in string charset);
+    nsIUnicodeDecoder getUnicodeDecoderRawInternal(in string charset);
 };

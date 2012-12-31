@@ -39,7 +39,6 @@
 #include "nsSplashScreen.h"
 
 #include <windows.h>
-#include <stdlib.h>
 
 static ATOM gSplashScreenClass = 0;
 
@@ -134,11 +133,8 @@ nsSplashScreenWin::Open()
 #ifdef WINCE
             mSplashBitmap = ::SHLoadDIBitmap(path);
 #else
-            mSplashBitmap = (HBITMAP)::LoadImage(NULL,
-                                                 path,
-                                                 IMAGE_BITMAP,
-                                                 0, 0,
-                                                 LR_DEFAULTCOLOR | LR_LOADFROMFILE);
+#warning splashscreen needs some code to load bitmaps on non-WinCE
+            mSplashBitmap = nsnull;
 #endif
 
             if (mSplashBitmap) {
@@ -157,10 +153,8 @@ nsSplashScreenWin::Open()
         }
     }
 
-    if (mSplashBitmap) {
-        DWORD threadID = 0;
-        CreateThread(0, 0, (LPTHREAD_START_ROUTINE)ThreadProc, this, 0, &threadID);
-    }
+    DWORD threadID = 0;
+    CreateThread(0, 0, (LPTHREAD_START_ROUTINE)ThreadProc, this, 0, &threadID);
 }
 
 DWORD WINAPI
@@ -178,7 +172,7 @@ nsSplashScreenWin::ThreadProc(LPVOID splashScreen)
 	       horizPad + sp->mWidth,
 	       vertPad  + sp->mHeight };
 
-    DWORD winStyle = WS_POPUP;
+    DWORD winStyle = (WS_POPUP | WS_BORDER);
     DWORD winStyleEx = WS_EX_NOACTIVATE;
 
     if(!::AdjustWindowRectEx(&r, winStyle, FALSE, winStyleEx))
@@ -278,7 +272,6 @@ nsSplashScreenWin::OnPaint(HDC dc, const PAINTSTRUCT *ps)
         progressBar.bottom = mHeight - 10;
     }
 
-#if 0 /* per request from redfive */
     if (mProgress != -1) {
         HBRUSH fill = CreateSolidBrush(RGB(0x77,0xC7,0x1C));
 
@@ -288,7 +281,6 @@ nsSplashScreenWin::OnPaint(HDC dc, const PAINTSTRUCT *ps)
 
         DeleteObject(fill);
     }
-#endif
 }
 
 LRESULT CALLBACK

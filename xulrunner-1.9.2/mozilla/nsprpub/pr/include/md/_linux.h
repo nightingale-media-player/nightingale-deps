@@ -81,6 +81,8 @@
 #define _PR_SI_ARCHITECTURE "s390"
 #elif defined(__sh__)
 #define _PR_SI_ARCHITECTURE "sh"
+#elif defined(__avr32__)
+#define _PR_SI_ARCHITECTURE "avr32"
 #else
 #error "Unknown CPU architecture"
 #endif
@@ -98,6 +100,9 @@
  */
 #define HAVE_DLL
 #define USE_DLFCN
+#if defined(ANDROID)
+#define NO_DLOPEN_NULL
+#endif
 
 #ifdef __FreeBSD_kernel__
 #define _PR_HAVE_SOCKADDR_LEN
@@ -275,8 +280,10 @@ static inline PRInt32 _MD_ATOMIC_SET(PRInt32 *ptr, PRInt32 nv)
 #define _PR_HAVE_GETADDRINFO
 #define _PR_INET6_PROBE
 #endif
+#ifndef ANDROID
 #define _PR_HAVE_SYSV_SEMAPHORES
 #define PR_HAVE_SYSV_NAMED_SHARED_MEMORY
+#endif
 #if (__GLIBC__ >= 2) && defined(_PR_PTHREADS)
 #define _PR_HAVE_GETHOST_R
 #define _PR_HAVE_GETHOST_R_INT

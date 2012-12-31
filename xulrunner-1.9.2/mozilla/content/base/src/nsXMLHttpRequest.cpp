@@ -711,6 +711,29 @@ nsAccessControlLRUCache::GetEntry(nsIURI* aURI,
     return nsnull;
   }
 
+  NS_ASSERTION(mTable.Count() <= ACCESS_CONTROL_CACHE_SIZE,
+               "Something is borked, too many entries in the cache!");
+
+  // Now enforce the max count.
+  if (mTable.Count() == ACCESS_CONTROL_CACHE_SIZE) {
+    // Try to kick out all the expired entries.
+    PRTime now = PR_Now();
+    mTable.Enumerate(RemoveExpiredEntries, &now);
+
+    // If that didn't remove anything then kick out the least recently used
+    // entry.
+    if (mTable.Count() == ACCESS_CONTROL_CACHE_SIZE) {
+      CacheEntry* lruEntry = static_cast<CacheEntry*>(PR_LIST_TAIL(&mList));
+      PR_REMOVE_LINK(lruEntry);
+
+      // This will delete 'lruEntry'.
+      mTable.Remove(lruEntry->mKey);
+
+      NS_ASSERTION(mTable.Count() == ACCESS_CONTROL_CACHE_SIZE - 1,
+                   "Somehow tried to remove an entry that was never added!");
+    }
+  }
+  
   if (!mTable.Put(key, entry)) {
     // Failed, clean up the new entry.
     delete entry;
@@ -721,29 +744,6 @@ nsAccessControlLRUCache::GetEntry(nsIURI* aURI,
 
   PR_INSERT_LINK(entry, &mList);
 
-  NS_ASSERTION(mTable.Count() <= ACCESS_CONTROL_CACHE_SIZE + 1,
-               "Something is borked, too many entries in the cache!");
-
-  // Now enforce the max count.
-  if (mTable.Count() > ACCESS_CONTROL_CACHE_SIZE) {
-    // Try to kick out all the expired entries.
-    PRTime now = PR_Now();
-    mTable.Enumerate(RemoveExpiredEntries, &now);
-
-    // If that didn't remove anything then kick out the least recently used
-    // entry.
-    if (mTable.Count() > ACCESS_CONTROL_CACHE_SIZE) {
-      CacheEntry* lruEntry = static_cast<CacheEntry*>(PR_LIST_TAIL(&mList));
-      PR_REMOVE_LINK(lruEntry);
-
-      // This will delete 'lruEntry'.
-      mTable.Remove(lruEntry->mKey);
-
-      NS_ASSERTION(mTable.Count() == ACCESS_CONTROL_CACHE_SIZE,
-                   "Somehow tried to remove an entry that was never added!");
-    }
-  }
-  
   return entry;
 }
 
@@ -782,7 +782,7 @@ nsAccessControlLRUCache::RemoveExpiredEntries(const nsACString& aKey,
   aValue->PurgeExpired(*now);
   
   if (aValue->mHeaders.IsEmpty() &&
-      aValue->mHeaders.IsEmpty()) {
+      aValue->mMethods.IsEmpty()) {
     // Expired, remove from the list as well as the hash table.
     PR_REMOVE_LINK(aValue);
     return PL_DHASH_REMOVE;
@@ -1278,6 +1278,18 @@ nsXMLHttpRequest::GetStatusText(nsACString& aStatusText)
   nsresult rv = NS_OK;
 
   if (httpChannel) {
+    if (mState & XML_HTTP_REQUEST_USE_XSITE_AC) {
+      // Make sure we don't leak status information from denied cross-site
+      // requests.
+      if (mChannel) {
+        nsresult status;
+        mChannel->GetStatus(&status);
+        if (NS_FAILED(status)) {
+          return NS_ERROR_NOT_AVAILABLE;
+        }
+      }
+    }
+
     rv = httpChannel->GetResponseStatusText(aStatusText);
   }
 
@@ -2388,7 +2400,11 @@ nsXMLHttpRequest::Send(nsIVariant *aBody)
                 NS_ENSURE_SUCCESS(rv, rv);
 
                 nsCOMPtr<nsIInputStream> stream;
-                rv = NS_NewLocalFileInputStream(getter_AddRefs(stream), internalFile); 
+                rv = NS_NewLocalFileInputStream(getter_AddRefs(stream),
+                                                internalFile,
+                                                -1, -1,
+                                                nsIFileInputStream::CLOSE_ON_EOF |
+                                                nsIFileInputStream::REOPEN_ON_REWIND); 
                 NS_ENSURE_SUCCESS(rv, rv);
 
                 // Feed local file input stream into our upload channel
@@ -2748,9 +2764,11 @@ nsXMLHttpRequest::SetRequestHeader(const nsACString& header,
   if (!privileged) {
     // Check for dangerous headers
     const char *kInvalidHeaders[] = {
-      "accept-charset", "accept-encoding", "connection", "content-length",
-      "content-transfer-encoding", "date", "expect", "host", "keep-alive",
-      "referer", "te", "trailer", "transfer-encoding", "upgrade", "via"
+      "accept-charset", "accept-encoding", "access-control-request-headers",
+      "access-control-request-method", "connection", "content-length",
+      "cookie", "cookie2", "content-transfer-encoding", "date", "expect",
+      "host", "keep-alive", "origin", "referer", "te", "trailer",
+      "transfer-encoding", "upgrade", "user-agent", "via"
     };
     PRUint32 i;
     for (i = 0; i < NS_ARRAY_LENGTH(kInvalidHeaders); ++i) {

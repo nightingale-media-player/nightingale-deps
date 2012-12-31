@@ -55,7 +55,7 @@
       <field name="_strings">
         document.getAnonymousElementByAttribute(this, "anonid", "strings");
       </field>
-      
+
       <field name="update_name">null</field>
       <field name="update_version">null</field>
       <field name="_remoteProgressListener">null</field>
@@ -78,6 +78,9 @@
                                                             [this.update_name]);
           this._setMessageValue(statusText);
           this.setAttribute("state", "error");
+          var e = document.createEvent("Events");
+          e.initEvent("load", false, true);
+          this.dispatchEvent(e);
         ]]></body>
       </method>
 
@@ -174,7 +177,7 @@
           this._content.setAttribute("src", val);
         ]]></setter>
       </property>
-      
+
       <method name="stopDownloading">
         <body><![CDATA[
           this._content.stop();
@@ -187,7 +190,7 @@
     <content>
       <xul:hbox>
         <xul:label class="update-name" xbl:inherits="value=name" flex="1" crop="right"/>
-        <xul:label xbl:inherits="href=detailsURL" class="text-link"
+        <xul:label xbl:inherits="href=detailsURL,hidden=hideDetailsURL" class="text-link"
                    value="&update.details.label;"/>
       </xul:hbox>
       <xul:label class="update-type" xbl:inherits="value=type"/>
@@ -221,6 +224,9 @@
       <property name="type"
                 onget="return this.getAttribute('type');"
                 onset="this.setAttribute('type', val); return val;"/>
+      <property name="hideDetailsURL"
+                onget="return this.getAttribute('hideDetailsURL');"
+                onset="this.setAttribute('hideDetailsURL', val); return val;"/>
       <property name="status"
                 onget="return this.getAttribute('status');">
         <setter><![CDATA[

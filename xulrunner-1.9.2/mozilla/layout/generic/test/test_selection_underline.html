@@ -73,10 +73,8 @@ if (kIsWin) {
     { emHeight: 52, ascent: 56, offset: -7, lineHeight: 3, descentLimit: 17 }
   ];
 }
-
 /*
-
-if (kIsMac) {
+else if (kIsMac) {
   // XXX mnakano: I got following metrics on my Mac (both 10.4 and 10.5).
   // However, on tinderbox machines, they are different values.  I'm not sure
   // the reason.
@@ -89,8 +87,7 @@ if (kIsMac) {
     { ascent: 56, offset: -6.500000, lineHeight: 2.600159 }
   ];
 }
-
-if (kIsLinux) {
+else if (kIsLinux) {
   // XXX mnakano: I got following metrics on my Ubuntu 8.10.  However, on
   // tinderbox machines, they are different.  Probably, the values depend on
   // the version of FreeType and Pango.  I bet we cannot test this on Linux
@@ -104,8 +101,10 @@ if (kIsLinux) {
     { ascent: 56, offset: -3.300781, lineHeight: 2.600002 }
   ];
 }
-
 */
+else {
+  todo(false, "This test is not supported on this platform.");
+}
 
 const kUnderlineStyles = [
   { color: "rgb(100%,  0%,  0%)", isIMESelection: false },
@@ -383,10 +382,7 @@ function doTest(aStyle, aSize)
 
 function onLoad()
 {
-  SimpleTest.waitForExplicitFinish();
-
   if (gFontMetrics.length == 0) {
-    todo(false, "test_selection_underline doesn't support this platform");
     SimpleTest.finish();
     return;
   }
@@ -431,6 +427,8 @@ function cleanup()
       prefs.clearUserPref(gPrefs[i].name);
   }
 }
+
+SimpleTest.waitForExplicitFinish();
 
 </script>
 

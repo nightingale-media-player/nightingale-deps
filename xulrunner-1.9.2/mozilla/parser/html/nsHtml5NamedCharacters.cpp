@@ -1,4 +1,10 @@
 #define nsHtml5NamedCharacters_cpp__
+
+// XXX bug 501082: must be located before first C++ statement in unit
+#if defined _AIX && defined __IBMCPP__
+#pragma options maxmem=65536
+#endif
+
 #include "prtypes.h"
 #include "jArray.h"
 #include "nscore.h"

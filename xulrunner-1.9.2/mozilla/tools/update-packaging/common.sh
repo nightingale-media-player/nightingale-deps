@@ -78,16 +78,13 @@ append_remove_instructions() {
     for ((i=0; $i<$num_files; i=$i+1)); do
       # Trim whitespace (including trailing carriage returns)
       f=$(echo ${files[$i]} | tr "|" " " | sed 's/^ *\(.*\) *$/\1/' | tr -d '\r')
-      # Exclude blank lines.
+      # Exclude any blank lines or any lines ending with a slash, which indicate
+      # directories.  The updater doesn't know how to remove entire directories.
       if [ -n "$f" ]; then
-        if [ $(echo "$f" | grep -c '\/$') = 1 ]; then
-          echo "rmdir \"$prefix$f\""
-        elif [ $(echo "$f" | grep -c '\/\*$') = 1 ]; then
-          # Remove the *
-          g=$(echo "$f" | sed -e 's:\*$::')
-          echo "rmrfdir \"$prefix$g\""
-        else
+        if [ $(echo "$f" | grep -c '\/$') = 0 ]; then
           echo "remove \"$prefix$f\""
+        else
+          notice "ignoring remove instruction for directory: $f"
         fi
       fi
     done
@@ -103,7 +100,6 @@ list_files() {
 
   find . -type f \
     ! -name "channel-prefs.js" \
-    ! -name "songbird-channel-prefs.js" \
     ! -name "update.manifest" \
     ! -name "temp-filelist" \
     | sed 's/\.\/\(.*\)/\1/' \

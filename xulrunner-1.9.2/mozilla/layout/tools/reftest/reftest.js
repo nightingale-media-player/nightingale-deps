@@ -56,7 +56,6 @@ const NS_NETWORK_PROTOCOL_CONTRACTID_PREFIX =
 const NS_XREAPPINFO_CONTRACTID =
           "@mozilla.org/xre/app-info;1";
 
-
 var gLoadTimeout = 0;
 
 // "<!--CLEAR-->"
@@ -297,6 +296,16 @@ function ReadManifest(aURL)
         sandbox.nativeThemePref = !prefs.getBoolPref("mozilla.widget.disable-native-theme");
     } catch (e) {
         sandbox.nativeThemePref = true;
+    }
+
+    new XPCSafeJSObjectWrapper(sandbox).prefs = {
+      __exposedProps__: {
+        getBoolPref: 'r',
+        getIntPref: 'r',
+      },
+      _prefs:      prefs,
+      getBoolPref: function(p) { return this._prefs.getBoolPref(p); },
+      getIntPref:  function(p) { return this._prefs.getIntPref(p); }
     }
 
     var line = {value:null};

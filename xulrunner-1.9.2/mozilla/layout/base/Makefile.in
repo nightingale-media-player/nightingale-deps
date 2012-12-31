@@ -89,6 +89,8 @@ XPIDLSRCS	= \
 		nsIStyleSheetService.idl	\
 		$(NULL)
 
+EXPORTS_NAMESPACES = mozilla
+
 EXPORTS		= \
 		nsBidi.h \
 		nsBidiPresUtils.h \
@@ -116,6 +118,10 @@ EXPORTS		= \
 		nsStyleConsts.h \
 		$(NULL)
 
+EXPORTS_mozilla =\
+  PaintTracker.h \
+  $(NULL)
+
 CPPSRCS		= \
 		nsCSSColorUtils.cpp \
 		nsCSSFrameConstructor.cpp \
@@ -140,6 +146,7 @@ CPPSRCS		= \
 		nsQuoteList.cpp \
 		nsStyleChangeList.cpp \
 		nsStyleSheetService.cpp \
+		PaintTracker.cpp \
 		$(NULL)
 
 ifndef MOZ_XUL

@@ -47,6 +47,7 @@ XPIDL_MODULE	= xpcom_base
 LIBRARY_NAME	= xpcombase_s
 GRE_MODULE	= 1
 MOZILLA_INTERNAL_API =1
+LIBXUL_LIBRARY = 1
 
 REQUIRES	= string \
 		  $(NULL)
@@ -154,3 +155,4 @@ ifneq (,$(filter gtk2,$(MOZ_WIDGET_TOOLKIT)))
 CXXFLAGS        += $(MOZ_GTK2_CFLAGS)
 endif
 
+LOCAL_INCLUDES += -I$(srcdir)/../build

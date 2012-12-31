@@ -1165,9 +1165,9 @@ PR_IMPLEMENT(PRThread*) _PR_CreateThread(PRThreadType type,
             if (type == PR_SYSTEM_THREAD)
             {
                 thread->flags |= _PR_SYSTEM;
-                PR_AtomicIncrement(&_pr_systemActive);
+                PR_ATOMIC_INCREMENT(&_pr_systemActive);
             }
-            else PR_AtomicIncrement(&_pr_userActive);
+            else PR_ATOMIC_INCREMENT(&_pr_userActive);
 
             if (state == PR_JOINABLE_THREAD) {
                 if (!thread->term) 
@@ -1264,14 +1264,6 @@ PR_IMPLEMENT(PRThread*) _PR_CreateThread(PRThreadType type,
             if ((PRUptrdiff)top & 0x3f) {
                 top = (char*)((PRUptrdiff)top & ~0x3f);
             }
-#endif
-#if defined(GC_LEAK_DETECTOR)
-            /*
-             * sorry, it is not safe to allocate the thread on the stack,
-             * because we assign to this object before the GC can learn
-             * about this thread. we'll just leak thread objects instead.
-             */
-            thread = PR_NEW(PRThread);
 #endif
             stack->thr = thread;
             memset(thread, 0, sizeof(PRThread));

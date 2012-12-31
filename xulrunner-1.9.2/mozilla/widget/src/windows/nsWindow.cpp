@@ -37,7 +37,6 @@
  *   Ningjie Chen <chenn@email.uc.edu>
  *   Jim Mathies <jmathies@mozilla.com>
  *   Kyle Huey <me@kylehuey.com>
- *   Ben Turner <mozilla@songbirdnest.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -105,13 +104,16 @@
  **************************************************************
  **************************************************************/
 
+#ifdef MOZ_IPC
+#include "mozilla/ipc/RPCChannel.h"
+#endif
+
 #include "nsWindow.h"
 
 #include <windows.h>
 #include <process.h>
 #include <commctrl.h>
 #include <unknwn.h>
-#include <shellapi.h>
 
 #include "prlog.h"
 #include "prtime.h"
@@ -153,10 +155,6 @@
 #include "nsTHashtable.h"
 #include "nsHashKeys.h"
 #include "nsString.h"
-
-// size constraints
-#include "nsIFrame.h"
-#include "nsIView.h"
 
 #if defined(WINCE)
 #include "nsWindowCE.h"
@@ -210,10 +208,6 @@
 #ifdef WINCE_WINDOWS_MOBILE
 #include "nsGfxCIID.h"
 #endif
-
-// A magic APP message that can be sent to quit, sort of like a QUERYENDSESSION/ENDSESSION,
-// but without the query.
-#define MOZ_WM_APP_QUIT (WM_APP+0x0300)
 
 /**************************************************************
  **************************************************************
@@ -283,6 +277,13 @@ LPFNLRESULTFROMOBJECT
                 nsWindow::sLresultFromObject      = 0;
 #endif // ACCESSIBILITY
 
+#ifdef MOZ_IPC
+// Used in OOPP plugin focus processing.
+const PRUnichar* kOOPPPluginFocusEventId   = L"OOPP Plugin Focus Widget Event";
+PRUint32        nsWindow::sOOPPPluginFocusEvent   =
+                  RegisterWindowMessageW(kOOPPPluginFocusEventId);
+#endif
+
 /**************************************************************
  *
  * SECTION: globals variables
@@ -330,7 +331,6 @@ static void UpdateLastInputEventTime() {
   if (is)
     is->IdleTimeWasModified();
 }
-
 
 // Global user preference for disabling native theme. Used
 // in NativeWindowTheme.
@@ -393,11 +393,6 @@ nsWindow::nsWindow() : nsBaseWidget()
   mLastKeyboardLayout   = 0;
   mBlurSuppressLevel    = 0;
   mIMEEnabled           = nsIWidget::IME_STATUS_ENABLED;
-
-  mIsChromeHidden       = PR_FALSE;
-  mIsMaximizing         = PR_FALSE;
-  mWasMaximized         = PR_FALSE;
-
   mLeadByte             = '\0';
 #ifdef MOZ_XUL
   mTransparentSurface   = nsnull;
@@ -1261,117 +1256,6 @@ void nsWindow::SetThemeRegion()
  *
  **************************************************************/
 
-NS_IMETHODIMP nsWindow::SetSizeConstraints(PRInt32 aMinWidth,
-                                           PRInt32 aMaxWidth,
-                                           PRInt32 aMinHeight,
-                                           PRInt32 aMaxHeight)
-{
-  // This function is only guaranteed to work with top-level widget windows
-  if (!mIsTopWidgetWindow)
-    return NS_ERROR_UNEXPECTED;
-
-  mSizeConstraints.minWidth =
-    PR_MAX(::GetSystemMetrics(SM_CXMINTRACK), aMinWidth);
-  mSizeConstraints.minHeight =
-    PR_MAX(::GetSystemMetrics(SM_CYMINTRACK), aMinHeight);
-
-  mSizeConstraints.maxWidth = aMaxWidth;
-  mSizeConstraints.maxHeight = aMaxHeight;
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsWindow::GetSizeConstraints(PRInt32* aMinWidth,
-                                           PRInt32* aMaxWidth,
-                                           PRInt32* aMinHeight,
-                                           PRInt32* aMaxHeight)
-{
-  SizeConstraints constraints;
-  
-  // read the constraints from CSS
-  nsresult rv;
-  nsCOMPtr<nsIDeviceContext> devContext = GetDeviceContext();
-
-  nsIWidget* widget = GetFirstChild();
-  nsIView* view = nsnull;
-  if (widget) {
-    view = nsIView::GetViewFor(widget);
-  }
-  nsIFrame* frame = nsnull;
-  if (view) {
-    /* see nsLayoutUtils, except we can't use it */
-    frame = static_cast<nsIFrame*>(view->GetClientData());
-  }
-  const nsStylePosition* position = nsnull;
-  if (frame) {
-    position = frame->GetStylePosition();
-  }
-  if (position) {
-    PRInt32 appUnitsPerDevPixel = devContext->AppUnitsPerDevPixel();
-    nscoord coordTwips, appUnits;
-
-    nsStyleUnit unit = position->mMinWidth.GetUnit();
-    if (eStyleUnit_Coord != unit) {
-      coordTwips = nscoord_MIN;
-    } else {
-      coordTwips = position->mMinWidth.GetCoordValue();
-    }
-    if (coordTwips != nscoord_MIN) {
-      appUnits = NS_TWIPS_TO_INCHES(coordTwips) * devContext->AppUnitsPerInch();
-      constraints.minWidth = NSAppUnitsToIntPixels(appUnits, appUnitsPerDevPixel);
-    }
-
-    unit = position->mMaxWidth.GetUnit();
-    if (eStyleUnit_Coord != unit) {
-      coordTwips = nscoord_MAX;
-    } else {
-      coordTwips = position->mMaxWidth.GetCoordValue();
-    }
-    if (coordTwips != nscoord_MAX) {
-      appUnits = NS_TWIPS_TO_INCHES(coordTwips) * devContext->AppUnitsPerInch();
-      constraints.maxWidth = NSAppUnitsToIntPixels(appUnits, appUnitsPerDevPixel);
-    }
-
-    unit = position->mMinHeight.GetUnit();
-    if (eStyleUnit_Coord != unit) {
-      coordTwips = nscoord_MIN;
-    } else {
-      coordTwips = position->mMinHeight.GetCoordValue();
-    }
-    if (coordTwips != nscoord_MIN) {
-      appUnits = NS_TWIPS_TO_INCHES(coordTwips) * devContext->AppUnitsPerInch();
-      constraints.minHeight = NSAppUnitsToIntPixels(appUnits, appUnitsPerDevPixel);
-    }
-
-    unit = position->mMaxHeight.GetUnit();
-    if (eStyleUnit_Coord != unit) {
-      coordTwips = nscoord_MAX;
-    } else {
-      coordTwips = position->mMaxHeight.GetCoordValue();
-    }
-    if (coordTwips != nscoord_MAX) {
-      appUnits = NS_TWIPS_TO_INCHES(coordTwips) * devContext->AppUnitsPerInch();
-      constraints.maxHeight = NSAppUnitsToIntPixels(appUnits, appUnitsPerDevPixel);
-    }
-  }
-  
-  // override them with attributes, as usual for XUL
-  constraints.minWidth = PR_MAX(constraints.minWidth, mSizeConstraints.minWidth);
-  constraints.maxWidth = PR_MIN(constraints.maxWidth, mSizeConstraints.maxWidth);
-  constraints.minHeight = PR_MAX(constraints.minHeight, mSizeConstraints.minHeight);
-  constraints.maxHeight = PR_MIN(constraints.maxHeight, mSizeConstraints.maxHeight);
-  
-  if (aMinWidth)
-    *aMinWidth = constraints.minWidth;
-  if (aMaxWidth)
-    *aMaxWidth = constraints.maxWidth;
-  if (aMinHeight)
-    *aMinHeight = constraints.minHeight;
-  if (aMaxHeight)
-    *aMaxHeight = constraints.maxHeight;
-  return NS_OK;
-}
-
 // Move this component
 NS_METHOD nsWindow::Move(PRInt32 aX, PRInt32 aY)
 {
@@ -2113,8 +1997,6 @@ NS_IMETHODIMP nsWindow::HideWindowChrome(PRBool aShouldHide)
   ::SetWindowLongPtrW(hwnd, GWL_STYLE, style);
   ::SetWindowLongPtrW(hwnd, GWL_EXSTYLE, exStyle);
 
-  mIsChromeHidden = aShouldHide;
-
   return NS_OK;
 }
 
@@ -2374,8 +2256,8 @@ nsWindow::Scroll(const nsIntPoint& aDelta,
 
   DWORD ourThreadID = GetWindowThreadProcessId(mWnd, NULL);
 
-  for (PRUint32 i = 0; i < aDestRects.Length(); ++i) {
-    const nsIntRect& destRect = aDestRects[i];
+  for (BlitRectIter iter(aDelta, aDestRects); !iter.IsDone(); ++iter) {
+    const nsIntRect& destRect = iter.Rect();
     nsIntRect affectedRect;
     affectedRect.UnionRect(destRect, destRect - aDelta);
     UINT flags = SW_SCROLLCHILDREN;
@@ -2389,8 +2271,8 @@ nsWindow::Scroll(const nsIntPoint& aDelta,
         if (entry) {
           // It's supposed to be scrolled, so we can still use
           // SW_SCROLLCHILDREN. But don't allow SW_SCROLLCHILDREN to be
-          // used on it again by a later rectangle in aDestRects, we
-          // don't want it to move twice!
+          // used on it again by a later rectangle; we don't want it to
+          // move twice!
           scrolledWidgets.RawRemoveEntry(entry);
 
           nsIntPoint screenOffset = WidgetToScreenOffset();
@@ -3230,9 +3112,8 @@ BOOL CALLBACK nsWindow::DispatchStarvedPaints(HWND aWnd, LPARAM aMsg)
     // its one of our windows so check to see if it has a
     // invalidated rect. If it does. Dispatch a synchronous
     // paint.
-    if (GetUpdateRect(aWnd, NULL, FALSE)) {
+    if (GetUpdateRect(aWnd, NULL, FALSE))
       VERIFY(::UpdateWindow(aWnd));
-    }
   }
   return TRUE;
 }
@@ -3461,6 +3342,9 @@ PRBool nsWindow::DispatchMouseEvent(PRUint32 aEventType, WPARAM wParam,
     case NS_MOUSE_MOVE:
       pluginEvent.event = WM_MOUSEMOVE;
       break;
+    case NS_MOUSE_EXIT:
+      pluginEvent.event = WM_MOUSELEAVE;
+      break;
     default:
       pluginEvent.event = WM_NULL;
       break;
@@ -3670,6 +3554,113 @@ PRBool nsWindow::ConvertStatus(nsEventStatus aStatus)
 }
 
 /**************************************************************
+ *
+ * SECTION: IPC
+ *
+ * IPC related helpers.
+ *
+ **************************************************************/
+
+#ifdef MOZ_IPC
+
+// static
+bool
+nsWindow::IsAsyncResponseEvent(UINT aMsg, LRESULT& aResult)
+{
+  switch(aMsg) {
+    case WM_SETFOCUS:
+    case WM_KILLFOCUS:
+    case WM_ENABLE:
+    case WM_WINDOWPOSCHANGING:
+    case WM_WINDOWPOSCHANGED:
+    case WM_PARENTNOTIFY:
+    case WM_ACTIVATEAPP:
+    case WM_NCACTIVATE:
+    case WM_ACTIVATE:
+    case WM_CHILDACTIVATE:
+    case WM_IME_SETCONTEXT:
+    case WM_IME_NOTIFY:
+    case WM_SHOWWINDOW:
+    case WM_CANCELMODE:
+    case WM_MOUSEACTIVATE:
+    case WM_CONTEXTMENU:
+      aResult = 0;
+    return true;
+
+    case WM_SETTINGCHANGE:
+    case WM_SETCURSOR:
+    return false;
+  }
+
+#ifdef DEBUG
+  char szBuf[200];
+  sprintf(szBuf,
+    "An unhandled ISMEX_SEND message was received during spin loop! (%X)", aMsg);
+  NS_WARNING(szBuf);
+#endif
+
+  return false;
+}
+
+void
+nsWindow::IPCWindowProcHandler(UINT& msg, WPARAM& wParam, LPARAM& lParam)
+{
+  NS_ASSERTION(!mozilla::ipc::SyncChannel::IsPumpingMessages(),
+               "Failed to prevent a nonqueued message from running!");
+
+  // Modal UI being displayed in windowless plugins.
+  if (mozilla::ipc::RPCChannel::IsSpinLoopActive() &&
+      (InSendMessageEx(NULL)&(ISMEX_REPLIED|ISMEX_SEND)) == ISMEX_SEND) {
+    LRESULT res;
+    if (IsAsyncResponseEvent(msg, res)) {
+      ReplyMessage(res);
+    }
+    return;
+  }
+
+  // Handle certain sync plugin events sent to the parent which
+  // trigger ipc calls that result in deadlocks.
+
+  DWORD dwResult = 0;
+  PRBool handled = PR_FALSE;
+
+  switch(msg) {
+    // Windowless flash sending WM_ACTIVATE events to the main window
+    // via calls to ShowWindow.
+    case WM_ACTIVATE:
+      if (lParam != 0 && LOWORD(wParam) == WA_ACTIVE &&
+          IsWindow((HWND)lParam))
+        handled = PR_TRUE;
+    break;
+    // Wheel events forwarded from the child.
+    case WM_MOUSEWHEEL:
+    case WM_MOUSEHWHEEL:
+    case WM_HSCROLL:
+    case WM_VSCROLL:
+    // Plugins taking or losing focus triggering focus app messages.
+    case WM_SETFOCUS:
+    case WM_KILLFOCUS:
+    // Windowed plugins that pass sys key events to defwndproc generate
+    // WM_SYSCOMMAND events to the main window.
+    case WM_SYSCOMMAND:
+    // Windowed plugins that fire context menu selection events to parent
+    // windows.
+    case WM_CONTEXTMENU:
+    // IME events fired as a result of synchronous focus changes
+    case WM_IME_SETCONTEXT:
+      handled = PR_TRUE;
+    break;
+  }
+
+  if (handled &&
+      (InSendMessageEx(NULL)&(ISMEX_REPLIED|ISMEX_SEND)) == ISMEX_SEND) {
+    ReplyMessage(dwResult);
+  }
+}
+
+#endif // MOZ_IPC
+
+/**************************************************************
  **************************************************************
  **
  ** BLOCK: Native events
@@ -3692,16 +3683,21 @@ PRBool nsWindow::ConvertStatus(nsEventStatus aStatus)
 // The WndProc procedure for all nsWindows in this toolkit
 LRESULT CALLBACK nsWindow::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+  // Get the window which caused the event and ask it to process the message
+  nsWindow *someWindow = GetNSWindowPtr(hWnd);
+
+#ifdef MOZ_IPC
+  if (someWindow)
+    someWindow->IPCWindowProcHandler(msg, wParam, lParam);
+#endif
+
   // create this here so that we store the last rolled up popup until after
   // the event has been processed.
   nsAutoRollup autoRollup;
 
   LRESULT popupHandlingResult;
-  if ( DealWithPopups(hWnd, msg, wParam, lParam, &popupHandlingResult) )
+  if (DealWithPopups(hWnd, msg, wParam, lParam, &popupHandlingResult))
     return popupHandlingResult;
-
-  // Get the window which caused the event and ask it to process the message
-  nsWindow *someWindow = GetNSWindowPtr(hWnd);
 
   // XXX This fixes 50208 and we are leaving 51174 open to further investigate
   // why we are hitting this assert
@@ -3727,15 +3723,15 @@ LRESULT CALLBACK nsWindow::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
   }
 
   // Call ProcessMessage
-  if (nsnull != someWindow) {
-    LRESULT retValue;
-    if (PR_TRUE == someWindow->ProcessMessage(msg, wParam, lParam, &retValue)) {
-      return retValue;
-    }
+  LRESULT retValue;
+  if (PR_TRUE == someWindow->ProcessMessage(msg, wParam, lParam, &retValue)) {
+    return retValue;
   }
 
-  return ::CallWindowProcW(someWindow->GetPrevWindowProc(),
-                           hWnd, msg, wParam, lParam);
+  LRESULT res = ::CallWindowProcW(someWindow->GetPrevWindowProc(),
+                                  hWnd, msg, wParam, lParam);
+
+  return res;
 }
 
 // The main windows message processing method for plugins.
@@ -3822,7 +3818,13 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM &wParam, LPARAM &lParam,
   // (Large blocks of code should be broken out into OnEvent handlers.)
   if (mWindowHook.Notify(mWnd, msg, wParam, lParam, aRetValue))
     return PR_TRUE;
-  
+
+#if defined(EVENT_DEBUG_OUTPUT)
+  // First param shows all events, second param indicates whether
+  // to show mouse move events. See nsWindowDbg for details.
+  PrintEvent(msg, SHOW_REPEAT_EVENTS, SHOW_MOUSEMOVE_EVENTS);
+#endif
+
   PRBool eatMessage;
   if (nsIMM32Handler::ProcessMessage(this, msg, wParam, lParam, aRetValue,
                                      eatMessage)) {
@@ -3842,12 +3844,6 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM &wParam, LPARAM &lParam,
   *aRetValue = 0;
 
   static PRBool getWheelInfo = PR_TRUE;
-
-#if defined(EVENT_DEBUG_OUTPUT)
-  // First param shows all events, second param indicates whether
-  // to show mouse move events. See nsWindowDbg for details.
-  PrintEvent(msg, SHOW_REPEAT_EVENTS, SHOW_MOUSEMOVE_EVENTS);
-#endif
 
   switch (msg) {
     case WM_COMMAND:
@@ -3920,12 +3916,6 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM &wParam, LPARAM &lParam,
 #ifndef WINCE
     case WM_DISPLAYCHANGE:
       DispatchStandardEvent(NS_DISPLAYCHANGED);
-
-      // When the window's chrome is hidden and the work area changes, 
-      // the window is not invalidated as it is supposed to
-      if (mIsChromeHidden)
-        Invalidate(PR_TRUE);
-
       break;
 #endif
 
@@ -4384,135 +4374,6 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM &wParam, LPARAM &lParam,
     break;
 #endif
 
-    case WM_GETMINMAXINFO:
-    {
-      PRInt32 minTrackWidth, maxTrackWidth, minTrackHeight, maxTrackHeight;
-      GetSizeConstraints(&minTrackWidth, &maxTrackWidth,
-                         &minTrackHeight, &maxTrackHeight);
-      PRInt32 maxWidth = maxTrackWidth;
-      PRInt32 maxHeight = maxTrackHeight;
-
-      PRInt32 left = -1, top = -1;
-      
-      PR_LOG(gWindowsLog, PR_LOG_DEBUG, (
-        "WM_GETMINMAXINFO: mIsChromeHidden(%s) mSizeMode(%s) mIsMaximizing(%s)",
-        (mIsChromeHidden ? "true" : "false"),
-        (mSizeMode == nsSizeMode_Normal ? "normal" :
-         mSizeMode == nsSizeMode_Minimized ? "minimized" :
-         mSizeMode == nsSizeMode_Maximized ? "maximized" :
-         "unknown"),
-        (mIsMaximizing ? "true" : "false")
-        ));
-
-      // Restrict the window from covering the taskbar if chrome is hidden
-      // (because the OS doesn't do this for us) and the size mode is set to
-      // maximized (because 'fullscreen' mode still uses nsSizeMode_Normal).
-      if (mIsChromeHidden &&
-          (mSizeMode == nsSizeMode_Maximized || mIsMaximizing)) {
-
-        // Figure out the maximized window's size and position
-        RECT workArea;
-        PRBool hasWorkArea = PR_FALSE;
-        nsCOMPtr<nsIScreenManager> screenmgr = do_GetService(sScreenManagerContractID);
-        if (screenmgr) {
-          nsCOMPtr<nsIScreen> screen;
-          PRInt32 left, top, width, height;
-      
-          // zero size rects confuse the screen manager
-          width = mBounds.width > 0 ? mBounds.width : 1;
-          height = mBounds.height > 0 ? mBounds.height : 1;
-          screenmgr->ScreenForNativeWidget(mWnd, getter_AddRefs(screen));
-          if (screen) {
-            screen->GetAvailRect(&left, &top, &width, &height);
-            workArea.left = left;
-            workArea.right = left+width;
-            workArea.top = top;
-            workArea.bottom = top+height;
-            hasWorkArea = PR_TRUE;
-          }
-        } else {
-          if (::SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0)) {
-            hasWorkArea = PR_TRUE;
-          }
-        }
-        
-        HMONITOR selfMon = ::MonitorFromWindow(mWnd, MONITOR_DEFAULTTONEAREST),
-                 targetMon;
-        
-        if (hasWorkArea) {
-          // adjust for the task bar
-          APPBARDATA appbarData = {sizeof(APPBARDATA)};
-          appbarData.hWnd = mWnd;
-          HWND wnd;
-
-          appbarData.uEdge = ABE_TOP;
-          wnd = (HWND)::SHAppBarMessage(ABM_GETAUTOHIDEBAR, &appbarData);
-          if (wnd) {
-            targetMon = ::MonitorFromWindow(wnd, MONITOR_DEFAULTTONEAREST);
-            if (targetMon == selfMon) {
-              workArea.top += 1;
-            }
-          }
-          appbarData.uEdge = ABE_RIGHT;
-          wnd = (HWND)::SHAppBarMessage(ABM_GETAUTOHIDEBAR, &appbarData);
-          if (wnd) {
-            targetMon = ::MonitorFromWindow(wnd, MONITOR_DEFAULTTONEAREST);
-            if (targetMon == selfMon) {
-              workArea.right -= 1;
-            }
-          }
-          appbarData.uEdge = ABE_BOTTOM;
-          wnd = (HWND)::SHAppBarMessage(ABM_GETAUTOHIDEBAR, &appbarData);
-          if (wnd) {
-            targetMon = ::MonitorFromWindow(wnd, MONITOR_DEFAULTTONEAREST);
-            if (targetMon == selfMon) {
-              workArea.bottom -= 1;
-            }
-          }
-          appbarData.uEdge = ABE_LEFT;
-          wnd = (HWND)::SHAppBarMessage(ABM_GETAUTOHIDEBAR, &appbarData);
-          if (wnd) {
-            targetMon = ::MonitorFromWindow(wnd, MONITOR_DEFAULTTONEAREST);
-            if (targetMon == selfMon) {
-              workArea.left += 1;
-            }
-          }
-        }
-
-        if (hasWorkArea) {
-          PRInt32 workWidth = workArea.right - workArea.left;
-          maxWidth = PR_MIN(workWidth, mSizeConstraints.maxWidth);
-
-          PRInt32 workHeight = workArea.bottom - workArea.top;
-          maxHeight = PR_MIN(workHeight, mSizeConstraints.maxHeight);
-          
-          // left and top are translated to be relative to the current screen.
-          left = 0;
-          top = 0;
-        }
-      }
-
-      // Set our values
-      MINMAXINFO* mmi = (MINMAXINFO*)lParam;
-      if (minTrackWidth > mmi->ptMinTrackSize.x)
-        mmi->ptMinTrackSize.x = minTrackWidth;
-      if (minTrackHeight > mmi->ptMinTrackSize.y)
-        mmi->ptMinTrackSize.y = minTrackHeight;
-      if (maxTrackWidth < mmi->ptMaxTrackSize.x)
-        mmi->ptMaxTrackSize.x = maxTrackWidth;
-      if (maxTrackHeight < mmi->ptMaxTrackSize.y)
-        mmi->ptMaxTrackSize.y = maxTrackHeight;
-      if (maxWidth < mmi->ptMaxSize.x)
-        mmi->ptMaxSize.x = maxWidth;
-      if (maxHeight < mmi->ptMaxSize.y)
-        mmi->ptMaxSize.y = maxHeight;
-      if (left > mmi->ptMaxPosition.x)
-        mmi->ptMaxPosition.x = left;
-      if (top > mmi->ptMaxPosition.y)
-        mmi->ptMaxPosition.y = top;
-    }
-    break;
-
     case WM_SETFOCUS:
       if (sJustGotActivate) {
         result = DispatchFocusToTopLevelWindow(NS_ACTIVATE);
@@ -4552,11 +4413,6 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM &wParam, LPARAM &lParam,
 
     case WM_WINDOWPOSCHANGED:
     {
-      // Reset our special case flag for maximizing a hidechrome window now
-      // that all sizing is completed
-      if (mIsMaximizing)
-        mIsMaximizing = PR_FALSE;
-
       WINDOWPOS *wp = (LPWINDOWPOS)lParam;
       OnWindowPosChanged(wp, result);
     }
@@ -4627,41 +4483,10 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM &wParam, LPARAM &lParam,
 
 #ifndef WINCE
     case WM_SYSCOMMAND:
-      switch (wParam)
-      {
-        case SC_MINIMIZE:
-        {
-          // prevent Windows from trimming the working set. bug 76831
-          if (!sTrimOnMinimize) {
-            ::ShowWindow(mWnd, SW_SHOWMINIMIZED);
-            result = PR_TRUE;
-          }
-          // Set this flag so that we restore to the proper size
-          if (mIsChromeHidden && mSizeMode == nsSizeMode_Maximized)
-            mWasMaximized = PR_TRUE;
-          break;
-        }
-
-        case SC_MAXIMIZE:
-        {
-          if (mIsChromeHidden) {
-            // Set a flag to properly animate the maximizing of a hidechrome window
-            // that will be handled in WM_GETMINMAXINFO
-            mWasMaximized = PR_FALSE;
-            mIsMaximizing = PR_TRUE;
-          }
-          break;
-        }
-
-        case SC_RESTORE:
-        {
-          if (mWasMaximized) {
-            if (mIsChromeHidden)
-              mIsMaximizing = PR_TRUE;
-            mWasMaximized = PR_FALSE;
-          }
-          break;
-        }
+      // prevent Windows from trimming the working set. bug 76831
+      if (!sTrimOnMinimize && wParam == SC_MINIMIZE) {
+        ::ShowWindow(mWnd, SW_SHOWMINIMIZED);
+        result = PR_TRUE;
       }
       break;
 #endif
@@ -4856,6 +4681,22 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM &wParam, LPARAM &lParam,
       if (msg == nsAppShell::GetTaskbarButtonCreatedMessage())
         SetHasTaskbarIconBeenCreated();
 #endif
+#ifdef MOZ_IPC
+      if (msg == sOOPPPluginFocusEvent) {
+        if (wParam == 1) {
+          // With OOPP, the plugin window exists in another process and is a child of
+          // this window. This window is a placeholder plugin window for the dom. We
+          // receive this event when the child window receives focus. (sent from
+          // PluginInstanceParent.cpp)
+          ::SendMessage(mWnd, WM_MOUSEACTIVATE, 0, 0); // See nsPluginNativeWindowWin.cpp
+        } else {
+          // WM_KILLFOCUS was received by the child process.
+          if (sJustGotDeactivate) {
+            DispatchFocusToTopLevelWindow(NS_DEACTIVATE);
+          }
+        }
+      }
+#endif
     }
     break;
   }
@@ -4989,7 +4830,7 @@ LRESULT nsWindow::ProcessKeyUpMessage(const MSG &aMsg, PRBool *aEventDispatched)
   }
 
   if (!nsIMM32Handler::IsComposing(this) &&
-      (aMsg.message != WM_KEYUP || aMsg.message != VK_MENU)) {
+      (aMsg.message != WM_KEYUP || aMsg.wParam != VK_MENU)) {
     // Ignore VK_MENU if it's not a system key release, so that the menu bar does not trigger
     // This helps avoid triggering the menu bar for ALT key accelerators used in
     // assistive technologies such as Window-Eyes and ZoomText, and when using Alt+Tab
@@ -5545,8 +5386,18 @@ PRBool nsWindow::OnMouseWheel(UINT msg, WPARAM wParam, LPARAM lParam, PRBool& ge
     }
   }
 
-  if (!scrollEvent.delta)
+  if (!scrollEvent.delta) {
+    // We store the wheel delta, and it will be used next wheel message, so,
+    // we consume this message actually.  We shouldn't call next wndproc.
+    result = PR_TRUE;
     return PR_FALSE; // break
+  }
+
+#ifdef MOZ_IPC
+  // The event may go to a plug-in which already dispatched this message.
+  // Then, the event can cause deadlock.  We should unlock the sender here.
+  ::ReplyMessage(isVertical ? 0 : TRUE);
+#endif
 
   scrollEvent.isShift   = IS_VK_DOWN(NS_VK_SHIFT);
   scrollEvent.isControl = IS_VK_DOWN(NS_VK_CONTROL);
@@ -6241,28 +6092,23 @@ void nsWindow::OnSettingsChange(WPARAM wParam, LPARAM lParam)
   if (mWindowType == eWindowType_dialog ||
       mWindowType == eWindowType_toplevel )
     nsWindowGfx::OnSettingsChangeGfx(wParam);
+}
 
-  const wchar_t kTraySettings[] = L"TraySettings";
-  if (wParam == 0 && lParam &&
-      !(wcsncmp(kTraySettings, (LPWSTR)lParam, NS_ARRAY_LENGTH(kTraySettings))))
-  {
-    if (mIsChromeHidden && mSizeMode == nsSizeMode_Maximized) {
-      // we need to handle WM_GETMINMAXINFO, but while the taskbar was changed
-      // Windows does not send a message.  Let's manually size the window.
-      MINMAXINFO mmi;
-      memset((void*)&mmi, -1, sizeof(MINMAXINFO));
-      mmi.ptMaxPosition.x = mmi.ptMaxPosition.y = LONG_MIN;
-      mmi.ptMaxSize.x = mmi.ptMaxSize.y = LONG_MAX;
-      LRESULT lr = ::SendMessage(mWnd, WM_GETMINMAXINFO, NULL, (LPARAM)&mmi);
-      if (!lr && !(mmi.ptMaxPosition.x == LONG_MIN && mmi.ptMaxPosition.y == LONG_MIN &&
-                   mmi.ptMaxSize.x == LONG_MAX && mmi.ptMaxSize.y == LONG_MAX))
-      {
-        // there was a size restriction, move it
-        ::MoveWindow(mWnd, mmi.ptMaxPosition.x, mmi.ptMaxPosition.y,
-                     mmi.ptMaxSize.x, mmi.ptMaxSize.y, TRUE);
-      }
+static PRBool IsOurProcessWindow(HWND aHWND)
+{
+  DWORD processId = 0;
+  ::GetWindowThreadProcessId(aHWND, &processId);
+  return processId == ::GetCurrentProcessId();
+}
+
+static HWND FindOurProcessWindow(HWND aHWND)
+{
+  for (HWND wnd = ::GetParent(aHWND); wnd; wnd = ::GetParent(wnd)) {
+    if (IsOurProcessWindow(wnd)) {
+      return wnd;
     }
   }
+  return nsnull;
 }
 
 // Scrolling helper function for handling plugins.  
@@ -6323,15 +6169,32 @@ PRBool nsWindow::HandleScrollingPlugins(UINT aMsg, WPARAM aWParam,
     // No window is under the pointer
     return PR_FALSE; // break, but continue processing
   }
-  // We don't care about windows belonging to other processes.
-  DWORD processId = 0;
-  GetWindowThreadProcessId(destWnd, &processId);
-  if (processId != GetCurrentProcessId())
-  {
-    // Somebody elses window
-    return PR_FALSE; // break, but continue processing
+
+  nsWindow* destWindow;
+
+  // We don't handle the message if the found window belongs to another
+  // process's top window.  If it belongs window, that is a plug-in's window.
+  // Then, we need to send the message to the plug-in window.
+  if (!IsOurProcessWindow(destWnd)) {
+    HWND ourPluginWnd = FindOurProcessWindow(destWnd);
+    if (!ourPluginWnd) {
+      // Somebody elses window
+      return PR_FALSE; // break, but continue processing
+    }
+    destWindow = GetNSWindowPtr(ourPluginWnd);
+  } else {
+    destWindow = GetNSWindowPtr(destWnd);
   }
-  nsWindow* destWindow = GetNSWindowPtr(destWnd);
+
+  if (destWindow == this && mWindowType == eWindowType_plugin) {
+    // If this is plug-in window, the message came from the plug-in window.
+    // Then, the message should be processed on the parent window.
+    destWindow = static_cast<nsWindow*>(GetParent());
+    NS_ENSURE_TRUE(destWindow, PR_FALSE); // break, but continue processing
+    destWnd = destWindow->mWnd;
+    NS_ENSURE_TRUE(destWnd, PR_FALSE); // break, but continue processing
+  }
+
   if (!destWindow || destWindow->mWindowType == eWindowType_plugin) {
     // Some other app, or a plugin window.
     // Windows directs scrolling messages to the focused window.
@@ -6352,15 +6215,24 @@ PRBool nsWindow::HandleScrollingPlugins(UINT aMsg, WPARAM aWParam,
         // others will call DefWndProc, which itself still forwards back to us.
         // So if we have sent it once, we need to handle it ourself.
 
+#ifdef MOZ_IPC
+        // XXX The message shouldn't come from the plugin window at here.
+        // But the message might come from it due to some bugs.  If it happens,
+        // SendMessage causes deadlock.  For safety, we should unlock the
+        // sender here.
+        ::ReplyMessage(aMsg == WM_MOUSEHWHEEL ? TRUE : 0);
+#endif
+
         // First time we have seen this message.
         // Call the child - either it will consume it, or
         // it will wind it's way back to us,triggering the destWnd case above
         // either way,when the call returns,we are all done with the message,
         sIsProcessing = PR_TRUE;
-        if (0 == ::SendMessageW(destWnd, aMsg, aWParam, aLParam))
-          aHandled = PR_TRUE;
+        ::SendMessageW(destWnd, aMsg, aWParam, aLParam);
         sIsProcessing = PR_FALSE;
-        return PR_FALSE; // break, but continue processing
+        aHandled = PR_TRUE;
+        aQuitProcessing = PR_TRUE;
+        return PR_FALSE; // break, and stop processing
       }
       parentWnd = ::GetParent(parentWnd);
     } // while parentWnd
@@ -6414,6 +6286,11 @@ PRBool nsWindow::OnScroll(UINT aMsg, WPARAM aWParam, LPARAM aLParam)
       default:
         return PR_FALSE;
     }
+#ifdef MOZ_IPC
+    // The event may go to a plug-in which already dispatched this message.
+    // Then, the event can cause deadlock.  We should unlock the sender here.
+    ::ReplyMessage(0);
+#endif
     scrollevent.isShift   = IS_VK_DOWN(NS_VK_SHIFT);
     scrollevent.isControl = IS_VK_DOWN(NS_VK_CONTROL);
     scrollevent.isMeta    = PR_FALSE;
@@ -7289,6 +7166,7 @@ void nsWindow::InitTrackPointHack()
   const WCHAR wstrKeys[][40] = {L"Software\\Lenovo\\TrackPoint",
                                 L"Software\\Lenovo\\UltraNav",
                                 L"Software\\Alps\\Apoint\\TrackPoint",
+                                L"Software\\Synaptics\\SynTPEnh\\UltraNavUSB",
                                 L"Software\\Synaptics\\SynTPEnh\\UltraNavPS2"};    
   // If anything fails turn the hack off
   sTrackPointHack = false;

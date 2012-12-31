@@ -53,11 +53,12 @@
 #include "nsThreadUtilsInternal.h"
 #include "dom_quickstubs.h"
 
-NS_IMPL_THREADSAFE_ISUPPORTS6(nsXPConnect,
+NS_IMPL_THREADSAFE_ISUPPORTS7(nsXPConnect,
                               nsIXPConnect,
                               nsISupportsWeakReference,
                               nsIThreadObserver,
                               nsIJSRuntimeService,
+                              nsIJSRuntimeService_MOZILLA_1_9_2,
                               nsIJSContextStack,
                               nsIThreadJSContextStack)
 
@@ -2522,6 +2523,20 @@ nsXPConnect::GetBackstagePass(nsIXPCScriptable **bsp)
     }
     NS_ADDREF(*bsp = mBackstagePass);
     return NS_OK;
+}
+
+/* [noscript, notxpcom] void registerGCCallback(in JSGCCallback func); */
+NS_IMETHODIMP_(void)
+nsXPConnect::RegisterGCCallback(JSGCCallback func)
+{
+    mRuntime->AddGCCallback(func);
+}
+
+/* [noscript, notxpcom] void unregisterGCCallback(in JSGCCallback func); */
+NS_IMETHODIMP_(void)
+nsXPConnect::UnregisterGCCallback(JSGCCallback func)
+{
+    mRuntime->RemoveGCCallback(func);
 }
 
 //  nsIJSContextStack and nsIThreadJSContextStack implementations

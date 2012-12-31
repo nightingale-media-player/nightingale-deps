@@ -64,6 +64,8 @@
 #include "nsISecurityContext.h"
 #include "nsIServiceManager.h"
 #include "nsIJSContextStack.h"
+#include "nsJVMManager.h"
+#include "nsIPluginInstancePeer2.h"
 
 PR_BEGIN_EXTERN_C
 
@@ -240,6 +242,49 @@ jsj_LeaveTrace(JSContext *cx)
     js_LeaveTrace(cx);
 }
 
+// nsILiveconnect methods (which constitute OJI's Java-to-JavaScript API) may
+// call back into Java (using the OJI plugin's implementation of the
+// nsISecureEnv interface).  But these nsISecureEnv methods assume there is
+// JavaScript on the stack, and Java code can call nsILiveconnect methods
+// "spontaneously" (without any JavaScript on the stack).  So the
+// nsCLiveconnect methods below (those that implement the nsILiveconnect
+// interface) always create an AutoPushJSContext object, which guarantees the
+// presence on the JavaScript stack of at least a dummy frame with a principal.
+//
+// Ordinarily we rely on jsj_enter_js() to tell us which JSContext to pass to
+// the AutoPushJSContext constructor, and really only need to create an
+// AutoPushJSContext object after jsj_enter_js() has returned.  But the first
+// time jsj_enter_js() is called we initialize a bunch of Java classes and
+// their methods and fields (in jsj.c's init_netscape_java_classes() and
+// init_java_VM_reflection()).  This involves calling into Java, and thus
+// using the plugin's nsISecureEnv methods -- which assume there is JavaScript
+// on the stack.
+//
+// So to deal with this edge case (to make sure jsj_enter_js() behaves
+// properly the first time it's called) we need to create an AutoPushJSContext
+// object *before* calling jsj_enter_js() -- which requires that we know which
+// JSContex to pass to the AutoPushJSContext constructor before the call to
+// jsj_enter_js();
+//
+// That's what this function does -- it tells us which JSContext the call to
+// jsj_enter_js() will return (as a result of indirectly calling
+// map_jsj_thread_to_js_context_impl() in lcglue.cpp).
+static JSContext* JSContextForPluginInstance(nsIPluginInstance* pluginInstance)
+{
+    JSContext* context = NULL;
+	if (pluginInstance) {
+        nsCOMPtr<nsIPluginInstancePeer> pluginPeer;
+        if (NS_SUCCEEDED(pluginInstance->GetPeer(getter_AddRefs(pluginPeer)))) {
+            nsresult rv;
+            nsCOMPtr<nsIPluginInstancePeer2> pluginPeer2 = do_QueryInterface(pluginPeer, &rv);
+            if (NS_SUCCEEDED(rv)) {
+                pluginPeer2->GetJSContext(&context);
+            }
+        }
+    }
+    return context;
+}
+
 ////////////////////////////////////////////////////////////////////////////
 // from nsISupports and AggregatedQueryInterface:
 
@@ -285,13 +330,17 @@ nsCLiveconnect::GetMember(JNIEnv *jEnv, lcjsobject obj, const jchar *name, jsize
     JSBool             dummy_bool     = PR_FALSE;
     JSErrorReporter    saved_state    = NULL;
 
-    jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, principalsArray, numPrincipals, securitySupports);
-    if (!jsj_env)
+    cx = JSContextForPluginInstance(reinterpret_cast<nsIPluginInstance*>(mJavaClient));
+    if (!cx)
         return NS_ERROR_FAILURE;
 
     AutoPushJSContext autopush(securitySupports, cx);
     if (NS_FAILED(autopush.ResultOfPush()))
-        goto done;
+        return NS_ERROR_FAILURE;
+
+    jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, principalsArray, numPrincipals, securitySupports);
+    if (!jsj_env)
+        return NS_ERROR_FAILURE;
 
     if (!name) {
         JS_ReportError(cx, "illegal null member name");
@@ -343,14 +392,18 @@ nsCLiveconnect::GetSlot(JNIEnv *jEnv, lcjsobject obj, jint slot, void* principal
     JSBool             dummy_bool     = PR_FALSE;
     JSErrorReporter    saved_state    = NULL;
 
+    cx = JSContextForPluginInstance(reinterpret_cast<nsIPluginInstance*>(mJavaClient));
+    if (!cx)
+        return NS_ERROR_FAILURE;
+
+    AutoPushJSContext autopush(securitySupports, cx);
+    if (NS_FAILED(autopush.ResultOfPush()))
+        return NS_ERROR_FAILURE;
+
     jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, principalsArray, numPrincipals, securitySupports);
     if (!jsj_env)
        return NS_ERROR_FAILURE;
 
-    AutoPushJSContext autopush(securitySupports, cx);
-    if (NS_FAILED(autopush.ResultOfPush()))
-        goto done;
-    
     // =-= sudu: check to see if slot can be passed in as is.
     //           Should it be converted to a jsint?
     if (!JS_GetElement(cx, js_obj, slot, &js_val))
@@ -393,14 +446,18 @@ nsCLiveconnect::SetMember(JNIEnv *jEnv, lcjsobject obj, const jchar *name, jsize
     jsval              js_val;
     JSErrorReporter    saved_state    = NULL;
 
-    jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, principalsArray, numPrincipals, securitySupports);
-    if (!jsj_env)
+    cx = JSContextForPluginInstance(reinterpret_cast<nsIPluginInstance*>(mJavaClient));
+    if (!cx)
         return NS_ERROR_FAILURE;
 
     AutoPushJSContext autopush(securitySupports, cx);
     if (NS_FAILED(autopush.ResultOfPush()))
-        goto done;
-    
+        return NS_ERROR_FAILURE;
+
+    jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, principalsArray, numPrincipals, securitySupports);
+    if (!jsj_env)
+        return NS_ERROR_FAILURE;
+
     if (!name) {
         JS_ReportError(cx, "illegal null member name");
         goto done;
@@ -443,14 +500,18 @@ nsCLiveconnect::SetSlot(JNIEnv *jEnv, lcjsobject obj, jint slot, jobject java_ob
     jsval              js_val;
     JSErrorReporter    saved_state    = NULL;
 
-    jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, principalsArray, numPrincipals, securitySupports);
-    if (!jsj_env)
+    cx = JSContextForPluginInstance(reinterpret_cast<nsIPluginInstance*>(mJavaClient));
+    if (!cx)
         return NS_ERROR_FAILURE;
 
     AutoPushJSContext autopush(securitySupports, cx);
     if (NS_FAILED(autopush.ResultOfPush()))
-        goto done;
-    
+        return NS_ERROR_FAILURE;
+
+    jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, principalsArray, numPrincipals, securitySupports);
+    if (!jsj_env)
+        return NS_ERROR_FAILURE;
+
     if (!jsj_ConvertJavaObjectToJSValue(cx, jEnv, java_obj, &js_val))
         goto done;
     JS_SetElement(cx, js_obj, slot, &js_val);
@@ -484,14 +545,18 @@ nsCLiveconnect::RemoveMember(JNIEnv *jEnv, lcjsobject obj, const jchar *name, js
     jsval              js_val;
     JSErrorReporter    saved_state    = NULL;
 
-    jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, principalsArray, numPrincipals, securitySupports);
-    if (!jsj_env)
+    cx = JSContextForPluginInstance(reinterpret_cast<nsIPluginInstance*>(mJavaClient));
+    if (!cx)
         return NS_ERROR_FAILURE;
 
     AutoPushJSContext autopush(securitySupports, cx);
     if (NS_FAILED(autopush.ResultOfPush()))
-        goto done;
-    
+        return NS_ERROR_FAILURE;
+
+    jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, principalsArray, numPrincipals, securitySupports);
+    if (!jsj_env)
+        return NS_ERROR_FAILURE;
+
     if (!name) {
         JS_ReportError(cx, "illegal null member name");
         goto done;
@@ -538,15 +603,20 @@ nsCLiveconnect::Call(JNIEnv *jEnv, lcjsobject obj, const jchar *name, jsize leng
     JSErrorReporter    saved_state    = NULL;
     jobject            result         = NULL;
 
+    cx = JSContextForPluginInstance(reinterpret_cast<nsIPluginInstance*>(mJavaClient));
+    if (!cx)
+        return NS_ERROR_FAILURE;
+
+    AutoPushJSContext autopush(securitySupports, cx);
+    if (NS_FAILED(autopush.ResultOfPush()))
+        return NS_ERROR_FAILURE;
+
     jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, principalsArray, numPrincipals, securitySupports);
     if (!jsj_env)
         return NS_ERROR_FAILURE;
 
     result = NULL;
-    AutoPushJSContext autopush(securitySupports, cx);
-    if (NS_FAILED(autopush.ResultOfPush()))
-        goto done;
-    
+
     if (!name) {
         JS_ReportError(cx, "illegal null JavaScript function name");
         goto done;
@@ -620,15 +690,20 @@ nsCLiveconnect::Eval(JNIEnv *jEnv, lcjsobject obj, const jchar *script, jsize le
     JSPrincipals      *principals     = NULL;
     JSBool             eval_succeeded = PR_FALSE;
 
+    cx = JSContextForPluginInstance(reinterpret_cast<nsIPluginInstance*>(mJavaClient));
+    if (!cx)
+        return NS_ERROR_FAILURE;
+
+    AutoPushJSContext autopush(securitySupports, cx);
+    if (NS_FAILED(autopush.ResultOfPush()))
+        return NS_ERROR_FAILURE;
+
     jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, principalsArray, numPrincipals, securitySupports);
     if (!jsj_env)
        return NS_ERROR_FAILURE;
 
     result = NULL;
-    AutoPushJSContext autopush(securitySupports, cx);
-    if (NS_FAILED(autopush.ResultOfPush()))
-        goto done;
-    
+
     if (!script) {
         JS_ReportError(cx, "illegal null string eval argument");
         goto done;
@@ -691,15 +766,20 @@ nsCLiveconnect::GetWindow(JNIEnv *jEnv, void *pJavaObject,  void* principalsArra
     JSJavaThreadState *jsj_env        = NULL;
     JSObjectHandle    *handle         = NULL;
 
+    cx = JSContextForPluginInstance(reinterpret_cast<nsIPluginInstance*>(mJavaClient));
+    if (!cx)
+        return NS_ERROR_FAILURE;
+
+    AutoPushJSContext autopush(securitySupports, cx);
+    if (NS_FAILED(autopush.ResultOfPush()))
+        return NS_ERROR_FAILURE;
+
     jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, principalsArray, numPrincipals, securitySupports);
     if (!jsj_env)
        return NS_ERROR_FAILURE;
 
     err_msg = NULL;
-    AutoPushJSContext autopush(securitySupports, cx);
-    if (NS_FAILED(autopush.ResultOfPush()))
-        goto done;
-    
+
     js_obj = JSJ_callbacks->map_java_object_to_js_object(jEnv, mJavaClient, &err_msg);
     if (!js_obj) {
         if (err_msg) {
@@ -772,14 +852,19 @@ nsCLiveconnect::ToString(JNIEnv *jEnv, lcjsobject obj, jstring *pjstring)
     jstring            result         = NULL;
     JSString          *jsstr          = NULL;
 
+    cx = JSContextForPluginInstance(reinterpret_cast<nsIPluginInstance*>(mJavaClient));
+    if (!cx)
+        return NS_ERROR_FAILURE;
+
+    AutoPushJSContext autopush(nsnull, cx);
+    if (NS_FAILED(autopush.ResultOfPush()))
+        return NS_ERROR_FAILURE;
+
     jsj_env = jsj_enter_js(jEnv, mJavaClient, NULL, &cx, NULL, &saved_state, NULL, 0, NULL );
     if (!jsj_env)
        return NS_ERROR_FAILURE;
 
     result = NULL;
-    AutoPushJSContext autopush(nsnull, cx);
-    if (NS_FAILED(autopush.ResultOfPush()))
-        return NS_ERROR_FAILURE;
 
     jsstr = JS_ValueToString(cx, OBJECT_TO_JSVAL(js_obj));
     if (jsstr)

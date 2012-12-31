@@ -45,6 +45,7 @@
 
 #include "nsIServiceManager.h"
 #include "nsIXPConnect.h"
+#include "XPCWrapper.h"
 
 #include "nsIURI.h"
 #include "nsIIOService.h"
@@ -155,6 +156,17 @@ mozJSSubScriptLoader::LoadSubScript (const PRUnichar * /*url*/
         return NS_OK;
     }
 
+    nsCOMPtr<nsIPrincipal> principal = mSystemPrincipal;
+    JSObject *result_obj = target_obj;
+
+    // This is very hacky: we know that our caller must be chrome here, and
+    // therefore if XPCWrappe::Unwrap returns null, then the object that we
+    // passed in was not a security wrapper (and not that it was an object
+    // that we couldn't access). In that case, we can use the original object
+    // without any changes.
+    if (target_obj && !(target_obj = XPCWrapper::Unwrap(cx, target_obj)))
+        target_obj = result_obj;
+
     if (!target_obj)
     {
         /* if the user didn't provide an object to eval onto, find the global
@@ -190,7 +202,7 @@ mozJSSubScriptLoader::LoadSubScript (const PRUnichar * /*url*/
         }
 #ifdef DEBUG_rginda
         fprintf (stderr, "\n");
-#endif  
+#endif
     }
 
     // Innerize the target_obj so that we compile the loaded script in the
@@ -207,6 +219,17 @@ mozJSSubScriptLoader::LoadSubScript (const PRUnichar * /*url*/
             fprintf (stderr, "Final global: %p\n", target_obj);
 #endif
         }
+    }
+
+    if (result_obj &&
+        target_obj != JS_GetGlobalForObject(cx, result_obj)) {
+        nsCOMPtr<nsIScriptSecurityManager> secman =
+            do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID);
+        if (!secman)
+            return NS_ERROR_FAILURE;
+
+        rv = secman->GetObjectPrincipal(cx, target_obj, getter_AddRefs(principal));
+        NS_ENSURE_SUCCESS(rv, rv);
     }
 
     /* load up the url.  From here on, failures are reflected as ``custom''
@@ -332,7 +355,7 @@ mozJSSubScriptLoader::LoadSubScript (const PRUnichar * /*url*/
     /* we can't hold onto jsPrincipals as a module var because the
      * JSPRINCIPALS_DROP macro takes a JSContext, which we won't have in the
      * destructor */
-    rv = mSystemPrincipal->GetJSPrincipals(cx, &jsPrincipals);
+    rv = principal->GetJSPrincipals(cx, &jsPrincipals);
     if (NS_FAILED(rv) || !jsPrincipals) {
         errmsg = JS_NewStringCopyZ (cx, LOAD_ERROR_NOPRINCIPALS);
         goto return_exception;

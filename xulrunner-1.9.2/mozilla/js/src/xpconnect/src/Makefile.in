@@ -57,6 +57,11 @@ SHORT_LIBNAME	= xpc$(MOZ_BITS)$(VERSION_NUMBER)
 endif
 LIBXUL_LIBRARY = 1
 
+ifdef MOZ_XPCTOOLS
+DEFINES         +=  -DXPC_TOOLS_SUPPORT
+REQUIRES	+= xpctools
+endif
+
 REQUIRES	= xpcom \
 		  string \
 		  js \
@@ -173,11 +178,6 @@ DEFINES += \
 ENABLE_TRACEABLE_FLAGS = --enable-traceables
 
 endif # ENABLE_JIT
-
-ifdef MOZ_XPCTOOLS
-DEFINES         +=  -DXPC_TOOLS_SUPPORT
-REQUIRES	+= xpctools
-endif
 
 ifdef XPC_IDISPATCH_SUPPORT
 DEFINES		+= -DXPC_IDISPATCH_SUPPORT

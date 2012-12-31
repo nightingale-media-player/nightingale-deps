@@ -578,7 +578,8 @@ class nsDocument : public nsIDocument,
                    public nsIApplicationCacheContainer,
                    public nsIDOMXPathNSResolver,
                    public nsStubMutationObserver,
-                   public nsIDocument_MOZILLA_1_9_2_BRANCH
+                   public nsIDocument_MOZILLA_1_9_2_BRANCH,
+                   public nsIDocument_MOZILLA_1_9_2_5_BRANCH
 {
 public:
   NS_DECL_CYCLE_COLLECTING_ISUPPORTS
@@ -961,6 +962,13 @@ public:
                                                       PRBool aFlushLayout,
                                                       nsIDOMElement** aReturn);
 
+  virtual NS_HIDDEN_(nsresult) NodesFromRectHelper(float aX, float aY,
+                                                   float aTopSize, float aRightSize,
+                                                   float aBottomSize, float aLeftSize,
+                                                   PRBool aIgnoreRootScrollFrame,
+                                                   PRBool aFlushLayout,
+                                                   nsIDOMNodeList** aReturn);
+
   virtual NS_HIDDEN_(void) FlushSkinBindings();
 
   virtual NS_HIDDEN_(nsresult) InitializeFrameLoader(nsFrameLoader* aLoader);
@@ -1013,6 +1021,9 @@ public:
   virtual void MaybePreLoadImage(nsIURI* uri);
 
   virtual nsISupports* GetCurrentContentSink();
+
+  // Only BlockOnload should call this!
+  void AsyncBlockOnload();
 
 protected:
 
@@ -1220,6 +1231,8 @@ private:
   void PostUnblockOnloadEvent();
   void DoUnblockOnload();
 
+  nsresult CheckFrameOptions();
+
   /**
    * See if aDocument is a child of this.  If so, return the frame element in
    * this document that holds currentDoc (or an ancestor).
@@ -1245,7 +1258,10 @@ private:
   // 2)  We haven't had Destroy() called on us yet.
   nsCOMPtr<nsILayoutHistoryState> mLayoutHistoryState;
 
+  // Currently active onload blockers
   PRUint32 mOnloadBlockCount;
+  // Onload blockers which haven't been activated yet
+  PRUint32 mAsyncOnloadBlockCount;
   nsCOMPtr<nsIRequest> mOnloadBlocker;
   ReadyState mReadyState;
   

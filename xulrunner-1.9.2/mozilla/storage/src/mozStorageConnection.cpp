@@ -78,10 +78,12 @@ namespace storage {
 
 #define PREF_TS_SYNCHRONOUS "toolkit.storage.synchronous"
 
+namespace {
+
 ////////////////////////////////////////////////////////////////////////////////
 //// Variant Specialization Functions (variantToSQLiteT)
 
-static int
+int
 sqlite3_T_int(sqlite3_context *aCtx,
               int aValue)
 {
@@ -89,7 +91,7 @@ sqlite3_T_int(sqlite3_context *aCtx,
   return SQLITE_OK;
 }
 
-static int
+int
 sqlite3_T_int64(sqlite3_context *aCtx,
                 sqlite3_int64 aValue)
 {
@@ -97,7 +99,7 @@ sqlite3_T_int64(sqlite3_context *aCtx,
   return SQLITE_OK;
 }
 
-static int
+int
 sqlite3_T_double(sqlite3_context *aCtx,
                  double aValue)
 {
@@ -105,7 +107,7 @@ sqlite3_T_double(sqlite3_context *aCtx,
   return SQLITE_OK;
 }
 
-static int
+int
 sqlite3_T_text(sqlite3_context *aCtx,
                const nsCString &aValue)
 {
@@ -116,7 +118,7 @@ sqlite3_T_text(sqlite3_context *aCtx,
   return SQLITE_OK;
 }
 
-static int
+int
 sqlite3_T_text16(sqlite3_context *aCtx,
                  const nsString &aValue)
 {
@@ -127,14 +129,14 @@ sqlite3_T_text16(sqlite3_context *aCtx,
   return SQLITE_OK;
 }
 
-static int
+int
 sqlite3_T_null(sqlite3_context *aCtx)
 {
   ::sqlite3_result_null(aCtx);
   return SQLITE_OK;
 }
 
-static int
+int
 sqlite3_T_blob(sqlite3_context *aCtx,
                const void *aData,
                int aSize)
@@ -148,7 +150,6 @@ sqlite3_T_blob(sqlite3_context *aCtx,
 ////////////////////////////////////////////////////////////////////////////////
 //// Local Functions
 
-namespace {
 #ifdef PR_LOGGING
 void tracefunc (void *aClosure, const char *aStmt)
 {

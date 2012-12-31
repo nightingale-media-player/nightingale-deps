@@ -47,6 +47,8 @@
 %advancedDTD;
 <!ENTITY % privacyDTD SYSTEM "chrome://browser/locale/preferences/privacy.dtd">
 %privacyDTD;
+<!ENTITY submitCrashes.label "Submit crash reports">
+<!ENTITY submitCrashes.accesskey "S">
 ]>
 
 <overlay id="AdvancedPaneOverlay"
@@ -133,10 +135,10 @@
             onselect="gAdvancedPane.tabSelectionChanged();">
 
       <tabs id="tabsElement">
-        <tab id="generalTab" label="&generalTab.label;"/>
-        <tab id="networkTab" label="&networkTab.label;"/>
-        <tab id="updateTab" label="&updateTab.label;"/>
-        <tab id="encryptionTab" label="&encryptionTab.label;"/>
+        <tab id="generalTab" label="&generalTab.label;" helpTopic="prefs-advanced-general"/>
+        <tab id="networkTab" label="&networkTab.label;" helpTopic="prefs-advanced-network"/>
+        <tab id="updateTab" label="&updateTab.label;"  helpTopic="prefs-advanced-update"/>
+        <tab id="encryptionTab" label="&encryptionTab.label;" helpTopic="prefs-advanced-encryption"/>
       </tabs>
 
       <tabpanels flex="1">
@@ -184,7 +186,7 @@
 
 #ifdef HAVE_SHELL_SERVICE
           <!-- System Defaults -->
-          <groupbox id="systemDefaultsGroup" orient="horizontal">
+          <groupbox id="systemDefaultsGroup" orient="vertical">
             <caption label="&systemDefaults.label;"/>
 
             <hbox id="checkDefaultBox" align="center" flex="1">      
@@ -196,6 +198,11 @@
                       oncommand="gAdvancedPane.checkNow()"
                       preference="pref.general.disable_button.default_browser"/>
             </hbox>
+#ifdef MOZ_CRASHREPORTER
+            <checkbox id="submitCrashesBox" flex="1"
+                      oncommand="gAdvancedPane.updateSubmitCrashes();"
+                      label="&submitCrashes.label;" accesskey="&submitCrashes.accesskey;"/>
+#endif
           </groupbox>
 #endif
         </tabpanel>

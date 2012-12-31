@@ -54,6 +54,7 @@ PRBool nsHtml5Module::sEnabled = PR_FALSE;
 void
 nsHtml5Module::InitializeStatics()
 {
+#if 0
   nsContentUtils::AddBoolPrefVarCache("html5.enable", &sEnabled);
   nsHtml5Atoms::AddRefAtoms();
   nsHtml5AttributeName::initializeStatics();
@@ -68,12 +69,14 @@ nsHtml5Module::InitializeStatics()
 #ifdef DEBUG
   sNsHtml5ModuleInitialized = PR_TRUE;
 #endif
+#endif
 }
 
 // static
 void
 nsHtml5Module::ReleaseStatics()
 {
+#if 0
 #ifdef DEBUG
   sNsHtml5ModuleInitialized = PR_FALSE;
 #endif
@@ -86,6 +89,7 @@ nsHtml5Module::ReleaseStatics()
   nsHtml5Tokenizer::releaseStatics();
   nsHtml5TreeBuilder::releaseStatics();
   nsHtml5UTF16Buffer::releaseStatics();
+#endif
 }
 
 // static

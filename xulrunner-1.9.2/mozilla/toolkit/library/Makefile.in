@@ -227,7 +227,7 @@ EXTRA_DSO_LDOPTS += $(LIBCONIC_LIBS)
 endif
 
 ifdef MOZ_ENABLE_DBUS
-EXTRA_DSO_LDOPTS += $(MOZ_DBUS_GLIB_LIBS)
+EXTRA_DSO_LDOPTS += $(MOZ_DBUS_LIBS)
 endif
 
 ifeq (gtk2,$(MOZ_WIDGET_TOOLKIT))
@@ -256,6 +256,10 @@ ifeq ($(OS_ARCH),SunOS)
 EXTRA_DSO_LDOPTS += -lelf -ldemangle -lCstd
 endif
 
+ifeq ($(OS_ARCH),AIX)
+EXTRA_DSO_LDOPTS += -bbigtoc 
+endif
+
 ifeq ($(OS_ARCH),WINNT)
 EXTRA_DSO_LDOPTS += $(call EXPAND_LIBNAME,shell32 ole32 uuid version winspool comdlg32 imm32 winmm wsock32 msimg32)
 ifneq (,$(MOZ_DEBUG)$(NS_TRACE_MALLOC))
@@ -280,6 +284,11 @@ endif
 
 ifdef MOZ_ENABLE_QT
 EXTRA_DSO_LDOPTS += $(MOZ_QT_LDFLAGS)
+endif
+
+ifeq ($(OS_ARCH),OpenBSD)
+# Needed by nsAuthGSSAPI
+OS_LIBS += -lkrb5 -lcrypto
 endif
 
 ifdef MOZ_JAVAXPCOM

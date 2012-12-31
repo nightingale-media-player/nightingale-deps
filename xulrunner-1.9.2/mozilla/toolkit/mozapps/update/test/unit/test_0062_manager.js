@@ -39,27 +39,32 @@
 /* General Update Manager Tests */
 
 function run_test() {
-  dump("Testing: resuming an update download in progress for the same " +
-       "version of the application on startup - bug 485624\n");
+  do_test_pending();
+  do_register_cleanup(end_test);
+
+  logTestInfo("testing resuming an update download in progress for the same " +
+              "version of the application on startup (bug 485624)");
   removeUpdateDirsAndFiles();
-  var defaults = getPrefBranch().QueryInterface(AUS_Ci.nsIPrefService).
-                 getDefaultBranch(null);
-  defaults.setCharPref("app.update.channel", "bogus_channel");
+  setUpdateChannel();
 
-  writeUpdatesToXMLFile(getLocalUpdatesXMLString(""), false);
+  var patches, updates;
 
-  var patches = getLocalPatchString(null, null, null, null, null, null,
-                                    STATE_DOWNLOADING);
-  var updates = getLocalUpdateString(patches, null, null, "1.0", null, "1.0",
-                                     null, null, null,
-                                     URL_HOST + DIR_DATA + "/empty.mar");
+  patches = getLocalPatchString(null, null, null, null, null, null,
+                                STATE_DOWNLOADING);
+  updates = getLocalUpdateString(patches, null, null, "1.0", "1.0");
   writeUpdatesToXMLFile(getLocalUpdatesXMLString(updates), true);
   writeStatusFile(STATE_DOWNLOADING);
 
-  startAUS();
-  startUpdateManager();
+  writeUpdatesToXMLFile(getLocalUpdatesXMLString(""), false);
+
+  standardInit();
 
   do_check_eq(gUpdateManager.updateCount, 1);
   do_check_eq(gUpdateManager.activeUpdate.state, STATE_DOWNLOADING);
+
+  do_test_finished();
+}
+
+function end_test() {
   cleanUp();
 }

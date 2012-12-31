@@ -98,6 +98,11 @@ ifdef MOZ_UPDATER
 DEFINES += -DMOZ_UPDATER=1
 endif
 
+ifdef MOZ_IPC
+include $(topsrcdir)/ipc/app/defs.mk
+DEFINES += -DMOZ_CHILD_PROCESS_NAME=$(MOZ_CHILD_PROCESS_NAME)
+endif
+
 ifdef MOZ_PKG_MANIFEST_P
 MOZ_PKG_MANIFEST = package-manifest
 
@@ -131,9 +136,8 @@ DEFINES += -DBINPATH=bin
 endif
 
 libs::
-	$(MAKE) -C $(DEPTH)/browser/locales langpack PKG_LANGPACK_PATH=
+	$(MAKE) -C $(DEPTH)/browser/locales langpack
 
-UPLOAD_EXTRA_FILES += $(PKG_LANGPACK_BASENAME).xpi
 
 installer:: removed-files
 ifdef INSTALLER_DIR

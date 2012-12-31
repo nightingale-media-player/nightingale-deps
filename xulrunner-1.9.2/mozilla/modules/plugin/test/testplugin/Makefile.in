@@ -46,9 +46,6 @@ MODULE       = nptest
 LIBRARY_NAME = nptest
 MODULE_NAME  = TestPlugin
 
-REQUIRES = \
-  plugin \
-  $(NULL)
 
 # Need to custom install plugins
 NO_DIST_INSTALL	= 1
@@ -80,9 +77,16 @@ CPPSRCS  += nptest_windows.cpp
 RCFILE    = nptest.rc
 RESFILE   = nptest.res
 DEFFILE   = $(win_srcdir)/nptest.def
+OS_LIBS  += $(call EXPAND_LIBNAME,msimg32)
 endif
 
 include $(topsrcdir)/config/rules.mk
+
+ifndef __LP64__
+ifeq ($(MOZ_WIDGET_TOOLKIT),cocoa)
+EXTRA_DSO_LDOPTS += -framework Carbon
+endif
+endif
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),gtk2)
 CXXFLAGS        += $(MOZ_GTK2_CFLAGS)

@@ -49,7 +49,7 @@
 class nsITreeBoxObject;
 struct nsTreeRange;
 
-class nsTreeSelection : public nsITreeSelection
+class nsTreeSelection : public nsINativeTreeSelection
 {
 public:
   nsTreeSelection(nsITreeBoxObject* aTree);
@@ -57,6 +57,9 @@ public:
    
   NS_DECL_ISUPPORTS
   NS_DECL_NSITREESELECTION
+
+  // nsINativeTreeSelection: Untrusted code can use us
+  NS_IMETHOD EnsureNative() { return NS_OK; }
 
   friend struct nsTreeRange;
 

@@ -467,7 +467,7 @@ class nsXPConnect : public nsIXPConnect,
                     public nsSupportsWeakReference,
                     public nsCycleCollectionJSRuntime,
                     public nsCycleCollectionParticipant,
-                    public nsIJSRuntimeService,
+                    public nsIJSRuntimeService_MOZILLA_1_9_2,
                     public nsIThreadJSContextStack
 {
 public:
@@ -476,6 +476,7 @@ public:
     NS_DECL_NSIXPCONNECT
     NS_DECL_NSITHREADOBSERVER
     NS_DECL_NSIJSRUNTIMESERVICE
+    NS_DECL_NSIJSRUNTIMESERVICE_MOZILLA_1_9_2
     NS_DECL_NSIJSCONTEXTSTACK
     NS_DECL_NSITHREADJSCONTEXTSTACK
 
@@ -493,7 +494,13 @@ public:
     static JSBool IsISupportsDescendant(nsIInterfaceInfo* info);
 
     nsIXPCSecurityManager* GetDefaultSecurityManager() const
-        {return mDefaultSecurityManager;}
+    {
+        // mDefaultSecurityManager is main-thread only.
+        if (!NS_IsMainThread()) {
+            return nsnull;
+        }
+        return mDefaultSecurityManager;
+    }
 
     PRUint16 GetDefaultSecurityManagerFlags() const
         {return mDefaultSecurityManagerFlags;}
@@ -768,6 +775,9 @@ private:
 public:
 #endif
 
+    void AddGCCallback(JSGCCallback cb);
+    void RemoveGCCallback(JSGCCallback cb);
+
 private:
     XPCJSRuntime(); // no implementation
     XPCJSRuntime(nsXPConnect* aXPConnect);
@@ -805,6 +815,7 @@ private:
     uintN mUnrootedGlobalCount;
     PRCondVar *mWatchdogWakeup;
     PRThread *mWatchdogThread;
+    nsTArray<JSGCCallback> extraGCCallbacks;
 };
 
 /***************************************************************************/

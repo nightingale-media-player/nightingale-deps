@@ -20,6 +20,7 @@ REQUIRES = \
 	uconv \
 	$(LCMS_REQUIRES) \
 	qcms \
+	ots/src \
 	$(NULL)
 
 CPPSRCS	= \
@@ -51,6 +52,7 @@ EXTRA_DSO_LDOPTS += \
 	$(NSPR_LIBS) \
 	$(ZLIB_LIBS) \
 	$(QCMS_LIBS) \
+	$(MOZ_OTS_LIBS) \
 	$(NULL)
 
 

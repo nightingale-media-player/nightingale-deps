@@ -157,6 +157,7 @@ imgFrame::imgFrame() :
 #ifdef USE_WIN_SURFACE
   , mIsDDBSurface(PR_FALSE)
 #endif
+  , mLocked(PR_FALSE)
 {
   static PRBool hasCheckedOptimize = PR_FALSE;
   if (!hasCheckedOptimize) {
@@ -418,8 +419,7 @@ void imgFrame::Draw(gfxContext *aContext, gfxPattern::GraphicsFilter aFilter,
 
   PRBool doTile = !imageRect.Contains(sourceRect);
   if (doPadding || doPartialDecode) {
-    gfxRect available = gfxRect(mDecoded.x, mDecoded.y, mDecoded.width, mDecoded.height) +
-      gfxPoint(aPadding.left, aPadding.top);
+    gfxRect available = gfxRect(mDecoded.x, mDecoded.y, mDecoded.width, mDecoded.height);
 
     if (!doTile && !mSinglePixel) {
       // Not tiling, and we have a surface, so we can account for
@@ -713,7 +713,7 @@ nsresult imgFrame::ImageUpdated(const nsIntRect &aUpdateRect)
 
   // clamp to bounds, in case someone sends a bogus updateRect (I'm looking at
   // you, gif decoder)
-  nsIntRect boundsRect(0, 0, mSize.width, mSize.height);
+  nsIntRect boundsRect(mOffset, mSize);
   mDecoded.IntersectRect(mDecoded, boundsRect);
 
 #ifdef XP_MACOSX
@@ -778,6 +778,9 @@ PRUint32 imgFrame::GetImageDataLength() const
 void imgFrame::GetImageData(PRUint8 **aData, PRUint32 *length) const
 {
   if (mImageSurface)
+    mImageSurface->Flush();
+
+  if (mImageSurface)
     *aData = mImageSurface->Data();
   else if (mPalettedImageData)
     *aData = mPalettedImageData + PaletteDataLength();
@@ -813,6 +816,12 @@ nsresult imgFrame::LockImageData()
   if (mPalettedImageData)
     return NS_OK;
 
+  NS_ABORT_IF_FALSE(!mLocked, "Trying to lock already locked image data.");
+  if (mLocked) {
+    return NS_ERROR_FAILURE;
+  }
+  mLocked = PR_TRUE;
+
   if ((mOptSurface || mSinglePixel) && !mImageSurface) {
     // Recover the pixels
     mImageSurface = new gfxImageSurface(gfxIntSize(mSize.width, mSize.height),
@@ -837,6 +846,11 @@ nsresult imgFrame::LockImageData()
 #endif
   }
 
+  // We might write to the bits in this image surface, so we need to make the
+  // surface ready for that.
+  if (mImageSurface)
+    mImageSurface->Flush();
+
   return NS_OK;
 }
 
@@ -845,7 +859,20 @@ nsresult imgFrame::UnlockImageData()
   if (mPalettedImageData)
     return NS_OK;
 
+  // Assume we've been written to.
+  if (mImageSurface)
+    mImageSurface->MarkDirty();
+
+  NS_ABORT_IF_FALSE(mLocked, "Unlocking an unlocked image!");
+  if (!mLocked) {
+    return NS_ERROR_FAILURE;
+  }
+
+  mLocked = PR_FALSE;
+
 #ifdef XP_MACOSX
+  // The quartz image surface (ab)uses the flush method to get the
+  // cairo_image_surface data into a CGImage, so we have to call Flush() here.
   if (mQuartzSurface)
     mQuartzSurface->Flush();
 #endif
@@ -900,7 +927,7 @@ void imgFrame::SetBlendMethod(PRInt32 aBlendMethod)
 
 PRBool imgFrame::ImageComplete() const
 {
-  return mDecoded == nsIntRect(0, 0, mSize.width, mSize.height);
+  return mDecoded == nsIntRect(mOffset, mSize);
 }
 
 // A hint from the image decoders that this image has no alpha, even

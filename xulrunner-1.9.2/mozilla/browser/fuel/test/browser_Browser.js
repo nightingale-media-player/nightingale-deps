@@ -1,10 +1,3 @@
-const Ci = Components.interfaces;
-const Cc = Components.classes;
-
-function url(spec) {
-  var ios = Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-  return ios.newURI(spec, null, null);
-}
 var gPageA = null;
 var gPageB = null;
 
@@ -17,27 +10,27 @@ var gTabMoveCount = 0;
 var gPageLoadCount = 0;
 
 function test() {
+  waitForExplicitFinish();
+
   var windows = Application.windows;
   ok(windows, "Check access to browser windows");
-  ok(windows.length, "There should be at least one browser window open");
+  is(windows.length, 1, "There should be one browser window open");
 
   var activeWin = Application.activeWindow;
   activeWin.events.addListener("TabOpen", onTabOpen);
   activeWin.events.addListener("TabClose", onTabClose);
   activeWin.events.addListener("TabMove", onTabMove);
 
-  gPageA = activeWin.open(url("chrome://mochikit/content/browser/browser/fuel/test/ContentA.html"));
+  gPageA = activeWin.open(makeURI("chrome://mochikit/content/browser/browser/fuel/test/ContentA.html"));
   gPageA.events.addListener("load", onPageAFirstLoad);
 
   is(activeWin.tabs.length, 2, "Checking length of 'Browser.tabs' after opening 1 additional tab");
-
-  waitForExplicitFinish();
 
   function onPageAFirstLoad(event) {
     gPageA.events.removeListener("load", onPageAFirstLoad);
     is(gPageA.uri.spec, event.data.uri.spec, "Checking event browser tab is equal to page A");
 
-    gPageB = activeWin.open(url("chrome://mochikit/content/browser/browser/fuel/test/ContentB.html"));
+    gPageB = activeWin.open(makeURI("chrome://mochikit/content/browser/browser/fuel/test/ContentB.html"));
     gPageB.events.addListener("load", delayAfterOpen);
     gPageB.focus();
 
@@ -56,11 +49,11 @@ function test() {
     is(gPageA.uri.spec, "chrome://mochikit/content/browser/browser/fuel/test/ContentA.html", "Checking 'BrowserTab.uri' after opening");
     is(gPageB.uri.spec, "chrome://mochikit/content/browser/browser/fuel/test/ContentB.html", "Checking 'BrowserTab.uri' after opening");
 
+    // check event
+    is(gTabOpenCount, 2, "Checking event handler for tab open");
     // check cached values from TabOpen event
     is(gPageA.uri.spec, gTabOpenPageA.uri.spec, "Checking first browser tab open is equal to page A");
     is(gPageB.uri.spec, gTabOpenPageB.uri.spec, "Checking second browser tab open is equal to page B");
-    // check event
-    is(gTabOpenCount, 2, "Checking event handler for tab open");
 
     // test document access
     var test1 = gPageA.document.getElementById("test1");
@@ -77,40 +70,33 @@ function test() {
     // check event
     is(gTabMoveCount, 1, "Checking event handler for tab move");
 
-    let browser = gBrowser.getBrowserAtIndex(gPageB.index);
-    browser.addProgressListener({
-      onStateChange: function(webProgress, request, stateFlags, status) {
+    gBrowser.addProgressListener({
+      onStateChange: function (webProgress, request, stateFlags, status) {
+        info("onStateChange: " + stateFlags);
+
         const complete = Ci.nsIWebProgressListener.STATE_IS_WINDOW +
                          Ci.nsIWebProgressListener.STATE_IS_NETWORK +
                          Ci.nsIWebProgressListener.STATE_STOP;
         if ((stateFlags & complete) == complete) {
-          browser.removeProgressListener(this);
+          gBrowser.removeProgressListener(this);
           onPageBLoadComplete();
         }
       },
-
-      onLocationChange: function() { return 0; },
-      onProgressChange: function() { return 0; },
-      onStatusChange: function() { return 0; },
-      onSecurityChange: function() { return 0; },
-      QueryInterface: function(iid) {
-        if (iid.equals(Ci.nsISupportsWeakReference) ||
-           iid.equals(Ci.nsIWebProgressListener) ||
-           iid.equals(Ci.nsISupports))
-           return this;
-
-        throw Components.results.NS_ERROR_NO_INTERFACE;
-      }
+      onLocationChange: function () 0,
+      onProgressChange: function () 0,
+      onStatusChange: function () 0,
+      onSecurityChange: function () 0
     });
 
     // test loading new content with a frame into a tab
     // the event will be checked in onPageBLoadComplete
     gPageB.events.addListener("load", onPageBLoadWithFrames);
-    gPageB.load(url("chrome://mochikit/content/browser/browser/fuel/test/ContentWithFrames.html"));
+    gPageB.load(makeURI("chrome://mochikit/content/browser/browser/fuel/test/ContentWithFrames.html"));
   }
 
   function onPageBLoadWithFrames(event) {
     gPageLoadCount++;
+    info("onPageBLoadWithFrames: " + gPageLoadCount);
   }
 
   function onPageBLoadComplete() {
@@ -121,7 +107,7 @@ function test() {
     // test loading new content into a tab
     // the event will be checked in onPageASecondLoad
     gPageA.events.addListener("load", onPageASecondLoad);
-    gPageA.load(url("chrome://mochikit/content/browser/browser/fuel/test/ContentB.html"));
+    gPageA.load(makeURI("chrome://mochikit/content/browser/browser/fuel/test/ContentB.html"));
   }
 
   function onPageASecondLoad(event) {

@@ -42,7 +42,6 @@ dnl   Mac OS X 10.4 support
 dnl   Giorgio Maone <g.maone@informaction.com>
 dnl   MSVC l10n compatible version check
 dnl   Ben Turner <mozilla@songbirdnest.com>
-dnl   J. Paul Reed <mozpreed@sigkill.com> 
 dnl
 dnl Alternatively, the contents of this file may be used under the terms of
 dnl either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -131,7 +130,7 @@ GCONF_VERSION=1.2.1
 LIBGNOME_VERSION=2.0
 STARTUP_NOTIFICATION_VERSION=0.8
 DBUS_VERSION=0.60
-SQLITE_VERSION=3.6.16.1
+SQLITE_VERSION=3.7.4
 LIBNOTIFY_VERSION=0.4
 
 MSMANIFEST_TOOL=
@@ -462,11 +461,7 @@ case "$target" in
     WINVER=500
     ;;
 *)
-    if test -n "$GNU_CC"; then  
-        WINVER=501
-    else    
-        WINVER=500
-    fi
+    WINVER=502
     ;;
 esac
 
@@ -816,7 +811,7 @@ else
     AC_MSG_RESULT([yes])    
 fi
 
-MOZ_PATH_PROGS(PYTHON, $PYTHON python2.5 python2.4 python)
+MOZ_PATH_PROGS(PYTHON, $PYTHON python2.7 python2.5 python2.4 python)
 if test -z "$PYTHON"; then
     AC_MSG_ERROR([python was not found in \$PATH])
 fi
@@ -1130,6 +1125,9 @@ HOST_OS_ARCH=`echo $host_os | sed -e 's|/|_|g'`
 case "$HOST_OS_ARCH" in
 cygwin*|mingw*|mks*|msvc*)
     HOST_OS_ARCH=WINNT
+    ;;
+darwin*)
+    HOST_OS_ARCH=Darwin
     ;;
 linux*)
     HOST_OS_ARCH=Linux
@@ -1826,8 +1824,8 @@ case "$target" in
     MKCSHLIB='$(CC) $(CFLAGS) $(DSO_PIC_CFLAGS) $(DSO_LDOPTS) -o $@'
     MOZ_OPTIMIZE_FLAGS="-O3"
     _PEDANTIC=
-    CFLAGS="$CFLAGS -fno-common"
-    CXXFLAGS="$CXXFLAGS -fno-common"
+    CFLAGS="$CFLAGS -fpascal-strings -fno-common"
+    CXXFLAGS="$CXXFLAGS -fpascal-strings -fno-common"
     DLL_SUFFIX=".dylib"
     DSO_LDOPTS=''
     STRIP="$STRIP -x -S"
@@ -4180,7 +4178,7 @@ dnl =
 dnl ========================================================
 MOZ_ARG_HEADER(External Packages)
 
-MOZ_ENABLE_LIBXUL=
+MOZ_ENABLE_LIBXUL=1
 
 MOZ_ARG_WITH_STRING(libxul-sdk,
 [  --with-libxul-sdk=PFX   Use the libXUL SDK at <PFX>],
@@ -4225,7 +4223,7 @@ MOZ_ARG_WITH_BOOL(system-nspr,
     _USE_SYSTEM_NSPR=1 )
 
 if test -n "$_USE_SYSTEM_NSPR"; then
-    AM_PATH_NSPR(4.8.0, [MOZ_NATIVE_NSPR=1], [MOZ_NATIVE_NSPR=])
+    AM_PATH_NSPR(4.8.6, [MOZ_NATIVE_NSPR=1], [MOZ_NATIVE_NSPR=])
 fi
 
 if test -n "$MOZ_NATIVE_NSPR"; then
@@ -4255,6 +4253,43 @@ else
     fi
 fi
 
+dnl system libevent Support
+dnl ========================================================
+MOZ_ARG_WITH_STRING(system-libevent,
+[  --with-system-libevent=[PFX]
+                          Use system libevent [installed at prefix PFX]],
+    LIBEVENT_DIR=$withval)
+
+_SAVE_CFLAGS=$CFLAGS
+_SAVE_LDFLAGS=$LDFLAGS
+_SAVE_LIBS=$LIBS
+if test -z "$LIBEVENT_DIR" -o "$LIBEVENT_DIR" = no; then
+    MOZ_NATIVE_LIBEVENT=
+else
+    if test "${LIBEVENT_DIR}" = "yes"; then
+        LIBEVENT_DIR=/usr
+    fi
+    CFLAGS="-I${LIBEVENT_DIR}/include $CFLAGS"
+    LDFLAGS="-L${LIBEVENT_DIR}/lib $LDFLAGS"
+    AC_CHECK_HEADER(event.h,
+                    [if test ! -f "${LIBEVENT_DIR}/include/event.h"; then
+                         AC_MSG_ERROR([event.h found, but is not in ${LIBEVENT_DIR}/include])
+                     fi],
+                    AC_MSG_ERROR([--with-system-libevent requested but event.h not found]))
+    AC_CHECK_LIB(event, event_init,
+                 [MOZ_NATIVE_LIBEVENT=1
+                  MOZ_LIBEVENT_INCLUDES="${LIBEVENT_DIR}/include"
+                  MOZ_LIBEVENT_LIBS="-L${LIBEVENT_DIR}/lib -levent"],
+                 [MOZ_NATIVE_LIBEVENT= MOZ_LIBEVENT_INCLUDES= MOZ_LIBEVENT_LIBS=])
+fi
+CFLAGS=$_SAVE_CFLAGS
+LDFLAGS=$_SAVE_LDFLAGS
+LIBS=$_SAVE_LIBS
+
+AC_SUBST(MOZ_NATIVE_LIBEVENT)
+AC_SUBST(MOZ_LIBEVENT_INCLUDES)
+AC_SUBST(MOZ_LIBEVENT_LIBS)
+
 dnl ========================================================
 dnl = If NSS was not detected in the system, 
 dnl = use the one in the source tree (mozilla/security/nss)
@@ -4265,7 +4300,7 @@ MOZ_ARG_WITH_BOOL(system-nss,
     _USE_SYSTEM_NSS=1 )
 
 if test -n "$_USE_SYSTEM_NSS"; then
-    AM_PATH_NSS(3.12.6, [MOZ_NATIVE_NSS=1], [MOZ_NATIVE_NSS=])
+    AM_PATH_NSS(3.12.8, [MOZ_NATIVE_NSS=1], [MOZ_NATIVE_NSS=])
 fi
 
 if test -n "$MOZ_NATIVE_NSS"; then
@@ -4509,6 +4544,7 @@ MOZ_ENABLE_CANVAS3D=
 MOZ_FEEDS=1
 MOZ_IMG_DECODERS_DEFAULT="png gif jpeg bmp icon"
 MOZ_IMG_ENCODERS_DEFAULT="png jpeg"
+MOZ_IPC=1
 MOZ_JAVAXPCOM=
 MOZ_JSDEBUGGER=1
 MOZ_JSLOADER=1
@@ -4558,7 +4594,6 @@ NECKO_WIFI=1
 NECKO_COOKIES=1
 NECKO_DISK_CACHE=1
 NECKO_PROTOCOLS_DEFAULT="about data file ftp gopher http res viewsource"
-NECKO_SMALL_BUFFERS=
 XPC_IDISPATCH_SUPPORT=
 
 
@@ -5286,11 +5321,14 @@ then
 
     if test "$MOZ_ENABLE_DBUS"
     then
+        PKG_CHECK_MODULES(MOZ_DBUS, dbus-1 >= $DBUS_VERSION)
         PKG_CHECK_MODULES(MOZ_DBUS_GLIB, dbus-glib-1 >= $DBUS_VERSION)
         AC_DEFINE(MOZ_ENABLE_DBUS)
     fi
 fi
 AC_SUBST(MOZ_ENABLE_DBUS)
+AC_SUBST(MOZ_DBUS_CFLAGS)
+AC_SUBST(MOZ_DBUS_LIBS)
 AC_SUBST(MOZ_DBUS_GLIB_CFLAGS)
 AC_SUBST(MOZ_DBUS_GLIB_LIBS)
 
@@ -5343,6 +5381,49 @@ MOZ_ARG_DISABLE_BOOL(jsd,
     MOZ_JSDEBUGGER=,
     MOZ_JSDEBUGGER=1)
 
+
+dnl ========================================================
+dnl = Disable IPC support for tabs and plugins
+dnl ========================================================
+case "${target}" in
+*-apple-darwin*)
+    MOZ_IPC=
+    ;;
+*-wince*)
+    MOZ_IPC=
+    ;;
+esac
+
+MOZ_ARG_DISABLE_BOOL(ipc,
+[  --disable-ipc           Disable IPC supports for tabs and plugins],
+    MOZ_IPC=,
+    MOZ_IPC=1)
+
+if test -n "$MOZ_IPC"; then
+    AC_DEFINE(MOZ_IPC)
+fi
+
+AC_SUBST(MOZ_IPC)
+
+dnl ========================================================
+dnl = Enable IPDL's "expensive" unit tests
+dnl ========================================================
+MOZ_IPDL_TESTS=
+
+MOZ_ARG_ENABLE_BOOL(ipdl-tests,
+[  --enable-ipdl-tests     Enable expensive IPDL tests],
+    MOZ_IPDL_TESTS=1,
+    MOZ_IPDL_TESTS=)
+
+if test -z "$MOZ_IPC" -a -n "$MOZ_IPDL_TESTS"; then
+    AC_MSG_ERROR([--enable-ipdl-tests requires --enable-ipc])
+fi
+
+if test -n "$MOZ_IPDL_TESTS"; then
+    AC_DEFINE(MOZ_IPDL_TESTS)
+fi
+
+AC_SUBST(MOZ_IPDL_TESTS)
 
 dnl ========================================================
 dnl = Disable plugin support
@@ -5719,13 +5800,20 @@ dnl ========================================================
 dnl = Breakpad crash reporting (on by default on supported platforms)
 dnl ========================================================
 
-if (test "$OS_ARCH" = "WINNT" -a -z "$GNU_CC" \
-    || test "$OS_ARCH" = "Darwin" \
-    || test "$OS_ARCH" = "Linux" -a "$CPU_ARCH" = "x86" \
-    || test "$OS_ARCH" = "SunOS") \
-   && test -z "$HAVE_64BIT_OS"; then
-   MOZ_CRASHREPORTER=1
-fi
+case $target in
+i?86-*-mingw*)
+  MOZ_CRASHREPORTER=1
+  ;;
+i?86-apple-darwin*|powerpc-apple-darwin*)
+  MOZ_CRASHREPORTER=1
+  ;;
+i?86-*-linux*|x86_64-*-linux*|arm-*-linux*)
+  MOZ_CRASHREPORTER=1
+  ;;
+*solaris*)
+  MOZ_CRASHREPORTER=1
+  ;;
+esac
 
 MOZ_ARG_DISABLE_BOOL(crashreporter,
 [  --disable-crashreporter          Disable breakpad crash reporting],
@@ -5782,6 +5870,11 @@ if test -z "$MOZ_ENABLE_GNOMEVFS" && test `echo "$MOZ_EXTENSIONS" | grep -c gnom
     if test -n "$MOZ_X11"; then
         AC_MSG_WARN([Cannot build gnomevfs without required libraries. Removing gnomevfs from MOZ_EXTENSIONS.])
     fi
+    MOZ_EXTENSIONS=`echo $MOZ_EXTENSIONS | sed -e 's|gnomevfs||'`
+fi
+
+dnl Do not build gnomevfs with libxul based apps
+if test ! -z "$LIBXUL_SDK_DIR" && test `echo "$MOZ_EXTENSIONS" | grep -c gnomevfs` -ne 0; then
     MOZ_EXTENSIONS=`echo $MOZ_EXTENSIONS | sed -e 's|gnomevfs||'`
 fi
 
@@ -6240,6 +6333,76 @@ then
     SQLITE_LIBS='$(call EXPAND_LIBNAME_PATH,sqlite3,$(DIST)/lib)'
 else
     PKG_CHECK_MODULES(SQLITE, sqlite3 >= $SQLITE_VERSION)
+    dnl ===================================
+    dnl === SQLITE_SECURE_DELETE checks ===
+    dnl ===================================
+    dnl check to see if the system sqlite package is compiled with
+    dnl SQLITE_SECURE_DELETE enabled.
+    AC_MSG_CHECKING(for SQLITE_SECURE_DELETE support in system sqlite)
+    _SAVE_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS $SQLITE_CFLAGS"
+    _SAVE_LIBS="$LIBS"
+    LIBS="$LIBS $SQLITE_LIBS"
+    AC_CACHE_VAL(ac_cv_sqlite_secure_delete,[
+        AC_TRY_RUN([
+            #include "sqlite3.h"
+            #include <stdio.h>
+            #include <assert.h>
+
+            int main(int argc, char **argv){
+              sqlite3 *db;
+              sqlite3_uint64 r;
+              char *zFilename;
+              FILE *in;
+              int i;
+              int rc;
+              char *zBuf;
+              const int bufSize = 1024*3;
+
+              zBuf = malloc(bufSize*sizeof(char));
+              assert( zBuf );
+              rc = sqlite3_open(":memory:", &db);
+              assert( rc==SQLITE_OK );
+              sqlite3_close(db);
+              sqlite3_randomness(sizeof(r), &r);
+              zFilename = sqlite3_mprintf("test_db_%llu.sqlite", r);
+              rc = sqlite3_open(zFilename, &db);
+              assert( rc==SQLITE_OK );
+              rc = sqlite3_exec(db, 
+                "BEGIN;"
+                "CREATE TABLE t1(x);"
+                "INSERT INTO t1 VALUES(zeroblob(1000)||'abcdefghijklmnopqrstuvwxyz');"
+                "COMMIT;"
+                "DELETE FROM t1;",
+                0, 0, 0
+              );
+              assert( rc==SQLITE_OK );
+              sqlite3_close(db);
+              in = fopen(zFilename, "r");
+              assert( in!=0 );
+              rc = fread(zBuf, 1, bufSize, in);
+              assert( rc==bufSize );
+              fclose(in);
+              unlink(zFilename);
+              free( zBuf );
+              for(i=0; i<bufSize-11; i++){
+                if( *(zBuf+i)=='h' && memcmp(zBuf+i, "hijklmnopq", 10)==0 ){
+                  return 1;
+                }
+              }
+              return 0;
+            }],
+            ac_cv_sqlite_secure_delete=yes,
+            ac_cv_sqlite_secure_delete=no,
+            ac_cv_sqlite_secure_delete=no
+        )
+    ])
+    AC_MSG_RESULT($ac_cv_sqlite_secure_delete)
+    CFLAGS="$_SAVE_CFLAGS"
+    LIBS="$_SAVE_LIBS"
+    if test "x$ac_cv_sqlite_secure_delete" = "xno"; then
+        AC_MSG_ERROR([System Sqlite library is not compiled with SQLITE_SECURE_DELETE.])
+    fi
 fi
 
 AC_SUBST(MOZ_NATIVE_SQLITE)
@@ -6397,6 +6560,13 @@ if test $MOZ_PLATFORM_MAEMO; then
       MOZ_PLATFORM_MAEMO_CFLAGS="$MOZ_PLATFORM_MAEMO_CFLAGS $LIBHILDONFM_CFLAGS"
       if test -z "$_LIB_FOUND"; then
          AC_MSG_ERROR([Hildon FM-2 is required when building for Maemo])
+      fi
+
+      PKG_CHECK_MODULES(LIBLOCATION,liblocation, _LIB_FOUND=1, _LIB_FOUND=)
+      MOZ_PLATFORM_MAEMO_LIBS="$MOZ_PLATFORM_MAEMO_LIBS $LIBLOCATION_LIBS"
+      MOZ_PLATFORM_MAEMO_CFLAGS="$MOZ_PLATFORM_MAEMO_CFLAGS $LIBLOCATION_CFLAGS"
+      if test -z "$_LIB_FOUND"; then
+         AC_MSG_ERROR([liblocation is required when building for Maemo])
       fi
    fi
 
@@ -6716,18 +6886,9 @@ if test "$MOZ_MEMORY"; then
     WIN32_CRT_SRC_DIR=`cd "$WIN32_CRT_SRC_DIR" && pwd -W`
     _objdir_win=`pwd -W`
     WIN32_CUSTOM_CRT_DIR="$_objdir_win/memory/jemalloc/crtsrc/build/intel"
-    dnl Statically link the C++ stdlib.  We only use this for Breakpad anyway.
-    AC_DEFINE(_STATIC_CPPLIB)
-    MOZ_MEMORY_LDFLAGS="-MANIFEST:NO -LIBPATH:\"$WIN32_CUSTOM_CRT_DIR\" -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd"
-    if test -z $MOZ_DEBUG; then
-      MOZ_MEMORY_LDFLAGS="$MOZ_MEMORY_LDFLAGS -DEFAULTLIB:mozcrt19"
-    else
-      MOZ_MEMORY_LDFLAGS="$MOZ_MEMORY_LDFLAGS -DEFAULTLIB:mozcrt19d"
-    fi
+    MOZ_MEMORY_LDFLAGS="-MANIFEST:NO -LIBPATH:\"$WIN32_CUSTOM_CRT_DIR\" -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -NODEFAULTLIB:msvcprt -NODEFAULTLIB:msvcprtd -DEFAULTLIB:mozcrt19 -DEFAULTLIB:mozcpp19"
     dnl Also pass this to NSPR/NSS
     DLLFLAGS="$DLLFLAGS $MOZ_MEMORY_LDFLAGS"
-    CFLAGS="$CFLAGS -I\"$WIN32_CUSTOM_CRT_DIR\""
-    CXXFLAGS="$CXXFLAGS -I\"$WIN32_CUSTOM_CRT_DIR\""
     export DLLFLAGS
     ;;
   *wince)
@@ -7386,6 +7547,7 @@ dnl ========================================================
 dnl C++ rtti
 dnl Should be smarter and check that the compiler does indeed have rtti
 dnl ========================================================
+
 MOZ_ARG_ENABLE_BOOL(cpp-rtti,
 [  --enable-cpp-rtti       Enable C++ RTTI ],
 [ _MOZ_USE_RTTI=1 ],
@@ -7494,11 +7656,6 @@ MOZ_ARG_ENABLE_BOOL(static,
     BUILD_STATIC_LIBS=1,
     BUILD_STATIC_LIBS=)
 
-dnl Disable libxul in debug builds, but not for xulrunner.
-if test -n "$MOZ_DEBUG" -a "$MOZ_BUILD_APP" != "xulrunner"; then
-   MOZ_ENABLE_LIBXUL=
-fi
-
 MOZ_ARG_ENABLE_BOOL(libxul,
 [  --enable-libxul         Enable building of libxul],
     MOZ_ENABLE_LIBXUL=1,
@@ -7510,6 +7667,10 @@ fi
 
 if test -n "$MOZ_ENABLE_LIBXUL" -a -n "$BUILD_STATIC_LIBS"; then
 	AC_MSG_ERROR([--enable-libxul is not compatible with --enable-static])
+fi
+
+if test -n "$MOZ_IPC" -a -z "$MOZ_ENABLE_LIBXUL"; then
+    AC_MSG_ERROR([--enable-ipc requires --enable-libxul])
 fi
 
 AC_SUBST(LIBXUL_LIBS)
@@ -7811,7 +7972,7 @@ if test "$MOZ_TREE_CAIRO"; then
     mv -f $CAIRO_FEATURES_H "$CAIRO_FEATURES_H".orig 2> /dev/null
 
 else
-   PKG_CHECK_MODULES(CAIRO, cairo >= $CAIRO_VERSION freetype2 fontconfig)
+   PKG_CHECK_MODULES(CAIRO, cairo >= $CAIRO_VERSION pixman-1 freetype2 fontconfig)
    MOZ_CAIRO_CFLAGS=$CAIRO_CFLAGS
    MOZ_CAIRO_LIBS=$CAIRO_LIBS
    if test "$MOZ_X11"; then
@@ -7830,6 +7991,12 @@ dnl ========================================================
 
 QCMS_LIBS='$(DEPTH)/gfx/qcms/$(LIB_PREFIX)mozqcms.$(LIB_SUFFIX)'
 AC_SUBST(QCMS_LIBS)
+
+dnl ========================================================
+dnl OTS
+dnl ========================================================
+MOZ_OTS_LIBS='$(DEPTH)/gfx/ots/src/$(LIB_PREFIX)mozots.$(LIB_SUFFIX)'
+AC_SUBST(MOZ_OTS_LIBS)
 
 dnl ========================================================
 dnl disable xul
@@ -7949,19 +8116,6 @@ if test "$NECKO_WIFI"; then
   AC_DEFINE(NECKO_WIFI)
 fi
 AC_SUBST(NECKO_WIFI)
-
-dnl
-dnl option to minimize size of necko's i/o buffers
-dnl
-MOZ_ARG_ENABLE_BOOL(necko-small-buffers,
-[  --enable-necko-small-buffers
-                          Minimize size of necko's i/o buffers],
-    NECKO_SMALL_BUFFERS=1,
-    NECKO_SMALL_BUFFERS=)
-AC_SUBST(NECKO_SMALL_BUFFERS)
-if test "$NECKO_SMALL_BUFFERS"; then
-    AC_DEFINE(NECKO_SMALL_BUFFERS)
-fi 
 
 dnl
 dnl option to disable cookies

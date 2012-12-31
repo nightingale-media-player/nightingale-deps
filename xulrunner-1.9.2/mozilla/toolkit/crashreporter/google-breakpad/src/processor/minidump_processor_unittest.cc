@@ -32,10 +32,15 @@
 
 #include <cstdlib>
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <map>
+#include "breakpad_googletest_includes.h"
 #include "google_breakpad/processor/basic_source_line_resolver.h"
 #include "google_breakpad/processor/call_stack.h"
 #include "google_breakpad/processor/code_module.h"
 #include "google_breakpad/processor/code_modules.h"
+#include "google_breakpad/processor/minidump.h"
 #include "google_breakpad/processor/minidump_processor.h"
 #include "google_breakpad/processor/process_state.h"
 #include "google_breakpad/processor/stack_frame.h"
@@ -43,17 +48,40 @@
 #include "processor/logging.h"
 #include "processor/scoped_ptr.h"
 
+using std::map;
+
+namespace google_breakpad {
+class MockMinidump : public Minidump {
+ public:
+  MockMinidump() : Minidump("") {
+  }
+
+  MOCK_METHOD0(Read,bool());
+  MOCK_CONST_METHOD0(path, string());
+  MOCK_CONST_METHOD0(header,const MDRawHeader*());
+  MOCK_METHOD0(GetThreadList,MinidumpThreadList*());
+};
+}
+
 namespace {
 
-using std::string;
 using google_breakpad::BasicSourceLineResolver;
 using google_breakpad::CallStack;
 using google_breakpad::CodeModule;
 using google_breakpad::MinidumpProcessor;
+using google_breakpad::MinidumpThreadList;
+using google_breakpad::MinidumpThread;
+using google_breakpad::MockMinidump;
 using google_breakpad::ProcessState;
 using google_breakpad::scoped_ptr;
 using google_breakpad::SymbolSupplier;
 using google_breakpad::SystemInfo;
+using std::string;
+using ::testing::_;
+using ::testing::Mock;
+using ::testing::Ne;
+using ::testing::Property;
+using ::testing::Return;
 
 static const char *kSystemInfoOS = "Windows NT";
 static const char *kSystemInfoOSShort = "windows";
@@ -62,17 +90,6 @@ static const char *kSystemInfoCPU = "x86";
 static const char *kSystemInfoCPUInfo =
     "GenuineIntel family 6 model 13 stepping 8";
 
-#define ASSERT_TRUE(cond) \
-  if (!(cond)) {                                                        \
-    fprintf(stderr, "FAILED: %s at %s:%d\n", #cond, __FILE__, __LINE__); \
-    return false; \
-  }
-
-#define ASSERT_FALSE(cond) ASSERT_TRUE(!(cond))
-
-#define ASSERT_EQ(e1, e2) ASSERT_TRUE((e1) == (e2))
-
-// Use ASSERT_*_ABORT in functions that can't return a boolean.
 #define ASSERT_TRUE_ABORT(cond) \
   if (!(cond)) {                                                        \
     fprintf(stderr, "FAILED: %s at %s:%d\n", #cond, __FILE__, __LINE__); \
@@ -88,6 +105,11 @@ class TestSymbolSupplier : public SymbolSupplier {
   virtual SymbolResult GetSymbolFile(const CodeModule *module,
                                      const SystemInfo *system_info,
                                      string *symbol_file);
+
+  virtual SymbolResult GetSymbolFile(const CodeModule *module,
+                                     const SystemInfo *system_info,
+                                     string *symbol_file,
+                                     string *symbol_data);
 
   // When set to true, causes the SymbolSupplier to return INTERRUPT
   void set_interrupt(bool interrupt) { interrupt_ = interrupt; }
@@ -123,7 +145,105 @@ SymbolSupplier::SymbolResult TestSymbolSupplier::GetSymbolFile(
   return NOT_FOUND;
 }
 
-static bool RunTests() {
+SymbolSupplier::SymbolResult TestSymbolSupplier::GetSymbolFile(
+    const CodeModule *module,
+    const SystemInfo *system_info,
+    string *symbol_file,
+    string *symbol_data) {
+  SymbolSupplier::SymbolResult s = GetSymbolFile(module, system_info,
+                                                 symbol_file);
+  if (s == FOUND) {
+    std::ifstream in(symbol_file->c_str());
+    std::getline(in, *symbol_data, std::string::traits_type::to_char_type(
+                     std::string::traits_type::eof()));
+    in.close();
+  }
+
+  return s;
+}
+
+// A mock symbol supplier that always returns NOT_FOUND; one current
+// use for testing the processor's caching of symbol lookups.
+class MockSymbolSupplier : public SymbolSupplier {
+ public:
+  MockSymbolSupplier() { }
+  MOCK_METHOD3(GetSymbolFile, SymbolResult(const CodeModule*,
+                                           const SystemInfo*,
+                                           string*));
+  MOCK_METHOD4(GetSymbolFile, SymbolResult(const CodeModule*,
+                                           const SystemInfo*,
+                                           string*,
+                                           string*));
+};
+
+class MinidumpProcessorTest : public ::testing::Test {
+
+};
+
+TEST_F(MinidumpProcessorTest, TestCorruptMinidumps) {
+  MockMinidump dump;
+  TestSymbolSupplier supplier;
+  BasicSourceLineResolver resolver;
+  MinidumpProcessor processor(&supplier, &resolver);
+  ProcessState state;
+
+  EXPECT_EQ(processor.Process("nonexistant minidump", &state),
+            google_breakpad::PROCESS_ERROR_MINIDUMP_NOT_FOUND);
+
+  EXPECT_CALL(dump, path()).WillRepeatedly(Return("mock minidump"));
+  EXPECT_CALL(dump, Read()).WillRepeatedly(Return(true));
+
+  MDRawHeader fakeHeader;
+  fakeHeader.time_date_stamp = 0;
+  EXPECT_CALL(dump, header()).WillOnce(Return((MDRawHeader*)NULL)).
+      WillRepeatedly(Return(&fakeHeader));
+  EXPECT_EQ(processor.Process(&dump, &state),
+            google_breakpad::PROCESS_ERROR_NO_MINIDUMP_HEADER);
+
+  EXPECT_CALL(dump, GetThreadList()).
+      WillOnce(Return((MinidumpThreadList*)NULL));
+  EXPECT_EQ(processor.Process(&dump, &state),
+            google_breakpad::PROCESS_ERROR_NO_THREAD_LIST);
+}
+
+// This test case verifies that the symbol supplier is only consulted
+// once per minidump per module.
+TEST_F(MinidumpProcessorTest, TestSymbolSupplierLookupCounts) {
+  MockSymbolSupplier supplier;
+  BasicSourceLineResolver resolver;
+  MinidumpProcessor processor(&supplier, &resolver);
+
+  string minidump_file = string(getenv("srcdir") ? getenv("srcdir") : ".") +
+                         "/src/processor/testdata/minidump2.dmp";
+  ProcessState state;
+  EXPECT_CALL(supplier, GetSymbolFile(
+      Property(&google_breakpad::CodeModule::code_file,
+               "c:\\test_app.exe"),
+      _, _, _)).WillOnce(Return(SymbolSupplier::NOT_FOUND));
+  EXPECT_CALL(supplier, GetSymbolFile(
+      Property(&google_breakpad::CodeModule::code_file,
+               Ne("c:\\test_app.exe")),
+      _, _, _)).WillRepeatedly(Return(SymbolSupplier::NOT_FOUND));
+  ASSERT_EQ(processor.Process(minidump_file, &state),
+            google_breakpad::PROCESS_OK);
+
+  ASSERT_TRUE(Mock::VerifyAndClearExpectations(&supplier));
+
+  // We need to verify that across minidumps, the processor will refetch
+  // symbol files, even with the same symbol supplier.
+  EXPECT_CALL(supplier, GetSymbolFile(
+      Property(&google_breakpad::CodeModule::code_file,
+               "c:\\test_app.exe"),
+      _, _, _)).WillOnce(Return(SymbolSupplier::NOT_FOUND));
+  EXPECT_CALL(supplier, GetSymbolFile(
+      Property(&google_breakpad::CodeModule::code_file,
+               Ne("c:\\test_app.exe")),
+      _, _, _)).WillRepeatedly(Return(SymbolSupplier::NOT_FOUND));
+  ASSERT_EQ(processor.Process(minidump_file, &state),
+            google_breakpad::PROCESS_OK);
+}
+
+TEST_F(MinidumpProcessorTest, TestBasicProcessing) {
   TestSymbolSupplier supplier;
   BasicSourceLineResolver resolver;
   MinidumpProcessor processor(&supplier, &resolver);
@@ -133,7 +253,7 @@ static bool RunTests() {
 
   ProcessState state;
   ASSERT_EQ(processor.Process(minidump_file, &state),
-            MinidumpProcessor::PROCESS_OK);
+            google_breakpad::PROCESS_OK);
   ASSERT_EQ(state.system_info()->os, kSystemInfoOS);
   ASSERT_EQ(state.system_info()->os_short, kSystemInfoOSShort);
   ASSERT_EQ(state.system_info()->os_version, kSystemInfoOSVersion);
@@ -141,16 +261,16 @@ static bool RunTests() {
   ASSERT_EQ(state.system_info()->cpu_info, kSystemInfoCPUInfo);
   ASSERT_TRUE(state.crashed());
   ASSERT_EQ(state.crash_reason(), "EXCEPTION_ACCESS_VIOLATION");
-  ASSERT_EQ(state.crash_address(), 0x45);
-  ASSERT_EQ(state.threads()->size(), 1);
+  ASSERT_EQ(state.crash_address(), 0x45U);
+  ASSERT_EQ(state.threads()->size(), size_t(1));
   ASSERT_EQ(state.requesting_thread(), 0);
 
   CallStack *stack = state.threads()->at(0);
   ASSERT_TRUE(stack);
-  ASSERT_EQ(stack->frames()->size(), 4);
+  ASSERT_EQ(stack->frames()->size(), 4U);
 
   ASSERT_TRUE(stack->frames()->at(0)->module);
-  ASSERT_EQ(stack->frames()->at(0)->module->base_address(), 0x400000);
+  ASSERT_EQ(stack->frames()->at(0)->module->base_address(), 0x400000U);
   ASSERT_EQ(stack->frames()->at(0)->module->code_file(), "c:\\test_app.exe");
   ASSERT_EQ(stack->frames()->at(0)->function_name,
             "`anonymous namespace'::CrashFunction");
@@ -158,7 +278,7 @@ static bool RunTests() {
   ASSERT_EQ(stack->frames()->at(0)->source_line, 58);
 
   ASSERT_TRUE(stack->frames()->at(1)->module);
-  ASSERT_EQ(stack->frames()->at(1)->module->base_address(), 0x400000);
+  ASSERT_EQ(stack->frames()->at(1)->module->base_address(), 0x400000U);
   ASSERT_EQ(stack->frames()->at(1)->module->code_file(), "c:\\test_app.exe");
   ASSERT_EQ(stack->frames()->at(1)->function_name, "main");
   ASSERT_EQ(stack->frames()->at(1)->source_file_name, "c:\\test_app.cc");
@@ -166,7 +286,7 @@ static bool RunTests() {
 
   // This comes from the CRT
   ASSERT_TRUE(stack->frames()->at(2)->module);
-  ASSERT_EQ(stack->frames()->at(2)->module->base_address(), 0x400000);
+  ASSERT_EQ(stack->frames()->at(2)->module->base_address(), 0x400000U);
   ASSERT_EQ(stack->frames()->at(2)->module->code_file(), "c:\\test_app.exe");
   ASSERT_EQ(stack->frames()->at(2)->function_name, "__tmainCRTStartup");
   ASSERT_EQ(stack->frames()->at(2)->source_file_name,
@@ -175,14 +295,14 @@ static bool RunTests() {
 
   // No debug info available for kernel32.dll
   ASSERT_TRUE(stack->frames()->at(3)->module);
-  ASSERT_EQ(stack->frames()->at(3)->module->base_address(), 0x7c800000);
+  ASSERT_EQ(stack->frames()->at(3)->module->base_address(), 0x7c800000U);
   ASSERT_EQ(stack->frames()->at(3)->module->code_file(),
             "C:\\WINDOWS\\system32\\kernel32.dll");
   ASSERT_TRUE(stack->frames()->at(3)->function_name.empty());
   ASSERT_TRUE(stack->frames()->at(3)->source_file_name.empty());
   ASSERT_EQ(stack->frames()->at(3)->source_line, 0);
 
-  ASSERT_EQ(state.modules()->module_count(), 13);
+  ASSERT_EQ(state.modules()->module_count(), 13U);
   ASSERT_TRUE(state.modules()->GetMainModule());
   ASSERT_EQ(state.modules()->GetMainModule()->code_file(), "c:\\test_app.exe");
   ASSERT_FALSE(state.modules()->GetModuleForAddress(0));
@@ -197,19 +317,12 @@ static bool RunTests() {
   state.Clear();
   supplier.set_interrupt(true);
   ASSERT_EQ(processor.Process(minidump_file, &state),
-            MinidumpProcessor::PROCESS_INTERRUPTED);
-
-  return true;
+            google_breakpad::PROCESS_SYMBOL_SUPPLIER_INTERRUPTED
+            );
 }
-
 }  // namespace
 
 int main(int argc, char *argv[]) {
-  BPLOG_INIT(&argc, &argv);
-
-  if (!RunTests()) {
-    return 1;
-  }
-
-  return 0;
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

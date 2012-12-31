@@ -169,6 +169,20 @@ pref("gfx.color_management.display_profile", "");
 pref("gfx.color_management.rendering_intent", 0);
 
 pref("gfx.downloadable_fonts.enabled", true);
+pref("gfx.downloadable_fonts.sanitize", true);
+#ifdef XP_MACOSX
+pref("gfx.downloadable_fonts.sanitize.preserve_otl_tables", false);
+#else
+pref("gfx.downloadable_fonts.sanitize.preserve_otl_tables", true);
+#endif
+
+#ifdef XP_MACOSX
+// Needed to work around a serious bug in how Apple handles downloaded fonts
+// on the most recent developer previews of OS X 10.7 (Lion, builds 11A480b
+// and 11A494a).  See bug 663688.  On Lion and up this setting overrides
+// gfx.downloadable_fonts.enabled.
+pref("gfx.downloadable_fonts.enabled.lion", false);
+#endif
 
 pref("accessibility.browsewithcaret", false);
 pref("accessibility.warn_on_browsewithcaret", true);
@@ -724,6 +738,7 @@ pref("network.IDN.whitelist.es", true);
 pref("network.IDN.whitelist.fi", true);
 pref("network.IDN.whitelist.gr", true);
 pref("network.IDN.whitelist.hu", true);
+pref("network.IDN.whitelist.il", true);
 pref("network.IDN.whitelist.io", true);
 pref("network.IDN.whitelist.ir", true);
 pref("network.IDN.whitelist.is", true);
@@ -731,7 +746,11 @@ pref("network.IDN.whitelist.jp", true);
 pref("network.IDN.whitelist.kr", true);
 pref("network.IDN.whitelist.li", true);
 pref("network.IDN.whitelist.lt", true);
+pref("network.IDN.whitelist.lu", true);
+pref("network.IDN.whitelist.lv", true);
 pref("network.IDN.whitelist.no", true);
+pref("network.IDN.whitelist.nu", true);
+pref("network.IDN.whitelist.nz", true);
 pref("network.IDN.whitelist.pl", true);
 pref("network.IDN.whitelist.pr", true);
 pref("network.IDN.whitelist.se", true);
@@ -739,14 +758,50 @@ pref("network.IDN.whitelist.sh", true);
 pref("network.IDN.whitelist.th", true);
 pref("network.IDN.whitelist.tm", true);
 pref("network.IDN.whitelist.tw", true);
+pref("network.IDN.whitelist.ua", true);
 pref("network.IDN.whitelist.vn", true);
 
-// non-ccTLDs
+// IDN ccTLDs
+// ae, UAE, .<Emarat>
+pref("network.IDN.whitelist.xn--mgbaam7a8h", true); 
+// cn, China, .<China> with variants
+pref("network.IDN.whitelist.xn--fiqz9s", true); // Traditional
+pref("network.IDN.whitelist.xn--fiqs8s", true); // Simplified
+// eg, Egypt, .<Masr>
+pref("network.IDN.whitelist.xn--wgbh1c", true);
+// hk, Hong Kong, .<Hong Kong>
+pref("network.IDN.whitelist.xn--j6w193g", true);
+// ir, Iran, <.Iran> with variants
+pref("network.IDN.whitelist.xn--mgba3a4f16a", true);
+pref("network.IDN.whitelist.xn--mgba3a4fra", true);
+// jo, Jordan, .<Al-Ordon>
+pref("network.IDN.whitelist.xn--mgbayh7gpa", true);
+// lk, Sri Lanka, .<Lanka> and .<Ilangai>
+pref("network.IDN.whitelist.xn--fzc2c9e2c", true);
+pref("network.IDN.whitelist.xn--xkc2al3hye2a", true);
+// qa, Qatar, .<Qatar>
+pref("network.IDN.whitelist.xn--wgbl6a", true);
+// ru, Russian Federation, .<RF>
+pref("network.IDN.whitelist.xn--p1ai", true);
+// sa, Saudi Arabia, .<al-Saudiah> with variants
+pref("network.IDN.whitelist.xn--mgberp4a5d4ar", true); 
+pref("network.IDN.whitelist.xn--mgberp4a5d4a87g", true);
+pref("network.IDN.whitelist.xn--mgbqly7c0a67fbc", true);
+pref("network.IDN.whitelist.xn--mgbqly7cvafr", true);
+// sy, Syria, .<Souria>
+pref("network.IDN.whitelist.xn--ogbpf8fl", true);
+// tw, Taiwan, <.Taiwan> with variants
+pref("network.IDN.whitelist.xn--kpry57d", true);  // Traditional
+pref("network.IDN.whitelist.xn--kprw13d", true);  // Simplified
+
+// gTLDs
+pref("network.IDN.whitelist.asia", true);
 pref("network.IDN.whitelist.biz", true);
 pref("network.IDN.whitelist.cat", true);
 pref("network.IDN.whitelist.info", true);
 pref("network.IDN.whitelist.museum", true);
 pref("network.IDN.whitelist.org", true);
+pref("network.IDN.whitelist.tel", true);
 
 // NOTE: Before these can be removed, one of bug 414812's tests must be updated
 //       or it will likely fail!  Please CC jwalden+bmo on the bug associated
@@ -859,15 +914,7 @@ pref("network.ntlm.send-lm-response", false);
 
 pref("permissions.default.image",           1); // 1-Accept, 2-Deny, 3-dontAcceptForeign
 
-#ifndef XP_MACOSX
-#ifdef XP_UNIX
 pref("network.proxy.type",                  5);
-#else
-pref("network.proxy.type",                  0);
-#endif
-#else
-pref("network.proxy.type",                  0);
-#endif
 
 pref("network.proxy.ftp",                   "");
 pref("network.proxy.ftp_port",              0);
@@ -897,6 +944,9 @@ pref("network.proxy.autoconfig_url", "");
 // until we reach interval_max or the PAC file is successfully loaded).
 pref("network.proxy.autoconfig_retry_interval_min", 5);    // 5 seconds
 pref("network.proxy.autoconfig_retry_interval_max", 300);  // 5 minutes
+
+pref("network.buffer.cache.count", 24);
+pref("network.buffer.cache.size",  4096);
 
 pref("converter.html2txt.structs",          true); // Output structured phrases (strong, em, code, sub, sup, b, i, u)
 pref("converter.html2txt.header_strategy",  1); // 0 = no indention; 1 = indention, increased with header level; 2 = numbering and slight indention
@@ -1217,6 +1267,10 @@ pref("editor.positioning.offset",            0);
 
 pref("dom.max_chrome_script_run_time", 20);
 pref("dom.max_script_run_time", 10);
+
+// How long a plugin is allowed to process a synchronous IPC message
+// before we consider it "hung".
+pref("dom.ipc.plugins.timeoutSecs", 45);
 
 pref("svg.enabled", true);
 pref("svg.smil.enabled", false);
@@ -2822,5 +2876,5 @@ pref("gfx.color_management.mode", 0);
 // Enable/Disable the geolocation API for content
 pref("geo.enabled", true);
 
-// Enable/Disable HTML5 parser
-pref("html5.enable", false);
+// Enable/Disable the orientation API for content
+pref("accelerometer.enabled", true);

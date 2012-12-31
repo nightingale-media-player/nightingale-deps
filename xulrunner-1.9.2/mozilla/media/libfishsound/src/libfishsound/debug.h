@@ -79,10 +79,16 @@ debug_print_err (const char * func, int line, const char * fmt, ...)
  *
  * Print a formatted debugging message of level 'level' to stderr
  */
+#if defined AIX
+#define debug_printf(x,...) {if (x <= DEBUG_LEVEL) debug_print_err (__func__,__LINE__, __VA_ARGS__);}
+#else
 #define debug_printf(x,y...) {if (x <= DEBUG_LEVEL) debug_print_err (__func__, __LINE__, y);}
+#endif
 
 #undef MAXLINE
 
+#elif defined AIX
+#define debug_printf(x,...)
 #else
 #define debug_printf(x,y...)
 #endif

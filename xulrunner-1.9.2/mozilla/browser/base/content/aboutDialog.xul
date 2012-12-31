@@ -89,6 +89,9 @@
         >&licenseLinkText;</label>&copyrightInfo2;
         &logoCopyright;
       </description>
+#ifdef MOZ_OFFICIAL_BRANDING
+      <description dir="ltr" id="charlton">Some of the trademarks used under license from The Charlton Company.</description>
+#endif
       <textbox id="userAgent" multiline="true" readonly="true" flex="1"/>
     </vbox>
     <vbox flex="1" id="creditsBox">

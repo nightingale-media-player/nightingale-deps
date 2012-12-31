@@ -379,11 +379,23 @@ static void DrawCellWithScaling(NSCell *cell,
     h += MAX_FOCUS_RING_WIDTH * 2.0;
 
     CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
+    if (!rgb) {
+      NS_WARNING("CGColorSpaceCreateDeviceRGB failed");
+      [NSGraphicsContext restoreGraphicsState];
+      return;
+    }
+
     CGContextRef ctx = CGBitmapContextCreate(NULL,
                                              (int) w, (int) h,
                                              8, (int) w * 4,
                                              rgb, kCGImageAlphaPremultipliedFirst);
     CGColorSpaceRelease(rgb);
+
+    if (!ctx) {
+      NS_WARNING("CGBitmapContextCreate failed");
+      [NSGraphicsContext restoreGraphicsState];
+      return;
+    }
 
     // We need to flip the image twice in order to avoid drawing bugs on 10.4, see bug 465069.
     // This is the first flip transform, applied to cgContext.
@@ -406,6 +418,13 @@ static void DrawCellWithScaling(NSCell *cell,
     [NSGraphicsContext setCurrentContext:savedContext];
 
     CGImageRef img = CGBitmapContextCreateImage(ctx);
+
+    if (!img) {
+      NS_WARNING("CGBitmapContextCreateImage failed");
+      CGContextRelease(ctx);
+      [NSGraphicsContext restoreGraphicsState];
+      return;
+    }
 
     // Drop the image into the original destination rectangle, scaling to fit
     // Only scale MAX_FOCUS_RING_WIDTH by xscale/yscale when the resulting rect
@@ -1293,6 +1312,11 @@ RenderTransformedHIThemeControl(CGContextRef aCGContext, const HIRect& aRect,
     aFunc(aCGContext, aData);
   } else {
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    if (!colorSpace) {
+      NS_WARNING("CGColorSpaceCreateDeviceRGB failed");
+      CGContextSetCTM(aCGContext, savedCTM);
+      return;
+    }
     CGContextRef bitmapctx = CGBitmapContextCreate(NULL,
                                                    (size_t) ceil(drawRect.size.width),
                                                    (size_t) ceil(drawRect.size.height),
@@ -1302,6 +1326,12 @@ RenderTransformedHIThemeControl(CGContextRef aCGContext, const HIRect& aRect,
                                                    kCGImageAlphaPremultipliedFirst);
     CGColorSpaceRelease(colorSpace);
 
+    if (!bitmapctx) {
+      NS_WARNING("CGBitmapContextCreate failed");
+      CGContextSetCTM(aCGContext, savedCTM);
+      return;
+    }
+    
     // HITheme always wants to draw into a flipped context, or things
     // get confused.
     CGContextTranslateCTM(bitmapctx, 0.0f, aRect.size.height);
@@ -1311,6 +1341,13 @@ RenderTransformedHIThemeControl(CGContextRef aCGContext, const HIRect& aRect,
 
     CGImageRef bitmap = CGBitmapContextCreateImage(bitmapctx);
 
+    if (!bitmap) {
+      NS_WARNING("CGBitmapContextCreateImage failed");
+      CGContextRelease(bitmapctx);
+      CGContextSetCTM(aCGContext, savedCTM);
+      return;
+    }
+    
     CGAffineTransform ctm = CGContextGetCTM(aCGContext);
 
     // We need to unflip, so that we can do a DrawImage without getting a flipped image.

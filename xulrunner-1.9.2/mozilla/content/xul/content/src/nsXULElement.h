@@ -373,6 +373,12 @@ public:
     {
         NS_ASSERTION(!mScriptObject.mObject, "Leaking script object.");
 
+        if (!aObject) {
+            mScriptObject.mObject = nsnull;
+
+            return;
+        }
+
         nsresult rv = nsContentUtils::HoldScriptObject(mScriptObject.mLangID,
                                                        this,
                                                        &NS_CYCLE_COLLECTION_NAME(nsXULPrototypeNode),

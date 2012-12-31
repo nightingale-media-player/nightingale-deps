@@ -955,6 +955,10 @@ nsSVGGlyphFrame::GetExtentOfChar(PRUint32 charnum, nsIDOMSVGRect **_retval)
 {
   *_retval = nsnull;
 
+  CharacterIterator iter(this, PR_FALSE);
+  if (!iter.AdvanceToCharacter(0))
+    return NS_ERROR_DOM_INDEX_SIZE_ERR;
+
   PRUint32 start = charnum, limit = charnum + 1;
   while (start > 0 && !mTextRun->IsClusterStart(start)) {
     --start;
@@ -963,8 +967,7 @@ nsSVGGlyphFrame::GetExtentOfChar(PRUint32 charnum, nsIDOMSVGRect **_retval)
     ++limit;
   }
 
-  CharacterIterator iter(this, PR_FALSE);
-  if (!iter.AdvanceToCharacter(start))
+  if (start > 0 && !iter.AdvanceToCharacter(start))
     return NS_ERROR_DOM_INDEX_SIZE_ERR;
 
   gfxTextRun::Metrics metrics =

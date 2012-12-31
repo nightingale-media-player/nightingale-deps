@@ -82,6 +82,8 @@
 #include "nsImageMapUtils.h"
 #include "nsTreeWalker.h"
 #include "nsIDOMNodeFilter.h"
+#include "nsIScriptObjectPrincipal.h"
+#include "nsIPrincipal.h"
 
 #ifdef MOZ_XUL
 #include "nsIDOMXULTextboxElement.h"
@@ -1050,6 +1052,25 @@ nsFocusManager::SetFocusInner(nsIContent* aNewContent, PRInt32 aFlags,
   // if the new element is in the same window as the currently focused element 
   PRBool isElementInFocusedWindow = (mFocusedWindow == newWindow);
 
+  if (!isElementInFocusedWindow && mFocusedWindow && newWindow &&
+      nsContentUtils::IsHandlingKeyBoardEvent()) {
+    nsCOMPtr<nsIScriptObjectPrincipal> focused =
+      do_QueryInterface(mFocusedWindow);
+    nsCOMPtr<nsIScriptObjectPrincipal> newFocus =
+      do_QueryInterface(newWindow);
+    nsIPrincipal* focusedPrincipal = focused->GetPrincipal();
+    nsIPrincipal* newPrincipal = newFocus->GetPrincipal();
+    if (!focusedPrincipal || !newPrincipal) {
+      return;
+    }
+    PRBool subsumes = PR_FALSE;
+    focusedPrincipal->Subsumes(newPrincipal, &subsumes);
+    if (!subsumes && !nsContentUtils::IsCallerTrustedForWrite()) {
+      NS_WARNING("Not allowed to focus the new window!");
+      return;
+    }
+  }
+
   // to check if the new element is in the active window, compare the
   // new root docshell for the new element with the active window's docshell.
   PRBool isElementInActiveWindow = PR_FALSE;
@@ -1605,6 +1626,13 @@ nsFocusManager::Focus(nsPIDOMWindow* aWindow,
                            aContent, aFlags & FOCUSMETHOD_MASK);
 
       nsIMEStateManager::OnTextStateFocus(presContext, aContent);
+    } else {
+      nsPresContext* presContext = presShell->GetPresContext();
+      nsIMEStateManager::OnTextStateBlur(presContext, nsnull);
+      nsIMEStateManager::OnChangeFocus(presContext, nsnull);
+      
+      if (!aWindowRaised)
+        aWindow->UpdateCommands(NS_LITERAL_STRING("focus"));
     }
   }
   else {
@@ -1629,6 +1657,26 @@ nsFocusManager::Focus(nsPIDOMWindow* aWindow,
   if (clearFirstFocusEvent)
     mFirstFocusEvent = nsnull;
 }
+
+class FocusBlurEvent : public nsRunnable
+{
+public:
+  FocusBlurEvent(nsISupports* aTarget, PRUint32 aType,
+                 nsPresContext* aContext)
+  : mTarget(aTarget), mType(aType), mContext(aContext)
+    {}
+
+  NS_IMETHOD Run()
+  {
+    nsEvent event(PR_TRUE, mType);
+    event.flags |= NS_EVENT_FLAG_CANT_BUBBLE;
+    return nsEventDispatcher::Dispatch(mTarget, mContext, &event);
+  }
+
+  nsCOMPtr<nsISupports>   mTarget;
+  PRUint32                mType;
+  nsCOMPtr<nsPresContext> mContext;
+};
 
 void
 nsFocusManager::SendFocusOrBlurEvent(PRUint32 aType,
@@ -1661,13 +1709,8 @@ nsFocusManager::SendFocusOrBlurEvent(PRUint32 aType,
     return;
   }
 
-  nsCOMPtr<nsPresContext> presContext = aPresShell->GetPresContext();
-
-  nsEventStatus status = nsEventStatus_eIgnore;
-  nsEvent event(PR_TRUE, aType);
-  event.flags |= NS_EVENT_FLAG_CANT_BUBBLE;
-
-  nsEventDispatcher::Dispatch(aTarget, presContext, &event, nsnull, &status);
+  nsContentUtils::AddScriptRunner(
+    new FocusBlurEvent(aTarget, aType, aPresShell->GetPresContext()));
 }
 
 void
@@ -2101,7 +2144,7 @@ nsFocusManager::DetermineElementToMoveFocus(nsPIDOMWindow* aWindow,
                                   PR_FALSE, 0, PR_FALSE, aNextContent);
   }
 
-  PRBool forward = (aType == MOVEFOCUS_FORWARD);
+  PRBool forward = (aType == MOVEFOCUS_FORWARD || aType == MOVEFOCUS_CARET);
   PRBool doNavigation = PR_TRUE;
   PRBool ignoreTabIndex = PR_FALSE;
   // when a popup is open, we want to ensure that tab navigation occurs only
@@ -2183,13 +2226,18 @@ nsFocusManager::DetermineElementToMoveFocus(nsPIDOMWindow* aWindow,
             startContent = nsnull;
         }
 
-        if (startContent) {
-          if (aType == MOVEFOCUS_CARET) {
+        if (aType == MOVEFOCUS_CARET) {
+          // GetFocusInSelection finds a focusable link near the caret.
+          // If there is no start content though, don't do this to avoid
+          // focusing something unexpected.
+          if (startContent) {
             GetFocusInSelection(aWindow, startContent,
                                 endSelectionContent, aNextContent);
-            return NS_OK;
           }
+          return NS_OK;
+        }
 
+        if (startContent) {
           // when starting from a selection, we always want to find the next or
           // previous element in the document. So the tabindex on elements
           // should be ignored.

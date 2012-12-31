@@ -116,6 +116,7 @@ class nsIXTFService;
 class nsIBidiKeyboard;
 #endif
 class nsIMIMEHeaderParam;
+class nsIChannel;
 
 extern const char kLoadAsData[];
 
@@ -161,20 +162,18 @@ public:
                                          nsIDocument *aOldDocument);
 
   /**
-   * Get a scope from aOldDocument and one from aNewDocument. Also get a
-   * context through one of the scopes, from the stack or the safe context.
+   * Get a scope from aNewDocument. Also get a context through the scope of one
+   * of the documents, from the stack or the safe context.
    *
-   * @param aOldDocument The document to get aOldScope from.
+   * @param aOldDocument The document to try to get a context from. May be null.
    * @param aNewDocument The document to get aNewScope from.
    * @param aCx [out] Context gotten through one of the scopes, from the stack
    *                  or the safe context.
-   * @param aOldScope [out] Scope gotten from aOldDocument.
    * @param aNewScope [out] Scope gotten from aNewDocument.
    */
-  static nsresult GetContextAndScopes(nsIDocument *aOldDocument,
-                                      nsIDocument *aNewDocument,
-                                      JSContext **aCx, JSObject **aOldScope,
-                                      JSObject **aNewScope);
+  static nsresult GetContextAndScope(nsIDocument *aOldDocument,
+                                     nsIDocument *aNewDocument,
+                                     JSContext **aCx, JSObject **aNewScope);
 
   /**
    * When a document's scope changes (e.g., from document.open(), call this
@@ -1434,7 +1433,9 @@ public:
 
   static JSContext *GetCurrentJSContext();
 
-                                             
+
+  // Returns NS_OK for same origin, error (NS_ERROR_DOM_BAD_URI) if not.
+  static nsresult CheckSameOrigin(nsIChannel *aOldChannel, nsIChannel *aNewChannel);
   static nsIInterfaceRequestor* GetSameOriginChecker();
 
   static nsIThreadJSContextStack* ThreadJSContextStack()
@@ -1492,13 +1493,22 @@ public:
    * method returns PR_TRUE, otherwise PR_FALSE.
    */
   static PRBool CanAccessNativeAnon();
+
+  static PRBool IsHandlingKeyBoardEvent()
+  {
+    return sIsHandlingKeyBoardEvent;
+  }
+
+  static void SetIsHandlingKeyBoardEvent(PRBool aHandling)
+  {
+    sIsHandlingKeyBoardEvent = aHandling;
+  }
 private:
 
   static PRBool InitializeEventTable();
 
   static nsresult doReparentContentWrapper(nsIContent *aChild,
                                            JSContext *cx,
-                                           JSObject *aOldGlobal,
                                            JSObject *aNewGlobal,
                                            nsIDocument *aOldDocument,
                                            nsIDocument *aNewDocument);
@@ -1571,6 +1581,8 @@ private:
   static PRUint32 sRunnersCountAtFirstBlocker;
 
   static nsIInterfaceRequestor* sSameOriginChecker;
+
+  static PRBool sIsHandlingKeyBoardEvent;
 };
 
 #define NS_HOLD_JS_OBJECTS(obj, clazz)                                         \

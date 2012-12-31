@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -58,7 +58,7 @@
 #endif
 
 #include "npfunctions.h"
-#include "prlink.h"
+#include "mozilla/PluginLibrary.h"
 
 class nsNPAPIPluginStreamListener;
 class nsPIDOMWindow;
@@ -89,6 +89,9 @@ class nsNPAPIPluginInstance : public nsIPluginInstance
                               public nsIJVMPluginInstance
 #endif
 {
+private:
+  typedef mozilla::PluginLibrary PluginLibrary;
+
 public:
   NS_DECL_ISUPPORTS
   NS_DECL_NSIPLUGININSTANCE
@@ -143,13 +146,20 @@ public:
   nsNPAPIPluginInstance(nsIPluginInstanceOld *aShadow);
 #endif
 
-  nsNPAPIPluginInstance(NPPluginFuncs* callbacks, PRLibrary* aLibrary);
+  nsNPAPIPluginInstance(NPPluginFuncs* callbacks, PluginLibrary* aLibrary);
 
   // Use Release() to destroy this
   virtual ~nsNPAPIPluginInstance();
 
   // returns the state of mStarted
-  PRBool IsStarted();
+  bool IsRunning() {
+    return RUNNING == mRunning;
+  }
+
+  // Indicates whether the plugin is running normally or being shut down
+  bool CanFireNotifications() {
+    return mRunning == RUNNING || mRunning == DESTROYING;
+  }
 
   // cache this NPAPI plugin
   nsresult SetCached(PRBool aCache);
@@ -189,19 +199,25 @@ protected:
   NPDrawingModel mDrawingModel;
 #endif
 
+  enum {
+    NOT_STARTED,
+    RUNNING,
+    DESTROYING,
+    DESTROYED
+  } mRunning;
+
   // these are used to store the windowless properties
   // which the browser will later query
   PRPackedBool mWindowless;
   PRPackedBool mWindowlessLocal;
   PRPackedBool mTransparent;
-  PRPackedBool mStarted;
   PRPackedBool mCached;
   PRPackedBool mWantsAllNetworkStreams;
 
 public:
   // True while creating the plugin, or calling NPP_SetWindow() on it.
   PRPackedBool mInPluginInitCall;
-  PRLibrary* mLibrary;
+  PluginLibrary* mLibrary;
   nsInstanceStream *mStreams;
 
 private:

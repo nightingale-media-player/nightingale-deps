@@ -41,6 +41,9 @@
 #include "prenv.h"
 #include "prprf.h"
 #include <string.h>
+#ifdef ANDROID
+#include <android/log.h>
+#endif
 
 /*
  * Lock used to lock the log.
@@ -126,6 +129,18 @@ static void OutputDebugStringA(const char* msg) {
     PR_END_MACRO
 #elif defined(_PR_USE_STDIO_FOR_LOGGING)
 #define _PUT_LOG(fd, buf, nb) {fwrite(buf, 1, nb, fd); fflush(fd);}
+#elif defined(ANDROID)
+#define _PUT_LOG(fd, buf, nb)                                \
+    PR_BEGIN_MACRO                                           \
+    if (fd == _pr_stderr) {                                  \
+        char savebyte = buf[nb];                             \
+        buf[nb] = '\0';                                      \
+        __android_log_write(ANDROID_LOG_INFO, "PRLog", buf); \
+        buf[nb] = savebyte;                                  \
+    } else {                                                 \
+        PR_Write(fd, buf, nb);                               \
+    }                                                        \
+    PR_END_MACRO
 #elif defined(_PR_PTHREADS)
 #define _PUT_LOG(fd, buf, nb) PR_Write(fd, buf, nb)
 #else
@@ -551,9 +566,8 @@ PR_IMPLEMENT(void) PR_Abort(void)
 PR_IMPLEMENT(void) PR_Assert(const char *s, const char *file, PRIntn ln)
 {
     PR_LogPrint("Assertion failure: %s, at %s:%d\n", s, file, ln);
-#if defined(XP_UNIX) || defined(XP_OS2) || defined(XP_BEOS)
     fprintf(stderr, "Assertion failure: %s, at %s:%d\n", s, file, ln);
-#endif
+    fflush(stderr);
 #ifdef WIN32
     DebugBreak();
 #endif

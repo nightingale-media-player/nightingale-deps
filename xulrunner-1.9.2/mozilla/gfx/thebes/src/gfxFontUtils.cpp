@@ -1403,7 +1403,7 @@ gfxFontUtils::DecodeFontName(const PRUint8 *aNameData, PRInt32 aByteLen,
     }
 
     nsresult rv;
-    nsCOMPtr<nsICharsetConverterManager> ccm =
+    nsCOMPtr<nsICharsetConverterManager_1_9_BRANCH> ccm =
         do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
     NS_ASSERTION(NS_SUCCEEDED(rv), "failed to get charset converter manager");
     if (NS_FAILED(rv)) {
@@ -1411,7 +1411,7 @@ gfxFontUtils::DecodeFontName(const PRUint8 *aNameData, PRInt32 aByteLen,
     }
 
     nsCOMPtr<nsIUnicodeDecoder> decoder;
-    rv = ccm->GetUnicodeDecoderRaw(csName, getter_AddRefs(decoder));
+    rv = ccm->GetUnicodeDecoderRawInternal(csName, getter_AddRefs(decoder));
     if (NS_FAILED(rv)) {
         NS_WARNING("failed to get the decoder for a font name string");
         return PR_FALSE;
@@ -1791,8 +1791,8 @@ gfxFontUtils::MakeEOTHeader(const PRUint8 *aFontData, PRUint32 aFontDataLength,
             break;
     }
 
-    if (needNames != 0) 
-    {
+    // the Version name is allowed to be null
+    if ((needNames & ~(1 << EOTFixedHeader::EOT_VERSION_NAME_INDEX)) != 0) {
         return NS_ERROR_FAILURE;
     }
 

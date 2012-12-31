@@ -219,6 +219,8 @@ nsDOMStorageMemoryDB::SetKey(nsDOMStorage* aStorage,
   }
   else
   {
+    if (!aSecure && item->mSecure)
+      return NS_ERROR_DOM_SECURITY_ERR;
     usage -= aKey.Length() + item->mValue.Length();
     if (usage > aQuota) {
       return NS_ERROR_DOM_QUOTA_REACHED;

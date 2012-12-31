@@ -191,7 +191,7 @@ public: //for methods who access nsTextControlFrame directly
    * @return whether this is a password ontrol
    */
   PRBool IsPasswordTextControl() const;
-  void FireOnInput();
+  void FireOnInput(PRBool aTrusted);
   void SetValueChanged(PRBool aValueChanged);
   /** Called when the frame is focused, to remember the value for onChange. */
   nsresult InitFocusedValue();

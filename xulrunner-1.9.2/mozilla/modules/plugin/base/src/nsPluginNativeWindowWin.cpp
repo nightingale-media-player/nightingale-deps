@@ -123,6 +123,7 @@ typedef enum {
   nsPluginType_Unknown = 0,
   nsPluginType_Flash,
   nsPluginType_Real,
+  nsPluginType_PDF,
   nsPluginType_Other
 } nsPluginType;
 
@@ -154,6 +155,8 @@ private:
   PluginWindowWeakRef mWeakRef;
   nsRefPtr<PluginWindowEvent> mCachedPluginWindowEvent;
 
+  HWND mParentWnd;
+  LONG_PTR mParentProc;
 public:
   nsPluginType mPluginType;
 };
@@ -221,23 +224,6 @@ static LRESULT CALLBACK PluginWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
   nsCOMPtr<nsIPluginInstance> inst;
   win->GetPluginInstance(inst);
 
-  // check plugin mime type and cache whether it is Flash or not
-  // Flash will need special treatment later
-  if (win->mPluginType == nsPluginType_Unknown) {
-    if (inst) {
-      const char* mimetype = nsnull;
-      inst->GetMIMEType(&mimetype);
-      if (mimetype) { 
-        if (!strcmp(mimetype, "application/x-shockwave-flash"))
-          win->mPluginType = nsPluginType_Flash;
-        else if (!strcmp(mimetype, "audio/x-pn-realaudio-plugin"))
-          win->mPluginType = nsPluginType_Real;
-        else
-          win->mPluginType = nsPluginType_Other;
-      }
-    }
-  }
-
   // Real may go into a state where it recursivly dispatches the same event
   // when subclassed. If this is Real, lets examine the event and drop it
   // on the floor if we get into this recursive situation. See bug 192914.
@@ -297,17 +283,19 @@ static LRESULT CALLBACK PluginWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 #ifndef WINCE
     case WM_MOUSEACTIVATE: {
       // If a child window of this plug-in is already focused,
-      // don't focus the parent to avoid focus dance.
-      // The following WM_SETFOCUS message will give the focus
-      // to the appropriate window anyway.
+      // don't focus the parent to avoid focus dance. We'll 
+      // receive a follow up WM_SETFOCUS which will notify
+      // the appropriate window anyway.
       HWND focusedWnd = ::GetFocus();
       if (!::IsChild((HWND)win->window, focusedWnd)) {
-        // This seems to be the only way we're
-        // notified when a child window that doesn't have this handler proc
-        // (read as: windows created by plugins like Adobe Acrobat)
-        // has been activated via clicking.
-        // should be handled here because some plugins won't forward
-        // messages to original WinProc.
+        // Notify the dom / focus manager the plugin has focus when one of
+        // it's child windows receives it. OOPP specific - this code is
+        // critical in notifying the dom of focus changes when the plugin
+        // window in the child process receives focus via a mouse click.
+        // WM_MOUSEACTIVATE is sent by nsWindow via a custom window event
+        // sent from PluginInstanceParent in response to focus events sent
+        // from the child. (bug 540052) Note, this gui event could also be
+        // sent directly from widget.
         nsCOMPtr<nsIWidget> widget;
         win->GetPluginWidget(getter_AddRefs(widget));
         if (widget) {
@@ -397,7 +385,10 @@ nsPluginNativeWindowWin::nsPluginNativeWindowWin() : nsPluginNativeWindow()
   mPrevWinProc = NULL;
   mPluginWinProc = NULL;
   mPluginType = nsPluginType_Unknown;
-  
+
+  mParentWnd = NULL;
+  mParentProc = NULL;
+
   if (sWM_FLASHBOUNCEMSG == 0)
     sWM_FLASHBOUNCEMSG = ::RegisterWindowMessage(NS_PLUGIN_CUSTOM_MSG_ID);
 
@@ -492,6 +483,24 @@ nsresult nsPluginNativeWindowWin::CallSetWindow(nsCOMPtr<nsIPluginInstance> &aPl
   // check the incoming instance, null indicates that window is going away and we are
   // not interested in subclassing business any more, undo and don't subclass
 
+  // check plugin mime type and cache it if it will need special treatment later
+  if (mPluginType == nsPluginType_Unknown) {
+    if (aPluginInstance) {
+      const char* mimetype = nsnull;
+      aPluginInstance->GetMIMEType(&mimetype);
+      if (mimetype) { 
+        if (!strcmp(mimetype, "application/x-shockwave-flash"))
+          mPluginType = nsPluginType_Flash;
+        else if (!strcmp(mimetype, "audio/x-pn-realaudio-plugin"))
+          mPluginType = nsPluginType_Real;
+        else if (!strcmp(mimetype, "application/pdf"))
+          mPluginType = nsPluginType_PDF;
+        else
+          mPluginType = nsPluginType_Other;
+      }
+    }
+  }
+
   // WINCE does not subclass windows.  See bug 300011 for the details.
 #ifndef WINCE
   if (!aPluginInstance) {
@@ -504,6 +513,17 @@ nsresult nsPluginNativeWindowWin::CallSetWindow(nsCOMPtr<nsIPluginInstance> &aPl
     WNDPROC currentWndProc = (WNDPROC)::GetWindowLongPtr((HWND)window, GWLP_WNDPROC);
     if (currentWndProc != PluginWndProc)
       mPrevWinProc = currentWndProc;
+
+    // PDF plugin v7.0.9, v8.1.3, and v9.0 subclass parent window, bug 531551
+    // V8.2.2 and V9.1 don't have such problem.
+    if (mPluginType == nsPluginType_PDF) {
+      HWND parent = ::GetParent((HWND)window);
+      if (mParentWnd != parent) {
+        NS_ASSERTION(!mParentWnd, "Plugin's parent window changed");
+        mParentWnd = parent;
+        mParentProc = ::GetWindowLongPtr(mParentWnd, GWLP_WNDPROC);
+      }
+    }
   }
 #endif
 
@@ -532,6 +552,20 @@ nsresult nsPluginNativeWindowWin::SubclassAndAssociateWindow()
   WNDPROC currentWndProc = (WNDPROC)::GetWindowLongPtr(hWnd, GWLP_WNDPROC);
   if (PluginWndProc == currentWndProc)
     return NS_OK;
+
+  LONG style = GetWindowLongPtr(hWnd, GWL_STYLE);
+#ifdef MOZ_IPC
+  // Out of process plugins must not have the WS_CLIPCHILDREN style set on their
+  // parent windows or else synchronous paints (via UpdateWindow() and others)
+  // will cause deadlocks.
+  if (::GetPropW(hWnd, L"PluginInstanceParentProperty"))
+    style &= ~WS_CLIPCHILDREN;
+  else
+    style |= WS_CLIPCHILDREN;
+#else
+  style |= WS_CLIPCHILDREN;
+#endif
+  SetWindowLongPtr(hWnd, GWL_STYLE, style);
 
   mPluginWinProc = SubclassWindow(hWnd, (LONG_PTR)PluginWndProc);
   if (!mPluginWinProc)
@@ -562,6 +596,16 @@ nsresult nsPluginNativeWindowWin::UndoSubclassAndAssociateWindow()
     WNDPROC currentWndProc = (WNDPROC)::GetWindowLongPtr(hWnd, GWLP_WNDPROC);
     if (currentWndProc == PluginWndProc)
       SubclassWindow(hWnd, (LONG_PTR)mPluginWinProc);
+
+    LONG style = GetWindowLongPtr(hWnd, GWL_STYLE);
+    style &= ~WS_CLIPCHILDREN;
+    SetWindowLongPtr(hWnd, GWL_STYLE, style);
+  }
+
+  if (mPluginType == nsPluginType_PDF && mParentWnd) {
+    ::SetWindowLongPtr(mParentWnd, GWLP_WNDPROC, mParentProc);
+    mParentWnd = NULL;
+    mParentProc = NULL;
   }
 
   return NS_OK;

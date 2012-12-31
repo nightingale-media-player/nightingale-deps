@@ -113,7 +113,9 @@ class FontEntry : public gfxFontEntry
 public:
     FontEntry(const nsAString& aFaceName, gfxWindowsFontType aFontType,
               PRBool aItalic, PRUint16 aWeight, gfxUserFontData *aUserFontData) : 
-        gfxFontEntry(aFaceName), mFontType(aFontType),
+        gfxFontEntry(aFaceName),
+        mWindowsFamily(0), mWindowsPitch(0),
+        mFontType(aFontType),
         mForceGDI(PR_FALSE), mUnknownCMAP(PR_FALSE),
         mUnicodeFont(PR_FALSE), mSymbolFont(PR_FALSE),
         mCharset(0), mUnicodeRanges(0)
@@ -363,6 +365,11 @@ private:
     LOGFONTW mLogFont;
 
     cairo_antialias_t mAntialiasOption;
+
+    // a copy of the font without antialiasing, if needed for separate
+    // measurement by mathml code; this is not cached separately in the
+    // gfxFontCache
+    nsAutoPtr<gfxWindowsFont> mNonAAFont;
 
     virtual PRBool SetupCairoFont(gfxContext *aContext);
 };

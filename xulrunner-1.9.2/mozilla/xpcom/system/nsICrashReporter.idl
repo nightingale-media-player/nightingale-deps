@@ -118,3 +118,12 @@ interface nsICrashReporter : nsISupports
    */
   [noscript] void appendObjCExceptionInfoToAppNotes(in voidPtr aException);
 };
+
+[scriptable, uuid(e8fe590f-7c08-4128-a746-57eb6b427d8f)]
+interface nsICrashReporter_MOZILLA_1_9_2_BRANCH : nsICrashReporter
+{
+  /**
+   * User preference for submitting crash reports.
+   */
+  attribute boolean submitReports;
+};

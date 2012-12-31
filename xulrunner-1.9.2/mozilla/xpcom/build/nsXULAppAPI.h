@@ -45,6 +45,7 @@
 #include "xrecore.h"
 #include "nsXPCOM.h"
 #include "nsISupports.h"
+#include "prlog.h"
 
 /**
  * Application-specific data needed to start the apprunner.
@@ -418,4 +419,93 @@ XRE_API(nsresult,
 XRE_API(void,
         XRE_FreeAppData, (nsXREAppData *aAppData))
 
+enum GeckoProcessType {
+  GeckoProcessType_Default = 0,
+
+  GeckoProcessType_Plugin,
+  GeckoProcessType_Content,
+
+  GeckoProcessType_IPDLUnitTest,
+
+  GeckoProcessType_End,
+  GeckoProcessType_Invalid = GeckoProcessType_End
+};
+
+static const char* const kGeckoProcessTypeString[] = {
+  "default",
+  "plugin",
+  "tab",
+  "ipdlunittest"
+};
+
+PR_STATIC_ASSERT(sizeof(kGeckoProcessTypeString) /
+                 sizeof(kGeckoProcessTypeString[0]) ==
+                 GeckoProcessType_End);
+
+
+XRE_API(const char*,
+        XRE_ChildProcessTypeToString, (GeckoProcessType aProcessType))
+
+XRE_API(GeckoProcessType,
+        XRE_StringToChildProcessType, (const char* aProcessTypeString))
+
+#if defined(MOZ_CRASHREPORTER)
+// Used in the "master" parent process hosting the crash server
+XRE_API(PRBool,
+        XRE_TakeMinidumpForChild, (PRUint32 aChildPid, nsILocalFile** aDump))
+
+// Used in child processes.
+XRE_API(PRBool,
+        XRE_SetRemoteExceptionHandler, (const char* aPipe))
+#endif
+
+XRE_API(nsresult,
+        XRE_InitChildProcess, (int aArgc,
+                               char* aArgv[],
+                               GeckoProcessType aProcess))
+
+XRE_API(GeckoProcessType,
+        XRE_GetProcessType, ())
+
+typedef void (*MainFunction)(void* aData);
+
+XRE_API(nsresult,
+        XRE_InitParentProcess, (int aArgc,
+                                char* aArgv[],
+                                MainFunction aMainFunction,
+                                void* aMainFunctionExtraData))
+
+XRE_API(int,
+        XRE_RunIPDLTest, (int aArgc,
+                          char* aArgv[]))
+
+XRE_API(nsresult,
+        XRE_RunAppShell, ())
+
+XRE_API(nsresult,
+        XRE_InitCommandLine, (int aArgc, char* aArgv[]))
+
+XRE_API(nsresult,
+        XRE_DeinitCommandLine, ())
+
+class MessageLoop;
+
+XRE_API(void,
+        XRE_ShutdownChildProcess, ())
+
+XRE_API(MessageLoop*,
+        XRE_GetIOMessageLoop, ())
+
+struct JSContext;
+struct JSString;
+
+XRE_API(bool,
+        XRE_SendTestShellCommand, (JSContext* aCx,
+                                   JSString* aCommand,
+                                   void* aCallback))
+XRE_API(bool,
+        XRE_ShutdownTestShell, ())
+
+XRE_API(void,
+        XRE_InstallX11ErrorHandler, ())
 #endif // _nsXULAppAPI_h__

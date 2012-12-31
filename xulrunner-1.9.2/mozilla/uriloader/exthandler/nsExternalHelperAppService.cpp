@@ -1109,6 +1109,7 @@ nsExternalAppHandler::nsExternalAppHandler(nsIMIMEInfo * aMIMEInfo,
 , mContentLength(-1)
 , mProgress(0)
 , mRequest(nsnull)
+, mDataBuffer(nsnull)
 {
 
   // make sure the extention includes the '.'
@@ -1137,12 +1138,30 @@ nsExternalAppHandler::nsExternalAppHandler(nsIMIMEInfo * aMIMEInfo,
   EnsureSuggestedFileName();
 
   gExtProtSvc->AddRef();
+
+  nsCOMPtr<nsIPrefBranch> prefs(do_GetService(NS_PREFSERVICE_CONTRACTID));
+  if (!prefs)
+    return;
+
+  mBufferSize = 4096;
+  PRInt32 size;
+  nsresult rv = prefs->GetIntPref("network.buffer.cache.size", &size);
+  if (NS_SUCCEEDED(rv)) {
+    mBufferSize = size;
+  }
+
+  mDataBuffer = (char*) malloc(mBufferSize);
+  if (!mDataBuffer)
+    return;
 }
 
 nsExternalAppHandler::~nsExternalAppHandler()
 {
   // Not using NS_RELEASE, since we don't want to set gExtProtSvc to NULL
   gExtProtSvc->Release();
+
+  if (mDataBuffer)
+    free(mDataBuffer);
 }
 
 NS_IMETHODIMP nsExternalAppHandler::SetWebProgressListener(nsIWebProgressListener2 * aWebProgressListener)
@@ -1335,8 +1354,7 @@ nsresult nsExternalAppHandler::SetUpTempFile(nsIChannel * aChannel)
     tempLeafName.Append(ext);
   }
 
-#ifdef XP_WIN
-  // On windows, we need to temporarily create a dummy file with the correct
+  // We need to temporarily create a dummy file with the correct
   // file extension to determine the executable-ness, so do this before adding
   // the extra .part extension.
   nsCOMPtr<nsIFile> dummyFile;
@@ -1352,7 +1370,6 @@ nsresult nsExternalAppHandler::SetUpTempFile(nsIChannel * aChannel)
   // Store executable-ness then delete
   dummyFile->IsExecutable(&mTempFileIsExecutable);
   dummyFile->Remove(PR_FALSE);
-#endif
 
   // Add an additional .part to prevent the OS from running this file in the
   // default application.
@@ -1363,12 +1380,6 @@ nsresult nsExternalAppHandler::SetUpTempFile(nsIChannel * aChannel)
   NS_ENSURE_SUCCESS(rv, rv);
   rv = mTempFile->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0600);
   NS_ENSURE_SUCCESS(rv, rv);
-
-#ifndef XP_WIN
-  // On other platforms, the file permission bits are used, so we can just call
-  // IsExecutable
-  mTempFile->IsExecutable(&mTempFileIsExecutable);
-#endif
 
   nsCOMPtr<nsIOutputStream> outputStream;
   rv = NS_NewLocalFileOutputStream(getter_AddRefs(outputStream), mTempFile,
@@ -1757,7 +1768,7 @@ NS_IMETHODIMP nsExternalAppHandler::OnDataAvailable(nsIRequest *request, nsISupp
 {
   nsresult rv = NS_OK;
   // first, check to see if we've been canceled....
-  if (mCanceled) // then go cancel our underlying channel too
+  if (mCanceled || !mDataBuffer) // then go cancel our underlying channel too
     return request->Cancel(NS_BINDING_ABORTED);
 
   // read the data out of the stream and write it to the temp file.
@@ -1770,7 +1781,7 @@ NS_IMETHODIMP nsExternalAppHandler::OnDataAvailable(nsIRequest *request, nsISupp
     while (NS_SUCCEEDED(rv) && count > 0) // while we still have bytes to copy...
     {
       readError = PR_TRUE;
-      rv = inStr->Read(mDataBuffer, PR_MIN(count, DATA_BUFFER_SIZE - 1), &numBytesRead);
+      rv = inStr->Read(mDataBuffer, PR_MIN(count, mBufferSize - 1), &numBytesRead);
       if (NS_SUCCEEDED(rv))
       {
         if (count >= numBytesRead)

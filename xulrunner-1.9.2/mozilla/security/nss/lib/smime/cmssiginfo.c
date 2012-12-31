@@ -38,7 +38,7 @@
 /*
  * CMS signerInfo methods.
  *
- * $Id: cmssiginfo.c,v 1.31 2006/06/23 17:01:38 rrelyea%redhat.com Exp $
+ * $Id: cmssiginfo.c,v 1.32.2.1 2010/08/28 19:51:44 nelson%bolyard.com Exp $
  */
 
 #include "cmslocal.h"
@@ -174,7 +174,7 @@ NSS_CMSSignerInfo_Sign(NSSCMSSignerInfo *signerinfo, SECItem *digest, SECItem *c
     SECOidTag pubkAlgTag;
     SECItem signature = { 0 };
     SECStatus rv;
-    PLArenaPool *poolp, *tmppoolp;
+    PLArenaPool *poolp, *tmppoolp = NULL;
     SECAlgorithmID *algID, freeAlgID;
     CERTSubjectPublicKeyInfo *spki;
 
@@ -298,6 +298,8 @@ loser:
 	SECITEM_FreeItem (&signature, PR_FALSE);
     if (privkey)
 	SECKEY_DestroyPrivateKey(privkey);
+    if (tmppoolp)
+	PORT_FreeArena(tmppoolp, PR_FALSE);
     return SECFailure;
 }
 
@@ -843,7 +845,7 @@ loser:
 
 /* 
  * NSS_CMSSignerInfo_AddMSSMIMEEncKeyPrefs - add a SMIMEEncryptionKeyPreferences attribute to the
- * authenticated (i.e. signed) attributes of "signerinfo", using the OID prefered by Microsoft.
+ * authenticated (i.e. signed) attributes of "signerinfo", using the OID preferred by Microsoft.
  *
  * This is expected to be included in outgoing signed messages for email (S/MIME),
  * if compatibility with Microsoft mail clients is wanted.

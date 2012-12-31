@@ -22,6 +22,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Mats Palmgren <matspal@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -933,12 +934,14 @@ nsresult
 nsFrameManager::ReParentStyleContext(nsIFrame* aFrame)
 {
   if (nsGkAtoms::placeholderFrame == aFrame->GetType()) {
-    // Also reparent the out-of-flow
+    // Also reparent the out-of-flow and all its continuations.
     nsIFrame* outOfFlow =
       nsPlaceholderFrame::GetRealFrameForPlaceholder(aFrame);
     NS_ASSERTION(outOfFlow, "no out-of-flow frame");
-
-    ReParentStyleContext(outOfFlow);
+    do {
+      ReParentStyleContext(outOfFlow);
+    } while ((outOfFlow = outOfFlow->GetNextContinuation()) &&
+             (outOfFlow->GetStateBits() & NS_FRAME_IS_OVERFLOW_CONTAINER));
   }
 
   // DO NOT verify the style tree before reparenting.  The frame
@@ -1476,11 +1479,14 @@ nsFrameManager::ReResolveStyleContext(nsPresContext     *aPresContext,
 
               // |nsFrame::GetParentStyleContextFrame| checks being out
               // of flow so that this works correctly.
-              ReResolveStyleContext(aPresContext, outOfFlowFrame,
-                                    content, aChangeList,
-                                    NS_SubtractHint(aMinChange,
-                                                    nsChangeHint_ReflowFrame),
-                                    fireAccessibilityEvents);
+              do {
+                ReResolveStyleContext(aPresContext, outOfFlowFrame,
+                                      content, aChangeList,
+                                      NS_SubtractHint(aMinChange,
+                                                      nsChangeHint_ReflowFrame),
+                                      fireAccessibilityEvents);
+              } while ((outOfFlowFrame = outOfFlowFrame->GetNextContinuation()) &&
+                       (outOfFlowFrame->GetStateBits() & NS_FRAME_IS_OVERFLOW_CONTAINER));
 
               // reresolve placeholder's context under the same parent
               // as the out-of-flow frame

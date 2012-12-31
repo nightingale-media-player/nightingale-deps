@@ -45,15 +45,8 @@
 #endif
 
 #if defined(XP_MACOSX) && defined(USE_MACH_DYLD)
-#include <CodeFragments.h>
-#include <TextUtils.h>
-#include <Types.h>
-#include <Aliases.h>
-#include <CFURL.h>
-#include <CFBundle.h>
-#include <CFString.h>
-#include <CFDictionary.h>
-#include <CFData.h>
+#include <Carbon/Carbon.h>
+#include <CoreFoundation/CoreFoundation.h>
 #endif
 
 #ifdef XP_UNIX
@@ -74,6 +67,9 @@
 #endif
 #ifdef AIX
 #include <sys/ldr.h>
+#ifndef L_IGNOREUNLOAD /* AIX 4.3.3 does not have L_IGNOREUNLOAD. */
+#define L_IGNOREUNLOAD 0x10000000
+#endif
 #endif
 #ifdef OSF1
 #include <loader.h>
@@ -202,7 +198,7 @@ void _PR_InitLinker(void)
 
 #elif defined(XP_UNIX)
 #ifdef HAVE_DLL
-#ifdef USE_DLFCN
+#if defined(USE_DLFCN) && !defined(NO_DLOPEN_NULL)
     h = dlopen(0, RTLD_LAZY);
     if (!h) {
         char *error;
@@ -218,8 +214,8 @@ void _PR_InitLinker(void)
 #elif defined(USE_HPSHL)
     h = NULL;
     /* don't abort with this NULL */
-#elif defined(USE_MACH_DYLD)
-    h = NULL; /* XXXX  toshok */
+#elif defined(USE_MACH_DYLD) || defined(NO_DLOPEN_NULL)
+    h = NULL; /* XXXX  toshok */ /* XXXX  vlad */
 #else
 #error no dll strategy
 #endif /* USE_DLFCN */
@@ -489,10 +485,16 @@ pr_LoadMachDyldModule(const char *name)
             == NSObjectFileImageSuccess) {
         h = NSLinkModule(ofi, name, NSLINKMODULE_OPTION_PRIVATE
                          | NSLINKMODULE_OPTION_RETURN_ON_ERROR);
-        /*
-         * TODO: If NSLinkModule fails, use NSLinkEditError to retrieve
-         * error information.
-         */
+        if (h == NULL) {
+            NSLinkEditErrors linkEditError;
+            int errorNum;
+            const char *fileName;
+            const char *errorString;
+            NSLinkEditError(&linkEditError, &errorNum, &fileName, &errorString);
+            PR_LOG(_pr_linker_lm, PR_LOG_MIN, 
+                   ("LoadMachDyldModule error %d:%d for file %s:\n%s",
+                    linkEditError, errorNum, fileName, errorString));
+        }
         if (NSDestroyObjectFileImage(ofi) == FALSE) {
             if (h) {
                 (void)NSUnLinkModule(h, NSUNLINKMODULE_OPTION_NONE);
@@ -652,8 +654,8 @@ pr_LoadViaDyld(const char *name, PRLibrary *lm)
         if (lm->image == NULL) {
             NSLinkEditErrors linkEditError;
             int errorNum;
-            const char *errorString;
             const char *fileName;
+            const char *errorString;
             NSLinkEditError(&linkEditError, &errorNum, &fileName, &errorString);
             PR_LOG(_pr_linker_lm, PR_LOG_MIN, 
                    ("LoadMachDyldModule error %d:%d for file %s:\n%s",
@@ -1358,7 +1360,7 @@ PR_LoadStaticLibrary(const char *name, const PRStaticLinkTable *slt)
 PR_IMPLEMENT(char *)
 PR_GetLibraryFilePathname(const char *name, PRFuncPtr addr)
 {
-#if defined(USE_DLFCN) && (defined(SOLARIS) || defined(FREEBSD) \
+#if defined(USE_DLFCN) && !defined(ANDROID) && (defined(SOLARIS) || defined(FREEBSD) \
         || defined(LINUX) || defined(__GNU__) || defined(__GLIBC__) \
         || defined(DARWIN))
     Dl_info dli;

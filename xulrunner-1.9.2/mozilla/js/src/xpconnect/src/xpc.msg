@@ -182,6 +182,7 @@ XPC_MSG_DEF(NS_ERROR_NO_CONTENT                     , "Channel opened successful
 XPC_MSG_DEF(NS_ERROR_IN_PROGRESS                    , "The requested action could not be completed while the object is busy")
 XPC_MSG_DEF(NS_ERROR_ALREADY_OPENED                 , "Channel is already open")
 XPC_MSG_DEF(NS_ERROR_INVALID_CONTENT_ENCODING       , "The content encoding of the source document is incorrect")
+XPC_MSG_DEF(NS_ERROR_CORRUPTED_CONTENT              , "Corrupted content was received from server")
 XPC_MSG_DEF(NS_ERROR_ALREADY_CONNECTED              , "The connection is already established")
 XPC_MSG_DEF(NS_ERROR_NOT_CONNECTED                  , "The connection does not exist")
 XPC_MSG_DEF(NS_ERROR_CONNECTION_REFUSED             , "The connection was refused")

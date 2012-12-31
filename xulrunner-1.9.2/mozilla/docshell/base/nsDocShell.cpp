@@ -3818,33 +3818,40 @@ nsDocShell::LoadErrorPage(nsIURI *aURI, const PRUnichar *aURL,
 
     // Create a URL to pass all the error information through to the page.
 
-    char *escapedUrl = nsEscape(url.get(), url_Path);
-    char *escapedCharset = nsEscape(charset.get(), url_Path);
-    char *escapedError = nsEscape(NS_ConvertUTF16toUTF8(aErrorType).get(), url_Path);
-    char *escapedDescription = nsEscape(NS_ConvertUTF16toUTF8(aDescription).get(), url_Path);
-    char *escapedCSSClass = nsEscape(aCSSClass, url_Path);
-
+#undef SAFE_ESCAPE
+#define SAFE_ESCAPE(cstring, escArg1, escArg2)  \
+    {                                           \
+        char* s = nsEscape(escArg1, escArg2);   \
+        if (!s)                                 \
+            return NS_ERROR_OUT_OF_MEMORY;      \
+        cstring.Adopt(s);                       \
+    }
+    nsCString escapedUrl, escapedCharset, escapedError, escapedDescription,
+              escapedCSSClass;
+    SAFE_ESCAPE(escapedUrl, url.get(), url_Path);
+    SAFE_ESCAPE(escapedCharset, charset.get(), url_Path);
+    SAFE_ESCAPE(escapedError,
+                NS_ConvertUTF16toUTF8(aErrorType).get(), url_Path);
+    SAFE_ESCAPE(escapedDescription,
+                NS_ConvertUTF16toUTF8(aDescription).get(), url_Path);
+    if (aCSSClass) {
+        SAFE_ESCAPE(escapedCSSClass, aCSSClass, url_Path);
+    }
     nsCString errorPageUrl("about:");
     errorPageUrl.AppendASCII(aErrorPage);
     errorPageUrl.AppendLiteral("?e=");
 
-    errorPageUrl.AppendASCII(escapedError);
+    errorPageUrl.AppendASCII(escapedError.get());
     errorPageUrl.AppendLiteral("&u=");
-    errorPageUrl.AppendASCII(escapedUrl);
-    if (escapedCSSClass && escapedCSSClass[0]) {
+    errorPageUrl.AppendASCII(escapedUrl.get());
+    if (!escapedCSSClass.IsEmpty()) {
         errorPageUrl.AppendASCII("&s=");
-        errorPageUrl.AppendASCII(escapedCSSClass);
+        errorPageUrl.AppendASCII(escapedCSSClass.get());
     }
     errorPageUrl.AppendLiteral("&c=");
-    errorPageUrl.AppendASCII(escapedCharset);
+    errorPageUrl.AppendASCII(escapedCharset.get());
     errorPageUrl.AppendLiteral("&d=");
-    errorPageUrl.AppendASCII(escapedDescription);
-
-    nsMemory::Free(escapedDescription);
-    nsMemory::Free(escapedError);
-    nsMemory::Free(escapedUrl);
-    nsMemory::Free(escapedCharset);
-    nsMemory::Free(escapedCSSClass);
+    errorPageUrl.AppendASCII(escapedDescription.get());
 
     nsCOMPtr<nsIURI> errorPageURI;
     nsresult rv = NS_NewURI(getter_AddRefs(errorPageURI), errorPageUrl);
@@ -5645,6 +5652,12 @@ nsDocShell::OnRedirectStateChange(nsIChannel* aOldChannel,
         aNewChannel->GetURI(getter_AddRefs(newURI));
         appCacheChannel->SetChooseApplicationCache(ShouldCheckAppCache(newURI));
     }
+
+    if (!(aRedirectFlags & nsIChannelEventSink::REDIRECT_INTERNAL) && 
+        mLoadType & (LOAD_CMD_RELOAD | LOAD_CMD_HISTORY)) {
+        mLoadType = LOAD_NORMAL_REPLACE;
+        SetHistoryEntry(&mLSHE, nsnull);
+    }
 }
 
 NS_IMETHODIMP
@@ -6172,7 +6185,7 @@ nsDocShell::CreateAboutBlankContentViewer(nsIPrincipal* aPrincipal,
         viewer->SetDOMDocument(domdoc);
 
         SetCurrentURI(blankDoc->GetDocumentURI(), nsnull, PR_TRUE);
-        rv = mIsBeingDestroyed ? NS_ERROR_NOT_AVAILABLE : NS_OK;
+        rv = NS_OK;
       }
     }
   }
@@ -8074,6 +8087,7 @@ nsIPrincipal*
 nsDocShell::GetInheritedPrincipal(PRBool aConsiderCurrentDocument)
 {
     nsCOMPtr<nsIDocument> document;
+    PRBool inheritedFromCurrent = PR_FALSE;
 
     if (aConsiderCurrentDocument && mContentViewer) {
         nsCOMPtr<nsIDocumentViewer>
@@ -8081,6 +8095,7 @@ nsDocShell::GetInheritedPrincipal(PRBool aConsiderCurrentDocument)
         if (!docViewer)
             return nsnull;
         docViewer->GetDocument(getter_AddRefs(document));
+        inheritedFromCurrent = PR_TRUE;
     }
 
     if (!document) {
@@ -8111,7 +8126,17 @@ nsDocShell::GetInheritedPrincipal(PRBool aConsiderCurrentDocument)
 
     //-- Get the document's principal
     if (document) {
-        return document->NodePrincipal();
+        nsIPrincipal *docPrincipal = document->NodePrincipal();
+
+        // Don't allow loads in typeContent docShells to inherit the system
+        // principal from existing documents.
+        if (inheritedFromCurrent &&
+            mItemType == typeContent &&
+            nsContentUtils::IsSystemPrincipal(docPrincipal)) {
+            return nsnull;
+        }
+
+        return docPrincipal;
     }
 
     return nsnull;
@@ -10885,6 +10910,10 @@ nsDocShell::OnLinkClickSync(nsIContent *aContent,
   nsCOMPtr<nsIDOMHTMLAnchorElement> anchor(do_QueryInterface(aContent));
   if (anchor) {
     anchor->GetType(typeHint);
+    NS_ConvertUTF16toUTF8 utf8Hint(typeHint);
+    nsCAutoString type, dummy;
+    NS_ParseContentType(utf8Hint, type, dummy);
+    CopyUTF8toUTF16(type, typeHint);
   }
   
   nsresult rv = InternalLoad(aURI,                      // New URI

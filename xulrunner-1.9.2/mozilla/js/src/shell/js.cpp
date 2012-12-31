@@ -3241,7 +3241,9 @@ Scatter(JSContext *cx, uintN argc, jsval *vp)
         );
         if (!newcx)
             goto fail;
+        JS_BeginRequest(newcx);
         JS_SetGlobalObject(newcx, JS_GetGlobalObject(cx));
+        JS_EndRequest(newcx);
         JS_ClearContextThread(newcx);
         sd.threads[i].cx = newcx;
     }

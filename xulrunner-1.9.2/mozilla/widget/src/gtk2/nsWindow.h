@@ -301,8 +301,8 @@ public:
     Window             mOldFocusWindow;
 #endif /* MOZ_X11 */
 
-    static guint32     mLastButtonPressTime;
-    static guint32     mLastButtonReleaseTime;
+    static guint32     sLastButtonPressTime;
+    static guint32     sLastButtonReleaseTime;
 
     NS_IMETHOD         BeginResizeDrag   (nsGUIEvent* aEvent, PRInt32 aHorizontal, PRInt32 aVertical);
 
@@ -444,7 +444,8 @@ private:
     void               SetDefaultIcon(void);
     void               InitButtonEvent(nsMouseEvent &aEvent, GdkEventButton *aGdkEvent);
     PRBool             DispatchCommandEvent(nsIAtom* aCommand);
-    nsresult           SetWindowClipRegion(const nsTArray<nsIntRect>& aRects);
+    void               SetWindowClipRegion(const nsTArray<nsIntRect>& aRects,
+                                           PRBool aIntersectWithExisting);
 
     GtkWidget          *mShell;
     MozContainer       *mContainer;
@@ -564,6 +565,7 @@ private:
         *flag &= ~mask;
     }
 
+    void DispatchMissedButtonReleases(GdkEventCrossing *aGdkEvent);
 };
 
 class nsChildWindow : public nsWindow {

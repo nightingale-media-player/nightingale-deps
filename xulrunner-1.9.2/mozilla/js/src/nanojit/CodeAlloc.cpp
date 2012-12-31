@@ -247,7 +247,19 @@ extern "C" void __clear_cache(char *BEG, char *END);
 #endif
 
 #ifdef AVMPLUS_SPARC
+#ifdef __linux__
+void sync_instruction_memory(caddr_t v, u_int len)
+{
+	caddr_t end = v + len;
+	caddr_t p = v;
+	while (p < end) {
+		asm volatile("flush %0" : : "r" (p));
+		p += 32;
+	}
+}
+#else
 extern  "C" void sync_instruction_memory(caddr_t v, u_int len);
+#endif
 #endif
 
 #if defined NANOJIT_IA32 || defined NANOJIT_X64

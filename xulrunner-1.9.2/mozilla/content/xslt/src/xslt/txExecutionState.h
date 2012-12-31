@@ -103,10 +103,11 @@ public:
     /**
      * Struct holding information about a current template rule
      */
-    struct TemplateRule {
+    class TemplateRule {
+    public:
         txStylesheet::ImportFrame* mFrame;
         PRInt32 mModeNsId;
-        nsIAtom* mModeLocalName;
+        nsCOMPtr<nsIAtom> mModeLocalName;
         txVariableMap* mParams;
     };
 
@@ -172,9 +173,7 @@ private:
     nsRefPtr<txAExprResult> mGlobalVarPlaceholderValue;
     PRInt32 mRecursionDepth;
 
-    TemplateRule* mTemplateRules;
-    PRInt32 mTemplateRulesBufferSize;
-    PRInt32 mTemplateRuleCount;
+    nsAutoTArray<TemplateRule, 10> mTemplateRules;
 
     txIEvalContext* mEvalContext;
     txIEvalContext* mInitialEvalContext;

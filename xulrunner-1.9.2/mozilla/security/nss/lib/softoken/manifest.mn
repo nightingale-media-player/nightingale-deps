@@ -47,8 +47,8 @@ MAPFILE = $(OBJDIR)/softokn.def
 
 DEFINES += -DSHLIB_SUFFIX=\"$(DLL_SUFFIX)\" -DSHLIB_PREFIX=\"$(DLL_PREFIX)\" -DSOFTOKEN_LIB_NAME=\"$(notdir $(SHARED_LIBRARY))\" -DSHLIB_VERSION=\"$(LIBRARY_VERSION)\"
 
-ifdef MOZILLA_CLIENT
-INCLUDES += -I$(DIST)/include/sqlite3
+ifdef SQLITE_INCLUDE_DIR
+INCLUDES += -I$(SQLITE_INCLUDE_DIR)
 endif
 
 EXPORTS = \
@@ -89,6 +89,7 @@ CSRCS = \
 	sftkpwd.c  \
 	softkver.c  \
 	tlsprf.c   \
+	jpakesftk.c \
 	$(NULL)
 
 ifdef SQLITE_UNSAFE_THREADS

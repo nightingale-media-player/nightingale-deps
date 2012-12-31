@@ -1011,6 +1011,15 @@ nsAutoCompleteController::StartSearch()
       ++searchesFailed;
       --mSearchesOngoing;
     }
+    // Because of the joy of nested event loops (which can easily happen when some
+    // code uses a generator for an asynchronous AutoComplete search),
+    // nsIAutoCompleteSearch::StartSearch might cause us to be detached from our input
+    // field.  The next time we iterate, we'd be touching something that we shouldn't
+    // be, and result in a crash.
+    if (!mInput) {
+      // The search operation has been finished.
+      return NS_OK;
+    }
   }
 
   if (searchesFailed == count)

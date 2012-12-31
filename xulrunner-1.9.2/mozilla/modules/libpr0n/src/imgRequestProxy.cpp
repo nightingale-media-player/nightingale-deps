@@ -226,7 +226,16 @@ imgRequestProxy::DoCancel(nsresult status)
 /* void cancelAndForgetObserver (in nsresult aStatus); */
 NS_IMETHODIMP imgRequestProxy::CancelAndForgetObserver(nsresult aStatus)
 {
-  if (mCanceled || !mOwner)
+  if (!mOwner)
+    return NS_ERROR_FAILURE;
+
+  // If mCanceled is true but mListener is non-null, that means
+  // someone called Cancel() on us but the imgCancelRunnable is still
+  // pending.  We still need to null out mListener before returning
+  // from this function in this case.  That means we want to do the
+  // RemoveProxy call right now, because we need to deliver the
+  // onStopRequest.
+  if (mCanceled && !mListener)
     return NS_ERROR_FAILURE;
 
   LOG_SCOPE(gImgLog, "imgRequestProxy::CancelAndForgetObserver");
@@ -236,7 +245,7 @@ NS_IMETHODIMP imgRequestProxy::CancelAndForgetObserver(nsresult aStatus)
   // Now cheat and make sure our removal from loadgroup happens async
   PRBool oldIsInLoadGroup = mIsInLoadGroup;
   mIsInLoadGroup = PR_FALSE;
-  
+
   // Passing false to aNotify means that mListener will still get
   // OnStopRequest, if needed.
   mOwner->RemoveProxy(this, aStatus, PR_FALSE);

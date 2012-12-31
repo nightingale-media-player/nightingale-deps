@@ -347,6 +347,10 @@ nsProxyObject::nsProxyObject(nsIEventTarget *target, PRInt32 proxyType,
     NS_ASSERTION(target == canonicalTarget,
                  "Non-canonical nsISupports passed to nsProxyObject constructor");
 #endif
+
+    nsProxyObjectManager *pom = nsProxyObjectManager::GetInstance();
+    NS_ASSERTION(pom, "Creating a proxy without a global proxy-object-manager.");
+    pom->AddRef();
 }
 
 nsProxyObject::~nsProxyObject()
@@ -396,6 +400,7 @@ nsProxyObject::LockedRelease()
 
     nsAutoUnlock unlock(pom->GetLock());
     delete this;
+    pom->Release();
 
     return 0;
 }

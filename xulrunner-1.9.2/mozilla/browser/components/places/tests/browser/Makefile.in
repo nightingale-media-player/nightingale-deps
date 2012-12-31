@@ -43,6 +43,8 @@ relativesrcdir  = browser/components/places/tests/browser
 include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/rules.mk
 
+# Tests disabled due to frequent oranges:
+# browser_library_middleclick.js
 _BROWSER_TEST_FILES = \
 	browser_0_library_left_pane_migration.js \
 	browser_library_left_pane_fixnames.js \
@@ -59,7 +61,6 @@ _BROWSER_TEST_FILES = \
 	browser_forgetthissite_single.js \
 	browser_library_left_pane_commands.js \
 	browser_drag_bookmarks_on_toolbar.js \
-	browser_library_middleclick.js \
 	browser_library_views_liveupdate.js \
 	browser_views_liveupdate.js \
 	browser_sidebarpanels_click.js \

@@ -340,8 +340,15 @@ png_decompress_chunk(png_structp png_ptr, int comp_type,
       {
          /* Success (maybe) - really uncompress the chunk. */
 	 png_size_t new_size = 0;
-	 png_charp text = png_malloc_warn(png_ptr,
-			prefix_size + expanded_size + 1);
+         png_charp text = NULL;
+         /* Need to check for both truncation (64-bit platforms) and integer
+          * overflow.
+          */
+         if (prefix_size + expanded_size > prefix_size &&
+             prefix_size + expanded_size < 0xffffffffU)
+         {
+            text = png_malloc_warn(png_ptr, prefix_size + expanded_size + 1);
+         }
 
          if (text != NULL)
          {
@@ -3377,6 +3384,8 @@ defined(PNG_USER_TRANSFORM_PTR_SUPPORTED)
    {
      png_free(png_ptr, png_ptr->big_row_buf);
      png_ptr->big_row_buf = (png_bytep)png_malloc(png_ptr, row_bytes+64);
+     if (png_ptr->interlaced)
+       png_memset(png_ptr->big_row_buf, 0, row_bytes + 64);
      png_ptr->row_buf = png_ptr->big_row_buf+32;
      png_ptr->old_big_row_buf_size = row_bytes+64;
    }

@@ -53,6 +53,7 @@
 #include "nsHTMLContainerFrame.h"
 #include "nsInlineFrame.h"
 #include "nsPlaceholderFrame.h"
+#include "nsFirstLetterFrame.h"
 
 static const PRUnichar kSpace            = 0x0020;
 static const PRUnichar kLineSeparator    = 0x2028;
@@ -200,42 +201,23 @@ CreateBidiContinuation(nsIFrame*       aFrame,
 
   nsIFrame* parent = aFrame->GetParent();
   NS_ASSERTION(parent, "Couldn't get frame parent in nsBidiPresUtils::CreateBidiContinuation");
-  
-  nsresult rv = presShell->FrameConstructor()->
-    CreateContinuingFrame(presContext, aFrame, parent, aNewFrame, PR_FALSE);
-  if (NS_FAILED(rv)) {
-    return rv;
-  }
 
+  nsresult rv = NS_OK;
+  
   // Have to special case floating first letter frames because the continuation
   // doesn't go in the first letter frame. The continuation goes with the rest
   // of the text that the first letter frame was made out of.
   if (parent->GetType() == nsGkAtoms::letterFrame &&
       parent->GetStyleDisplay()->IsFloating()) {
-    nsIFrame* oldParent = parent;
-    nsPlaceholderFrame* placeholderFrame =
-      presShell->FrameManager()->GetPlaceholderFrameFor(parent);
-    parent = placeholderFrame->GetParent();
+    nsFirstLetterFrame* letterFrame = do_QueryFrame(parent);
+    rv = letterFrame->CreateContinuationForFloatingParent(presContext, aFrame,
+                                                          aNewFrame, PR_FALSE);
+    return rv;
+  }
 
-    (*aNewFrame)->SetParent(parent);
-    nsHTMLContainerFrame::ReparentFrameView(aFrame->PresContext(), *aNewFrame,
-                                            oldParent, parent);
-
-    // The continuation will have gotten the first letter style from it's prev
-    // continuation, so we need to repair the style context so it doesn't have
-    // the first letter styling.
-    nsStyleContext* parentSC = oldParent->GetStyleContext()->GetParent();
-    if (parentSC) {
-      nsRefPtr<nsStyleContext> newSC;
-      newSC = presShell->StyleSet()->ResolveStyleForNonElement(parentSC);
-      if (newSC) {
-        (*aNewFrame)->SetStyleContext(newSC);
-      }
-    }
-
-    // The list name nsGkAtoms::nextBidi would indicate we don't want reflow
-    nsFrameList temp(*aNewFrame);
-    rv = parent->InsertFrames(nsGkAtoms::nextBidi, placeholderFrame, temp);
+  rv = presShell->FrameConstructor()->
+    CreateContinuingFrame(presContext, aFrame, parent, aNewFrame, PR_FALSE);
+  if (NS_FAILED(rv)) {
     return rv;
   }
 
@@ -450,7 +432,9 @@ nsBidiPresUtils::Resolve(nsBlockFrame*   aBlockFrame,
         }
         PRInt32 start, end;
         frame->GetOffsets(start, end);
-        fragmentLength = end - start;
+        NS_ASSERTION(!(contentTextLength < end - start),
+                     "Frame offsets don't fit in content");
+        fragmentLength = NS_MIN(contentTextLength, end - start);
         contentOffset = start;
         isTextFrame = PR_TRUE;
       }
@@ -510,14 +494,17 @@ nsBidiPresUtils::Resolve(nsBlockFrame*   aBlockFrame,
           }
           lineIter.GetLine()->MarkDirty();
           nsIFrame* nextBidi;
+          PRInt32 runEnd = contentOffset + runLength;
           EnsureBidiContinuation(frame, &nextBidi, frameIndex,
                                  contentOffset,
-                                 contentOffset + runLength);
+                                 runEnd);
           if (NS_FAILED(mSuccess)) {
             break;
           }
+          nextBidi->AdjustOffsetsForBidi(runEnd,
+                                         contentOffset + fragmentLength);
           frame = nextBidi;
-          contentOffset += runLength;
+          contentOffset = runEnd;
         } // if (runLength < fragmentLength)
         else {
           if (contentOffset + fragmentLength == contentTextLength) {

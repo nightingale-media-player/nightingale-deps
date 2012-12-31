@@ -733,6 +733,11 @@ nsDOMAttribute::RemoveChildAt(PRUint32 aIndex, PRBool aNotify, PRBool aMutationE
   if (guard.Mutated(0) && mChild != child) {
     return NS_OK;
   }
+
+  if (aNotify) {
+    nsNodeUtils::AttributeChildRemoved(this, mChild);
+  }
+
   NS_RELEASE(mChild);
   static_cast<nsTextNode*>(child.get())->UnbindFromAttribute();
 
@@ -819,7 +824,7 @@ nsDOMAttribute::EnsureChildState(PRBool aSetText, PRBool &aHasChild) const
   aHasChild = !value.IsEmpty();
 
   if (aSetText && aHasChild) {
-    mChild->SetText(value, PR_TRUE);
+    mChild->SetText(value, PR_FALSE);
   }
 
   return NS_OK;

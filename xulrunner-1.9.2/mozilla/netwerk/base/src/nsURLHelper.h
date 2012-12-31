@@ -141,7 +141,8 @@ inline PRBool net_IsValidScheme(const nsAFlatCString &scheme)
  * This function strips out all whitespace at the beginning and end of the URL
  * and strips out \r, \n, \t from the middle of the URL.  This makes it safe to
  * call on things like javascript: urls or data: urls, where we may in fact run
- * into whitespace that is not properly encoded.
+ * into whitespace that is not properly encoded.  Note that stripping does not
+ * occur in the scheme portion itself.
  *
  * @param str the pointer to the string to filter.  Must be non-null.
  * @param result the out param to write to if filtering happens
@@ -247,5 +248,15 @@ inline char *net_RFindCharNotInSet(const char *str, const char *set)
  * restricted characters.  Otherwise, false is returned.
  */
 NS_HIDDEN_(PRBool) net_IsValidHostName(const nsCSubstring &host);
+
+/**
+ * Checks whether the IPv4 address is valid according to RFC 3986 section 3.2.2.
+ */
+NS_HIDDEN_(PRBool) net_IsValidIPv4Addr(const char *addr, PRInt32 addrLen);
+
+/**
+ * Checks whether the IPv6 address is valid according to RFC 3986 section 3.2.2.
+ */
+NS_HIDDEN_(PRBool) net_IsValidIPv6Addr(const char *addr, PRInt32 addrLen);
 
 #endif // !nsURLHelper_h__

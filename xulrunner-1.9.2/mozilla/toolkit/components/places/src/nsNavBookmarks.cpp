@@ -940,9 +940,7 @@ nsNavBookmarks::IsRealBookmark(PRInt64 aPlaceId)
 
     (void)mDBIsRealBookmark->BindInt64Parameter(0, aPlaceId);
     (void)mDBIsRealBookmark->BindInt32Parameter(1, TYPE_BOOKMARK);
-    (void)mDBIsRealBookmark->BindUTF8StringParameter(
-      2, NS_LITERAL_CSTRING(LMANNO_FEEDURI)
-    );
+    (void)BindStatementURLCString(mDBIsRealBookmark, 2, NS_LITERAL_CSTRING(LMANNO_FEEDURI));
 
     // If we get any rows, then there exists at least one bookmark corresponding
     // to aPlaceId that is not a livemark item.

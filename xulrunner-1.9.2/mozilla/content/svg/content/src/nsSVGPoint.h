@@ -43,6 +43,15 @@
 #include "nsIDOMSVGPoint.h"
 #include "gfxPoint.h"
 
+#define NS_ENSURE_NATIVE_SVG_POINT(obj, retval)                \
+  {                                                            \
+    nsresult rv;                                               \
+    if (retval)                                                \
+      *retval = nsnull;                                        \
+    nsCOMPtr<nsISVGValue> point = do_QueryInterface(obj, &rv); \
+    NS_ENSURE_SUCCESS(rv, NS_ERROR_DOM_SVG_WRONG_TYPE_ERR);    \
+  }
+
 nsresult
 NS_NewSVGPoint(nsIDOMSVGPoint** result, float x = 0.0f, float y = 0.0f);
 

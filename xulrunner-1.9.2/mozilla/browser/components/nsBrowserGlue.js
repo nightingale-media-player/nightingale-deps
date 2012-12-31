@@ -1,4 +1,3 @@
-/*
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -41,7 +40,6 @@
 # the terms of any one of the MPL, the GPL or the LGPL.
 #
 # ***** END LICENSE BLOCK *****
-*/
 
 const Ci = Components.interfaces;
 const Cc = Components.classes;
@@ -51,9 +49,7 @@ const Cu = Components.utils;
 const XULNS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-// XXX Songbird: distribution file moved from its old location
-// Cu.import("resource:///modules/distribution.js");
-Cu.import("resource://app/jsmodules/Distribution.jsm");
+Cu.import("resource:///modules/distribution.js");
 
 const PREF_EM_NEW_ADDONS_LIST = "extensions.newAddons";
 const PREF_PLUGINS_NOTIFYUSER = "plugins.update.notifyUser";
@@ -108,8 +104,7 @@ function BrowserGlue() {
 
   this.__defineGetter__("_distributionCustomizer", function() {
     delete this._distributionCustomizer;
-    // XXX Songbird: allow not having a distribution customizer
-    return this._distributionCustomizer = ("function" == typeof(DistributionCustomizer) ? new DistributionCustomizer() : null);
+    return this._distributionCustomizer = new DistributionCustomizer()
   });
 
   this._init();
@@ -262,9 +257,7 @@ BrowserGlue.prototype = {
   {
     // apply distribution customizations (prefs)
     // other customizations are applied in _onProfileStartup()
-    // XXX Songbird: allow not having a distribution customizer
-    if (this._distributionCustomizer)
-      this._distributionCustomizer.applyPrefDefaults();
+    this._distributionCustomizer.applyPrefDefaults();
   },
 
   // profile startup handler (contains profile initialization routines)
@@ -283,9 +276,7 @@ BrowserGlue.prototype = {
 
     // apply distribution customizations
     // prefs are applied in _onAppDefaults()
-    // XXX Songbird: allow not having a distribution customizer
-    if (this._distributionCustomizer)
-      this._distributionCustomizer.applyCustomizations();
+    this._distributionCustomizer.applyCustomizations();
 
     // handle any UI migration
     this._migrateUI();
@@ -400,13 +391,9 @@ BrowserGlue.prototype = {
     } catch (ex) {}
 
     // Never show a prompt inside the private browsing mode
-    // XXX Songbird: allow not having private browsing support
-    var inPrivateBrowsing = false;
-    if ("@mozilla.org/privatebrowsing;1" in Cc) {
-      inPrivateBrowsing = Cc["@mozilla.org/privatebrowsing;1"].
-                          getService(Ci.nsIPrivateBrowsingService).
-                          privateBrowsingEnabled;
-    }
+    var inPrivateBrowsing = Cc["@mozilla.org/privatebrowsing;1"].
+                            getService(Ci.nsIPrivateBrowsingService).
+                            privateBrowsingEnabled;
     if (!showPrompt || inPrivateBrowsing)
       return false;
 
@@ -594,9 +581,6 @@ BrowserGlue.prototype = {
    *   bookmarks.
    */
   _initPlaces: function bg__initPlaces() {
-    // XXX Songbird: Songbird does not use Places
-    return;
-
     // We must instantiate the history service since it will tell us if we
     // need to import or restore bookmarks due to first-run, corruption or
     // forced migration (due to a major schema change).
@@ -1117,12 +1101,7 @@ BrowserGlue.prototype = {
   // get this contractID registered for certain categories via XPCOMUtils
   _xpcom_categories: [
     // make BrowserGlue a startup observer
-    { category: "app-startup", service: true },
-    { /* when component registration *didn't* run (i.e. second run), we need
-       * to get invoked via this topic to be able to apply the default prefs
-       * before the chrome registry initializes
-       */
-      category: "prefservice:after-app-defaults", service: true }
+    { category: "app-startup", service: true }
   ]
 }
 
@@ -1217,13 +1196,9 @@ GeolocationPrompt.prototype = {
       function geolocation_hacks_to_notification () {
 
         // Never show a remember checkbox inside the private browsing mode
-        // XXX Songbird: allow not having private browsing support
-        var inPrivateBrowsing = false;
-        if ("@mozilla.org/privatebrowsing;1" in Cc) {
-          inPrivateBrowsing = Cc["@mozilla.org/privatebrowsing;1"].
-                              getService(Ci.nsIPrivateBrowsingService).
-                              privateBrowsingEnabled;
-        }
+        var inPrivateBrowsing = Cc["@mozilla.org/privatebrowsing;1"].
+                                getService(Ci.nsIPrivateBrowsingService).
+                                privateBrowsingEnabled;
         if (!inPrivateBrowsing) {
           var checkbox = newBar.ownerDocument.createElementNS(XULNS, "checkbox");
           checkbox.className = "rememberChoice";
@@ -1252,9 +1227,5 @@ GeolocationPrompt.prototype = {
 
 //module initialization
 function NSGetModule(aCompMgr, aFileSpec) {
-  /* on runs with component registration (e.g. safe mode), we need to manually
-   * load the default prefs in order to happen before the chrome registry loads
-   */
-  BrowserGlueServiceFactory.createInstance(null)._onAppDefaults();
   return XPCOMUtils.generateModule([BrowserGlue, GeolocationPrompt]);
 }

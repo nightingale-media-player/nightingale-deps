@@ -95,13 +95,6 @@ typedef struct _nsCocoaWindowList {
 
 @end
 
-@interface NSWindow (Resizer)
-
-- (BOOL)usesNativeResizer;
-
-@end
-
-
 @interface PopupWindow : BaseWindow
 {
 @private
@@ -122,11 +115,6 @@ typedef struct _nsCocoaWindowList {
 - (BOOL)canBecomeKeyWindow;
 - (BOOL)canBecomeMainWindow;
 
-@end
-
-
-@interface SongbirdWindow : BorderlessWindow 
-{}
 @end
 
 @interface WindowDelegate : NSObject
@@ -253,8 +241,6 @@ public:
     NS_IMETHOD SetWindowShadowStyle(PRInt32 aStyle);
     virtual void SetShowsToolbarButton(PRBool aShow);
     NS_IMETHOD SetWindowTitlebarColor(nscolor aColor, PRBool aActive);
-
-    NS_IMETHOD SetModalLockWindow(NSWindow *aWindow, PRBool aShouldLock);
 
     void DispatchSizeModeEvent();
 

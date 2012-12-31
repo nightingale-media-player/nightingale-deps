@@ -222,7 +222,8 @@ nsNSSSocketInfo::nsNSSSocketInfo()
     mAllowTLSIntoleranceTimeout(PR_TRUE),
     mRememberClientAuthCertificate(PR_FALSE),
     mHandshakeStartTime(0),
-    mPort(0)
+    mPort(0),
+    mIsCertIssuerBlacklisted(PR_FALSE)
 {
   mThreadData = new nsSSLSocketThreadData;
 }
@@ -3228,6 +3229,13 @@ cancel_and_failure(nsNSSSocketInfo* infoObject)
 static SECStatus
 nsNSSBadCertHandler(void *arg, PRFileDesc *sslSocket)
 {
+  // cert was revoked, don't do anything else
+  // Calling cancel_and_failure is not necessary, and would be wrong,
+  // [for errors other than the ones explicitly handled below,] 
+  // because it suppresses error reporting.
+  if (PR_GetError() == SEC_ERROR_REVOKED_CERTIFICATE)
+    return SECFailure;
+
   nsNSSShutDownPreventionLock locker;
   nsNSSSocketInfo* infoObject = (nsNSSSocketInfo *)arg;
   if (!infoObject)
@@ -3297,6 +3305,10 @@ nsNSSBadCertHandler(void *arg, PRFileDesc *sslSocket)
                                  PR_TRUE, certificateUsageSSLServer,
                                  PR_Now(), (void*)infoObject, 
                                  verify_log, NULL);
+
+    if (infoObject->IsCertIssuerBlacklisted()) {
+      collected_errors |= nsICertOverrideService::ERROR_UNTRUSTED;
+    }
 
     // We ignore the result code of the cert verification.
     // Either it is a failure, which is expected, and we'll process the

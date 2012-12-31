@@ -201,7 +201,7 @@ protected:
 
     /**
      * For any accessibles in this subtree, invalidate their knowledge of
-     * their children. Only weak refrences are destroyed, not accessibles.
+     * their children. Only weak references are destroyed, not accessibles.
      * @param aStartNode  The root of the subrtee to invalidate accessible child refs in
      */
     void InvalidateChildrenInSubtree(nsIDOMNode *aStartNode);

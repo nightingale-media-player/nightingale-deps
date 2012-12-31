@@ -42,7 +42,6 @@
 #include "nsString.h"
 #include "nsTArray.h"
 #include "prtypes.h"
-#include "nsCUPSShim.h"
 #include "psSharedCore.h"
 
 class nsIPrefService;
@@ -96,7 +95,6 @@ class NS_PSSHARED nsPSPrinterList {
     private:
         nsCOMPtr<nsIPrefService> mPrefSvc;
         nsCOMPtr<nsIPrefBranch> mPref;
-        nsCUPSShim mCups;
 };
 
 #endif /* nsPSPrinters_h___ */

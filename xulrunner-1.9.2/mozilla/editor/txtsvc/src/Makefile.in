@@ -62,7 +62,6 @@ REQUIRES	= xpcom \
 CPPSRCS		= \
 		nsFilteredContentIterator.cpp \
 		nsTextServicesDocument.cpp \
-		nsTSDNotifier.cpp \
 		$(NULL)
 
 

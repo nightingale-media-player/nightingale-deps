@@ -34,7 +34,12 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+const LAST_DIR_PREF = "browser.download.lastDir";
+
 var EXPORTED_SYMBOLS = [ "gDownloadLastDir" ];
+
+let prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
+                        .getService(Components.interfaces.nsIPrefBranch);
 
 let observer = {
   QueryInterface: function (aIID) {
@@ -45,13 +50,23 @@ let observer = {
     throw Components.results.NS_NOINTERFACE;
   },
   observe: function (aSubject, aTopic, aData) {
-    gDownloadLastDirFile = null;
+    switch (aTopic) {
+      case "private-browsing":
+        gDownloadLastDirFile = null;
+        break;
+      case "browser:purge-session-history":
+        gDownloadLastDirFile = null;
+        if (prefSvc.prefHasUserValue(LAST_DIR_PREF))
+          prefSvc.clearUserPref(LAST_DIR_PREF);
+        break;
+    }
   }
 };
 
-Components.classes["@mozilla.org/observer-service;1"]
-          .getService(Components.interfaces.nsIObserverService)
-          .addObserver(observer, "private-browsing", true);
+let os = Components.classes["@mozilla.org/observer-service;1"]
+                   .getService(Components.interfaces.nsIObserverService);
+os.addObserver(observer, "private-browsing", true);
+os.addObserver(observer, "browser:purge-session-history", true);
 
 let gDownloadLastDirFile = null;
 let gDownloadLastDir = {

@@ -306,12 +306,12 @@ static const char sHeaderFooterTags[][4] =  {"", "&T", "&U", "&D", "&P", "&PT"};
   [list setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
   [[list cell] setControlSize:NSSmallControlSize];
   NSArray* items =
-    [NSArray arrayWithObjects:[self localizedString:"--blank--"],
-                              [self localizedString:"Title"],
-                              [self localizedString:"URL"],
-                              [self localizedString:"Date/Time"],
-                              [self localizedString:"Page #"],
-                              [self localizedString:"Page # of #"],
+    [NSArray arrayWithObjects:NSLocalizedString(@"--blank--", nil),
+                              NSLocalizedString(@"Title", nil),
+                              NSLocalizedString(@"URL", nil),
+                              NSLocalizedString(@"Date/Time", nil),
+                              NSLocalizedString(@"Page #", nil),
+                              NSLocalizedString(@"Page # of #", nil),
                               nil];
   [list addItemsWithTitles:items];
 
@@ -331,10 +331,10 @@ static const char sHeaderFooterTags[][4] =  {"", "&T", "&U", "&D", "&P", "&PT"};
 - (void)addOptionsSection
 {
   // Title
-  [self addLabel:"Options:" withFrame:NSMakeRect(0, 240, 151, 22)];
+  [self addLabel:[NSLocalizedString(@"Options:", nil) UTF8String] withFrame:NSMakeRect(0, 240, 151, 22)];
 
   // "Print Selection Only"
-  mPrintSelectionOnlyCheckbox = [self checkboxWithLabel:"Print Selection Only"
+  mPrintSelectionOnlyCheckbox = [self checkboxWithLabel:[NSLocalizedString(@"Print Selection Only", nil) UTF8String]
                                                andFrame:NSMakeRect(156, 240, 0, 0)];
 
   PRBool canPrintSelection;
@@ -351,7 +351,7 @@ static const char sHeaderFooterTags[][4] =  {"", "&T", "&U", "&D", "&P", "&PT"};
   [self addSubview:mPrintSelectionOnlyCheckbox];
 
   // "Shrink To Fit"
-  mShrinkToFitCheckbox = [self checkboxWithLabel:"Ignore Scaling and Shrink To Fit Page Width"
+  mShrinkToFitCheckbox = [self checkboxWithLabel:[NSLocalizedString(@"Ignore Scaling and Shrink To Fit Page Width", nil) UTF8String]
                                         andFrame:NSMakeRect(156, 218, 0, 0)];
 
   PRBool shrinkToFit;
@@ -364,10 +364,10 @@ static const char sHeaderFooterTags[][4] =  {"", "&T", "&U", "&D", "&P", "&PT"};
 - (void)addAppearanceSection
 {
   // Title
-  [self addLabel:"Appearance:" withFrame:NSMakeRect(0, 188, 151, 22)];
+  [self addLabel:[NSLocalizedString(@"Appearance:", nil) UTF8String] withFrame:NSMakeRect(0, 188, 151, 22)];
 
   // "Print Background Colors"
-  mPrintBGColorsCheckbox = [self checkboxWithLabel:"Print Background Colors"
+  mPrintBGColorsCheckbox = [self checkboxWithLabel:[NSLocalizedString(@"Print Background Colors", nil) UTF8String]
                                           andFrame:NSMakeRect(156, 188, 0, 0)];
 
   PRBool geckoBool;
@@ -377,7 +377,7 @@ static const char sHeaderFooterTags[][4] =  {"", "&T", "&U", "&D", "&P", "&PT"};
   [self addSubview:mPrintBGColorsCheckbox];
 
   // "Print Background Images"
-  mPrintBGImagesCheckbox = [self checkboxWithLabel:"Print Background Images"
+  mPrintBGImagesCheckbox = [self checkboxWithLabel:[NSLocalizedString(@"Print Background Images", nil) UTF8String]
                                           andFrame:NSMakeRect(156, 166, 0, 0)];
 
   mSettings->GetPrintBGImages(&geckoBool);
@@ -389,7 +389,7 @@ static const char sHeaderFooterTags[][4] =  {"", "&T", "&U", "&D", "&P", "&PT"};
 - (void)addFramesSection
 {
   // Title
-  [self addLabel:"Frames:" withFrame:NSMakeRect(0, 124, 151, 22)];
+  [self addLabel:[NSLocalizedString(@"Frames:", nil) UTF8String] withFrame:NSMakeRect(0, 124, 151, 22)];
 
   // Radio matrix
   NSButtonCell *radio = [[NSButtonCell alloc] init];
@@ -408,9 +408,9 @@ static const char sHeaderFooterTags[][4] =  {"", "&T", "&U", "&D", "&P", "&PT"};
   mAsLaidOutRadio = [cellArray objectAtIndex:0];
   mSelectedFrameRadio = [cellArray objectAtIndex:1];
   mSeparateFramesRadio = [cellArray objectAtIndex:2];
-  [mAsLaidOutRadio setTitle:[self localizedString:"As Laid Out on the Screen"]];
-  [mSelectedFrameRadio setTitle:[self localizedString:"The Selected Frame"]];
-  [mSeparateFramesRadio setTitle:[self localizedString:"Each Frame on Separate Pages"]];
+  [mAsLaidOutRadio setTitle:NSLocalizedString(@"As Laid Out on the Screen", nil)];
+  [mSelectedFrameRadio setTitle:NSLocalizedString(@"The Selected Frame", nil)];
+  [mSeparateFramesRadio setTitle:NSLocalizedString(@"Each Frame on Separate Pages", nil)];
 
   // Radio enabled state
   PRInt16 frameUIFlag;
@@ -442,11 +442,11 @@ static const char sHeaderFooterTags[][4] =  {"", "&T", "&U", "&D", "&P", "&PT"};
 - (void)addHeaderFooterSection
 {
   // Labels
-  [self addLabel:"Page Headers:" withFrame:NSMakeRect(0, 44, 151, 22)];
-  [self addLabel:"Page Footers:" withFrame:NSMakeRect(0, 0, 151, 22)];
-  [self addCenteredLabel:"Left" withFrame:NSMakeRect(156, 22, 100, 22)];
-  [self addCenteredLabel:"Center" withFrame:NSMakeRect(256, 22, 100, 22)];
-  [self addCenteredLabel:"Right" withFrame:NSMakeRect(356, 22, 100, 22)];
+  [self addLabel:[NSLocalizedString(@"Page Headers:", nil) UTF8String] withFrame:NSMakeRect(0, 44, 151, 22)];
+  [self addLabel:[NSLocalizedString(@"Page Footers:", nil) UTF8String] withFrame:NSMakeRect(0, 0, 151, 22)];
+  [self addCenteredLabel:[NSLocalizedString(@"Left", nil) UTF8String] withFrame:NSMakeRect(156, 22, 100, 22)];
+  [self addCenteredLabel:[NSLocalizedString(@"Center", nil) UTF8String] withFrame:NSMakeRect(256, 22, 100, 22)];
+  [self addCenteredLabel:[NSLocalizedString(@"Right", nil) UTF8String] withFrame:NSMakeRect(356, 22, 100, 22)];
 
   // Lists
   nsXPIDLString sel;

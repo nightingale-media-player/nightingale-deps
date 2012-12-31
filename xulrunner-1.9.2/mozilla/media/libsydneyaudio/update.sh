@@ -10,4 +10,7 @@ patch -p4 <include-CoreServices.patch
 patch -p4 <sydney_os2_base.patch
 patch -p4 <sydney_os2_moz.patch
 patch -p3 <bug495794_closeAudio.patch
-patch -p3 < bug495558_alsa_endian.patch
+patch -p3 <bug495558_alsa_endian.patch
+patch -p3 <bug526411_latency.patch
+patch -p3 <sydney_aix.patch
+

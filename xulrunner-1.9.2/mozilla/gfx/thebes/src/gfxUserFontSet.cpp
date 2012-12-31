@@ -49,6 +49,9 @@
 
 #include "woff.h"
 
+#include "opentype-sanitiser.h"
+#include "ots-memory-stream.h"
+
 #ifdef PR_LOGGING
 static PRLogModuleInfo *gUserFontsLog = PR_NewLogModule("userfonts");
 #endif /* PR_LOGGING */
@@ -223,6 +226,92 @@ PrepareOpenTypeData(const PRUint8* aData, PRUint32* aLength)
     return nsnull;
 }
 
+// Based on ots::ExpandingMemoryStream from ots-memory-stream.h,
+// adapted to use Mozilla allocators and to allow the final
+// memory buffer to be adopted by the client.
+class ExpandingMemoryStream : public ots::OTSStream {
+public:
+    ExpandingMemoryStream(size_t initial, size_t limit)
+        : mLength(initial), mLimit(limit), mOff(0) {
+        mPtr = NS_Alloc(mLength);
+    }
+
+    ~ExpandingMemoryStream() {
+        NS_Free(mPtr);
+    }
+
+    // return the buffer, and give up ownership of it
+    // so the caller becomes responsible to call NS_Free
+    // when finished with it
+    void* forget() {
+        void* p = mPtr;
+        mPtr = nsnull;
+        return p;
+    }
+
+    bool WriteRaw(const void *data, size_t length) {
+        if ((mOff + length > mLength) ||
+            (mLength > std::numeric_limits<size_t>::max() - mOff)) {
+            if (mLength == mLimit) {
+                return false;
+            }
+            size_t newLength = (mLength + 1) * 2;
+            if (newLength < mLength) {
+                return false;
+            }
+            if (newLength > mLimit) {
+                newLength = mLimit;
+            }
+            mPtr = NS_Realloc(mPtr, newLength);
+            mLength = newLength;
+            return WriteRaw(data, length);
+        }
+        std::memcpy(static_cast<char*>(mPtr) + mOff, data, length);
+        mOff += length;
+        return true;
+    }
+
+    bool Seek(off_t position) {
+        if (position < 0) {
+            return false;
+        }
+        if (static_cast<size_t>(position) > mLength) {
+            return false;
+        }
+        mOff = position;
+        return true;
+    }
+
+    off_t Tell() const {
+        return mOff;
+    }
+
+private:
+    void*        mPtr;
+    size_t       mLength;
+    const size_t mLimit;
+    off_t        mOff;
+};
+
+// Call the OTS library to sanitize an sfnt before attempting to use it.
+// Returns a newly-allocated block, or NULL in case of fatal errors.
+static const PRUint8*
+SanitizeOpenTypeData(const PRUint8* aData, PRUint32 aLength,
+                     PRUint32& aSaneLength, bool aIsCompressed)
+{
+    // limit output/expansion to 256MB
+    ExpandingMemoryStream output(aIsCompressed ? aLength * 2 : aLength,
+                                 1024 * 1024 * 256);
+    if (ots::Process(&output, aData, aLength,
+        gfxPlatform::GetPlatform()->PreserveOTLTablesWhenSanitizing())) {
+        aSaneLength = output.Tell();
+        return static_cast<PRUint8*>(output.forget());
+    } else {
+        aSaneLength = 0;
+        return nsnull;
+    }
+}
+
 // This is called when a font download finishes.
 // Ownership of aFontData passes in here, and the font set must
 // ensure that it is eventually deleted via NS_Free().
@@ -244,30 +333,69 @@ gfxUserFontSet::OnLoadComplete(gfxFontEntry *aFontToLoad,
     if (NS_SUCCEEDED(aDownloadStatus)) {
         gfxFontEntry *fe = nsnull;
 
-        // Unwrap/decompress or otherwise munge the downloaded data
+        // Unwrap/decompress/sanitize or otherwise munge the downloaded data
         // to make a usable sfnt structure.
         // This may cause aFontData to point to a new buffer, or be NULL.
-        aFontData = PrepareOpenTypeData(aFontData, &aLength);
-        if (aFontData &&
-            gfxFontUtils::ValidateSFNTHeaders(aFontData, aLength)) {
-            // Here ownership of aFontData is passed to the platform,
-            // which will delete it when no longer required
-            fe = gfxPlatform::GetPlatform()->MakePlatformFont(pe,
-                                                              aFontData,
-                                                              aLength);
-            aFontData = nsnull; // the platform may have freed the data now!
+
+        if (gfxPlatform::GetPlatform()->SanitizeDownloadedFonts()) {
+            gfxUserFontType fontType =
+                gfxFontUtils::DetermineFontDataType(aFontData, aLength);
+
+            // Call the OTS sanitizer; this will also decode WOFF to sfnt
+            // if necessary. The original data in aFontData is left unchanged.
+            PRUint32 saneLen;
+            const PRUint8* saneData =
+                SanitizeOpenTypeData(aFontData, aLength, saneLen,
+                                     fontType == GFX_USERFONT_WOFF);
+#ifdef DEBUG
+            if (!saneData) {
+                char buf[1000];
+                sprintf(buf, "downloaded font rejected for \"%s\"",
+                        NS_ConvertUTF16toUTF8(pe->FamilyName()).get());
+                NS_WARNING(buf);
+            }
+#endif
+            if (saneData) {
+                // Here ownership of saneData is passed to the platform,
+                // which will delete it when no longer required
+                fe = gfxPlatform::GetPlatform()->MakePlatformFont(pe,
+                                                                  saneData,
+                                                                  saneLen);
+                if (!fe) {
+                    NS_WARNING("failed to make platform font from download");
+                }
+            }
         } else {
-            // the data was unusable, so just discard it
-            // (error will be reported below, if logging is enabled)
+            // FIXME: this code can be removed if we remove the pref to
+            // disable the sanitizer; the PrepareOpenTypeData and
+            // ValidateSFNTHeaders functions will then be obsolete.
+            aFontData = PrepareOpenTypeData(aFontData, &aLength);
+
             if (aFontData) {
-                NS_Free((void*)aFontData);
+                if (gfxFontUtils::ValidateSFNTHeaders(aFontData, aLength)) {
+                    // Here ownership of aFontData is passed to the platform,
+                    // which will delete it when no longer required
+                    fe = gfxPlatform::GetPlatform()->MakePlatformFont(pe,
+                                                                      aFontData,
+                                                                      aLength);
+                    aFontData = nsnull; // we must NOT free this below!
+                } else {
+                    // the data was unusable, so just discard it
+                    // (error will be reported below, if logging is enabled)
+                    NS_WARNING("failed to make platform font from download");
+                }
             }
         }
 
+        if (aFontData) {
+            NS_Free((void*)aFontData);
+            aFontData = nsnull;
+        }
+
         if (fe) {
-            static_cast<gfxMixedFontFamily*>(pe->mFamily)->ReplaceFontEntry(pe, fe);
-            IncrementGeneration();
 #ifdef PR_LOGGING
+            // must do this before ReplaceFontEntry() because that will
+            // destroy the proxy!
             if (LOG_ENABLED()) {
                 nsCAutoString fontURI;
                 pe->mSrcList[pe->mSrcIndex].mURI->GetSpec(fontURI);
@@ -277,6 +405,8 @@ gfxUserFontSet::OnLoadComplete(gfxFontEntry *aFontToLoad,
                      PRUint32(mGeneration)));
             }
 #endif
+            static_cast<gfxMixedFontFamily*>(pe->mFamily)->ReplaceFontEntry(pe, fe);
+            IncrementGeneration();
             return PR_TRUE;
         } else {
 #ifdef PR_LOGGING
@@ -291,9 +421,6 @@ gfxUserFontSet::OnLoadComplete(gfxFontEntry *aFontToLoad,
         }
     } else {
         // download failed
-        if (aFontData) {
-            NS_Free((void*)aFontData);
-        }
 #ifdef PR_LOGGING
         if (LOG_ENABLED()) {
             nsCAutoString fontURI;
@@ -304,6 +431,10 @@ gfxUserFontSet::OnLoadComplete(gfxFontEntry *aFontToLoad,
                  aDownloadStatus));
         }
 #endif
+    }
+
+    if (aFontData) {
+        NS_Free((void*)aFontData);
     }
 
     // error occurred, load next src

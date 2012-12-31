@@ -48,6 +48,7 @@
 #include "nsPromptService.h"
 #include "nsWWJSUtils.h"
 #include "plstr.h"
+#include "nsIContentUtils.h"
 
 #include "nsIBaseWindow.h"
 #include "nsIDocShell.h"
@@ -519,6 +520,12 @@ nsWindowWatcher::OpenWindowJSInternal(nsIDOMWindow *aParent,
   NS_ENSURE_ARG_POINTER(_retval);
   *_retval = 0;
 
+  nsCOMPtr<nsIContentUtils> utils =
+    do_GetService("@mozilla.org/content/contentutils;1");
+  if (utils && !utils->IsSafeToRunScript()) {
+    return NS_ERROR_FAILURE;
+  }
+
   GetWindowTreeOwner(aParent, getter_AddRefs(parentTreeOwner));
 
   if (aUrl) {
@@ -641,6 +648,8 @@ nsWindowWatcher::OpenWindowJSInternal(nsIDOMWindow *aParent,
     }
   }
   
+  PRBool newWindowShouldBeModal = PR_FALSE;
+  PRBool parentIsModal = PR_FALSE;
   if (!newDocShellItem) {
     windowIsNew = PR_TRUE;
     isNewToplevelWindow = PR_TRUE;
@@ -649,8 +658,11 @@ nsWindowWatcher::OpenWindowJSInternal(nsIDOMWindow *aParent,
 
     // is the parent (if any) modal? if so, we must be, too.
     PRBool weAreModal = (chromeFlags & nsIWebBrowserChrome::CHROME_MODAL) != 0;
-    if (!weAreModal && parentChrome)
+    newWindowShouldBeModal = weAreModal;
+    if (!weAreModal && parentChrome) {
       parentChrome->IsWindowModal(&weAreModal);
+      parentIsModal = weAreModal;
+    }
 
     if (weAreModal) {
       windowIsModal = PR_TRUE;
@@ -995,12 +1007,24 @@ nsWindowWatcher::OpenWindowJSInternal(nsIDOMWindow *aParent,
       return NS_OK;
     }
 
-    // Reset popup state while opening a modal dialog, and firing
-    // events about the dialog, to prevent the current state from
-    // being active the whole time a modal dialog is open.
-    nsAutoPopupStatePusher popupStatePusher(modalContentWindow, openAbused);
-
-    newChrome->ShowAsModal();
+        
+    if (!newWindowShouldBeModal && parentIsModal) {
+      nsCOMPtr<nsIBaseWindow> parentWindow(do_GetInterface(newTreeOwner));
+      if (parentWindow) {
+        nsCOMPtr<nsIWidget> parentWidget;
+        parentWindow->GetMainWidget(getter_AddRefs(parentWidget));
+        if (parentWidget) {
+          parentWidget->SetModal(PR_TRUE);
+        }
+      }
+    } else { 
+      // Reset popup state while opening a modal dialog, and firing
+      // events about the dialog, to prevent the current state from
+      // being active the whole time a modal dialog is open.
+      nsAutoPopupStatePusher popupStatePusher(modalContentWindow, openAbused);
+  
+      newChrome->ShowAsModal();
+    }
   }
 
   return NS_OK;

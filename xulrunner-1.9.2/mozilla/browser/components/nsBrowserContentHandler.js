@@ -817,8 +817,7 @@ var nsDefaultCommandLineHandler = {
     }
   },
 
-  // XXX localize me... how?
-  helpInfo : "Usage: firefox [-flags] [<url>]\n",
+  helpInfo : "",
 
   /* nsIFactory */
   createInstance: function dch_CI(outer, iid) {

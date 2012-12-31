@@ -1,6 +1,6 @@
-This is sqlite 3.6.16.1
+This is sqlite 3.7.4
 
--- Shawn Wilsher <me@shawnwilsher.com>, 10/2009
+-- Paul O’Shannessy <paul@oshannessy.com>, 01/2011
 
 See http://www.sqlite.org/ for more info.
 
@@ -11,6 +11,16 @@ To move to a new version:
 
 Simply copy the sqlite3.h and sqlite3.c files from the amalgamation of sqlite.
 
-Be sure to update SQLITE_VERSION accordingly in $(topsrcdir)/configure.in.
+Also copy test_quota.c from the full source package.
 
--- Shawn Wilsher <me@shawnwilsher.com> 01/2008
+Be sure to update SQLITE_VERSION accordingly in $(topsrcdir)/configure.in as
+well as the version number at the top of this file.
+
+-- Paul O’Shannessy <paul@oshannessy.com>, 01/2011
+
+We are using an experimental quota management feature included in test_quota.c.
+This file is not compiled into mozsqlite, but instead included directly into
+mozStorageService.cpp for linking into mozstorage. This allows us to continue
+supporting system sqlite installations.
+
+-- Ben Turner <bent.mozilla@gmail.com>, 09/2010

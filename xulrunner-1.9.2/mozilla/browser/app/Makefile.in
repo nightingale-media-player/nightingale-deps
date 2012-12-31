@@ -55,7 +55,11 @@ PREF_JS_EXPORTS = $(srcdir)/profile/firefox.js \
 # hardcode en-US for the moment
 AB_CD = en-US
 
-DEFINES += -DAB_CD=$(AB_CD)
+DEFINES += \
+  -DAB_CD=$(AB_CD) \
+  -DDLL_PREFIX=$(DLL_PREFIX) \
+  -DDLL_SUFFIX=$(DLL_SUFFIX) \
+  $(NULL)
 
 APP_VERSION = $(shell cat $(srcdir)/../config/version.txt)
 DEFINES += -DAPP_VERSION="$(APP_VERSION)"

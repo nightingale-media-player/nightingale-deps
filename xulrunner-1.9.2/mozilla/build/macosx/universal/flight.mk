@@ -67,7 +67,7 @@ ifeq ($(MOZ_BUILD_APP),camino) # {
 INSTALLER_DIR = camino/installer
 MOZ_PKG_APPNAME = camino
 APPNAME = Camino.app
-BUILDCONFIG_JAR = Contents/MacOS/chrome/embed.jar
+BUILDCONFIG_JAR = Contents/MacOS/chrome/toolkit.jar
 else # } {
 MOZ_PKG_APPNAME = $(MOZ_APP_NAME)
 APPNAME = $(MOZ_APP_DISPLAYNAME)$(DBGTAG).app
@@ -125,6 +125,8 @@ postflight_all:
            cp $(DIST_PPC)/test-package-stage/reftest/automation.py   \
              $(DIST_X86)/test-package-stage/reftest/;                \
            $(TOPSRCDIR)/build/macosx/universal/unify                 \
+             --unify-with-sort "all-test-dirs\.list$$"               \
              $(DIST_PPC)/test-package-stage                          \
              $(DIST_X86)/test-package-stage                          \
-             $(DIST_UNI)/test-package-stage; fi
+             $(DIST_UNI)/test-package-stage;                         \
+	fi

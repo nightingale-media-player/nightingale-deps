@@ -112,9 +112,8 @@ TaskbarPreview::~TaskbarPreview() {
   if (sActivePreview == this)
     sActivePreview = nsnull;
 
-  // Here we remove the hook since this preview is dying before the nsWindow
-  if (mWnd)
-    DetachFromNSWindow(PR_TRUE);
+  // Our subclass should have invoked DetachFromNSWindow already.
+  NS_ASSERTION(!mWnd, "TaskbarPreview::DetachFromNSWindow was not called before destruction");
 
   // Make sure to release before potentially uninitializing COM
   mTaskbar = NULL;
@@ -144,7 +143,6 @@ TaskbarPreview::GetTooltip(nsAString &aTooltip) {
 
 NS_IMETHODIMP
 TaskbarPreview::SetTooltip(const nsAString &aTooltip) {
-  return NS_OK;
   mTooltip = aTooltip;
   return CanMakeTaskbarCalls() ? UpdateTooltip() : NS_OK;
 }
@@ -153,6 +151,13 @@ NS_IMETHODIMP
 TaskbarPreview::SetVisible(PRBool visible) {
   if (mVisible == visible) return NS_OK;
   mVisible = visible;
+
+  // If the nsWindow has already been destroyed but the caller is still trying
+  // to use it then just pretend that everything succeeded.  The caller doesn't
+  // actually have a way to detect this since it's the same case as when we
+  // CanMakeTaskbarCalls returns false.
+  if (!mWnd)
+    return NS_OK;
 
   return visible ? Enable() : Disable();
 }
@@ -234,11 +239,9 @@ TaskbarPreview::Disable() {
 }
 
 void
-TaskbarPreview::DetachFromNSWindow(PRBool windowIsAlive) {
-  if (windowIsAlive) {
-    WindowHook &hook = GetWindowHook();
-    hook.RemoveMonitor(WM_DESTROY, MainWindowHook, this);
-  }
+TaskbarPreview::DetachFromNSWindow() {
+  WindowHook &hook = GetWindowHook();
+  hook.RemoveMonitor(WM_DESTROY, MainWindowHook, this);
   mWnd = NULL;
 }
 
@@ -289,10 +292,20 @@ TaskbarPreview::WndProc(UINT nMsg, WPARAM wParam, LPARAM lParam) {
 
 PRBool
 TaskbarPreview::CanMakeTaskbarCalls() {
-  nsWindow *window = nsWindow::GetNSWindowPtr(mWnd);
-  NS_ASSERTION(window, "Cannot use taskbar previews in an embedded context!");
-
-  return mVisible && window->HasTaskbarIconBeenCreated();
+  // If the nsWindow has already been destroyed and we know it but our caller
+  // clearly doesn't so we can't make any calls.
+  if (!mWnd)
+    return PR_FALSE;
+  // Certain functions like SetTabOrder seem to require a visible window. During
+  // window close, the window seems to be hidden before being destroyed.
+  if (!::IsWindowVisible(mWnd))
+    return PR_FALSE;
+  if (mVisible) {
+    nsWindow *window = nsWindow::GetNSWindowPtr(mWnd);
+    NS_ASSERTION(window, "Could not get nsWindow from HWND");
+    return window->HasTaskbarIconBeenCreated();
+  }
+  return PR_FALSE;
 }
 
 WindowHook&
@@ -379,9 +392,8 @@ TaskbarPreview::MainWindowHook(void *aContext,
   TaskbarPreview *preview = reinterpret_cast<TaskbarPreview*>(aContext);
   if (nMsg == WM_DESTROY) {
     // nsWindow is being destroyed
-    // Don't remove the hook since it is currently in dispatch
-    // and the window is being destroyed
-    preview->DetachFromNSWindow(PR_FALSE);
+    // We can't really do anything at this point including removing hooks
+    preview->mWnd = NULL;
   } else {
     nsWindow *window = nsWindow::GetNSWindowPtr(preview->mWnd);
     NS_ASSERTION(window, "Cannot use taskbar previews in an embedded context!");

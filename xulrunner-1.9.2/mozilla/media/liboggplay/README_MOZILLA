@@ -46,3 +46,7 @@ bug520493.patch: Ensure liboggplay returns data when all tracks
                  are deactivated when a callback reaches EOF.
 
 bug523816.patch: Correct CMML data buffer size calculation.
+
+oggplay-aix.patch: Bug 576883 - add AIX support (this patch should be removed
+                   when AIX support is added upstream)
+

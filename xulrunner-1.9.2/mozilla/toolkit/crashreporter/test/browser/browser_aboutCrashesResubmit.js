@@ -89,6 +89,12 @@ function check_submit_pending(tab, crashes) {
                   });
     }
   }
+  function csp_fail() {
+    browser.removeEventListener("CrashSubmitFailed", csp_fail, true);
+    ok(false, "failed to submit crash report!");
+    cleanup_and_finish();
+  }
+  browser.addEventListener("CrashSubmitFailed", csp_fail, true);
   browser.addEventListener("load", csp_onload, true);
   function csp_pageshow() {
     browser.removeEventListener("pageshow", csp_pageshow, true);

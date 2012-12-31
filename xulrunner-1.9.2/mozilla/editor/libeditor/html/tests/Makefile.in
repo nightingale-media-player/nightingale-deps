@@ -51,10 +51,27 @@ _TEST_FILES = \
 		test_bug456244.html \
 		test_bug478725.html \
 		test_bug480972.html \
+		test_bug484181.html \
 		test_bug487524.html \
+		test_bug520189.html \
+		test_bug537046.html \
+		test_bug592592.html \
+		test_bug597784.html \
+		test_bug599322.html \
+		test_CF_HTML_clipboard.html \
+		$(NULL)
+
+_DATA_FILES = \
+		data/cfhtml-chromium.txt \
+		data/cfhtml-firefox.txt \
+		data/cfhtml-ie.txt \
+		data/cfhtml-ooo.txt \
 		$(NULL)
 
 libs:: $(_TEST_FILES)
 	$(INSTALL) $(foreach f,$^,"$f") $(DEPTH)/_tests/testing/mochitest/tests/$(relativesrcdir)
 	(cd $(srcdir) && tar $(TAR_CREATE_FLAGS) - browserscope) | (cd $(DEPTH)/_tests/testing/mochitest/tests/$(relativesrcdir) && tar -xf -)
+
+libs:: $(_DATA_FILES)
+	$(INSTALL) $(foreach f,$^,"$f") $(DEPTH)/_tests/testing/mochitest/tests/$(relativesrcdir)/data
 

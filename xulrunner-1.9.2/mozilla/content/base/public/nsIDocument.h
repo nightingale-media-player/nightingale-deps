@@ -1332,6 +1332,25 @@ public:
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIDocument_MOZILLA_1_9_2_BRANCH,
                               NS_IDOCUMENT_MOZILLA_1_9_2_BRANCH_IID)
 
+
+#define NS_IDOCUMENT_MOZILLA_1_9_2_5_BRANCH_IID             \
+  { 0x654b6327, 0xed3f, 0x4fe2,                             \
+      { 0x83, 0x40, 0x11, 0xc4, 0x06, 0x36, 0x77, 0x53 } }
+class nsIDocument_MOZILLA_1_9_2_5_BRANCH : public nsISupports {
+public:
+  NS_DECLARE_STATIC_IID_ACCESSOR(NS_IDOCUMENT_MOZILLA_1_9_2_5_BRANCH_IID)
+
+  virtual nsresult NodesFromRectHelper(float aX, float aY,
+                                       float aTopSize, float aRightSize,
+                                       float aBottomSize, float aLeftSize,
+                                       PRBool aIgnoreRootScrollFrame,
+                                       PRBool aFlushLayout,
+                                       nsIDOMNodeList** aReturn) = 0;
+};
+
+NS_DEFINE_STATIC_IID_ACCESSOR(nsIDocument_MOZILLA_1_9_2_5_BRANCH,
+                              NS_IDOCUMENT_MOZILLA_1_9_2_5_BRANCH_IID)
+
 /**
  * mozAutoSubtreeModified batches DOM mutations so that a DOMSubtreeModified
  * event is dispatched, if necessary, when the outermost mozAutoSubtreeModified

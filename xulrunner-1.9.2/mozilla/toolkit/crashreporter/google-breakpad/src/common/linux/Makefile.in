@@ -47,19 +47,31 @@ HOST_LIBRARY_NAME = host_breakpad_linux_common_s
 
 LOCAL_INCLUDES 	= -I$(srcdir)/../..
 
-# not compiling http_upload.cc currently
-# since it depends on libcurl
 CPPSRCS	= \
-  dump_symbols.cc \
   file_id.cc \
   guid_creator.cc \
+  http_upload.cc \
   $(NULL)
 
 HOST_CPPSRCS = \
+  dump_stabs.cc \
   dump_symbols.cc \
+  dwarf_cfi_to_module.cc \
+  dwarf_cu_to_module.cc \
+  dwarf_line_to_module.cc \
   file_id.cc \
   guid_creator.cc \
+  language.cc \
+  module.cc \
+  stabs_reader.cc \
   $(NULL)
+
+ifdef MOZ_PLATFORM_MAEMO
+# The GCC in scratchbox crashes writing DWARF debug info for language.cc.
+# Since we don't really need debug symbols for the host tools anyway,
+# just get rid of debug options.
+HOST_CXXFLAGS = $(patsubst -g%,,$(CXXFLAGS))
+endif
 
 # need static lib
 FORCE_STATIC_LIB = 1

@@ -59,6 +59,9 @@
 #include "stdlib.h"
 #include "nsWildCard.h"
 #include "nsZipArchive.h"
+#if defined(XP_WIN)
+#include <windows.h>
+#endif
 
 /**
  * Global allocator used with zlib. Destroyed in module shutdown.
@@ -314,7 +317,7 @@ nsZipItem*  nsZipArchive::GetItem(const char * aEntryName)
                 return 0;
         }
     }
-
+MOZ_WIN_MEM_TRY_BEGIN
     nsZipItem* item = mFiles[ HashName(aEntryName, len) ];
     while (item) {
       if ((len == item->nameLength) && 
@@ -322,8 +325,9 @@ nsZipItem*  nsZipArchive::GetItem(const char * aEntryName)
         return item; //-- found it
       item = item->next;
     }
+MOZ_WIN_MEM_TRY_CATCH(return nsnull)
   }
-  return 0;
+  return nsnull;
 }
 
 //---------------------------------------------
@@ -341,6 +345,7 @@ nsresult nsZipArchive::ExtractFile(nsZipItem *item, const char *outname,
   if (!mFd)
     return NS_ERROR_FAILURE;
 
+MOZ_WIN_MEM_TRY_BEGIN
   // Directory extraction is handled in nsJAR::Extract,
   // so the item to be extracted should never be a directory
   PR_ASSERT(!item->IsDirectory());
@@ -373,8 +378,8 @@ nsresult nsZipArchive::ExtractFile(nsZipItem *item, const char *outname,
       rv = ResolveSymlink(outname);
 #endif
   }
-
   return rv;
+MOZ_WIN_MEM_TRY_CATCH(return NS_ERROR_FAILURE)
 }
 
 //---------------------------------------------
@@ -445,7 +450,7 @@ nsresult nsZipFind::FindNext(const char ** aResult, PRUint16 *aNameLen)
 
   *aResult = 0;
   *aNameLen = 0;
-
+MOZ_WIN_MEM_TRY_BEGIN
   // we start from last match, look for next
   while (mSlot < ZIP_TABSIZE)
   {
@@ -474,7 +479,7 @@ nsresult nsZipFind::FindNext(const char ** aResult, PRUint16 *aNameLen)
       return NS_OK;
     }
   }
-
+MOZ_WIN_MEM_TRY_CATCH(return NS_ERROR_FAILURE)
   return NS_ERROR_FILE_TARGET_DOES_NOT_EXIST;
 }
 
@@ -526,16 +531,18 @@ nsresult nsZipArchive::BuildFileList()
   PRUint8* buf;
   PRUint8* startp = mFd->mFileData;
   PRUint8* endp = startp + mFd->mLen;
-
-  for (buf = endp - ZIPEND_SIZE; xtolong(buf) != ENDSIG; buf--)
+MOZ_WIN_MEM_TRY_BEGIN
+  PRUint32 centralOffset = 0;
+  for (buf = endp - ZIPEND_SIZE; buf > startp; buf--)
   {
-    if (buf == startp) {
-      // We're at the beginning of the file, and still no sign
-      // of the end signature.  File must be corrupted!
-      return NS_ERROR_FILE_CORRUPTED;
+    if (xtolong(buf) == ENDSIG) {
+      centralOffset = xtolong(((ZipEnd *)buf)->offset_central_dir);
+      break;
     }
   }
-  PRUint32 centralOffset = xtolong(((ZipEnd *)buf)->offset_central_dir);
+
+  if (!centralOffset)
+    return NS_ERROR_FILE_CORRUPTED;
 
   //-- Read the central directory headers
   buf = startp + centralOffset;
@@ -580,6 +587,8 @@ nsresult nsZipArchive::BuildFileList()
 
   if (sig != ENDSIG)
     return NS_ERROR_FILE_CORRUPTED;
+
+MOZ_WIN_MEM_TRY_CATCH(return NS_ERROR_FAILURE)
   return NS_OK;
 }
 
@@ -592,6 +601,7 @@ nsresult nsZipArchive::BuildSynthetics()
     return NS_OK;
   mBuiltSynthetics = true;
 
+MOZ_WIN_MEM_TRY_BEGIN
   // Create synthetic entries for any missing directories.
   // Do this when all ziptable has scanned to prevent double entries.
   for (int i = 0; i < ZIP_TABSIZE; ++i)
@@ -648,6 +658,7 @@ nsresult nsZipArchive::BuildSynthetics()
       } /* end processing of dirs in item's name */
     }
   }
+MOZ_WIN_MEM_TRY_CATCH(return NS_ERROR_FAILURE)
   return NS_OK;
 }
 
@@ -664,6 +675,7 @@ nsZipHandle* nsZipArchive::GetFD()
 PRUint8* nsZipArchive::GetData(nsZipItem* aItem)
 {
   PR_ASSERT (aItem);
+MOZ_WIN_MEM_TRY_BEGIN
 
   //-- read local header to get variable length values and calculate
   //-- the real data offset
@@ -690,6 +702,7 @@ PRUint8* nsZipArchive::GetData(nsZipItem* aItem)
     return nsnull;
 
   return data + offset;
+MOZ_WIN_MEM_TRY_CATCH(return nsnull)
 }
 
 //---------------------------------------------

@@ -1259,6 +1259,8 @@ nsXULListCellAccessible::GetAttributesInternal(nsIPersistentProperties *aAttribu
   // "table-cell-index" attribute
   nsCOMPtr<nsIAccessibleTable> table;
   GetTable(getter_AddRefs(table));
+  if (!table)
+    return NS_OK;
 
   PRInt32 rowIdx = -1;
   GetRowIndex(&rowIdx);

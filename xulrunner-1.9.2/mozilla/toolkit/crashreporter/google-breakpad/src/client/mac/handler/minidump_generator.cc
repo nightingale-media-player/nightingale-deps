@@ -174,7 +174,7 @@ bool MinidumpGenerator::Write(const char *path) {
     // exception.
     &MinidumpGenerator::WriteExceptionStream,
   };
-  bool result = true;
+  bool result = false;
 
   // If opening was successful, create the header, directory, and call each
   // writer.  The destructor for the TypedMDRVAs will cause the data to be
@@ -205,6 +205,7 @@ bool MinidumpGenerator::Write(const char *path) {
     header_ptr->stream_directory_rva = dir.position();
 
     MDRawDirectory local_dir;
+    result = true;
     for (int i = 0; (result) && (i < writer_count); ++i) {
       result = (this->*writers[i])(&local_dir);
 
@@ -322,11 +323,7 @@ bool MinidumpGenerator::WriteStack(breakpad_thread_state_data_t state,
                                    MDMemoryDescriptor *stack_location) {
   breakpad_thread_state_t *machine_state =
     reinterpret_cast<breakpad_thread_state_t *>(state);
-#if TARGET_CPU_PPC
-  mach_vm_address_t start_addr = machine_state->r1;
-#else
-  mach_vm_address_t start_addr = machine_state->__r1;
-#endif
+  mach_vm_address_t start_addr = REGISTER_FROM_THREADSTATE(machine_state, r1);
   return WriteStackFromStartAddress(start_addr, stack_location);
 }
 
@@ -335,11 +332,7 @@ MinidumpGenerator::CurrentPCForStack(breakpad_thread_state_data_t state) {
   breakpad_thread_state_t *machine_state =
     reinterpret_cast<breakpad_thread_state_t *>(state);
 
-#if TARGET_CPU_PPC
-  return machine_state->srr0;
-#else
-  return machine_state->__srr0;
-#endif
+  return REGISTER_FROM_THREADSTATE(machine_state, srr0);
 }
 
 bool MinidumpGenerator::WriteContext(breakpad_thread_state_data_t state,
@@ -355,13 +348,8 @@ bool MinidumpGenerator::WriteContext(breakpad_thread_state_data_t state,
   MinidumpContext *context_ptr = context.get();
   context_ptr->context_flags = MD_CONTEXT_PPC_BASE;
 
-#if TARGET_CPU_PPC64
-#define AddReg(a) context_ptr->a = machine_state->__ ## a
-#define AddGPR(a) context_ptr->gpr[a] = machine_state->__r ## a
-#else
-#define AddReg(a) context_ptr->a = machine_state->a
-#define AddGPR(a) context_ptr->gpr[a] = machine_state->r ## a
-#endif
+#define AddReg(a) context_ptr->a = REGISTER_FROM_THREADSTATE(machine_state, a)
+#define AddGPR(a) context_ptr->gpr[a] = REGISTER_FROM_THREADSTATE(machine_state, r ## a)
  
   AddReg(srr0);
   AddReg(cr);
@@ -420,9 +408,9 @@ bool MinidumpGenerator::WriteStack(breakpad_thread_state_data_t state,
     reinterpret_cast<breakpad_thread_state_t *>(state);
 
 #if TARGET_CPU_X86_64
-  mach_vm_address_t start_addr = machine_state->__rsp;
+  mach_vm_address_t start_addr = REGISTER_FROM_THREADSTATE(machine_state, rsp);
 #else
-  mach_vm_address_t start_addr = machine_state->esp;
+  mach_vm_address_t start_addr = REGISTER_FROM_THREADSTATE(machine_state, esp);
 #endif
   return WriteStackFromStartAddress(start_addr, stack_location);
 }
@@ -433,9 +421,9 @@ MinidumpGenerator::CurrentPCForStack(breakpad_thread_state_data_t state) {
     reinterpret_cast<breakpad_thread_state_t *>(state);
 
 #if TARGET_CPU_X86_64
-  return machine_state->__rip;
+  return REGISTER_FROM_THREADSTATE(machine_state, rip);
 #else
-  return machine_state->eip;
+  return REGISTER_FROM_THREADSTATE(machine_state, eip);
 #endif
 }
 
@@ -451,10 +439,9 @@ bool MinidumpGenerator::WriteContext(breakpad_thread_state_data_t state,
   *register_location = context.location();
   MinidumpContext *context_ptr = context.get();
 
+#define AddReg(a) context_ptr->a = REGISTER_FROM_THREADSTATE(machine_state, a)
 #if TARGET_CPU_X86
   context_ptr->context_flags = MD_CONTEXT_X86;
-
-#define AddReg(a) context_ptr->a = machine_state->a
   AddReg(eax);
   AddReg(ebx);
   AddReg(ecx);
@@ -474,8 +461,6 @@ bool MinidumpGenerator::WriteContext(breakpad_thread_state_data_t state,
 
   AddReg(eip);
 #else
-
-#define AddReg(a) context_ptr->a = machine_state->__ ## a
   context_ptr->context_flags = MD_CONTEXT_AMD64;
   AddReg(rax);
   AddReg(rbx);
@@ -503,6 +488,7 @@ bool MinidumpGenerator::WriteContext(breakpad_thread_state_data_t state,
   AddReg(fs);
   AddReg(gs);
 #endif
+#undef AddReg(a)
 
   return true;
 }
@@ -651,6 +637,7 @@ bool MinidumpGenerator::WriteSystemInfoStream(
       // get version and feature info
       cpuid(1, info_ptr->cpu.x86_cpu_info.version_information, unused, unused2,
             info_ptr->cpu.x86_cpu_info.feature_information);
+
       // family
       info_ptr->processor_level =
         (info_ptr->cpu.x86_cpu_info.version_information & 0xF00) >> 8;
@@ -658,6 +645,20 @@ bool MinidumpGenerator::WriteSystemInfoStream(
       info_ptr->processor_revision =
         (info_ptr->cpu.x86_cpu_info.version_information & 0xF) |
         ((info_ptr->cpu.x86_cpu_info.version_information & 0xF0) << 4);
+
+      // decode extended model info
+      if (info_ptr->processor_level == 0xF ||
+          info_ptr->processor_level == 0x6) {
+        info_ptr->processor_revision |=
+          ((info_ptr->cpu.x86_cpu_info.version_information & 0xF0000) >> 4);
+      }
+
+      // decode extended family info
+      if (info_ptr->processor_level == 0xF) {
+        info_ptr->processor_level +=
+          ((info_ptr->cpu.x86_cpu_info.version_information & 0xFF00000) >> 20);
+      }
+
 #endif // __i386__
       break;
     default:

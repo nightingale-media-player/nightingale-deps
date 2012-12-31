@@ -25,7 +25,6 @@
  *   Travis Bogard <travis@netscape.com>
  *   Dan Rosen <dr@netscape.com>
  *   Ben Goodger <ben@netscape.com>
- *   Ben Turner <mozilla@songbirdnest.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -1144,39 +1143,6 @@ PRBool nsXULWindow::LoadSizeFromXUL()
     }
   }
 
-  SizeConstraints sizeConstraints;
-  rv = windowElement->GetAttribute(NS_LITERAL_STRING("minwidth"), sizeString);
-  if (NS_SUCCEEDED(rv)) {
-    temp = sizeString.ToInteger(&errorCode);
-    if (NS_SUCCEEDED(errorCode) && temp > 0) {
-      sizeConstraints.minWidth = temp;
-    }
-  }
-
-  rv = windowElement->GetAttribute(NS_LITERAL_STRING("maxwidth"), sizeString);
-  if (NS_SUCCEEDED(rv)) {
-    temp = sizeString.ToInteger(&errorCode);
-    if (NS_SUCCEEDED(errorCode) && temp > 0) {
-      sizeConstraints.maxWidth = temp;
-    }
-  }
-
-  rv = windowElement->GetAttribute(NS_LITERAL_STRING("minheight"), sizeString);
-  if (NS_SUCCEEDED(rv)) {
-    temp = sizeString.ToInteger(&errorCode);
-    if (NS_SUCCEEDED(errorCode) && temp > 0) {
-      sizeConstraints.minHeight = temp;
-    }
-  }
-
-  rv = windowElement->GetAttribute(NS_LITERAL_STRING("maxheight"), sizeString);
-  if (NS_SUCCEEDED(rv)) {
-    temp = sizeString.ToInteger(&errorCode);
-    if (NS_SUCCEEDED(errorCode) && temp > 0) {
-      sizeConstraints.maxHeight = temp;
-    }
-  }
-
   if (gotSize) {
     // constrain to screen size
     nsCOMPtr<nsIDOMWindowInternal> domWindow;
@@ -1202,15 +1168,6 @@ PRBool nsXULWindow::LoadSizeFromXUL()
     if (specWidth != currWidth || specHeight != currHeight)
       SetSize(specWidth, specHeight, PR_FALSE);
   }
-
-  // XXXbent The values loaded from XUL should be in CSS pixels. Those values
-  //         will need to be converted to device pixels here once such a
-  //         conversion is possible.
-  rv = mWindow->SetSizeConstraints(sizeConstraints.minWidth,
-                                   sizeConstraints.maxWidth,
-                                   sizeConstraints.minHeight,
-                                   sizeConstraints.maxHeight);
-  NS_WARN_IF_FALSE(NS_SUCCEEDED(rv), "SetSizeConstraints failed!");
 
   return gotSize;
 }

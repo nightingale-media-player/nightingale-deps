@@ -957,6 +957,8 @@ protected:
 
   // Most recent canvas background color.
   nscolor                   mCanvasBackgroundColor;
+
+  static nsIContent* gKeyDownTarget;
 };
 
 /**

@@ -21,7 +21,6 @@
 #
 # Contributor(s):
 #  Ted Mielczarek <ted.mielczarek@gmail.com>
-#  J. Paul Reed <mozpreed@sigkill.com>
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -53,26 +52,19 @@ VISIBILITY_FLAGS=
 ifeq (WINNT,$(OS_TARGET))
 # Building the CRT from source
 CRT_OBJ_DIR = $(CURDIR)/crtsrc
-
-ifeq ($(MOZ_DEBUG),1)
-MOZ_CRT_DLL_NAME = mozcrt19d
-MOZ_CRT_STATIC_LIBS = libcmtd libcpmtd
-else
 MOZ_CRT_DLL_NAME = mozcrt19
+MOZ_CRTCPP_DLL_NAME = mozcpp19
 MOZ_CRT_STATIC_LIBS = libcmt libcpmt
-endif # MOZ_DEBUG
-
 MOZ_CRT_DLL = $(CRT_OBJ_DIR)/build/intel/$(MOZ_CRT_DLL_NAME).dll
 MOZ_CRT_IMPORT_LIB = $(CRT_OBJ_DIR)/build/intel/$(MOZ_CRT_DLL_NAME).lib
-MOZ_CRT_PDB = $(CRT_OBJ_DIR)/build/intel/$(MOZ_CRT_DLL_NAME).pdb
+MOZ_CRTCPP_DLL = $(CRT_OBJ_DIR)/build/intel/$(MOZ_CRTCPP_DLL_NAME).dll
+MOZ_CRTCPP_IMPORT_LIB = $(CRT_OBJ_DIR)/build/intel/$(MOZ_CRTCPP_DLL_NAME).lib
 
-WIN32_CRT_SRC_MEM_HEADERS=crtdbg.h malloc.h xdebug xlocale
-
-# copy the CRT DLL to dist/bin,
-# copy everything to dist/lib
-libs:: $(MOZ_CRT_DLL) $(MOZ_CRT_IMPORT_LIB) $(MOZ_CRT_PDB)
-	$(INSTALL) $(MOZ_CRT_DLL) $(FINAL_TARGET)
-	$(INSTALL) $(MOZ_CRT_DLL) $(MOZ_CRT_IMPORT_LIB) $(MOZ_CRT_PDB) $(DIST)/lib
+# copy the CRT DLLs to dist/bin,
+# copy the import libs to dist/lib
+libs:: $(MOZ_CRT_DLL) $(MOZ_CRT_IMPORT_LIB)
+	$(INSTALL) $(MOZ_CRT_DLL) $(MOZ_CRTCPP_DLL) $(FINAL_TARGET)
+	$(INSTALL) $(MOZ_CRT_IMPORT_LIB) $(MOZ_CRTCPP_IMPORT_LIB) $(DIST)/lib
 
 $(MOZ_CRT_IMPORT_LIB): $(MOZ_CRT_DLL)
 
@@ -91,30 +83,6 @@ endif
 $(CRT_OBJ_DIR)/jemalloc.c: $(srcdir)/$(CRTDIFF)
 	rm -rf $(CRT_OBJ_DIR)
 	cp -R "$(WIN32_CRT_SRC_DIR)" $(CRT_OBJ_DIR)
-
-	# Ooh, let's be clever...
-	cp $(addprefix $(CRT_OBJ_DIR)/, _sample_.rc mozcrt19.rc)
-	cp $(addprefix $(CRT_OBJ_DIR)/intel/, _sample_.def mozcrt19.def)
-	cp $(addprefix $(CRT_OBJ_DIR)/intel/, _sampld_.def mozcrt19d.def)
-
-	# release rc files
-	for f in $(addprefix $(CRT_OBJ_DIR)/, sample_p.rc sample_m.rc); do \
-	  a=`echo $$f | sed -e 's/sample/mozcrt19/'`; \
-	  cp -v $$f $$a; \
-	done
-
-	# Release dll def files; still need them for the patch, though...
-	for f in $(addprefix $(CRT_OBJ_DIR)/, sample_m.def sample_p.def sample_u.def); do \
-	  a=`echo $$f | sed -e 's/sample/mozcrt19/'`; \
-	  cp -v $$f $$a; \
-	done
-
-	# Debug dll def files; still need them for the patch, though...
-	for f in $(addprefix $(CRT_OBJ_DIR)/, sampld_m.def sampld_p.def sampld_u.def); do \
-	  a=`echo $$f | sed -e 's/sampld/mozcrt19d/'`; \
-	  cp -v $$f $$a; \
-	done
-
 # per http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=1189363&SiteID=1
 	$(foreach i,dll mt xdll xmt,$(EXTRACT_CMD))
 # truly awful
@@ -128,16 +96,7 @@ $(MOZ_CRT_DLL): \
 	cp $(srcdir)/jemalloc.c $(srcdir)/jemalloc.h $(srcdir)/rb.h \
 	$(CRT_OBJ_DIR)
 # this pretty much sucks, but nmake and make don't play well together
-	MOZ_DEBUG=$(MOZ_DEBUG) $(PYTHON) $(srcdir)/build-crt.py $(CRT_OBJ_DIR)
-
-ifeq ($(MOZ_DEBUG),1)
-	# debug mode
-	# In debug mode, we need to copy the debug headers we've patched, so
-	# the mozilla build uses the same headers that we used for the CRT
-	# build; incidentally, this is why INCLUDE now gets munged
-	cp -v $(addprefix $(CRT_OBJ_DIR)/, $(WIN32_CRT_SRC_MEM_HEADERS)) $(CRT_OBJ_DIR)/build/intel
-endif # MOZ_DEBUG 
-
+	$(PYTHON) $(srcdir)/build-crt.py $(CRT_OBJ_DIR)
 # XXX: these don't link right for some reason; the problem is likely
 # that  not all the standard symbols are exported; looks like MSFT
 # never updated the sample.def files; could probably fix if someone

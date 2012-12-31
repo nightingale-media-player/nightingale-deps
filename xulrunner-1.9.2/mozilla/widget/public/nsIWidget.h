@@ -171,38 +171,6 @@ enum nsTopLevelWidgetZPlacement { // for PlaceBehind()
 
 
 /**
- * Size constraints for a widget
- * @see nsBaseWidget::SetSizeConstraints()
- */
-struct SizeConstraints {
-  SizeConstraints(PRInt32 aMinWidth,
-                  PRInt32 aMaxWidth,
-                  PRInt32 aMinHeight,
-                  PRInt32 aMaxHeight)
-  : minWidth(aMinWidth),
-    maxWidth(aMaxWidth),
-    minHeight(aMinHeight),
-    maxHeight(aMaxHeight)
-  {
-  }
-  SizeConstraints()
-  : minWidth(MIN_CONSTRAINT),
-    maxWidth(MAX_CONSTRAINT),
-    minHeight(MIN_CONSTRAINT),
-    maxHeight(MAX_CONSTRAINT)
-  {
-  }
-
-  PRInt32 minWidth;
-  PRInt32 maxWidth;
-  PRInt32 minHeight;
-  PRInt32 maxHeight;
-  
-  enum { MIN_CONSTRAINT = 0 };
-  enum { MAX_CONSTRAINT = PR_INT32_MAX };
-};
-
-/**
  * The base class for all the widgets. It provides the interface for
  * all basic and necessary functionality.
  */
@@ -392,58 +360,6 @@ class nsIWidget : public nsISupports {
     NS_IMETHOD ConstrainPosition(PRBool aAllowSlop,
                                  PRInt32 *aX,
                                  PRInt32 *aY) = 0;
-
-    /**
-     * Platform-dependent method that uses the OS to ensure that the size of
-     * widget never exceeds the given minimum or maximum values. Also affects
-     * the behavior of the <xul:resizer> element.
-     *
-     * This is only guaranteed to work on top-level window widgets (i.e.
-     * widgets created with the 'eWindowType_dialog', 'eWindowType_toplevel',
-     * or 'eWindowType_invisible' windowTypes that have no parent). Calling
-     * this function on any other type of window will throw
-     * NS_ERROR_UNEXPECTED. In contrast, calls to GetSizeConstraints will
-     * always succeed, but each constraint will be set to -1.
-     *
-     * XXXbent All of the following pixel values are supposed to be device
-     *         pixels, but note that we currently assume device pixels map 1:1
-     *         to CSS pixels.
-     *
-     * @param aMinWidth: the minimum width in device pixels (-1 to ignore)
-     * @param aMaxWidth: the maximum width in device pixels (-1 to ignore)
-     * @param aMinHeight: the minimum height in device pixels (-1 to ignore)
-     * @param aMaxHeight: the maximum height in device pixels (-1 to ignore)
-     *
-     * @throws NS_ERROR_UNEXPECTED if called on a non-top-level widget
-     **/
-    NS_IMETHOD SetSizeConstraints(PRInt32 aMinWidth,
-                                  PRInt32 aMaxWidth,
-                                  PRInt32 aMinHeight,
-                                  PRInt32 aMaxHeight) = 0;
-
-    /**
-     * Return the size constraints currently observed by the widget.
-     *
-     * You can pass nsnull for any of the parameters if you don't care to
-     * retrieve their value. Constraint values set to -1 by this function
-     * indicate that that particular constraint is not observed.
-     *
-     * Calling this function on non-top-level widgets will succeed, however
-     * *all* constraints will be reported as -1 (unconstrained).
-     *
-     * XXXbent All of the following pixel values are supposed to be device
-     *         pixels, but note that we currently assume device pixels map 1:1
-     *         to CSS pixels.
-     *
-     * @param aMinWidth: the minimum width of the widget in device pixels
-     * @param aMaxWidth: the maximum width for the widget in device pixels
-     * @param aMinHeight: the minimum height for the widget in device pixels
-     * @param aMaxHeight: the maximum height for the widget in device pixels
-     **/
-    NS_IMETHOD GetSizeConstraints(PRInt32* aMinWidth,
-                                  PRInt32* aMaxWidth,
-                                  PRInt32* aMinHeight,
-                                  PRInt32* aMaxHeight) = 0;
 
     /**
      * Move this widget.
@@ -780,11 +696,8 @@ class nsIWidget : public nsISupports {
      * operation fails to blit because part of the window is unavailable
      * (e.g. partially offscreen).
      * 
-     * The caller guarantees that the rectangles in aDestRects are ordered
-     * so that copying from aDestRects[i] - aDelta to aDestRects[i] does
-     * not alter anything in aDestRects[j] - aDelta for j > i. That is,
-     * it's safe to just copy the rectangles in the order given in
-     * aDestRects.
+     * The caller guarantees that the rectangles in aDestRects are
+     * non-intersecting.
      *
      * @param aDelta amount to scroll (device pixels)
      * @param aDestRects rectangles to copy into

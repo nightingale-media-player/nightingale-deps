@@ -70,10 +70,7 @@ nsTArray_base::EnsureCapacity(size_type capacity, size_type elemSize) {
     return PR_FALSE;
   }
 
-  // XXX Somehow mHdr doesn't always point to the right sEmptyHdr (linking
-  //     problems on OS X in debug builds). We're going to instead check the
-  //     capacity of the header.
-  if (!mHdr->mCapacity) {
+  if (mHdr == &sEmptyHdr) {
     // NS_Alloc new data
     Header *header = static_cast<Header*>
                                 (NS_Alloc(sizeof(Header) + capacity * elemSize));

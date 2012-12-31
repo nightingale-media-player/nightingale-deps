@@ -35,10 +35,10 @@
 #
 # ***** END LICENSE BLOCK *****
 
-DEPTH = ../../../..
+DEPTH     = ../../../..
 topsrcdir = @top_srcdir@
-srcdir = @srcdir@
-VPATH = @srcdir@
+srcdir    = @srcdir@
+VPATH     = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
@@ -48,10 +48,23 @@ XPCSHELL_TESTS = \
   unit \
   $(NULL)
 
-TESTROOT	= $(shell cd $(DEPTH) && pwd)/_tests/xpcshell/$(MODULE)
+TESTROOT = $(call core_abspath,$(DEPTH))/_tests/xpcshell/$(MODULE)
+
+DEFINES += \
+  -DAB_CD=$(AB_CD) \
+  -DMOZ_APP_NAME=$(MOZ_APP_NAME) \
+  -DBIN_SUFFIX=$(BIN_SUFFIX) \
+  -DNS_NO_XPCOM \
+  $(NULL)
+
+ifndef ANDROID
+DIRS = \
+  chrome \
+  $(NULL)
 
 CPPSRCS = \
   TestAUSReadStrings.cpp \
+  TestAUSHelper.cpp \
   $(NULL)
 
 SIMPLE_PROGRAMS = $(CPPSRCS:.cpp=$(BIN_SUFFIX))
@@ -68,11 +81,6 @@ LOCAL_INCLUDES += \
   $(NULL)
 
 MOZ_WINCONSOLE = 1
-
-DEFINES += \
-  -DAB_CD=$(AB_CD) \
-  -DNS_NO_XPCOM \
-  $(NULL)
 
 LIBS += \
   $(DEPTH)/toolkit/mozapps/update/src/updater/readstrings.$(OBJ_SUFFIX) \
@@ -99,9 +107,6 @@ else
 bug473417dir = test_bug473417
 endif
 
-libs:: unit/head_update.js.in
-	$(PYTHON) $(MOZILLA_DIR)/config/Preprocessor.py -Fsubstitution $(DEFINES) $(ACDEFINES) $^ > $(TESTROOT)/unit/head_update.js
-
 check::
 	$(RM) -rf $(DEPTH)/_tests/updater/ && $(NSINSTALL) -D $(DEPTH)/_tests/updater/$(bug473417dir)/
 	for i in $(INI_TEST_FILES); do \
@@ -109,3 +114,12 @@ check::
 	done
 	$(INSTALL) $(FINAL_TARGET)/TestAUSReadStrings$(BIN_SUFFIX) $(DEPTH)/_tests/updater/$(bug473417dir)/
 	@$(RUN_TEST_PROGRAM) $(DEPTH)/_tests/updater/$(bug473417dir)/TestAUSReadStrings$(BIN_SUFFIX)
+endif # ANDROID
+
+libs:: unit/head_update.js.in
+	$(PYTHON) $(MOZILLA_DIR)/config/Preprocessor.py -Fsubstitution $(DEFINES) $(ACDEFINES) $^ > $(TESTROOT)/unit/head_update.js
+
+ifndef ANDROID
+libs::
+	$(INSTALL) TestAUSHelper$(BIN_SUFFIX) $(TESTROOT)/unit
+endif # ANDROID

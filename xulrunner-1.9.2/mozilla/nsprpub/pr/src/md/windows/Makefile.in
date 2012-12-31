@@ -46,7 +46,7 @@ include $(MOD_DEPTH)/config/autoconf.mk
 
 include $(topsrcdir)/config/config.mk
 
-ifeq (,$(filter-out WIN95 WINCE, $(OS_TARGET)))
+ifeq (,$(filter-out WIN95 WINCE WINMO, $(OS_TARGET)))
 CSRCS =          \
     ntmisc.c \
     ntsec.c   \
@@ -93,7 +93,7 @@ include $(topsrcdir)/config/rules.mk
 export:: $(TARGETS)
 
 # Bug 122433 workaround: disable global optimization (-Og-) on ntio.c.
-ifdef BUILD_OPT
+ifdef MOZ_OPTIMIZE
 ifeq ($(OS_TARGET), WINNT)
 ifndef NS_USE_GCC
 $(OBJDIR)/ntio.$(OBJ_SUFFIX): ntio.c

@@ -103,7 +103,11 @@ static DllBlockInfo sWindowsDllBlocklist[] = {
   // Music download filter for vkontakte.ru - old instances
   // of this DLL cause crashes
   {"vksaver.dll", MAKE_VERSION(1,0,0,1)},
-  
+
+  // psicon.dll - Topcrashes in Thunderbird, and some crashes in Firefox
+  // Adobe photoshop library, now redundant in later installations
+  {"psicon.dll", ALL_VERSIONS},
+
   // leave these two in always for tests
   { "mozdllblockingtest.dll", ALL_VERSIONS },
   { "mozdllblockingtest_versioned.dll", 0x0000000400000000ULL },

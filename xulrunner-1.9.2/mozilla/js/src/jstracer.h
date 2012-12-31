@@ -1013,6 +1013,9 @@ public:
 
     JS_REQUIRES_STACK JSTraceType determineSlotType(jsval* vp);
 
+    JS_REQUIRES_STACK JSRecordingStatus setUpwardTrackedVar(jsval* stackVp, jsval v,
+                                                            nanojit::LIns* v_ins);
+
     /*
      * Examines current interpreter state to record information suitable for
      * returning to the interpreter through a side exit of the given type.

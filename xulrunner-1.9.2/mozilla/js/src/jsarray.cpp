@@ -322,7 +322,7 @@ ResizeSlots(JSContext *cx, JSObject *obj, uint32 oldlen, uint32 newlen,
         return JS_TRUE;
     }
 
-    if (newlen > MAX_DSLOTS_LENGTH) {
+    if (newlen > MAX_DSLOTS_LENGTH32) {
         js_ReportAllocationOverflow(cx);
         return JS_FALSE;
     }
@@ -653,8 +653,16 @@ array_length_setter(JSContext *cx, JSObject *obj, jsval id, jsval *vp)
     if (OBJ_IS_DENSE_ARRAY(cx, obj)) {
         /* Don't reallocate if we're not actually shrinking our slots. */
         jsuint capacity = js_DenseArrayCapacity(obj);
-        if (capacity > newlen && !ResizeSlots(cx, obj, capacity, newlen))
-            return JS_FALSE;
+        if (capacity > newlen) {
+            jsuint numNonHolesRemoved = 0;
+            for (jsval *slots = obj->dslots + newlen; slots < obj->dslots + capacity; slots++)
+                if (*slots != JSVAL_HOLE)
+                    numNonHolesRemoved++;
+            if (!ResizeSlots(cx, obj, capacity, newlen))
+                return JS_FALSE;
+            obj->fslots[JSSLOT_ARRAY_COUNT] -= numNonHolesRemoved;
+        }
+
     } else if (oldlen - newlen < (1 << 24)) {
         do {
             --oldlen;
@@ -736,6 +744,8 @@ array_lookupProperty(JSContext *cx, JSObject *obj, jsid id, JSObject **objp,
         *propp = NULL;
         return JS_TRUE;
     }
+
+    JSAutoTempValueRooter root(cx, proto);
     return proto->lookupProperty(cx, id, objp, propp);
 }
 
@@ -820,22 +830,6 @@ slowarray_addProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp)
     if (index >= length)
         obj->fslots[JSSLOT_ARRAY_LENGTH] = index + 1;
     return JS_TRUE;
-}
-
-static void
-slowarray_trace(JSTracer *trc, JSObject *obj)
-{
-    uint32 length = obj->fslots[JSSLOT_ARRAY_LENGTH];
-
-    JS_ASSERT(STOBJ_GET_CLASS(obj) == &js_SlowArrayClass);
-
-    /*
-     * Move JSSLOT_ARRAY_LENGTH aside to prevent the GC from treating
-     * untagged integer values as objects or strings.
-     */
-    obj->fslots[JSSLOT_ARRAY_LENGTH] = JSVAL_VOID;
-    js_TraceObject(trc, obj);
-    obj->fslots[JSSLOT_ARRAY_LENGTH] = length;
 }
 
 static JSObjectOps js_SlowArrayObjectOps;
@@ -1271,7 +1265,7 @@ JSClass js_ArrayClass = {
 
 JSClass js_SlowArrayClass = {
     "Array",
-    JSCLASS_HAS_RESERVED_SLOTS(1) |
+    JSCLASS_HAS_PRIVATE |
     JSCLASS_HAS_CACHED_PROTO(JSProto_Array),
     slowarray_addProperty, JS_PropertyStub, JS_PropertyStub,  JS_PropertyStub,
     JS_EnumerateStub,      JS_ResolveStub,  js_TryValueOf,    NULL,
@@ -1338,9 +1332,14 @@ js_MakeArraySlow(JSContext *cx, JSObject *obj)
      * a jsval, set our slow/sparse COUNT to the current length as a jsval, so
      * we can tell when only named properties have been added to a dense array
      * to make it slow-but-not-sparse.
+     *
+     * We do not need to make the length slot GC-safe as this slot is private
+     * where the implementation can store an arbitrary value.
      */
     {
-        uint32 length = obj->fslots[JSSLOT_ARRAY_LENGTH];
+        JS_STATIC_ASSERT(JSSLOT_ARRAY_LENGTH == JSSLOT_PRIVATE);
+        JS_ASSERT(js_SlowArrayClass.flags & JSCLASS_HAS_PRIVATE);
+        uint32 length = uint32(obj->fslots[JSSLOT_ARRAY_LENGTH]);
         obj->fslots[JSSLOT_ARRAY_COUNT] = INT_FITS_IN_JSVAL(length)
                                           ? INT_TO_JSVAL(length)
                                           : JSVAL_VOID;
@@ -1528,17 +1527,6 @@ array_toString_sub(JSContext *cx, JSObject *obj, JSBool locale,
     MUST_FLOW_THROUGH("out");
     bool ok = false;
 
-    /* Get characters to use for the separator. */
-    static const jschar comma = ',';
-    const jschar *sep;
-    size_t seplen;
-    if (sepstr) {
-        sepstr->getCharsAndLength(sep, seplen);
-    } else {
-        sep = &comma;
-        seplen = 1;
-    }
-
     /*
      * This object will take responsibility for the jschar buffer until the
      * buffer is transferred to the returned JSString.
@@ -1577,6 +1565,15 @@ array_toString_sub(JSContext *cx, JSObject *obj, JSBool locale,
 
         /* Append the separator. */
         if (index + 1 != length) {
+            static const jschar comma = ',';
+            const jschar *sep;
+            size_t seplen;
+            if (sepstr) {
+                sepstr->getCharsAndLength(sep, seplen);
+            } else {
+                sep = &comma;
+                seplen = 1;
+            }
             if (!cb.append(sep, seplen))
                 goto out;
         }
@@ -3081,7 +3078,8 @@ array_extra(JSContext *cx, ArrayExtraMode mode, uintN argc, jsval *vp)
     jsval *argv, *elemroot, *invokevp, *sp;
     JSBool ok, cond, hole;
     JSObject *callable, *thisp, *newarr;
-    jsint start, end, step, i;
+    jsuint start, end, i;
+    jsint step;
     void *mark;
 
     obj = JS_THIS_OBJECT(cx, vp);
@@ -3450,7 +3448,6 @@ js_InitArrayClass(JSContext *cx, JSObject *obj)
 
     /* Initialize the ops structure used by slow arrays */
     memcpy(&js_SlowArrayObjectOps, &js_ObjectOps, sizeof(JSObjectOps));
-    js_SlowArrayObjectOps.trace = slowarray_trace;
     js_SlowArrayObjectOps.enumerate = slowarray_enumerate;
     js_SlowArrayObjectOps.call = NULL;
 
@@ -3537,13 +3534,17 @@ JS_FRIEND_API(JSBool)
 js_CoerceArrayToCanvasImageData(JSObject *obj, jsuint offset, jsuint count,
                                 JSUint8 *dest)
 {
-    uint32 length;
+    uint32 length, capacity;
 
     if (!obj || !js_IsDenseArray(obj))
         return JS_FALSE;
 
     length = obj->fslots[JSSLOT_ARRAY_LENGTH];
     if (length < offset + count)
+        return JS_FALSE;
+
+    capacity = js_DenseArrayCapacity(obj);
+    if (capacity < offset + count)
         return JS_FALSE;
 
     JSUint8 *dp = dest;

@@ -294,11 +294,6 @@ protected:
   // coordinate system of this frame.
   PRInt32 GetRowAt(nscoord aX, nscoord aY);
 
-  // An internal visible hit test.  Returns true if coordinates are in visible
-  // space of frame, even if they're not in a tree row.  aX and aY are expected
-  // to be in app units in the coordinate system of this frame.
-  PRBool IsInVisibleSpace(nscoord aX, nscoord aY);
-
   // Check for bidi characters in the text, and if there are any, ensure
   // that the prescontext is in bidi mode.
   void CheckTextForBidi(nsAutoString& aText);
@@ -433,6 +428,8 @@ protected:
       InvalidateRow(aRow + aOrientation);
   }
 
+public:
+  static
   already_AddRefed<nsTreeColumn> GetColumnImpl(nsITreeColumn* aUnknownCol) {
     if (!aUnknownCol)
       return nsnull;
@@ -441,6 +438,8 @@ protected:
     aUnknownCol->QueryInterface(NS_GET_IID(nsTreeColumn), (void**)&col);
     return col;
   }
+
+protected:
 
   // Create a new timer. This method is used to delay various actions like
   // opening/closing folders or tree scrolling.

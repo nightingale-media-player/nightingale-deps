@@ -95,7 +95,8 @@ PRLock *_pr_dnsLock = NULL;
 
 #if defined(SOLARIS) || (defined(BSDI) && defined(_REENTRANT)) \
 	|| (defined(LINUX) && defined(_REENTRANT) \
-        && !(defined(__GLIBC__) && __GLIBC__ >= 2))
+        && !(defined(__GLIBC__) && __GLIBC__ >= 2)) \
+        && !defined(ANDROID)
 #define _PR_HAVE_GETPROTO_R
 #define _PR_HAVE_GETPROTO_R_POINTER
 #endif
@@ -1185,6 +1186,16 @@ PR_IMPLEMENT(PRStatus) PR_GetHostByAddr(
  * any usable implementation.
  */
 
+#if defined(ANDROID)
+/* Android's Bionic libc system includes prototypes for these in netdb.h,
+ * but doesn't actually include implementations.  It uses the 5-arg form,
+ * so these functions end up not matching the prototype.  So just rename
+ * them if not found.
+ */
+#define getprotobyname_r _pr_getprotobyname_r
+#define getprotobynumber_r _pr_getprotobynumber_r
+#endif
+
 static struct protoent *getprotobyname_r(const char* name)
 {
 	return getprotobyname(name);
@@ -1535,7 +1546,8 @@ PR_IsNetAddrType(const PRNetAddr *addr, PRNetAddrValue val)
     return PR_FALSE;
 }
 
-#ifndef _PR_HAVE_INET_NTOP
+extern int pr_inet_aton(const char *cp, PRUint32 *addr);
+
 #define XX 127
 static const unsigned char index_hex[256] = {
     XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX, XX,XX,XX,XX,
@@ -1668,7 +1680,8 @@ static int StringToV6Addr(const char *string, PRIPv6Addr *addr)
     return 1;
 }
 #undef XX
-            
+
+#ifndef _PR_HAVE_INET_NTOP
 static const char *basis_hex = "0123456789abcdef";
 
 /*
@@ -1774,7 +1787,6 @@ static const char *V6AddrToString(
     return bufcopy;
 #undef STUFF    
 }
-
 #endif /* !_PR_HAVE_INET_NTOP */
 
 /*
@@ -2027,7 +2039,32 @@ PR_IMPLEMENT(PRAddrInfo *) PR_GetAddrInfoByName(const char  *hostname,
          */
 
         memset(&hints, 0, sizeof(hints));
-        hints.ai_flags = (flags & PR_AI_NOCANONNAME) ? 0: AI_CANONNAME;
+        if (!(flags & PR_AI_NOCANONNAME))
+            hints.ai_flags |= AI_CANONNAME;
+#ifdef AI_ADDRCONFIG
+        /* 
+         * Propagate AI_ADDRCONFIG to the GETADDRINFO call if PR_AI_ADDRCONFIG
+         * is set.
+         * 
+         * Need a workaround for loopback host addresses:         
+         * The problem is that in glibc and Windows, AI_ADDRCONFIG applies the
+         * existence of an outgoing network interface to IP addresses of the
+         * loopback interface, due to a strict interpretation of the
+         * specification.  For example, if a computer does not have any
+         * outgoing IPv6 network interface, but its loopback network interface
+         * supports IPv6, a getaddrinfo call on "localhost" with AI_ADDRCONFIG
+         * won't return the IPv6 loopback address "::1", because getaddrinfo
+         * thinks the computer cannot connect to any IPv6 destination,
+         * ignoring the remote vs. local/loopback distinction.
+         */
+        if ((flags & PR_AI_ADDRCONFIG) &&
+            strcmp(hostname, "localhost") != 0 &&
+            strcmp(hostname, "localhost.localdomain") != 0 &&
+            strcmp(hostname, "localhost6") != 0 &&
+            strcmp(hostname, "localhost6.localdomain6") != 0) {
+            hints.ai_flags |= AI_ADDRCONFIG;
+        }
+#endif
         hints.ai_family = (af == PR_AF_INET) ? AF_INET : AF_UNSPEC;
 
         /*
@@ -2141,12 +2178,6 @@ static PRStatus pr_StringToNetAddrGAI(const char *string, PRNetAddr *addr)
     PRNetAddr laddr;
     PRStatus status = PR_SUCCESS;
 
-    if (NULL == addr)
-    {
-        PR_SetError(PR_INVALID_ARGUMENT_ERROR, 0);
-        return PR_FAILURE;
-    }
-
     memset(&hints, 0, sizeof(hints));
     hints.ai_flags = AI_NUMERICHOST;
     hints.ai_family = AF_UNSPEC;
@@ -2183,64 +2214,42 @@ static PRStatus pr_StringToNetAddrGAI(const char *string, PRNetAddr *addr)
 }
 #endif  /* _PR_HAVE_GETADDRINFO */
 
-#if !defined(_PR_HAVE_GETADDRINFO) || defined(_PR_INET6_PROBE) || defined(DARWIN)
 static PRStatus pr_StringToNetAddrFB(const char *string, PRNetAddr *addr)
 {
-    PRStatus status = PR_SUCCESS;
     PRIntn rv;
 
-#if defined(_PR_HAVE_INET_NTOP)
-    rv = inet_pton(AF_INET6, string, &addr->ipv6.ip);
+    rv = pr_inet_aton(string, &addr->inet.ip);
+    if (1 == rv)
+    {
+        addr->raw.family = AF_INET;
+        return PR_SUCCESS;
+    }
+
+    PR_ASSERT(0 == rv);
+    /* clean up after the failed call */
+    memset(&addr->inet.ip, 0, sizeof(addr->inet.ip));
+
+    rv = StringToV6Addr(string, &addr->ipv6.ip);
     if (1 == rv)
     {
         addr->raw.family = PR_AF_INET6;
-    }
-    else
-    {
-        PR_ASSERT(0 == rv);
-        /* clean up after the failed inet_pton() call */
-        memset(&addr->ipv6.ip, 0, sizeof(addr->ipv6.ip));
-        rv = inet_pton(AF_INET, string, &addr->inet.ip);
-        if (1 == rv)
-        {
-            addr->raw.family = AF_INET;
-        }
-        else
-        {
-            PR_ASSERT(0 == rv);
-            PR_SetError(PR_INVALID_ARGUMENT_ERROR, 0);
-            status = PR_FAILURE;
-        }
-    }
-#else /* _PR_HAVE_INET_NTOP */
-    rv = StringToV6Addr(string, &addr->ipv6.ip);
-    if (1 == rv) {
-        addr->raw.family = PR_AF_INET6;
         return PR_SUCCESS;
     }
+
     PR_ASSERT(0 == rv);
-    /* clean up after the failed StringToV6Addr() call */
-    memset(&addr->ipv6.ip, 0, sizeof(addr->ipv6.ip));
-
-    addr->inet.family = AF_INET;
-    addr->inet.ip = inet_addr(string);
-    if ((PRUint32) -1 == addr->inet.ip)
-    {
-        /*
-         * The string argument is a malformed address string.
-         */
-        PR_SetError(PR_INVALID_ARGUMENT_ERROR, 0);
-        status = PR_FAILURE;
-    }
-#endif /* _PR_HAVE_INET_NTOP */
-
-    return status;
+    PR_SetError(PR_INVALID_ARGUMENT_ERROR, 0);
+    return PR_FAILURE;
 }
-#endif /* !_PR_HAVE_GETADDRINFO || _PR_INET6_PROBE || DARWIN */
 
 PR_IMPLEMENT(PRStatus) PR_StringToNetAddr(const char *string, PRNetAddr *addr)
 {
     if (!_pr_initialized) _PR_ImplicitInitialization();
+
+    if (!addr || !string || !*string)
+    {
+        PR_SetError(PR_INVALID_ARGUMENT_ERROR, 0);
+        return PR_FAILURE;
+    }
 
 #if !defined(_PR_HAVE_GETADDRINFO)
     return pr_StringToNetAddrFB(string, addr);
@@ -2249,16 +2258,15 @@ PR_IMPLEMENT(PRStatus) PR_StringToNetAddr(const char *string, PRNetAddr *addr)
     if (!_pr_ipv6_is_present())
         return pr_StringToNetAddrFB(string, addr);
 #endif
-#if defined(DARWIN)
     /*
-     * On Mac OS X, getaddrinfo with AI_NUMERICHOST is slow.
-     * So we only use it to convert literal IP addresses that
-     * contain IPv6 scope IDs, which pr_StringToNetAddrFB
-     * cannot convert.  (See bug 404399.)
+     * getaddrinfo with AI_NUMERICHOST is much slower than pr_inet_aton on some
+     * platforms, such as Mac OS X (bug 404399), Linux glibc 2.10 (bug 344809),
+     * and most likely others. So we only use it to convert literal IP addresses
+     * that contain IPv6 scope IDs, which pr_inet_aton cannot convert.
      */
     if (!strchr(string, '%'))
         return pr_StringToNetAddrFB(string, addr);
-#endif
+
     return pr_StringToNetAddrGAI(string, addr);
 #endif
 }

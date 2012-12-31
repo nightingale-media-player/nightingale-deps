@@ -1253,6 +1253,10 @@ nsresult nsCharsetMenu::InitMoreSubmenus(nsTArray<nsCString>& aDecs)
 
   nsresult res = NS_OK;
 
+  // remove charsets "not for browser"
+  res = RemoveFlaggedCharsets(aDecs, NS_LITERAL_STRING(".notForBrowser"));
+  if (NS_FAILED(res)) return res;
+
   nsCOMPtr<nsIRDFContainer> container1;
   nsCOMPtr<nsIRDFContainer> container2;
   nsCOMPtr<nsIRDFContainer> container3;

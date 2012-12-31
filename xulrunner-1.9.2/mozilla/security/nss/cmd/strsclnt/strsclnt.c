@@ -162,6 +162,7 @@ static PRBool disableLocking  = PR_FALSE;
 static PRBool ignoreErrors    = PR_FALSE;
 static PRBool enableSessionTickets = PR_FALSE;
 static PRBool enableCompression    = PR_FALSE;
+static PRBool enableFalseStart     = PR_FALSE;
 
 PRIntervalTime maxInterval    = PR_INTERVAL_NO_TIMEOUT;
 
@@ -197,7 +198,8 @@ Usage(const char *progName)
         "       -U means enable throttling up threads\n"
 	"       -B bypasses the PKCS11 layer for SSL encryption and MACing\n"
 	"       -u enable TLS Session Ticket extension\n"
-	"       -z enable compression\n",
+	"       -z enable compression\n"
+	"       -g enable false start\n",
 	progName);
     exit(1);
 }
@@ -266,7 +268,7 @@ mySSLAuthCertificate(void *arg, PRFileDesc *fd, PRBool checkSig,
     /* invoke the "default" AuthCert handler. */
     rv = SSL_AuthCertificate(arg, fd, checkSig, isServer);
 
-    PR_AtomicIncrement(&certsTested);
+    PR_ATOMIC_INCREMENT(&certsTested);
     if (rv == SECSuccess) {
 	fputs("strsclnt: -- SSL: Server Certificate Validated.\n", stderr);
     }
@@ -732,7 +734,7 @@ PRInt32 lastFullHandshakePeerID;
 void
 myHandshakeCallback(PRFileDesc *socket, void *arg) 
 {
-    PR_AtomicSet(&lastFullHandshakePeerID, (PRInt32) arg);
+    PR_ATOMIC_SET(&lastFullHandshakePeerID, (PRInt32) arg);
 }
 
 #endif
@@ -838,7 +840,7 @@ retry:
         static PRInt32 sockPeerID = 0; /* atomically incremented */
         PRInt32 thisPeerID;
 #endif
-        PRInt32 savid = PR_AtomicIncrement(&globalconid);
+        PRInt32 savid = PR_ATOMIC_INCREMENT(&globalconid);
         PRInt32 conid = 1 + (savid - 1) % 100;
         /* don't change peer ID on the very first handshake, which is always
            a full, so the session gets stored into the client cache */
@@ -849,7 +851,7 @@ retry:
 #ifdef USE_SOCK_PEER_ID
         {
             /* force a full handshake by changing the socket peer ID */
-            thisPeerID = PR_AtomicIncrement(&sockPeerID);
+            thisPeerID = PR_ATOMIC_INCREMENT(&sockPeerID);
         } else {
             /* reuse previous sockPeerID for restart handhsake */
             thisPeerID = lastFullHandshakePeerID;
@@ -869,7 +871,7 @@ retry:
 	goto done;
     }
 
-    PR_AtomicIncrement(&numConnected);
+    PR_ATOMIC_INCREMENT(&numConnected);
 
     if (bigBuf.data != NULL) {
 	result = handle_fdx_connection( ssl_sock, tid);
@@ -877,7 +879,7 @@ retry:
 	result = handle_connection( ssl_sock, tid);
     }
 
-    PR_AtomicDecrement(&numConnected);
+    PR_ATOMIC_DECREMENT(&numConnected);
 
 done:
     if (ssl_sock) {
@@ -1244,6 +1246,12 @@ client_main(
 	    errExit("SSL_OptionSet SSL_ENABLE_DEFLATE");
     }
 
+    if (enableFalseStart) {
+	rv = SSL_OptionSet(model_sock, SSL_ENABLE_FALSE_START, PR_TRUE);
+	if (rv != SECSuccess)
+	    errExit("SSL_OptionSet SSL_ENABLE_FALSE_START");
+    }
+
     SSL_SetURL(model_sock, hostName);
 
     SSL_AuthCertificateHook(model_sock, mySSLAuthCertificate, 
@@ -1354,7 +1362,7 @@ main(int argc, char **argv)
  
 
     optstate = PL_CreateOptState(argc, argv,
-                                 "23BC:DNP:TUW:a:c:d:f:in:op:qst:uvw:z");
+                                 "23BC:DNP:TUW:a:c:d:f:gin:op:qst:uvw:z");
     while ((status = PL_GetNextOpt(optstate)) == PL_OPT_OK) {
 	switch(optstate->option) {
 
@@ -1383,6 +1391,8 @@ main(int argc, char **argv)
 	case 'd': dir = optstate->value; break;
 
 	case 'f': fileName = optstate->value; break;
+
+	case 'g': enableFalseStart = PR_TRUE; break;
 
 	case 'i': ignoreErrors = PR_TRUE; break;
 

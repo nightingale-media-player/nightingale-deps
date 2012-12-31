@@ -86,7 +86,6 @@ struct PRLibrary;
 class NS_PSSHARED nsCUPSShim {
     public:
         nsCUPSShim() : mCupsLib(nsnull) { }
-        ~nsCUPSShim();
 
         /**
          * Initialize this object. Attempt to load the CUPS shared

@@ -71,6 +71,8 @@
 // the static instance
 nsMacCommandLine nsMacCommandLine::sMacCommandLine;
 
+static PRBool sBuildingCommandLine = PR_FALSE;
+
 /*
  * ReadLine --
  *
@@ -116,6 +118,18 @@ nsMacCommandLine::~nsMacCommandLine()
   }
 }
 
+PRBool nsMacCommandLine::AddURLToCurrentCommandLine(const char* aURL)
+{
+  if (!sBuildingCommandLine) {
+    return PR_FALSE;
+  }
+  
+  AddToCommandLine("-url");
+  AddToCommandLine(aURL);
+  
+  return PR_TRUE;
+}
+
 nsresult nsMacCommandLine::Initialize(int& argc, char**& argv)
 {
   mArgs = static_cast<char **>(malloc(kArgsGrowSize * sizeof(char *)));
@@ -124,7 +138,9 @@ nsresult nsMacCommandLine::Initialize(int& argc, char**& argv)
   mArgs[0] = nsnull;
   mArgsAllocated = kArgsGrowSize;
   mArgsUsed = 0;
-  
+
+  sBuildingCommandLine = PR_TRUE;
+
   // Here, we may actually get useful args.
   // Copy them first to mArgv.
   for (int arg = 0; arg < argc; arg++) {
@@ -133,6 +149,28 @@ nsresult nsMacCommandLine::Initialize(int& argc, char**& argv)
     if (strncmp(flag, "-psn_", 5) != 0)
       AddToCommandLine(flag);
   }
+
+  // Force processing of any pending Apple Events while we're building the
+  // command line. The handlers will append to the command line rather than
+  // act directly so there is no chance we'll process them during a XUL window
+  // load and accidentally open unnecessary windows and home pages.
+  const EventTypeSpec kAppleEventList[] = {
+    { kEventClassAppleEvent, kEventAppleEvent },
+  };
+  EventRef carbonEvent;
+  while (::ReceiveNextEvent(GetEventTypeCount(kAppleEventList),
+                            kAppleEventList,
+                            kEventDurationNoWait,
+                            PR_TRUE,
+                            &carbonEvent) == noErr) {
+    EventRecord eventRecord;
+    Boolean converted = ::ConvertEventRefToEventRecord(carbonEvent, &eventRecord);
+    ::ReleaseEvent(carbonEvent);
+    if (converted)
+      ::AEProcessAppleEvent(&eventRecord);
+  }
+
+  sBuildingCommandLine = PR_FALSE;
 
   // we've started up now
   mStartedUp = PR_TRUE;
@@ -207,9 +245,6 @@ nsresult nsMacCommandLine::AddToCommandLine(const char* inOptionString, const CF
                      0, PR_FALSE, nsnull, 0, &bufLen);
 
   UInt8 buffer[bufLen + 1];
-  if (!buffer)
-    return NS_ERROR_OUT_OF_MEMORY;
-
   ::CFStringGetBytes(string, CFRangeMake(0, length), kCFStringEncodingUTF8,
                      0, PR_FALSE, buffer, bufLen, nsnull);
   buffer[bufLen] = 0;

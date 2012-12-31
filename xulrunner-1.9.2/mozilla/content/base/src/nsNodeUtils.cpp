@@ -40,6 +40,7 @@
 #include "nsINode.h"
 #include "nsIContent.h"
 #include "nsIMutationObserver.h"
+#include "nsIMutationObserver2.h"
 #include "nsIDocument.h"
 #include "nsIDOMUserDataHandler.h"
 #include "nsIEventListenerManager.h"
@@ -55,10 +56,14 @@
 #endif
 #include "nsBindingManager.h"
 #include "nsGenericHTMLElement.h"
+#ifdef MOZ_MEDIA
 #include "nsHTMLMediaElement.h"
+#endif // MOZ_MEDIA
 
 // This macro expects the ownerDocument of content_ to be in scope as
 // |nsIDocument* doc|
+// NOTE: AttributeChildRemoved doesn't use this macro but has a very similar use.
+// If you change how this macro behave please update AttributeChildRemoved.
 #define IMPL_MUTATION_NOTIFICATION(func_, content_, params_)      \
   PR_BEGIN_MACRO                                                  \
   nsINode* node = content_;                                       \
@@ -79,7 +84,6 @@
     node = node->GetNodeParent();                                 \
   } while (node);                                                 \
   PR_END_MACRO
-
 
 void
 nsNodeUtils::CharacterDataWillChange(nsIContent* aContent,
@@ -183,6 +187,32 @@ nsNodeUtils::ContentRemoved(nsINode* aContainer,
 }
 
 void
+nsNodeUtils::AttributeChildRemoved(nsINode* aAttribute,
+                                   nsIContent* aChild)
+{
+  NS_PRECONDITION(aAttribute->IsNodeOfType(nsINode::eATTRIBUTE),
+                  "container must be a nsIAttribute");
+
+  // This is a variant of IMPL_MUTATION_NOTIFICATION.
+  do {
+    nsINode::nsSlots* slots = aAttribute->GetExistingSlots();
+    if (slots && !slots->mMutationObservers.IsEmpty()) {
+      // This is a variant of NS_OBSERVER_ARRAY_NOTIFY_OBSERVERS.
+      nsTObserverArray<nsIMutationObserver*>::ForwardIterator iter_ =
+        slots->mMutationObservers;
+      nsCOMPtr<nsIMutationObserver2> obs_;
+      while (iter_.HasMore()) {
+        obs_ = do_QueryInterface(iter_.GetNext());
+        if (obs_) {
+          obs_->AttributeChildRemoved(aAttribute, aChild);
+        }
+      }
+    }
+    aAttribute = aAttribute->GetNodeParent();
+  } while (aAttribute);
+}
+
+void
 nsNodeUtils::ParentChainChanged(nsIContent *aContent)
 {
   // No need to notify observers on the parents since their parent
@@ -262,8 +292,22 @@ nsNodeUtils::LastRelease(nsINode* aNode)
 
   if (aNode->IsNodeOfType(nsINode::eELEMENT)) {
     nsIDocument* ownerDoc = aNode->GetOwnerDoc();
+    nsIContent* cont = static_cast<nsIContent*>(aNode);
     if (ownerDoc) {
-      ownerDoc->ClearBoxObjectFor(static_cast<nsIContent*>(aNode));
+      ownerDoc->ClearBoxObjectFor(cont);
+    }
+
+    NS_ASSERTION(aNode->HasFlag(NODE_FORCE_XBL_BINDINGS) ||
+                 !ownerDoc ||
+                 !ownerDoc->BindingManager() ||
+                 !ownerDoc->BindingManager()->GetBinding(cont),
+                 "Non-forced node has binding on destruction");
+
+    // if NODE_FORCE_XBL_BINDINGS is set, the node might still have a binding
+    // attached
+    if (aNode->HasFlag(NODE_FORCE_XBL_BINDINGS) &&
+        ownerDoc && ownerDoc->BindingManager()) {
+      ownerDoc->BindingManager()->ChangeDocumentFor(cont, ownerDoc, nsnull);
     }
   }
 
@@ -465,12 +509,11 @@ nsNodeUtils::CloneNodeImpl(nsINode *aNode, PRBool aDeep, nsIDOMNode **aResult)
 class AdoptFuncData {
 public:
   AdoptFuncData(nsIDOMElement *aElement, nsNodeInfoManager *aNewNodeInfoManager,
-                JSContext *aCx, JSObject *aOldScope, JSObject *aNewScope,
+                JSContext *aCx, JSObject *aNewScope,
                 nsCOMArray<nsINode> &aNodesWithProperties)
     : mElement(aElement),
       mNewNodeInfoManager(aNewNodeInfoManager),
       mCx(aCx),
-      mOldScope(aOldScope),
       mNewScope(aNewScope),
       mNodesWithProperties(aNodesWithProperties)
   {
@@ -479,7 +522,6 @@ public:
   nsIDOMElement *mElement;
   nsNodeInfoManager *mNewNodeInfoManager;
   JSContext *mCx;
-  JSObject *mOldScope;
   JSObject *mNewScope;
   nsCOMArray<nsINode> &mNodesWithProperties;
 };
@@ -498,8 +540,7 @@ AdoptFunc(nsAttrHashKey::KeyType aKey, nsIDOMNode *aData, void* aUserArg)
   nsCOMPtr<nsIDOMNode> node;
   nsresult rv = nsNodeUtils::CloneAndAdopt(attr, clone, PR_TRUE,
                                            data->mNewNodeInfoManager,
-                                           data->mCx, data->mOldScope,
-                                           data->mNewScope,
+                                           data->mCx, data->mNewScope,
                                            data->mNodesWithProperties,
                                            nsnull, getter_AddRefs(node));
 
@@ -517,15 +558,14 @@ AdoptFunc(nsAttrHashKey::KeyType aKey, nsIDOMNode *aData, void* aUserArg)
 nsresult
 nsNodeUtils::CloneAndAdopt(nsINode *aNode, PRBool aClone, PRBool aDeep,
                            nsNodeInfoManager *aNewNodeInfoManager,
-                           JSContext *aCx, JSObject *aOldScope,
-                           JSObject *aNewScope,
+                           JSContext *aCx, JSObject *aNewScope,
                            nsCOMArray<nsINode> &aNodesWithProperties,
                            nsINode *aParent, nsIDOMNode **aResult)
 {
   NS_PRECONDITION((!aClone && aNewNodeInfoManager) || !aCx,
                   "If cloning or not getting a new nodeinfo we shouldn't "
                   "rewrap");
-  NS_PRECONDITION(!aCx || (aOldScope && aNewScope), "Must have scopes");
+  NS_PRECONDITION(!aCx || aNewScope, "Must have scopes");
   NS_PRECONDITION(!aParent || !aNode->IsNodeOfType(nsINode::eDOCUMENT),
                   "Can't insert document nodes into a parent");
 
@@ -635,11 +675,12 @@ nsNodeUtils::CloneAndAdopt(nsINode *aNode, PRBool aClone, PRBool aDeep,
       elem->RecompileScriptEventListeners();
     }
 
-    if (aCx) {
+    JSObject *wrapper = aNode->GetWrapper();
+    if (aCx && wrapper) {
       nsIXPConnect *xpc = nsContentUtils::XPConnect();
       if (xpc) {
         nsCOMPtr<nsIXPConnectJSObjectHolder> oldWrapper;
-        rv = xpc->ReparentWrappedNativeIfFound(aCx, aOldScope, aNewScope, aNode,
+        rv = xpc->ReparentWrappedNativeIfFound(aCx, wrapper, aNewScope, aNode,
                                                getter_AddRefs(oldWrapper));
         if (NS_FAILED(rv)) {
           aNode->mNodeInfo.swap(nodeInfo);
@@ -662,8 +703,8 @@ nsNodeUtils::CloneAndAdopt(nsINode *aNode, PRBool aClone, PRBool aDeep,
         NS_ENSURE_SUCCESS(rv, rv);
       }
 
-      AdoptFuncData data(element, nodeInfoManager, aCx, aOldScope,
-                         aNewScope, aNodesWithProperties);
+      AdoptFuncData data(element, nodeInfoManager, aCx, aNewScope,
+                         aNodesWithProperties);
 
       PRUint32 count = map->Enumerate(AdoptFunc, &data);
       NS_ENSURE_TRUE(count == map->Count(), NS_ERROR_FAILURE);
@@ -697,7 +738,7 @@ nsNodeUtils::CloneAndAdopt(nsINode *aNode, PRBool aClone, PRBool aDeep,
     for (i = 0; i < length; ++i) {
       nsCOMPtr<nsIDOMNode> child;
       rv = CloneAndAdopt(aNode->GetChildAt(i), aClone, PR_TRUE, nodeInfoManager,
-                         aCx, aOldScope, aNewScope, aNodesWithProperties,
+                         aCx, aNewScope, aNodesWithProperties,
                          clone, getter_AddRefs(child));
       NS_ENSURE_SUCCESS(rv, rv);
     }

@@ -111,6 +111,8 @@
 #include "nsINameSpaceManager.h"
 #include "nsIHTMLDocument.h"
 #include "nsIParserService.h"
+#include "nsComputedDOMStyle.h"
+#include "nsIDOMNSEvent.h"
 
 #define NS_ERROR_EDITOR_NO_SELECTION NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_EDITOR,1)
 #define NS_ERROR_EDITOR_NO_TEXTNODE  NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_EDITOR,2)
@@ -153,6 +155,7 @@ nsEditor::nsEditor()
 ,  mDocDirtyState(-1)
 ,  mDocWeak(nsnull)
 ,  mPhonetic(nsnull)
+,  mLastKeypressEventWasTrusted(eTriUnset)
 {
   //initialize member variables here
 }
@@ -205,6 +208,7 @@ NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(nsEditor)
 NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
 
 NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsEditor)
+ NS_INTERFACE_MAP_ENTRY(nsIEditor_MOZILLA_1_9_2_BRANCH)
  NS_INTERFACE_MAP_ENTRY(nsIMutationObserver)
  NS_INTERFACE_MAP_ENTRY(nsIPhonetic)
  NS_INTERFACE_MAP_ENTRY(nsISupportsWeakReference)
@@ -960,12 +964,12 @@ nsEditor::BeginPlaceHolderTransaction(nsIAtom *aName)
     mPlaceHolderName = aName;
     nsCOMPtr<nsISelection> selection;
     nsresult res = GetSelection(getter_AddRefs(selection));
-    if (NS_FAILED(res)) return res;
-    mSelState = new nsSelectionState();
-    if (!mSelState)
-      return NS_ERROR_OUT_OF_MEMORY;
-
-    mSelState->SaveSelection(selection);
+    if (NS_SUCCEEDED(res)) {
+      mSelState = new nsSelectionState();
+      if (mSelState) {
+        mSelState->SaveSelection(selection);
+      }
+    }
   }
   mPlaceHolderBatch++;
 
@@ -3009,6 +3013,10 @@ nsEditor::SplitNodeImpl(nsIDOMNode * aExistingRightNode,
           }        
         }
         // handle selection
+        nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
+        if (ps)
+          ps->FlushPendingNotifications(Flush_Frames);
+
         if (GetShouldTxnSetSelection())
         {
           // editor wants us to set selection at split point
@@ -4142,11 +4150,19 @@ nsEditor::IsPreformatted(nsIDOMNode *aNode, PRBool *aResult)
   
   nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
   if (!ps) return NS_ERROR_NOT_INITIALIZED;
-  
-  nsIFrame *frame = ps->GetPrimaryFrameFor(content);
 
-  NS_ASSERTION(frame, "no frame, see bug #188946");
-  if (!frame)
+  // Look at the node (and its parent if it's not an element), and grab its style context
+  nsRefPtr<nsStyleContext> elementStyle;
+  if (!content->IsNodeOfType(nsINode::eELEMENT)) {
+    content = content->GetParent();
+  }
+  if (content && content->IsNodeOfType(nsINode::eELEMENT)) {
+    elementStyle = nsComputedDOMStyle::GetStyleContextForContent(static_cast<nsIContent*>(content),
+                                                                 nsnull,
+                                                                 ps);
+  }
+
+  if (!elementStyle)
   {
     // Consider nodes without a style context to be NOT preformatted:
     // For instance, this is true of JS tags inside the body (which show
@@ -4155,7 +4171,7 @@ nsEditor::IsPreformatted(nsIDOMNode *aNode, PRBool *aResult)
     return NS_OK;
   }
 
-  const nsStyleText* styleText = frame->GetStyleText();
+  const nsStyleText* styleText = elementStyle->GetStyleText();
 
   *aResult = styleText->WhiteSpaceIsSignificant();
   return NS_OK;
@@ -4892,16 +4908,16 @@ nsEditor::CreateTxnForDeleteCharacter(nsIDOMCharacterData  *aData,
   PRUint32 segOffset, segLength = 1;
   if (aDirection == eNext) {
     segOffset = aOffset;
-    if (NS_IS_HIGH_SURROGATE(data[segOffset]) &&
-        segOffset + 1 < data.Length() &&
+    if (segOffset + 1 < data.Length() &&
+        NS_IS_HIGH_SURROGATE(data[segOffset]) &&
         NS_IS_LOW_SURROGATE(data[segOffset+1])) {
       // delete both halves of the surrogate pair
       ++segLength;
     }
   } else {
     segOffset = aOffset - 1;
-    if (NS_IS_LOW_SURROGATE(data[segOffset]) &&
-        segOffset > 0 &&
+    if (segOffset > 1 &&
+        NS_IS_LOW_SURROGATE(data[segOffset]) &&
         NS_IS_HIGH_SURROGATE(data[segOffset-1])) {
       ++segLength;
       --segOffset;
@@ -5366,4 +5382,29 @@ PRBool
 nsEditor::IsModifiableNode(nsIDOMNode *aNode)
 {
   return PR_TRUE;
+}
+
+NS_IMETHODIMP
+nsEditor::GetLastKeypressEventTrusted(PRBool *aWasTrusted)
+{
+  NS_ENSURE_ARG_POINTER(aWasTrusted);
+
+  if (mLastKeypressEventWasTrusted == eTriUnset) {
+    return NS_ERROR_UNEXPECTED;
+  }
+
+  *aWasTrusted = (mLastKeypressEventWasTrusted == eTriTrue);
+  return NS_OK;
+}
+
+void
+nsEditor::BeginKeypressHandling(nsIDOMNSEvent* aEvent)
+{
+  NS_ASSERTION(mLastKeypressEventWasTrusted == eTriUnset, "How come our status is not clear?");
+
+  if (aEvent) {
+    PRBool isTrusted = PR_FALSE;
+    aEvent->GetIsTrusted(&isTrusted);
+    mLastKeypressEventWasTrusted = isTrusted ? eTriTrue : eTriFalse;
+  }
 }

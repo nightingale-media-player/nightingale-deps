@@ -55,7 +55,9 @@
 #include "nsDebug.h"
 
 #if defined(XP_MACOSX)
+#if 0
 #include <ucontext.h>
+#endif
 #endif
 
 #if defined(LINUX)
@@ -216,10 +218,10 @@ my_glib_log_func(const gchar *log_domain, GLogLevelFlags log_level,
 static void fpehandler(int signum, siginfo_t *si, void *context)
 {
 #ifdef XP_MACOSX
+  // Not available with 10.4 SDK? See bug 533035
+#if 0
   ucontext_t *uc = (ucontext_t *)context;
 
-// Not available with 10.4 SDK? See bug 533035
-#if 0
   _STRUCT_FP_CONTROL *ctrl = &uc->uc_mcontext->fs.fpu_fcw;
   ctrl->invalid = ctrl->denorm = ctrl->zdiv = ctrl->ovrfl = ctrl->undfl = ctrl->precis = 1;
 
@@ -284,15 +286,18 @@ void InstallSignalHandlers(const char *ProgramName)
   signal(SIGABRT, abnormal_exit_handler);
 
 #elif defined(CRAWL_STACK_ON_SIGSEGV)
-  signal(SIGSEGV, ah_crap_handler);
-  signal(SIGILL, ah_crap_handler);
-  signal(SIGABRT, ah_crap_handler);
+  if (!getenv("XRE_NO_WINDOWS_CRASH_DIALOG")) {
+    signal(SIGSEGV, ah_crap_handler);
+    signal(SIGILL, ah_crap_handler);
+    signal(SIGABRT, ah_crap_handler);
+  }
 #endif // CRAWL_STACK_ON_SIGSEGV
 
   /* Install a handler for floating point exceptions and disable them if they occur. */
   struct sigaction sa, osa;
   sa.sa_flags = SA_ONSTACK | SA_RESTART | SA_SIGINFO;
   sa.sa_sigaction = fpehandler;
+  sigemptyset(&sa.sa_mask);
   sigaction(SIGFPE, &sa, &osa);
 
 #if defined(DEBUG) && defined(LINUX)
@@ -426,6 +431,9 @@ void InstallSignalHandlers(const char *ProgramName)
 }
 
 #endif
+
+#elif defined(XP_OS2)
+/* OS/2's FPE handler is implemented in NSPR */
 
 #else
 #error No signal handling implementation for this platform.

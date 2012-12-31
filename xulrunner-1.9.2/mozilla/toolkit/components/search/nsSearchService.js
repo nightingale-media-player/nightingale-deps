@@ -93,9 +93,7 @@ const CACHE_INVALIDATION_DELAY = 1000;
 
 // Current cache version. This should be incremented if the format of the cache
 // file is modified.
-// XXX Specific cache version to make sure the cache file can pick up Songbird
-//     extensions. Please update when Mozilla increases the cache version.
-const CACHE_VERSION = 106;
+const CACHE_VERSION = 6;
 
 const ICON_DATAURL_PREFIX = "data:image/x-icon;base64,";
 
@@ -848,7 +846,6 @@ function EngineURL(aType, aMethod, aTemplate) {
     // Disable these for now, see bug 295018
     // case "file":
     // case "resource":
-    case "chrome": // XXX Songbird: allow chrome search engines
       this.template = aTemplate;
       break;
     default:
@@ -994,11 +991,9 @@ EngineURL.prototype = {
  *        Boolean indicating whether the engine should be treated as read-only.
  *        Read only engines cannot be serialized to file.
  */
-function Engine(aLocation, aSourceDataType, aIsReadOnly, aTags) {
+function Engine(aLocation, aSourceDataType, aIsReadOnly) {
   this._dataType = aSourceDataType;
   this._readOnly = aIsReadOnly;
-  // XXX Songbird: Set the tags properly during Engine construction.
-  this._tags = aTags;
   this._urls = [];
 
   if (aLocation.type) {
@@ -1066,8 +1061,6 @@ Engine.prototype = {
   _name: null,
   // The engine type. See engine types (TYPE_) defined above.
   _type: null,
-  // XXX Songbird: Space delimited keyword string
-  _tags: "",
   // The name of the charset used to submit the search terms.
   _queryCharset: null,
   // A URL string pointing to the engine's search form.
@@ -1334,15 +1327,6 @@ Engine.prototype = {
         return;
     }
 
-    // If we don't yet have a file, get one now. The only case where we would
-    // already have a file is if this is an update and _file was set above.
-    if (!aEngine._file) {
-      var uuidGenerator = Cc["@mozilla.org/uuid-generator;1"]
-                            .getService(Ci.nsIUUIDGenerator);
-      var uuid = uuidGenerator.generateUUID();
-      aEngine._file = getSanitizedFile(uuid.toString());
-    }
-
     try {
       // Initialize the engine from the obtained data
       aEngine._initFromData();
@@ -1379,6 +1363,11 @@ Engine.prototype = {
         return;
       aEngine._useNow = confirmation.useNow;
     }
+
+    // If we don't yet have a file, get one now. The only case where we would
+    // already have a file is if this is an update and _file was set above.
+    if (!aEngine._file)
+      aEngine._file = getSanitizedFile(aEngine.name);
 
     if (engineToUpdate) {
       // Keep track of the last modified date, so that we can make conditional
@@ -1456,8 +1445,6 @@ Engine.prototype = {
         + this.name + "\".");
     // Only accept remote icons from http[s] or ftp
     switch (uri.scheme) {
-      // XXX Songbird: Accept chrome icons. Needed for library stub.
-      case "chrome":
       case "data":
         this._iconURI = uri;
         notifyAction(this, SEARCH_ENGINE_CHANGED);
@@ -1718,14 +1705,6 @@ Engine.prototype = {
           break;
         case "IconUpdateUrl":
           this._iconUpdateURL = child.textContent;
-          break;
-        
-        // XXX Songbird: extensions for the internal search
-        case "Alias":
-          this.alias = child.textContent;
-          break;
-        case "Tags":
-          this._tags = child.textContent;
           break;
       }
     }
@@ -2093,9 +2072,7 @@ Engine.prototype = {
       description: this.description,
       __searchForm: this.__searchForm,
       _iconURL: this._iconURL,
-      _urls: [url._serializeToJSON() for each(url in this._urls)],
-      // XXX Songbird: cache tags
-      tags: this._tags
+      _urls: [url._serializeToJSON() for each(url in this._urls)] 
     };
 
     if (this._file instanceof Ci.nsILocalFile)
@@ -2170,14 +2147,6 @@ Engine.prototype = {
     for (var i = 0; i < this._urls.length; ++i)
       this._urls[i]._serializeToElement(doc, docElem);
     docElem.appendChild(doc.createTextNode("\n"));
-
-    // XXX Songbird: extensions for the internal search
-    if (this._tags) {
-      appendTextNode(MOZSEARCH_NS_10, "Tags", this._tags);
-    }
-    if (this.alias) {
-      appendTextNode(MOZSEARCH_NS_10, "Alias", this.alias);
-    }
 
     return doc;
   },
@@ -2395,11 +2364,6 @@ Engine.prototype = {
     return this._type;
   },
 
-  // XXX Songbird: engine tags
-  get tags() {
-    return this._tags;
-  },
-  
   get searchForm() {
     if (!this._searchForm) {
       // No searchForm specified in the engine definition file, use the prePath
@@ -2738,14 +2702,6 @@ SearchService.prototype = {
   _addEngineToStore: function SRCH_SVC_addEngineToStore(aEngine) {
     LOG("_addEngineToStore: Adding engine: \"" + aEngine.name + "\"");
 
-    // XXX Songbird HACK
-    // For now any engines with special songbird tags should be hidden by default
-    // This is to ensure that if an extension adds a programmatic search engine
-    // the search engine will not show up after the extension is uninstalled
-    if (aEngine.tags && aEngine.tags.indexOf("songbird") > -1) {
-      aEngine.hidden = true;
-    }
-
     // See if there is an existing engine with the same name. However, if this
     // engine is updating another engine, it's allowed to have the same name.
     var hasSameNameAsUpdate = (aEngine._engineToUpdate &&
@@ -2817,7 +2773,7 @@ SearchService.prototype = {
         let engine;
         if (json.filePath)
           engine = new Engine({type: "filePath", value: json.filePath}, json._dataType,
-                               json._readOnly, json.tags);
+                               json._readOnly);
         else if (json._url)
           engine = new Engine({type: "uri", value: json._url}, json._dataType, json._readOnly);
 

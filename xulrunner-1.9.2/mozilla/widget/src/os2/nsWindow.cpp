@@ -283,6 +283,13 @@ nsWindow::~nsWindow()
     Destroy();
   }
 
+  // Once a plugin window has been destroyed,
+  // its parent, the clipping window, can be destroyed.
+  if (mClipWnd) {
+    WinDestroyWindow(mClipWnd);
+    mClipWnd = 0;
+  }
+
 }
 
 /* static */ void
@@ -2152,9 +2159,9 @@ nsWindow::Scroll(const nsIntPoint& aDelta,
   CheckDragStatus(ACTION_SCROLL, &hps);
 
   // Step through each rectangle to be scrolled.
-  for (PRUint32 i = 0; i < aDestRects.Length(); ++i) {
+  for (BlitRectIter iter(aDelta, aDestRects); !iter.IsDone(); ++iter) {
     nsIntRect affectedRect;
-    affectedRect.UnionRect(aDestRects[i], aDestRects[i] - aDelta);
+    affectedRect.UnionRect(iter.Rect(), iter.Rect() - aDelta);
 
     ULONG flags = SW_INVALIDATERGN;
 
@@ -2195,10 +2202,10 @@ nsWindow::Scroll(const nsIntPoint& aDelta,
         // but not the part outside it [at least on Windows].  For
         // these widgets, we have to invalidate them to get both
         // parts updated after the scroll.
-        if (w->mBounds.Intersects(affectedRect)) {
+        if (w->mWnd && w->mBounds.Intersects(affectedRect)) {
           if (!ClipRegionContainedInRect(configuration.mClipRegion,
-                                         affectedRect - (w->mBounds.TopLeft()
-                                                         + aDelta))) {
+                                         affectedRect -
+                                         (w->mBounds.TopLeft() + aDelta))) {
             w->Invalidate(PR_FALSE);
           }
 
