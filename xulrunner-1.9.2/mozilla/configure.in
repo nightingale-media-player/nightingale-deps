@@ -1824,8 +1824,8 @@ case "$target" in
     MKCSHLIB='$(CC) $(CFLAGS) $(DSO_PIC_CFLAGS) $(DSO_LDOPTS) -o $@'
     MOZ_OPTIMIZE_FLAGS="-O3"
     _PEDANTIC=
-    CFLAGS="$CFLAGS -fpascal-strings -fno-common"
-    CXXFLAGS="$CXXFLAGS -fpascal-strings -fno-common"
+    CFLAGS="$CFLAGS -fno-common"
+    CXXFLAGS="$CXXFLAGS -fno-common"
     DLL_SUFFIX=".dylib"
     DSO_LDOPTS=''
     STRIP="$STRIP -x -S"
@@ -1959,7 +1959,7 @@ case "$target" in
         # -Os has been broken on Intel's C/C++ compilers for quite a
         # while; Intel recommends against using it.
         MOZ_OPTIMIZE_FLAGS="-O2"
-        MOZ_DEBUG_FLAGS="-g -fno-inline"
+        MOZ_DEBUG_FLAGS="-fno-inline"
     elif test "$GNU_CC" || test "$GNU_CXX"; then
         GCC_VERSION=`$CC -v 2>&1 | awk '/^gcc version/ { print $3 }'`
         case $GCC_VERSION in
@@ -1968,7 +1968,7 @@ case "$target" in
             MOZ_OPTIMIZE_SIZE_TWEAK="-finline-limit=50"
         esac
         MOZ_OPTIMIZE_FLAGS="-Os -freorder-blocks -fno-reorder-functions $MOZ_OPTIMIZE_SIZE_TWEAK"
-        MOZ_DEBUG_FLAGS="-g -fno-inline"  # most people on linux use gcc/gdb,
+        MOZ_DEBUG_FLAGS="-fno-inline"  # most people on linux use gcc/gdb,
                                           # and that combo is not yet good at
                                           # debugging inlined functions (even
                                           # when using DWARF2 as the debugging
@@ -1989,7 +1989,7 @@ case "$target" in
         MOZ_ENABLE_OLD_ABI_COMPAT_WRAPPERS=1
     ;;
     mips*)
-        MOZ_DEBUG_FLAGS="-g" # We want inlining
+        MOZ_DEBUG_FLAGS="" # We want inlining
     ;;
     esac
     ;;
@@ -2456,7 +2456,7 @@ case "$target" in
     FILTER='emxexp -o'
     LDFLAGS='-Zmap'
     WARNINGS_AS_ERRORS='-Werror'
-    MOZ_DEBUG_FLAGS="-g -fno-inline"
+    MOZ_DEBUG_FLAGS="-fno-inline"
     MOZ_OPTIMIZE_FLAGS="-O2"
     MOZ_OPTIMIZE_LDFLAGS="-s -Zlinker /EXEPACK:2 -Zlinker /PACKCODE -Zlinker /PACKDATA"
     MOZ_XPCOM_OBSOLETE_LIBS='-L$(LIBXUL_DIST)/lib $(LIBXUL_DIST)/lib/xpcomct.lib'
@@ -2503,7 +2503,7 @@ alpha*-*-osf*)
       MKCSHLIB='$(CC) $(CFLAGS) $(DSO_PIC_CFLAGS) $(DSO_LDOPTS) -Wl,-soname,$@ -o $@'
 
     else
-	MOZ_DEBUG_FLAGS='-g'
+	MOZ_DEBUG_FLAGS=''
 	ASFLAGS='-I$(topsrcdir)/xpcom/reflect/xptcall/public -g'
 	CFLAGS="$CFLAGS -ieee"
 	CXXFLAGS="$CXXFLAGS "'-noexceptions -ieee  -ptr $(DIST)/cxx_repository'
@@ -6612,15 +6612,15 @@ then
                 MOZ_DEBUG_FLAGS=""
                 ;;
             *)
-                MOZ_DEBUG_FLAGS="-g"
+                MOZ_DEBUG_FLAGS=""
                 ;;
             esac
         else
-            MOZ_DEBUG_FLAGS="-g"
+            MOZ_DEBUG_FLAGS=""
         fi
         ;;
     *)
-    	MOZ_DEBUG_FLAGS="-g"
+    	MOZ_DEBUG_FLAGS=""
         ;;
     esac
 fi
