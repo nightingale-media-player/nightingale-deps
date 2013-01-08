@@ -56,8 +56,6 @@ case $OSTYPE in
 			mkdir "build"
 		fi
 
-        export 
-
         echo -e "Building gettext..."
         make CC=gcc CXX=g++ -C gettext -f Makefile.songbird
         echo -e "Building glib..."
