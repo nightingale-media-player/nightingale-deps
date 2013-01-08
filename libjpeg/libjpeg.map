@@ -1,4 +1,4 @@
-LIBJPEG_8.0 {
+LIBJPEG_7.0 {
   global:
     *;
 };

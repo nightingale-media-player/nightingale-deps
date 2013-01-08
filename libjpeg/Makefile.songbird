@@ -29,7 +29,7 @@
 ################################################################################
 
 SB_VENDOR_TARGET = libjpeg
-SB_VENDOR_TARGET_VERSION = 8
+SB_VENDOR_TARGET_VERSION = 7
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 

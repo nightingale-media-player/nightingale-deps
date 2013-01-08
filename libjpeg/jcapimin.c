@@ -2,7 +2,6 @@
  * jcapimin.c
  *
  * Copyright (C) 1994-1998, Thomas G. Lane.
- * Modified 2003-2010 by Guido Vollbeding.
  * This file is part of the Independent JPEG Group's software.
  * For conditions of distribution and use, see the accompanying README file.
  *
@@ -73,11 +72,6 @@ jpeg_CreateCompress (j_compress_ptr cinfo, int version, size_t structsize)
     cinfo->dc_huff_tbl_ptrs[i] = NULL;
     cinfo->ac_huff_tbl_ptrs[i] = NULL;
   }
-
-  /* Must do it here for emit_dqt in case jpeg_write_tables is used */
-  cinfo->block_size = DCTSIZE;
-  cinfo->natural_order = jpeg_natural_order;
-  cinfo->lim_Se = DCTSIZE2-1;
 
   cinfo->script_space = NULL;
 

@@ -1,7 +1,7 @@
 /*
  * transupp.h
  *
- * Copyright (C) 1997-2011, Thomas G. Lane, Guido Vollbeding.
+ * Copyright (C) 1997-2001, Thomas G. Lane.
  * This file is part of the Independent JPEG Group's software.
  * For conditions of distribution and use, see the accompanying README file.
  *
@@ -57,16 +57,10 @@
  * corner up and/or left to make it so, simultaneously increasing the region
  * dimensions to keep the lower right crop corner unchanged.  (Thus, the
  * output image covers at least the requested region, but may cover more.)
- * The adjustment of the region dimensions may be optionally disabled.
  *
- * We also provide a lossless-resize option, which is kind of a lossless-crop
- * operation in the DCT coefficient block domain - it discards higher-order
- * coefficients and losslessly preserves lower-order coefficients of a
- * sub-block.
- *
- * Rotate/flip transform, resize, and crop can be requested together in a
- * single invocation.  The crop is applied last --- that is, the crop region
- * is specified in terms of the destination image after transform/resize.
+ * If both crop and a rotate/flip transform are requested, the crop is applied
+ * last --- that is, the crop region is specified in terms of the destination
+ * image.
  *
  * We also offer a "force to grayscale" option, which simply discards the
  * chrominance channels of a YCbCr image.  This is lossless in the sense that
@@ -107,15 +101,13 @@ typedef enum {
 
 /*
  * Codes for crop parameters, which can individually be unspecified,
- * positive or negative for xoffset or yoffset,
- * positive or forced for width or height.
+ * positive, or negative.  (Negative width or height makes no sense, though.)
  */
 
 typedef enum {
-        JCROP_UNSET,
-        JCROP_POS,
-        JCROP_NEG,
-        JCROP_FORCE
+	JCROP_UNSET,
+	JCROP_POS,
+	JCROP_NEG
 } JCROP_CODE;
 
 /*
@@ -136,9 +128,9 @@ typedef struct {
    * These can be filled in by jtransform_parse_crop_spec().
    */
   JDIMENSION crop_width;	/* Width of selected region */
-  JCROP_CODE crop_width_set;	/* (forced disables adjustment) */
+  JCROP_CODE crop_width_set;
   JDIMENSION crop_height;	/* Height of selected region */
-  JCROP_CODE crop_height_set;	/* (forced disables adjustment) */
+  JCROP_CODE crop_height_set;
   JDIMENSION crop_xoffset;	/* X offset of selected region */
   JCROP_CODE crop_xoffset_set;	/* (negative measures from right edge) */
   JDIMENSION crop_yoffset;	/* Y offset of selected region */
@@ -151,8 +143,8 @@ typedef struct {
   JDIMENSION output_height;
   JDIMENSION x_crop_offset;	/* destination crop offsets measured in iMCUs */
   JDIMENSION y_crop_offset;
-  int iMCU_sample_width;	/* destination iMCU size */
-  int iMCU_sample_height;
+  int max_h_samp_factor;	/* destination iMCU size */
+  int max_v_samp_factor;
 } jpeg_transform_info;
 
 
@@ -162,7 +154,7 @@ typedef struct {
 EXTERN(boolean) jtransform_parse_crop_spec
 	JPP((jpeg_transform_info *info, const char *spec));
 /* Request any required workspace */
-EXTERN(boolean) jtransform_request_workspace
+EXTERN(void) jtransform_request_workspace
 	JPP((j_decompress_ptr srcinfo, jpeg_transform_info *info));
 /* Adjust output image parameters */
 EXTERN(jvirt_barray_ptr *) jtransform_adjust_parameters

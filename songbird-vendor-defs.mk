@@ -622,7 +622,7 @@ ifneq (,$(call enable-sb-lib, jpeg))
    SB_CFLAGS = -I$(SB_LIBJPEG_DIR)/include
 
    ifeq (Msys,$(SB_VENDOR_ARCH))
-      SB_JPEG_LIBS += "-ljpeg-8"
+      SB_JPEG_LIBS += "-ljpeg-7"
       SB_PATH += $(SB_LIBJPEG_DIR)/bin
       ifeq (debug,$(SB_BUILD_TYPE))
          SB_JPEG_LIBS += -Wl,-Zi
