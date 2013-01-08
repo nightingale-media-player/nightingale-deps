@@ -33,7 +33,7 @@
 SB_VENDOR_TARGET_DEP_MODULES := 
 
 SB_VENDOR_TARGET = libogg
-SB_VENDOR_TARGET_VERSION = 1.3.0
+SB_VENDOR_TARGET_VERSION = 1.1.4
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
