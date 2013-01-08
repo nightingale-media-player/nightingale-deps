@@ -59,37 +59,37 @@ case $OSTYPE in
         export 
 
         echo -e "Building gettext..."
-        make -C gettext -f Makefile.songbird
+        make CC=gcc CXX=g++ -C gettext -f Makefile.songbird
         echo -e "Building glib..."
-        make -C glib -f Makefile.songbird
+        make CC=gcc CXX=g++ -C glib -f Makefile.songbird
         echo -e "Building libidl..."
-        make -C libidl -f Makefile.songbird
+        make CC=clang CXX=clang++ -C libidl -f Makefile.songbird
         echo -e "Building flac..."
-        make -C flac -f Makefile.songbird
+        make CC=clang CXX=clang++ -C flac -f Makefile.songbird
         echo -e "Building libjpeg..."
-        make -C libjpeg -f Makefile.songbird
+        make CC=clang CXX=clang++ -C libjpeg -f Makefile.songbird
         echo -e "libogg gettext..."
-        make -C libogg -f Makefile.songbird
+        make CC=clang CXX=clang++ -C libogg -f Makefile.songbird
         echo -e "Building libtheora..."
-        make -C libtheora -f Makefile.songbird
+        make CC=clang CXX=clang++ -C libtheora -f Makefile.songbird
         echo -e "Building libtool..."
-        make -C libtool -f Makefile.songbird
+        make CC=clang CXX=clang++ -C libtool -f Makefile.songbird
         echo -e "Building libvorbis..."        
-        make -C libvorbis -f Makefile.songbird
+        make CC=clang CXX=clang++ -C libvorbis -f Makefile.songbird
         echo -e "Building sqlite..."
-        make -C sqlite -f Makefile.songbird
+        make CC=clang CXX=clang++ -C sqlite -f Makefile.songbird
         echo -e "Building taglib..."        
-        make -C taglib -f Makefile.songbird
+        make CC=clang CXX=clang++ -C taglib -f Makefile.songbird
 
         echo -e "Building xulrunner and crossing our fingers..."
-        make -C xulrunner-1.9.2 -f Makefile.songbird xr-all
+        make CC=clang CXX=clang++ -C xulrunner-1.9.2 -f Makefile.songbird xr-all
         echo -e "Building gstreamer bits..."
-        make -C gstreamer -f Makefile.songbird
+        makeCC=clang CXX=clang++ -C gstreamer -f Makefile.songbird
         echo -e "Building gst plugins...here's hoping these all build!"
-        make -C gst-plugins-base -f Makefile.songbird
-        make -C gst-plugins-good -f Makefile.songbird
-        make -C gst-plugins-bad -f Makefile.songbird
-        make -C gst-plugins-ugly -f Makefile.songbird
+        make CC=clang CXX=clang++ -C gst-plugins-base -f Makefile.songbird
+        make CC=clang CXX=clang++ -C gst-plugins-good -f Makefile.songbird
+        make CC=clang CXX=clang++ -C gst-plugins-bad -f Makefile.songbird
+        make CC=clang CXX=clang++ -C gst-plugins-ugly -f Makefile.songbird
         echo "Done!"
 
     ;;
