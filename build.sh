@@ -56,6 +56,8 @@ case $OSTYPE in
 			mkdir "build"
 		fi
 
+        export 
+
         echo -e "Building gettext..."
         make -C gettext -f Makefile.songbird
         echo -e "Building glib..."
@@ -78,6 +80,7 @@ case $OSTYPE in
         make -C sqlite -f Makefile.songbird
         echo -e "Building taglib..."        
         make -C taglib -f Makefile.songbird
+
         echo -e "Building xulrunner and crossing our fingers..."
         make -C xulrunner-1.9.2 -f Makefile.songbird xr-all
         echo -e "Building gstreamer bits..."
