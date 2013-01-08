@@ -1,6 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-AUTOMAKE_OPTIONS = foreign 1.9 dist-zip
+
+#AUTOMAKE_OPTIONS = foreign 1.6 dist-zip
+AUTOMAKE_OPTIONS = foreign 1.11 dist-zip dist-xz
 
 SUBDIRS = src include doc
 
@@ -13,7 +15,7 @@ pkgconfig_DATA = ogg.pc
 EXTRA_DIST = README AUTHORS CHANGES COPYING \
 	libogg.spec libogg.spec.in \
 	ogg.m4 ogg.pc.in ogg-uninstalled.pc.in \
-	macos macosx win32
+	macosx win32
 
 dist-hook:
 	for item in $(EXTRA_DIST); do \
