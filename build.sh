@@ -9,6 +9,9 @@ export SB_VENDOR_BUILD_ROOT=$DIR
 # Currently, we build both debug and release, which takes a lot longer,
 # especially on xulrunner... TODO: make it optional to build debug
 
+rm -rf build
+mkdir build
+
 case $OSTYPE in
 	# linux is easy, as all it requires right now is xulrunner, sqlite, and taglib
 	# we'll get to a point where this is unnecessary on linux altogether in the future
@@ -61,33 +64,33 @@ case $OSTYPE in
         echo -e "Building glib..."
         make CC=gcc CXX=g++ -C glib -f Makefile.songbird
         echo -e "Building libidl..."
-        make CC=clang CXX=clang++ -C libidl -f Makefile.songbird
+        make CC=gcc CXX=g++ -C libidl -f Makefile.songbird
         echo -e "Building flac..."
-        make CC=clang CXX=clang++ -C flac -f Makefile.songbird
+        make CC=gcc CXX=g++ -C flac -f Makefile.songbird
         echo -e "Building libjpeg..."
-        make CC=clang CXX=clang++ -C libjpeg -f Makefile.songbird
+        make CC=gcc CXX=g++ -C libjpeg -f Makefile.songbird
         echo -e "libogg gettext..."
-        make CC=clang CXX=clang++ -C libogg -f Makefile.songbird
+        make CC=gcc CXX=g++ -C libogg -f Makefile.songbird
         echo -e "Building libtheora..."
-        make CC=clang CXX=clang++ -C libtheora -f Makefile.songbird
+        make CC=gcc CXX=g++ -C libtheora -f Makefile.songbird
         echo -e "Building libtool..."
-        make CC=clang CXX=clang++ -C libtool -f Makefile.songbird
+        make CC=gcc CXX=g++ -C libtool -f Makefile.songbird
         echo -e "Building libvorbis..."        
-        make CC=clang CXX=clang++ -C libvorbis -f Makefile.songbird
+        make CC=gcc CXX=g++ -C libvorbis -f Makefile.songbird
         echo -e "Building sqlite..."
-        make CC=clang CXX=clang++ -C sqlite -f Makefile.songbird
+        make CC=gcc CXX=g++ -C sqlite -f Makefile.songbird
         echo -e "Building taglib..."        
-        make CC=clang CXX=clang++ -C taglib -f Makefile.songbird
+        make CC=gcc CXX=g++ -C taglib -f Makefile.songbird
 
-        echo -e "Building xulrunner and crossing our fingers..."
-        make CC=clang CXX=clang++ -C xulrunner-1.9.2 -f Makefile.songbird xr-all
+        echo -e "Building xulrunner and crossing our fingers..." xr-build-debug
+        make CC=gcc-4.2 CXX=g++-4.2 -C xulrunner-1.9.2 -f Makefile.songbird xr-all
         echo -e "Building gstreamer bits..."
-        makeCC=clang CXX=clang++ -C gstreamer -f Makefile.songbird
+        make CC=gcc-4.2 CXX=g++-4.2 -C gstreamer -f Makefile.songbird
         echo -e "Building gst plugins...here's hoping these all build!"
-        make CC=clang CXX=clang++ -C gst-plugins-base -f Makefile.songbird
-        make CC=clang CXX=clang++ -C gst-plugins-good -f Makefile.songbird
-        make CC=clang CXX=clang++ -C gst-plugins-bad -f Makefile.songbird
-        make CC=clang CXX=clang++ -C gst-plugins-ugly -f Makefile.songbird
+        make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-base -f Makefile.songbird
+        make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-good -f Makefile.songbird
+        make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-bad -f Makefile.songbird
+        make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-ugly -f Makefile.songbird
         echo "Done!"
 
     ;;
