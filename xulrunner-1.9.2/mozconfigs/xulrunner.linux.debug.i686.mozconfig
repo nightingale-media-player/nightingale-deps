@@ -17,19 +17,6 @@ ac_add_options --disable-mochitest
 ac_add_options --disable-crashreporter
 ac_add_options --disable-necko-wifi
 
-#testing
-ac_add_options --enable-plaintext-editor-only
-ac_add_options --disable-mailnews
-ac_add_options --disable-composer
-ac_add_options --disable-jsd
-ac_add_options --disable-logging
-ac_add_options --disable-ldap
-ac_add_options --disable-printing
-ac_add_options --disable-mathml
-ac_add_options --disable-gnomevfs 
-ac_add_options --disable-gnomeui
-ac_add_options --disable-libnotify
-
 export BUILD_OFFICIAL=1
 export MOZILLA_OFFICIAL=1
 mk_add_options BUILD_OFFICIAL=1

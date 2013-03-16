@@ -16,7 +16,7 @@ case $OSTYPE in
 	# linux is easy, as all it requires right now is xulrunner, sqlite, and taglib
 	# we'll get to a point where this is unnecessary on linux altogether in the future
 	linux*)
-		export CXXFLAGS="-fpermissive -O2 -fomit-frame-pointer -pipe"
+		export CXXFLAGS="-fpermissive"
 		export CFLAGS=$CXXFLAGS
 		export CCFLAGS=$CXXFLAGS
 
