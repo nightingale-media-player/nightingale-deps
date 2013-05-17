@@ -12,13 +12,15 @@ USE="TARBALL"
 ARCH="$(uname -m)"
 
 # XUL Version
-export XUL="15.0.1"
+export XUL="9.0.1"
 
 # Top level build path
 export SB_VENDOR_BUILD_ROOT="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "checkout/linux-$ARCH"
-mkdir build
 
+if [ ! -d "build" ] ; then
+    mkdir build
+fi
 
 # output directory
 mkdir -p "linux-$ARCH"
@@ -94,5 +96,5 @@ esac
 # build Xulrunner
 make xr-all
 
-cp -a "oldscripts/*" "linux-$ARCH/mozilla-$XUL/scripts/"
+cp -a "oldscripts/*" "linux-$ARCH/mozilla-$XUL/debug/scripts/"
 cp -a "oldscripts/*" "linux-$ARCH/mozilla-$XUL/release/scripts/"
