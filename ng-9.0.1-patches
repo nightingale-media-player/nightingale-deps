@@ -1,0 +1,42 @@
+
+Some is GCC 4.7 stuff
+
+
+string literals with C++11 need a space:
+    need to patch:
+        xpcom/build/nsXPCOMPrivate.h
+            https://bugzilla.mozilla.org/show_bug.cgi?id=698592
+        security/nss/lib/softoken/secmodt.h
+            https://bugzilla.mozilla.org/show_bug.cgi?id=698264
+
+
+need #include <unistd.h>
+    fix:
+        #if defined(ANDROID) || defined(OS_POSIX)
+        #include <unistd.h>
+        #endif
+
+    file_util.cc
+        https://bugzilla.mozilla.org/show_bug.cgi?id=706724
+
+    file_util_linux.cc, message_pump_libevent.cc, time_posix.cc
+        https://bugzilla.mozilla.org/show_bug.cgi?id=746526
+
+    fix both sets of files:
+        https://bugzilla.mozilla.org/show_bug.cgi?id=736765
+        patch: https://bug736765.bugzilla.mozilla.org/attachment.cgi?id=606921
+
+
+Crashreport fails to build with GCC 4.7
+    error:
+        ... dist/include/mozilla/mozalloc.h:253: undefined reference to `moz_free'
+
+    file to patch:
+        toolkit/crashreporter/google-breakpad/src/common/linux/Makefile.in
+    
+    append to file:
+        # See https://bugzilla.mozilla.org/show_bug.cgi?id=741348#c11
+        file_id.$(OBJ_SUFFIX): STL_FLAGS=
+
+    https://bugzilla.mozilla.org/show_bug.cgi?id=741348
+
