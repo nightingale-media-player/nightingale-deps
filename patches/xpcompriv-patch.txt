@@ -1,0 +1,37 @@
+
+diff --git a/xpcom/build/nsXPCOMPrivate.h b/xpcom/build/nsXPCOMPrivate.h
+--- a/xpcom/build/nsXPCOMPrivate.h
++++ b/xpcom/build/nsXPCOMPrivate.h
+@@ -252,26 +252,26 @@ void LogTerm();
+ #define XPCOM_DLL         "xpcom.dll"
+ #define LXPCOM_DLL        L"xpcom.dll"
+ #define XUL_DLL           "xul.dll"
+ #define LXUL_DLL          L"xul.dll"
+ 
+ #else // Unix
+ #include <limits.h> // for PATH_MAX
+ 
+-#define XPCOM_DLL "libxpcom"MOZ_DLL_SUFFIX
++#define XPCOM_DLL "libxpcom" MOZ_DLL_SUFFIX
+ 
+ // you have to love apple..
+ #ifdef XP_MACOSX  
+ #define XPCOM_SEARCH_KEY  "DYLD_LIBRARY_PATH"
+ #define GRE_FRAMEWORK_NAME "XUL.framework"
+ #define XUL_DLL            "XUL"
+ #else
+ #define XPCOM_SEARCH_KEY  "LD_LIBRARY_PATH"
+-#define XUL_DLL   "libxul"MOZ_DLL_SUFFIX
++#define XUL_DLL   "libxul" MOZ_DLL_SUFFIX
+ #endif
+ 
+ #define GRE_CONF_NAME ".gre.config"
+ #define GRE_CONF_PATH "/etc/gre.conf"
+ #define GRE_CONF_DIR  "/etc/gre.d"
+ #define GRE_USER_CONF_DIR ".gre.d"
+ #endif
+ 
+
+
+
+
