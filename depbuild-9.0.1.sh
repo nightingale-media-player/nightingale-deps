@@ -5,14 +5,15 @@ ARCH="$(uname -m)"
 # XUL Version
 export XUL="9.0.1"
 
-# Top level build path
-export SB_VENDOR_BUILD_ROOT="$(cd "$(dirname "$0")" && pwd)"
+export DIR="$(cd "$(dirname "$0")" && pwd)"
+export SB_VENDOR_BINARIES_CO_ROOT=$DIR
+export SB_VENDOR_BUILD_ROOT=$DIR
+export SB_TARGET_ARCH="linux-x86_64"
 
 mkdir -p "checkout/linux-$ARCH"
 
 # output directory
 mkdir -p "linux-$ARCH"
-
 
 rm -rf build
 mkdir build
