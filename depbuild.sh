@@ -53,5 +53,12 @@ if [ ! -d "linux-$ARCH/xulrunner-$XUL/debug" ] ; then
     mv "linux-$ARCH/xulrunner-$XUL/xulrunner.tar.bz" "linux-$ARCH/xulrunner-$XUL/debug"
 fi
 
-cp -a "oldscripts/*" "linux-$ARCH/mozilla-$XUL/debug/scripts/"
-cp -a "oldscripts/*" "linux-$ARCH/mozilla-$XUL/release/scripts/"
+cp -a "xulrunner/mozilla/config/Expression.py" "linux-$ARCH/mozilla-$XUL/debug/scripts/"
+cp -a "xulrunner/mozilla/config/buildlist.py" "linux-$ARCH/mozilla-$XUL/debug/scripts/"
+cp -a "xulrunner/mozilla/config/MozZipFile.py" "linux-$ARCH/mozilla-$XUL/debug/scripts/"
+cp -a "xulrunner/mozilla/config/utils.py" "linux-$ARCH/mozilla-$XUL/debug/scripts/"
+
+cp -a "xulrunner/mozilla/config/Expression.py" "linux-$ARCH/mozilla-$XUL/release/scripts/"
+cp -a "xulrunner/mozilla/config/buildlist.py" "linux-$ARCH/mozilla-$XUL/release/scripts/"
+cp -a "xulrunner/mozilla/config/MozZipFile.py" "linux-$ARCH/mozilla-$XUL/release/scripts/"
+cp -a "xulrunner/mozilla/config/utils.py" "linux-$ARCH/mozilla-$XUL/release/scripts/"
