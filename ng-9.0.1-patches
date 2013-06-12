@@ -40,6 +40,3 @@ Crashreport fails to build with GCC 4.7
 
     https://bugzilla.mozilla.org/show_bug.cgi?id=741348
 
-XPIDL was removed
-    re-add it maybe and test it
-

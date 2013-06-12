@@ -41,6 +41,17 @@ make -C sqlite -f Makefile.songbird
 echo -e "Building taglib...\n"
 make -C taglib -f Makefile.songbird
 
+if [ ! -d "linux-$ARCH/mozilla-$XUL/debug" ] ; then 
+    cd "linux-$ARCH/mozilla-$XUL"
+    mkdir debug
+    mv bin frozen idl include lib scripts debug/
+    cd ../../
+fi
+
+if [ ! -d "linux-$ARCH/xulrunner-$XUL/debug" ] ; then
+    mkdir "linux-$ARCH/xulrunner-$XUL/debug"
+    mv "linux-$ARCH/xulrunner-$XUL/xulrunner.tar.bz" "linux-$ARCH/xulrunner-$XUL/debug"
+fi
+
 cp -a "oldscripts/*" "linux-$ARCH/mozilla-$XUL/debug/scripts/"
 cp -a "oldscripts/*" "linux-$ARCH/mozilla-$XUL/release/scripts/"
-
