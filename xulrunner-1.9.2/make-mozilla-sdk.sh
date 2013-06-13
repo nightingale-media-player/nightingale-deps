@@ -94,7 +94,13 @@ build_script_files="build/cygwin-wrapper
                     config/mozLock.pm
                     config/preprocessor.pl
                     config/printconfigsetting.py
+                    config/Preprocessor.py
+                    config/JarMaker.py
+                    config/Expression.py
+                    config/MozZipFile.py
+                    config/utils.py
 "
+# buildlist.py isn't in xul-1.9.2 but is needed by 9.0.1 ^^^
 
 # breakpad script files are relative to $srcdir
 breakpad_script_files="toolkit/crashreporter/tools/symbolstore.py
