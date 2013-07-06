@@ -1,0 +1,15 @@
+--- a/toolkit/crashreporter/google-breakpad/src/common/linux/Makefile.in    
++++ a/toolkit/crashreporter/google-breakpad/src/common/linux/Makefile.in    
+@@ -65,8 +65,11 @@ HOST_CPPSRCS = \
+   file_id.cc \
+   guid_creator.cc \
+   $(NULL)
+ 
+ # need static lib
+ FORCE_STATIC_LIB = 1
+ 
+ include $(topsrcdir)/config/rules.mk
++
++# See https://bugzilla.mozilla.org/show_bug.cgi?id=741348#c11
++file_id.$(OBJ_SUFFIX): STL_FLAGS=
++
