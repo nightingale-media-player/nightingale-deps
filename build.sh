@@ -54,9 +54,12 @@ case $OSTYPE in
 		export OBJCFLAGS="$arch_flags"
 
 		if [ ! -d "macosx-i686" ]; then
-			mkdir -p "macosx-i686"
+			mkdir -p "macosx-i686/mozilla-1.9.2/release/scripts"
+			cp xulrunner-1.9.2/mozilla/toolkit/crashreporter/tools/symbolstore.py macosx-i686/mozilla-1.9.2/release/scripts
 			mkdir -p "checkout/macosx-i686"
-			mkdir "build"
+			if [ ! -d "build" ]; then
+				mkdir "build"
+			fi
 		fi
 
         echo -e "Building gettext..."
