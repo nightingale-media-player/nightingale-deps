@@ -47,19 +47,24 @@ cd "$permFixDir"
 notice "Creating mega xpt out of all .xpts..."
 pushd components > /dev/null
 if test -e xulrunner.xpt; then
-   notice "xulrunner.xpt already exists. Skipping mega xpt creation."
+  notice "xulrunner.xpt already exists. Skipping mega xpt creation."
 else
-   all_xpts=$($FIND . -name '*.xpt')
-   [ -z "${PYTHON}" ] && PYTHON="$(which python2 2>/dev/null || which python)"
-   shellExec $PYTHON ../../sdk/bin/xpt.py link xulrunner.xpt $all_xpts
-   shellExec $RM -f $all_xpts
+  all_xpts=$($FIND . -name '*.xpt')
+  [ -z "${PYTHON}" ] && PYTHON="$(which python2 2>/dev/null || which python)"
+  shellExec $PYTHON ../../sdk/bin/xpt.py link xulrunner.xpt $all_xpts
+  shellExec $RM -f $all_xpts
 fi
+# Before 2.0, xpts didn't need to be registered in manifests, but they do now.
+# All of the xpts are linked and removed, but the 'mega' xpt isn't registered
+# in the manifest, while all the ones just removed are listed still.
+# So, overwrite the manifest containing the old list with our new, single, one.
+echo -e 'interfaces xulrunner.xpt\n' > interfaces.manifest
 popd > /dev/null
 
 EXTRA_TAR_FLAGS=""
 # Ensure there are no .pdbs in the xulrunner release tarballs...
 if test -n "$(echo "$destBasename" | $GREP release)"; then
-   EXTRA_TAR_FLAGS="--exclude='*.pdb'"
+  EXTRA_TAR_FLAGS="--exclude='*.pdb'"
 fi
 
 notice "creating tarball in dest..."
