@@ -78,7 +78,7 @@ update_script_files="common.sh
 
 # build_scripts are relative to $srcdir
 build_script_files="build/autoconf/acoutput-fast.pl
-                    build/autoconf/make-makefile
+                    build/autoconf/makemakefile.pm
                     config/configobj.py
                     config/mozLock.pm
                     config/Preprocessor.py
