@@ -1,0 +1,25 @@
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/compiled/xulrunner-debug
+export MOZ_DEBUG_SYMBOLS=1
+export MOZILLA_OFFICIAL=1
+export BUILD_OFFICIAL=1
+ac_add_options --enable-application=xulrunner
+ac_add_options --with-xulrunner-stub-name=nightingale
+ac_add_options --enable-debug
+ac_add_options --disable-optimize
+ac_add_options --disable-tests
+ac_add_options --disable-javaxpcom
+ac_add_options --enable-update-packaging
+ac_add_options --disable-installer
+ac_add_options --disable-dbus
+ac_add_options --enable-jemalloc
+ac_add_options --disable-safe-browsing
+ac_add_options --disable-url-classifier
+ac_add_options --enable-splashscreen
+ac_add_options --disable-mochitest
+ac_add_options --disable-necko-wifi
+ac_add_options --enable-shared-js
+ac_add_options --enable-chrome-format=omni
+# ac_add_options --with-windows-version=600
+
+export WIN32_CRT_SRC_DIR="/C/Program Files (x86)/Microsoft Visual Studio 10.0/VC/crt/src"
+export WIN32_REDIST_DIR="C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\redist\x86\Microsoft.VC100.CRT"
