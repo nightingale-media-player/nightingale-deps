@@ -79,7 +79,7 @@ ifndef XR_DISABLE_SYMBOLS
       echo xr-symbols cannot be built before a xulrunner release-build exists.; \
       echo Build the xr-release target first. Bailing.; \
       exit -1; \
-   fi
+    fi
 	# Only build symbols for release builds 
 	$(MAKE) -C $(CURDIR)/mozilla/compiled/xulrunner-release buildsymbols
    ifneq (,$(filter-out linux-%,$(SB_TARGET_ARCH)))
@@ -104,14 +104,14 @@ xr-packaging-%:
       else \
          echo "Could not find release build to strip symbols in. Skipping." 1>&2; \
       fi; \
-   fi
+    fi
 	@if $(HAVE_XR_$*_BUILD); then \
       $(call sh_make,$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $(SB_BRANCH) $*); \
       $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}/$*); \
       $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/mozilla/$* $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}/); \
       $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}/$*); \
       $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner/$* $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}/); \
-   fi
+    fi
 
 xr-build-%: setup_environment
 	$(MKDIR) $(SB_VENDOR_BUILD_DIR)
