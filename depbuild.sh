@@ -47,6 +47,30 @@ case $OSTYPE in
             cd ../../
         fi
     ;;
+
+    darwin*)
+        # on OSX, we want 32 bit builds
+        arch_flags="-m32 -arch i386"
+        export CFLAGS="$arch_flags"
+        export CXXFLAGS="$arch_flags"
+        export CPPFLAGS="$arch_flags"
+        export LDFLAGS="$arch_flags"
+        export OBJCFLAGS="$arch_flags"
+
+        if [ ! -d "macosx-i686" ]; then
+            mkdir -p "macosx-i686"
+            mkdir -p "checkout/macosx-i686"
+        fi
+
+        echo -e "Building sqlite..."
+        make CC=gcc CXX=g++ -C sqlite -f Makefile.songbird
+        echo -e "Building taglib..."        
+        make CC=gcc CXX=g++ -C taglib -f Makefile.songbird
+
+        echo -e "Building xulrunner and crossing our fingers..."
+        make CC=gcc-4.2 CXX=g++-4.2 -C xulrunner -f Makefile.songbird xr-all
+        echo "Done!"
+    ;;
     *)
         echo "Lazy buildscript for your OS coming soon."
     ;;
