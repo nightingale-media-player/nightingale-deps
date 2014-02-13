@@ -71,6 +71,28 @@ case $OSTYPE in
         make CC=gcc-4.2 CXX=g++-4.2 -C xulrunner -f Makefile.songbird xr-all
         echo "Done!"
     ;;
+
+    msys*)
+        if [ ! -d "windows-i686-msvc10" ]; then
+            mkdir -p "windows-i686-msvc10"
+        fi
+        if [ ! -d "checkout/windows-i686-msvc10" ]; then
+            mkdir -p "checkout/windows-i686-msvc10"
+        fi
+
+        echo -e "\nBuilding xulrunner...\n\n"
+        make -C xulrunner xr-all
+
+        # echo -e "\nBuilding glib...\n\n"
+        # make -C glib -f Makefile.songbird
+
+        # echo -e "\nBuilding gettext...\n\n"
+        # make -C gettext -f Makefile.songbird
+
+        # echo -e "\nBuilding flac...\n\n"
+        # make -C flac -f Makefile.songbird
+    ;;
+
     *)
         echo "Lazy buildscript for your OS coming soon."
     ;;
