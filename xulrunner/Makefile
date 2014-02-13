@@ -108,8 +108,10 @@ xr-packaging-%:
 	@if $(HAVE_XR_$*_BUILD); then \
       $(call sh_make,$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $(SB_BRANCH) $*); \
       $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}/$*); \
+      $(call sh_make,$(MKDIR) -p $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}); \
       $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/mozilla/$* $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}/); \
       $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}/$*); \
+      $(call sh_make,$(MKDIR) -p $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}); \
       $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner/$* $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}/); \
     fi
 
