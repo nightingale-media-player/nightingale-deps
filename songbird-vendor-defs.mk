@@ -119,7 +119,7 @@ ifeq (Linux,$(SB_VENDOR_ARCH))
 endif
 
 ifeq (Msys,$(SB_VENDOR_OS))
-   SB_TARGET_ARCH := windows-i686-msvc8
+   SB_TARGET_ARCH := windows-i686-msvc10
    SB_ARCH_DETECTED := 1
    # We redefine SB_VENDOR_ARCH here to make it more useful to us; in Msys,
    # uname returns some some long, difficult string to compare against...
