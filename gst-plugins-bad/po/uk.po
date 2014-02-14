@@ -1,0 +1,136 @@
+# Ukrainian translation to gst-plugins-bad
+# Copyright (C) 2004 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gst-plugins-bad package.
+#
+# Maxim V. Dziumanenko <dziumanenko@gmail.com>, 2004-2007.
+# Yuri Chornoivan <yurchor@ukr.net>, 2011, 2013.
+msgid ""
+msgstr ""
+"Project-Id-Version: gst-plugins-bad 1.1.4\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
+"POT-Creation-Date: 2014-02-08 12:44+0100\n"
+"PO-Revision-Date: 2013-09-14 22:32+0300\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <translation-team-uk@lists.sourceforge.net>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgid "Could not read title information for DVD."
+msgstr "Не вдалося прочитати дані щодо записів на DVD."
+
+#, c-format
+msgid "Failed to open DVD device '%s'."
+msgstr "Не вдалося відкрити пристрій DVD «%s»."
+
+msgid "Failed to set PGC based seeking."
+msgstr "Не вдалося позиціювання на основі програмної послідовності."
+
+msgid ""
+"Could not read DVD. This may be because the DVD is encrypted and a DVD "
+"decryption library is not installed."
+msgstr ""
+"Не вдалося прочитати DVD. Причиною може бути те, що DVD зашифровано, а "
+"бібліотеку розшифрування DVD не встановлено."
+
+msgid "Could not read DVD."
+msgstr "Не вдалося прочитати DVD."
+
+msgid "This file contains no playable streams."
+msgstr "Файл не містить потоків, які можна відтворити."
+
+msgid "Couldn't get the Manifest's URI"
+msgstr "Не вдалося отримати адреси Manifest"
+
+msgid "Failed to get fragment URL."
+msgstr "Не вдалося отримати адреси фрагмента."
+
+msgid "Couldn't download fragments"
+msgstr "Не вдалося отримати фрагменти"
+
+msgid "No file name specified for writing."
+msgstr "Не вказано назви файла для запису."
+
+#, c-format
+msgid "Could not open file \"%s\" for writing."
+msgstr "Не вдалося відкрити файл «%s» для запису."
+
+msgid "Internal data stream error."
+msgstr "Помилка внутрішнього потоку даних."
+
+#, c-format
+msgid "Could not write to file \"%s\"."
+msgstr "Спроба запису до файла «%s» завершилася невдало"
+
+msgid "Could not establish connection to sndio"
+msgstr "Не вдалося встановити з’єднання з sndio"
+
+msgid "Failed to query sndio capabilities"
+msgstr "Не вдалося виконати опитування щодо можливостей sndio"
+
+msgid "Could not configure sndio"
+msgstr "Не вдалося налаштувати sndio"
+
+msgid "Could not start sndio"
+msgstr "Не вдалося задіяти sndio"
+
+msgid "Internal data flow error."
+msgstr "Помилка внутрішнього перенесення даних."
+
+msgid "Generated file has a larger preroll time than its streams duration"
+msgstr ""
+"Створений файл має більше значення випереджувального просування даних ніж "
+"тривалість відтворення збережених у ньому потоків даних"
+
+#, c-format
+msgid "Missing element '%s' - check your GStreamer installation."
+msgstr ""
+"Відсутній елемент «%s». Перевірте, чи встановлено GStreamer належним чином."
+
+msgid "File location is set to NULL, please set it to a valid filename"
+msgstr ""
+"Значенням розташування файла є NULL. Будь ласка, встановіть чинне значення "
+"назви файла."
+
+msgid "Subpicture format was not configured before data flow"
+msgstr "Формат підзображення не було налаштовано до створення потоку даних"
+
+#, c-format
+msgid "Given file name \"%s\" can't be converted to local file name encoding."
+msgstr ""
+"Вказану назву файла, «%s», не можна перетворити у локальне кодування назв "
+"файлів."
+
+#, c-format
+msgid "Device \"%s\" does not exist."
+msgstr "Пристрою «%s» не існує."
+
+#, c-format
+msgid "Could not open frontend device \"%s\"."
+msgstr "Не вдалося відкрити пристрій відтворення «%s»."
+
+#, c-format
+msgid "Could not get settings from frontend device \"%s\"."
+msgstr "Не вдалося отримати параметри пристрою відтворення «%s»."
+
+#, c-format
+msgid "Could not open file \"%s\" for reading."
+msgstr "Не вдалося відкрити файл «%s» для читання."
+
+msgid "Couldn't find DVB channel configuration file"
+msgstr "Не вдалося знайти файла налаштувань каналів DVB"
+
+#, c-format
+msgid "Couldn't load DVB channel configuration file: %s"
+msgstr "Не вдалося завантажити файл налаштувань каналів DVB: %s"
+
+msgid "DVB channel configuration file doesn't contain any channels"
+msgstr "У файлі налаштувань каналів DVB не міститься даних щодо жодного каналу"
+
+#, c-format
+msgid "Couldn't find details for DVB channel %s"
+msgstr "Не вдалося знайти параметрів каналу DVB %s"

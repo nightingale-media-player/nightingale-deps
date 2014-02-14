@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ISDB variants of MPEG-TS descriptors</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="mpegts.html" title="Mpeg TS helper library">
+<link rel="prev" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html" title="DVB variants of MPEG-TS descriptors">
+<link rel="next" href="tools.html" title="Useful elements">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="mpegts.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 1.0 Library Reference Manual</th>
+<td><a accesskey="n" href="tools.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-libs-ISDB-variants-of-MPEG-TS-descriptors.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-bad-libs-ISDB-variants-of-MPEG-TS-descriptors.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="gst-plugins-bad-libs-ISDB-variants-of-MPEG-TS-descriptors"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-libs-ISDB-variants-of-MPEG-TS-descriptors.top_of_page"></a>ISDB variants of MPEG-TS descriptors</span></h2>
+<p>ISDB variants of MPEG-TS descriptors — Descriptors for the various ISDB specifications</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-bad-libs-ISDB-variants-of-MPEG-TS-descriptors.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+#include &lt;gst/mpegts/mpegts.h&gt;
+
+enum                <a class="link" href="gst-plugins-bad-libs-ISDB-variants-of-MPEG-TS-descriptors.html#GstMpegTsISDBDescriptorType" title="enum GstMpegTsISDBDescriptorType">GstMpegTsISDBDescriptorType</a>;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-ISDB-variants-of-MPEG-TS-descriptors.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-ISDB-variants-of-MPEG-TS-descriptors.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="GstMpegTsISDBDescriptorType"></a><h3>enum GstMpegTsISDBDescriptorType</h3>
+<pre class="programlisting">typedef enum {
+  /* ISDB ARIB B10 v4.6 */
+  GST_MTS_DESC_ISDB_HIERARCHICAL_TRANSMISSION   = 0xC0,
+  GST_MTS_DESC_ISDB_DIGITAL_COPY_CONTROL        = 0xC1,
+  GST_MTS_DESC_ISDB_NETWORK_IDENTIFICATION      = 0xC2,
+  GST_MTS_DESC_ISDB_PARTIAL_TS_TIME             = 0xc3,
+  GST_MTS_DESC_ISDB_AUDIO_COMPONENT             = 0xc4,
+  GST_MTS_DESC_ISDB_HYPERLINK                   = 0xc5,
+  GST_MTS_DESC_ISDB_TARGET_REGION               = 0xc6,
+  GST_MTS_DESC_ISDB_DATA_CONTENT                = 0xc7,
+  GST_MTS_DESC_ISDB_VIDEO_DECODE_CONTROL        = 0xc8,
+  GST_MTS_DESC_ISDB_DOWNLOAD_CONTENT            = 0xc9,
+  GST_MTS_DESC_ISDB_CA_EMM_TS                   = 0xca,
+  GST_MTS_DESC_ISDB_CA_CONTRACT_INFORMATION     = 0xcb,
+  GST_MTS_DESC_ISDB_CA_SERVICE                  = 0xcc,
+  GST_MTS_DESC_ISDB_TS_INFORMATION              = 0xcd,
+  GST_MTS_DESC_ISDB_EXTENDED_BROADCASTER        = 0xce,
+  GST_MTS_DESC_ISDB_LOGO_TRANSMISSION           = 0xcf,
+  GST_MTS_DESC_ISDB_BASIC_LOCAL_EVENT           = 0xd0,
+  GST_MTS_DESC_ISDB_REFERENCE                   = 0xd1,
+  GST_MTS_DESC_ISDB_NODE_RELATION               = 0xd2,
+  GST_MTS_DESC_ISDB_SHORT_NODE_INFORMATION      = 0xd3,
+  GST_MTS_DESC_ISDB_STC_REFERENCE               = 0xd4,
+  GST_MTS_DESC_ISDB_SERIES                      = 0xd5,
+  GST_MTS_DESC_ISDB_EVENT_GROUP                 = 0xd6,
+  GST_MTS_DESC_ISDB_SI_PARAMETER                = 0xd7,
+  GST_MTS_DESC_ISDB_BROADCASTER_NAME            = 0xd8,
+  GST_MTS_DESC_ISDB_COMPONENT_GROUP             = 0xd9,
+  GST_MTS_DESC_ISDB_SI_PRIME_TS                 = 0xda,
+  GST_MTS_DESC_ISDB_BOARD_INFORMATION           = 0xdb,
+  GST_MTS_DESC_ISDB_LDT_LINKAGE                 = 0xdc,
+  GST_MTS_DESC_ISDB_CONNECTED_TRANSMISSION      = 0xdd,
+  GST_MTS_DESC_ISDB_CONTENT_AVAILABILITY        = 0xde,
+  /* ... */
+  GST_MTS_DESC_ISDB_SERVICE_GROUP               = 0xe0
+} GstMpegTsISDBDescriptorType;
+</pre>
+<p>
+These values correspond to the registered descriptor type from
+the various ISDB specifications.
+</p>
+<p>
+Consult the relevant specifications for more details.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-HIERARCHICAL-TRANSMISSION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_HIERARCHICAL_TRANSMISSION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-DIGITAL-COPY-CONTROL:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_DIGITAL_COPY_CONTROL</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-NETWORK-IDENTIFICATION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_NETWORK_IDENTIFICATION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-PARTIAL-TS-TIME:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_PARTIAL_TS_TIME</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-AUDIO-COMPONENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_AUDIO_COMPONENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-HYPERLINK:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_HYPERLINK</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-TARGET-REGION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_TARGET_REGION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-DATA-CONTENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_DATA_CONTENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-VIDEO-DECODE-CONTROL:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_VIDEO_DECODE_CONTROL</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-DOWNLOAD-CONTENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_DOWNLOAD_CONTENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-CA-EMM-TS:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_CA_EMM_TS</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-CA-CONTRACT-INFORMATION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_CA_CONTRACT_INFORMATION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-CA-SERVICE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_CA_SERVICE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-TS-INFORMATION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_TS_INFORMATION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-EXTENDED-BROADCASTER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_EXTENDED_BROADCASTER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-LOGO-TRANSMISSION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_LOGO_TRANSMISSION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-BASIC-LOCAL-EVENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_BASIC_LOCAL_EVENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-REFERENCE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_REFERENCE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-NODE-RELATION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_NODE_RELATION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-SHORT-NODE-INFORMATION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_SHORT_NODE_INFORMATION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-STC-REFERENCE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_STC_REFERENCE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-SERIES:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_SERIES</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-EVENT-GROUP:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_EVENT_GROUP</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-SI-PARAMETER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_SI_PARAMETER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-BROADCASTER-NAME:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_BROADCASTER_NAME</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-COMPONENT-GROUP:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_COMPONENT_GROUP</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-SI-PRIME-TS:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_SI_PRIME_TS</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-BOARD-INFORMATION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_BOARD_INFORMATION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-LDT-LINKAGE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_LDT_LINKAGE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-CONNECTED-TRANSMISSION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_CONNECTED_TRANSMISSION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-CONTENT-AVAILABILITY:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_CONTENT_AVAILABILITY</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISDB-SERVICE-GROUP:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISDB_SERVICE_GROUP</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>

@@ -1,0 +1,692 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Base MPEG-TS descriptors</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="mpegts.html" title="Mpeg TS helper library">
+<link rel="prev" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html" title="Base MPEG-TS sections">
+<link rel="next" href="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-sections.html" title="ATSC variants of MPEG-TS sections">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-libs-Base-MPEG-TS-sections.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="mpegts.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 1.0 Library Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-sections.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-libs-Base-MPEG-TS-descriptors.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-bad-libs-Base-MPEG-TS-descriptors.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-bad-libs-Base-MPEG-TS-descriptors.object-hierarchy" class="shortcut">Object Hierarchy</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="gst-plugins-bad-libs-Base-MPEG-TS-descriptors"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.top_of_page"></a>Base MPEG-TS descriptors</span></h2>
+<p>Base MPEG-TS descriptors — Descriptors for ITU H.222.0 | ISO/IEC 13818-1</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.synopsis"></a><h2>Synopsis</h2>
+<a name="GstMpegTsDescriptor"></a><a name="GstMpegTsDescriptorType"></a><a name="GstMpegTsIso639AudioType"></a><pre class="synopsis">
+#include &lt;gst/mpegts/mpegts.h&gt;
+
+struct              <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor-struct" title="struct GstMpegTsDescriptor">GstMpegTsDescriptor</a>;
+enum                <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptorType-enum" title="enum GstMpegTsDescriptorType">GstMpegTsDescriptorType</a>;
+enum                <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsMiscDescriptorType" title="enum GstMpegTsMiscDescriptorType">GstMpegTsMiscDescriptorType</a>;
+const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="returnvalue">GstMpegTsDescriptor</span></a> * <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#gst-mpegts-find-descriptor" title="gst_mpegts_find_descriptor ()">gst_mpegts_find_descriptor</a>  (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *descriptors</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint8</span> tag</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="returnvalue">GPtrArray</span></a> *         <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#gst-mpegts-parse-descriptors" title="gst_mpegts_parse_descriptors ()">gst_mpegts_parse_descriptors</a>        (<em class="parameter"><code><span class="type">guint8</span> *buffer</code></em>,
+                                                         <em class="parameter"><code><span class="type">gsize</span> buf_len</code></em>);
+
+struct              <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsISO639LanguageDescriptor" title="struct GstMpegTsISO639LanguageDescriptor">GstMpegTsISO639LanguageDescriptor</a>;
+enum                <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsIso639AudioType-enum" title="enum GstMpegTsIso639AudioType">GstMpegTsIso639AudioType</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#gst-mpegts-descriptor-parse-iso-639-language" title="gst_mpegts_descriptor_parse_iso_639_language ()">gst_mpegts_descriptor_parse_iso_639_language</a>
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsISO639LanguageDescriptor" title="struct GstMpegTsISO639LanguageDescriptor"><span class="type">GstMpegTsISO639LanguageDescriptor</span></a> *res</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#gst-mpegts-descriptor-parse-dvb-stream-identifier" title="gst_mpegts_descriptor_parse_dvb_stream_identifier ()">gst_mpegts_descriptor_parse_dvb_stream_identifier</a>
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint8</span> *component_tag</code></em>);
+
+struct              <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsLogicalChannel" title="struct GstMpegTsLogicalChannel">GstMpegTsLogicalChannel</a>;
+struct              <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsLogicalChannelDescriptor" title="struct GstMpegTsLogicalChannelDescriptor">GstMpegTsLogicalChannelDescriptor</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#gst-mpegts-descriptor-parse-logical-channel" title="gst_mpegts_descriptor_parse_logical_channel ()">gst_mpegts_descriptor_parse_logical_channel</a>
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsLogicalChannelDescriptor" title="struct GstMpegTsLogicalChannelDescriptor"><span class="type">GstMpegTsLogicalChannelDescriptor</span></a> *res</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GBoxed
+   +----GstMpegTsDescriptor
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----GstMpegTsDescriptorType
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----GstMpegTsIso639AudioType
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.description"></a><h2>Description</h2>
+<p>
+These are the base descriptor types and methods.
+</p>
+<p>
+For more details, refer to the ITU H.222.0 or ISO/IEC 13818-1 specifications
+and other specifications mentionned in the documentation.
+</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="GstMpegTsDescriptor-struct"></a><h3>struct GstMpegTsDescriptor</h3>
+<pre class="programlisting">struct GstMpegTsDescriptor {
+  guint8 tag;
+  guint8 tag_extension;
+  guint8 length;
+  const guint8 *data;
+};
+</pre>
+<p>
+Mpeg-TS descriptor (ISO/IEC 13818-1).
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><span class="type">guint8</span> <em class="structfield"><code><a name="GstMpegTsDescriptor-struct.tag"></a>tag</code></em>;</span></p></td>
+<td>the type of descriptor</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="type">guint8</span> <em class="structfield"><code><a name="GstMpegTsDescriptor-struct.tag-extension"></a>tag_extension</code></em>;</span></p></td>
+<td>the extended type (if <em class="parameter"><code>descriptor_tag</code></em> is 0x7f)</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="type">guint8</span> <em class="structfield"><code><a name="GstMpegTsDescriptor-struct.length"></a>length</code></em>;</span></p></td>
+<td>the length of the descriptor content (excluding tag/length field)</td>
+</tr>
+<tr>
+<td><p><span class="term">const <span class="type">guint8</span> *<em class="structfield"><code><a name="GstMpegTsDescriptor-struct.data"></a>data</code></em>;</span></p></td>
+<td>the full descriptor data (including tag, extension, length). The first
+two bytes are the <em class="parameter"><code>tag</code></em> and <em class="parameter"><code>tag_extension</code></em>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsDescriptorType-enum"></a><h3>enum GstMpegTsDescriptorType</h3>
+<pre class="programlisting">typedef enum {
+  /* 0-18 ISO/IEC 13818-1 (H222.0 06/2012) */
+  GST_MTS_DESC_RESERVED_00                      = 0x00,
+  GST_MTS_DESC_RESERVED_01                      = 0x01,
+  GST_MTS_DESC_VIDEO_STREAM                     = 0x02,
+  GST_MTS_DESC_AUDIO_STREAM                     = 0x03,
+  GST_MTS_DESC_HIERARCHY                        = 0x04,
+  GST_MTS_DESC_REGISTRATION                     = 0x05,
+  GST_MTS_DESC_DATA_STREAM_ALIGNMENT            = 0x06,
+  GST_MTS_DESC_TARGET_BACKGROUND_GRID           = 0x07,
+  GST_MTS_DESC_VIDEO_WINDOW                     = 0x08,
+  GST_MTS_DESC_CA                               = 0x09,
+  GST_MTS_DESC_ISO_639_LANGUAGE                 = 0x0A,
+  GST_MTS_DESC_SYSTEM_CLOCK                     = 0x0B,
+  GST_MTS_DESC_MULTIPLEX_BUFFER_UTILISATION     = 0x0C,
+  GST_MTS_DESC_COPYRIGHT                        = 0x0D,
+  GST_MTS_DESC_MAXIMUM_BITRATE                  = 0x0E,
+  GST_MTS_DESC_PRIVATE_DATA_INDICATOR           = 0x0F,
+  GST_MTS_DESC_SMOOTHING_BUFFER                 = 0x10,
+  GST_MTS_DESC_STD                              = 0x11,
+  GST_MTS_DESC_IBP                              = 0x12,
+
+  /* 19-26 Defined in ISO/IEC 13818-6 (Extensions for DSM-CC) */
+  GST_MTS_DESC_DSMCC_CAROUSEL_IDENTIFIER        = 0x13,
+  GST_MTS_DESC_DSMCC_ASSOCIATION_TAG            = 0x14,
+  GST_MTS_DESC_DSMCC_DEFERRED_ASSOCIATION_TAG   = 0x15,
+  /* 0x16 is reserved (so far) */
+  GST_MTS_DESC_DSMCC_NPT_REFERENCE              = 0x17,
+  GST_MTS_DESC_DSMCC_NPT_ENDPOINT               = 0x18,
+  GST_MTS_DESC_DSMCC_STREAM_MODE                = 0x19,
+  GST_MTS_DESC_DSMCC_STREAM_EVENT               = 0x1A,
+
+  /* 27-54 Later additions to ISO/IEC 13818-1 (H222.0 06/2012) */
+  GST_MTS_DESC_MPEG4_VIDEO                      = 0x1B,
+  GST_MTS_DESC_MPEG4_AUDIO                      = 0x1C,
+  GST_MTS_DESC_IOD                              = 0x1D,
+  GST_MTS_DESC_SL                               = 0x1E,
+  GST_MTS_DESC_FMC                              = 0x1F,
+  GST_MTS_DESC_EXTERNAL_ES_ID                   = 0x20,
+  GST_MTS_DESC_MUX_CODE                         = 0x21,
+  GST_MTS_DESC_FMX_BUFFER_SIZE                  = 0x22,
+  GST_MTS_DESC_MULTIPLEX_BUFFER                 = 0x23,
+  GST_MTS_DESC_CONTENT_LABELING                 = 0x24,
+  GST_MTS_DESC_METADATA_POINTER                 = 0x25,
+  GST_MTS_DESC_METADATA                         = 0x26,
+  GST_MTS_DESC_METADATA_STD                     = 0x27,
+  GST_MTS_DESC_AVC_VIDEO                        = 0x28,
+  /* defined in ISO/IEC 13818-11, MPEG-2 IPMP */
+  GST_MTS_DESC_IPMP                             = 0x29,
+  GST_MTS_DESC_AVC_TIMING_AND_HRD               = 0x2A,
+  GST_MTS_DESC_MPEG2_AAC_AUDIO                  = 0x2B,
+  GST_MTS_DESC_FLEX_MUX_TIMING                  = 0x2C,
+  GST_MTS_DESC_MPEG4_TEXT                       = 0x2D,
+  GST_MTS_DESC_MPEG4_AUDIO_EXTENSION            = 0x2E,
+  GST_MTS_DESC_AUXILIARY_VIDEO_STREAM           = 0x2F,
+  GST_MTS_DESC_SVC_EXTENSION                    = 0x30,
+  GST_MTS_DESC_MVC_EXTENSION                    = 0x31,
+  GST_MTS_DESC_J2K_VIDEO                        = 0x32,
+  GST_MTS_DESC_MVC_OPERATION_POINT              = 0x33,
+  GST_MTS_DESC_MPEG2_STEREOSCOPIC_VIDEO_FORMAT  = 0x34,
+  GST_MTS_DESC_STEREOSCOPIC_PROGRAM_INFO        = 0x35,
+  GST_MTS_DESC_STEREOSCOPIC_VIDEO_INFO          = 0x36,
+
+  /* 55-63 ITU-T Rec. H.222.0 | ISO/IEC 13818-1 Reserved */
+} GstMpegTsDescriptorType;
+</pre>
+<p>
+The type of <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a>
+</p>
+<p>
+These values correspond to the registered descriptor type from
+the base MPEG-TS specifications (ITU H.222.0 | ISO/IEC 13818-1).
+</p>
+<p>
+Consult the relevant specifications for more details.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="GST-MTS-DESC-RESERVED-00:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_RESERVED_00</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-RESERVED-01:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_RESERVED_01</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-VIDEO-STREAM:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_VIDEO_STREAM</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-AUDIO-STREAM:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_AUDIO_STREAM</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-HIERARCHY:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_HIERARCHY</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-REGISTRATION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_REGISTRATION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DATA-STREAM-ALIGNMENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DATA_STREAM_ALIGNMENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-TARGET-BACKGROUND-GRID:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_TARGET_BACKGROUND_GRID</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-VIDEO-WINDOW:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_VIDEO_WINDOW</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-CA:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_CA</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ISO-639-LANGUAGE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ISO_639_LANGUAGE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-SYSTEM-CLOCK:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_SYSTEM_CLOCK</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-MULTIPLEX-BUFFER-UTILISATION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_MULTIPLEX_BUFFER_UTILISATION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-COPYRIGHT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_COPYRIGHT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-MAXIMUM-BITRATE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_MAXIMUM_BITRATE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-PRIVATE-DATA-INDICATOR:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_PRIVATE_DATA_INDICATOR</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-SMOOTHING-BUFFER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_SMOOTHING_BUFFER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-STD:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_STD</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-IBP:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_IBP</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DSMCC-CAROUSEL-IDENTIFIER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DSMCC_CAROUSEL_IDENTIFIER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DSMCC-ASSOCIATION-TAG:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DSMCC_ASSOCIATION_TAG</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DSMCC-DEFERRED-ASSOCIATION-TAG:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DSMCC_DEFERRED_ASSOCIATION_TAG</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DSMCC-NPT-REFERENCE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DSMCC_NPT_REFERENCE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DSMCC-NPT-ENDPOINT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DSMCC_NPT_ENDPOINT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DSMCC-STREAM-MODE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DSMCC_STREAM_MODE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DSMCC-STREAM-EVENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DSMCC_STREAM_EVENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-MPEG4-VIDEO:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_MPEG4_VIDEO</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-MPEG4-AUDIO:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_MPEG4_AUDIO</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-IOD:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_IOD</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-SL:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_SL</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-FMC:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_FMC</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-EXTERNAL-ES-ID:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_EXTERNAL_ES_ID</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-MUX-CODE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_MUX_CODE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-FMX-BUFFER-SIZE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_FMX_BUFFER_SIZE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-MULTIPLEX-BUFFER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_MULTIPLEX_BUFFER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-CONTENT-LABELING:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_CONTENT_LABELING</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-METADATA-POINTER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_METADATA_POINTER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-METADATA:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_METADATA</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-METADATA-STD:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_METADATA_STD</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-AVC-VIDEO:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_AVC_VIDEO</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-IPMP:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_IPMP</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-AVC-TIMING-AND-HRD:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_AVC_TIMING_AND_HRD</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-MPEG2-AAC-AUDIO:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_MPEG2_AAC_AUDIO</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-FLEX-MUX-TIMING:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_FLEX_MUX_TIMING</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-MPEG4-TEXT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_MPEG4_TEXT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-MPEG4-AUDIO-EXTENSION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_MPEG4_AUDIO_EXTENSION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-AUXILIARY-VIDEO-STREAM:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_AUXILIARY_VIDEO_STREAM</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-SVC-EXTENSION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_SVC_EXTENSION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-MVC-EXTENSION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_MVC_EXTENSION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-J2K-VIDEO:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_J2K_VIDEO</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-MVC-OPERATION-POINT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_MVC_OPERATION_POINT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-MPEG2-STEREOSCOPIC-VIDEO-FORMAT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_MPEG2_STEREOSCOPIC_VIDEO_FORMAT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-STEREOSCOPIC-PROGRAM-INFO:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_STEREOSCOPIC_PROGRAM_INFO</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-STEREOSCOPIC-VIDEO-INFO:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_STEREOSCOPIC_VIDEO_INFO</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsMiscDescriptorType"></a><h3>enum GstMpegTsMiscDescriptorType</h3>
+<pre class="programlisting">typedef enum {
+  /* 0x80 - 0xFE are user defined */
+  GST_MTS_DESC_AC3_AUDIO_STREAM                 = 0x81,
+  GST_MTS_DESC_DTG_LOGICAL_CHANNEL              = 0x83,    /* from DTG D-Book */
+} GstMpegTsMiscDescriptorType;
+</pre>
+<p>
+The type of <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a>
+</p>
+<p>
+These values correspond to miscellaneous descriptor types that are
+not yet identified from known specifications.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="GST-MTS-DESC-AC3-AUDIO-STREAM:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_AC3_AUDIO_STREAM</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DTG-LOGICAL-CHANNEL:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DTG_LOGICAL_CHANNEL</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-find-descriptor"></a><h3>gst_mpegts_find_descriptor ()</h3>
+<pre class="programlisting">const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="returnvalue">GstMpegTsDescriptor</span></a> * gst_mpegts_find_descriptor  (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="type">GPtrArray</span></a> *descriptors</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint8</span> tag</code></em>);</pre>
+<p>
+Finds the first descriptor of type <em class="parameter"><code>tag</code></em> in the array.
+</p>
+<p>
+Note: To look for descriptors that can be present more than once in an
+array of descriptors, iterate the <a href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#GArray"><span class="type">GArray</span></a> manually.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>descriptors</code></em> :</span></p></td>
+<td>an array
+of <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a>. <span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstMpegTsDescriptor][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>tag</code></em> :</span></p></td>
+<td>the tag to look for</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the first descriptor matchin <em class="parameter"><code>tag</code></em>, else <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-parse-descriptors"></a><h3>gst_mpegts_parse_descriptors ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Pointer-Arrays.html#GPtrArray"><span class="returnvalue">GPtrArray</span></a> *         gst_mpegts_parse_descriptors        (<em class="parameter"><code><span class="type">guint8</span> *buffer</code></em>,
+                                                         <em class="parameter"><code><span class="type">gsize</span> buf_len</code></em>);</pre>
+<p>
+Parses the descriptors present in <em class="parameter"><code>buffer</code></em> and returns them as an
+array.
+</p>
+<p>
+Note: The data provided in <em class="parameter"><code>buffer</code></em> will not be copied.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>buffer</code></em> :</span></p></td>
+<td>descriptors to parse. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>buf_len</code></em> :</span></p></td>
+<td>Size of <em class="parameter"><code>buffer</code></em>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>an
+array of the parsed descriptors or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if there was an error.
+Release with <a href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#g-array-unref"><span class="type">g_array_unref</span></a> when done with it. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstMpegTsDescriptor]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsISO639LanguageDescriptor"></a><h3>struct GstMpegTsISO639LanguageDescriptor</h3>
+<pre class="programlisting">struct GstMpegTsISO639LanguageDescriptor {
+  guint                    nb_language;
+  gchar                    language[64][3];
+  GstMpegTsIso639AudioType audio_type[64];
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsIso639AudioType-enum"></a><h3>enum GstMpegTsIso639AudioType</h3>
+<pre class="programlisting">typedef enum {
+  GST_MPEGTS_AUDIO_TYPE_UNDEFINED = 0,
+  GST_MPEGTS_AUDIO_TYPE_CLEAN_EFFECTS,
+  GST_MPEGTS_AUDIO_TYPE_HEARING_IMPAIRED,
+  GST_MPEGTS_AUDIO_TYPE_VISUAL_IMPAIRED_COMMENTARY
+} GstMpegTsIso639AudioType;
+</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="GST-MPEGTS-AUDIO-TYPE-UNDEFINED:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_AUDIO_TYPE_UNDEFINED</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-AUDIO-TYPE-CLEAN-EFFECTS:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_AUDIO_TYPE_CLEAN_EFFECTS</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-AUDIO-TYPE-HEARING-IMPAIRED:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_AUDIO_TYPE_HEARING_IMPAIRED</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-AUDIO-TYPE-VISUAL-IMPAIRED-COMMENTARY:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_AUDIO_TYPE_VISUAL_IMPAIRED_COMMENTARY</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-descriptor-parse-iso-639-language"></a><h3>gst_mpegts_descriptor_parse_iso_639_language ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_mpegts_descriptor_parse_iso_639_language
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsISO639LanguageDescriptor" title="struct GstMpegTsISO639LanguageDescriptor"><span class="type">GstMpegTsISO639LanguageDescriptor</span></a> *res</code></em>);</pre>
+<p>
+Extracts the iso 639-2 language information from <em class="parameter"><code>descriptor</code></em>.
+</p>
+<p>
+Note: Use <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gsttaglanguagecodes.html#gst-tag-get-language-code"><span class="type">gst_tag_get_language_code</span></a> if you want to get the the
+ISO 639-1 language code from the returned ISO 639-2 one.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>descriptor</code></em> :</span></p></td>
+<td>a <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GST-MTS-DESC-ISO-639-LANGUAGE:CAPS"><code class="literal">GST_MTS_DESC_ISO_639_LANGUAGE</code></a> <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em> :</span></p></td>
+<td>the <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsISO639LanguageDescriptor" title="struct GstMpegTsISO639LanguageDescriptor"><span class="type">GstMpegTsISO639LanguageDescriptor</span></a> to fill. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if parsing succeeded, else <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-descriptor-parse-dvb-stream-identifier"></a><h3>gst_mpegts_descriptor_parse_dvb_stream_identifier ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_mpegts_descriptor_parse_dvb_stream_identifier
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><span class="type">guint8</span> *component_tag</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsLogicalChannel"></a><h3>struct GstMpegTsLogicalChannel</h3>
+<pre class="programlisting">struct GstMpegTsLogicalChannel {
+  guint16   service_id;
+  gboolean  visible_service;
+  guint16   logical_channel_number;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsLogicalChannelDescriptor"></a><h3>struct GstMpegTsLogicalChannelDescriptor</h3>
+<pre class="programlisting">struct GstMpegTsLogicalChannelDescriptor {
+  guint                   nb_channels;
+  GstMpegTsLogicalChannel channels[64];
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-descriptor-parse-logical-channel"></a><h3>gst_mpegts_descriptor_parse_logical_channel ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_mpegts_descriptor_parse_logical_channel
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsLogicalChannelDescriptor" title="struct GstMpegTsLogicalChannelDescriptor"><span class="type">GstMpegTsLogicalChannelDescriptor</span></a> *res</code></em>);</pre>
+<p>
+Extracts the logical channels from <em class="parameter"><code>descriptor</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>descriptor</code></em> :</span></p></td>
+<td>a <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GST-MTS-DESC-DTG-LOGICAL-CHANNEL:CAPS"><code class="literal">GST_MTS_DESC_DTG_LOGICAL_CHANNEL</code></a> <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em> :</span></p></td>
+<td>the <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsLogicalChannelDescriptor" title="struct GstMpegTsLogicalChannelDescriptor"><span class="type">GstMpegTsLogicalChannelDescriptor</span></a> to fill. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if parsing succeeded, else <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>
