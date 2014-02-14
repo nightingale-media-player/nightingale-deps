@@ -22,9 +22,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <cppunit/extensions/HelperMacros.h>
 #include <tbytevector.h>
 #include <tbytevectorlist.h>
+#include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
 using namespace TagLib;
@@ -112,12 +112,17 @@ public:
     ByteVector s2("f");
     CPPUNIT_ASSERT(ByteVectorList::split(s2, " ").size() == 1);
 
-
     CPPUNIT_ASSERT(ByteVector().size() == 0);
     CPPUNIT_ASSERT(ByteVector("asdf").clear().size() == 0);
     CPPUNIT_ASSERT(ByteVector("asdf").clear() == ByteVector());
-  }
 
+    ByteVector i("blah blah");
+    ByteVector j("blah");
+    CPPUNIT_ASSERT(i.containsAt(j, 5, 0));
+    CPPUNIT_ASSERT(i.containsAt(j, 6, 1));
+    CPPUNIT_ASSERT(i.containsAt(j, 6, 1, 3));
+  }
+  
   void testFind1()
   {
     CPPUNIT_ASSERT_EQUAL(4, ByteVector("....SggO."). find("SggO"));

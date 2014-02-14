@@ -10,6 +10,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/mp4
   ${CMAKE_CURRENT_SOURCE_DIR}/ogg/vorbis
   ${CMAKE_CURRENT_SOURCE_DIR}/ogg/speex
+  ${CMAKE_CURRENT_SOURCE_DIR}/ogg/opus
   ${CMAKE_CURRENT_SOURCE_DIR}/mpeg/id3v2
   ${CMAKE_CURRENT_SOURCE_DIR}/mpeg/id3v2/frames
   ${CMAKE_CURRENT_SOURCE_DIR}/mpeg/id3v1
@@ -49,6 +50,8 @@ set(tag_HDRS
   toolkit/tmap.h
   toolkit/tmap.tcc
   toolkit/tpropertymap.h
+  toolkit/trefcounter.h
+  toolkit/tdebuglistener.h
   mpeg/mpegfile.h
   mpeg/mpegproperties.h
   mpeg/mpegheader.h
@@ -83,6 +86,8 @@ set(tag_HDRS
   ogg/flac/oggflacfile.h
   ogg/speex/speexfile.h
   ogg/speex/speexproperties.h
+  ogg/opus/opusfile.h
+  ogg/opus/opusproperties.h
   flac/flacfile.h
   flac/flacpicture.h
   flac/flacproperties.h
@@ -103,6 +108,7 @@ set(tag_HDRS
   riff/aiff/aiffproperties.h
   riff/wav/wavfile.h
   riff/wav/wavproperties.h
+  riff/wav/infotag.h
   asf/asffile.h
   asf/asfproperties.h
   asf/asftag.h
@@ -219,6 +225,11 @@ set(speex_SRCS
   ogg/speex/speexproperties.cpp
 )
 
+set(opus_SRCS
+  ogg/opus/opusfile.cpp
+  ogg/opus/opusproperties.cpp
+)
+
 set(trueaudio_SRCS
   trueaudio/trueaudiofile.cpp
   trueaudio/trueaudioproperties.cpp
@@ -244,6 +255,7 @@ set(aiff_SRCS
 set(wav_SRCS
   riff/wav/wavfile.cpp
   riff/wav/wavproperties.cpp
+  riff/wav/infotag.cpp
 )
 
 set(mod_SRCS
@@ -279,6 +291,8 @@ set(toolkit_SRCS
   toolkit/tfilestream.cpp
   toolkit/tdebug.cpp
   toolkit/tpropertymap.cpp
+  toolkit/trefcounter.cpp
+  toolkit/tdebuglistener.cpp
   toolkit/unicode.cpp
 )
 
@@ -286,7 +300,7 @@ set(tag_LIB_SRCS
   ${mpeg_SRCS} ${id3v1_SRCS} ${id3v2_SRCS} ${frames_SRCS} ${ogg_SRCS}
   ${vorbis_SRCS} ${oggflacs_SRCS} ${mpc_SRCS} ${ape_SRCS} ${toolkit_SRCS} ${flacs_SRCS}
   ${wavpack_SRCS} ${speex_SRCS} ${trueaudio_SRCS} ${riff_SRCS} ${aiff_SRCS} ${wav_SRCS}
-  ${asf_SRCS} ${mp4_SRCS} ${mod_SRCS} ${s3m_SRCS} ${it_SRCS} ${xm_SRCS}
+  ${asf_SRCS} ${mp4_SRCS} ${mod_SRCS} ${s3m_SRCS} ${it_SRCS} ${xm_SRCS} ${opus_SRCS}
   tag.cpp
   tagunion.cpp
   fileref.cpp

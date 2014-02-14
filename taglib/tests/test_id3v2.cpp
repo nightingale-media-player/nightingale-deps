@@ -1,4 +1,7 @@
-#include <cppunit/extensions/HelperMacros.h>
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <string>
 #include <stdio.h>
 // so evil :(
@@ -16,8 +19,10 @@
 #include <popularimeterframe.h>
 #include <urllinkframe.h>
 #include <ownershipframe.h>
+#include <unknownframe.h>
 #include <tdebug.h>
 #include <tpropertymap.h>
+#include <cppunit/extensions/HelperMacros.h>
 #include "utils.h"
 
 using namespace std;
@@ -580,13 +585,27 @@ public:
   {
     MPEG::File f(TEST_FILE_PATH_C("compressed_id3_frame.mp3"), false);
     CPPUNIT_ASSERT(f.ID3v2Tag()->frameListMap().contains("APIC"));
-    ID3v2::AttachedPictureFrame *frame =
-        static_cast<TagLib::ID3v2::AttachedPictureFrame*>(f.ID3v2Tag()->frameListMap()["APIC"].front());
+
+#ifdef HAVE_ZLIB
+
+    ID3v2::AttachedPictureFrame *frame 
+      = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(f.ID3v2Tag()->frameListMap()["APIC"].front());
     CPPUNIT_ASSERT(frame);
     CPPUNIT_ASSERT_EQUAL(String("image/bmp"), frame->mimeType());
     CPPUNIT_ASSERT_EQUAL(ID3v2::AttachedPictureFrame::Other, frame->type());
     CPPUNIT_ASSERT_EQUAL(String(""), frame->description());
     CPPUNIT_ASSERT_EQUAL(TagLib::uint(86414), frame->picture().size());
+
+#else
+
+    // Skip the test if ZLIB is not installed.
+    // The message "Compressed frames are currently not supported." will be displayed.
+
+    ID3v2::UnknownFrame *frame 
+      = dynamic_cast<TagLib::ID3v2::UnknownFrame*>(f.ID3v2Tag()->frameListMap()["APIC"].front());
+    CPPUNIT_ASSERT(frame);
+
+#endif
   }
   
   void testW000()
@@ -624,7 +643,7 @@ public:
     CPPUNIT_ASSERT_EQUAL(String("A COMMENT"), dict["COMMENT"].front());
 
     CPPUNIT_ASSERT_EQUAL(1u, dict.unsupportedData().size());
-    CPPUNIT_ASSERT_EQUAL(String("UFID"), dict.unsupportedData().front());
+    CPPUNIT_ASSERT_EQUAL(String("UFID/supermihi@web.de"), dict.unsupportedData().front());
   }
 
   void testPropertyInterface2()
@@ -657,11 +676,23 @@ public:
     frame5->setText(tmclData);
     tag.addFrame(frame5);
 
+    ID3v2::UniqueFileIdentifierFrame *frame6 = new ID3v2::UniqueFileIdentifierFrame("http://musicbrainz.org", "152454b9-19ba-49f3-9fc9-8fc26545cf41");
+    tag.addFrame(frame6);
+
+    ID3v2::UniqueFileIdentifierFrame *frame7 = new ID3v2::UniqueFileIdentifierFrame("http://example.com", "123");
+    tag.addFrame(frame7);
+
+    ID3v2::UserTextIdentificationFrame *frame8 = new ID3v2::UserTextIdentificationFrame();
+    frame8->setDescription("MusicBrainz Album Id");
+    frame8->setText("95c454a5-d7e0-4d8f-9900-db04aca98ab3");
+    tag.addFrame(frame8);
+
     PropertyMap properties = tag.properties();
 
-    CPPUNIT_ASSERT_EQUAL(2u, properties.unsupportedData().size());
+    CPPUNIT_ASSERT_EQUAL(3u, properties.unsupportedData().size());
     CPPUNIT_ASSERT(properties.unsupportedData().contains("TIPL"));
     CPPUNIT_ASSERT(properties.unsupportedData().contains("APIC"));
+    CPPUNIT_ASSERT(properties.unsupportedData().contains("UFID/http://example.com"));
 
     CPPUNIT_ASSERT(properties.contains("PERFORMER:VIOLIN"));
     CPPUNIT_ASSERT(properties.contains("PERFORMER:PIANO"));
@@ -671,9 +702,17 @@ public:
     CPPUNIT_ASSERT(properties.contains("LYRICS"));
     CPPUNIT_ASSERT(properties.contains("LYRICS:TEST"));
 
+    CPPUNIT_ASSERT(properties.contains("MUSICBRAINZ_TRACKID"));
+    CPPUNIT_ASSERT_EQUAL(String("152454b9-19ba-49f3-9fc9-8fc26545cf41"), properties["MUSICBRAINZ_TRACKID"].front());
+
+    CPPUNIT_ASSERT(properties.contains("MUSICBRAINZ_ALBUMID"));
+    CPPUNIT_ASSERT_EQUAL(String("95c454a5-d7e0-4d8f-9900-db04aca98ab3"), properties["MUSICBRAINZ_ALBUMID"].front());
+
     tag.removeUnsupportedProperties(properties.unsupportedData());
     CPPUNIT_ASSERT(tag.frameList("APIC").isEmpty());
     CPPUNIT_ASSERT(tag.frameList("TIPL").isEmpty());
+    CPPUNIT_ASSERT_EQUAL((ID3v2::UniqueFileIdentifierFrame *)0, ID3v2::UniqueFileIdentifierFrame::findByOwner(&tag, "http://example.com"));
+    CPPUNIT_ASSERT_EQUAL(frame6, ID3v2::UniqueFileIdentifierFrame::findByOwner(&tag, "http://musicbrainz.org"));
   }
 
   void testDeleteFrame()
