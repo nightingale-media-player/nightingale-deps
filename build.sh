@@ -1,100 +1,133 @@
-#TODO: put the finished archive in {os}_arch/{release|debug}/xulrunner.tar.bz2 rather than just in the file root!
+#!/bin/bash
 
-# NOTE: If you've already built once successfully, then don't use this
-# script to repackage! Instead go to xulrunner and 
-# make -f Makefile.songbird xr-packaging
-
-set -e
-
-# Use HG or TARBALL to fetch the sources?
-# Really, just use whichever suits you or is fastest
-USE="TARBALL"
 ARCH="$(uname -m)"
 
 # XUL Version
 export XUL="9.0.1"
 
-# Top level build path
-export SB_VENDOR_BUILD_ROOT="$(cd "$(dirname "$0")" && pwd)"
-mkdir -p "checkout/linux-$ARCH"
+export DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export SB_VENDOR_BINARIES_CO_ROOT=$DIR
+export SB_VENDOR_BUILD_ROOT=$DIR
 
-if [ ! -d "build" ] ; then
+# rm -rf build
+# mkdir build
+if [ ! -d "build" ]; then
     mkdir build
 fi
 
-# output directory
-mkdir -p "linux-$ARCH"
-
-cd "xulrunner"
-# just in case the directory exists already
-#rm -rf mozilla
-
-get_bundle() {
-  [ -f mozilla-release.hg ] && {
-    [ -f mozilla-release.old.hg ] && {
-      rm mozilla-release.old.hg
-    }
-    mv mozilla-release.hg mozilla-release.old.hg
-  }
-  # if you have axel or aria2c installed, i'd suggest using it here to speed up the download
-  wget -O mozilla-release.hg ftp://ftp.mozilla.org/pub/mozilla.org/firefox/bundles/mozilla-release.hg
-}
-
-use_hg() {
-  [ -d mozilla ] || {
-    # mozilla directory does not exist; get the source code
-    mkdir -p mozilla
-    hg --cwd mozilla init
-    # make sure we have a bundle available
-    [ -f mozilla-release.hg ] || get_bundle
-    # unbundle
-    hg --cwd mozilla unbundle ../mozilla-release.hg
-    # make sure we have the release we want
-    hg --cwd mozilla tags | grep -F "FIREFOX_${XUL//./_}_RELEASE" || {
-      # perhaps the bundle was too old; grab a new one
-      get_bundle
-      hg --cwd mozilla unbundle ../mozilla-release.hg
-    }
-    # remember to checkout
-    hg co "FIREFOX_${XUL//./_}_RELEASE"
-  }
-}
-
-use_tarball() {
-	if [ ! -f "xulrunner-$XUL.source.tar.bz2" ] ; then	
-	    # if you have axel or aria2c installed, i'd suggest using it here to speed up the download	
-		wget "https://ftp.mozilla.org/pub/mozilla.org/xulrunner/releases/$XUL/source/xulrunner-$XUL.source.tar.bz2"
-		tar xvf "xulrunner-$XUL.source.tar.bz2"
-		# just in case the directory exists already
-		rm -rf mozilla
-		mv "mozilla-release" mozilla
-	else
-		rm -rf mozilla
-		tar xvf "xulrunner-$XUL.source.tar.bz2"
-		mv "mozilla-release" mozilla
-	fi
-}
-
-if [ $USE = "HG" ] ; then
-	use_hg
-elif [ $USE = "TARBALL" ] ; then
-	use_tarball
-fi
-
-# fix for kernels > 3.X on versions of xul without security setup for them
 case $OSTYPE in
-	linux*)
-		if [ ! -f mozilla/security/coreconf/Linux$(uname -r|sed -e 's/\-.*//'|grep -o "[0-9]\.[0-9]").mk ]; then
-			ln -s $(pwd)/mozilla/security/coreconf/Linux2.6.mk $(pwd)/mozilla/security/coreconf/Linux$(uname -r|sed -e 's/\-.*//'|grep -o "[0-9]\.[0-9]").mk
-		fi
-	;;
-	*)
-		# weee! xulrunner already has security coreconf for our kernel!
-	;;
+    linux*)
+        if [ ! -d "linux-$(uname -m)" ]; then
+            mkdir -p "linux-$(uname -m)"
+            mkdir -p "checkout/linux-$(uname -m)"
+        fi
+
+        echo -e "Building FLAC...\n"
+        make -C flac -f Makefile.songbird
+
+        echo -e "Building libjpeg-turbo...\n"
+        make -C libjpeg-turbo -f Makefile.songbird
+
+        echo -e "Building libogg...\n"
+        make -C libogg -f Makefile.songbird
+
+        echo -e "Building libtheora...\n"
+        make -C libtheora -f Makefile.songbird
+
+        echo -e "Building libtool...\n"
+        make -C libtool -f Makefile.songbird
+
+        echo -e "Building libvorbis...\n"
+        make -C libvorbis -f Makefile.songbird
+
+        echo -e "Building sqlite...\n"
+        make -C sqlite -f Makefile.songbird
+
+        echo -e "Building taglib...\n"
+        make -C taglib -f Makefile.songbird
+
+        echo -e "Building gstreamer...\n"
+        make -C gstreamer -f Makefile.songbird
+
+        echo -e "Building gst plugins...\n"
+        make -C gst-plugins-base -f Makefile.songbird
+        make -C gst-plugins-good -f Makefile.songbird
+        make -C gst-plugins-bad -f Makefile.songbird
+        make -C gst-plugins-ugly -f Makefile.songbird
+
+        cd "xulrunner"
+        # fix for kernels > 3.X on versions of xul without security setup for them
+        if [ ! -f mozilla/security/coreconf/Linux$(uname -r|sed -e 's/\-.*//'|grep -o "[0-9]\.[0-9]").mk ]; then
+            ln -s $(pwd)/mozilla/security/coreconf/Linux2.6.mk $(pwd)/mozilla/security/coreconf/Linux$(uname -r|sed -e 's/\-.*//'|grep -o "[0-9]\.[0-9]").mk
+        fi
+        cd ../
+
+        echo -e "Building xulrunner...\n"
+        make -C xulrunner xr-all
+
+        if [ ! -d "linux-$ARCH/mozilla-$XUL/debug" ] ; then 
+            cd "linux-$ARCH/mozilla-$XUL"
+            mkdir debug
+            mv bin frozen idl include lib scripts debug
+            cd ../../
+        fi
+
+        if [ ! -d "linux-$ARCH/xulrunner-$XUL/debug" ] ; then
+            cd "linux-$ARCH/xulrunner-$XUL"
+            mkdir debug
+            mv xulrunner.tar.bz debug
+            cd ../../
+        fi
+    ;;
+
+    darwin*)
+        # on OSX, we want 32 bit builds
+        arch_flags="-m32 -arch i386"
+        export CFLAGS="$arch_flags"
+        export CXXFLAGS="$arch_flags"
+        export CPPFLAGS="$arch_flags"
+        export LDFLAGS="$arch_flags"
+        export OBJCFLAGS="$arch_flags"
+
+        if [ ! -d "macosx-i686" ]; then
+            mkdir -p "macosx-i686"
+            mkdir -p "checkout/macosx-i686"
+        fi
+
+        echo -e "Building sqlite..."
+        make CC=gcc CXX=g++ -C sqlite -f Makefile.songbird
+        echo -e "Building taglib..."        
+        make CC=gcc CXX=g++ -C taglib -f Makefile.songbird
+
+        echo -e "Building xulrunner and crossing our fingers..."
+        make CC=gcc-4.2 CXX=g++-4.2 -C xulrunner -f Makefile.songbird xr-all
+        echo "Done!"
+    ;;
+
+    msys*)
+        if [ ! -d "windows-i686-msvc10" ]; then
+            mkdir -p "windows-i686-msvc10"
+        fi
+        if [ ! -d "checkout/windows-i686-msvc10" ]; then
+            mkdir -p "checkout/windows-i686-msvc10"
+        fi
+
+        echo -e "Building xulrunner...\n\n"
+        make -C xulrunner xr-all
+
+        # echo -e "\nBuilding glib...\n\n"
+        # make -C glib -f Makefile.songbird
+
+        # echo -e "\nBuilding gettext...\n\n"
+        # make -C gettext -f Makefile.songbird
+
+        # echo -e "\nBuilding flac...\n\n"
+        # make -C flac -f Makefile.songbird
+    ;;
+
+    *)
+        echo "Lazy buildscript for your OS coming soon."
+    ;;
 esac
 
-# build Xulrunner
-make xr-all
 
-cp -a "oldscripts/*" "linux-$ARCH/mozilla-$XUL/debug/scripts/"
-cp -a "oldscripts/*" "linux-$ARCH/mozilla-$XUL/release/scripts/"
