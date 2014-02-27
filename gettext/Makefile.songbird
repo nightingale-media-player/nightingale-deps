@@ -38,14 +38,14 @@ SB_VENDOR_TARGET_VERSION = 0.18.3.1
 include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := --enable-relocatable \
-      --disable-libsuffix \
-      --enable-cxx-warnings=no
+                                   --disable-libsuffix \
+                                   --enable-cxx-warnings=no
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS := \
-   libintl \
-   libasprintf \
-   libgettextlib \
-   libgettextsrc \
-   libgettextpo
+    libintl \
+    libasprintf \
+    libgettextlib \
+    libgettextsrc \
+    libgettextpo
 
 include $(CURDIR)/../songbird-vendor-rules.mk

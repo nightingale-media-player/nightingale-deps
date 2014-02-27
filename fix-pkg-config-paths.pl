@@ -17,7 +17,7 @@ Usage: $0 [-f] -p [TOKEN] [full path to libtool .pc file]
 If the supplied .pc file has a previouly munged marker in it, it will not be
 modified unless -f is supplied.
 
-Example: $0 -p windows-i686-msvc8 /e/builds/sb-deps/flac/release/lib/libFLAC.pc
+Example: $0 -p windows-i686-msvc10 /e/builds/sb-deps/flac/release/lib/libFLAC.pc
 __END_USAGE__
 }
 
