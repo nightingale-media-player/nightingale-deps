@@ -44,19 +44,6 @@ ifneq (,$(PKG_CONFIG_PATH))
   SB_PKG_CONFIG_PATH := $(SB_PKG_CONFIG_PATH):$(PKG_CONFIG_PATH)
 endif
 
-# This flag only means anything on Win32 right now, so assert that...
-ifdef SB_USE_MOZCRT
-   ifneq (Msys,$(SB_VENDOR_ARCH))
-      $(error SB_USE_MOZCRT is only meaningful on Win32.)
-   endif
-
-   # Add the mozsdk lib dir (containing mozcrt19.dll) to the runtime
-   # path, so that the configure tests that create executables are
-   # actually runnable; we do this up here because SB_PATH's assignment-type
-   # below.
-   SB_PATH += $(MOZSDK_DIR)/lib
-endif
-
 SB_PATH := $(subst $(SPACE),:,$(strip $(SB_PATH))):$(PATH)
 
 SB_DYLD_LIBRARY_PATH := $(subst $(SPACE),:,$(strip $(SB_DYLD_LIBRARY_PATH)))
@@ -104,24 +91,10 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
    normalizepath = $(if $(filter /%,$(1)),$(shell cd $(call root-path,$(1)) && pwd -W)/$(call non-root-path,$(1)),$(1))
 
    ifeq (debug,$(SB_BUILD_TYPE))
-      ifeq (1,$(SB_USE_MOZCRT))
-         SB_CFLAGS += -MDd
-         SB_LDFLAGS += -LIBPATH:$(call normalizepath,$(MOZSDK_DIR))/lib \
-          -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19d
-      else
-         SB_CFLAGS += -MTd
-      endif
-      SB_CFLAGS += -DDEBUG -UNDEBUG
+      SB_CFLAGS += -MTd -DDEBUG -UNDEBUG
    endif
    ifeq (release,$(SB_BUILD_TYPE))
-      ifeq (1,$(SB_USE_MOZCRT))
-         SB_CFLAGS += -MD
-         SB_LDFLAGS += -LIBPATH:$(call normalizepath,$(MOZSDK_DIR))/lib \
-          -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19
-      else
-         SB_CFLAGS += -MT
-      endif
-      SB_CFLAGS += -UDEBUG -DNDEBUG
+      SB_CFLAGS += -MT -UDEBUG -DNDEBUG
    endif
 endif
 
