@@ -1,7 +1,7 @@
 # English translations for gettext-tools package.
-# Copyright (C) 2013 Free Software Foundation, Inc.
+# Copyright (C) 2014 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gettext-tools package.
-# Automatically generated, 2013.
+# Automatically generated, 2014.
 #
 # All this catalog "translates" are quotation characters.
 # The msgids must be ASCII and therefore cannot contain real quotation
@@ -32,8 +32,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gettext-tools 0.18.3\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2013-08-15 18:32+0200\n"
-"PO-Revision-Date: 2013-08-15 18:32+0200\n"
+"POT-Creation-Date: 2014-01-07 15:19+0900\n"
+"PO-Revision-Date: 2014-01-07 15:19+0900\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en@boldquot\n"

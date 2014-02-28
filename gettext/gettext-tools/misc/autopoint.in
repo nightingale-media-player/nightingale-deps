@@ -141,18 +141,20 @@ fi
 func_trace ()
 {
   echo '\
-dnl ignore M4sugar macros which may abort autom4te
+dnl disable macros which may abort autom4te
 m4_undefine([m4_assert])
 m4_undefine([m4_fatal])
 m4_undefine([m4_warn])
 m4_undefine([m4_errprintn])
 m4_undefine([m4_exit])
+m4_undefine([m4_include])
+m4_undefine([m4_esyscmd])
 dnl macros which needs to be traced without aclocal.m4
 m4_define([AM_GNU_GETTEXT], [])
 m4_define([AM_GNU_GETTEXT_VERSION], [])
 ' \
-  | autom4te --no-cache --language=Autoconf-without-aclocal-m4 \
-    --trace="$1":\$% - "$2"
+  | ${AUTOM4TE:-autom4te} --no-cache --language=Autoconf-without-aclocal-m4 \
+    --trace="$1":\$% - "$2" 2>/dev/null
 }
 
 # func_usage
@@ -347,15 +349,21 @@ if test -z "$m4dir" && test -f Makefile.am; then
   done
 fi
 
+if test -z "$m4dir"; then
+  m4dir=m4
+fi
+
 # Check whether to omit the intl/ directory.
 omitintl=
 xargs=`func_trace AM_GNU_GETTEXT "$configure_in"`
+save_IFS="$IFS"; IFS=:
 for arg in $xargs; do
   if test 'external' = "$arg"; then
     omitintl=yes
     break
   fi
 done
+IFS="$save_IFS"
 
 # Check in which directory or directories the po/* infrastructure belongs.
 configfiles=`func_trace AC_CONFIG_FILES "$configure_in"`

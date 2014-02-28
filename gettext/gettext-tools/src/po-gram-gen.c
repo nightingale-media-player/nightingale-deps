@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.4.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Bison implementation for Yacc-like parsers in C
    
@@ -44,7 +44,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "2.6.4"
+#define YYBISON_VERSION "2.7"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -62,7 +62,7 @@
 
 
 /* Copy the first part of user declarations.  */
-/* Line 358 of yacc.c  */
+/* Line 371 of yacc.c  */
 #line 19 "po-gram-gen.y"
 
 #ifdef HAVE_CONFIG_H
@@ -170,7 +170,7 @@ do_callback_message (char *msgctxt,
     free ((value).ctxt);
 
 
-/* Line 358 of yacc.c  */
+/* Line 371 of yacc.c  */
 #line 175 "po-gram-gen.c"
 
 # ifndef YY_NULL
@@ -244,7 +244,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
 {
-/* Line 374 of yacc.c  */
+/* Line 387 of yacc.c  */
 #line 143 "po-gram-gen.y"
 
   struct { char *string; lex_pos_ty pos; bool obsolete; } string;
@@ -256,7 +256,7 @@ typedef union YYSTYPE
   struct { struct msgstr_def rhs; lex_pos_ty pos; bool obsolete; } rhs;
 
 
-/* Line 374 of yacc.c  */
+/* Line 387 of yacc.c  */
 #line 261 "po-gram-gen.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
@@ -284,7 +284,7 @@ int yyparse ();
 
 /* Copy the second part of user declarations.  */
 
-/* Line 377 of yacc.c  */
+/* Line 390 of yacc.c  */
 #line 289 "po-gram-gen.c"
 
 #ifdef short
@@ -756,47 +756,18 @@ do                                                              \
     }								\
 while (YYID (0))
 
-
+/* Error token number */
 #define YYTERROR	1
 #define YYERRCODE	256
 
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
-
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)                                \
-    do                                                                  \
-      if (YYID (N))                                                     \
-        {                                                               \
-          (Current).first_line   = YYRHSLOC (Rhs, 1).first_line;        \
-          (Current).first_column = YYRHSLOC (Rhs, 1).first_column;      \
-          (Current).last_line    = YYRHSLOC (Rhs, N).last_line;         \
-          (Current).last_column  = YYRHSLOC (Rhs, N).last_column;       \
-        }                                                               \
-      else                                                              \
-        {                                                               \
-          (Current).first_line   = (Current).last_line   =              \
-            YYRHSLOC (Rhs, 0).last_line;                                \
-          (Current).first_column = (Current).last_column =              \
-            YYRHSLOC (Rhs, 0).last_column;                              \
-        }                                                               \
-    while (YYID (0))
-#endif
-
-#define YYRHSLOC(Rhs, K) ((Rhs)[K])
-
-
 
 /* This macro is provided for backward compatibility. */
-
 #ifndef YY_LOCATION_PRINT
 # define YY_LOCATION_PRINT(File, Loc) ((void) 0)
 #endif
 
 
 /* YYLEX -- calling `yylex' with the right arguments.  */
-
 #ifdef YYLEX_PARAM
 # define YYLEX yylex (YYLEX_PARAM)
 #else
@@ -859,7 +830,7 @@ yy_symbol_value_print (yyoutput, yytype, yyvaluep)
   switch (yytype)
     {
       default:
-	break;
+        break;
     }
 }
 
@@ -1101,7 +1072,6 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 {
   YYSIZE_T yysize0 = yytnamerr (YY_NULL, yytname[yytoken]);
   YYSIZE_T yysize = yysize0;
-  YYSIZE_T yysize1;
   enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
   /* Internationalized format string. */
   const char *yyformat = YY_NULL;
@@ -1164,11 +1134,13 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                     break;
                   }
                 yyarg[yycount++] = yytname[yyx];
-                yysize1 = yysize + yytnamerr (YY_NULL, yytname[yyx]);
-                if (! (yysize <= yysize1
-                       && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
-                  return 2;
-                yysize = yysize1;
+                {
+                  YYSIZE_T yysize1 = yysize + yytnamerr (YY_NULL, yytname[yyx]);
+                  if (! (yysize <= yysize1
+                         && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+                    return 2;
+                  yysize = yysize1;
+                }
               }
         }
     }
@@ -1188,10 +1160,12 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 # undef YYCASE_
     }
 
-  yysize1 = yysize + yystrlen (yyformat);
-  if (! (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
-    return 2;
-  yysize = yysize1;
+  {
+    YYSIZE_T yysize1 = yysize + yystrlen (yyformat);
+    if (! (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+      return 2;
+    yysize = yysize1;
+  }
 
   if (*yymsg_alloc < yysize)
     {
@@ -1251,7 +1225,7 @@ yydestruct (yymsg, yytype, yyvaluep)
     {
 
       default:
-	break;
+        break;
     }
 }
 
@@ -1262,16 +1236,16 @@ yydestruct (yymsg, yytype, yyvaluep)
 int yychar;
 
 
-#ifndef YYLVAL_INITIALIZE
-# define YYLVAL_INITIALIZE()
-#endif
 #ifndef YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
 # define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END
 #endif
+#ifndef YY_INITIAL_VALUE
+# define YY_INITIAL_VALUE(Value) /* Nothing. */
+#endif
 
 /* The semantic value of the lookahead symbol.  */
-YYSTYPE yylval;
+YYSTYPE yylval YY_INITIAL_VALUE(yyval_default);
 
 /* Number of syntax errors so far.  */
 int yynerrs;
@@ -1347,8 +1321,8 @@ yyparse ()
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
 
-  yyss = yyssa;
-  yyvs = yyvsa;
+  yyssp = yyss = yyssa;
+  yyvsp = yyvs = yyvsa;
   yystacksize = YYINITDEPTH;
 
   YYDPRINTF ((stderr, "Starting parse\n"));
@@ -1357,15 +1331,6 @@ yyparse ()
   yyerrstatus = 0;
   yynerrs = 0;
   yychar = YYEMPTY; /* Cause a token to be read.  */
-
-  /* Initialize stack pointers.
-     Waste one element of value and location stack
-     so that they stay on the same level as the state stack.
-     The wasted elements are never initialized.  */
-  yyssp = yyss;
-  yyvsp = yyvs;
-
-  YYLVAL_INITIALIZE ();
   goto yysetstate;
 
 /*------------------------------------------------------------.
@@ -1545,7 +1510,7 @@ yyreduce:
   switch (yyn)
     {
         case 7:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 179 "po-gram-gen.y"
     {
                   po_callback_comment_dispatcher ((yyvsp[(1) - (1)].string).string);
@@ -1553,7 +1518,7 @@ yyreduce:
     break;
 
   case 8:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 187 "po-gram-gen.y"
     {
                    po_callback_domain ((yyvsp[(2) - (2)].string).string);
@@ -1561,7 +1526,7 @@ yyreduce:
     break;
 
   case 9:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 195 "po-gram-gen.y"
     {
                   char *string2 = string_list_concat_destroy (&(yyvsp[(2) - (4)].stringlist).stringlist);
@@ -1586,7 +1551,7 @@ yyreduce:
     break;
 
   case 10:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 216 "po-gram-gen.y"
     {
                   char *string2 = string_list_concat_destroy (&(yyvsp[(2) - (4)].stringlist).stringlist);
@@ -1611,7 +1576,7 @@ yyreduce:
     break;
 
   case 11:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 237 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (3)].message_intro), (yyvsp[(2) - (3)].stringlist));
@@ -1624,7 +1589,7 @@ yyreduce:
     break;
 
   case 12:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 246 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (3)].message_intro), (yyvsp[(2) - (3)].stringlist));
@@ -1637,7 +1602,7 @@ yyreduce:
     break;
 
   case 13:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 255 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (2)].message_intro), (yyvsp[(2) - (2)].stringlist));
@@ -1648,7 +1613,7 @@ yyreduce:
     break;
 
   case 14:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 266 "po-gram-gen.y"
     {
                   (yyval.message_intro).prev_ctxt = NULL;
@@ -1661,7 +1626,7 @@ yyreduce:
     break;
 
   case 15:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 275 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (2)].prev), (yyvsp[(2) - (2)].string));
@@ -1675,7 +1640,7 @@ yyreduce:
     break;
 
   case 16:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 289 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (2)].string), (yyvsp[(2) - (2)].stringlist));
@@ -1688,7 +1653,7 @@ yyreduce:
     break;
 
   case 17:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 298 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (3)].string), (yyvsp[(2) - (3)].stringlist));
@@ -1702,7 +1667,7 @@ yyreduce:
     break;
 
   case 18:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 312 "po-gram-gen.y"
     {
                   (yyval.string).string = NULL;
@@ -1712,7 +1677,7 @@ yyreduce:
     break;
 
   case 19:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 318 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (3)].pos), (yyvsp[(2) - (3)].stringlist));
@@ -1724,7 +1689,7 @@ yyreduce:
     break;
 
   case 20:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 329 "po-gram-gen.y"
     {
                   (yyval.string).string = NULL;
@@ -1734,7 +1699,7 @@ yyreduce:
     break;
 
   case 21:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 335 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (3)].pos), (yyvsp[(2) - (3)].stringlist));
@@ -1746,7 +1711,7 @@ yyreduce:
     break;
 
   case 22:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 347 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (2)].pos), (yyvsp[(2) - (2)].stringlist));
@@ -1758,7 +1723,7 @@ yyreduce:
     break;
 
   case 23:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 358 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (2)].pos), (yyvsp[(2) - (2)].stringlist));
@@ -1769,7 +1734,7 @@ yyreduce:
     break;
 
   case 24:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 369 "po-gram-gen.y"
     {
                   (yyval.rhs) = (yyvsp[(1) - (1)].rhs);
@@ -1777,7 +1742,7 @@ yyreduce:
     break;
 
   case 25:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 373 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (2)].rhs), (yyvsp[(2) - (2)].rhs));
@@ -1793,7 +1758,7 @@ yyreduce:
     break;
 
   case 26:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 388 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (5)].pos), (yyvsp[(2) - (5)].pos));
@@ -1816,7 +1781,7 @@ yyreduce:
     break;
 
   case 27:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 411 "po-gram-gen.y"
     {
                   string_list_init (&(yyval.stringlist).stringlist);
@@ -1827,7 +1792,7 @@ yyreduce:
     break;
 
   case 28:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 418 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (2)].stringlist), (yyvsp[(2) - (2)].string));
@@ -1839,7 +1804,7 @@ yyreduce:
     break;
 
   case 29:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 429 "po-gram-gen.y"
     {
                   string_list_init (&(yyval.stringlist).stringlist);
@@ -1850,7 +1815,7 @@ yyreduce:
     break;
 
   case 30:
-/* Line 1813 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 436 "po-gram-gen.y"
     {
                   check_obsolete ((yyvsp[(1) - (2)].stringlist), (yyvsp[(2) - (2)].string));
@@ -1862,8 +1827,8 @@ yyreduce:
     break;
 
 
-/* Line 1813 of yacc.c  */
-#line 1867 "po-gram-gen.c"
+/* Line 1792 of yacc.c  */
+#line 1832 "po-gram-gen.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
