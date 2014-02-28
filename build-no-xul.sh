@@ -78,6 +78,54 @@ case $OSTYPE in
     #     echo "Done!"
     # ;;
 
+    msys*)
+        if [ ! -d "windows-i686-msvc10" ]; then
+            mkdir -p "windows-i686-msvc10"
+        fi
+        if [ ! -d "checkout/windows-i686-msvc10" ]; then
+            mkdir -p "checkout/windows-i686-msvc10"
+        fi
+
+        # echo -e "Building glib...\n"
+        # make -C glib -f Makefile.songbird
+
+        echo -e "Building gettext...\n"
+        make -C gettext -f Makefile.songbird
+
+        echo -e "Building FLAC...\n"
+        make -C flac -f Makefile.songbird
+
+        # echo -e "Building libjpeg-turbo...\n"
+        # make -C libjpeg-turbo -f Makefile.songbird
+
+        # echo -e "Building libogg...\n"
+        # make -C libogg -f Makefile.songbird
+
+        # echo -e "Building libtheora...\n"
+        # make -C libtheora -f Makefile.songbird
+
+        # echo -e "Building libtool...\n"
+        # make -C libtool -f Makefile.songbird
+
+        # echo -e "Building libvorbis...\n"
+        # make -C libvorbis -f Makefile.songbird
+
+        # echo -e "Building sqlite...\n"
+        # make -C sqlite -f Makefile.songbird
+
+        # echo -e "Building taglib...\n"
+        # make -C taglib -f Makefile.songbird
+
+        # echo -e "Building gstreamer...\n"
+        # make -C gstreamer -f Makefile.songbird
+
+        # echo -e "Building gst plugins...\n"
+        # make -C gst-plugins-base -f Makefile.songbird
+        # make -C gst-plugins-good -f Makefile.songbird
+        # make -C gst-plugins-bad -f Makefile.songbird
+        # make -C gst-plugins-ugly -f Makefile.songbird
+    ;;
+
     *)
         echo "Lazy buildscript for your OS coming soon."
     ;;
