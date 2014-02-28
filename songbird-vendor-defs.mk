@@ -210,7 +210,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 
    SB_CFLAGS += -D_MSC_VER=$(_MSC_VER) -DWIN32 -D__NO_CTYPE \
      -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS \
-     -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055
+     -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -wd9035
 
    SB_CFLAGS += -Zi 
    SB_CXXFLAGS += -Zi
