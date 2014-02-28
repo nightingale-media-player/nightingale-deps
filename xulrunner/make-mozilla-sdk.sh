@@ -19,7 +19,7 @@ lib_files="*js3250.*
            *xpcom.*
            *xpcomglue_s*
            *mozjs*
-           *mozcrt19*
+           *mozcrt*
            *xul*
            *smime3*
            *ssl3*
@@ -60,8 +60,8 @@ symbol_files="intl/unicharutil/util/nsunicharutils.pdb
               xpcom/stub/xpcom.pdb
               xulrunner/app/xulrunner.pdb
               xulrunner/stub/xulrunner-stub.pdb
-              memory/jemalloc/mozcrt19*.pdb
               memory/jemalloc/libc*.pdb
+              memory/mozalloc/mozalloc*.pdb
 "
 
 # update_bin_files are relative to $objdir/dist/host/bin/
