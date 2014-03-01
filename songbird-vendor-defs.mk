@@ -210,7 +210,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 
    SB_CFLAGS += -D_MSC_VER=$(_MSC_VER) -DWIN32 -D__NO_CTYPE \
      -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS \
-     -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055 -wd9035
+     -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055
 
    SB_CFLAGS += -Zi 
    SB_CXXFLAGS += -Zi
@@ -547,6 +547,7 @@ ifneq (,$(call enable-sb-lib, ogg))
 
    ifeq (Msys, $(SB_VENDOR_ARCH))
       SB_PATH += $(SB_LIBOGG_DIR)/bin
+      SB_CFLAGS += -wd9035
       ifeq (debug, $(SB_BUILD_TYPE))
          SB_LIBOGG_LIBS += -Wl,-Zi
       endif
