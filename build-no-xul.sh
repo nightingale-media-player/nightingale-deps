@@ -21,37 +21,37 @@ case $OSTYPE in
         fi
 
         echo -e "Building FLAC...\n"
-        make -C flac -f Makefile.songbird
+        make -C flac -f Makefile.nightingale
 
         echo -e "Building libjpeg-turbo...\n"
-        make -C libjpeg-turbo -f Makefile.songbird
+        make -C libjpeg-turbo -f Makefile.nightingale
 
         echo -e "Building libogg...\n"
-        make -C libogg -f Makefile.songbird
+        make -C libogg -f Makefile.nightingale
 
         echo -e "Building libtheora...\n"
-        make -C libtheora -f Makefile.songbird
+        make -C libtheora -f Makefile.nightingale
 
         echo -e "Building libtool...\n"
-        make -C libtool -f Makefile.songbird
+        make -C libtool -f Makefile.nightingale
 
         echo -e "Building libvorbis...\n"
-        make -C libvorbis -f Makefile.songbird
+        make -C libvorbis -f Makefile.nightingale
 
         echo -e "Building sqlite...\n"
-        make -C sqlite -f Makefile.songbird
+        make -C sqlite -f Makefile.nightingale
 
         echo -e "Building taglib...\n"
-        make -C taglib -f Makefile.songbird
+        make -C taglib -f Makefile.nightingale
 
         echo -e "Building gstreamer...\n"
-        make -C gstreamer -f Makefile.songbird
+        make -C gstreamer -f Makefile.nightingale
 
         echo -e "Building gst plugins...\n"
-        make -C gst-plugins-base -f Makefile.songbird
-        make -C gst-plugins-good -f Makefile.songbird
-        make -C gst-plugins-bad -f Makefile.songbird
-        make -C gst-plugins-ugly -f Makefile.songbird
+        make -C gst-plugins-base -f Makefile.nightingale
+        make -C gst-plugins-good -f Makefile.nightingale
+        make -C gst-plugins-bad -f Makefile.nightingale
+        make -C gst-plugins-ugly -f Makefile.nightingale
     ;;
 
     # darwin*)
@@ -69,12 +69,12 @@ case $OSTYPE in
     #     fi
 
     #     echo -e "Building gstreamer bits..."
-    #     make CC=gcc-4.2 CXX=g++-4.2 -C gstreamer -f Makefile.songbird
+    #     make CC=gcc-4.2 CXX=g++-4.2 -C gstreamer -f Makefile.nightingale
     #     echo -e "Building gst plugins...here's hoping these all build!"
-    #     make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-base -f Makefile.songbird
-    #     make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-good -f Makefile.songbird
-    #     make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-bad -f Makefile.songbird
-    #     make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-ugly -f Makefile.songbird
+    #     make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-base -f Makefile.nightingale
+    #     make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-good -f Makefile.nightingale
+    #     make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-bad -f Makefile.nightingale
+    #     make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-ugly -f Makefile.nightingale
     #     echo "Done!"
     # ;;
 
@@ -87,43 +87,43 @@ case $OSTYPE in
         fi
 
         # echo -e "Building glib...\n"
-        # make -C glib -f Makefile.songbird
+        # make -C glib -f Makefile.nightingale
 
         echo -e "Building gettext...\n"
-        make -C gettext -f Makefile.songbird
+        make -C gettext -f Makefile.nightingale
 
         echo -e "Building FLAC...\n"
-        make -C flac -f Makefile.songbird
+        make -C flac -f Makefile.nightingale
 
         # echo -e "Building libjpeg-turbo...\n"
-        # make -C libjpeg-turbo -f Makefile.songbird
+        # make -C libjpeg-turbo -f Makefile.nightingale
 
         # echo -e "Building libogg...\n"
-        # make -C libogg -f Makefile.songbird
+        # make -C libogg -f Makefile.nightingale
 
         # echo -e "Building libtheora...\n"
-        # make -C libtheora -f Makefile.songbird
+        # make -C libtheora -f Makefile.nightingale
 
         # echo -e "Building libtool...\n"
-        # make -C libtool -f Makefile.songbird
+        # make -C libtool -f Makefile.nightingale
 
         # echo -e "Building libvorbis...\n"
-        # make -C libvorbis -f Makefile.songbird
+        # make -C libvorbis -f Makefile.nightingale
 
         # echo -e "Building sqlite...\n"
-        # make -C sqlite -f Makefile.songbird
+        # make -C sqlite -f Makefile.nightingale
 
         # echo -e "Building taglib...\n"
-        # make -C taglib -f Makefile.songbird
+        # make -C taglib -f Makefile.nightingale
 
         # echo -e "Building gstreamer...\n"
-        # make -C gstreamer -f Makefile.songbird
+        # make -C gstreamer -f Makefile.nightingale
 
         # echo -e "Building gst plugins...\n"
-        # make -C gst-plugins-base -f Makefile.songbird
-        # make -C gst-plugins-good -f Makefile.songbird
-        # make -C gst-plugins-bad -f Makefile.songbird
-        # make -C gst-plugins-ugly -f Makefile.songbird
+        # make -C gst-plugins-base -f Makefile.nightingale
+        # make -C gst-plugins-good -f Makefile.nightingale
+        # make -C gst-plugins-bad -f Makefile.nightingale
+        # make -C gst-plugins-ugly -f Makefile.nightingale
     ;;
 
     *)

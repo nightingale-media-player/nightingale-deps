@@ -29,51 +29,53 @@ case $OSTYPE in
         export WINDOWS_SDK_ROOT="/c/Program Files (x86)/Microsoft SDKs/Windows/v7.0A"
 
         # echo -e "Building libtool..."
-        # make -C libtool -f Makefile.songbird
+        # make -C libtool -f Makefile.nightingale
+
+        # echo -e "Building libiconv..."
+        # make -C libiconv -f Makefile.nightingale
+
+        # echo -e "Building libjpeg-turbo...\n"
+        # make -C libjpeg-turbo -f Makefile.nightingale
 
         ### TIER 1 ###
         # echo -e "Building gettext..."
-        # make -C gettext -f Makefile.songbird
+        # make -C gettext -f Makefile.nightingale
 
         # echo -e "Building glib..."
-        # make -C glib -f Makefile.songbird
+        # make -C glib -f Makefile.nightingale
 
         # echo -e "Building sqlite...\n"
-        # make -C sqlite -f Makefile.songbird
+        # make -C sqlite -f Makefile.nightingale
 
         # echo -e "Building zlib...\n"
-        # make -C zlib -f Makefile.songbird
+        # make -C zlib -f Makefile.nightingale
 
         ### TIER 2 ###
         # echo -e "Building libogg...\n"
-        # make -C libogg -f Makefile.songbird
+        # make -C libogg -f Makefile.nightingale
 
         # echo -e "Building libvorbis...\n"
-        # make -C libvorbis -f Makefile.songbird
+        # make -C libvorbis -f Makefile.nightingale
 
         # echo -e "Building libtheora...\n"
-        # make -C libtheora -f Makefile.songbird
+        # make -C libtheora -f Makefile.nightingale
 
         # echo -e "Building FLAC...\n"
-        # make -C flac -f Makefile.songbird
+        # make -C flac -f Makefile.nightingale
 
         # echo -e "Building taglib...\n"
-        # make -C taglib -f Makefile.songbird
+        # make -C taglib -f Makefile.nightingale
 
         ### TIER 3 ###
         # echo -e "Building gstreamer bits..."
-        # make -C gstreamer -f Makefile.songbird
+        # make -C gstreamer -f Makefile.nightingale
 
         ### TIER 4 ###
         # echo -e "Building gst plugins...here's hoping these all build!"
-        # make -C gst-plugins-base -f Makefile.songbird
-        # make -C gst-plugins-good -f Makefile.songbird
-        # make -C gst-plugins-bad -f Makefile.songbird
-        # make -C gst-plugins-ugly -f Makefile.songbird
-
-        ### TIER 5? ###
-        # echo -e "Building libjpeg-turbo...\n"
-        # make -C libjpeg-turbo -f Makefile.songbird
+        # make -C gst-plugins-base -f Makefile.nightingale
+        # make -C gst-plugins-good -f Makefile.nightingale
+        # make -C gst-plugins-bad -f Makefile.nightingale
+        # make -C gst-plugins-ugly -f Makefile.nightingale
 
     ;;
 

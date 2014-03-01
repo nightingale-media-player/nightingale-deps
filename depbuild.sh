@@ -33,10 +33,10 @@ case $OSTYPE in
         make -C xulrunner xr-all
 
         echo -e "Building sqlite...\n"
-        make -C sqlite -f Makefile.songbird
+        make -C sqlite -f Makefile.nightingale
 
         echo -e "Building taglib...\n"
-        make -C taglib -f Makefile.songbird
+        make -C taglib -f Makefile.nightingale
 
         if [ ! -d "linux-$ARCH/mozilla-$XUL/debug" ] ; then 
             cd "linux-$ARCH/mozilla-$XUL"
@@ -68,12 +68,12 @@ case $OSTYPE in
         fi
 
         echo -e "Building sqlite..."
-        make CC=gcc CXX=g++ -C sqlite -f Makefile.songbird
+        make CC=gcc CXX=g++ -C sqlite -f Makefile.nightingale
         echo -e "Building taglib..."        
-        make CC=gcc CXX=g++ -C taglib -f Makefile.songbird
+        make CC=gcc CXX=g++ -C taglib -f Makefile.nightingale
 
         echo -e "Building xulrunner and crossing our fingers..."
-        make CC=gcc-4.2 CXX=g++-4.2 -C xulrunner -f Makefile.songbird xr-all
+        make CC=gcc-4.2 CXX=g++-4.2 -C xulrunner xr-all
         echo "Done!"
     ;;
 
@@ -89,13 +89,13 @@ case $OSTYPE in
         make -C xulrunner xr-all
 
         # echo -e "\nBuilding glib...\n\n"
-        # make -C glib -f Makefile.songbird
+        # make -C glib -f Makefile.nightingale
 
         # echo -e "\nBuilding gettext...\n\n"
-        # make -C gettext -f Makefile.songbird
+        # make -C gettext -f Makefile.nightingale
 
         # echo -e "\nBuilding flac...\n\n"
-        # make -C flac -f Makefile.songbird
+        # make -C flac -f Makefile.nightingale
     ;;
 
     *)
