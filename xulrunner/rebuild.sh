@@ -3,6 +3,8 @@
 # XUL Version
 export XUL="9.0.1"
 
+export ARCH="$(uname -m)"
+
 # Top level build path
 export SB_VENDOR_BUILD_ROOT="$(cd ../"$(dirname "$0")" && pwd)"
 
