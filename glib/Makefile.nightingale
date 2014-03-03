@@ -42,8 +42,7 @@ SB_VENDOR_TARGET_VERSION = 2.39.90
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
-SB_VENDOR_TARGET_CONFIGURE_OPTS := --disable-libsuffix \
-                                   --enable-cxx-warnings=no
+SB_VENDOR_TARGET_CONFIGURE_OPTS :=
 
 ifneq (,$(filter Msys Darwin,$(SB_VENDOR_ARCH)))
   SB_VENDOR_TARGET_CONFIGURE_OPTS += --with-libiconv=gnu
