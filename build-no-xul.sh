@@ -22,6 +22,12 @@ case $OSTYPE in
             mkdir -p "checkout/linux-$(uname -m)"
         fi
 
+        # echo -e "Building libtool..."
+        # make -C libtool -f Makefile.nightingale
+
+        # echo -e "Building libiconv..."
+        # make -C libiconv -f Makefile.nightingale
+
         # echo -e "Building libjpeg-turbo...\n"
         # make -C libjpeg-turbo -f Makefile.nightingale
 
