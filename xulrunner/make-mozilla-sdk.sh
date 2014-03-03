@@ -8,7 +8,7 @@ RM=${RM:-rm}
 
 # bin_files are relative to $objdir/dist/bin/
 bin_files="js*
-xpidl*"
+"
 
 # lib_files are relative to $objdir/dist/lib/
 lib_files="*js3250.*
@@ -140,10 +140,10 @@ cd "$distdir/bin" && $CP -Lfp $bin_files "$sdkdir/bin"
 cd "$distdir/host/bin" && $CP -Lfp $update_bin_files "$sdkdir/bin"
 
 # POSSIBLY BROKEN
-cd "$srcdir/xulrunner/tools" && $CP -Lfpa *redit* "$sdkdir/bin"
+cd "$objdir/xulrunner/tools/redit" && $CP -Lfpa *redit "$sdkdir/bin"
 
 # POSSIBLY BROKEN - breakpad binaries
-cd "$objdir/toolkit/crashreporter/google-breakpad/src/tools/linux" && $CP -Lfpa *dump_syms* "$sdkdir/bin"
+cd "$objdir/toolkit/crashreporter/google-breakpad/src/tools/linux/dump_syms" && $CP -Lfpa *dump_syms "$sdkdir/bin"
 
 notice "copying library files..."
 cd "$sdkdir" && $MKDIR -p lib
