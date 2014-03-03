@@ -38,13 +38,19 @@ SB_VENDOR_TARGET_VERSION = 0.18.3.2
 include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := --enable-relocatable \
-                                   --prefix=/nonexistent \
                                    --disable-libsuffix \
                                    --enable-cxx-warnings=no \
-                                   --enable-threads=win32 \
                                    --disable-native-java \
                                    --disable-java \
                                    --disable-openmp
+
+ifeq (Linux,$(SB_VENDOR_ARCH))
+  SB_VENDOR_TARGET_CONFIGURE_OPTS += --enable-threads=posix
+endif
+
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  SB_VENDOR_TARGET_CONFIGURE_OPTS += --enable-threads=win32
+endif
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS := \
     libintl \
