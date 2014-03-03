@@ -22,52 +22,51 @@ case $OSTYPE in
             mkdir -p "checkout/linux-$(uname -m)"
         fi
 
-        # echo -e "Building libtool..."
-        # make -C libtool -f Makefile.nightingale
+        echo -e "Building libtool...\n"
+        make -C libtool -f Makefile.nightingale
 
-        # echo -e "Building libiconv..."
-        # make -C libiconv -f Makefile.nightingale
+        echo -e "Building libiconv...\n"
+        make -C libiconv -f Makefile.nightingale
 
-        # echo -e "Building libjpeg-turbo...\n"
-        # make -C libjpeg-turbo -f Makefile.nightingale
+        echo -e "Building libjpeg-turbo...\n"
+        make -C libjpeg-turbo -f Makefile.nightingale
 
         ### TIER 1 ###
-        # echo -e "Building gettext..."
-        # make -C gettext -f Makefile.nightingale
+        echo -e "Building gettext...\n"
+        make -C gettext -f Makefile.nightingale
 
-        # echo -e "Building glib..."
-        # make -C glib -f Makefile.nightingale
+        echo -e "Building glib...\n"
+        make -C glib -f Makefile.nightingale
 
-        # echo -e "Building sqlite...\n"
-        # make -C sqlite -f Makefile.nightingale
+        echo -e "Building sqlite...\n"
+        make -C sqlite -f Makefile.nightingale
 
         ### TIER 2 ###
-        # echo -e "Building libogg...\n"
-        # make -C libogg -f Makefile.nightingale
+        echo -e "Building libogg...\n"
+        make -C libogg -f Makefile.nightingale
 
-        # echo -e "Building libvorbis...\n"
-        # make -C libvorbis -f Makefile.nightingale
+        echo -e "Building libvorbis...\n"
+        make -C libvorbis -f Makefile.nightingale
 
-        # echo -e "Building libtheora...\n"
-        # make -C libtheora -f Makefile.nightingale
+        echo -e "Building libtheora...\n"
+        make -C libtheora -f Makefile.nightingale
 
-        # echo -e "Building FLAC...\n"
-        # make -C flac -f Makefile.nightingale
+        echo -e "Building FLAC...\n"
+        make -C flac -f Makefile.nightingale
 
-        # echo -e "Building taglib...\n"
-        # make -C taglib -f Makefile.nightingale
+        echo -e "Building taglib...\n"
+        make -C taglib -f Makefile.nightingale
 
         ### TIER 3 ###
-        # echo -e "Building gstreamer bits..."
-        # make -C gstreamer -f Makefile.nightingale
+        echo -e "Building gstreamer...\n"
+        make -C gstreamer -f Makefile.nightingale
 
         ### TIER 4 ###
-        # echo -e "Building gst plugins...here's hoping these all build!"
-        # make -C gst-plugins-base -f Makefile.nightingale
-        # make -C gst-plugins-good -f Makefile.nightingale
-        # make -C gst-plugins-bad -f Makefile.nightingale
-        # make -C gst-plugins-ugly -f Makefile.nightingale
-
+        echo -e "Building gst plugins...\n"
+        make -C gst-plugins-base -f Makefile.nightingale
+        make -C gst-plugins-good -f Makefile.nightingale
+        make -C gst-plugins-bad -f Makefile.nightingale
+        make -C gst-plugins-ugly -f Makefile.nightingale
     ;;
 
     # darwin*)
