@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2009 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2008 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -82,8 +82,6 @@
   /* Initialize additional fields. */
   if (from_wchar != to_wchar) {
     struct wchar_conv_struct * wcd = (struct wchar_conv_struct *) cd;
-#if HAVE_WCRTOMB || HAVE_MBRTOWC
     memset(&wcd->state,'\0',sizeof(mbstate_t));
-#endif
   }
   /* Done. */

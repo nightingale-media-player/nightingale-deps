@@ -61,7 +61,6 @@ gl_VISIBILITY
 dnl           checks for header files and functions
 
 AM_LANGINFO_CODESET
-gl_FCNTL_O_FLAGS
 gl_GLIBC21
 AC_CHECK_FUNCS([setlocale])
 

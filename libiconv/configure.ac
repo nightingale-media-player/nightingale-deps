@@ -1,4 +1,4 @@
-dnl Copyright (C) 1999-2011 Free Software Foundation, Inc.
+dnl Copyright (C) 1999-2009 Free Software Foundation, Inc.
 dnl This file is part of the GNU LIBICONV Library.
 dnl
 dnl The GNU LIBICONV Library is free software; you can redistribute it
@@ -20,7 +20,7 @@ AC_PREREQ([2.60])
 AC_INIT
 AC_CONFIG_SRCDIR([lib/iconv.c])
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([libiconv], [1.14])
+AM_INIT_AUTOMAKE([libiconv], [1.13])
 AC_CONFIG_HEADERS([config.h lib/config.h])
 AC_PROG_MAKE_SET
 
@@ -83,19 +83,6 @@ dnl Prepares the libtool configuration for handling of Windows resources, and
 dnl sets the RC variable to a program that compiles Windows resource files.
 LT_LANG([Windows Resource])
 
-dnl On mingw and Cygwin, we can activate special Makefile rules which add
-dnl version information to the executables.
-case "$host_os" in
-  mingw* | cygwin*) is_woe32=yes ;;
-  *) is_woe32=no ;;
-esac
-WOE32=$is_woe32
-AC_SUBST([WOE32])
-if test $WOE32 = yes; then
-  dnl Check for a program that compiles Windows resource files.
-  AC_CHECK_TOOL([WINDRES], [windres])
-fi
-
 gl_VISIBILITY
 AM_ICONV
 AM_GNU_GETTEXT([external], [need-ngettext])
@@ -133,11 +120,8 @@ AC_SUBST([USE_MBSTATE_T])
 
 AC_CACHE_CHECK([whether <wchar.h> is standalone],
   [gl_cv_header_wchar_h_standalone],
-  [AC_COMPILE_IFELSE(
-     [AC_LANG_PROGRAM(
-        [[#include <wchar.h>
-          wchar_t w;]],
-        [[]])],
+  [AC_COMPILE_IFELSE([[#include <wchar.h>
+wchar_t w;]],
     [gl_cv_header_wchar_h_standalone=yes],
     [gl_cv_header_wchar_h_standalone=no])])
 if test $gl_cv_header_wchar_h_standalone = yes; then
@@ -150,7 +134,6 @@ AC_SUBST([BROKEN_WCHAR_H])
 AC_REPLACE_FUNCS([memmove])
 
 AM_LANGINFO_CODESET
-gl_FCNTL_O_FLAGS
 
 AC_EILSEQ
 
@@ -188,6 +171,19 @@ else
   DLL_VARIABLE=
 fi
 AC_SUBST([DLL_VARIABLE])
+
+dnl On mingw and Cygwin, we can activate special Makefile rules which add
+dnl version information to the executables.
+case "$host_os" in
+  mingw* | cygwin*) is_woe32=yes ;;
+  *) is_woe32=no ;;
+esac
+WOE32=$is_woe32
+AC_SUBST([WOE32])
+if test $WOE32 = yes; then
+  dnl Check for a program that compiles Windows resource files.
+  AC_CHECK_TOOL([WINDRES], [windres])
+fi
 
 AH_BOTTOM([
 /* On Windows, variables that may be in a DLL must be marked specially.  */

@@ -43,12 +43,6 @@
    declarations. */
 #undef HAVE_VISIBILITY
 
-/* Define to 1 if O_NOATIME works. */
-#undef HAVE_WORKING_O_NOATIME
-
-/* Define to 1 if O_NOFOLLOW works. */
-#undef HAVE_WORKING_O_NOFOLLOW
-
 /* Define to the value of ${prefix}, as a string. */
 #undef INSTALLPREFIX
 
@@ -67,9 +61,6 @@
 
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
-
-/* Define to the home page for this package. */
-#undef PACKAGE_URL
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION

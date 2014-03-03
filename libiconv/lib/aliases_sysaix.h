@@ -32,7 +32,7 @@
 #line 1 "lib/aliases_sysaix.gperf"
 struct alias { int name; unsigned int encoding_index; };
 
-#define TOTAL_KEYWORDS 356
+#define TOTAL_KEYWORDS 355
 #define MIN_WORD_LENGTH 2
 #define MAX_WORD_LENGTH 45
 #define MIN_HASH_VALUE 13
@@ -405,7 +405,6 @@ struct stringpool_t
     char stringpool_str584[sizeof("BIG5-HKSCS:2001")];
     char stringpool_str585[sizeof("ISO646-JP")];
     char stringpool_str586[sizeof("JIS0208")];
-    char stringpool_str590[sizeof("BIG5-HKSCS:2008")];
     char stringpool_str591[sizeof("ISO-2022-JP-1")];
     char stringpool_str594[sizeof("ISO-2022-JP-2")];
     char stringpool_str599[sizeof("SHIFT-JIS")];
@@ -764,7 +763,6 @@ static const struct stringpool_t stringpool_contents =
     "BIG5-HKSCS:2001",
     "ISO646-JP",
     "JIS0208",
-    "BIG5-HKSCS:2008",
     "ISO-2022-JP-1",
     "ISO-2022-JP-2",
     "SHIFT-JIS",
@@ -854,7 +852,7 @@ static const struct alias aliases[] =
     {-1}, {-1}, {-1}, {-1},
 #line 212 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str32, ei_cp1131},
-#line 363 "lib/aliases_sysaix.gperf"
+#line 362 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str33, ei_johab},
 #line 208 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str34, ei_cp866},
@@ -992,7 +990,7 @@ static const struct alias aliases[] =
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str131, ei_pt154},
 #line 16 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str132, ei_ascii},
-#line 360 "lib/aliases_sysaix.gperf"
+#line 359 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str133, ei_cp949},
     {-1},
 #line 290 "lib/aliases_sysaix.gperf"
@@ -1119,7 +1117,7 @@ static const struct alias aliases[] =
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str204, ei_iso8859_14},
 #line 79 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str205, ei_iso8859_4},
-#line 361 "lib/aliases_sysaix.gperf"
+#line 360 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str206, ei_cp949},
 #line 250 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str207, ei_tis620},
@@ -1257,11 +1255,11 @@ static const struct alias aliases[] =
     {-1}, {-1}, {-1},
 #line 112 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str306, ei_iso8859_7},
-#line 366 "lib/aliases_sysaix.gperf"
+#line 365 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str307, ei_local_char},
     {-1}, {-1},
-#line 354 "lib/aliases_sysaix.gperf"
-    {(int)(long)&((struct stringpool_t *)0)->stringpool_str310, ei_big5hkscs2008},
+#line 353 "lib/aliases_sysaix.gperf"
+    {(int)(long)&((struct stringpool_t *)0)->stringpool_str310, ei_big5hkscs2004},
     {-1}, {-1},
 #line 203 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str313, ei_cp850},
@@ -1270,8 +1268,8 @@ static const struct alias aliases[] =
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str322, ei_cp1252},
 #line 35 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str323, ei_ucs4},
-#line 353 "lib/aliases_sysaix.gperf"
-    {(int)(long)&((struct stringpool_t *)0)->stringpool_str324, ei_big5hkscs2008},
+#line 352 "lib/aliases_sysaix.gperf"
+    {(int)(long)&((struct stringpool_t *)0)->stringpool_str324, ei_big5hkscs2004},
     {-1}, {-1},
 #line 33 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str327, ei_ucs4},
@@ -1287,7 +1285,7 @@ static const struct alias aliases[] =
 #line 254 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str339, ei_tis620},
     {-1}, {-1},
-#line 365 "lib/aliases_sysaix.gperf"
+#line 364 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str342, ei_iso2022_kr},
 #line 215 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str343, ei_mac_roman},
@@ -1301,14 +1299,14 @@ static const struct alias aliases[] =
 #line 110 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str350, ei_iso8859_7},
     {-1}, {-1}, {-1}, {-1},
-#line 357 "lib/aliases_sysaix.gperf"
+#line 356 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str355, ei_euc_kr},
     {-1}, {-1},
 #line 38 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str358, ei_utf16},
 #line 260 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str359, ei_viscii},
-#line 364 "lib/aliases_sysaix.gperf"
+#line 363 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str360, ei_iso2022_kr},
     {-1},
 #line 19 "lib/aliases_sysaix.gperf"
@@ -1318,7 +1316,7 @@ static const struct alias aliases[] =
 #line 41 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str364, ei_utf32},
     {-1}, {-1}, {-1}, {-1},
-#line 356 "lib/aliases_sysaix.gperf"
+#line 355 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str369, ei_euc_kr},
     {-1},
 #line 194 "lib/aliases_sysaix.gperf"
@@ -1506,7 +1504,7 @@ static const struct alias aliases[] =
 #line 32 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str540, ei_ucs2le},
     {-1}, {-1},
-#line 367 "lib/aliases_sysaix.gperf"
+#line 366 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str543, ei_local_wchar_t},
 #line 55 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str544, ei_iso8859_1},
@@ -1523,7 +1521,7 @@ static const struct alias aliases[] =
 #line 288 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str554, ei_jisx0212},
     {-1},
-#line 358 "lib/aliases_sysaix.gperf"
+#line 357 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str556, ei_euc_kr},
 #line 46 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str557, ei_utf7},
@@ -1557,9 +1555,7 @@ static const struct alias aliases[] =
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str585, ei_iso646_jp},
 #line 278 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str586, ei_jisx0208},
-    {-1}, {-1}, {-1},
-#line 355 "lib/aliases_sysaix.gperf"
-    {(int)(long)&((struct stringpool_t *)0)->stringpool_str590, ei_big5hkscs2008},
+    {-1}, {-1}, {-1}, {-1},
 #line 320 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str591, ei_iso2022_jp1},
     {-1}, {-1},
@@ -1597,7 +1593,7 @@ static const struct alias aliases[] =
 #line 318 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str629, ei_iso2022_jp},
     {-1}, {-1}, {-1}, {-1}, {-1},
-#line 352 "lib/aliases_sysaix.gperf"
+#line 354 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str635, ei_big5hkscs2004},
     {-1}, {-1},
 #line 306 "lib/aliases_sysaix.gperf"
@@ -1631,7 +1627,7 @@ static const struct alias aliases[] =
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str685, ei_utf7},
     {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
     {-1},
-#line 359 "lib/aliases_sysaix.gperf"
+#line 358 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str696, ei_euc_kr},
     {-1}, {-1}, {-1}, {-1}, {-1},
 #line 50 "lib/aliases_sysaix.gperf"
@@ -1715,7 +1711,7 @@ static const struct alias aliases[] =
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str874, ei_euc_jp},
     {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
     {-1},
-#line 362 "lib/aliases_sysaix.gperf"
+#line 361 "lib/aliases_sysaix.gperf"
     {(int)(long)&((struct stringpool_t *)0)->stringpool_str885, ei_johab},
     {-1}, {-1}, {-1}, {-1}, {-1},
 #line 52 "lib/aliases_sysaix.gperf"
