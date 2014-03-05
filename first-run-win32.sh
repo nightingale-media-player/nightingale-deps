@@ -9,6 +9,11 @@ MOZBLD_URL="https://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/Mozi
 
 HAVE_ARIA2C=0
 
+if [ $(uname -o | grep ) -ne "Msys" ] ; then
+    echo "This script only needs to be run on Windows!\n"
+    exit 1
+fi
+
 if [ -z  $(which aria2c | grep unknown) && ! -z $(which aria2c) ] ; then
     HAVE_ARIA2C=1
 fi
@@ -59,9 +64,10 @@ echo "Extracting packages\n"
 unzip bison-2.1-bin.zip
 unzip bison-2.1-dep.zip
 unzip cmake-2.8.12.2-win32-x86.zip
-mkdir flex-2.5.33 regex-0.12
+mkdir flex-2.5.33 regex-0.12 binutils-2.17.50
 tar -j -x -f flex-2.5.33-MSYS-1.0.11-1.tar.bz2 -C flex-2.5.33
 tar -j -x -f regex-0.12-MSYS-1.0.11-1.tar.bz2 -C regex-0.12
+tar -z -x -f binutils-2.17.50-20060824-1.tar.gz -C binutils-2.17.50
 
 echo "Setting up packages\n"
 mkdir /c/ng-deps
@@ -70,6 +76,7 @@ mv bison-2.1-deps /c/ng-deps/bison-2.1-deps
 mv cmake-2.8.12.2-win32-x86/cmake-2.8.12.2-win32-x86 /c/ng-deps/cmake-2.8.12.2
 mv flex-2.5.33 /c/ng-deps/flex-2.5.33
 mv regex-0.12 /c/ng-deps/regex-0.12
+mv binutils-2.17.50 /c/ng-deps/binutils-2.17.50
 rmdir cmake-2.8.12.2-win32-x86
 
 # TODO: (next) add /c/ng-deps/* paths and win paths to start-msvc10.bat
