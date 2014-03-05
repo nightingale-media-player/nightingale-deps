@@ -88,7 +88,6 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
   SB_CXX = $(CURDIR)/../clwrapper.py
   SB_CFLAGS += -D_USE_MATH_DEFINES -D_UNICODE -DUNICODE
   SB_CXXFLAGS += $(SB_CFLAGS)
-  SB_USE_MOZCRT = 1
 
   # autoconf hackery; see bug 16052
   export ac_cv_header_streams_h = yes

@@ -45,7 +45,6 @@ ifneq (Msys,$(SB_VENDOR_ARCH))
    $(error zlib is only expected to be built on Windows)
 endif
 
-SB_USE_MOZCRT = 1
 LOC := "-Zi -Zc:wchar_t-"
 
 # we kinda want to end up running make with different arguments
