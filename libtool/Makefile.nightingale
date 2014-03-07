@@ -40,9 +40,9 @@ SB_VENDOR_TARGET_DEP_MODULES = $(NULL)
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
-include $(CURDIR)/../songbird-vendor-rules.mk
-
 SB_VENDOR_TARGET_CONFIGURE_OPTS = --disable-ltdl-install
+
+include $(CURDIR)/../songbird-vendor-rules.mk
 
 module_setup_build:
 	cd $(SB_VENDOR_BUILD_DIR) && ./bootstrap
