@@ -2,7 +2,7 @@ language: cpp
 compiler: gcc
 before_install:
  - "sudo apt-get update -qq"
- - "sudo apt-get install autoconf2.13 yasm libgtk2.0-dev libglib2.0-dev libdbus-1-dev libdbus-glib-1-dev libasound2-dev libcurl4-openssl-dev libiw-dev libxt-dev mesa-common-dev libpulse-dev"
+ - "sudo apt-get install autoconf2.13 yasm libgtk2.0-dev libglib2.0-dev libdbus-1-dev libdbus-glib-1-dev libasound2-dev libcurl4-openssl-dev libiw-dev libxt-dev mesa-common-dev libpulse-dev help2man"
 script: "./first-run-linux.sh && ./build-no-xul.sh"
 branches:
   only:
