@@ -51,8 +51,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
   # dynamic CRTs and symbols end up missing.  This also means we need to
   # match the MSVCP80 (C++ standard library) configuration too - and Mozilla
   # builds with -D_STATIC_CPPLIB (statically linked C++ library).
-  SB_USE_MOZCRT = 1
-  CMAKE_C_FLAGS := -Zc:wchar_t- -Zi -EHsc -D_STATIC_CPPLIB
+  CMAKE_C_FLAGS := -Zc:wchar_t- -Zi -EHsc -D_HAS_EXCEPTIONS=0 -D_STATIC_CPPLIB
   CMAKE_CXX_FLAGS := $(CMAKE_C_FLAGS)
 
   CMAKE_C_FLAGS_DEBUG := $(CMAKE_C_FLAGS) -MDd
