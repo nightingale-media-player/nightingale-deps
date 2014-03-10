@@ -1,0 +1,21 @@
+# Autodetect text files
+* text=auto
+
+# Overrides
+
+# Text files
+*.txt text
+*.c text
+*.cpp text
+*.h text
+*.sh text
+
+# Windows lib crap ugh
+*.def crlf
+*.exp crlf
+
+# Binaries
+*.a binary
+*.dll binary
+*.obj binary
+
