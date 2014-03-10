@@ -27,12 +27,13 @@ lib_files="*js3250.*
            *nssutil3*
            *sqlite3*
            *mozalloc*
+           *mozutils*
 "
 
 # symbol_files are relative to $objdir
 symbol_files="intl/unicharutil/util/nsunicharutils.pdb
               intl/unicharutil/util/unicharutil_external_s.pdb
-              js/src/js3250.pdb
+              js/src/mozjs.pdb
               toolkit/library/xul.pdb
               xpcom/glue/nsarrayenumerator.pdb
               xpcom/glue/nsarrayutils.pdb
@@ -61,7 +62,8 @@ symbol_files="intl/unicharutil/util/nsunicharutils.pdb
               xulrunner/app/xulrunner.pdb
               xulrunner/stub/xulrunner-stub.pdb
               memory/jemalloc/libc*.pdb
-              memory/mozalloc/mozalloc*.pdb
+              memory/mozalloc/mozalloc.pdb
+              memory/mozutils/mozutils*
 "
 
 # update_bin_files are relative to $objdir/dist/host/bin/
