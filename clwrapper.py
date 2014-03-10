@@ -19,16 +19,16 @@ def fix_link_args(fargs):
 	fargs.extend(os.getenv("LDFLAGS", "").split())
 	for i in range(len(fargs)):
 		if fargs[i].startswith("-L") and not \
-                   fargs[i].startswith("-LIBPATH"):
+				fargs[i].startswith("-LIBPATH"):
 			libpath = fargs[i][2:]
 			# make sure the path is a windows path
 			linkerargs.append("-LIBPATH:%s" % winpath(libpath))
 		elif fargs[i].startswith("-l") and not fargs[i] == "-link":
 			libname = fargs[i][2:]
 			linkerargs.append("%s.lib" % libname)
-                elif fargs[i].startswith("-NODEFAULTLIB") or \
-                     fargs[i].startswith("-DEFAULTLIB") or \
-                     fargs[i].startswith("-LIBPATH"):
+		elif fargs[i].startswith("-NODEFAULTLIB") or \
+				fargs[i].startswith("-DEFAULTLIB") or \
+				fargs[i].startswith("-LIBPATH"):
 			linkerargs.append(fargs[i])
 		else:
 			cargs.append(fargs[i])
@@ -90,8 +90,8 @@ if __name__ == "__main__":
 			# now let's convert -L<PATH> to -LIBPATH:<PATH>
 			# and -l<libname> to <libname>.lib
 			# and put them at the end (linker options)
-        if "-g" in fargs:
-                fargs[fargs.index("-g")] = "-Zi"
+		if "-g" in fargs:
+				fargs[fargs.index("-g")] = "-Zi"
 
 	# ok, and an extra round to make sur all include paths are valid windows path
 	#for i in range(len(fargs)):
