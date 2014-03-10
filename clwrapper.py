@@ -30,6 +30,9 @@ def fix_link_args(fargs):
 				fargs[i].startswith("-DEFAULTLIB") or \
 				fargs[i].startswith("-LIBPATH"):
 			linkerargs.append(fargs[i])
+		elif fargs[i].startswith("-Wl,-DLL,-IMPLIB:"):
+			linkerargs.append("-DLL")
+			linkerargs.append("-IMPLIB:%s" % fargs[i][17:])
 		else:
 			cargs.append(fargs[i])
 	resultargs = ["cl"] + cargs[1:] + ["-link"] + linkerargs
