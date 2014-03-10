@@ -50,11 +50,12 @@ ifdef SB_USE_MOZCRT
       $(error SB_USE_MOZCRT is only meaningful on Win32.)
    endif
 
-   # Add the mozsdk lib dir (containing mozcrt19.dll) to the runtime
+   # Add the mozsdk lib dir (containing mozcrt.lib & mozutils.dll) to the runtime
    # path, so that the configure tests that create executables are
    # actually runnable; we do this up here because SB_PATH's assignment-type
    # below.
    SB_PATH += $(MOZSDK_DIR)/lib
+   SB_LIBS += -L$(MOZSDK_DIR)/lib -lmozcrt
 endif
 
 SB_PATH := $(subst $(SPACE),:,$(strip $(SB_PATH))):$(PATH)
@@ -107,7 +108,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
       ifeq (1,$(SB_USE_MOZCRT))
          SB_CFLAGS += -MDd
          SB_LDFLAGS += -LIBPATH:$(call normalizepath,$(MOZSDK_DIR))/lib \
-          -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19d
+          -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt
       else
          SB_CFLAGS += -MTd
       endif
@@ -117,7 +118,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
       ifeq (1,$(SB_USE_MOZCRT))
          SB_CFLAGS += -MD
          SB_LDFLAGS += -LIBPATH:$(call normalizepath,$(MOZSDK_DIR))/lib \
-          -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19
+          -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt
       else
          SB_CFLAGS += -MT
       endif
