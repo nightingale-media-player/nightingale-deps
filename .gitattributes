@@ -16,14 +16,26 @@
 *.exp eol=crlf
 *.vcproj eol=crlf
 *.vcxproj eol=crlf
+*.vcxproj.filters eol=crlf
 *.vsprops eol=crlf
+*.props eol=crlf
 *.dsp eol=crlf
 *.dsw eol=crlf
 *.sln eol=crlf
+*.rc eol=crlf
+*/VS20*/* eol=crlf
+*/win32/* eol=crlf
+*/vstudio/* eol=crlf
+*.win32 eol=crlf
 
 # Binaries
 *.a binary
 *.dll binary
 *.obj binary
 *.svg binary
+*.tar binary
+*.xz binary
+*.bz2 binary
+*.gz binary
+*.zip binary
 
