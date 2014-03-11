@@ -11,11 +11,19 @@
 *.sh text
 
 # Windows lib crap ugh
-*.def crlf
-*.exp crlf
+*.bat eol=crlf
+*.def eol=crlf
+*.exp eol=crlf
+*.vcproj eol=crlf
+*.vcxproj eol=crlf
+*.vsprops eol=crlf
+*.dsp eol=crlf
+*.dsw eol=crlf
+*.sln eol=crlf
 
 # Binaries
 *.a binary
 *.dll binary
 *.obj binary
+*.svg binary
 
