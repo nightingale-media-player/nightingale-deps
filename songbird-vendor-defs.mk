@@ -547,7 +547,6 @@ ifneq (,$(call enable-sb-lib, ogg))
 
    ifeq (Msys, $(SB_VENDOR_ARCH))
       SB_PATH += $(SB_LIBOGG_DIR)/bin
-      SB_CFLAGS += -wd9035
       ifeq (debug, $(SB_BUILD_TYPE))
          SB_LIBOGG_LIBS += -Wl,-Zi
       endif
