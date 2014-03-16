@@ -426,7 +426,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
-   MACOSX_SDK ?= /Developer/SDKs/MacOSX10.4u.sdk
+   MACOSX_SDK ?= /Developer/SDKs/MacOSX10.6.sdk
 endif
 
 #

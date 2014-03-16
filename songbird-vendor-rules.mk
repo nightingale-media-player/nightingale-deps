@@ -158,7 +158,7 @@ endif
   export JPEG_LIBS = $(SB_JPEG_LIBS)
 
   ifeq (Darwin,$(SB_VENDOR_ARCH))
-    export MACOSX_DEPLOYMENT_TARGET=10.4
+    export MACOSX_DEPLOYMENT_TARGET=10.6
     export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
   endif
 endif
