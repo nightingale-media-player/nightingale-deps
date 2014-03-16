@@ -175,12 +175,14 @@ ifneq (1,$(SB_VENDOR_SKIP_RELEASE_BUILD))
 	$(MAKE) -f $(SB_VENDOR_MAKEFILE) release
 endif
 
-debug: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) copy_symbols
+# debug: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) copy_symbols
+debug: build post_build copy_symbols
 ifneq (,$(SB_VENDOR_BUILD_LOG))
 	-$(CP) $(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 endif
 
-release: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) copy_symbols strip_build
+# release: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) copy_symbols strip_build
+release: build post_build copy_symbols strip_build
 ifneq (,$(SB_VENDOR_BUILD_LOG))
 	-$(CP) $(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 endif
