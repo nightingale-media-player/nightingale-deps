@@ -156,6 +156,8 @@ func_verbose $compile_command \
              "$srcdir"/progname.c \
              "$srcdir"/progreloc.c \
              "$srcdir"/areadlink.c \
+             "$srcdir"/stat.c \
+             "$srcdir"/lstat.c \
              "$srcdir"/careadlinkat.c \
              "$srcdir"/allocator.c \
              "$srcdir"/readlink.c \
@@ -164,6 +166,7 @@ func_verbose $compile_command \
              "$srcdir"/relocatable.c \
              "$srcdir"/setenv.c \
              "$srcdir"/strerror.c \
+             "$srcdir"/strerror-override.c \
              "$srcdir"/c-ctype.c \
              -o "$destprog.wrapper$exeext"
 rc=$?
