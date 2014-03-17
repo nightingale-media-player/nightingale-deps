@@ -482,6 +482,7 @@ ifneq (,$(call enable-sb-lib, iconv))
 
    ifeq (Darwin,$(SB_VENDOR_ARCH))
       LDFLAGS += -Wl,-dylib_file -Wl,libiconv.dylib:$(SB_ICONV_DIR)/lib/libiconv.dylib
+      ICONV_LIBS = "iconv"
    endif
 endif
 
