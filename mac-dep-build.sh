@@ -33,13 +33,24 @@ case $OSTYPE in
 
         #####
 
+        # echo -e "Building libtool...\n"
+        # make CC=gcc-4.2 CXX=g++-4.2 -C libtool -f Makefile.nightingale
+
         # echo -e "Building libiconv...\n"
         # make CC=gcc-4.2 CXX=g++-4.2 -C libiconv -f Makefile.nightingale
 
         #####
 
-        echo -e "Building gettext...\n"
-        make CC=gcc-4.2 CXX=g++-4.2 -C gettext -f Makefile.nightingale
+        # echo -e "Building libIDL...\n"
+        # make CC=gcc-4.2 CXX=g++-4.2 -C libIDL -f Makefile.nightingale
+
+        # echo -e "Building xulrunner...\n"
+        make CC=gcc-4.2 CXX=g++-4.2 -C xulrunner xr-all
+
+        #####
+
+        # echo -e "Building gettext...\n"
+        # make CC=gcc-4.2 CXX=g++-4.2 -C gettext -f Makefile.nightingale
 
         # echo -e "Building glib...\n"
         # make CC=gcc-4.2 CXX=g++-4.2 -C glib -f Makefile.nightingale
@@ -67,7 +78,7 @@ case $OSTYPE in
         # make CC=gcc-4.2 CXX=g++-4.2 -C flac -f Makefile.nightingale
 
         # echo -e "Building taglib...\n"
-        # make CC=gcc-4.2 CXX=g++-4.2 -C taglib -f Makefile.nightingale
+        # make CC=cc-4.2 CXX=c++-4.2 -C taglib -f Makefile.nightingale # CC and CXX aren't really needed here
 
         #####
 
