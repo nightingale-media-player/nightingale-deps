@@ -43,6 +43,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := --disable-ogg \
                                    --disable-doxygen-docs \
                                    --disable-oggtest \
                                    --disable-asm-optimizations \
+                                   --disable-xmms-plugin \
                                    $(NULL)
 
 SB_CFLAGS += -DFLAC_API_EXPORTS
