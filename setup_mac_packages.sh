@@ -41,6 +41,15 @@ make
 sudo make install
 cd ..
 
+# libtool-2.4.2
+echo "Setting up libtool-2.4.2"
+tar xf libtool-2.4.2.tar.gz
+cd libtool-2.4.2
+./configure
+make
+sudo make install
+cd ..
+
 # pkg-config-0.23
 echo "Setting up pkg-config-0.23"
 tar xf pkg-config-0.23.tar.gz
