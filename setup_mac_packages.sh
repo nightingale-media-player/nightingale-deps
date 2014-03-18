@@ -41,6 +41,15 @@ make
 sudo make install
 cd ..
 
+# pkg-config-0.23
+echo "Setting up pkg-config-0.23"
+tar xf pkg-config-0.23.tar.gz
+cd pkg-config-0.23
+./configure
+make
+sudo make install
+cd ..
+
 # make sure we get these packages, and before the system ones
 echo "Setting up paths"
 echo "export PATH=/usr/local/bin:$PATH" >> ~/.bash_profile
