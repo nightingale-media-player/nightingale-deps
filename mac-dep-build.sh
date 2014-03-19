@@ -36,24 +36,19 @@ case $OSTYPE in
         # echo -e "Building libtool...\n"
         # make CC=gcc-4.2 CXX=g++-4.2 -C libtool -f Makefile.nightingale
 
+        #####
+
         # echo -e "Building libiconv...\n"
         # make CC=gcc-4.2 CXX=g++-4.2 -C libiconv -f Makefile.nightingale
-
-        #####
-
-        # echo -e "Building libIDL...\n"
-        # make CC=gcc-4.2 CXX=g++-4.2 -C libIDL -f Makefile.nightingale
-
-        # echo -e "Building xulrunner...\n"
-        make CC=gcc-4.2 CXX=g++-4.2 -C xulrunner xr-all
-
-        #####
 
         # echo -e "Building gettext...\n"
         # make CC=gcc-4.2 CXX=g++-4.2 -C gettext -f Makefile.nightingale
 
         # echo -e "Building glib...\n"
         # make CC=gcc-4.2 CXX=g++-4.2 -C glib -f Makefile.nightingale
+
+        # echo -e "Building libIDL...\n"
+        # make CC=gcc-4.2 CXX=g++-4.2 -C libIDL -f Makefile.nightingale
 
         # echo -e "Building sqlite...\n"
         # make CC=gcc-4.2 CXX=g++-4.2 -C sqlite -f Makefile.nightingale
@@ -82,17 +77,29 @@ case $OSTYPE in
 
         #####
 
-        # echo -e "Building gstreamer bits..."
+        # echo -e "Building gstreamer...\n"
         # make CC=gcc-4.2 CXX=g++-4.2 -C gstreamer -f Makefile.nightingale
 
         #####
 
-        # echo -e "Building gst plugins...here's hoping these all build!"
+        # echo -e "Building gst-plugins-base...\n"
         # make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-base -f Makefile.nightingale
+
+        # echo -e "Building gst-plugins-good...\n"
         # make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-good -f Makefile.nightingale
+
+        # echo -e "Building gst-plugins-bad...\n"
         # make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-bad -f Makefile.nightingale
+
+        # echo -e "Building gst-plugins-ugly...\n"
         # make CC=gcc-4.2 CXX=g++-4.2 -C gst-plugins-ugly -f Makefile.nightingale
-        # echo "Done!"
+
+        #####
+
+        # echo -e "Building xulrunner...\n"
+        # make -C xulrunner xr-all
+
+        #####
 
     ;;
 
