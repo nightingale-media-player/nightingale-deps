@@ -41,7 +41,9 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-pango \
         --disable-cdparanoia --disable-gio --disable-libvisual
 
-SB_CFLAGS += -Wl,-rpath=$(SB_VENDOR_BINARIES_DIR)/gstreamer/$(SB_BUILD_TYPE)/lib
+ifneq (Darwin,$(SB_VENDOR_ARCH))
+	SB_CFLAGS += -Wl,-rpath=$(SB_VENDOR_BINARIES_DIR)/gstreamer/$(SB_BUILD_TYPE)/lib
+endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
   SB_VENDOR_TARGET_CONFIGURE_OPTS += \
