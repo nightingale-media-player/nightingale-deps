@@ -67,6 +67,12 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-wininet  --disable-x264 --disable-xvid \
         --disable-dccp --disable-legacyresample --disable-frei0r
 
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+    SB_VENDOR_TARGET_CONFIGURE_OPTS += --disable-yadif \
+                                       --disable-apple_media
+    SB_CFLAGS += -std=c99
+endif
+
 DIRECTSHOW_LIBS_ROOT = $(SB_VENDOR_TARGET_BINARY_DEPS_DIR)/DirectShowBaseClasses
 
 ifeq (debug,$(SB_BUILD_TYPE))
