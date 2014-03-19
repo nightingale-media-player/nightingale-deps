@@ -59,6 +59,15 @@ make
 sudo make install
 cd ..
 
+# tar-1.27.1
+echo "Setting up tar-1.27.1"
+tar xf tar-1.27.1.tar.gz
+cd tar-1.27.1
+./configure
+make
+sudo make install
+cd ..
+
 # make sure we get these packages, and before the system ones
 echo "Setting up paths"
 echo "export PATH=/usr/local/bin:$PATH" >> ~/.bash_profile
