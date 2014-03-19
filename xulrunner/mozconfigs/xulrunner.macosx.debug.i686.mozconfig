@@ -2,6 +2,7 @@ mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/compiled/xulrunner-debug
 export MOZ_DEBUG_SYMBOLS=1
 export MOZILLA_OFFICIAL=1
 export BUILD_OFFICIAL=1
+
 ac_add_options --enable-application=xulrunner
 ac_add_options --with-xulrunner-stub-name=nightingale
 ac_add_options --enable-debug
@@ -10,7 +11,7 @@ ac_add_options --disable-tests
 ac_add_options --disable-javaxpcom
 ac_add_options --enable-update-packaging
 ac_add_options --disable-installer
-ac_add_options --with-macos-sdk=/Developer/SDKs/MacOSX10.6.sdk
+ac_add_options --with-macos-sdk=/Developer/SDKs/MacOSX10.5.sdk
 ac_add_options --disable-dbus
 ac_add_options --disable-safe-browsing
 ac_add_options --disable-url-classifier
@@ -18,5 +19,25 @@ ac_add_options --disable-mochitest
 ac_add_options --enable-shared-js
 ac_add_options --enable-chrome-format=omni
 
-CC="gcc-4.2 -m32 -arch i386"
-CXX="g++-4.2 -m32 -arch i386"
+ac_add_options --target=i386-apple-darwin9.2.0
+ac_add_options --enable-macos-target=10.5
+
+
+# CC="clang-mp-3.1 -arch i386"
+# CXX="clang++-mp-3.1 -arch i386"
+# HOST_CC="clang-mp-3.1"
+# HOST_CXX="clang++-mp-3.1"
+
+CC="gcc-4.2 -arch i386"
+CXX="g++-4.2 -arch i386"
+HOST_CC="gcc-4.2"
+HOST_CXX="g++-4.2"
+
+RANLIB=ranlib
+AR=ar
+AS=$CC
+LD=ld
+STRIP="strip -x -S"
+CROSS_COMPILE=1
+
+mk_add_options MOZ_MAKE_FLAGS="-j4"
