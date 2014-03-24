@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Datasets.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Datasets.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Datasets.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-data-types.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -143,11 +142,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Datasets.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Datasets.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -188,7 +182,7 @@ created as soon as you add elements to it.</p>
 previous data with the same key is removed, and its destroy function
 is called.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.2.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -228,7 +222,7 @@ the function to call when the data element is destroyed. Any
 previous data with the same key is removed, and its destroy function
 is called.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.3.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -272,7 +266,7 @@ for it.</p></td>
 is destroyed. It is passed the pointer to the data element and
 should free any memory and resources allocated for it.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.4.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -295,7 +289,7 @@ g_dataset_id_get_data (<em class="parameter"><code><a class="link" href="glib-Ba
                        <em class="parameter"><code><a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a> key_id</code></em>);</pre>
 <p>Gets the data element corresponding to a <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.5.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -317,7 +311,7 @@ g_dataset_id_get_data (<em class="parameter"><code><a class="link" href="glib-Ba
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.17.7.5.6"></a><h4>Returns</h4>
+<a name="id-1.6.17.6.5.6"></a><h4>Returns</h4>
 <p> the data element corresponding to the <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if
 it is not found.</p>
 <p></p>
@@ -330,7 +324,7 @@ it is not found.</p>
 <p>Removes a data element from a dataset. The data element's destroy
 function is called if it has been set.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.6.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -361,7 +355,7 @@ g_dataset_id_remove_no_notify (<em class="parameter"><code><a class="link" href=
 <p>Removes an element, without calling its destroy notification
 function.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.7.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -383,7 +377,7 @@ function.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.17.7.7.6"></a><h4>Returns</h4>
+<a name="id-1.6.17.6.7.6"></a><h4>Returns</h4>
 <p> the data previously stored at <em class="parameter"><code>key_id</code></em>
 , or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if none.</p>
 <p></p>
@@ -395,7 +389,7 @@ function.</p>
 <pre class="programlisting">#define             g_dataset_set_data(l, k, d)</pre>
 <p>Sets the data corresponding to the given string identifier.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.8.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -429,7 +423,7 @@ function.</p>
 <p>Sets the data corresponding to the given string identifier, and the
 function to call when the data element is destroyed.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.9.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.9.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -469,7 +463,7 @@ free any memory allocated for it.</p></td>
 <pre class="programlisting">#define             g_dataset_get_data(l, k)</pre>
 <p>Gets the data element corresponding to a string.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.10.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.10.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -491,7 +485,7 @@ free any memory allocated for it.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.17.7.10.6"></a><h4>Returns</h4>
+<a name="id-1.6.17.6.10.6"></a><h4>Returns</h4>
 <p> the data element corresponding to the string, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if
 it is not found.</p>
 <p></p>
@@ -504,7 +498,7 @@ it is not found.</p>
 <p>Removes a data element corresponding to a string. Its destroy
 function is called if it has been set.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.11.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.11.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -532,7 +526,7 @@ function is called if it has been set.</p>
 <pre class="programlisting">#define             g_dataset_remove_no_notify(l, k)</pre>
 <p>Removes an element, without calling its destroy notifier.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.12.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.12.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -567,7 +561,7 @@ So unless <em class="parameter"><code>datalist</code></em>
  can be protected from any modifications during
 invocation of this function, it should not be called.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.13.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.13.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -606,7 +600,7 @@ called with each <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><
 with the <em class="parameter"><code>user_data</code></em>
  parameter supplied to <a class="link" href="glib-Datasets.html#g-dataset-foreach" title="g_dataset_foreach ()"><code class="function">g_dataset_foreach()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.14.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.14.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -641,7 +635,7 @@ g_dataset_destroy (<em class="parameter"><code><a class="link" href="glib-Basic-
 <p>Destroys the dataset, freeing all memory allocated, and calling any
 destroy functions set for data elements.</p>
 <div class="refsect3">
-<a name="id-1.6.17.7.15.5"></a><h4>Parameters</h4>
+<a name="id-1.6.17.6.15.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">

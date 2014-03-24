@@ -3204,57 +3204,35 @@ update_condition (GSocket *socket)
 
 typedef struct {
   GSource       source;
+#ifdef G_OS_WIN32
   GPollFD       pollfd;
+#else
+  gpointer      fd_tag;
+#endif
   GSocket      *socket;
   GIOCondition  condition;
-  GCancellable *cancellable;
-  GPollFD       cancel_pollfd;
-  gint64        timeout_time;
 } GSocketSource;
 
+#ifdef G_OS_WIN32
 static gboolean
-socket_source_prepare (GSource *source,
-		       gint    *timeout)
+socket_source_prepare_win32 (GSource *source,
+                             gint    *timeout)
 {
   GSocketSource *socket_source = (GSocketSource *)source;
 
-  if (g_cancellable_is_cancelled (socket_source->cancellable))
-    return TRUE;
+  *timeout = -1;
 
-  if (socket_source->timeout_time)
-    {
-      gint64 now;
-
-      now = g_source_get_time (source);
-      /* Round up to ensure that we don't try again too early */
-      *timeout = (socket_source->timeout_time - now + 999) / 1000;
-      if (*timeout < 0)
-        {
-          socket_source->socket->priv->timed_out = TRUE;
-          *timeout = 0;
-          return TRUE;
-        }
-    }
-  else
-    *timeout = -1;
-
-#ifdef G_OS_WIN32
-  socket_source->pollfd.revents = update_condition (socket_source->socket);
-#endif
-
-  if ((socket_source->condition & socket_source->pollfd.revents) != 0)
-    return TRUE;
-
-  return FALSE;
+  return (update_condition (socket_source->socket) & socket_source->condition) != 0;
 }
 
 static gboolean
-socket_source_check (GSource *source)
+socket_source_check_win32 (GSource *source)
 {
   int timeout;
 
-  return socket_source_prepare (source, &timeout);
+  return socket_source_prepare_win32 (source, &timeout);
 }
+#endif
 
 static gboolean
 socket_source_dispatch (GSource     *source,
@@ -3264,24 +3242,29 @@ socket_source_dispatch (GSource     *source,
   GSocketSourceFunc func = (GSocketSourceFunc)callback;
   GSocketSource *socket_source = (GSocketSource *)source;
   GSocket *socket = socket_source->socket;
+  gint64 timeout;
+  guint events;
   gboolean ret;
 
 #ifdef G_OS_WIN32
-  socket_source->pollfd.revents = update_condition (socket_source->socket);
+  events = update_condition (socket_source->socket);
+#else
+  events = g_source_query_unix_fd (source, socket_source->fd_tag);
 #endif
-  if (socket_source->socket->priv->timed_out)
-    socket_source->pollfd.revents |= socket_source->condition & (G_IO_IN | G_IO_OUT);
 
-  ret = (*func) (socket,
-		 socket_source->pollfd.revents & socket_source->condition,
-		 user_data);
+  timeout = g_source_get_ready_time (source);
+  if (timeout >= 0 && timeout < g_source_get_time (source))
+    {
+      socket->priv->timed_out = TRUE;
+      events |= (G_IO_IN | G_IO_OUT);
+    }
+
+  ret = (*func) (socket, events & socket_source->condition, user_data);
 
   if (socket->priv->timeout)
-    socket_source->timeout_time = g_get_monotonic_time () +
-                                  socket->priv->timeout * 1000000;
-
+    g_source_set_ready_time (source, g_get_monotonic_time () + socket->priv->timeout * 1000000);
   else
-    socket_source->timeout_time = 0;
+    g_source_set_ready_time (source, -1);
 
   return ret;
 }
@@ -3299,12 +3282,6 @@ socket_source_finalize (GSource *source)
 #endif
 
   g_object_unref (socket);
-
-  if (socket_source->cancellable)
-    {
-      g_cancellable_release_fd (socket_source->cancellable);
-      g_object_unref (socket_source->cancellable);
-    }
 }
 
 static gboolean
@@ -3337,8 +3314,12 @@ socket_source_closure_callback (GSocket      *socket,
 
 static GSourceFuncs socket_source_funcs =
 {
-  socket_source_prepare,
-  socket_source_check,
+#ifdef G_OS_WIN32
+  socket_source_prepare_win32,
+  socket_source_check_win32,
+#else
+  NULL, NULL, /* check, prepare */
+#endif
   socket_source_dispatch,
   socket_source_finalize,
   (GSourceFunc)socket_source_closure_callback,
@@ -3371,30 +3352,30 @@ socket_source_new (GSocket      *socket,
   socket_source->socket = g_object_ref (socket);
   socket_source->condition = condition;
 
-  if (g_cancellable_make_pollfd (cancellable,
-                                 &socket_source->cancel_pollfd))
+  if (cancellable)
     {
-      socket_source->cancellable = g_object_ref (cancellable);
-      g_source_add_poll (source, &socket_source->cancel_pollfd);
+      GSource *cancellable_source;
+
+      cancellable_source = g_cancellable_source_new (cancellable);
+      g_source_add_child_source (source, cancellable_source);
+      g_source_set_dummy_callback (cancellable_source);
+      g_source_unref (cancellable_source);
     }
 
 #ifdef G_OS_WIN32
   add_condition_watch (socket, &socket_source->condition);
   socket_source->pollfd.fd = (gintptr) socket->priv->event;
-#else
-  socket_source->pollfd.fd = socket->priv->fd;
-#endif
-
   socket_source->pollfd.events = condition;
   socket_source->pollfd.revents = 0;
   g_source_add_poll (source, &socket_source->pollfd);
+#else
+  socket_source->fd_tag = g_source_add_unix_fd (source, socket->priv->fd, condition);
+#endif
 
   if (socket->priv->timeout)
-    socket_source->timeout_time = g_get_monotonic_time () +
-                                  socket->priv->timeout * 1000000;
-
+    g_source_set_ready_time (source, g_get_monotonic_time () + socket->priv->timeout * 1000000);
   else
-    socket_source->timeout_time = 0;
+    g_source_set_ready_time (source, -1);
 
   return source;
 }
@@ -3406,7 +3387,7 @@ socket_source_new (GSocket      *socket,
  * @cancellable: (allow-none): a %GCancellable or %NULL
  *
  * Creates a %GSource that can be attached to a %GMainContext to monitor
- * for the availibility of the specified @condition on the socket.
+ * for the availability of the specified @condition on the socket.
  *
  * The callback on the source is of the #GSocketSourceFunc type.
  *

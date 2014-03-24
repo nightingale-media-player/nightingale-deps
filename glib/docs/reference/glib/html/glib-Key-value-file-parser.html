@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Key-value-file-parser.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Key-value-file-parser.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Key-value-file-parser.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -539,11 +538,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Key-value-file-parser.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Key-value-file-parser.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -583,25 +577,25 @@ consists of groups of key-value pairs, interspersed with comments.</p>
 17
 18
 19</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="preproc"># this</span><span class="normal"> is just an example</span>
-<span class="preproc"># there</span><span class="normal"> can be comments before the first group</span>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc ppc"># this is just an example</span>
+<span class="gtkdoc ppc"># there can be comments before the first group</span>
 
-<span class="symbol">[</span><span class="usertype">First</span><span class="normal"> Group</span><span class="symbol">]</span>
+<span class="gtkdoc opt">[</span>First Group<span class="gtkdoc opt">]</span>
 
-<span class="normal">Name</span><span class="symbol">=</span><span class="normal">Key </span><span class="usertype">File</span><span class="normal"> Example</span><span class="symbol">\</span><span class="normal">tthis </span><span class="usertype">value</span><span class="normal"> shows</span><span class="symbol">\</span><span class="normal">nescaping</span>
+Name<span class="gtkdoc opt">=</span>Key File Example<span class="gtkdoc esc">\t</span>this value shows<span class="gtkdoc esc">\n</span>escaping
 
-<span class="preproc"># localized</span><span class="normal"> strings are stored in </span><span class="usertype">multiple</span><span class="normal"> key</span><span class="symbol">-</span><span class="normal">value pairs</span>
-<span class="normal">Welcome</span><span class="symbol">=</span><span class="normal">Hello</span>
-<span class="normal">Welcome</span><span class="symbol">[</span><span class="normal">de</span><span class="symbol">]=</span><span class="normal">Hallo</span>
-<span class="normal">Welcome</span><span class="symbol">[</span><span class="normal">fr_FR</span><span class="symbol">]=</span><span class="normal">Bonjour</span>
-<span class="normal">Welcome</span><span class="symbol">[</span><span class="normal">it</span><span class="symbol">]=</span><span class="normal">Ciao</span>
-<span class="normal">Welcome</span><span class="symbol">[</span><span class="normal">be@latin</span><span class="symbol">]=</span><span class="normal">Hello</span>
+<span class="gtkdoc ppc"># localized strings are stored in multiple key-value pairs</span>
+Welcome<span class="gtkdoc opt">=</span>Hello
+Welcome<span class="gtkdoc opt">[</span>de<span class="gtkdoc opt">]=</span>Hallo
+Welcome<span class="gtkdoc opt">[</span>fr_FR<span class="gtkdoc opt">]=</span>Bonjour
+Welcome<span class="gtkdoc opt">[</span>it<span class="gtkdoc opt">]=</span>Ciao
+Welcome<span class="gtkdoc opt">[</span>be&#64;latin<span class="gtkdoc opt">]=</span>Hello
 
-<span class="symbol">[</span><span class="usertype">Another</span><span class="normal"> Group</span><span class="symbol">]</span>
+<span class="gtkdoc opt">[</span>Another Group<span class="gtkdoc opt">]</span>
 
-<span class="normal">Numbers</span><span class="symbol">=</span><span class="number">2</span><span class="symbol">;</span><span class="number">20</span><span class="symbol">;-</span><span class="number">200</span><span class="symbol">;</span><span class="number">0</span>
+Numbers<span class="gtkdoc opt">=</span><span class="number">2</span><span class="gtkdoc opt">;</span><span class="number">20</span><span class="gtkdoc opt">;-</span><span class="number">200</span><span class="gtkdoc opt">;</span><span class="number">0</span>
 
-<span class="normal">Booleans</span><span class="symbol">=</span><span class="normal">true</span><span class="symbol">;</span><span class="normal">false</span><span class="symbol">;</span><span class="normal">true</span><span class="symbol">;</span><span class="normal">true</span></pre></td>
+Booleans<span class="gtkdoc opt">=</span><span class="keyword">true</span><span class="gtkdoc opt">;</span><span class="keyword">false</span><span class="gtkdoc opt">;</span><span class="keyword">true</span><span class="gtkdoc opt">;</span><span class="keyword">true</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -658,7 +652,7 @@ g_key_file_new (<em class="parameter"><code><span class="type">void</span></code
 <a class="link" href="glib-Key-value-file-parser.html#g-key-file-load-from-dirs" title="g_key_file_load_from_dirs ()"><code class="function">g_key_file_load_from_dirs()</code></a> or <a class="link" href="glib-Key-value-file-parser.html#g-key-file-load-from-data-dirs" title="g_key_file_load_from_data_dirs ()"><code class="function">g_key_file_load_from_data_dirs()</code></a> to
 read an existing key file.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.2.5"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.2.5"></a><h4>Returns</h4>
 <p> an empty <a class="link" href="glib-Key-value-file-parser.html#GKeyFile" title="GKeyFile"><span class="type">GKeyFile</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -674,7 +668,7 @@ g_key_file_free (<em class="parameter"><code><a class="link" href="glib-Key-valu
 reference count by 1. If the reference count reaches zero,
 frees the key file and all its allocated memory.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -698,7 +692,7 @@ g_key_file_ref (<em class="parameter"><code><a class="link" href="glib-Key-value
 <p>Increases the reference count of <em class="parameter"><code>key_file</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -713,7 +707,7 @@ g_key_file_ref (<em class="parameter"><code><a class="link" href="glib-Key-value
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.4.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.4.6"></a><h4>Returns</h4>
 <p> the same <em class="parameter"><code>key_file</code></em>
 .</p>
 <p></p>
@@ -729,7 +723,7 @@ g_key_file_unref (<em class="parameter"><code><a class="link" href="glib-Key-val
  by 1. If the reference count
 reaches zero, frees the key file and all its allocated memory.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -755,7 +749,7 @@ g_key_file_set_list_separator (<em class="parameter"><code><a class="link" href=
 values in lists. Typically ';' or ',' are used
 as separators. The default list separator is ';'.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -791,7 +785,7 @@ If the file could not be loaded then <em class="parameter"><code>error</code></e
  is set to
 either a <a class="link" href="glib-File-Utilities.html#GFileError" title="enum GFileError"><span class="type">GFileError</span></a> or <a class="link" href="glib-Key-value-file-parser.html#GKeyFileError" title="enum GKeyFileError"><span class="type">GKeyFileError</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -823,7 +817,7 @@ either a <a class="link" href="glib-File-Utilities.html#GFileError" title="enum 
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.7.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.7.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if a key file could be loaded, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise</p>
 <p></p>
 </div>
@@ -841,7 +835,7 @@ g_key_file_load_from_data (<em class="parameter"><code><a class="link" href="gli
 <p>Loads a key file from memory into an empty <a class="link" href="glib-Key-value-file-parser.html#GKeyFile" title="GKeyFile"><span class="type">GKeyFile</span></a> structure.  
 If the object cannot be created then <code class="literal">error</code> is set to a <a class="link" href="glib-Key-value-file-parser.html#GKeyFileError" title="enum GKeyFileError"><span class="type">GKeyFileError</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -879,7 +873,7 @@ in bytes (or (gsize)-1 if data is nul-terminated)</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.8.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.8.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if a key file could be loaded, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise</p>
 <p></p>
 </div>
@@ -903,7 +897,7 @@ loads the file into <em class="parameter"><code>key_file</code></em>
 .  If the file could not be loaded then an <code class="literal">error</code> is
 set to either a <a class="link" href="glib-File-Utilities.html#GFileError" title="enum GFileError"><span class="type">GFileError</span></a> or <a class="link" href="glib-Key-value-file-parser.html#GKeyFileError" title="enum GKeyFileError"><span class="type">GKeyFileError</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.9.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.9.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -941,7 +935,7 @@ of the file, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.9.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.9.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if a key file could be loaded, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> othewise</p>
 <p></p>
 </div>
@@ -967,7 +961,7 @@ returns the file's full path in <em class="parameter"><code>full_path</code></em
 be loaded then an <code class="literal">error</code> is set to either a <a class="link" href="glib-File-Utilities.html#GFileError" title="enum GFileError"><span class="type">GFileError</span></a> or
 <a class="link" href="glib-Key-value-file-parser.html#GKeyFileError" title="enum GKeyFileError"><span class="type">GKeyFileError</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.10.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.10.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1010,7 +1004,7 @@ of the file, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.10.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.10.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if a key file could be loaded, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise</p>
 <p></p>
 </div>
@@ -1029,7 +1023,7 @@ g_key_file_to_data (<em class="parameter"><code><a class="link" href="glib-Key-v
 so it is safe to pass <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> as <em class="parameter"><code>error</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.11.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.11.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1057,7 +1051,7 @@ returned string, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" t
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.11.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.11.7"></a><h4>Returns</h4>
 <p> a newly allocated string holding
 the contents of the <a class="link" href="glib-Key-value-file-parser.html#GKeyFile" title="GKeyFile"><span class="type">GKeyFile</span></a> </p>
 <p></p>
@@ -1078,7 +1072,7 @@ g_key_file_save_to_file (<em class="parameter"><code><a class="link" href="glib-
 <p>This function can fail for any of the reasons that
 <a class="link" href="glib-File-Utilities.html#g-file-set-contents" title="g_file_set_contents ()"><code class="function">g_file_set_contents()</code></a> may fail.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.12.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.12.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1105,7 +1099,7 @@ g_key_file_save_to_file (<em class="parameter"><code><a class="link" href="glib-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.12.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.12.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if successful, else <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> with <em class="parameter"><code>error</code></em>
 set</p>
 <p></p>
@@ -1119,7 +1113,7 @@ set</p>
 g_key_file_get_start_group (<em class="parameter"><code><a class="link" href="glib-Key-value-file-parser.html#GKeyFile" title="GKeyFile"><span class="type">GKeyFile</span></a> *key_file</code></em>);</pre>
 <p>Returns the name of the start group of the file.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.13.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.13.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1134,7 +1128,7 @@ g_key_file_get_start_group (<em class="parameter"><code><a class="link" href="gl
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.13.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.13.6"></a><h4>Returns</h4>
 <p> The start group of the key file.</p>
 <p></p>
 </div>
@@ -1152,7 +1146,7 @@ The array of returned groups will be <a class="link" href="glib-Standard-Macros.
 <em class="parameter"><code>length</code></em>
  may optionally be <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.14.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.14.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1174,7 +1168,7 @@ The array of returned groups will be <a class="link" href="glib-Standard-Macros.
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.14.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.14.6"></a><h4>Returns</h4>
 <p> a newly-allocated <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>-terminated array of strings.
 Use <a class="link" href="glib-String-Utility-Functions.html#g-strfreev" title="g_strfreev ()"><code class="function">g_strfreev()</code></a> to free it. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -1199,7 +1193,7 @@ be found, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL
  is set to
 <a class="link" href="glib-Key-value-file-parser.html#G-KEY-FILE-ERROR-GROUP-NOT-FOUND:CAPS"><span class="type">G_KEY_FILE_ERROR_GROUP_NOT_FOUND</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.15.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.15.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1231,7 +1225,7 @@ be found, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.15.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.15.6"></a><h4>Returns</h4>
 <p> a newly-allocated <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>-terminated array of strings.
 Use <a class="link" href="glib-String-Utility-Functions.html#g-strfreev" title="g_strfreev ()"><code class="function">g_strfreev()</code></a> to free it. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -1247,7 +1241,7 @@ g_key_file_has_group (<em class="parameter"><code><a class="link" href="glib-Key
 <p>Looks whether the key file has the group <em class="parameter"><code>group_name</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.16.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.16.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1269,7 +1263,7 @@ g_key_file_has_group (<em class="parameter"><code><a class="link" href="glib-Key
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.16.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.16.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>group_name</code></em>
 is a part of <em class="parameter"><code>key_file</code></em>
 , <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a>
@@ -1298,7 +1292,7 @@ whether it is not <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" tit
 <p>Language bindings should use <a class="link" href="glib-Key-value-file-parser.html#g-key-file-get-value" title="g_key_file_get_value ()"><code class="function">g_key_file_get_value()</code></a> to test whether
 or not a key exists.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.17.7"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.17.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1330,7 +1324,7 @@ or not a key exists.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.17.8"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.17.8"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>key</code></em>
 is a part of <em class="parameter"><code>group_name</code></em>
 , <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise</p>
@@ -1358,7 +1352,7 @@ event that the <em class="parameter"><code>group_name</code></em>
 and <em class="parameter"><code>error</code></em>
  is set to <a class="link" href="glib-Key-value-file-parser.html#G-KEY-FILE-ERROR-GROUP-NOT-FOUND:CAPS"><span class="type">G_KEY_FILE_ERROR_GROUP_NOT_FOUND</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.18.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.18.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1390,7 +1384,7 @@ and <em class="parameter"><code>error</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.18.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.18.7"></a><h4>Returns</h4>
 <p> a newly allocated string or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the specified
 key cannot be found.</p>
 <p></p>
@@ -1418,7 +1412,7 @@ event that the <em class="parameter"><code>group_name</code></em>
 and <em class="parameter"><code>error</code></em>
  is set to <a class="link" href="glib-Key-value-file-parser.html#G-KEY-FILE-ERROR-GROUP-NOT-FOUND:CAPS"><span class="type">G_KEY_FILE_ERROR_GROUP_NOT_FOUND</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.19.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.19.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1450,7 +1444,7 @@ and <em class="parameter"><code>error</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.19.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.19.7"></a><h4>Returns</h4>
 <p> a newly allocated string or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the specified
 key cannot be found.</p>
 <p></p>
@@ -1481,7 +1475,7 @@ with <em class="parameter"><code>key</code></em>
  cannot be interpreted or no suitable translation can
 be found then the untranslated value is returned.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.20.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.20.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1518,7 +1512,7 @@ be found then the untranslated value is returned.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.20.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.20.7"></a><h4>Returns</h4>
 <p> a newly allocated string or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the specified
 key cannot be found.</p>
 <p></p>
@@ -1546,7 +1540,7 @@ associated with <em class="parameter"><code>key</code></em>
 is returned and <em class="parameter"><code>error</code></em>
  is set to <a class="link" href="glib-Key-value-file-parser.html#G-KEY-FILE-ERROR-INVALID-VALUE:CAPS"><span class="type">G_KEY_FILE_ERROR_INVALID_VALUE</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.21.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.21.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1578,7 +1572,7 @@ is returned and <em class="parameter"><code>error</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.21.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.21.7"></a><h4>Returns</h4>
 <p> the value associated with the key as a boolean,
 or <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if the key was not found or could not be parsed.</p>
 <p></p>
@@ -1606,7 +1600,7 @@ with <em class="parameter"><code>key</code></em>
 and <em class="parameter"><code>error</code></em>
  is set to <a class="link" href="glib-Key-value-file-parser.html#G-KEY-FILE-ERROR-INVALID-VALUE:CAPS"><span class="type">G_KEY_FILE_ERROR_INVALID_VALUE</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.22.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.22.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1638,7 +1632,7 @@ and <em class="parameter"><code>error</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.22.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.22.7"></a><h4>Returns</h4>
 <p> the value associated with the key as an integer, or
 0 if the key was not found or could not be parsed.</p>
 <p></p>
@@ -1659,7 +1653,7 @@ g_key_file_get_int64 (<em class="parameter"><code><a class="link" href="glib-Key
 64-bit integer. This is similar to <a class="link" href="glib-Key-value-file-parser.html#g-key-file-get-integer" title="g_key_file_get_integer ()"><code class="function">g_key_file_get_integer()</code></a> but can return
 64-bit results without truncation.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.23.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.23.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1691,7 +1685,7 @@ g_key_file_get_int64 (<em class="parameter"><code><a class="link" href="glib-Key
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.23.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.23.6"></a><h4>Returns</h4>
 <p> the value associated with the key as a signed 64-bit integer, or
 0 if the key was not found or could not be parsed.</p>
 <p></p>
@@ -1712,7 +1706,7 @@ g_key_file_get_uint64 (<em class="parameter"><code><a class="link" href="glib-Ke
 64-bit integer. This is similar to <a class="link" href="glib-Key-value-file-parser.html#g-key-file-get-integer" title="g_key_file_get_integer ()"><code class="function">g_key_file_get_integer()</code></a> but can return
 large positive results without truncation.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.24.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.24.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1744,7 +1738,7 @@ large positive results without truncation.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.24.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.24.6"></a><h4>Returns</h4>
 <p> the value associated with the key as an unsigned 64-bit integer,
 or 0 if the key was not found or could not be parsed.</p>
 <p></p>
@@ -1773,7 +1767,7 @@ with <em class="parameter"><code>key</code></em>
 and <em class="parameter"><code>error</code></em>
  is set to <a class="link" href="glib-Key-value-file-parser.html#G-KEY-FILE-ERROR-INVALID-VALUE:CAPS"><span class="type">G_KEY_FILE_ERROR_INVALID_VALUE</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.25.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.25.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1805,7 +1799,7 @@ and <em class="parameter"><code>error</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.25.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.25.7"></a><h4>Returns</h4>
 <p> the value associated with the key as a double, or
 0.0 if the key was not found or could not be parsed.</p>
 <p></p>
@@ -1832,7 +1826,7 @@ event that the <em class="parameter"><code>group_name</code></em>
 and <em class="parameter"><code>error</code></em>
  is set to <a class="link" href="glib-Key-value-file-parser.html#G-KEY-FILE-ERROR-GROUP-NOT-FOUND:CAPS"><span class="type">G_KEY_FILE_ERROR_GROUP_NOT_FOUND</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.26.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.26.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1869,7 +1863,7 @@ and <em class="parameter"><code>error</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.26.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.26.7"></a><h4>Returns</h4>
 <p> a <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>-terminated string array or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the specified
 key cannot be found. The array should be freed with <a class="link" href="glib-String-Utility-Functions.html#g-strfreev" title="g_strfreev ()"><code class="function">g_strfreev()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1 length=length][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> utf8][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -1904,7 +1898,7 @@ returned array is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" tit
  may optionally 
 be <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.27.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.27.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1946,7 +1940,7 @@ be <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.27.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.27.7"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>-terminated string array
 or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the key isn't found. The string array should be freed
 with <a class="link" href="glib-String-Utility-Functions.html#g-strfreev" title="g_strfreev ()"><code class="function">g_strfreev()</code></a>. </p>
@@ -1976,7 +1970,7 @@ with <em class="parameter"><code>key</code></em>
 and <em class="parameter"><code>error</code></em>
  is set to <a class="link" href="glib-Key-value-file-parser.html#G-KEY-FILE-ERROR-INVALID-VALUE:CAPS"><span class="type">G_KEY_FILE_ERROR_INVALID_VALUE</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.28.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.28.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2013,7 +2007,7 @@ and <em class="parameter"><code>error</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.28.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.28.7"></a><h4>Returns</h4>
 <p>   the values associated with the key as a list of booleans, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the
 key was not found or could not be parsed. The returned list of booleans
 should be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a> when no longer needed. </p>
@@ -2043,7 +2037,7 @@ with <em class="parameter"><code>key</code></em>
 and <em class="parameter"><code>error</code></em>
  is set to <a class="link" href="glib-Key-value-file-parser.html#G-KEY-FILE-ERROR-INVALID-VALUE:CAPS"><span class="type">G_KEY_FILE_ERROR_INVALID_VALUE</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.29.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.29.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2080,7 +2074,7 @@ and <em class="parameter"><code>error</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.29.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.29.7"></a><h4>Returns</h4>
 <p>    the values associated with the key as a list of integers, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if
 the key was not found or could not be parsed. The returned list of
 integers should be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a> when no longer needed. </p>
@@ -2110,7 +2104,7 @@ with <em class="parameter"><code>key</code></em>
 and <em class="parameter"><code>error</code></em>
  is set to <a class="link" href="glib-Key-value-file-parser.html#G-KEY-FILE-ERROR-INVALID-VALUE:CAPS"><span class="type">G_KEY_FILE_ERROR_INVALID_VALUE</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.30.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.30.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2147,7 +2141,7 @@ and <em class="parameter"><code>error</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.30.7"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.30.7"></a><h4>Returns</h4>
 <p>    the values associated with the key as a list of doubles, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the
 key was not found or could not be parsed. The returned list of doubles
 should be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a> when no longer needed. </p>
@@ -2176,7 +2170,7 @@ If <em class="parameter"><code>key</code></em>
 <em class="parameter"><code>comment</code></em>
  will be read from above the first group in the file.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.31.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.31.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2208,7 +2202,7 @@ If <em class="parameter"><code>key</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.31.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.31.6"></a><h4>Returns</h4>
 <p> a comment that should be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a></p>
 <p></p>
 </div>
@@ -2232,7 +2226,7 @@ be found then it is created. To set an UTF-8 string which may contain
 characters that need escaping (such as newlines or spaces), use 
 <a class="link" href="glib-Key-value-file-parser.html#g-key-file-set-string" title="g_key_file_set_string ()"><code class="function">g_key_file_set_string()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.32.6"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.32.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2283,7 +2277,7 @@ If <em class="parameter"><code>group_name</code></em>
 Unlike <a class="link" href="glib-Key-value-file-parser.html#g-key-file-set-value" title="g_key_file_set_value ()"><code class="function">g_key_file_set_value()</code></a>, this function handles characters
 that need escaping, such as newlines.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.33.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.33.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2332,7 +2326,7 @@ g_key_file_set_locale_string (<em class="parameter"><code><a class="link" href="
 If the translation for <em class="parameter"><code>key</code></em>
  cannot be found then it is created.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.34.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.34.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2384,7 +2378,7 @@ g_key_file_set_boolean (<em class="parameter"><code><a class="link" href="glib-K
 If <em class="parameter"><code>key</code></em>
  cannot be found then it is created.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.35.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.35.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2431,7 +2425,7 @@ g_key_file_set_integer (<em class="parameter"><code><a class="link" href="glib-K
 If <em class="parameter"><code>key</code></em>
  cannot be found then it is created.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.36.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.36.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2478,7 +2472,7 @@ g_key_file_set_int64 (<em class="parameter"><code><a class="link" href="glib-Key
 If <em class="parameter"><code>key</code></em>
  cannot be found then it is created.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.37.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.37.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2525,7 +2519,7 @@ g_key_file_set_uint64 (<em class="parameter"><code><a class="link" href="glib-Ke
 If <em class="parameter"><code>key</code></em>
  cannot be found then it is created.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.38.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.38.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2572,7 +2566,7 @@ g_key_file_set_double (<em class="parameter"><code><a class="link" href="glib-Ke
 If <em class="parameter"><code>key</code></em>
  cannot be found then it is created.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.39.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.39.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2622,7 +2616,7 @@ If <em class="parameter"><code>key</code></em>
 If <em class="parameter"><code>group_name</code></em>
  cannot be found then it is created.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.40.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.40.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2679,7 +2673,7 @@ g_key_file_set_locale_string_list (<em class="parameter"><code><a class="link" h
  cannot be found then
 it is created.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.41.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.41.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2740,7 +2734,7 @@ If <em class="parameter"><code>key</code></em>
 If <em class="parameter"><code>group_name</code></em>
  is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>, the start_group is used.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.42.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.42.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2794,7 +2788,7 @@ g_key_file_set_integer_list (<em class="parameter"><code><a class="link" href="g
 If <em class="parameter"><code>key</code></em>
  cannot be found then it is created.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.43.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.43.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2848,7 +2842,7 @@ g_key_file_set_double_list (<em class="parameter"><code><a class="link" href="gl
 .  If <em class="parameter"><code>key</code></em>
  cannot be found then it is created.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.44.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.44.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2909,7 +2903,7 @@ If both <em class="parameter"><code>key</code></em>
  will be 
 written above the first group in the file.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.45.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.45.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2946,7 +2940,7 @@ written above the first group in the file.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.45.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.45.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the comment was written, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise</p>
 <p></p>
 </div>
@@ -2963,7 +2957,7 @@ g_key_file_remove_group (<em class="parameter"><code><a class="link" href="glib-
 , 
 from the key file.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.46.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.46.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2990,7 +2984,7 @@ from the key file.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.46.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.46.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the group was removed, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise</p>
 <p></p>
 </div>
@@ -3008,7 +3002,7 @@ g_key_file_remove_key (<em class="parameter"><code><a class="link" href="glib-Ke
  in <em class="parameter"><code>group_name</code></em>
  from the key file.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.47.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.47.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -3040,7 +3034,7 @@ g_key_file_remove_key (<em class="parameter"><code><a class="link" href="glib-Ke
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.47.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.47.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the key was removed, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise</p>
 <p></p>
 </div>
@@ -3067,7 +3061,7 @@ If both <em class="parameter"><code>key</code></em>
  will
 be removed above the first group in the file.</p>
 <div class="refsect3">
-<a name="id-1.5.27.8.48.5"></a><h4>Parameters</h4>
+<a name="id-1.5.27.7.48.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -3099,7 +3093,7 @@ be removed above the first group in the file.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.27.8.48.6"></a><h4>Returns</h4>
+<a name="id-1.5.27.7.48.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the comment was removed, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise</p>
 <p></p>
 </div>
@@ -3128,7 +3122,7 @@ be from the <a class="link" href="glib-Key-value-file-parser.html#GKeyFileError"
 <a name="GKeyFileError"></a><h3>enum GKeyFileError</h3>
 <p>Error codes returned by key file parsing.</p>
 <div class="refsect3">
-<a name="id-1.5.27.9.4.4"></a><h4>Members</h4>
+<a name="id-1.5.27.8.4.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -3188,7 +3182,7 @@ be from the <a class="link" href="glib-Key-value-file-parser.html#GKeyFileError"
 <a name="GKeyFileFlags"></a><h3>enum GKeyFileFlags</h3>
 <p>Flags which influence the parsing.</p>
 <div class="refsect3">
-<a name="id-1.5.27.9.5.4"></a><h4>Members</h4>
+<a name="id-1.5.27.8.5.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">

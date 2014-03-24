@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Timers.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Timers.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Timers.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -113,11 +112,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Timers.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Timers.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -138,7 +132,7 @@ g_timer_new (<em class="parameter"><code><span class="type">void</span></code></
 <p>Creates a new timer, and starts timing (i.e. <a class="link" href="glib-Timers.html#g-timer-start" title="g_timer_start ()"><code class="function">g_timer_start()</code></a> is
 implicitly called for you).</p>
 <div class="refsect3">
-<a name="id-1.5.16.8.2.5"></a><h4>Returns</h4>
+<a name="id-1.5.16.7.2.5"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-Timers.html#GTimer" title="GTimer"><span class="type">GTimer</span></a>.</p>
 <p></p>
 </div>
@@ -153,7 +147,7 @@ report the time since <a class="link" href="glib-Timers.html#g-timer-start" titl
 automatically marks the start time, so no need to call
 <a class="link" href="glib-Timers.html#g-timer-start" title="g_timer_start ()"><code class="function">g_timer_start()</code></a> immediately after creating the timer.</p>
 <div class="refsect3">
-<a name="id-1.5.16.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.5.16.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -176,7 +170,7 @@ g_timer_stop (<em class="parameter"><code><a class="link" href="glib-Timers.html
 <p>Marks an end time, so calls to <a class="link" href="glib-Timers.html#g-timer-elapsed" title="g_timer_elapsed ()"><code class="function">g_timer_elapsed()</code></a> will return the
 difference between this end time and the start time.</p>
 <div class="refsect3">
-<a name="id-1.5.16.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.5.16.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -200,7 +194,7 @@ g_timer_continue (<em class="parameter"><code><a class="link" href="glib-Timers.
 <a class="link" href="glib-Timers.html#g-timer-stop" title="g_timer_stop ()"><code class="function">g_timer_stop()</code></a>. <a class="link" href="glib-Timers.html#g-timer-stop" title="g_timer_stop ()"><code class="function">g_timer_stop()</code></a> must be called before using this
 function.</p>
 <div class="refsect3">
-<a name="id-1.5.16.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.5.16.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -232,7 +226,7 @@ including any fractional part. The <em class="parameter"><code>microseconds</cod
  out parameter is
 essentially useless.</p>
 <div class="refsect3">
-<a name="id-1.5.16.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.5.16.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -256,7 +250,7 @@ of microseconds elapsed, modulo 1000000), or <a class="link" href="glib-Standard
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.16.8.6.6"></a><h4>Returns</h4>
+<a name="id-1.5.16.7.6.6"></a><h4>Returns</h4>
 <p> seconds elapsed as a floating point value, including any
 fractional part.</p>
 <p></p>
@@ -271,7 +265,7 @@ g_timer_reset (<em class="parameter"><code><a class="link" href="glib-Timers.htm
 already-started timer to reset the start time, so <a class="link" href="glib-Timers.html#g-timer-reset" title="g_timer_reset ()"><code class="function">g_timer_reset()</code></a>
 serves no purpose.</p>
 <div class="refsect3">
-<a name="id-1.5.16.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.5.16.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -293,7 +287,7 @@ serves no purpose.</p>
 g_timer_destroy (<em class="parameter"><code><a class="link" href="glib-Timers.html#GTimer" title="GTimer"><span class="type">GTimer</span></a> *timer</code></em>);</pre>
 <p>Destroys a timer, freeing associated resources.</p>
 <div class="refsect3">
-<a name="id-1.5.16.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.5.16.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">

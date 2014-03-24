@@ -342,6 +342,7 @@
    <File RelativePath="..\..\..\glib\gthreadpool.c" />
    <File RelativePath="..\..\..\glib\gtimer.c" />
    <File RelativePath="..\..\..\glib\gtimezone.c" />
+   <File RelativePath="..\..\..\glib\gtranslit.c" />
    <File RelativePath="..\..\..\glib\gtrashstack.c" />
    <File RelativePath="..\..\..\glib\gtree.c" />
    <File RelativePath="..\..\..\glib\guniprop.c" />

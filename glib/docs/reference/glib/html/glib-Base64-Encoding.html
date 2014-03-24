@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Base64-Encoding.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Base64-Encoding.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Base64-Encoding.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -92,11 +91,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Base64-Encoding.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Base64-Encoding.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -149,7 +143,7 @@ Note however that it breaks the lines with <code class="literal">LF</code> chara
 <code class="literal">CR LF</code> sequences, so the result cannot be passed directly to SMTP
 or certain other protocols.</p>
 <div class="refsect3">
-<a name="id-1.5.5.7.2.8"></a><h4>Parameters</h4>
+<a name="id-1.5.5.6.2.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -192,7 +186,7 @@ or certain other protocols.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.5.7.2.9"></a><h4>Returns</h4>
+<a name="id-1.5.5.6.2.9"></a><h4>Returns</h4>
 <p> The number of bytes of output that was written</p>
 <p></p>
 </div>
@@ -211,7 +205,7 @@ g_base64_encode_close (<em class="parameter"><code><a class="link" href="glib-Ba
 be written to it. It will need up to 4 bytes, or up to 5 bytes if
 line-breaking is enabled.</p>
 <div class="refsect3">
-<a name="id-1.5.5.7.3.6"></a><h4>Parameters</h4>
+<a name="id-1.5.5.6.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -243,7 +237,7 @@ line-breaking is enabled.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.5.7.3.7"></a><h4>Returns</h4>
+<a name="id-1.5.5.6.3.7"></a><h4>Returns</h4>
 <p> The number of bytes of output that was written</p>
 <p></p>
 </div>
@@ -258,7 +252,7 @@ g_base64_encode (<em class="parameter"><code>const <a class="link" href="glib-Ba
 <p>Encode a sequence of binary data into its Base-64 stringified
 representation.</p>
 <div class="refsect3">
-<a name="id-1.5.5.7.4.5"></a><h4>Parameters</h4>
+<a name="id-1.5.5.6.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -281,7 +275,7 @@ representation.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.5.7.4.6"></a><h4>Returns</h4>
+<a name="id-1.5.5.6.4.6"></a><h4>Returns</h4>
 <p> a newly allocated, zero-terminated Base-64
 encoded string representing <em class="parameter"><code>data</code></em>
 . The returned string must
@@ -308,7 +302,7 @@ at least: (<em class="parameter"><code>len</code></em>
  / 4) * 3 + 3 bytes (+ 3 may be needed in case of non-zero
 state).</p>
 <div class="refsect3">
-<a name="id-1.5.5.7.5.6"></a><h4>Parameters</h4>
+<a name="id-1.5.5.6.5.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -346,7 +340,7 @@ data to decode</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.5.7.5.7"></a><h4>Returns</h4>
+<a name="id-1.5.5.6.5.7"></a><h4>Returns</h4>
 <p> The number of bytes of output that was written</p>
 <p></p>
 </div>
@@ -362,7 +356,7 @@ g_base64_decode (<em class="parameter"><code>const <a class="link" href="glib-Ba
 that the returned binary data is not necessarily zero-terminated,
 so it should not be used as a character string.</p>
 <div class="refsect3">
-<a name="id-1.5.5.7.6.5"></a><h4>Parameters</h4>
+<a name="id-1.5.5.6.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -384,7 +378,7 @@ so it should not be used as a character string.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.5.7.6.6"></a><h4>Returns</h4>
+<a name="id-1.5.5.6.6.6"></a><h4>Returns</h4>
 <p>              newly allocated buffer containing the binary data
 that <em class="parameter"><code>text</code></em>
 represents. The returned buffer must
@@ -402,7 +396,7 @@ g_base64_decode_inplace (<em class="parameter"><code><a class="link" href="glib-
 <p>Decode a sequence of Base-64 encoded text into binary data
 by overwriting the input data.</p>
 <div class="refsect3">
-<a name="id-1.5.5.7.7.5"></a><h4>Parameters</h4>
+<a name="id-1.5.5.6.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -425,7 +419,7 @@ string with base64 text to decode. </p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.5.7.7.6"></a><h4>Returns</h4>
+<a name="id-1.5.5.6.7.6"></a><h4>Returns</h4>
 <p> The binary data that <em class="parameter"><code>text</code></em>
 responds. This pointer
 is the same as the input <em class="parameter"><code>text</code></em>

@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#gobject-Value-arrays.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#gobject-Value-arrays.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gobject-Value-arrays.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="rn01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -138,11 +137,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="gobject-Value-arrays.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="gobject-Value-arrays.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib-object.h&gt;
 </pre>
@@ -163,7 +157,7 @@ for instance, the following code:</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="usertype">GValueArray</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">array </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="gobject-Value-arrays.html#g-value-array-new">g_value_array_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="number">10</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">GValueArray <span class="gtkdoc opt">*</span>array <span class="gtkdoc opt">=</span> <span class="function"><a href="gobject-Value-arrays.html#g-value-array-new">g_value_array_new</a></span> <span class="gtkdoc opt">(</span><span class="number">10</span><span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -177,8 +171,8 @@ for instance, the following code:</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="usertype">GArray</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">array </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="../glib/glib-Arrays.html#g-array-sized-new">g_array_sized_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="../glib/glib-Standard-Macros.html#FALSE:CAPS">FALSE</a></span><span class="symbol">,</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS">TRUE</a></span><span class="symbol">,</span><span class="normal"> </span><span class="keyword">sizeof</span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="gobject-Generic-values.html#GValue">GValue</a></span><span class="symbol">),</span><span class="normal"> </span><span class="number">10</span><span class="symbol">);</span>
-<span class="function"><a href="../glib/glib-Arrays.html#g-array-set-clear-func">g_array_set_clear_func</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">array</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="../glib/glib-Datasets.html#GDestroyNotify">GDestroyNotify</a></span><span class="symbol">)</span><span class="normal"> <a href="gobject-Generic-values.html#g-value-unset">g_value_unset</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">GArray <span class="gtkdoc opt">*</span>array <span class="gtkdoc opt">=</span> <span class="function"><a href="../glib/glib-Arrays.html#g-array-sized-new">g_array_sized_new</a></span> <span class="gtkdoc opt">(</span>FALSE<span class="gtkdoc opt">,</span> TRUE<span class="gtkdoc opt">,</span> <span class="keyword">sizeof</span> <span class="gtkdoc opt">(</span>GValue<span class="gtkdoc opt">),</span> <span class="number">10</span><span class="gtkdoc opt">);</span>
+<span class="function"><a href="../glib/glib-Arrays.html#g-array-set-clear-func">g_array_set_clear_func</a></span> <span class="gtkdoc opt">(</span>array<span class="gtkdoc opt">, (</span>GDestroyNotify<span class="gtkdoc opt">)</span> g_value_unset<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -201,7 +195,7 @@ g_value_array_get_nth (<em class="parameter"><code><a class="link" href="gobject
  containd in <em class="parameter"><code>value_array</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.14.8.2.6"></a><h4>Parameters</h4>
+<a name="id-1.4.14.7.2.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -223,7 +217,7 @@ g_value_array_get_nth (<em class="parameter"><code><a class="link" href="gobject
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.14.8.2.7"></a><h4>Returns</h4>
+<a name="id-1.4.14.7.2.7"></a><h4>Returns</h4>
 <p> pointer to a value at <em class="parameter"><code>index_</code></em>
 in <em class="parameter"><code>value_array</code></em>
 . </p>
@@ -245,7 +239,7 @@ for <em class="parameter"><code>n_prealloced</code></em>
 regardless of the value of <em class="parameter"><code>n_prealloced</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.14.8.3.6"></a><h4>Parameters</h4>
+<a name="id-1.4.14.7.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -260,7 +254,7 @@ regardless of the value of <em class="parameter"><code>n_prealloced</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.14.8.3.7"></a><h4>Returns</h4>
+<a name="id-1.4.14.7.3.7"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a> with 0 values</p>
 <p></p>
 </div>
@@ -277,7 +271,7 @@ g_value_array_copy (<em class="parameter"><code>const <a class="link" href="gobj
 <p>Construct an exact copy of a <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a> by duplicating all its
 contents.</p>
 <div class="refsect3">
-<a name="id-1.4.14.8.4.6"></a><h4>Parameters</h4>
+<a name="id-1.4.14.7.4.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -292,7 +286,7 @@ contents.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.14.8.4.7"></a><h4>Returns</h4>
+<a name="id-1.4.14.7.4.7"></a><h4>Returns</h4>
 <p> Newly allocated copy of <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -308,7 +302,7 @@ g_value_array_free (<em class="parameter"><code><a class="link" href="gobject-Va
 </div>
 <p>Free a <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a> including its contents.</p>
 <div class="refsect3">
-<a name="id-1.4.14.8.5.6"></a><h4>Parameters</h4>
+<a name="id-1.4.14.7.5.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -339,7 +333,7 @@ g_value_array_append (<em class="parameter"><code><a class="link" href="gobject-
  is
 <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, an uninitialized value is appended.</p>
 <div class="refsect3">
-<a name="id-1.4.14.8.6.6"></a><h4>Parameters</h4>
+<a name="id-1.4.14.7.6.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -361,7 +355,7 @@ g_value_array_append (<em class="parameter"><code><a class="link" href="gobject-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.14.8.6.7"></a><h4>Returns</h4>
+<a name="id-1.4.14.7.6.7"></a><h4>Returns</h4>
 <p> the <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a> passed in as <em class="parameter"><code>value_array</code></em>
 . </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
@@ -383,7 +377,7 @@ g_value_array_prepend (<em class="parameter"><code><a class="link" href="gobject
  is
 <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, an uninitialized value is prepended.</p>
 <div class="refsect3">
-<a name="id-1.4.14.8.7.6"></a><h4>Parameters</h4>
+<a name="id-1.4.14.7.7.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -405,7 +399,7 @@ g_value_array_prepend (<em class="parameter"><code><a class="link" href="gobject
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.14.8.7.7"></a><h4>Returns</h4>
+<a name="id-1.4.14.7.7.7"></a><h4>Returns</h4>
 <p> the <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a> passed in as <em class="parameter"><code>value_array</code></em>
 . </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
@@ -428,7 +422,7 @@ g_value_array_insert (<em class="parameter"><code><a class="link" href="gobject-
 
 is <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, an uninitialized value is inserted.</p>
 <div class="refsect3">
-<a name="id-1.4.14.8.8.6"></a><h4>Parameters</h4>
+<a name="id-1.4.14.7.8.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -455,7 +449,7 @@ is <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">N
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.14.8.8.7"></a><h4>Returns</h4>
+<a name="id-1.4.14.7.8.7"></a><h4>Returns</h4>
 <p> the <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a> passed in as <em class="parameter"><code>value_array</code></em>
 . </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
@@ -475,7 +469,7 @@ g_value_array_remove (<em class="parameter"><code><a class="link" href="gobject-
  from <em class="parameter"><code>value_array</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.14.8.9.6"></a><h4>Parameters</h4>
+<a name="id-1.4.14.7.9.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -499,7 +493,7 @@ g_value_array_remove (<em class="parameter"><code><a class="link" href="gobject-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.14.8.9.7"></a><h4>Returns</h4>
+<a name="id-1.4.14.7.9.7"></a><h4>Returns</h4>
 <p> the <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a> passed in as <em class="parameter"><code>value_array</code></em>
 . </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
@@ -522,7 +516,7 @@ the semantics of <a href="../glib/glib-Doubly-Linked-Lists.html#GCompareFunc"><s
 <p>The current implementation uses the same sorting algorithm as standard
 C <code class="function">qsort()</code> function.</p>
 <div class="refsect3">
-<a name="id-1.4.14.8.10.7"></a><h4>Parameters</h4>
+<a name="id-1.4.14.7.10.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -544,7 +538,7 @@ C <code class="function">qsort()</code> function.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.14.8.10.8"></a><h4>Returns</h4>
+<a name="id-1.4.14.7.10.8"></a><h4>Returns</h4>
 <p> the <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a> passed in as <em class="parameter"><code>value_array</code></em>
 . </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
@@ -569,7 +563,7 @@ to the semantics of <a href="../glib/glib-Doubly-Linked-Lists.html#GCompareDataF
 C <code class="function">qsort()</code> function.</p>
 <p>Rename to: g_value_array_sort</p>
 <div class="refsect3">
-<a name="id-1.4.14.8.11.8"></a><h4>Parameters</h4>
+<a name="id-1.4.14.7.11.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -597,7 +591,7 @@ C <code class="function">qsort()</code> function.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.14.8.11.9"></a><h4>Returns</h4>
+<a name="id-1.4.14.7.11.9"></a><h4>Returns</h4>
 <p> the <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a> passed in as <em class="parameter"><code>value_array</code></em>
 . </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
@@ -615,7 +609,7 @@ C <code class="function">qsort()</code> function.</p>
 </pre>
 <p>A <a class="link" href="gobject-Value-arrays.html#GValueArray" title="struct GValueArray"><span class="type">GValueArray</span></a> contains an array of <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> elements.</p>
 <div class="refsect3">
-<a name="id-1.4.14.9.2.5"></a><h4>Members</h4>
+<a name="id-1.4.14.8.2.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">

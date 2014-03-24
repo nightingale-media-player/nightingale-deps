@@ -12,11 +12,11 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GFileEnumerator.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GFileEnumerator.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GFileEnumerator.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GFileEnumerator.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
                   <a href="#GFileEnumerator.properties" class="shortcut">Properties</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -647,9 +647,9 @@ inside loops with <a class="link" href="GFileEnumerator.html#g-file-enumerator-n
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">name </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GFileInfo.html#g-file-info-get-name">g_file_info_get_name</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">info</span><span class="symbol">);</span>
-<span class="usertype">GFile</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">child </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GFile.html#g-file-get-child">g_file_get_child</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="GFileEnumerator.html#g-file-enumerator-get-container">g_file_enumerator_get_container</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">enumr</span><span class="symbol">),</span>
-<span class="normal">                                 name</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">gchar <span class="gtkdoc opt">*</span>name <span class="gtkdoc opt">=</span> <span class="function"><a href="GFileInfo.html#g-file-info-get-name">g_file_info_get_name</a></span> <span class="gtkdoc opt">(</span>info<span class="gtkdoc opt">);</span>
+GFile <span class="gtkdoc opt">*</span>child <span class="gtkdoc opt">=</span> <span class="function"><a href="GFile.html#g-file-get-child">g_file_get_child</a></span> <span class="gtkdoc opt">(</span><span class="function"><a href="GFileEnumerator.html#g-file-enumerator-get-container">g_file_enumerator_get_container</a></span> <span class="gtkdoc opt">(</span>enumr<span class="gtkdoc opt">),</span>
+                                 name<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>

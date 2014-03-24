@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#gobject-Varargs-Value-Collection.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#gobject-Varargs-Value-Collection.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gobject-Varargs-Value-Collection.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="rn01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -87,11 +86,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="gobject-Varargs-Value-Collection.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="gobject-Varargs-Value-Collection.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib-object.h&gt;
 #include &lt;gobject/gvaluecollector.h&gt;
@@ -113,7 +107,7 @@ types and pointers.</p>
 implement the varargs collection as a macro, because on some systems
 va_list variables cannot be passed by reference.</p>
 <div class="refsect3">
-<a name="id-1.4.11.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.4.11.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -168,7 +162,7 @@ va_list variables cannot be passed by reference.</p>
 you should use the <a class="link" href="gobject-Varargs-Value-Collection.html#G-VALUE-COLLECT-INIT:CAPS" title="G_VALUE_COLLECT_INIT()"><span class="type">G_VALUE_COLLECT_INIT</span></a> variant and pass the unitialized
 <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a>. That variant is faster than <a class="link" href="gobject-Varargs-Value-Collection.html#G-VALUE-COLLECT:CAPS" title="G_VALUE_COLLECT()"><span class="type">G_VALUE_COLLECT</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.11.8.3.6"></a><h4>Parameters</h4>
+<a name="id-1.4.11.7.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -217,7 +211,7 @@ allocated error messages if something fails</p></td>
 <p>Collects a value's variable argument locations from a va_list. Usage is
 analogous to <a class="link" href="gobject-Varargs-Value-Collection.html#G-VALUE-COLLECT:CAPS" title="G_VALUE_COLLECT()"><code class="function">G_VALUE_COLLECT()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.11.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.4.11.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -261,14 +255,40 @@ allocated error messages if something fails</p></td>
 <a name="GTypeCValue"></a><h3>union GTypeCValue</h3>
 <p>A union holding one collected value.</p>
 <div class="refsect3">
-<a name="id-1.4.11.9.2.4"></a><h4>Members</h4>
+<a name="id-1.4.11.8.2.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="union_members_name">
 <col class="union_members_description">
 <col width="200px" class="union_members_annotations">
 </colgroup>
-<tbody></tbody>
+<tbody>
+<tr>
+<td class="union_member_name"><p><a href="../glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GTypeCValue.v-int"></a>v_int</code></em>;</p></td>
+<td class="union_member_description"><p>the field for holding integer values</p></td>
+<td class="union_member_annotations"> </td>
+</tr>
+<tr>
+<td class="union_member_name"><p><a href="../glib/glib-Basic-Types.html#glong"><span class="type">glong</span></a> <em class="structfield"><code><a name="GTypeCValue.v-long"></a>v_long</code></em>;</p></td>
+<td class="union_member_description"><p>the field for holding long integer values</p></td>
+<td class="union_member_annotations"> </td>
+</tr>
+<tr>
+<td class="union_member_name"><p><a href="../glib/glib-Basic-Types.html#gint64"><span class="type">gint64</span></a> <em class="structfield"><code><a name="GTypeCValue.v-int64"></a>v_int64</code></em>;</p></td>
+<td class="union_member_description"><p>the field for holding 64 bit integer values</p></td>
+<td class="union_member_annotations"> </td>
+</tr>
+<tr>
+<td class="union_member_name"><p><a href="../glib/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a> <em class="structfield"><code><a name="GTypeCValue.v-double"></a>v_double</code></em>;</p></td>
+<td class="union_member_description"><p>the field for holding floating point values</p></td>
+<td class="union_member_annotations"> </td>
+</tr>
+<tr>
+<td class="union_member_name"><p><a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> <em class="structfield"><code><a name="GTypeCValue.v-pointer"></a>v_pointer</code></em>;</p></td>
+<td class="union_member_description"><p>the field for holding pointers</p></td>
+<td class="union_member_annotations"> </td>
+</tr>
+</tbody>
 </table></div>
 </div>
 </div>

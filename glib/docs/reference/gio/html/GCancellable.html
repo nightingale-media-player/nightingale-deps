@@ -12,11 +12,11 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GCancellable.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GCancellable.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_signals"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GCancellable.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GCancellable.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_signals">  <span class="dim">|</span> 
                   <a href="#GCancellable.signals" class="shortcut">Signals</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -792,27 +792,27 @@ like this.</p>
 19
 20
 21</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="comment">// Make sure we don't do unnecessary work if already cancelled</span>
-<span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="GCancellable.html#g-cancellable-set-error-if-cancelled">g_cancellable_set_error_if_cancelled</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cancellable</span><span class="symbol">,</span><span class="normal"> error</span><span class="symbol">))</span>
-<span class="normal">  </span><span class="keyword">return</span><span class="symbol">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc slc">// Make sure we don't do unnecessary work if already cancelled</span>
+<span class="keyword">if</span> <span class="gtkdoc opt">(</span><span class="function"><a href="GCancellable.html#g-cancellable-set-error-if-cancelled">g_cancellable_set_error_if_cancelled</a></span> <span class="gtkdoc opt">(</span>cancellable<span class="gtkdoc opt">,</span> error<span class="gtkdoc opt">))</span>
+  <span class="keyword">return</span><span class="gtkdoc opt">;</span>
 
-<span class="comment">// Set up all the data needed to be able to handle cancellation</span>
-<span class="comment">// of the operation</span>
-<span class="normal">my_data </span><span class="symbol">=</span><span class="normal"> </span><span class="function">my_data_new</span><span class="normal"> </span><span class="symbol">(...);</span>
+<span class="gtkdoc slc">// Set up all the data needed to be able to handle cancellation</span>
+<span class="gtkdoc slc">// of the operation</span>
+my_data <span class="gtkdoc opt">=</span> <span class="function">my_data_new</span> <span class="gtkdoc opt">(...);</span>
 
-<span class="normal">id </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0</span><span class="symbol">;</span>
-<span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cancellable</span><span class="symbol">)</span>
-<span class="normal">  id </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GCancellable.html#g-cancellable-connect">g_cancellable_connect</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cancellable</span><span class="symbol">,</span>
-<span class="normal">                  </span><span class="function"><a href="../gobject/gobject-Closures.html#G-CALLBACK:CAPS">G_CALLBACK</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cancelled_handler</span><span class="symbol">)</span>
-<span class="normal">                  data</span><span class="symbol">,</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
+id <span class="gtkdoc opt">=</span> <span class="number">0</span><span class="gtkdoc opt">;</span>
+<span class="keyword">if</span> <span class="gtkdoc opt">(</span>cancellable<span class="gtkdoc opt">)</span>
+  id <span class="gtkdoc opt">=</span> <span class="function"><a href="GCancellable.html#g-cancellable-connect">g_cancellable_connect</a></span> <span class="gtkdoc opt">(</span>cancellable<span class="gtkdoc opt">,</span>
+			      <span class="function"><a href="../gobject/gobject-Closures.html#G-CALLBACK:CAPS">G_CALLBACK</a></span> <span class="gtkdoc opt">(</span>cancelled_handler<span class="gtkdoc opt">)</span>
+			      data<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span>
 
-<span class="comment">// cancellable operation here...</span>
+<span class="gtkdoc slc">// cancellable operation here...</span>
 
-<span class="function"><a href="GCancellable.html#g-cancellable-disconnect">g_cancellable_disconnect</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cancellable</span><span class="symbol">,</span><span class="normal"> id</span><span class="symbol">);</span>
+<span class="function"><a href="GCancellable.html#g-cancellable-disconnect">g_cancellable_disconnect</a></span> <span class="gtkdoc opt">(</span>cancellable<span class="gtkdoc opt">,</span> id<span class="gtkdoc opt">);</span>
 
-<span class="comment">// cancelled_handler is never called after this, it is now safe</span>
-<span class="comment">// to free the data</span>
-<span class="function">my_data_free</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">my_data</span><span class="symbol">);</span></pre></td>
+<span class="gtkdoc slc">// cancelled_handler is never called after this, it is now safe</span>
+<span class="gtkdoc slc">// to free the data</span>
+<span class="function">my_data_free</span> <span class="gtkdoc opt">(</span>my_data<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>

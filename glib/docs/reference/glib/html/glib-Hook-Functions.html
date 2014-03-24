@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Hook-Functions.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Hook-Functions.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Hook-Functions.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -353,11 +352,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Hook-Functions.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Hook-Functions.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -378,7 +372,7 @@ and the list of hook functions can be invoked.</p>
 <p>Defines the type of function to be called when a hook in a
 list of hooks gets finalized.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -409,7 +403,7 @@ that gets finalized</p></td>
 <p>Defines the type of a hook function that can be invoked
 by <a class="link" href="glib-Hook-Functions.html#g-hook-list-invoke" title="g_hook_list_invoke ()"><code class="function">g_hook_list_invoke()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -432,7 +426,7 @@ by <a class="link" href="glib-Hook-Functions.html#g-hook-list-invoke" title="g_h
 <p>Defines the type of a hook function that can be invoked
 by <a class="link" href="glib-Hook-Functions.html#g-hook-list-invoke-check" title="g_hook_list_invoke_check ()"><code class="function">g_hook_list_invoke_check()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -447,7 +441,7 @@ by <a class="link" href="glib-Hook-Functions.html#g-hook-list-invoke-check" titl
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.4.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.4.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> should be destroyed</p>
 <p></p>
 </div>
@@ -461,7 +455,7 @@ g_hook_list_init (<em class="parameter"><code><a class="link" href="glib-Hook-Fu
 <p>Initializes a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>.
 This must be called before the <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a> is used.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -492,7 +486,7 @@ g_hook_list_invoke (<em class="parameter"><code><a class="link" href="glib-Hook-
                     <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gboolean" title="gboolean"><span class="type">gboolean</span></a> may_recurse</code></em>);</pre>
 <p>Calls all of the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> functions in a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -525,7 +519,7 @@ g_hook_list_invoke_check (<em class="parameter"><code><a class="link" href="glib
 <p>Calls all of the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> functions in a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>.
 Any function which returns <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> is removed from the <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -559,7 +553,7 @@ g_hook_list_marshal (<em class="parameter"><code><a class="link" href="glib-Hook
                      <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);</pre>
 <p>Calls a function on each valid <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -602,7 +596,7 @@ these are skipped</p></td>
                     <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);</pre>
 <p>Defines the type of function used by <a class="link" href="glib-Hook-Functions.html#g-hook-list-marshal" title="g_hook_list_marshal ()"><code class="function">g_hook_list_marshal()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.9.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.9.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -635,7 +629,7 @@ g_hook_list_marshal_check (<em class="parameter"><code><a class="link" href="gli
 <p>Calls a function on each valid <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> and destroys it if the
 function returns <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.10.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.10.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -678,7 +672,7 @@ these are skipped</p></td>
                          <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);</pre>
 <p>Defines the type of function used by <a class="link" href="glib-Hook-Functions.html#g-hook-list-marshal-check" title="g_hook_list_marshal_check ()"><code class="function">g_hook_list_marshal_check()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.11.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.11.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -700,7 +694,7 @@ these are skipped</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.11.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.11.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if <em class="parameter"><code>hook</code></em>
 should be destroyed</p>
 <p></p>
@@ -713,7 +707,7 @@ should be destroyed</p>
 g_hook_list_clear (<em class="parameter"><code><a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a> *hook_list</code></em>);</pre>
 <p>Removes all the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> elements from a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.12.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.12.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -735,7 +729,7 @@ g_hook_list_clear (<em class="parameter"><code><a class="link" href="glib-Hook-F
 g_hook_alloc (<em class="parameter"><code><a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a> *hook_list</code></em>);</pre>
 <p>Allocates space for a <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> and initializes it.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.13.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.13.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -750,7 +744,7 @@ g_hook_alloc (<em class="parameter"><code><a class="link" href="glib-Hook-Functi
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.13.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.13.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a></p>
 <p></p>
 </div>
@@ -761,7 +755,7 @@ g_hook_alloc (<em class="parameter"><code><a class="link" href="glib-Hook-Functi
 <pre class="programlisting">#define             g_hook_append( hook_list, hook )</pre>
 <p>Appends a <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> onto the end of a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.14.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.14.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -792,7 +786,7 @@ g_hook_prepend (<em class="parameter"><code><a class="link" href="glib-Hook-Func
                 <em class="parameter"><code><a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> *hook</code></em>);</pre>
 <p>Prepends a <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> on the start of a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.15.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.15.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -824,7 +818,7 @@ g_hook_insert_before (<em class="parameter"><code><a class="link" href="glib-Hoo
                       <em class="parameter"><code><a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> *hook</code></em>);</pre>
 <p>Inserts a <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> into a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>, before a given <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.16.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.16.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -860,7 +854,7 @@ g_hook_insert_sorted (<em class="parameter"><code><a class="link" href="glib-Hoo
                       <em class="parameter"><code><a class="link" href="glib-Hook-Functions.html#GHookCompareFunc" title="GHookCompareFunc ()"><span class="type">GHookCompareFunc</span></a> func</code></em>);</pre>
 <p>Inserts a <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> into a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>, sorted by the given function.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.17.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.17.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -896,7 +890,7 @@ g_hook_insert_sorted (<em class="parameter"><code><a class="link" href="glib-Hoo
 <p>Defines the type of function used to compare <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> elements in
 <a class="link" href="glib-Hook-Functions.html#g-hook-insert-sorted" title="g_hook_insert_sorted ()"><code class="function">g_hook_insert_sorted()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.18.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.18.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -919,7 +913,7 @@ g_hook_insert_sorted (<em class="parameter"><code><a class="link" href="glib-Hoo
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.18.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.18.6"></a><h4>Returns</h4>
 <p> a value &lt;= 0 if <em class="parameter"><code>new_hook</code></em>
 should be before <em class="parameter"><code>sibling</code></em>
 </p>
@@ -935,7 +929,7 @@ g_hook_compare_ids (<em class="parameter"><code><a class="link" href="glib-Hook-
 <p>Compares the ids of two <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> elements, returning a negative value
 if the second id is greater than the first.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.19.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.19.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -958,7 +952,7 @@ if the second id is greater than the first.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.19.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.19.6"></a><h4>Returns</h4>
 <p> a value &lt;= 0 if the id of <em class="parameter"><code>sibling</code></em>
 is &gt;= the id of <em class="parameter"><code>new_hook</code></em>
 </p>
@@ -973,7 +967,7 @@ g_hook_get (<em class="parameter"><code><a class="link" href="glib-Hook-Function
             <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gulong" title="gulong"><span class="type">gulong</span></a> hook_id</code></em>);</pre>
 <p>Returns the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> with the given id, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if it is not found.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.20.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.20.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -995,7 +989,7 @@ g_hook_get (<em class="parameter"><code><a class="link" href="glib-Hook-Function
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.20.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.20.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> with the given id, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if it is not found</p>
 <p></p>
 </div>
@@ -1011,7 +1005,7 @@ g_hook_find (<em class="parameter"><code><a class="link" href="glib-Hook-Functio
 <p>Finds a <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> in a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a> using the given function to
 test for a match.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.21.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.21.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1046,7 +1040,7 @@ should be skipped</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.21.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.21.6"></a><h4>Returns</h4>
 <p> the found <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if no matching <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> is found</p>
 <p></p>
 </div>
@@ -1059,7 +1053,7 @@ should be skipped</p></td>
                   <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
 <p>Defines the type of the function passed to <a class="link" href="glib-Hook-Functions.html#g-hook-find" title="g_hook_find ()"><code class="function">g_hook_find()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.22.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.22.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1081,7 +1075,7 @@ should be skipped</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.22.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.22.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the required <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> has been found</p>
 <p></p>
 </div>
@@ -1095,7 +1089,7 @@ g_hook_find_data (<em class="parameter"><code><a class="link" href="glib-Hook-Fu
                   <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
 <p>Finds a <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> in a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a> with the given data.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.23.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.23.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1123,7 +1117,7 @@ should be skipped</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.23.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.23.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> with the given <em class="parameter"><code>data</code></em>
 or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if no matching
 <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> is found</p>
@@ -1139,7 +1133,7 @@ g_hook_find_func (<em class="parameter"><code><a class="link" href="glib-Hook-Fu
                   <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> func</code></em>);</pre>
 <p>Finds a <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> in a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a> with the given function.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.24.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.24.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1167,7 +1161,7 @@ should be skipped</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.24.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.24.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> with the given <em class="parameter"><code>func</code></em>
 or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if no matching
 <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> is found</p>
@@ -1184,7 +1178,7 @@ g_hook_find_func_data (<em class="parameter"><code><a class="link" href="glib-Ho
                        <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
 <p>Finds a <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> in a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a> with the given function and data.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.25.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.25.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1217,7 +1211,7 @@ should be skipped</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.25.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.25.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> with the given <em class="parameter"><code>func</code></em>
 and <em class="parameter"><code>data</code></em>
 or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if
@@ -1236,7 +1230,7 @@ The reference count for the <a class="link" href="glib-Hook-Functions.html#GHook
 <a class="link" href="glib-Hook-Functions.html#g-hook-unref" title="g_hook_unref ()"><code class="function">g_hook_unref()</code></a> to restore it when no longer needed. (Or call
 <a class="link" href="glib-Hook-Functions.html#g-hook-next-valid" title="g_hook_next_valid ()"><code class="function">g_hook_next_valid()</code></a> if you are stepping through the <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>.)</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.26.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.26.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1260,7 +1254,7 @@ these are skipped</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.26.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.26.6"></a><h4>Returns</h4>
 <p> the first valid <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if none are valid</p>
 <p></p>
 </div>
@@ -1277,7 +1271,7 @@ The reference count for the <a class="link" href="glib-Hook-Functions.html#GHook
 <a class="link" href="glib-Hook-Functions.html#g-hook-unref" title="g_hook_unref ()"><code class="function">g_hook_unref()</code></a> to restore it when no longer needed. (Or continue to call
 <a class="link" href="glib-Hook-Functions.html#g-hook-next-valid" title="g_hook_next_valid ()"><code class="function">g_hook_next_valid()</code></a> until <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is returned.)</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.27.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.27.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1306,7 +1300,7 @@ these are skipped</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.27.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.27.6"></a><h4>Returns</h4>
 <p> the next valid <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if none are valid</p>
 <p></p>
 </div>
@@ -1318,7 +1312,7 @@ these are skipped</p></td>
 </pre>
 <p>Gets the flags of a hook.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.28.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.28.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1340,7 +1334,7 @@ these are skipped</p></td>
 </pre>
 <p>Casts a pointer to a <code class="literal">GHook*</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.29.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.29.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1362,7 +1356,7 @@ these are skipped</p></td>
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> is valid, i.e. it is in a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>,
 it is active and it has not been destroyed.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.30.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.30.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1377,7 +1371,7 @@ it is active and it has not been destroyed.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.30.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.30.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> is valid</p>
 <p></p>
 </div>
@@ -1389,7 +1383,7 @@ it is active and it has not been destroyed.</p>
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> is active, which is normally the case
 until the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> is destroyed.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.31.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.31.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1404,7 +1398,7 @@ until the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GH
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.31.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.31.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> is active</p>
 <p></p>
 </div>
@@ -1415,7 +1409,7 @@ until the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GH
 <pre class="programlisting">#define             G_HOOK_IN_CALL(hook)</pre>
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> function is currently executing.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.32.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.32.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1430,7 +1424,7 @@ until the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GH
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.32.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.32.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> function is currently executing</p>
 <p></p>
 </div>
@@ -1441,7 +1435,7 @@ until the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GH
 <pre class="programlisting">#define             G_HOOK_IS_UNLINKED(hook)</pre>
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> is not in a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.33.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.33.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1456,7 +1450,7 @@ until the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GH
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.33.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.33.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> is not in a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a></p>
 <p></p>
 </div>
@@ -1469,7 +1463,7 @@ g_hook_ref (<em class="parameter"><code><a class="link" href="glib-Hook-Function
             <em class="parameter"><code><a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> *hook</code></em>);</pre>
 <p>Increments the reference count for a <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.34.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.34.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1491,7 +1485,7 @@ g_hook_ref (<em class="parameter"><code><a class="link" href="glib-Hook-Function
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.34.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.34.6"></a><h4>Returns</h4>
 <p> the <em class="parameter"><code>hook</code></em>
 that was passed in (since 2.6)</p>
 <p></p>
@@ -1507,7 +1501,7 @@ g_hook_unref (<em class="parameter"><code><a class="link" href="glib-Hook-Functi
 If the reference count falls to 0, the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> is removed
 from the <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a> and <a class="link" href="glib-Hook-Functions.html#g-hook-free" title="g_hook_free ()"><code class="function">g_hook_free()</code></a> is called to free it.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.35.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.35.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1539,7 +1533,7 @@ g_hook_free (<em class="parameter"><code><a class="link" href="glib-Hook-Functio
  function if it exists,
 and frees the memory allocated for the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.36.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.36.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1569,7 +1563,7 @@ g_hook_destroy (<em class="parameter"><code><a class="link" href="glib-Hook-Func
                 <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gulong" title="gulong"><span class="type">gulong</span></a> hook_id</code></em>);</pre>
 <p>Destroys a <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a>, given its ID.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.37.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.37.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1591,7 +1585,7 @@ g_hook_destroy (<em class="parameter"><code><a class="link" href="glib-Hook-Func
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.13.8.37.6"></a><h4>Returns</h4>
+<a name="id-1.5.13.7.37.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> was found in the <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a> and destroyed</p>
 <p></p>
 </div>
@@ -1605,7 +1599,7 @@ g_hook_destroy_link (<em class="parameter"><code><a class="link" href="glib-Hook
 <p>Removes one <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> from a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>, marking it
 inactive and calling <a class="link" href="glib-Hook-Functions.html#g-hook-unref" title="g_hook_unref ()"><code class="function">g_hook_unref()</code></a> on it.</p>
 <div class="refsect3">
-<a name="id-1.5.13.8.38.5"></a><h4>Parameters</h4>
+<a name="id-1.5.13.7.38.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1644,7 +1638,7 @@ inactive and calling <a class="link" href="glib-Hook-Functions.html#g-hook-unref
 </pre>
 <p>The <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a> struct represents a list of hook functions.</p>
 <div class="refsect3">
-<a name="id-1.5.13.9.2.5"></a><h4>Members</h4>
+<a name="id-1.5.13.8.2.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">
@@ -1709,7 +1703,7 @@ function</p></td>
 </pre>
 <p>The <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> struct represents a single hook function in a <a class="link" href="glib-Hook-Functions.html#GHookList" title="struct GHookList"><span class="type">GHookList</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.13.9.3.5"></a><h4>Members</h4>
+<a name="id-1.5.13.8.3.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">
@@ -1770,7 +1764,7 @@ this member of the hook that is being finalized</p></td>
 <a name="GHookFlagMask"></a><h3>enum GHookFlagMask</h3>
 <p>Flags used internally in the <a class="link" href="glib-Hook-Functions.html#GHook" title="struct GHook"><span class="type">GHook</span></a> implementation.</p>
 <div class="refsect3">
-<a name="id-1.5.13.9.4.4"></a><h4>Members</h4>
+<a name="id-1.5.13.8.4.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">

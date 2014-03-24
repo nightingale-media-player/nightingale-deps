@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-GDateTime.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-GDateTime.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-GDateTime.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -458,11 +457,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-GDateTime.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-GDateTime.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -543,7 +537,7 @@ g_date_time_unref (<em class="parameter"><code><a class="link" href="glib-GDateT
 <em class="parameter"><code>datetime</code></em>
  are freed</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.7.6"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.7.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -567,7 +561,7 @@ g_date_time_ref (<em class="parameter"><code><a class="link" href="glib-GDateTim
 <p>Atomically increments the reference count of <em class="parameter"><code>datetime</code></em>
  by one.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -582,7 +576,7 @@ g_date_time_ref (<em class="parameter"><code><a class="link" href="glib-GDateTim
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.8.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.8.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a> with the reference count increased</p>
 <p></p>
 </div>
@@ -603,7 +597,7 @@ year 9999).</p>
 <p>You should release the return value by calling <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>
 when you are done with it.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.9.7"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.9.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -618,7 +612,7 @@ when you are done with it.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.9.8"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.9.8"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
 </div>
@@ -634,7 +628,7 @@ time zone.</p>
 <p>This is equivalent to calling <a class="link" href="glib-GDateTime.html#g-date-time-new-now" title="g_date_time_new_now ()"><code class="function">g_date_time_new_now()</code></a> with the time
 zone returned by <a class="link" href="glib-GTimeZone.html#g-time-zone-new-local" title="g_time_zone_new_local ()"><code class="function">g_time_zone_new_local()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.10.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.10.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
 </div>
@@ -649,7 +643,7 @@ g_date_time_new_now_utc (<em class="parameter"><code><span class="type">void</sp
 <p>This is equivalent to calling <a class="link" href="glib-GDateTime.html#g-date-time-new-now" title="g_date_time_new_now ()"><code class="function">g_date_time_new_now()</code></a> with the time
 zone returned by <a class="link" href="glib-GTimeZone.html#g-time-zone-new-utc" title="g_time_zone_new_utc ()"><code class="function">g_time_zone_new_utc()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.11.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.11.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
 </div>
@@ -671,7 +665,7 @@ of the supported range of <a class="link" href="glib-GDateTime.html#GDateTime" t
 <p>You should release the return value by calling <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>
 when you are done with it.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.12.8"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.12.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -686,7 +680,7 @@ when you are done with it.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.12.9"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.12.9"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
 </div>
@@ -707,7 +701,7 @@ of the supported range of <a class="link" href="glib-GDateTime.html#GDateTime" t
 <p>You should release the return value by calling <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>
 when you are done with it.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.13.8"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.13.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -722,7 +716,7 @@ when you are done with it.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.13.9"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.13.9"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
 </div>
@@ -745,7 +739,7 @@ of the supported range of <a class="link" href="glib-GDateTime.html#GDateTime" t
 <p>You should release the return value by calling <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>
 when you are done with it.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.14.8"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.14.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -760,7 +754,7 @@ when you are done with it.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.14.9"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.14.9"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
 </div>
@@ -781,7 +775,7 @@ of the supported range of <a class="link" href="glib-GDateTime.html#GDateTime" t
 <p>You should release the return value by calling <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>
 when you are done with it.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.15.8"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.15.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -796,7 +790,7 @@ when you are done with it.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.15.9"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.15.9"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
 </div>
@@ -842,7 +836,7 @@ return <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><
 <p>You should release the return value by calling <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>
 when you are done with it.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.16.12"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.16.12"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -889,7 +883,7 @@ when you are done with it.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.16.13"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.16.13"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
 </div>
@@ -910,7 +904,7 @@ the local time zone.</p>
 <p>This call is equivalent to calling <a class="link" href="glib-GDateTime.html#g-date-time-new" title="g_date_time_new ()"><code class="function">g_date_time_new()</code></a> with the time
 zone returned by <a class="link" href="glib-GTimeZone.html#g-time-zone-new-local" title="g_time_zone_new_local ()"><code class="function">g_time_zone_new_local()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.17.6"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.17.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -952,7 +946,7 @@ zone returned by <a class="link" href="glib-GTimeZone.html#g-time-zone-new-local
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.17.7"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.17.7"></a><h4>Returns</h4>
 <p> a <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
 </div>
@@ -973,7 +967,7 @@ UTC.</p>
 <p>This call is equivalent to calling <a class="link" href="glib-GDateTime.html#g-date-time-new" title="g_date_time_new ()"><code class="function">g_date_time_new()</code></a> with the time
 zone returned by <a class="link" href="glib-GTimeZone.html#g-time-zone-new-utc" title="g_time_zone_new_utc ()"><code class="function">g_time_zone_new_utc()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.18.6"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.18.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1015,7 +1009,7 @@ zone returned by <a class="link" href="glib-GTimeZone.html#g-time-zone-new-utc" 
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.18.7"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.18.7"></a><h4>Returns</h4>
 <p> a <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
 </div>
@@ -1030,7 +1024,7 @@ g_date_time_add (<em class="parameter"><code><a class="link" href="glib-GDateTim
 <p>Creates a copy of <em class="parameter"><code>datetime</code></em>
  and adds the specified timespan to the copy.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.19.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.19.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1052,7 +1046,7 @@ g_date_time_add (<em class="parameter"><code><a class="link" href="glib-GDateTim
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.19.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.19.6"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a> which should be freed with
 <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>.</p>
 <p></p>
@@ -1069,7 +1063,7 @@ g_date_time_add_years (<em class="parameter"><code><a class="link" href="glib-GD
  and adds the specified number of years to the
 copy. Add negative values to subtract years.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.20.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.20.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1091,7 +1085,7 @@ copy. Add negative values to subtract years.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.20.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.20.6"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a> which should be freed with
 <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>.</p>
 <p></p>
@@ -1108,7 +1102,7 @@ g_date_time_add_months (<em class="parameter"><code><a class="link" href="glib-G
  and adds the specified number of months to the
 copy. Add negative values to subtract months.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.21.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.21.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1130,7 +1124,7 @@ copy. Add negative values to subtract months.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.21.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.21.6"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a> which should be freed with
 <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>.</p>
 <p></p>
@@ -1147,7 +1141,7 @@ g_date_time_add_weeks (<em class="parameter"><code><a class="link" href="glib-GD
  and adds the specified number of weeks to the
 copy. Add negative values to subtract weeks.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.22.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.22.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1169,7 +1163,7 @@ copy. Add negative values to subtract weeks.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.22.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.22.6"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a> which should be freed with
 <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>.</p>
 <p></p>
@@ -1186,7 +1180,7 @@ g_date_time_add_days (<em class="parameter"><code><a class="link" href="glib-GDa
  and adds the specified number of days to the
 copy. Add negative values to subtract days.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.23.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.23.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1208,7 +1202,7 @@ copy. Add negative values to subtract days.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.23.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.23.6"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a> which should be freed with
 <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>.</p>
 <p></p>
@@ -1225,7 +1219,7 @@ g_date_time_add_hours (<em class="parameter"><code><a class="link" href="glib-GD
  and adds the specified number of hours.
 Add negative values to subtract hours.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.24.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.24.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1247,7 +1241,7 @@ Add negative values to subtract hours.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.24.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.24.6"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a> which should be freed with
 <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>.</p>
 <p></p>
@@ -1264,7 +1258,7 @@ g_date_time_add_minutes (<em class="parameter"><code><a class="link" href="glib-
  adding the specified number of minutes.
 Add negative values to subtract minutes.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.25.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.25.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1286,7 +1280,7 @@ Add negative values to subtract minutes.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.25.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.25.6"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a> which should be freed with
 <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>.</p>
 <p></p>
@@ -1303,7 +1297,7 @@ g_date_time_add_seconds (<em class="parameter"><code><a class="link" href="glib-
  and adds the specified number of seconds.
 Add negative values to subtract seconds.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.26.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.26.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1325,7 +1319,7 @@ Add negative values to subtract seconds.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.26.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.26.6"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a> which should be freed with
 <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>.</p>
 <p></p>
@@ -1347,7 +1341,7 @@ g_date_time_add_full (<em class="parameter"><code><a class="link" href="glib-GDa
 time in <em class="parameter"><code>datetime</code></em>
 . Add negative values to subtract.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.27.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.27.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1394,7 +1388,7 @@ time in <em class="parameter"><code>datetime</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.27.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.27.6"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a> that should be freed with
 <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>.</p>
 <p></p>
@@ -1410,7 +1404,7 @@ g_date_time_compare (<em class="parameter"><code><a class="link" href="glib-Basi
 <p>A comparison function for <a href="glib-GDateTime.html#GDateTime"><span class="type">GDateTimes</span></a> that is suitable
 as a <a class="link" href="glib-Doubly-Linked-Lists.html#GCompareFunc" title="GCompareFunc ()"><span class="type">GCompareFunc</span></a>. Both <a href="glib-GDateTime.html#GDateTime"><span class="type">GDateTimes</span></a> must be non-<a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.28.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.28.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1432,7 +1426,7 @@ as a <a class="link" href="glib-Doubly-Linked-Lists.html#GCompareFunc" title="GC
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.28.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.28.6"></a><h4>Returns</h4>
 <p> -1, 0 or 1 if <em class="parameter"><code>dt1</code></em>
 is less than, equal to or greater
 than <em class="parameter"><code>dt2</code></em>
@@ -1455,7 +1449,7 @@ g_date_time_difference (<em class="parameter"><code><a class="link" href="glib-G
  (ie:
 positive if the first parameter is larger).</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.29.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.29.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1477,7 +1471,7 @@ positive if the first parameter is larger).</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.29.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.29.6"></a><h4>Returns</h4>
 <p> the difference between the two <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>, as a time
 span expressed in microseconds.</p>
 <p></p>
@@ -1492,7 +1486,7 @@ g_date_time_hash (<em class="parameter"><code><a class="link" href="glib-Basic-T
 <p>Hashes <em class="parameter"><code>datetime</code></em>
  into a <a class="link" href="glib-Basic-Types.html#guint" title="guint"><span class="type">guint</span></a>, suitable for use within <a class="link" href="glib-Hash-Tables.html#GHashTable" title="GHashTable"><span class="type">GHashTable</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.30.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.30.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1507,7 +1501,7 @@ g_date_time_hash (<em class="parameter"><code><a class="link" href="glib-Basic-T
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.30.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.30.6"></a><h4>Returns</h4>
 <p> a <a class="link" href="glib-Basic-Types.html#guint" title="guint"><span class="type">guint</span></a> containing the hash</p>
 <p></p>
 </div>
@@ -1525,7 +1519,7 @@ g_date_time_equal (<em class="parameter"><code><a class="link" href="glib-Basic-
 <p>Equal here means that they represent the same moment after converting
 them to the same time zone.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.31.6"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.31.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1547,7 +1541,7 @@ them to the same time zone.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.31.7"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.31.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>dt1</code></em>
 and <em class="parameter"><code>dt2</code></em>
 are equal</p>
@@ -1565,7 +1559,7 @@ g_date_time_get_ymd (<em class="parameter"><code><a class="link" href="glib-GDat
                      <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gint" title="gint"><span class="type">gint</span></a> *day</code></em>);</pre>
 <p>Retrieves the Gregorian day, month, and year of a given <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.32.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.32.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1606,7 +1600,7 @@ g_date_time_get_year (<em class="parameter"><code><a class="link" href="glib-GDa
 <p>Retrieves the year represented by <em class="parameter"><code>datetime</code></em>
  in the Gregorian calendar.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.33.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.33.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1621,7 +1615,7 @@ g_date_time_get_year (<em class="parameter"><code><a class="link" href="glib-GDa
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.33.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.33.6"></a><h4>Returns</h4>
 <p> the year represented by <em class="parameter"><code>datetime</code></em>
 </p>
 <p></p>
@@ -1637,7 +1631,7 @@ g_date_time_get_month (<em class="parameter"><code><a class="link" href="glib-GD
  in the Gregorian
 calendar.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.34.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.34.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1652,7 +1646,7 @@ calendar.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.34.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.34.6"></a><h4>Returns</h4>
 <p> the month represented by <em class="parameter"><code>datetime</code></em>
 </p>
 <p></p>
@@ -1668,7 +1662,7 @@ g_date_time_get_day_of_month (<em class="parameter"><code><a class="link" href="
  in the gregorian
 calendar.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.35.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.35.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1683,7 +1677,7 @@ calendar.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.35.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.35.6"></a><h4>Returns</h4>
 <p> the day of the month</p>
 <p></p>
 </div>
@@ -1721,7 +1715,7 @@ week (Monday to Sunday).</p>
 <p>Note that January 1 0001 in the proleptic Gregorian calendar is a
 Monday, so this function never returns 0.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.36.12"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.36.12"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1736,7 +1730,7 @@ Monday, so this function never returns 0.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.36.13"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.36.13"></a><h4>Returns</h4>
 <p> the ISO 8601 week-numbering year for <em class="parameter"><code>datetime</code></em>
 </p>
 <p></p>
@@ -1763,7 +1757,7 @@ previous year.  Similarly, the final days of a calendar year may be
 considered as being part of the first ISO 8601 week of the next year
 if 4 or more days of that week are contained within the new year.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.37.7"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.37.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1778,7 +1772,7 @@ if 4 or more days of that week are contained within the new year.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.37.8"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.37.8"></a><h4>Returns</h4>
 <p> the ISO 8601 week number for <em class="parameter"><code>datetime</code></em>
 .</p>
 <p></p>
@@ -1794,7 +1788,7 @@ g_date_time_get_day_of_week (<em class="parameter"><code><a class="link" href="g
  falls (1 is
 Monday, 2 is Tuesday... 7 is Sunday).</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.38.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.38.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1809,7 +1803,7 @@ Monday, 2 is Tuesday... 7 is Sunday).</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.38.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.38.6"></a><h4>Returns</h4>
 <p> the day of the week</p>
 <p></p>
 </div>
@@ -1824,7 +1818,7 @@ g_date_time_get_day_of_year (<em class="parameter"><code><a class="link" href="g
  in the Gregorian
 calendar.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.39.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.39.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1839,7 +1833,7 @@ calendar.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.39.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.39.6"></a><h4>Returns</h4>
 <p> the day of the year</p>
 <p></p>
 </div>
@@ -1853,7 +1847,7 @@ g_date_time_get_hour (<em class="parameter"><code><a class="link" href="glib-GDa
 <p>Retrieves the hour of the day represented by <em class="parameter"><code>datetime</code></em>
 </p>
 <div class="refsect3">
-<a name="id-1.5.11.8.40.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.40.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1868,7 +1862,7 @@ g_date_time_get_hour (<em class="parameter"><code><a class="link" href="glib-GDa
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.40.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.40.6"></a><h4>Returns</h4>
 <p> the hour of the day</p>
 <p></p>
 </div>
@@ -1882,7 +1876,7 @@ g_date_time_get_minute (<em class="parameter"><code><a class="link" href="glib-G
 <p>Retrieves the minute of the hour represented by <em class="parameter"><code>datetime</code></em>
 </p>
 <div class="refsect3">
-<a name="id-1.5.11.8.41.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.41.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1897,7 +1891,7 @@ g_date_time_get_minute (<em class="parameter"><code><a class="link" href="glib-G
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.41.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.41.6"></a><h4>Returns</h4>
 <p> the minute of the hour</p>
 <p></p>
 </div>
@@ -1911,7 +1905,7 @@ g_date_time_get_second (<em class="parameter"><code><a class="link" href="glib-G
 <p>Retrieves the second of the minute represented by <em class="parameter"><code>datetime</code></em>
 </p>
 <div class="refsect3">
-<a name="id-1.5.11.8.42.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.42.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1926,7 +1920,7 @@ g_date_time_get_second (<em class="parameter"><code><a class="link" href="glib-G
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.42.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.42.6"></a><h4>Returns</h4>
 <p> the second represented by <em class="parameter"><code>datetime</code></em>
 </p>
 <p></p>
@@ -1941,7 +1935,7 @@ g_date_time_get_microsecond (<em class="parameter"><code><a class="link" href="g
 <p>Retrieves the microsecond of the date represented by <em class="parameter"><code>datetime</code></em>
 </p>
 <div class="refsect3">
-<a name="id-1.5.11.8.43.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.43.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1956,7 +1950,7 @@ g_date_time_get_microsecond (<em class="parameter"><code><a class="link" href="g
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.43.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.43.6"></a><h4>Returns</h4>
 <p> the microsecond of the second</p>
 <p></p>
 </div>
@@ -1970,7 +1964,7 @@ g_date_time_get_seconds (<em class="parameter"><code><a class="link" href="glib-
 <p>Retrieves the number of seconds since the start of the last minute,
 including the fractional part.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.44.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.44.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1985,7 +1979,7 @@ including the fractional part.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.44.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.44.6"></a><h4>Returns</h4>
 <p> the number of seconds</p>
 <p></p>
 </div>
@@ -2003,7 +1997,7 @@ nearest second.</p>
 00:00:00 UTC, regardless of the time zone associated with <em class="parameter"><code>datetime</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.45.6"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.45.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2018,7 +2012,7 @@ nearest second.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.45.7"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.45.7"></a><h4>Returns</h4>
 <p> the Unix time corresponding to <em class="parameter"><code>datetime</code></em>
 </p>
 <p></p>
@@ -2045,7 +2039,7 @@ systems, this function returns <a class="link" href="glib-Standard-Macros.html#F
 out of range.</p>
 <p>On systems where 'long' is 64bit, this function never fails.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.46.8"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.46.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2067,7 +2061,7 @@ out of range.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.46.9"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.46.9"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if successful, else <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a></p>
 <p></p>
 </div>
@@ -2087,7 +2081,7 @@ zones west of GMT, positive numbers for east).</p>
 <p>If <em class="parameter"><code>datetime</code></em>
  represents UTC time, then the offset is always zero.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.47.7"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.47.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2102,7 +2096,7 @@ zones west of GMT, positive numbers for east).</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.47.8"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.47.8"></a><h4>Returns</h4>
 <p> the number of microseconds that should be added to UTC to
 get the local time</p>
 <p></p>
@@ -2121,7 +2115,7 @@ the time zone of <em class="parameter"><code>datetime</code></em>
 months and "EDT" during the summer months when daylight savings
 time is in effect.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.48.6"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.48.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2136,7 +2130,7 @@ time is in effect.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.48.7"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.48.7"></a><h4>Returns</h4>
 <p> the time zone abbreviation. The returned
 string is owned by the <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a> and it should not be
 modified or freed. </p>
@@ -2153,7 +2147,7 @@ g_date_time_is_daylight_savings (<em class="parameter"><code><a class="link" hre
 the time zone of <em class="parameter"><code>datetime</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.49.5"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.49.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2168,7 +2162,7 @@ the time zone of <em class="parameter"><code>datetime</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.49.6"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.49.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if daylight savings time is in effect</p>
 <p></p>
 </div>
@@ -2190,7 +2184,7 @@ Greenwich will fail (due to the year 0 being out of range).</p>
 <p>You should release the return value by calling <a class="link" href="glib-GDateTime.html#g-date-time-unref" title="g_date_time_unref ()"><code class="function">g_date_time_unref()</code></a>
 when you are done with it.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.50.7"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.50.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2212,7 +2206,7 @@ when you are done with it.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.50.8"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.50.8"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
 </div>
@@ -2229,7 +2223,7 @@ g_date_time_to_local (<em class="parameter"><code><a class="link" href="glib-GDa
 <p>This call is equivalent to calling <a class="link" href="glib-GDateTime.html#g-date-time-to-timezone" title="g_date_time_to_timezone ()"><code class="function">g_date_time_to_timezone()</code></a> with the
 time zone returned by <a class="link" href="glib-GTimeZone.html#g-time-zone-new-local" title="g_time_zone_new_local ()"><code class="function">g_time_zone_new_local()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.51.6"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.51.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2244,7 +2238,7 @@ time zone returned by <a class="link" href="glib-GTimeZone.html#g-time-zone-new-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.51.7"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.51.7"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a></p>
 <p></p>
 </div>
@@ -2261,7 +2255,7 @@ g_date_time_to_utc (<em class="parameter"><code><a class="link" href="glib-GDate
 <p>This call is equivalent to calling <a class="link" href="glib-GDateTime.html#g-date-time-to-timezone" title="g_date_time_to_timezone ()"><code class="function">g_date_time_to_timezone()</code></a> with the
 time zone returned by <a class="link" href="glib-GTimeZone.html#g-time-zone-new-utc" title="g_time_zone_new_utc ()"><code class="function">g_time_zone_new_utc()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.11.8.52.6"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.52.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2276,7 +2270,7 @@ time zone returned by <a class="link" href="glib-GTimeZone.html#g-time-zone-new-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.52.7"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.52.7"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-GDateTime.html#GDateTime" title="GDateTime"><span class="type">GDateTime</span></a></p>
 <p></p>
 </div>
@@ -2374,7 +2368,7 @@ for the specifier.</p></li>
 for the specifier.</p></li>
 </ul></div>
 <div class="refsect3">
-<a name="id-1.5.11.8.53.11"></a><h4>Parameters</h4>
+<a name="id-1.5.11.7.53.11"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2397,7 +2391,7 @@ for the specifier.</p></li>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.11.8.53.12"></a><h4>Returns</h4>
+<a name="id-1.5.11.7.53.12"></a><h4>Returns</h4>
 <p> a newly allocated string formatted to the requested format
 or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> in the case that there was an error. The string
 should be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>.</p>

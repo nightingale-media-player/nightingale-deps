@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts"></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="ch33.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -34,10 +34,10 @@
 2
 3
 4</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">proxy </span><span class="symbol">=</span><span class="normal"> </span><span class="function">dbus_g_proxy_new_for_name</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">system_bus_connection</span><span class="symbol">,</span>
-<span class="normal">                                   </span><span class="string">"org.freedesktop.Accounts"</span><span class="symbol">,</span>
-<span class="normal">                                   </span><span class="string">"/org/freedesktop/Accounts"</span><span class="symbol">,</span>
-<span class="normal">                                   </span><span class="string">"org.freedesktop.Accounts"</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">proxy <span class="gtkdoc opt">=</span> <span class="function">dbus_g_proxy_new_for_name</span> <span class="gtkdoc opt">(</span>system_bus_connection<span class="gtkdoc opt">,</span>
+                                   <span class="string">&quot;org.freedesktop.Accounts&quot;</span><span class="gtkdoc opt">,</span>
+                                   <span class="string">&quot;/org/freedesktop/Accounts&quot;</span><span class="gtkdoc opt">,</span>
+                                   <span class="string">&quot;org.freedesktop.Accounts&quot;</span><span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -63,15 +63,15 @@
 7
 8
 9</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">error </span><span class="symbol">=</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
-<span class="normal">proxy </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GDBusProxy.html#g-dbus-proxy-new-for-bus-sync">g_dbus_proxy_new_for_bus_sync</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">G_BUS_TYPE_SYSTEM</span><span class="symbol">,</span>
-<span class="normal">                                       G_DBUS_PROXY_FLAGS_NONE</span><span class="symbol">,</span>
-<span class="normal">                                       <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> </span><span class="comment">/* GDBusInterfaceInfo */</span>
-<span class="normal">                                       </span><span class="string">"org.freedesktop.Accounts"</span><span class="symbol">,</span>
-<span class="normal">                                       </span><span class="string">"/org/freedesktop/Accounts"</span><span class="symbol">,</span>
-<span class="normal">                                       </span><span class="string">"org.freedesktop.Accounts"</span><span class="symbol">,</span>
-<span class="normal">                                       <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> </span><span class="comment">/* GCancellable */</span>
-<span class="normal">                                       </span><span class="symbol">&amp;</span><span class="normal">error</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">error <span class="gtkdoc opt">=</span> NULL<span class="gtkdoc opt">;</span>
+proxy <span class="gtkdoc opt">=</span> <span class="function"><a href="GDBusProxy.html#g-dbus-proxy-new-for-bus-sync">g_dbus_proxy_new_for_bus_sync</a></span> <span class="gtkdoc opt">(</span>G_BUS_TYPE_SYSTEM<span class="gtkdoc opt">,</span>
+                                       G_DBUS_PROXY_FLAGS_NONE<span class="gtkdoc opt">,</span>
+                                       NULL<span class="gtkdoc opt">,</span> <span class="comment">/* GDBusInterfaceInfo */</span>
+                                       <span class="string">&quot;org.freedesktop.Accounts&quot;</span><span class="gtkdoc opt">,</span>
+                                       <span class="string">&quot;/org/freedesktop/Accounts&quot;</span><span class="gtkdoc opt">,</span>
+                                       <span class="string">&quot;org.freedesktop.Accounts&quot;</span><span class="gtkdoc opt">,</span>
+                                       NULL<span class="gtkdoc opt">,</span> <span class="comment">/* GCancellable */</span>
+                                       <span class="gtkdoc opt">&amp;</span>error<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>

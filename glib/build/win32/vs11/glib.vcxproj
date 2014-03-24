@@ -393,6 +393,7 @@
     <ClCompile Include="..\..\..\glib\gthreadpool.c" />
     <ClCompile Include="..\..\..\glib\gtimer.c" />
     <ClCompile Include="..\..\..\glib\gtimezone.c" />
+    <ClCompile Include="..\..\..\glib\gtranslit.c" />
     <ClCompile Include="..\..\..\glib\gtrashstack.c" />
     <ClCompile Include="..\..\..\glib\gtree.c" />
     <ClCompile Include="..\..\..\glib\guniprop.c" />

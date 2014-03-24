@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts"></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="howto-gobject.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -109,38 +109,38 @@ maman_bar_init (MamanBar *self)
 30
 31
 32</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">enum</span><span class="normal"> </span><span class="cbracket">{</span>
-<span class="normal">  PROP_0</span><span class="symbol">,</span>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">enum</span> <span class="gtkdoc opt">{</span>
+  PROP_0<span class="gtkdoc opt">,</span>
 
-<span class="normal">  PROP_MAMAN</span><span class="symbol">,</span>
+  PROP_MAMAN<span class="gtkdoc opt">,</span>
 
-<span class="normal">  N_PROPERTIES</span>
-<span class="cbracket">}</span><span class="symbol">;</span>
+  N_PROPERTIES
+<span class="gtkdoc opt">};</span>
 
 <span class="comment">/* Keep a pointer to the properties definition */</span>
-<span class="keyword">static</span><span class="normal"> </span><span class="usertype">GParamSpec</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">obj_properties</span><span class="symbol">[</span><span class="normal">N_PROPERTIES</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">=</span><span class="normal"> </span><span class="cbracket">{</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> </span><span class="cbracket">}</span><span class="symbol">;</span>
+<span class="gtkdoc kwb">static</span> GParamSpec <span class="gtkdoc opt">*</span>obj_properties<span class="gtkdoc opt">[</span>N_PROPERTIES<span class="gtkdoc opt">] = {</span> NULL<span class="gtkdoc opt">, };</span>
 
-<span class="keyword">static</span><span class="normal"> </span><span class="type">void</span>
-<span class="function">bar_class_init</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">MamanBarClass</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">klass</span><span class="symbol">)</span>
-<span class="cbracket">{</span>
-<span class="normal">  </span><span class="usertype">GObjectClass</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">gobject_class </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="gobject-The-Base-Object-Type.html#G-OBJECT-CLASS:CAPS">G_OBJECT_CLASS</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">klass</span><span class="symbol">);</span>
+<span class="gtkdoc kwb">static void</span>
+<span class="function">bar_class_init</span> <span class="gtkdoc opt">(</span>MamanBarClass <span class="gtkdoc opt">*</span>klass<span class="gtkdoc opt">)</span>
+<span class="gtkdoc opt">{</span>
+  GObjectClass <span class="gtkdoc opt">*</span>gobject_class <span class="gtkdoc opt">=</span> <span class="function"><a href="gobject-The-Base-Object-Type.html#G-OBJECT-CLASS:CAPS">G_OBJECT_CLASS</a></span> <span class="gtkdoc opt">(</span>klass<span class="gtkdoc opt">);</span>
 
-<span class="normal">  gobject_class</span><span class="symbol">-&gt;</span><span class="normal">set_property </span><span class="symbol">=</span><span class="normal"> bar_set_property</span><span class="symbol">;</span>
-<span class="normal">  gobject_class</span><span class="symbol">-&gt;</span><span class="normal">get_property </span><span class="symbol">=</span><span class="normal"> bar_get_property</span><span class="symbol">;</span>
+  gobject_class<span class="gtkdoc opt">-&gt;</span>set_property <span class="gtkdoc opt">=</span> bar_set_property<span class="gtkdoc opt">;</span>
+  gobject_class<span class="gtkdoc opt">-&gt;</span>get_property <span class="gtkdoc opt">=</span> bar_get_property<span class="gtkdoc opt">;</span>
 
-<span class="normal">  obj_properties</span><span class="symbol">[</span><span class="normal">PROP_MAMAN</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">=</span>
-<span class="normal">    </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-param-spec-string">g_param_spec_string</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"maman"</span><span class="symbol">,</span>
-<span class="normal">                         </span><span class="string">"Maman construct prop"</span><span class="symbol">,</span>
-<span class="normal">                         </span><span class="string">"Set maman's name"</span><span class="symbol">,</span>
-<span class="normal">                         </span><span class="string">"no-name-set"</span><span class="normal"> </span><span class="comment">/* default value */</span><span class="symbol">,</span>
-<span class="normal">                         G_PARAM_CONSTRUCT_ONLY </span><span class="symbol">|</span>
-<span class="normal">                         <a href="gobject-GParamSpec.html#G-PARAM-READWRITE:CAPS">G_PARAM_READWRITE</a> </span><span class="symbol">|</span>
-<span class="normal">                         <a href="gobject-GParamSpec.html#G-PARAM-STATIC-STRINGS:CAPS">G_PARAM_STATIC_STRINGS</a></span><span class="symbol">);</span>
+  obj_properties<span class="gtkdoc opt">[</span>PROP_MAMAN<span class="gtkdoc opt">] =</span>
+    <span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-param-spec-string">g_param_spec_string</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;maman&quot;</span><span class="gtkdoc opt">,</span>
+                         <span class="string">&quot;Maman construct prop&quot;</span><span class="gtkdoc opt">,</span>
+                         <span class="string">&quot;Set maman's name&quot;</span><span class="gtkdoc opt">,</span>
+                         <span class="string">&quot;no-name-set&quot;</span> <span class="comment">/* default value */</span><span class="gtkdoc opt">,</span>
+                         G_PARAM_CONSTRUCT_ONLY <span class="gtkdoc opt">|</span>
+                         G_PARAM_READWRITE <span class="gtkdoc opt">|</span>
+                         G_PARAM_STATIC_STRINGS<span class="gtkdoc opt">);</span>
 
-<span class="normal">  </span><span class="function"><a href="gobject-The-Base-Object-Type.html#g-object-class-install-properties">g_object_class_install_properties</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">gobject_class</span><span class="symbol">,</span>
-<span class="normal">                                     N_PROPERTIES</span><span class="symbol">,</span>
-<span class="normal">                                     obj_properties</span><span class="symbol">);</span>
-<span class="cbracket">}</span></pre></td>
+  <span class="function"><a href="gobject-The-Base-Object-Type.html#g-object-class-install-properties">g_object_class_install_properties</a></span> <span class="gtkdoc opt">(</span>gobject_class<span class="gtkdoc opt">,</span>
+                                     N_PROPERTIES<span class="gtkdoc opt">,</span>
+                                     obj_properties<span class="gtkdoc opt">);</span>
+<span class="gtkdoc opt">}</span></pre></td>
       </tr>
     </tbody>
   </table>

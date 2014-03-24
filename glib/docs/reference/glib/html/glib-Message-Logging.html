@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Message-Logging.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Message-Logging.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Message-Logging.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-core.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -178,11 +177,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Message-Logging.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Message-Logging.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -212,7 +206,7 @@ it in any public header files.</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">INCLUDES </span><span class="symbol">=</span><span class="normal"> </span><span class="symbol">-</span><span class="normal">DG_LOG_DOMAIN</span><span class="symbol">=\</span><span class="string">"Gtk</span><span class="specialchar">\"</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">INCLUDES <span class="gtkdoc opt">= -</span>DG_LOG_DOMAIN<span class="gtkdoc opt">=</span><span class="gtkdoc esc">\&quot;</span>Gtk<span class="gtkdoc esc">\&quot;</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -249,7 +243,7 @@ custom log handler functions behave similarly, so that logging calls in user
 code do not need modifying to add a new-line character to the message if the
 log handler is changed.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.5.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.5.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -297,7 +291,7 @@ function is called to terminate the program.</p>
 character will automatically be appended to @..., and need not be entered
 manually.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.6.7"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.6.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -345,7 +339,7 @@ function is called to terminate the program.</p>
 character will automatically be appended to @..., and need not be entered
 manually.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.7.7"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.7.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -386,7 +380,7 @@ manually.</p>
 character will automatically be appended to @..., and need not be entered
 manually.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.8.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.8.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -414,7 +408,7 @@ environment variable (see
 a newline character will automatically be appended to @..., and
 need not be entered manually.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.9.7"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.9.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -447,7 +441,7 @@ setting the <code class="literal">G_DEBUG</code> environment variable (see
 character will automatically be appended to @..., and need not be entered
 manually.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.10.7"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.10.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -477,7 +471,7 @@ an assertion failure.</p>
 character will automatically be appended to @..., and need not be entered
 manually.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.11.7"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.11.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -504,7 +498,7 @@ manually.</p>
 <p>Such messages are suppressed by the <a class="link" href="glib-Message-Logging.html#g-log-default-handler" title="g_log_default_handler ()"><code class="function">g_log_default_handler()</code></a> unless
 the G_MESSAGES_DEBUG environment variable is set appropriately.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.12.7"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.12.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -532,7 +526,7 @@ manually.</p>
 <p>Such messages are suppressed by the <a class="link" href="glib-Message-Logging.html#g-log-default-handler" title="g_log_default_handler ()"><code class="function">g_log_default_handler()</code></a> unless
 the G_MESSAGES_DEBUG environment variable is set appropriately.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.13.7"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.13.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -573,8 +567,8 @@ in the default domain:</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Message-Logging.html#g-log-set-handler">g_log_set_handler</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> G_LOG_LEVEL_WARNING </span><span class="symbol">|</span><span class="normal"> G_LOG_FLAG_FATAL</span>
-<span class="normal">                   </span><span class="symbol">|</span><span class="normal"> G_LOG_FLAG_RECURSION</span><span class="symbol">,</span><span class="normal"> my_log_handler</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Message-Logging.html#g-log-set-handler">g_log_set_handler</a></span> <span class="gtkdoc opt">(</span>NULL<span class="gtkdoc opt">,</span> G_LOG_LEVEL_WARNING <span class="gtkdoc opt">|</span> G_LOG_FLAG_FATAL
+                   <span class="gtkdoc opt">|</span> G_LOG_FLAG_RECURSION<span class="gtkdoc opt">,</span> my_log_handler<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -588,8 +582,8 @@ in the default domain:</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Message-Logging.html#g-log-set-handler">g_log_set_handler</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Gtk"</span><span class="symbol">,</span><span class="normal"> G_LOG_LEVEL_CRITICAL </span><span class="symbol">|</span><span class="normal"> G_LOG_FLAG_FATAL</span>
-<span class="normal">                   </span><span class="symbol">|</span><span class="normal"> G_LOG_FLAG_RECURSION</span><span class="symbol">,</span><span class="normal"> my_log_handler</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Message-Logging.html#g-log-set-handler">g_log_set_handler</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;Gtk&quot;</span><span class="gtkdoc opt">,</span> G_LOG_LEVEL_CRITICAL <span class="gtkdoc opt">|</span> G_LOG_FLAG_FATAL
+                   <span class="gtkdoc opt">|</span> G_LOG_FLAG_RECURSION<span class="gtkdoc opt">,</span> my_log_handler<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -603,8 +597,8 @@ in the default domain:</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Message-Logging.html#g-log-set-handler">g_log_set_handler</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"GLib"</span><span class="symbol">,</span><span class="normal"> G_LOG_LEVEL_MASK </span><span class="symbol">|</span><span class="normal"> G_LOG_FLAG_FATAL</span>
-<span class="normal">                   </span><span class="symbol">|</span><span class="normal"> G_LOG_FLAG_RECURSION</span><span class="symbol">,</span><span class="normal"> my_log_handler</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Message-Logging.html#g-log-set-handler">g_log_set_handler</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;GLib&quot;</span><span class="gtkdoc opt">,</span> G_LOG_LEVEL_MASK <span class="gtkdoc opt">|</span> G_LOG_FLAG_FATAL
+                   <span class="gtkdoc opt">|</span> G_LOG_FLAG_RECURSION<span class="gtkdoc opt">,</span> my_log_handler<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -612,7 +606,7 @@ in the default domain:</p>
 
 <p></p>
 <div class="refsect3">
-<a name="id-1.4.12.8.14.15"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.14.15"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -648,7 +642,7 @@ the log levels with the <a class="link" href="glib-Message-Logging.html#G-LOG-FL
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.14.16"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.14.16"></a><h4>Returns</h4>
 <p> the id of the new handler</p>
 <p></p>
 </div>
@@ -661,7 +655,7 @@ g_log_remove_handler (<em class="parameter"><code>const <a class="link" href="gl
                       <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#guint" title="guint"><span class="type">guint</span></a> handler_id</code></em>);</pre>
 <p>Removes the log handler.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.15.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.15.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -697,7 +691,7 @@ You can only set the levels defined by GLib to be fatal.
 the <code class="literal">G_DEBUG</code> environment variable (see
 <a class="ulink" href="glib-running.html" target="_top">Running GLib Applications</a>).</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.16.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.16.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -713,7 +707,7 @@ of error which is to be fatal</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.16.7"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.16.7"></a><h4>Returns</h4>
 <p> the old fatal mask</p>
 <p></p>
 </div>
@@ -727,7 +721,7 @@ g_log_set_fatal_mask (<em class="parameter"><code>const <a class="link" href="gl
 <p>Sets the log levels which are fatal in the given domain.
 <a class="link" href="glib-Message-Logging.html#G-LOG-LEVEL-ERROR:CAPS"><code class="literal">G_LOG_LEVEL_ERROR</code></a> is always fatal.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.17.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.17.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -749,7 +743,7 @@ g_log_set_fatal_mask (<em class="parameter"><code>const <a class="link" href="gl
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.17.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.17.6"></a><h4>Returns</h4>
 <p> the old fatal mask for the log domain</p>
 <p></p>
 </div>
@@ -784,7 +778,7 @@ these messages are not printed.</p></li>
 <a class="link" href="glib-Message-Logging.html#G-LOG-LEVEL-WARNING:CAPS"><code class="literal">G_LOG_LEVEL_WARNING</code></a> and <a class="link" href="glib-Message-Logging.html#G-LOG-LEVEL-MESSAGE:CAPS"><code class="literal">G_LOG_LEVEL_MESSAGE</code></a>. stdout is used for
 the rest.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.18.8"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.18.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -827,7 +821,7 @@ log handler has been set for the particular log domain
 and log level combination. By default, GLib uses
 <a class="link" href="glib-Message-Logging.html#g-log-default-handler" title="g_log_default_handler ()"><code class="function">g_log_default_handler()</code></a> as default log handler.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.19.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.19.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -849,7 +843,7 @@ and log level combination. By default, GLib uses
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.19.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.19.6"></a><h4>Returns</h4>
 <p> the previous default log handler</p>
 <p></p>
 </div>
@@ -864,7 +858,7 @@ and log level combination. By default, GLib uses
 <p>It is possible to change how GLib treats messages of the various
 levels using <a class="link" href="glib-Message-Logging.html#g-log-set-handler" title="g_log_set_handler ()"><code class="function">g_log_set_handler()</code></a> and <a class="link" href="glib-Message-Logging.html#g-log-set-fatal-mask" title="g_log_set_fatal_mask ()"><code class="function">g_log_set_fatal_mask()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.12.9.2.5"></a><h4>Members</h4>
+<a name="id-1.4.12.8.2.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">

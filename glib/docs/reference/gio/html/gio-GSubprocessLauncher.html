@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#gio-GSubprocessLauncher.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#gio-GSubprocessLauncher.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gio-GSubprocessLauncher.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="subprocesses.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -192,11 +191,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="gio-GSubprocessLauncher.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="gio-GSubprocessLauncher.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;gio/gio.h&gt;
 </pre>
@@ -225,7 +219,7 @@ environment of processes launched from this launcher.</p>
 means that it can be an arbitrary byte string.  On Windows, it will
 be UTF-8.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.2.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.2.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -247,7 +241,7 @@ be UTF-8.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.2.7"></a><h4>Returns</h4>
+<a name="id-1.4.12.3.7.2.7"></a><h4>Returns</h4>
 <p> the value of the environment variable, <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if unset</p>
 <p></p>
 </div>
@@ -263,7 +257,7 @@ g_subprocess_launcher_new (<em class="parameter"><code><a class="link" href="GSu
 environment of the calling process is made at the time of this call
 and will be used as the environment that the process is launched in.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.3.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -299,7 +293,7 @@ given.</p>
  to disable the functionality.</p>
 <p>Child setup functions are only available on UNIX.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.4.9"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.4.9"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -345,7 +339,7 @@ with.</p>
 <p>By default processes are launched with the current working directory
 of the launching process at the time of launch.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.5.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.5.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -385,7 +379,7 @@ the process 'environ' and using the functions <a href="../glib/glib-Miscellaneou
 encoding.  On UNIX, this means that they can be arbitrary byte
 strings.  On Windows, they should be in UTF-8.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.6.8"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.6.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -424,7 +418,7 @@ handle a particular stdio stream (eg: specifying both
 function like <a class="link" href="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-stdin-file-path" title="g_subprocess_launcher_set_stdin_file_path ()"><code class="function">g_subprocess_launcher_set_stdin_file_path()</code></a> or
 <a class="link" href="gio-GSubprocessLauncher.html#g-subprocess-launcher-take-stdout-fd" title="g_subprocess_launcher_take_stdout_fd ()"><code class="function">g_subprocess_launcher_take_stdout_fd()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.7.8"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.7.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -465,7 +459,7 @@ would be the case if using '2&gt;' at the shell.</p>
 if the launcher flags contain any flags directing stderr elsewhere.</p>
 <p>This feature is only available on UNIX.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.8.10"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.8.10"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -503,7 +497,7 @@ g_subprocess_launcher_set_stdin_file_path
 the launcher flags contain any flags directing stdin elsewhere.</p>
 <p>This feature is only available on UNIX.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.9.9"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.9.9"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -542,7 +536,7 @@ would be the case if using '&gt;' at the shell.</p>
 if the launcher flags contain any flags directing stdout elsewhere.</p>
 <p>This feature is only available on UNIX.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.10.9"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.10.9"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -580,7 +574,7 @@ processes launched from this launcher.</p>
 encoding. On UNIX, this means that they can be arbitrary byte
 strings. On Windows, they should be in UTF-8.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.11.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.11.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -624,7 +618,7 @@ g_subprocess_launcher_spawn (<em class="parameter"><code><a class="link" href="g
 <p>A convenience helper for creating a <a class="link" href="GSubprocess.html" title="GSubprocess"><span class="type">GSubprocess</span></a> given a provided
 varargs list of arguments.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.12.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.12.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -656,7 +650,7 @@ varargs list of arguments.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.12.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.3.7.12.6"></a><h4>Returns</h4>
 <p> A new <a class="link" href="GSubprocess.html" title="GSubprocess"><span class="type">GSubprocess</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error (and <em class="parameter"><code>error</code></em>
 will be set). </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -673,7 +667,7 @@ g_subprocess_launcher_spawnv (<em class="parameter"><code><a class="link" href="
 <p>A convenience helper for creating a <a class="link" href="GSubprocess.html" title="GSubprocess"><span class="type">GSubprocess</span></a> given a provided
 array of arguments.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.13.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.13.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -700,7 +694,7 @@ array of arguments.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.13.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.3.7.13.6"></a><h4>Returns</h4>
 <p> A new <a class="link" href="GSubprocess.html" title="GSubprocess"><span class="type">GSubprocess</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error (and <em class="parameter"><code>error</code></em>
 will be set). </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -726,7 +720,7 @@ descriptor in the child.</p>
 --passphrase-fd providing a file descriptor number where it expects
 the passphrase to be written.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.14.7"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.14.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -773,7 +767,7 @@ spawned process.</p>
 if the launcher flags contain any flags directing stderr elsewhere.</p>
 <p>This feature is only available on UNIX.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.15.10"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.15.10"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -818,7 +812,7 @@ O_CLOEXEC if that's what you want.</p>
 the launcher flags contain any flags directing stdin elsewhere.</p>
 <p>This feature is only available on UNIX.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.16.10"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.16.10"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -862,7 +856,7 @@ O_CLOEXEC if that's what you want.</p>
 if the launcher flags contain any flags directing stdout elsewhere.</p>
 <p>This feature is only available on UNIX.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.17.10"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.17.10"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -898,7 +892,7 @@ processes launched from this launcher.</p>
 this means that they can be arbitrary byte strings.  On Windows, they
 should be in UTF-8.</p>
 <div class="refsect3">
-<a name="id-1.4.12.3.8.18.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.3.7.18.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">

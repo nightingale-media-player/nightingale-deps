@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Spawning-Processes.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Spawning-Processes.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Spawning-Processes.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -135,11 +134,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Spawning-Processes.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Spawning-Processes.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -166,22 +160,21 @@ function in the parent can have ill effects, and you should be very
 careful when porting software to Windows that uses child setup
 functions.</p>
 <p>However, even on POSIX, you are extremely limited in what you can
-safely do from a <a class="link" href="glib-Spawning-Processes.html#GSpawnChildSetupFunc" title="GSpawnChildSetupFunc ()"><span class="type">GSpawnChildSetupFunc</span></a>, because any mutexes that
-were held by other threads in the parent process at the time of the
-<code class="function">fork()</code> will still be locked in the child process, and they will
-never be unlocked (since the threads that held them don't exist in
-the child). POSIX allows only async-signal-safe functions (see
-&lt;citerefentry&gt;&lt;refentrytitle&gt;signal&lt;/refentrytitle&gt;&lt;manvolnum&gt;7&lt;/manvolnum&gt;&lt;/citerefentry&gt;)
-to be called in the child between <code class="function">fork()</code> and <code class="function">exec()</code>, which
-drastically limits the usefulness of child setup functions.</p>
+safely do from a <a class="link" href="glib-Spawning-Processes.html#GSpawnChildSetupFunc" title="GSpawnChildSetupFunc ()"><span class="type">GSpawnChildSetupFunc</span></a>, because any mutexes that were
+held by other threads in the parent process at the time of the <code class="function">fork()</code>
+will still be locked in the child process, and they will never be
+unlocked (since the threads that held them don't exist in the child).
+POSIX allows only async-signal-safe functions (see signal(7)) to be
+called in the child between <code class="function">fork()</code> and <code class="function">exec()</code>, which drastically limits
+the usefulness of child setup functions.</p>
 <p>In particular, it is not safe to call any function which may
 call <code class="function">malloc()</code>, which includes POSIX functions such as <code class="function">setenv()</code>.
 If you need to set up the child environment differently from
 the parent, you should use <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-get-environ" title="g_get_environ ()"><code class="function">g_get_environ()</code></a>, <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-environ-setenv" title="g_environ_setenv ()"><code class="function">g_environ_setenv()</code></a>,
 and <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-environ-unsetenv" title="g_environ_unsetenv ()"><code class="function">g_environ_unsetenv()</code></a>, and then pass the complete environment
-list to the &lt;literal&gt;g_spawn...&lt;/literal&gt; function.</p>
+list to the <code class="literal">g_spawn...</code> function.</p>
 <div class="refsect3">
-<a name="id-1.5.17.8.2.9"></a><h4>Parameters</h4>
+<a name="id-1.5.17.7.2.9"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -389,7 +382,7 @@ are spawning is a graphical application, too, then you may
 want to use <code class="function">gdk_spawn_on_screen_with_pipes()</code> instead to ensure that
 the spawned program opens its windows on the right screen.</p>
 <div class="refsect3">
-<a name="id-1.5.17.8.3.24"></a><h4>Parameters</h4>
+<a name="id-1.5.17.7.3.24"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -457,7 +450,7 @@ the spawned program opens its windows on the right screen.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.17.8.3.25"></a><h4>Returns</h4>
+<a name="id-1.5.17.7.3.25"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if an error was set</p>
 <p></p>
 </div>
@@ -487,7 +480,7 @@ opens its windows on the right screen.</p>
 process and not its identifier. Process handles and process identifiers
 are different concepts on Windows.</p>
 <div class="refsect3">
-<a name="id-1.5.17.8.4.8"></a><h4>Parameters</h4>
+<a name="id-1.5.17.7.4.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -540,7 +533,7 @@ are different concepts on Windows.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.17.8.4.9"></a><h4>Returns</h4>
+<a name="id-1.5.17.7.4.9"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if error is set</p>
 <p></p>
 </div>
@@ -584,7 +577,7 @@ Note that it is invalid to pass <a class="link" href="glib-Spawning-Processes.ht
 function for full details on the other parameters and details on
 how these functions work on Windows.</p>
 <div class="refsect3">
-<a name="id-1.5.17.8.5.8"></a><h4>Parameters</h4>
+<a name="id-1.5.17.7.5.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -647,7 +640,7 @@ how these functions work on Windows.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.17.8.5.9"></a><h4>Returns</h4>
+<a name="id-1.5.17.7.5.9"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if an error was set</p>
 <p></p>
 </div>
@@ -698,7 +691,7 @@ the available platform via a macro such as <a class="link" href="glib-Standard-M
 to scan or parse the error message string; it may be translated and/or
 change in future versions of GLib.</p>
 <div class="refsect3">
-<a name="id-1.5.17.8.6.12"></a><h4>Parameters</h4>
+<a name="id-1.5.17.7.6.12"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -720,7 +713,7 @@ change in future versions of GLib.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.17.8.6.13"></a><h4>Returns</h4>
+<a name="id-1.5.17.7.6.13"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if child exited successfully, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise (and
 <em class="parameter"><code>error</code></em>
 will be set)</p>
@@ -743,7 +736,7 @@ consider using <a class="link" href="glib-Spawning-Processes.html#g-spawn-async"
 errors are those from <a class="link" href="glib-Shell-related-Utilities.html#g-shell-parse-argv" title="g_shell_parse_argv ()"><code class="function">g_shell_parse_argv()</code></a> and <a class="link" href="glib-Spawning-Processes.html#g-spawn-async" title="g_spawn_async ()"><code class="function">g_spawn_async()</code></a>.</p>
 <p>The same concerns on Windows apply as for <a class="link" href="glib-Spawning-Processes.html#g-spawn-command-line-sync" title="g_spawn_command_line_sync ()"><code class="function">g_spawn_command_line_sync()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.17.8.7.6"></a><h4>Parameters</h4>
+<a name="id-1.5.17.7.7.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -765,7 +758,7 @@ errors are those from <a class="link" href="glib-Shell-related-Utilities.html#g-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.17.8.7.7"></a><h4>Returns</h4>
+<a name="id-1.5.17.7.7.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if error is set</p>
 <p></p>
 </div>
@@ -804,7 +797,7 @@ the backslashes will be eaten, and the space will act as a
 separator. You need to enclose such paths with single quotes, like
 "'c:\program files\app\app.exe' 'e:\folder\argument.txt'".</p>
 <div class="refsect3">
-<a name="id-1.5.17.8.8.7"></a><h4>Parameters</h4>
+<a name="id-1.5.17.7.8.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -841,7 +834,7 @@ separator. You need to enclose such paths with single quotes, like
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.17.8.8.8"></a><h4>Returns</h4>
+<a name="id-1.5.17.7.8.8"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if an error was set</p>
 <p></p>
 </div>
@@ -856,7 +849,7 @@ which must be closed to prevent resource leaking. <a class="link" href="glib-Spa
 is provided for this purpose. It should be used on all platforms, even
 though it doesn't do anything under UNIX.</p>
 <div class="refsect3">
-<a name="id-1.5.17.8.9.5"></a><h4>Parameters</h4>
+<a name="id-1.5.17.7.9.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -878,7 +871,7 @@ though it doesn't do anything under UNIX.</p>
 <a name="GSpawnError"></a><h3>enum GSpawnError</h3>
 <p>Error codes returned by spawning processes.</p>
 <div class="refsect3">
-<a name="id-1.5.17.9.2.4"></a><h4>Members</h4>
+<a name="id-1.5.17.8.2.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -910,21 +903,21 @@ though it doesn't do anything under UNIX.</p>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-ACCES:CAPS"></a>G_SPAWN_ERROR_ACCES</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;EACCES&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">EACCES</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-PERM:CAPS"></a>G_SPAWN_ERROR_PERM</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;EPERM&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">EPERM</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-TOO-BIG:CAPS"></a>G_SPAWN_ERROR_TOO_BIG</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;E2BIG&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">E2BIG</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -938,91 +931,91 @@ though it doesn't do anything under UNIX.</p>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-NOEXEC:CAPS"></a>G_SPAWN_ERROR_NOEXEC</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;ENOEXEC&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">ENOEXEC</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-NAMETOOLONG:CAPS"></a>G_SPAWN_ERROR_NAMETOOLONG</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;ENAMETOOLONG&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">ENAMETOOLONG</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-NOENT:CAPS"></a>G_SPAWN_ERROR_NOENT</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;ENOENT&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">ENOENT</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-NOMEM:CAPS"></a>G_SPAWN_ERROR_NOMEM</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;ENOMEM&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">ENOMEM</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-NOTDIR:CAPS"></a>G_SPAWN_ERROR_NOTDIR</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;ENOTDIR&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">ENOTDIR</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-LOOP:CAPS"></a>G_SPAWN_ERROR_LOOP</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;ELOOP&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">ELOOP</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-TXTBUSY:CAPS"></a>G_SPAWN_ERROR_TXTBUSY</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;ETXTBUSY&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">ETXTBUSY</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-IO:CAPS"></a>G_SPAWN_ERROR_IO</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;EIO&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">EIO</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-NFILE:CAPS"></a>G_SPAWN_ERROR_NFILE</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;ENFILE&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">ENFILE</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-MFILE:CAPS"></a>G_SPAWN_ERROR_MFILE</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;EMFILE&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">EMFILE</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-INVAL:CAPS"></a>G_SPAWN_ERROR_INVAL</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;EINVAL&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">EINVAL</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-ISDIR:CAPS"></a>G_SPAWN_ERROR_ISDIR</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;EISDIR&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">EISDIR</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-LIBBAD:CAPS"></a>G_SPAWN_ERROR_LIBBAD</p></td>
 <td class="enum_member_description">
-<p>execv() returned &lt;literal&gt;ELIBBAD&lt;/literal&gt;</p>
+<p>execv() returned <code class="literal">ELIBBAD</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -1030,7 +1023,7 @@ though it doesn't do anything under UNIX.</p>
 <td class="enum_member_name"><p><a name="G-SPAWN-ERROR-FAILED:CAPS"></a>G_SPAWN_ERROR_FAILED</p></td>
 <td class="enum_member_description">
 <p>Some other fatal failure,
-  &lt;literal&gt;error-&amp;gt;message&lt;/literal&gt; should explain.</p>
+  <code class="literal">error-&gt;message</code> should explain.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -1052,7 +1045,7 @@ error domains.</p>
 <a name="GSpawnFlags"></a><h3>enum GSpawnFlags</h3>
 <p>Flags passed to <a class="link" href="glib-Spawning-Processes.html#g-spawn-sync" title="g_spawn_sync ()"><code class="function">g_spawn_sync()</code></a>, <a class="link" href="glib-Spawning-Processes.html#g-spawn-async" title="g_spawn_async ()"><code class="function">g_spawn_async()</code></a> and <a class="link" href="glib-Spawning-Processes.html#g-spawn-async-with-pipes" title="g_spawn_async_with_pipes ()"><code class="function">g_spawn_async_with_pipes()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.17.9.4.4"></a><h4>Members</h4>
+<a name="id-1.5.17.8.4.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -1070,26 +1063,26 @@ error domains.</p>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-LEAVE-DESCRIPTORS-OPEN:CAPS"></a>G_SPAWN_LEAVE_DESCRIPTORS_OPEN</p></td>
 <td class="enum_member_description">
-<p>the parent's open file descriptors will be
-  inherited by the child; otherwise all descriptors except stdin/stdout/stderr
-  will be closed before calling <code class="function">exec()</code> in the child.</p>
+<p>the parent's open file descriptors will
+    be inherited by the child; otherwise all descriptors except stdin,
+    stdout and stderr will be closed before calling <code class="function">exec()</code> in the child.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-DO-NOT-REAP-CHILD:CAPS"></a>G_SPAWN_DO_NOT_REAP_CHILD</p></td>
 <td class="enum_member_description">
-<p>the child will not be automatically reaped; you
-  must use <a class="link" href="glib-The-Main-Event-Loop.html#g-child-watch-add" title="g_child_watch_add ()"><code class="function">g_child_watch_add()</code></a> yourself (or call <code class="function">waitpid()</code>
-  or handle &lt;literal&gt;SIGCHLD&lt;/literal&gt; yourself), or the child will become a zombie.</p>
+<p>the child will not be automatically reaped;
+    you must use <a class="link" href="glib-The-Main-Event-Loop.html#g-child-watch-add" title="g_child_watch_add ()"><code class="function">g_child_watch_add()</code></a> yourself (or call <code class="function">waitpid()</code> or handle
+    <code class="literal">SIGCHLD</code> yourself), or the child will become a zombie.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-SEARCH-PATH:CAPS"></a>G_SPAWN_SEARCH_PATH</p></td>
 <td class="enum_member_description">
-<p>&lt;literal&gt;argv[0]&lt;/literal&gt; need not be an absolute path,
-  it will be looked for in the user's &lt;envar&gt;PATH&lt;/envar&gt;.</p>
+<p><code class="literal">argv[0]</code> need not be an absolute path, it will be
+    looked for in the user's <code class="literal">PATH</code>.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -1097,7 +1090,7 @@ error domains.</p>
 <td class="enum_member_name"><p><a name="G-SPAWN-STDOUT-TO-DEV-NULL:CAPS"></a>G_SPAWN_STDOUT_TO_DEV_NULL</p></td>
 <td class="enum_member_description">
 <p>the child's standard output will be discarded,
-  instead of going to the same location as the parent's standard output.</p>
+    instead of going to the same location as the parent's standard output.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -1112,36 +1105,34 @@ error domains.</p>
 <td class="enum_member_name"><p><a name="G-SPAWN-CHILD-INHERITS-STDIN:CAPS"></a>G_SPAWN_CHILD_INHERITS_STDIN</p></td>
 <td class="enum_member_description">
 <p>the child will inherit the parent's standard
-  input (by default, the child's standard input is attached to
-  &lt;filename&gt;/dev/null&lt;/filename&gt;).</p>
+    input (by default, the child's standard input is attached to <code class="literal">/dev/null</code>).</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-FILE-AND-ARGV-ZERO:CAPS"></a>G_SPAWN_FILE_AND_ARGV_ZERO</p></td>
 <td class="enum_member_description">
-<p>the first element of &lt;literal&gt;argv&lt;/literal&gt; is
-  the file to execute, while the remaining elements are the actual argument
-  vector to pass to the file. Normally <a class="link" href="glib-Spawning-Processes.html#g-spawn-async-with-pipes" title="g_spawn_async_with_pipes ()"><code class="function">g_spawn_async_with_pipes()</code></a> uses
-  &lt;literal&gt;argv[0]&lt;/literal&gt; as the file to execute, and passes all of
-  &lt;literal&gt;argv&lt;/literal&gt; to the child.</p>
+<p>the first element of <code class="literal">argv</code> is the file to
+    execute, while the remaining elements are the actual argument vector
+    to pass to the file. Normally <a class="link" href="glib-Spawning-Processes.html#g-spawn-async-with-pipes" title="g_spawn_async_with_pipes ()"><code class="function">g_spawn_async_with_pipes()</code></a> uses <code class="literal">argv[0]</code>
+    as the file to execute, and passes all of <code class="literal">argv</code> to the child.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-SEARCH-PATH-FROM-ENVP:CAPS"></a>G_SPAWN_SEARCH_PATH_FROM_ENVP</p></td>
 <td class="enum_member_description">
-<p>if &lt;literal&gt;argv[0]&lt;/literal&gt; is not an abolute path,
-  it will be looked for in the &lt;envar&gt;PATH&lt;/envar&gt; from the passed child 
-  environment. Since: 2.34</p>
+<p>if <code class="literal">argv[0]</code> is not an abolute path,
+    it will be looked for in the <code class="literal">PATH</code> from the passed child environment.
+    Since: 2.34</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-SPAWN-CLOEXEC-PIPES:CAPS"></a>G_SPAWN_CLOEXEC_PIPES</p></td>
 <td class="enum_member_description">
-<p>create all pipes with the O_CLOEXEC flag set.
-  Since: 2.40.</p>
+<p>create all pipes with the <code class="literal">O_CLOEXEC</code> flag set.
+    Since: 2.40</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>

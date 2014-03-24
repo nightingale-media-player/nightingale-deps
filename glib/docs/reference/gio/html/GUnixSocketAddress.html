@@ -12,12 +12,12 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GUnixSocketAddress.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GUnixSocketAddress.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces"> <span class="dim">|</span> 
-                  <a href="#GUnixSocketAddress.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GUnixSocketAddress.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GUnixSocketAddress.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#GUnixSocketAddress.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
                   <a href="#GUnixSocketAddress.properties" class="shortcut">Properties</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -508,12 +508,11 @@ socket bound to a filesystem path. <a class="link" href="GUnixSocketAddress.html
 indicates a socket not bound to any name (eg, a client-side socket,
 or a socket created with <code class="function">socketpair()</code>).</p>
 <p>For abstract sockets, there are two incompatible ways of naming
-them; the man pages suggest using the entire &lt;literal&gt;struct
-sockaddr_un&lt;/literal&gt; as the name, padding the unused parts of the
-<code class="literal">sun_path</code> field with zeroes; this corresponds to
-<a class="link" href="GUnixSocketAddress.html#G-UNIX-SOCKET-ADDRESS-ABSTRACT-PADDED:CAPS"><code class="literal">G_UNIX_SOCKET_ADDRESS_ABSTRACT_PADDED</code></a>. However, many programs
-instead just use a portion of <code class="literal">sun_path</code>, and pass an appropriate
-smaller length to <code class="function">bind()</code> or <code class="function">connect()</code>. This is
+them; the man pages suggest using the entire <code class="literal">struct sockaddr_un</code>
+as the name, padding the unused parts of the <code class="literal">sun_path</code> field with
+zeroes; this corresponds to <a class="link" href="GUnixSocketAddress.html#G-UNIX-SOCKET-ADDRESS-ABSTRACT-PADDED:CAPS"><code class="literal">G_UNIX_SOCKET_ADDRESS_ABSTRACT_PADDED</code></a>.
+However, many programs instead just use a portion of <code class="literal">sun_path</code>, and
+pass an appropriate smaller length to <code class="function">bind()</code> or <code class="function">connect()</code>. This is
 <a class="link" href="GUnixSocketAddress.html#G-UNIX-SOCKET-ADDRESS-ABSTRACT:CAPS"><code class="literal">G_UNIX_SOCKET_ADDRESS_ABSTRACT</code></a>.</p>
 <div class="refsect3">
 <a name="id-1.4.13.7.11.3.5"></a><h4>Members</h4>

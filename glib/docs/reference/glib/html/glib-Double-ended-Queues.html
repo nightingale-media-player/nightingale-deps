@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Double-ended-Queues.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Double-ended-Queues.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Double-ended-Queues.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-data-types.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -383,11 +382,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Double-ended-Queues.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Double-ended-Queues.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -416,7 +410,7 @@ or simply pointers to any type of data.</p>
 g_queue_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>Creates a new <a class="link" href="glib-Double-ended-Queues.html#GQueue" title="struct GQueue"><span class="type">GQueue</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.2.5"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.2.5"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-Double-ended-Queues.html#GQueue" title="struct GQueue"><span class="type">GQueue</span></a></p>
 <p></p>
 </div>
@@ -433,7 +427,7 @@ dynamically-allocated memory, they should be freed first.</p>
 <p>If queue elements contain dynamically-allocated memory, you should
 either use <a class="link" href="glib-Double-ended-Queues.html#g-queue-free-full" title="g_queue_free_full ()"><code class="function">g_queue_free_full()</code></a> or free them manually first.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.3.6"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -457,7 +451,7 @@ g_queue_free_full (<em class="parameter"><code><a class="link" href="glib-Double
 <p>Convenience method, which frees all the memory used by a <a class="link" href="glib-Double-ended-Queues.html#GQueue" title="struct GQueue"><span class="type">GQueue</span></a>,
 and calls the specified destroy function on every element's data.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -490,7 +484,7 @@ before it can be used. Alternatively you can initialize it with
 <a class="link" href="glib-Double-ended-Queues.html#G-QUEUE-INIT:CAPS" title="G_QUEUE_INIT"><span class="type">G_QUEUE_INIT</span></a>. It is not necessary to initialize queues created with
 <a class="link" href="glib-Double-ended-Queues.html#g-queue-new" title="g_queue_new ()"><code class="function">g_queue_new()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -515,7 +509,7 @@ g_queue_clear (<em class="parameter"><code><a class="link" href="glib-Double-end
 . If queue elements contain
 dynamically-allocated memory, they should be freed first.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -538,7 +532,7 @@ dynamically-allocated memory, they should be freed first.</p>
 g_queue_is_empty (<em class="parameter"><code><a class="link" href="glib-Double-ended-Queues.html#GQueue" title="struct GQueue"><span class="type">GQueue</span></a> *queue</code></em>);</pre>
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the queue is empty.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -553,7 +547,7 @@ g_queue_is_empty (<em class="parameter"><code><a class="link" href="glib-Double-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.7.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.7.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the queue is empty</p>
 <p></p>
 </div>
@@ -566,7 +560,7 @@ g_queue_get_length (<em class="parameter"><code><a class="link" href="glib-Doubl
 <p>Returns the number of items in <em class="parameter"><code>queue</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -581,7 +575,7 @@ g_queue_get_length (<em class="parameter"><code><a class="link" href="glib-Doubl
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.8.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.8.6"></a><h4>Returns</h4>
 <p> the number of items in <em class="parameter"><code>queue</code></em>
 </p>
 <p></p>
@@ -596,7 +590,7 @@ g_queue_reverse (<em class="parameter"><code><a class="link" href="glib-Double-e
 <p>Reverses the order of the items in <em class="parameter"><code>queue</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.9.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.9.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -622,7 +616,7 @@ g_queue_copy (<em class="parameter"><code><a class="link" href="glib-Double-ende
 queue consist of pointers to data, the pointers are copied, but the
 actual data is not.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.10.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.10.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -637,7 +631,7 @@ actual data is not.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.10.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.10.6"></a><h4>Returns</h4>
 <p> a copy of <em class="parameter"><code>queue</code></em>
 </p>
 <p></p>
@@ -656,7 +650,7 @@ g_queue_foreach (<em class="parameter"><code><a class="link" href="glib-Double-e
  to the
 function.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.11.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.11.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -695,7 +689,7 @@ g_queue_find (<em class="parameter"><code><a class="link" href="glib-Double-ende
  which contains <em class="parameter"><code>data</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.12.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.12.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -717,7 +711,7 @@ g_queue_find (<em class="parameter"><code><a class="link" href="glib-Double-ende
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.12.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.12.6"></a><h4>Returns</h4>
 <p> the first link in <em class="parameter"><code>queue</code></em>
 which contains <em class="parameter"><code>data</code></em>
 </p>
@@ -738,7 +732,7 @@ which should return 0 when the desired element is found. The function
 takes two gconstpointer arguments, the <a class="link" href="glib-Double-ended-Queues.html#GQueue" title="struct GQueue"><span class="type">GQueue</span></a> element's data as the
 first argument and the given user data as the second argument.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.13.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.13.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -767,7 +761,7 @@ when the desired element is found</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.13.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.13.6"></a><h4>Returns</h4>
 <p> the found link, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if it wasn't found</p>
 <p></p>
 </div>
@@ -784,7 +778,7 @@ g_queue_sort (<em class="parameter"><code><a class="link" href="glib-Double-ende
  using <em class="parameter"><code>compare_func</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.14.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.14.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -825,7 +819,7 @@ g_queue_push_head (<em class="parameter"><code><a class="link" href="glib-Double
                    <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
 <p>Adds a new element at the head of the queue.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.15.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.15.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -855,7 +849,7 @@ g_queue_push_tail (<em class="parameter"><code><a class="link" href="glib-Double
                    <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
 <p>Adds a new element at the tail of the queue.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.16.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.16.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -887,7 +881,7 @@ g_queue_push_nth (<em class="parameter"><code><a class="link" href="glib-Double-
 <p>Inserts a new element into <em class="parameter"><code>queue</code></em>
  at the given position.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.17.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.17.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -926,7 +920,7 @@ added to the end of the queue.</p></td>
 g_queue_pop_head (<em class="parameter"><code><a class="link" href="glib-Double-ended-Queues.html#GQueue" title="struct GQueue"><span class="type">GQueue</span></a> *queue</code></em>);</pre>
 <p>Removes the first element of the queue and returns its data.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.18.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.18.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -941,7 +935,7 @@ g_queue_pop_head (<em class="parameter"><code><a class="link" href="glib-Double-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.18.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.18.6"></a><h4>Returns</h4>
 <p> the data of the first element in the queue, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 if the queue is empty</p>
 <p></p>
@@ -954,7 +948,7 @@ if the queue is empty</p>
 g_queue_pop_tail (<em class="parameter"><code><a class="link" href="glib-Double-ended-Queues.html#GQueue" title="struct GQueue"><span class="type">GQueue</span></a> *queue</code></em>);</pre>
 <p>Removes the last element of the queue and returns its data.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.19.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.19.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -969,7 +963,7 @@ g_queue_pop_tail (<em class="parameter"><code><a class="link" href="glib-Double-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.19.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.19.6"></a><h4>Returns</h4>
 <p> the data of the last element in the queue, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 if the queue is empty</p>
 <p></p>
@@ -985,7 +979,7 @@ g_queue_pop_nth (<em class="parameter"><code><a class="link" href="glib-Double-e
 'th element of <em class="parameter"><code>queue</code></em>
  and returns its data.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.20.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.20.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1007,7 +1001,7 @@ g_queue_pop_nth (<em class="parameter"><code><a class="link" href="glib-Double-e
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.20.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.20.6"></a><h4>Returns</h4>
 <p> the element's data, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if <em class="parameter"><code>n</code></em>
 is off the end of <em class="parameter"><code>queue</code></em>
 </p>
@@ -1022,7 +1016,7 @@ is off the end of <em class="parameter"><code>queue</code></em>
 g_queue_peek_head (<em class="parameter"><code><a class="link" href="glib-Double-ended-Queues.html#GQueue" title="struct GQueue"><span class="type">GQueue</span></a> *queue</code></em>);</pre>
 <p>Returns the first element of the queue.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.21.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.21.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1037,7 +1031,7 @@ g_queue_peek_head (<em class="parameter"><code><a class="link" href="glib-Double
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.21.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.21.6"></a><h4>Returns</h4>
 <p> the data of the first element in the queue, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 if the queue is empty</p>
 <p></p>
@@ -1050,7 +1044,7 @@ if the queue is empty</p>
 g_queue_peek_tail (<em class="parameter"><code><a class="link" href="glib-Double-ended-Queues.html#GQueue" title="struct GQueue"><span class="type">GQueue</span></a> *queue</code></em>);</pre>
 <p>Returns the last element of the queue.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.22.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.22.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1065,7 +1059,7 @@ g_queue_peek_tail (<em class="parameter"><code><a class="link" href="glib-Double
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.22.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.22.6"></a><h4>Returns</h4>
 <p> the data of the last element in the queue, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 if the queue is empty</p>
 <p></p>
@@ -1081,7 +1075,7 @@ g_queue_peek_nth (<em class="parameter"><code><a class="link" href="glib-Double-
 'th element of <em class="parameter"><code>queue</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.23.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.23.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1103,7 +1097,7 @@ g_queue_peek_nth (<em class="parameter"><code><a class="link" href="glib-Double-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.23.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.23.6"></a><h4>Returns</h4>
 <p> the data for the <em class="parameter"><code>n</code></em>
 'th element of <em class="parameter"><code>queue</code></em>
 ,
@@ -1124,7 +1118,7 @@ g_queue_index (<em class="parameter"><code><a class="link" href="glib-Double-end
  which contains <em class="parameter"><code>data</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.24.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.24.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1146,7 +1140,7 @@ g_queue_index (<em class="parameter"><code><a class="link" href="glib-Double-end
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.24.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.24.6"></a><h4>Returns</h4>
 <p> the position of the first element in <em class="parameter"><code>queue</code></em>
 which
 contains <em class="parameter"><code>data</code></em>
@@ -1167,7 +1161,7 @@ g_queue_remove (<em class="parameter"><code><a class="link" href="glib-Double-en
  that contains <em class="parameter"><code>data</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.25.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.25.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1189,7 +1183,7 @@ g_queue_remove (<em class="parameter"><code><a class="link" href="glib-Double-en
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.25.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.25.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>data</code></em>
 was found and removed from <em class="parameter"><code>queue</code></em>
 </p>
@@ -1207,7 +1201,7 @@ g_queue_remove_all (<em class="parameter"><code><a class="link" href="glib-Doubl
  from <em class="parameter"><code>queue</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.26.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.26.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1229,7 +1223,7 @@ g_queue_remove_all (<em class="parameter"><code><a class="link" href="glib-Doubl
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.26.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.26.6"></a><h4>Returns</h4>
 <p> the number of elements removed from <em class="parameter"><code>queue</code></em>
 </p>
 <p></p>
@@ -1251,7 +1245,7 @@ g_queue_insert_before (<em class="parameter"><code><a class="link" href="glib-Do
  must be part of <em class="parameter"><code>queue</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.27.6"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.27.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1295,7 +1289,7 @@ g_queue_insert_after (<em class="parameter"><code><a class="link" href="glib-Dou
  must be part of <em class="parameter"><code>queue</code></em>
 </p>
 <div class="refsect3">
-<a name="id-1.6.4.8.28.6"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.28.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1337,7 +1331,7 @@ g_queue_insert_sorted (<em class="parameter"><code><a class="link" href="glib-Do
  using <em class="parameter"><code>func</code></em>
  to determine the new position.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.29.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.29.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1385,7 +1379,7 @@ g_queue_push_head_link (<em class="parameter"><code><a class="link" href="glib-D
                         <em class="parameter"><code><a class="link" href="glib-Doubly-Linked-Lists.html#GList" title="struct GList"><span class="type">GList</span></a> *link_</code></em>);</pre>
 <p>Adds a new element at the head of the queue.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.30.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.30.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1415,7 +1409,7 @@ g_queue_push_tail_link (<em class="parameter"><code><a class="link" href="glib-D
                         <em class="parameter"><code><a class="link" href="glib-Doubly-Linked-Lists.html#GList" title="struct GList"><span class="type">GList</span></a> *link_</code></em>);</pre>
 <p>Adds a new element at the tail of the queue.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.31.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.31.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1448,7 +1442,7 @@ g_queue_push_nth_link (<em class="parameter"><code><a class="link" href="glib-Do
  into <em class="parameter"><code>queue</code></em>
  at the given position.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.32.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.32.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1488,7 +1482,7 @@ the number of elements in <em class="parameter"><code>queue</code></em>
 g_queue_pop_head_link (<em class="parameter"><code><a class="link" href="glib-Double-ended-Queues.html#GQueue" title="struct GQueue"><span class="type">GQueue</span></a> *queue</code></em>);</pre>
 <p>Removes and returns the first element of the queue.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.33.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.33.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1503,7 +1497,7 @@ g_queue_pop_head_link (<em class="parameter"><code><a class="link" href="glib-Do
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.33.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.33.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Doubly-Linked-Lists.html#GList" title="struct GList"><span class="type">GList</span></a> element at the head of the queue, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 if the queue is empty</p>
 <p></p>
@@ -1516,7 +1510,7 @@ if the queue is empty</p>
 g_queue_pop_tail_link (<em class="parameter"><code><a class="link" href="glib-Double-ended-Queues.html#GQueue" title="struct GQueue"><span class="type">GQueue</span></a> *queue</code></em>);</pre>
 <p>Removes and returns the last element of the queue.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.34.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.34.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1531,7 +1525,7 @@ g_queue_pop_tail_link (<em class="parameter"><code><a class="link" href="glib-Do
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.34.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.34.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Doubly-Linked-Lists.html#GList" title="struct GList"><span class="type">GList</span></a> element at the tail of the queue, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 if the queue is empty</p>
 <p></p>
@@ -1545,7 +1539,7 @@ g_queue_pop_nth_link (<em class="parameter"><code><a class="link" href="glib-Dou
                       <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#guint" title="guint"><span class="type">guint</span></a> n</code></em>);</pre>
 <p>Removes and returns the link at the given position.</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.35.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.35.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1567,7 +1561,7 @@ g_queue_pop_nth_link (<em class="parameter"><code><a class="link" href="glib-Dou
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.35.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.35.6"></a><h4>Returns</h4>
 <p> the <em class="parameter"><code>n</code></em>
 'th link, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if <em class="parameter"><code>n</code></em>
 is off the end of <em class="parameter"><code>queue</code></em>
@@ -1584,7 +1578,7 @@ g_queue_peek_head_link (<em class="parameter"><code><a class="link" href="glib-D
 <p>Returns the first link in <em class="parameter"><code>queue</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.36.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.36.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1599,7 +1593,7 @@ g_queue_peek_head_link (<em class="parameter"><code><a class="link" href="glib-D
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.36.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.36.6"></a><h4>Returns</h4>
 <p> the first link in <em class="parameter"><code>queue</code></em>
 , or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if <em class="parameter"><code>queue</code></em>
 is empty</p>
@@ -1615,7 +1609,7 @@ g_queue_peek_tail_link (<em class="parameter"><code><a class="link" href="glib-D
 <p>Returns the last link in <em class="parameter"><code>queue</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.37.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.37.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1630,7 +1624,7 @@ g_queue_peek_tail_link (<em class="parameter"><code><a class="link" href="glib-D
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.37.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.37.6"></a><h4>Returns</h4>
 <p> the last link in <em class="parameter"><code>queue</code></em>
 , or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if <em class="parameter"><code>queue</code></em>
 is empty</p>
@@ -1646,7 +1640,7 @@ g_queue_peek_nth_link (<em class="parameter"><code><a class="link" href="glib-Do
                        <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#guint" title="guint"><span class="type">guint</span></a> n</code></em>);</pre>
 <p>Returns the link at the given position</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.38.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.38.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1668,7 +1662,7 @@ g_queue_peek_nth_link (<em class="parameter"><code><a class="link" href="glib-Do
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.38.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.38.6"></a><h4>Returns</h4>
 <p> the link at the <em class="parameter"><code>n</code></em>
 'th position, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 if <em class="parameter"><code>n</code></em>
@@ -1687,7 +1681,7 @@ g_queue_link_index (<em class="parameter"><code><a class="link" href="glib-Doubl
  in <em class="parameter"><code>queue</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.39.5"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.39.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1709,7 +1703,7 @@ g_queue_link_index (<em class="parameter"><code><a class="link" href="glib-Doubl
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.4.8.39.6"></a><h4>Returns</h4>
+<a name="id-1.6.4.7.39.6"></a><h4>Returns</h4>
 <p> the position of <em class="parameter"><code>link_</code></em>
 , or -1 if the link is
 not part of <em class="parameter"><code>queue</code></em>
@@ -1732,7 +1726,7 @@ The link is not freed.</p>
  must be part of <em class="parameter"><code>queue</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.40.6"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.40.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1769,7 +1763,7 @@ g_queue_delete_link (<em class="parameter"><code><a class="link" href="glib-Doub
  must be part of <em class="parameter"><code>queue</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.4.8.41.6"></a><h4>Parameters</h4>
+<a name="id-1.6.4.7.41.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1807,7 +1801,7 @@ g_queue_delete_link (<em class="parameter"><code><a class="link" href="glib-Doub
 <p>Contains the public fields of a
 &lt;link linkend="glib-Double-ended-Queues"&gt;Queue&lt;/link&gt;.</p>
 <div class="refsect3">
-<a name="id-1.6.4.9.2.5"></a><h4>Members</h4>
+<a name="id-1.6.4.8.2.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">
@@ -1848,7 +1842,7 @@ you have to use <a class="link" href="glib-Double-ended-Queues.html#g-queue-init
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="usertype">GQueue</span><span class="normal"> my_queue </span><span class="symbol">=</span><span class="normal"> <a href="glib-Double-ended-Queues.html#G-QUEUE-INIT:CAPS">G_QUEUE_INIT</a></span><span class="symbol">;</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">GQueue my_queue <span class="gtkdoc opt">=</span> G_QUEUE_INIT<span class="gtkdoc opt">;</span></pre></td>
       </tr>
     </tbody>
   </table>

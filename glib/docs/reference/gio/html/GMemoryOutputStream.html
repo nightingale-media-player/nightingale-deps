@@ -12,12 +12,12 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GMemoryOutputStream.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GMemoryOutputStream.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces"> <span class="dim">|</span> 
-                  <a href="#GMemoryOutputStream.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GMemoryOutputStream.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GMemoryOutputStream.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#GMemoryOutputStream.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
                   <a href="#GMemoryOutputStream.properties" class="shortcut">Properties</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -284,15 +284,15 @@ allocation for itself).</p>
 7
 8
 9</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="comment">// a stream that can grow</span>
-<span class="normal">stream </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GMemoryOutputStream.html#g-memory-output-stream-new">g_memory_output_stream_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> realloc</span><span class="symbol">,</span><span class="normal"> free</span><span class="symbol">);</span>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc slc">// a stream that can grow</span>
+stream <span class="gtkdoc opt">=</span> <span class="function"><a href="GMemoryOutputStream.html#g-memory-output-stream-new">g_memory_output_stream_new</a></span> <span class="gtkdoc opt">(</span>NULL<span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">,</span> realloc<span class="gtkdoc opt">,</span> free<span class="gtkdoc opt">);</span>
 
-<span class="comment">// another stream that can grow</span>
-<span class="normal">stream2 </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GMemoryOutputStream.html#g-memory-output-stream-new">g_memory_output_stream_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> <a href="../glib/glib-Memory-Allocation.html#g-realloc">g_realloc</a></span><span class="symbol">,</span><span class="normal"> <a href="../glib/glib-Memory-Allocation.html#g-free">g_free</a></span><span class="symbol">);</span>
+<span class="gtkdoc slc">// another stream that can grow</span>
+stream2 <span class="gtkdoc opt">=</span> <span class="function"><a href="GMemoryOutputStream.html#g-memory-output-stream-new">g_memory_output_stream_new</a></span> <span class="gtkdoc opt">(</span>NULL<span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">,</span> g_realloc<span class="gtkdoc opt">,</span> g_free<span class="gtkdoc opt">);</span>
 
-<span class="comment">// a fixed-size stream</span>
-<span class="normal">data </span><span class="symbol">=</span><span class="normal"> </span><span class="function">malloc</span><span class="normal"> </span><span class="symbol">(</span><span class="number">200</span><span class="symbol">);</span>
-<span class="normal">stream3 </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GMemoryOutputStream.html#g-memory-output-stream-new">g_memory_output_stream_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">data</span><span class="symbol">,</span><span class="normal"> </span><span class="number">200</span><span class="symbol">,</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> free</span><span class="symbol">);</span></pre></td>
+<span class="gtkdoc slc">// a fixed-size stream</span>
+data <span class="gtkdoc opt">=</span> <span class="function">malloc</span> <span class="gtkdoc opt">(</span><span class="number">200</span><span class="gtkdoc opt">);</span>
+stream3 <span class="gtkdoc opt">=</span> <span class="function"><a href="GMemoryOutputStream.html#g-memory-output-stream-new">g_memory_output_stream_new</a></span> <span class="gtkdoc opt">(</span>data<span class="gtkdoc opt">,</span> <span class="number">200</span><span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span> free<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>

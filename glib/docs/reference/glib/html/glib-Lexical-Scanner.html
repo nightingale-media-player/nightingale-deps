@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Lexical-Scanner.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Lexical-Scanner.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Lexical-Scanner.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -301,11 +300,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Lexical-Scanner.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Lexical-Scanner.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -329,7 +323,7 @@ of the scanner, which are copied into the <a class="link" href="glib-Lexical-Sca
  field. If you pass <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> then the default settings
 are used.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.2.6"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.2.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -344,7 +338,7 @@ are used.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.15.8.2.7"></a><h4>Returns</h4>
+<a name="id-1.5.15.7.2.7"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-Lexical-Scanner.html#GScanner" title="struct GScanner"><span class="type">GScanner</span></a></p>
 <p></p>
 </div>
@@ -356,7 +350,7 @@ are used.</p>
 g_scanner_destroy (<em class="parameter"><code><a class="link" href="glib-Lexical-Scanner.html#GScanner" title="struct GScanner"><span class="type">GScanner</span></a> *scanner</code></em>);</pre>
 <p>Frees all memory used by the <a class="link" href="glib-Lexical-Scanner.html#GScanner" title="struct GScanner"><span class="type">GScanner</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -379,7 +373,7 @@ g_scanner_input_file (<em class="parameter"><code><a class="link" href="glib-Lex
                       <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gint" title="gint"><span class="type">gint</span></a> input_fd</code></em>);</pre>
 <p>Prepares to scan a file.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -411,7 +405,7 @@ and blows the file read ahead buffer. This is useful for
 third party uses of the scanners filedescriptor, which hooks
 onto the current scanning position.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -435,7 +429,7 @@ g_scanner_input_text (<em class="parameter"><code><a class="link" href="glib-Lex
                       <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#guint" title="guint"><span class="type">guint</span></a> text_len</code></em>);</pre>
 <p>Prepares to scan a text buffer.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -482,7 +476,7 @@ the next token. Getting the next token after switching the scope or
 configuration will return whatever was peeked before, regardless of
 any symbols that may have been added or removed in the new scope.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.7.6"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.7.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -497,7 +491,7 @@ any symbols that may have been added or removed in the new scope.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.15.8.7.7"></a><h4>Returns</h4>
+<a name="id-1.5.15.7.7.7"></a><h4>Returns</h4>
 <p> the type of the token</p>
 <p></p>
 </div>
@@ -516,7 +510,7 @@ placed in the <em class="parameter"><code>token</code></em>
  fields of
 the <a class="link" href="glib-Lexical-Scanner.html#GScanner" title="struct GScanner"><span class="type">GScanner</span></a> structure.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -531,7 +525,7 @@ the <a class="link" href="glib-Lexical-Scanner.html#GScanner" title="struct GSca
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.15.8.8.6"></a><h4>Returns</h4>
+<a name="id-1.5.15.7.8.6"></a><h4>Returns</h4>
 <p> the type of the token</p>
 <p></p>
 </div>
@@ -544,7 +538,7 @@ g_scanner_eof (<em class="parameter"><code><a class="link" href="glib-Lexical-Sc
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the scanner has reached the end of
 the file or text buffer.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.9.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.9.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -559,7 +553,7 @@ the file or text buffer.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.15.8.9.6"></a><h4>Returns</h4>
+<a name="id-1.5.15.7.9.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the scanner has reached the end of
 the file or text buffer</p>
 <p></p>
@@ -574,7 +568,7 @@ g_scanner_cur_line (<em class="parameter"><code><a class="link" href="glib-Lexic
 from 1). This is the line of the last token parsed via
 <a class="link" href="glib-Lexical-Scanner.html#g-scanner-get-next-token" title="g_scanner_get_next_token ()"><code class="function">g_scanner_get_next_token()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.10.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.10.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -589,7 +583,7 @@ from 1). This is the line of the last token parsed via
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.15.8.10.6"></a><h4>Returns</h4>
+<a name="id-1.5.15.7.10.6"></a><h4>Returns</h4>
 <p> the current line</p>
 <p></p>
 </div>
@@ -603,7 +597,7 @@ g_scanner_cur_position (<em class="parameter"><code><a class="link" href="glib-L
 from 0). This is the position of the last token parsed via
 <a class="link" href="glib-Lexical-Scanner.html#g-scanner-get-next-token" title="g_scanner_get_next_token ()"><code class="function">g_scanner_get_next_token()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.11.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.11.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -618,7 +612,7 @@ from 0). This is the position of the last token parsed via
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.15.8.11.6"></a><h4>Returns</h4>
+<a name="id-1.5.15.7.11.6"></a><h4>Returns</h4>
 <p> the current position on the line</p>
 <p></p>
 </div>
@@ -632,7 +626,7 @@ g_scanner_cur_token (<em class="parameter"><code><a class="link" href="glib-Lexi
 
 field in the <a class="link" href="glib-Lexical-Scanner.html#GScanner" title="struct GScanner"><span class="type">GScanner</span></a> structure.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.12.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.12.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -647,7 +641,7 @@ field in the <a class="link" href="glib-Lexical-Scanner.html#GScanner" title="st
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.15.8.12.6"></a><h4>Returns</h4>
+<a name="id-1.5.15.7.12.6"></a><h4>Returns</h4>
 <p> the current token type</p>
 <p></p>
 </div>
@@ -661,7 +655,7 @@ g_scanner_cur_value (<em class="parameter"><code><a class="link" href="glib-Lexi
 
 field in the <a class="link" href="glib-Lexical-Scanner.html#GScanner" title="struct GScanner"><span class="type">GScanner</span></a> structure.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.13.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.13.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -676,7 +670,7 @@ field in the <a class="link" href="glib-Lexical-Scanner.html#GScanner" title="st
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.15.8.13.6"></a><h4>Returns</h4>
+<a name="id-1.5.15.7.13.6"></a><h4>Returns</h4>
 <p> the current token value</p>
 <p></p>
 </div>
@@ -689,7 +683,7 @@ g_scanner_set_scope (<em class="parameter"><code><a class="link" href="glib-Lexi
                      <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#guint" title="guint"><span class="type">guint</span></a> scope_id</code></em>);</pre>
 <p>Sets the current scope.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.14.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.14.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -711,7 +705,7 @@ g_scanner_set_scope (<em class="parameter"><code><a class="link" href="glib-Lexi
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.15.8.14.6"></a><h4>Returns</h4>
+<a name="id-1.5.15.7.14.6"></a><h4>Returns</h4>
 <p> the old scope id</p>
 <p></p>
 </div>
@@ -726,7 +720,7 @@ g_scanner_scope_add_symbol (<em class="parameter"><code><a class="link" href="gl
                             <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> value</code></em>);</pre>
 <p>Adds a symbol to the given scope.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.15.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.15.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -772,7 +766,7 @@ the symbol and value of each pair, and the given <em class="parameter"><code>use
 
 parameter.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.16.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.16.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -814,7 +808,7 @@ g_scanner_scope_lookup_symbol (<em class="parameter"><code><a class="link" href=
 <p>Looks up a symbol in a scope and return its value. If the
 symbol is not bound in the scope, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is returned.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.17.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.17.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -841,7 +835,7 @@ symbol is not bound in the scope, <a class="link" href="glib-Standard-Macros.htm
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.15.8.17.6"></a><h4>Returns</h4>
+<a name="id-1.5.15.7.17.6"></a><h4>Returns</h4>
 <p> the value of <em class="parameter"><code>symbol</code></em>
 in the given scope, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 if <em class="parameter"><code>symbol</code></em>
@@ -858,7 +852,7 @@ g_scanner_scope_remove_symbol (<em class="parameter"><code><a class="link" href=
                                <em class="parameter"><code>const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar"><span class="type">gchar</span></a> *symbol</code></em>);</pre>
 <p>Removes a symbol from a scope.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.18.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.18.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -895,7 +889,7 @@ g_scanner_scope_remove_symbol (<em class="parameter"><code><a class="link" href=
 </div>
 <p>Adds a symbol to the default scope.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.19.6"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.19.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -932,7 +926,7 @@ g_scanner_scope_remove_symbol (<em class="parameter"><code><a class="link" href=
 </div>
 <p>Removes a symbol from the default scope.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.20.6"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.20.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -964,7 +958,7 @@ g_scanner_scope_remove_symbol (<em class="parameter"><code><a class="link" href=
 </div>
 <p>Calls a function for each symbol in the default scope.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.21.6"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.21.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1001,7 +995,7 @@ g_scanner_scope_remove_symbol (<em class="parameter"><code><a class="link" href=
 </div>
 <p>There is no reason to use this macro, since it does nothing.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.22.6"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.22.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1026,7 +1020,7 @@ g_scanner_scope_remove_symbol (<em class="parameter"><code><a class="link" href=
 </div>
 <p>There is no reason to use this macro, since it does nothing.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.23.6"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.23.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1051,7 +1045,7 @@ g_scanner_lookup_symbol (<em class="parameter"><code><a class="link" href="glib-
 If the symbol is not bound in the current scope, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is
 returned.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.24.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.24.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1073,7 +1067,7 @@ returned.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.15.8.24.6"></a><h4>Returns</h4>
+<a name="id-1.5.15.7.24.6"></a><h4>Returns</h4>
 <p> the value of <em class="parameter"><code>symbol</code></em>
 in the current scope, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 if <em class="parameter"><code>symbol</code></em>
@@ -1090,7 +1084,7 @@ g_scanner_warn (<em class="parameter"><code><a class="link" href="glib-Lexical-S
                 <em class="parameter"><code>...</code></em>);</pre>
 <p>Outputs a warning message, via the <a class="link" href="glib-Lexical-Scanner.html#GScanner" title="struct GScanner"><span class="type">GScanner</span></a> message handler.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.25.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.25.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1126,7 +1120,7 @@ g_scanner_error (<em class="parameter"><code><a class="link" href="glib-Lexical-
                  <em class="parameter"><code>...</code></em>);</pre>
 <p>Outputs an error message, via the <a class="link" href="glib-Lexical-Scanner.html#GScanner" title="struct GScanner"><span class="type">GScanner</span></a> message handler.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.26.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.26.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1172,7 +1166,7 @@ call to <a class="link" href="glib-Lexical-Scanner.html#g-scanner-get-next-token
 evaluates the scanner's current token (not the peeked token)
 to construct part of the message.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.27.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.27.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1239,7 +1233,7 @@ output as a warning.</p></td>
                     <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gboolean" title="gboolean"><span class="type">gboolean</span></a> error</code></em>);</pre>
 <p>Specifies the type of the message handler function.</p>
 <div class="refsect3">
-<a name="id-1.5.15.8.28.5"></a><h4>Parameters</h4>
+<a name="id-1.5.15.7.28.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1321,7 +1315,7 @@ can place them here.</p>
  field. The type of the message handler function
 is declared by <a class="link" href="glib-Lexical-Scanner.html#GScannerMsgFunc" title="GScannerMsgFunc ()"><span class="type">GScannerMsgFunc</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.15.9.2.8"></a><h4>Members</h4>
+<a name="id-1.5.15.8.2.8"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">
@@ -1453,7 +1447,7 @@ is declared by <a class="link" href="glib-Lexical-Scanner.html#GScannerMsgFunc" 
 be changed during the parsing phase and will affect the lexical
 parsing of the next unpeeked token.</p>
 <div class="refsect3">
-<a name="id-1.5.15.9.3.5"></a><h4>Members</h4>
+<a name="id-1.5.15.8.3.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">
@@ -1673,7 +1667,7 @@ in <a class="link" href="glib-Lexical-Scanner.html#GScannerConfig" title="struct
 <p>The possible types of token returned from each
 <a class="link" href="glib-Lexical-Scanner.html#g-scanner-get-next-token" title="g_scanner_get_next_token ()"><code class="function">g_scanner_get_next_token()</code></a> call.</p>
 <div class="refsect3">
-<a name="id-1.5.15.9.9.4"></a><h4>Members</h4>
+<a name="id-1.5.15.8.9.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -1725,7 +1719,7 @@ in <a class="link" href="glib-Lexical-Scanner.html#GScannerConfig" title="struct
 <a name="GTokenValue"></a><h3>union GTokenValue</h3>
 <p>A union holding the value of the token.</p>
 <div class="refsect3">
-<a name="id-1.5.15.9.10.4"></a><h4>Members</h4>
+<a name="id-1.5.15.8.10.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="union_members_name">
@@ -1804,7 +1798,7 @@ in <a class="link" href="glib-Lexical-Scanner.html#GScannerConfig" title="struct
  field
 of <a class="link" href="glib-Lexical-Scanner.html#GTokenValue" title="union GTokenValue"><span class="type">GTokenValue</span></a>, when the token is a <code class="literal">G_TOKEN_ERROR</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.15.9.11.4"></a><h4>Members</h4>
+<a name="id-1.5.15.8.11.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">

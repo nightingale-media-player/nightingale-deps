@@ -12,11 +12,11 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GFile.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GFile.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_prerequisites"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GFile.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GFile.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_prerequisites">  <span class="dim">|</span> 
                   <a href="#GFile.prerequisites" class="shortcut">Prerequisites</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -1105,9 +1105,9 @@
 </div>
 <div class="refsect1">
 <a name="GFile.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    GFlags
+<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/gobject-Enumeration-and-Flag-Types.html">GFlags</a>
     <span class="lineart">╰──</span> GFileMonitorFlags
-    GInterface
+    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
     <span class="lineart">╰──</span> GFile
 </pre>
 </div>
@@ -2235,7 +2235,7 @@ RFC 3986 decodes the scheme as:</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">URI </span><span class="symbol">=</span><span class="normal"> scheme </span><span class="string">":"</span><span class="normal"> hier</span><span class="symbol">-</span><span class="normal">part </span><span class="symbol">[</span><span class="normal"> </span><span class="string">"?"</span><span class="normal"> query </span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">[</span><span class="normal"> </span><span class="string">"#"</span><span class="normal"> fragment </span><span class="symbol">]</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">URI <span class="gtkdoc opt">=</span> scheme <span class="string">&quot;:&quot;</span> hier<span class="gtkdoc opt">-</span>part <span class="gtkdoc opt">[</span> <span class="string">&quot;?&quot;</span> query <span class="gtkdoc opt">] [</span> <span class="string">&quot;#&quot;</span> fragment <span class="gtkdoc opt">]</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -9616,7 +9616,7 @@ necessarily represent files or directories that currently exist.</p>
 <p>Tally usage based on apparent file
   sizes.  Normally, the block-size is used, if available, as this is a
   more accurate representation of disk space used.
-  Compare with '&lt;literal&gt;du --apparent-size&lt;/literal&gt;'.</p>
+  Compare with <code class="literal">du --apparent-size</code>.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -9624,7 +9624,7 @@ necessarily represent files or directories that currently exist.</p>
 <td class="enum_member_name"><p><a name="G-FILE-MEASURE-NO-XDEV:CAPS"></a>G_FILE_MEASURE_NO_XDEV</p></td>
 <td class="enum_member_description">
 <p>Do not cross mount point boundaries.
-  Compare with '&lt;literal&gt;du -x&lt;/literal&gt;'.</p>
+  Compare with <code class="literal">du -x</code>.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>

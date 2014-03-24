@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#gobject-Boxed-Types.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#gobject-Boxed-Types.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gobject-Boxed-Types.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="rn01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -159,6 +158,10 @@
 </tr>
 <tr>
 <td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gobject-Boxed-Types.html#G-TYPE-VARIANT-DICT:CAPS" title="G_TYPE_VARIANT_DICT">G_TYPE_VARIANT_DICT</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
 <td class="function_name"><a class="link" href="gobject-Boxed-Types.html#G-TYPE-KEY-FILE:CAPS" title="G_TYPE_KEY_FILE">G_TYPE_KEY_FILE</a></td>
 </tr>
 <tr>
@@ -202,11 +205,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="gobject-Boxed-Types.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="gobject-Boxed-Types.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib-object.h&gt;
 </pre>
@@ -229,7 +227,7 @@ based libraries.</p>
 <p>This function is provided by the user and should produce a copy
 of the passed in boxed structure.</p>
 <div class="refsect3">
-<a name="id-1.4.7.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.4.7.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -244,7 +242,7 @@ of the passed in boxed structure.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.7.8.2.6"></a><h4>Returns</h4>
+<a name="id-1.4.7.7.2.6"></a><h4>Returns</h4>
 <p> The newly created copy of the boxed structure.</p>
 <p></p>
 </div>
@@ -257,7 +255,7 @@ of the passed in boxed structure.</p>
 <p>This function is provided by the user and should free the boxed
 structure passed.</p>
 <div class="refsect3">
-<a name="id-1.4.7.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.4.7.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -282,7 +280,7 @@ g_boxed_copy (<em class="parameter"><code><a class="link" href="gobject-Type-Inf
  which is of type <em class="parameter"><code>boxed_type</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.7.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.4.7.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -305,7 +303,7 @@ g_boxed_copy (<em class="parameter"><code><a class="link" href="gobject-Type-Inf
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.7.8.4.6"></a><h4>Returns</h4>
+<a name="id-1.4.7.7.4.6"></a><h4>Returns</h4>
 <p> The newly created copy of the boxed structure. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -320,7 +318,7 @@ g_boxed_free (<em class="parameter"><code><a class="link" href="gobject-Type-Inf
  which is of type <em class="parameter"><code>boxed_type</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.7.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.4.7.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -355,7 +353,7 @@ boxed type with name <em class="parameter"><code>name</code></em>
 . Boxed type handling functions have to be
 provided to copy and free opaque boxed structures of this type.</p>
 <div class="refsect3">
-<a name="id-1.4.7.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.4.7.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -382,7 +380,7 @@ provided to copy and free opaque boxed structures of this type.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.7.8.6.6"></a><h4>Returns</h4>
+<a name="id-1.4.7.7.6.6"></a><h4>Returns</h4>
 <p> New <a class="link" href="gobject-Type-Information.html#G-TYPE-BOXED:CAPS" title="G_TYPE_BOXED"><code class="literal">G_TYPE_BOXED</code></a> derived type id for <em class="parameter"><code>name</code></em>
 .</p>
 <p></p>
@@ -397,7 +395,7 @@ g_pointer_type_register_static (<em class="parameter"><code>const <a href="../gl
 pointer type with name <em class="parameter"><code>name</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.7.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.4.7.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -412,7 +410,7 @@ pointer type with name <em class="parameter"><code>name</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.7.8.7.6"></a><h4>Returns</h4>
+<a name="id-1.4.7.7.7.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="gobject-Type-Information.html#G-TYPE-POINTER:CAPS" title="G_TYPE_POINTER"><code class="literal">G_TYPE_POINTER</code></a> derived type id for <em class="parameter"><code>name</code></em>
 .</p>
 <p></p>
@@ -468,21 +466,21 @@ and <a class="link" href="gobject-The-Base-Object-Type.html#g-object-get" title=
 13
 14
 15</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="gobject-The-Base-Object-Type.html#g-object-class-install-property">g_object_class_install_property</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">object_class</span><span class="symbol">,</span>
-<span class="normal">                                 PROP_AUTHORS</span><span class="symbol">,</span>
-<span class="normal">                                 </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-param-spec-boxed">g_param_spec_boxed</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"authors"</span><span class="symbol">,</span>
-<span class="normal">                                                     </span><span class="function"><a href="../glib/glib-I18N.html#gettext-macro">_</a></span><span class="symbol">(</span><span class="string">"Authors"</span><span class="symbol">),</span>
-<span class="normal">                                                     </span><span class="function"><a href="../glib/glib-I18N.html#gettext-macro">_</a></span><span class="symbol">(</span><span class="string">"List of authors"</span><span class="symbol">),</span>
-<span class="normal">                                                     <a href="gobject-Boxed-Types.html#G-TYPE-STRV:CAPS">G_TYPE_STRV</a></span><span class="symbol">,</span>
-<span class="normal">                                                     <a href="gobject-GParamSpec.html#G-PARAM-READWRITE:CAPS">G_PARAM_READWRITE</a></span><span class="symbol">));</span>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="gobject-The-Base-Object-Type.html#g-object-class-install-property">g_object_class_install_property</a></span> <span class="gtkdoc opt">(</span>object_class<span class="gtkdoc opt">,</span>
+                                 PROP_AUTHORS<span class="gtkdoc opt">,</span>
+                                 <span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-param-spec-boxed">g_param_spec_boxed</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;authors&quot;</span><span class="gtkdoc opt">,</span>
+                                                     <span class="function"><a href="../glib/glib-I18N.html#gettext-macro">_</a></span><span class="gtkdoc opt">(</span><span class="string">&quot;Authors&quot;</span><span class="gtkdoc opt">),</span>
+                                                     <span class="function"><a href="../glib/glib-I18N.html#gettext-macro">_</a></span><span class="gtkdoc opt">(</span><span class="string">&quot;List of authors&quot;</span><span class="gtkdoc opt">),</span>
+                                                     G_TYPE_STRV<span class="gtkdoc opt">,</span>
+                                                     G_PARAM_READWRITE<span class="gtkdoc opt">));</span>
 
-<span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">authors</span><span class="symbol">[]</span><span class="normal"> </span><span class="symbol">=</span><span class="normal"> </span><span class="cbracket">{</span><span class="normal"> </span><span class="string">"Owen"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"Tim"</span><span class="symbol">,</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a> </span><span class="cbracket">}</span><span class="symbol">;</span>
-<span class="function"><a href="gobject-The-Base-Object-Type.html#g-object-set">g_object_set</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">obj</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"authors"</span><span class="symbol">,</span><span class="normal"> authors</span><span class="symbol">,</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
+gchar <span class="gtkdoc opt">*</span>authors<span class="gtkdoc opt">[] = {</span> <span class="string">&quot;Owen&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;Tim&quot;</span><span class="gtkdoc opt">,</span> NULL <span class="gtkdoc opt">};</span>
+<span class="function"><a href="gobject-The-Base-Object-Type.html#g-object-set">g_object_set</a></span> <span class="gtkdoc opt">(</span>obj<span class="gtkdoc opt">,</span> <span class="string">&quot;authors&quot;</span><span class="gtkdoc opt">,</span> authors<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span>
 
-<span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">writers</span><span class="symbol">[];</span>
-<span class="function"><a href="gobject-The-Base-Object-Type.html#g-object-get">g_object_get</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">obj</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"authors"</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">writers</span><span class="symbol">,</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
-<span class="symbol">/&amp;</span><span class="normal">ast</span><span class="symbol">;</span><span class="normal"> </span><span class="keyword">do</span><span class="normal"> something </span><span class="usertype">with</span><span class="normal"> </span><span class="usertype">writers</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">ast</span><span class="symbol">;/</span>
-<span class="function"><a href="../glib/glib-String-Utility-Functions.html#g-strfreev">g_strfreev</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">writers</span><span class="symbol">);</span></pre></td>
+gchar <span class="gtkdoc opt">*</span>writers<span class="gtkdoc opt">[];</span>
+<span class="function"><a href="gobject-The-Base-Object-Type.html#g-object-get">g_object_get</a></span> <span class="gtkdoc opt">(</span>obj<span class="gtkdoc opt">,</span> <span class="string">&quot;authors&quot;</span><span class="gtkdoc opt">, &amp;</span>writers<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span>
+<span class="gtkdoc opt">/&amp;</span>ast<span class="gtkdoc opt">;</span> <span class="keyword">do</span> something with writers <span class="gtkdoc opt">&amp;</span>ast<span class="gtkdoc opt">;/</span>
+<span class="function"><a href="../glib/glib-String-Utility-Functions.html#g-strfreev">g_strfreev</a></span> <span class="gtkdoc opt">(</span>writers<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -592,6 +590,14 @@ and <a class="link" href="gobject-The-Base-Object-Type.html#g-object-get" title=
 </pre>
 <p>The <a class="link" href="gobject-Type-Information.html#GType" title="GType"><span class="type">GType</span></a> for a boxed type holding a <a href="../glib/glib-GVariant.html#GVariantBuilder"><span class="type">GVariantBuilder</span></a>.</p>
 <p class="since">Since 2.30</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="G-TYPE-VARIANT-DICT:CAPS"></a><h3>G_TYPE_VARIANT_DICT</h3>
+<pre class="programlisting">#define G_TYPE_VARIANT_DICT (g_variant_dict_get_type ())
+</pre>
+<p>The <a class="link" href="gobject-Type-Information.html#GType" title="GType"><span class="type">GType</span></a> for a boxed type holding a <a href="../glib/glib-GVariant.html#GVariantDict"><span class="type">GVariantDict</span></a>.</p>
+<p class="since">Since 2.40</p>
 </div>
 <hr>
 <div class="refsect2">

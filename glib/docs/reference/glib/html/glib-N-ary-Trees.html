@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-N-ary-Trees.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-N-ary-Trees.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-N-ary-Trees.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-data-types.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -365,11 +364,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-N-ary-Trees.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-N-ary-Trees.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -408,7 +402,7 @@ g_node_new (<em class="parameter"><code><a class="link" href="glib-Basic-Types.h
 <p>Creates a new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> containing the given data.
 Used to create the first node in a tree.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -423,7 +417,7 @@ Used to create the first node in a tree.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.2.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.2.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a></p>
 <p></p>
 </div>
@@ -436,7 +430,7 @@ g_node_copy (<em class="parameter"><code><a class="link" href="glib-N-ary-Trees.
 <p>Recursively copies a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> (but does not deep-copy the data inside the 
 nodes, see <a class="link" href="glib-N-ary-Trees.html#g-node-copy-deep" title="g_node_copy_deep ()"><code class="function">g_node_copy_deep()</code></a> if you need that).</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -451,7 +445,7 @@ nodes, see <a class="link" href="glib-N-ary-Trees.html#g-node-copy-deep" title="
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.3.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.3.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> containing the same data pointers</p>
 <p></p>
 </div>
@@ -465,7 +459,7 @@ nodes, see <a class="link" href="glib-N-ary-Trees.html#g-node-copy-deep" title="
 <p>A function of this signature is used to copy the node data 
 when doing a deep-copy of a tree.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -487,7 +481,7 @@ when doing a deep-copy of a tree.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.4.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.4.6"></a><h4>Returns</h4>
 <p> A pointer to the copy</p>
 <p></p>
 </div>
@@ -502,7 +496,7 @@ g_node_copy_deep (<em class="parameter"><code><a class="link" href="glib-N-ary-T
                   <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
 <p>Recursively copies a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> and its data.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -531,7 +525,7 @@ or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.5.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.5.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> containing copies of the data in <em class="parameter"><code>node</code></em>
 .</p>
 <p></p>
@@ -547,7 +541,7 @@ g_node_insert (<em class="parameter"><code><a class="link" href="glib-N-ary-Tree
                <em class="parameter"><code><a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> *node</code></em>);</pre>
 <p>Inserts a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> beneath the parent at the given position.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -579,7 +573,7 @@ is inserted as the last child of <em class="parameter"><code>parent</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.6.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.6.6"></a><h4>Returns</h4>
 <p> the inserted <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a></p>
 <p></p>
 </div>
@@ -593,7 +587,7 @@ g_node_insert_before (<em class="parameter"><code><a class="link" href="glib-N-a
                       <em class="parameter"><code><a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> *node</code></em>);</pre>
 <p>Inserts a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> beneath the parent before the given sibling.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -624,7 +618,7 @@ If sibling is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.7.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.7.6"></a><h4>Returns</h4>
 <p> the inserted <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a></p>
 <p></p>
 </div>
@@ -638,7 +632,7 @@ g_node_insert_after (<em class="parameter"><code><a class="link" href="glib-N-ar
                      <em class="parameter"><code><a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> *node</code></em>);</pre>
 <p>Inserts a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> beneath the parent after the given sibling.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -669,7 +663,7 @@ If sibling is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.8.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.8.6"></a><h4>Returns</h4>
 <p> the inserted <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a></p>
 <p></p>
 </div>
@@ -680,7 +674,7 @@ If sibling is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="
 <pre class="programlisting">#define             g_node_append(parent, node)</pre>
 <p>Inserts a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> as the last child of the given parent.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.9.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.9.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -702,7 +696,7 @@ If sibling is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.9.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.9.6"></a><h4>Returns</h4>
 <p> the inserted <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a></p>
 <p></p>
 </div>
@@ -715,7 +709,7 @@ g_node_prepend (<em class="parameter"><code><a class="link" href="glib-N-ary-Tre
                 <em class="parameter"><code><a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> *node</code></em>);</pre>
 <p>Inserts a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> as the first child of the given parent.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.10.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.10.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -737,7 +731,7 @@ g_node_prepend (<em class="parameter"><code><a class="link" href="glib-N-ary-Tre
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.10.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.10.6"></a><h4>Returns</h4>
 <p> the inserted <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a></p>
 <p></p>
 </div>
@@ -748,7 +742,7 @@ g_node_prepend (<em class="parameter"><code><a class="link" href="glib-N-ary-Tre
 <pre class="programlisting">#define             g_node_insert_data(parent, position, data)</pre>
 <p>Inserts a new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> at the given position.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.11.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.11.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -777,7 +771,7 @@ the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode">
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.11.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.11.6"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a></p>
 <p></p>
 </div>
@@ -788,7 +782,7 @@ the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode">
 <pre class="programlisting">#define             g_node_insert_data_after(parent, sibling, data)</pre>
 <p>Inserts a new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> after the given sibling.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.12.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.12.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -815,7 +809,7 @@ the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode">
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.12.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.12.6"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a></p>
 <p></p>
 </div>
@@ -826,7 +820,7 @@ the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode">
 <pre class="programlisting">#define             g_node_insert_data_before(parent, sibling, data)</pre>
 <p>Inserts a new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> before the given sibling.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.13.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.13.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -853,7 +847,7 @@ the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode">
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.13.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.13.6"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a></p>
 <p></p>
 </div>
@@ -864,7 +858,7 @@ the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode">
 <pre class="programlisting">#define             g_node_append_data(parent, data)</pre>
 <p>Inserts a new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> as the last child of the given parent.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.14.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.14.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -886,7 +880,7 @@ the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode">
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.14.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.14.6"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a></p>
 <p></p>
 </div>
@@ -897,7 +891,7 @@ the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode">
 <pre class="programlisting">#define             g_node_prepend_data(parent, data)</pre>
 <p>Inserts a new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> as the first child of the given parent.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.15.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.15.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -919,7 +913,7 @@ the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode">
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.15.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.15.6"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a></p>
 <p></p>
 </div>
@@ -932,7 +926,7 @@ g_node_reverse_children (<em class="parameter"><code><a class="link" href="glib-
 <p>Reverses the order of the children of a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a>.
 (It doesn't change the order of the grandchildren.)</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.16.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.16.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -962,7 +956,7 @@ It calls the given function for each node visited.
 The traversal can be halted at any point by returning <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> from <em class="parameter"><code>func</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.17.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.17.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1020,7 +1014,7 @@ function is called with each of the nodes visited, together with the
 user data passed to <a class="link" href="glib-N-ary-Trees.html#g-node-traverse" title="g_node_traverse ()"><code class="function">g_node_traverse()</code></a>. If the function returns
 <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a>, then the traversal is stopped.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.18.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.18.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1042,7 +1036,7 @@ user data passed to <a class="link" href="glib-N-ary-Trees.html#g-node-traverse"
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.18.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.18.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> to stop the traversal.</p>
 <p></p>
 </div>
@@ -1058,7 +1052,7 @@ g_node_children_foreach (<em class="parameter"><code><a class="link" href="glib-
 <p>Calls a function for each of the children of a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a>.
 Note that it doesn't descend beneath the child nodes.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.19.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.19.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1101,7 +1095,7 @@ Note that it doesn't descend beneath the child nodes.</p>
 The function is called with each child node, together with the user
 data passed to <a class="link" href="glib-N-ary-Trees.html#g-node-children-foreach" title="g_node_children_foreach ()"><code class="function">g_node_children_foreach()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.20.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.20.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1130,7 +1124,7 @@ data passed to <a class="link" href="glib-N-ary-Trees.html#g-node-children-forea
 g_node_get_root (<em class="parameter"><code><a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> *node</code></em>);</pre>
 <p>Gets the root of a tree.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.21.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.21.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1145,7 +1139,7 @@ g_node_get_root (<em class="parameter"><code><a class="link" href="glib-N-ary-Tr
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.21.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.21.6"></a><h4>Returns</h4>
 <p> the root of the tree</p>
 <p></p>
 </div>
@@ -1160,7 +1154,7 @@ g_node_find (<em class="parameter"><code><a class="link" href="glib-N-ary-Trees.
              <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
 <p>Finds a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> in a tree.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.22.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.22.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1194,7 +1188,7 @@ g_node_find (<em class="parameter"><code><a class="link" href="glib-N-ary-Trees.
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.22.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.22.6"></a><h4>Returns</h4>
 <p> the found <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the data is not found</p>
 <p></p>
 </div>
@@ -1208,7 +1202,7 @@ g_node_find_child (<em class="parameter"><code><a class="link" href="glib-N-ary-
                    <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> data</code></em>);</pre>
 <p>Finds the first child of a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> with the given data.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.23.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.23.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1236,7 +1230,7 @@ g_node_find_child (<em class="parameter"><code><a class="link" href="glib-N-ary-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.23.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.23.6"></a><h4>Returns</h4>
 <p> the found child <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the data is not found</p>
 <p></p>
 </div>
@@ -1250,7 +1244,7 @@ g_node_child_index (<em class="parameter"><code><a class="link" href="glib-N-ary
 <p>Gets the position of the first child of a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> 
 which contains the given data.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.24.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.24.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1272,7 +1266,7 @@ which contains the given data.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.24.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.24.6"></a><h4>Returns</h4>
 <p> the index of the child of <em class="parameter"><code>node</code></em>
 which contains
 <em class="parameter"><code>data</code></em>
@@ -1292,7 +1286,7 @@ g_node_child_position (<em class="parameter"><code><a class="link" href="glib-N-
 . The first child is numbered 0, 
 the second 1, and so on.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.25.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.25.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1315,7 +1309,7 @@ the second 1, and so on.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.25.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.25.6"></a><h4>Returns</h4>
 <p> the position of <em class="parameter"><code>child</code></em>
 with respect to its siblings</p>
 <p></p>
@@ -1327,7 +1321,7 @@ with respect to its siblings</p>
 <pre class="programlisting">#define             g_node_first_child(node)</pre>
 <p>Gets the first child of a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.26.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.26.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1342,7 +1336,7 @@ with respect to its siblings</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.26.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.26.6"></a><h4>Returns</h4>
 <p> the first child of <em class="parameter"><code>node</code></em>
 , or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em>
 is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
@@ -1357,7 +1351,7 @@ or has no children</p>
 g_node_last_child (<em class="parameter"><code><a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> *node</code></em>);</pre>
 <p>Gets the last child of a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.27.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.27.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1372,7 +1366,7 @@ g_node_last_child (<em class="parameter"><code><a class="link" href="glib-N-ary-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.27.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.27.6"></a><h4>Returns</h4>
 <p> the last child of <em class="parameter"><code>node</code></em>
 , or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em>
 has no children</p>
@@ -1389,7 +1383,7 @@ g_node_nth_child (<em class="parameter"><code><a class="link" href="glib-N-ary-T
 The first child is at index 0. If the index is 
 too big, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is returned.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.28.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.28.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1411,7 +1405,7 @@ too big, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.28.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.28.6"></a><h4>Returns</h4>
 <p> the child of <em class="parameter"><code>node</code></em>
 at index <em class="parameter"><code>n</code></em>
 </p>
@@ -1426,7 +1420,7 @@ g_node_first_sibling (<em class="parameter"><code><a class="link" href="glib-N-a
 <p>Gets the first sibling of a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a>.
 This could possibly be the node itself.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.29.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.29.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1441,7 +1435,7 @@ This could possibly be the node itself.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.29.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.29.6"></a><h4>Returns</h4>
 <p> the first sibling of <em class="parameter"><code>node</code></em>
 </p>
 <p></p>
@@ -1453,7 +1447,7 @@ This could possibly be the node itself.</p>
 <pre class="programlisting">#define             g_node_next_sibling(node)</pre>
 <p>Gets the next sibling of a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.30.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.30.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1468,7 +1462,7 @@ This could possibly be the node itself.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.30.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.30.6"></a><h4>Returns</h4>
 <p> the next sibling of <em class="parameter"><code>node</code></em>
 , or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em>
 is the last node
@@ -1482,7 +1476,7 @@ or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code
 <pre class="programlisting">#define             g_node_prev_sibling(node)</pre>
 <p>Gets the previous sibling of a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.31.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.31.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1497,7 +1491,7 @@ or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.31.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.31.6"></a><h4>Returns</h4>
 <p> the previous sibling of <em class="parameter"><code>node</code></em>
 , or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if <em class="parameter"><code>node</code></em>
 is the first
@@ -1513,7 +1507,7 @@ g_node_last_sibling (<em class="parameter"><code><a class="link" href="glib-N-ar
 <p>Gets the last sibling of a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a>.
 This could possibly be the node itself.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.32.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.32.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1528,7 +1522,7 @@ This could possibly be the node itself.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.32.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.32.6"></a><h4>Returns</h4>
 <p> the last sibling of <em class="parameter"><code>node</code></em>
 </p>
 <p></p>
@@ -1541,7 +1535,7 @@ This could possibly be the node itself.</p>
 </pre>
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> is a leaf node.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.33.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.33.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1556,7 +1550,7 @@ This could possibly be the node itself.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.33.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.33.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> is a leaf node
 (i.e. it has no children)</p>
 <p></p>
@@ -1568,7 +1562,7 @@ This could possibly be the node itself.</p>
 <pre class="programlisting">#define             G_NODE_IS_ROOT(node)</pre>
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> is the root of a tree.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.34.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.34.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1583,7 +1577,7 @@ This could possibly be the node itself.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.34.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.34.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> is the root of a tree
 (i.e. it has no parent or siblings)</p>
 <p></p>
@@ -1599,7 +1593,7 @@ g_node_depth (<em class="parameter"><code><a class="link" href="glib-N-ary-Trees
  is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> the depth is 0. The root node has a depth of 1.
 For the children of the root node the depth is 2. And so on.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.35.6"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.35.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1614,7 +1608,7 @@ For the children of the root node the depth is 2. And so on.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.35.7"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.35.7"></a><h4>Returns</h4>
 <p> the depth of the <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a></p>
 <p></p>
 </div>
@@ -1627,7 +1621,7 @@ g_node_n_nodes (<em class="parameter"><code><a class="link" href="glib-N-ary-Tre
                 <em class="parameter"><code><a class="link" href="glib-N-ary-Trees.html#GTraverseFlags" title="enum GTraverseFlags"><span class="type">GTraverseFlags</span></a> flags</code></em>);</pre>
 <p>Gets the number of nodes in a tree.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.36.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.36.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1650,7 +1644,7 @@ g_node_n_nodes (<em class="parameter"><code><a class="link" href="glib-N-ary-Tre
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.36.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.36.6"></a><h4>Returns</h4>
 <p> the number of nodes in the tree</p>
 <p></p>
 </div>
@@ -1662,7 +1656,7 @@ g_node_n_nodes (<em class="parameter"><code><a class="link" href="glib-N-ary-Tre
 g_node_n_children (<em class="parameter"><code><a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> *node</code></em>);</pre>
 <p>Gets the number of children of a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.37.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.37.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1677,7 +1671,7 @@ g_node_n_children (<em class="parameter"><code><a class="link" href="glib-N-ary-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.37.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.37.6"></a><h4>Returns</h4>
 <p> the number of children of <em class="parameter"><code>node</code></em>
 </p>
 <p></p>
@@ -1697,7 +1691,7 @@ This is true if node is the parent of <em class="parameter"><code>descendant</co
 or if node is the grandparent of <em class="parameter"><code>descendant</code></em>
  etc.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.38.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.38.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1719,7 +1713,7 @@ or if node is the grandparent of <em class="parameter"><code>descendant</code></
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.38.6"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.38.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>node</code></em>
 is an ancestor of <em class="parameter"><code>descendant</code></em>
 </p>
@@ -1739,7 +1733,7 @@ This is the maximum distance from the <a class="link" href="glib-N-ary-Trees.htm
 1 is returned. If <em class="parameter"><code>root</code></em>
  has children, 2 is returned. And so on.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.39.6"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.39.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1754,7 +1748,7 @@ This is the maximum distance from the <a class="link" href="glib-N-ary-Trees.htm
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.14.8.39.7"></a><h4>Returns</h4>
+<a name="id-1.6.14.7.39.7"></a><h4>Returns</h4>
 <p> the maximum height of the tree beneath <em class="parameter"><code>root</code></em>
 </p>
 <p></p>
@@ -1767,7 +1761,7 @@ This is the maximum distance from the <a class="link" href="glib-N-ary-Trees.htm
 g_node_unlink (<em class="parameter"><code><a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> *node</code></em>);</pre>
 <p>Unlinks a <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> from a tree, resulting in two separate trees.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.40.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.40.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1791,7 +1785,7 @@ g_node_destroy (<em class="parameter"><code><a class="link" href="glib-N-ary-Tre
  and its children from the tree, freeing any memory
 allocated.</p>
 <div class="refsect3">
-<a name="id-1.6.14.8.41.5"></a><h4>Parameters</h4>
+<a name="id-1.6.14.7.41.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1821,7 +1815,7 @@ allocated.</p>
 </pre>
 <p>The <a class="link" href="glib-N-ary-Trees.html#GNode" title="struct GNode"><span class="type">GNode</span></a> struct represents one node in a <a class="link" href="glib-N-ary-Trees.html" title="N-ary Trees">n-ary tree</a>.</p>
 <div class="refsect3">
-<a name="id-1.6.14.9.2.5"></a><h4>Members</h4>
+<a name="id-1.6.14.8.2.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">
@@ -1880,7 +1874,7 @@ illustrated here:</p>
 <span class="inlinemediaobject"><img src="Sorted_binary_tree_breadth-first_traversal.svg"></span></p></li>
 </ul></div>
 <div class="refsect3">
-<a name="id-1.6.14.9.3.5"></a><h4>Members</h4>
+<a name="id-1.6.14.8.3.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -1934,7 +1928,7 @@ illustrated here:</p>
 <p>Specifies which nodes are visited during several of the tree
 functions, including <a class="link" href="glib-N-ary-Trees.html#g-node-traverse" title="g_node_traverse ()"><code class="function">g_node_traverse()</code></a> and <a class="link" href="glib-N-ary-Trees.html#g-node-find" title="g_node_find ()"><code class="function">g_node_find()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.14.9.4.4"></a><h4>Members</h4>
+<a name="id-1.6.14.8.4.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">

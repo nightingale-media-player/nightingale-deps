@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Quarks.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Quarks.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Quarks.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-data-types.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -109,11 +108,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Quarks.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Quarks.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -151,7 +145,7 @@ pointer comparison, rather than using <code class="function">strcmp()</code>.</p
 <p>Note that the quark name will be stringified automatically
 in the macro, so you shouldn't use double quotes.</p>
 <div class="refsect3">
-<a name="id-1.6.15.8.2.6"></a><h4>Parameters</h4>
+<a name="id-1.6.15.7.2.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -183,7 +177,7 @@ g_quark_from_string (<em class="parameter"><code>const <a class="link" href="gli
 not currently have an associated <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a>, a new <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a> is created,
 using a copy of the string.</p>
 <div class="refsect3">
-<a name="id-1.6.15.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.6.15.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -198,7 +192,7 @@ using a copy of the string.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.15.8.3.6"></a><h4>Returns</h4>
+<a name="id-1.6.15.7.3.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a> identifying the string, or 0 if <em class="parameter"><code>string</code></em>
 is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
@@ -221,7 +215,7 @@ statically allocated memory in dynamically loaded modules, if you
 expect to ever unload the module again (e.g. do not use this
 function in GTK+ theme engines).</p>
 <div class="refsect3">
-<a name="id-1.6.15.8.4.6"></a><h4>Parameters</h4>
+<a name="id-1.6.15.7.4.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -236,7 +230,7 @@ function in GTK+ theme engines).</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.15.8.4.7"></a><h4>Returns</h4>
+<a name="id-1.6.15.7.4.7"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a> identifying the string, or 0 if <em class="parameter"><code>string</code></em>
 is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a></p>
 <p></p>
@@ -249,7 +243,7 @@ is <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code
 g_quark_to_string (<em class="parameter"><code><a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a> quark</code></em>);</pre>
 <p>Gets the string associated with the given <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.15.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.6.15.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -264,7 +258,7 @@ g_quark_to_string (<em class="parameter"><code><a class="link" href="glib-Quarks
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.15.8.5.6"></a><h4>Returns</h4>
+<a name="id-1.6.15.7.5.6"></a><h4>Returns</h4>
 <p> the string associated with the <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a></p>
 <p></p>
 </div>
@@ -279,7 +273,7 @@ g_quark_try_string (<em class="parameter"><code>const <a class="link" href="glib
 <p>If you want the GQuark to be created if it doesn't already exist,
 use <a class="link" href="glib-Quarks.html#g-quark-from-string" title="g_quark_from_string ()"><code class="function">g_quark_from_string()</code></a> or <a class="link" href="glib-Quarks.html#g-quark-from-static-string" title="g_quark_from_static_string ()"><code class="function">g_quark_from_static_string()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.15.8.6.6"></a><h4>Parameters</h4>
+<a name="id-1.6.15.7.6.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -294,7 +288,7 @@ use <a class="link" href="glib-Quarks.html#g-quark-from-string" title="g_quark_f
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.15.8.6.7"></a><h4>Returns</h4>
+<a name="id-1.6.15.7.6.7"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a> associated with the string, or 0 if <em class="parameter"><code>string</code></em>
 is
 <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> or there is no <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a> associated with it</p>
@@ -311,7 +305,7 @@ g_intern_string (<em class="parameter"><code>const <a class="link" href="glib-Ba
 can be compared for equality by comparing the pointers, instead of
 using <code class="function">strcmp()</code>.</p>
 <div class="refsect3">
-<a name="id-1.6.15.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.6.15.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -326,7 +320,7 @@ using <code class="function">strcmp()</code>.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.15.8.7.6"></a><h4>Returns</h4>
+<a name="id-1.6.15.7.7.6"></a><h4>Returns</h4>
 <p> a canonical representation for the string</p>
 <p></p>
 </div>
@@ -344,7 +338,7 @@ using <code class="function">strcmp()</code>. <a class="link" href="glib-Quarks.
 therefore <em class="parameter"><code>string</code></em>
  must not be freed or modified.</p>
 <div class="refsect3">
-<a name="id-1.6.15.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.6.15.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -359,7 +353,7 @@ therefore <em class="parameter"><code>string</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.15.8.8.6"></a><h4>Returns</h4>
+<a name="id-1.6.15.7.8.6"></a><h4>Returns</h4>
 <p> a canonical representation for the string</p>
 <p></p>
 </div>

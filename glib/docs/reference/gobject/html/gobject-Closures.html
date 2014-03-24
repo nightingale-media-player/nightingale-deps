@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#gobject-Closures.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#gobject-Closures.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gobject-Closures.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="rn01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -659,11 +658,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="gobject-Closures.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="gobject-Closures.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib-object.h&gt;
 </pre>
@@ -717,7 +711,7 @@ automatically removed when the objects they point to go away.</p></li>
 </pre>
 <p>Check if the closure still needs a marshaller. See <a class="link" href="gobject-Closures.html#g-closure-set-marshal" title="g_closure_set_marshal ()"><code class="function">g_closure_set_marshal()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -732,7 +726,7 @@ automatically removed when the objects they point to go away.</p></li>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.8.2.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.7.2.6"></a><h4>Returns</h4>
 <p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if a <a class="link" href="gobject-Closures.html#GClosureMarshal" title="GClosureMarshal ()"><span class="type">GClosureMarshal</span></a> marshaller has not yet been set on
 <em class="parameter"><code>closure</code></em>
 .</p>
@@ -750,7 +744,7 @@ and the marshal guards. Note that each guard counts as two notifiers.
 See <a class="link" href="gobject-Closures.html#g-closure-set-meta-marshal" title="g_closure_set_meta_marshal ()"><code class="function">g_closure_set_meta_marshal()</code></a>, <a class="link" href="gobject-Closures.html#g-closure-add-finalize-notifier" title="g_closure_add_finalize_notifier ()"><code class="function">g_closure_add_finalize_notifier()</code></a>,
 <a class="link" href="gobject-Closures.html#g-closure-add-invalidate-notifier" title="g_closure_add_invalidate_notifier ()"><code class="function">g_closure_add_invalidate_notifier()</code></a> and <a class="link" href="gobject-Closures.html#g-closure-add-marshal-guards" title="g_closure_add_marshal_guards ()"><code class="function">g_closure_add_marshal_guards()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -765,7 +759,7 @@ See <a class="link" href="gobject-Closures.html#g-closure-set-meta-marshal" titl
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.8.3.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.7.3.6"></a><h4>Returns</h4>
 <p> number of notifiers</p>
 <p></p>
 </div>
@@ -778,7 +772,7 @@ See <a class="link" href="gobject-Closures.html#g-closure-set-meta-marshal" titl
 <p>Checks whether the user data of the <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> should be passed as the
 first parameter to the callback. See <a class="link" href="gobject-Closures.html#g-cclosure-new-swap" title="g_cclosure_new_swap ()"><code class="function">g_cclosure_new_swap()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -793,7 +787,7 @@ first parameter to the callback. See <a class="link" href="gobject-Closures.html
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.8.4.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.7.4.6"></a><h4>Returns</h4>
 <p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if data has to be swapped.</p>
 <p></p>
 </div>
@@ -805,7 +799,7 @@ first parameter to the callback. See <a class="link" href="gobject-Closures.html
 </pre>
 <p>Cast a function pointer to a <a class="link" href="gobject-Closures.html#GCallback" title="GCallback ()"><span class="type">GCallback</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -850,7 +844,7 @@ is connected). Use <a class="link" href="gobject-Closures.html#G-CALLBACK:CAPS" 
                     <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> marshal_data</code></em>);</pre>
 <p>The type used for marshaller functions.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -923,7 +917,7 @@ registering the marshaller, see <a class="link" href="gobject-Closures.html#g-cl
 <p>The type used for the various notification callbacks which can be registered
 on closures.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.10.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.10.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -957,7 +951,7 @@ g_cclosure_new (<em class="parameter"><code><a class="link" href="gobject-Closur
  as
 the last parameter.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.11.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.11.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -986,7 +980,7 @@ is no longer used</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.8.11.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.7.11.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a></p>
 <p></p>
 </div>
@@ -1003,7 +997,7 @@ g_cclosure_new_swap (<em class="parameter"><code><a class="link" href="gobject-C
  as
 the first parameter.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.12.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.12.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1032,7 +1026,7 @@ is no longer used</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.8.12.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.7.12.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -1052,7 +1046,7 @@ closure. This function is useful when you have a callback closely
 associated with a <a class="link" href="gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>, and want the callback to no longer run
 after the object is is freed.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.13.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.13.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1075,7 +1069,7 @@ after the object is is freed.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.8.13.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.7.13.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a></p>
 <p></p>
 </div>
@@ -1095,7 +1089,7 @@ closure. This function is useful when you have a callback closely
 associated with a <a class="link" href="gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>, and want the callback to no longer run
 after the object is is freed.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.14.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.14.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1118,7 +1112,7 @@ after the object is is freed.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.8.14.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.7.14.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a></p>
 <p></p>
 </div>
@@ -1136,7 +1130,7 @@ g_cclosure_marshal_generic (<em class="parameter"><code><a class="link" href="go
 <p>A generic marshaller function implemented via
 <a class="ulink" href="http://sourceware.org/libffi/" target="_top">libffi</a>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.15.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.15.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1199,7 +1193,7 @@ g_closure_new_object (<em class="parameter"><code><a href="../glib/glib-Basic-Ty
  and the created closure. This function is mainly useful
 when implementing new types of closures.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.16.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.16.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1224,7 +1218,7 @@ allocated <a class="link" href="gobject-Closures.html#GClosure" title="struct GC
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.8.16.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.7.16.6"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="gobject-Closures.html#GClosure" title="struct GClosure"><span class="type">GClosure</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -1237,7 +1231,7 @@ g_closure_ref (<em class="parameter"><code><a class="link" href="gobject-Closure
 <p>Increments the reference count on a closure to force it staying
 alive while the caller holds a pointer to it.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.17.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.17.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1252,7 +1246,7 @@ alive while the caller holds a pointer to it.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.8.17.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.7.17.6"></a><h4>Returns</h4>
 <p> The <em class="parameter"><code>closure</code></em>
 passed in, for convenience. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
@@ -1278,9 +1272,9 @@ sequences like:</p>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">closure </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="gobject-Closures.html#g-cclosure-new">g_cclosure_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cb_func</span><span class="symbol">,</span><span class="normal"> cb_data</span><span class="symbol">);</span>
-<span class="function"><a href="gobject-Closures.html#g-source-set-closure">g_source_set_closure</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">source</span><span class="symbol">,</span><span class="normal"> closure</span><span class="symbol">);</span>
-<span class="function"><a href="gobject-Closures.html#g-closure-unref">g_closure_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">closure</span><span class="symbol">);</span><span class="normal"> </span><span class="comment">// GObject doesn't really need this</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">closure <span class="gtkdoc opt">=</span> <span class="function"><a href="gobject-Closures.html#g-cclosure-new">g_cclosure_new</a></span> <span class="gtkdoc opt">(</span>cb_func<span class="gtkdoc opt">,</span> cb_data<span class="gtkdoc opt">);</span>
+<span class="function"><a href="gobject-Closures.html#g-source-set-closure">g_source_set_closure</a></span> <span class="gtkdoc opt">(</span>source<span class="gtkdoc opt">,</span> closure<span class="gtkdoc opt">);</span>
+<span class="function"><a href="gobject-Closures.html#g-closure-unref">g_closure_unref</a></span> <span class="gtkdoc opt">(</span>closure<span class="gtkdoc opt">);</span> <span class="gtkdoc slc">// GObject doesn't really need this</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1294,7 +1288,7 @@ initial reference count, if it is unowned, we instead can write:</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="gobject-Closures.html#g-source-set-closure">g_source_set_closure</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">source</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="gobject-Closures.html#g-cclosure-new">g_cclosure_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">cb_func</span><span class="symbol">,</span><span class="normal"> cb_data</span><span class="symbol">));</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="gobject-Closures.html#g-source-set-closure">g_source_set_closure</a></span> <span class="gtkdoc opt">(</span>source<span class="gtkdoc opt">,</span> <span class="function"><a href="gobject-Closures.html#g-cclosure-new">g_cclosure_new</a></span> <span class="gtkdoc opt">(</span>cb_func<span class="gtkdoc opt">,</span> cb_data<span class="gtkdoc opt">));</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1320,19 +1314,19 @@ of storing a closure for later notification looks like:</p>
 11
 12
 13</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">static</span><span class="normal"> </span><span class="usertype">GClosure</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">notify_closure </span><span class="symbol">=</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
-<span class="type">void</span>
-<span class="function">foo_notify_set_closure</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">GClosure</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">closure</span><span class="symbol">)</span>
-<span class="cbracket">{</span>
-<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">notify_closure</span><span class="symbol">)</span>
-<span class="normal">    </span><span class="function"><a href="gobject-Closures.html#g-closure-unref">g_closure_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">notify_closure</span><span class="symbol">);</span>
-<span class="normal">  notify_closure </span><span class="symbol">=</span><span class="normal"> closure</span><span class="symbol">;</span>
-<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">notify_closure</span><span class="symbol">)</span>
-<span class="normal">    </span><span class="cbracket">{</span>
-<span class="normal">      </span><span class="function"><a href="gobject-Closures.html#g-closure-ref">g_closure_ref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">notify_closure</span><span class="symbol">);</span>
-<span class="normal">      </span><span class="function"><a href="gobject-Closures.html#g-closure-sink">g_closure_sink</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">notify_closure</span><span class="symbol">);</span>
-<span class="normal">    </span><span class="cbracket">}</span>
-<span class="cbracket">}</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">static</span> GClosure <span class="gtkdoc opt">*</span>notify_closure <span class="gtkdoc opt">=</span> NULL<span class="gtkdoc opt">;</span>
+<span class="gtkdoc kwb">void</span>
+<span class="function">foo_notify_set_closure</span> <span class="gtkdoc opt">(</span>GClosure <span class="gtkdoc opt">*</span>closure<span class="gtkdoc opt">)</span>
+<span class="gtkdoc opt">{</span>
+  <span class="keyword">if</span> <span class="gtkdoc opt">(</span>notify_closure<span class="gtkdoc opt">)</span>
+    <span class="function"><a href="gobject-Closures.html#g-closure-unref">g_closure_unref</a></span> <span class="gtkdoc opt">(</span>notify_closure<span class="gtkdoc opt">);</span>
+  notify_closure <span class="gtkdoc opt">=</span> closure<span class="gtkdoc opt">;</span>
+  <span class="keyword">if</span> <span class="gtkdoc opt">(</span>notify_closure<span class="gtkdoc opt">)</span>
+    <span class="gtkdoc opt">{</span>
+      <span class="function"><a href="gobject-Closures.html#g-closure-ref">g_closure_ref</a></span> <span class="gtkdoc opt">(</span>notify_closure<span class="gtkdoc opt">);</span>
+      <span class="function"><a href="gobject-Closures.html#g-closure-sink">g_closure_sink</a></span> <span class="gtkdoc opt">(</span>notify_closure<span class="gtkdoc opt">);</span>
+    <span class="gtkdoc opt">}</span>
+<span class="gtkdoc opt">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1344,7 +1338,7 @@ of storing a closure for later notification looks like:</p>
  yet) just like <a class="link" href="gobject-Closures.html#g-closure-unref" title="g_closure_unref ()"><code class="function">g_closure_unref()</code></a>,
 <a class="link" href="gobject-Closures.html#g-closure-ref" title="g_closure_ref ()"><code class="function">g_closure_ref()</code></a> should be called prior to this function.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.18.13"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.18.13"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1369,7 +1363,7 @@ g_closure_unref (<em class="parameter"><code><a class="link" href="gobject-Closu
 incremented by the same caller. If no other callers are using the
 closure, then the closure will be destroyed and freed.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.19.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.19.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1396,7 +1390,7 @@ g_closure_invoke (<em class="parameter"><code><a class="link" href="gobject-Clos
 <p>Invokes the closure, i.e. executes the callback represented by the <em class="parameter"><code>closure</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.20.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.20.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1458,7 +1452,7 @@ that you've previously called <a class="link" href="gobject-Closures.html#g-clos
 reference count of a closure drops to zero (unless it has already
 been invalidated before).</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.21.6"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.21.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1488,7 +1482,7 @@ a single call to <a class="link" href="gobject-Closures.html#g-closure-unref" ti
 both invalidated and finalized, then the invalidate notifiers will
 be run before the finalize notifiers.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.22.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.22.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1529,7 +1523,7 @@ g_closure_add_invalidate_notifier (<em class="parameter"><code><a class="link" h
 notifiers are invoked before finalization notifiers, in an
 unspecified order.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.23.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.23.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1567,7 +1561,7 @@ g_closure_remove_finalize_notifier (<em class="parameter"><code><a class="link" 
 <p>Removes a finalization notifier.</p>
 <p>Notice that notifiers are automatically removed after they are run.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.24.6"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.24.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1606,7 +1600,7 @@ g_closure_remove_invalidate_notifier (<em class="parameter"><code><a class="link
 <p>Removes an invalidation notifier.</p>
 <p>Notice that notifiers are automatically removed after they are run.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.25.6"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.25.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1678,36 +1672,36 @@ implementing new types of closures.</p>
 28
 29
 30</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">typedef</span><span class="normal"> </span><span class="keyword">struct</span><span class="normal"> </span><span class="classname">_MyClosure</span><span class="normal"> MyClosure</span><span class="symbol">;</span>
-<span class="keyword">struct</span><span class="normal"> </span><span class="classname">_MyClosure</span>
-<span class="cbracket">{</span>
-<span class="normal">  </span><span class="usertype">GClosure</span><span class="normal"> closure</span><span class="symbol">;</span>
-<span class="normal">  </span><span class="comment">// extra data goes here</span>
-<span class="cbracket">}</span><span class="symbol">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwc">typedef</span> <span class="gtkdoc kwb">struct</span> _MyClosure MyClosure<span class="gtkdoc opt">;</span>
+<span class="gtkdoc kwb">struct</span> _MyClosure
+<span class="gtkdoc opt">{</span>
+  GClosure closure<span class="gtkdoc opt">;</span>
+  <span class="gtkdoc slc">// extra data goes here</span>
+<span class="gtkdoc opt">};</span>
 
-<span class="keyword">static</span><span class="normal"> </span><span class="type">void</span>
-<span class="function">my_closure_finalize</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">gpointer</span><span class="normal">  notify_data</span><span class="symbol">,</span>
-<span class="normal">                     </span><span class="usertype">GClosure</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">closure</span><span class="symbol">)</span>
-<span class="cbracket">{</span>
-<span class="normal">  </span><span class="usertype">MyClosure</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">my_closure </span><span class="symbol">=</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">MyClosure </span><span class="symbol">*)</span><span class="normal">closure</span><span class="symbol">;</span>
+<span class="gtkdoc kwb">static void</span>
+<span class="function">my_closure_finalize</span> <span class="gtkdoc opt">(</span>gpointer  notify_data<span class="gtkdoc opt">,</span>
+                     GClosure <span class="gtkdoc opt">*</span>closure<span class="gtkdoc opt">)</span>
+<span class="gtkdoc opt">{</span>
+  MyClosure <span class="gtkdoc opt">*</span>my_closure <span class="gtkdoc opt">= (</span>MyClosure <span class="gtkdoc opt">*)</span>closure<span class="gtkdoc opt">;</span>
 
-<span class="normal">  </span><span class="comment">// free extra data here</span>
-<span class="cbracket">}</span>
+  <span class="gtkdoc slc">// free extra data here</span>
+<span class="gtkdoc opt">}</span>
 
-<span class="usertype">MyClosure</span><span class="normal"> </span><span class="symbol">*</span><span class="function">my_closure_new</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">gpointer</span><span class="normal"> data</span><span class="symbol">)</span>
-<span class="cbracket">{</span>
-<span class="normal">  </span><span class="usertype">GClosure</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">closure</span><span class="symbol">;</span>
-<span class="normal">  </span><span class="usertype">MyClosure</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">my_closure</span><span class="symbol">;</span>
+MyClosure <span class="gtkdoc opt">*</span><span class="function">my_closure_new</span> <span class="gtkdoc opt">(</span>gpointer data<span class="gtkdoc opt">)</span>
+<span class="gtkdoc opt">{</span>
+  GClosure <span class="gtkdoc opt">*</span>closure<span class="gtkdoc opt">;</span>
+  MyClosure <span class="gtkdoc opt">*</span>my_closure<span class="gtkdoc opt">;</span>
 
-<span class="normal">  closure </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="gobject-Closures.html#g-closure-new-simple">g_closure_new_simple</a></span><span class="normal"> </span><span class="symbol">(</span><span class="keyword">sizeof</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">MyClosure</span><span class="symbol">),</span><span class="normal"> data</span><span class="symbol">);</span>
-<span class="normal">  my_closure </span><span class="symbol">=</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">MyClosure </span><span class="symbol">*)</span><span class="normal"> closure</span><span class="symbol">;</span>
+  closure <span class="gtkdoc opt">=</span> <span class="function"><a href="gobject-Closures.html#g-closure-new-simple">g_closure_new_simple</a></span> <span class="gtkdoc opt">(</span><span class="keyword">sizeof</span> <span class="gtkdoc opt">(</span>MyClosure<span class="gtkdoc opt">),</span> data<span class="gtkdoc opt">);</span>
+  my_closure <span class="gtkdoc opt">= (</span>MyClosure <span class="gtkdoc opt">*)</span> closure<span class="gtkdoc opt">;</span>
 
-<span class="normal">  </span><span class="comment">// initialize extra data here</span>
+  <span class="gtkdoc slc">// initialize extra data here</span>
 
-<span class="normal">  </span><span class="function"><a href="gobject-Closures.html#g-closure-add-finalize-notifier">g_closure_add_finalize_notifier</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">closure</span><span class="symbol">,</span><span class="normal"> notify_data</span><span class="symbol">,</span>
-<span class="normal">                                   my_closure_finalize</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="keyword">return</span><span class="normal"> my_closure</span><span class="symbol">;</span>
-<span class="cbracket">}</span></pre></td>
+  <span class="function"><a href="gobject-Closures.html#g-closure-add-finalize-notifier">g_closure_add_finalize_notifier</a></span> <span class="gtkdoc opt">(</span>closure<span class="gtkdoc opt">,</span> notify_data<span class="gtkdoc opt">,</span>
+                                   my_closure_finalize<span class="gtkdoc opt">);</span>
+  <span class="keyword">return</span> my_closure<span class="gtkdoc opt">;</span>
+<span class="gtkdoc opt">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1715,7 +1709,7 @@ implementing new types of closures.</p>
 
 <p></p>
 <div class="refsect3">
-<a name="id-1.4.13.8.26.7"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.26.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1739,7 +1733,7 @@ field of the newly allocated <a class="link" href="gobject-Closures.html#GClosur
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.8.26.8"></a><h4>Returns</h4>
+<a name="id-1.4.13.7.26.8"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="gobject-Closures.html#GClosure" title="struct GClosure"><span class="type">GClosure</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -1760,7 +1754,7 @@ functions), what it provides is a callback function to use instead of
 <em class="parameter"><code>closure</code></em>
 -&gt;callback.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.27.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.27.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1796,7 +1790,7 @@ closure callback, respectively. This is typically used to protect
 the extra arguments for the duration of the callback. See
 <a class="link" href="gobject-The-Base-Object-Type.html#g-object-watch-closure" title="g_object_watch_closure ()"><code class="function">g_object_watch_closure()</code></a> for an example of marshal guards.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.28.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.28.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1860,7 +1854,7 @@ the right callback and passes it to the marshaller as the
 <em class="parameter"><code>marshal_data</code></em>
  argument.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.29.6"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.29.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1901,7 +1895,7 @@ and <em class="parameter"><code>closure_marshal</code></em>
  fields of the <a href="../glib/glib-The-Main-Event-Loop.html#GSourceFuncs"><span class="type">GSourceFuncs</span></a> structure must have been
 filled in with pointers to appropriate functions.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.30.6"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.30.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1941,7 +1935,7 @@ that type.)</p>
 structure must have been filled in with pointers to appropriate
 functions.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.31.6"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.31.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1969,7 +1963,7 @@ g_cclosure_marshal_VOID__VOID (<em class="parameter"><code><a class="link" href=
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.32.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.32.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2025,7 +2019,7 @@ g_cclosure_marshal_VOID__BOOLEAN (<em class="parameter"><code><a class="link" hr
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, gboolean arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.33.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.33.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2081,7 +2075,7 @@ g_cclosure_marshal_VOID__CHAR (<em class="parameter"><code><a class="link" href=
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, gchar arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.34.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.34.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2137,7 +2131,7 @@ g_cclosure_marshal_VOID__UCHAR (<em class="parameter"><code><a class="link" href
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, guchar arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.35.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.35.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2193,7 +2187,7 @@ g_cclosure_marshal_VOID__INT (<em class="parameter"><code><a class="link" href="
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, gint arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.36.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.36.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2249,7 +2243,7 @@ g_cclosure_marshal_VOID__UINT (<em class="parameter"><code><a class="link" href=
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, guint arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.37.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.37.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2305,7 +2299,7 @@ g_cclosure_marshal_VOID__LONG (<em class="parameter"><code><a class="link" href=
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, glong arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.38.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.38.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2361,7 +2355,7 @@ g_cclosure_marshal_VOID__ULONG (<em class="parameter"><code><a class="link" href
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, gulong arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.39.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.39.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2417,7 +2411,7 @@ g_cclosure_marshal_VOID__ENUM (<em class="parameter"><code><a class="link" href=
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, gint arg1, gpointer user_data)</code> where the <a href="../glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> parameter denotes an enumeration type..</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.40.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.40.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2473,7 +2467,7 @@ g_cclosure_marshal_VOID__FLAGS (<em class="parameter"><code><a class="link" href
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, gint arg1, gpointer user_data)</code> where the <a href="../glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> parameter denotes a flags type.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.41.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.41.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2529,7 +2523,7 @@ g_cclosure_marshal_VOID__FLOAT (<em class="parameter"><code><a class="link" href
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, gfloat arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.42.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.42.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2585,7 +2579,7 @@ g_cclosure_marshal_VOID__DOUBLE (<em class="parameter"><code><a class="link" hre
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, gdouble arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.43.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.43.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2641,7 +2635,7 @@ g_cclosure_marshal_VOID__STRING (<em class="parameter"><code><a class="link" hre
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, const gchar *arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.44.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.44.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2697,7 +2691,7 @@ g_cclosure_marshal_VOID__PARAM (<em class="parameter"><code><a class="link" href
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, GParamSpec *arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.45.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.45.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2753,7 +2747,7 @@ g_cclosure_marshal_VOID__BOXED (<em class="parameter"><code><a class="link" href
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, GBoxed *arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.46.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.46.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2778,7 +2772,7 @@ g_cclosure_marshal_VOID__BOXED (<em class="parameter"><code><a class="link" href
 </tr>
 <tr>
 <td class="parameter_name"><p>param_values</p></td>
-<td class="parameter_description"><p>a <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> array holding the instance and the <span class="type">GBoxed</span>* parameter</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> array holding the instance and the <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/gobject-Boxed-Types.html"><span class="type">GBoxed</span></a>* parameter</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
@@ -2809,7 +2803,7 @@ g_cclosure_marshal_VOID__POINTER (<em class="parameter"><code><a class="link" hr
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, gpointer arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.47.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.47.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2865,7 +2859,7 @@ g_cclosure_marshal_VOID__OBJECT (<em class="parameter"><code><a class="link" hre
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, GObject *arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.48.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.48.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2921,7 +2915,7 @@ g_cclosure_marshal_VOID__VARIANT (<em class="parameter"><code><a class="link" hr
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, GVariant *arg1, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.49.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.49.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2979,7 +2973,7 @@ g_cclosure_marshal_STRING__OBJECT_POINTER
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">gchar* (*callback) (gpointer instance, GObject *arg1, gpointer arg2, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.50.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.50.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -3035,7 +3029,7 @@ g_cclosure_marshal_VOID__UINT_POINTER (<em class="parameter"><code><a class="lin
 <p>A marshaller for a <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> with a callback of type
 <code class="literal">void (*callback) (gpointer instance, guint arg1, gpointer arg2, gpointer user_data)</code>.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.51.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.51.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -3092,7 +3086,7 @@ g_cclosure_marshal_BOOLEAN__FLAGS (<em class="parameter"><code><a class="link" h
 <code class="literal">gboolean (*callback) (gpointer instance, gint arg1, gpointer user_data)</code> where the <a href="../glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> parameter
 denotes a flags type.</p>
 <div class="refsect3">
-<a name="id-1.4.13.8.52.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.7.52.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -3438,7 +3432,7 @@ g_cclosure_marshal_BOOLEAN__BOXED_BOXEDv
 </pre>
 <p>A <a class="link" href="gobject-Closures.html#GClosure" title="struct GClosure"><span class="type">GClosure</span></a> represents a callback supplied by the programmer.</p>
 <div class="refsect3">
-<a name="id-1.4.13.9.2.5"></a><h4>Members</h4>
+<a name="id-1.4.13.8.2.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">
@@ -3472,7 +3466,7 @@ g_cclosure_marshal_BOOLEAN__BOXED_BOXEDv
 </pre>
 <p>A <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a> is a specialization of <a class="link" href="gobject-Closures.html#GClosure" title="struct GClosure"><span class="type">GClosure</span></a> for C function callbacks.</p>
 <div class="refsect3">
-<a name="id-1.4.13.9.3.5"></a><h4>Members</h4>
+<a name="id-1.4.13.8.3.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">

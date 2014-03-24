@@ -147,7 +147,6 @@
 <ANCHOR id="gio-GFileAttribute" href="gio/gio-GFileAttribute.html">
 <ANCHOR id="gio-GFileAttribute.functions" href="gio/gio-GFileAttribute.html#gio-GFileAttribute.functions">
 <ANCHOR id="gio-GFileAttribute.other" href="gio/gio-GFileAttribute.html#gio-GFileAttribute.other">
-<ANCHOR id="gio-GFileAttribute.object-hierarchy" href="gio/gio-GFileAttribute.html#gio-GFileAttribute.object-hierarchy">
 <ANCHOR id="gio-GFileAttribute.includes" href="gio/gio-GFileAttribute.html#gio-GFileAttribute.includes">
 <ANCHOR id="gio-GFileAttribute.description" href="gio/gio-GFileAttribute.html#gio-GFileAttribute.description">
 <ANCHOR id="gio-GFileAttribute.functions_details" href="gio/gio-GFileAttribute.html#gio-GFileAttribute.functions_details">
@@ -353,7 +352,6 @@
 <ANCHOR id="gio-GIOError" href="gio/gio-GIOError.html">
 <ANCHOR id="gio-GIOError.functions" href="gio/gio-GIOError.html#gio-GIOError.functions">
 <ANCHOR id="gio-GIOError.other" href="gio/gio-GIOError.html#gio-GIOError.other">
-<ANCHOR id="gio-GIOError.object-hierarchy" href="gio/gio-GIOError.html#gio-GIOError.object-hierarchy">
 <ANCHOR id="gio-GIOError.includes" href="gio/gio-GIOError.html#gio-GIOError.includes">
 <ANCHOR id="gio-GIOError.description" href="gio/gio-GIOError.html#gio-GIOError.description">
 <ANCHOR id="gio-GIOError.functions_details" href="gio/gio-GIOError.html#gio-GIOError.functions_details">
@@ -532,7 +530,6 @@
 <ANCHOR id="gio-GIOScheduler" href="gio/gio-GIOScheduler.html">
 <ANCHOR id="gio-GIOScheduler.functions" href="gio/gio-GIOScheduler.html#gio-GIOScheduler.functions">
 <ANCHOR id="gio-GIOScheduler.other" href="gio/gio-GIOScheduler.html#gio-GIOScheduler.other">
-<ANCHOR id="gio-GIOScheduler.object-hierarchy" href="gio/gio-GIOScheduler.html#gio-GIOScheduler.object-hierarchy">
 <ANCHOR id="gio-GIOScheduler.includes" href="gio/gio-GIOScheduler.html#gio-GIOScheduler.includes">
 <ANCHOR id="gio-GIOScheduler.description" href="gio/gio-GIOScheduler.html#gio-GIOScheduler.description">
 <ANCHOR id="gio-GIOScheduler.functions_details" href="gio/gio-GIOScheduler.html#gio-GIOScheduler.functions_details">
@@ -1038,7 +1035,6 @@
 <ANCHOR id="gio-GWin32InputStream" href="gio/gio-GWin32InputStream.html">
 <ANCHOR id="gio-GWin32InputStream.functions" href="gio/gio-GWin32InputStream.html#gio-GWin32InputStream.functions">
 <ANCHOR id="gio-GWin32InputStream.other" href="gio/gio-GWin32InputStream.html#gio-GWin32InputStream.other">
-<ANCHOR id="gio-GWin32InputStream.object-hierarchy" href="gio/gio-GWin32InputStream.html#gio-GWin32InputStream.object-hierarchy">
 <ANCHOR id="gio-GWin32InputStream.includes" href="gio/gio-GWin32InputStream.html#gio-GWin32InputStream.includes">
 <ANCHOR id="gio-GWin32InputStream.description" href="gio/gio-GWin32InputStream.html#gio-GWin32InputStream.description">
 <ANCHOR id="gio-GWin32InputStream.functions_details" href="gio/gio-GWin32InputStream.html#gio-GWin32InputStream.functions_details">
@@ -1052,7 +1048,6 @@
 <ANCHOR id="gio-GWin32OutputStream" href="gio/gio-GWin32OutputStream.html">
 <ANCHOR id="gio-GWin32OutputStream.functions" href="gio/gio-GWin32OutputStream.html#gio-GWin32OutputStream.functions">
 <ANCHOR id="gio-GWin32OutputStream.other" href="gio/gio-GWin32OutputStream.html#gio-GWin32OutputStream.other">
-<ANCHOR id="gio-GWin32OutputStream.object-hierarchy" href="gio/gio-GWin32OutputStream.html#gio-GWin32OutputStream.object-hierarchy">
 <ANCHOR id="gio-GWin32OutputStream.includes" href="gio/gio-GWin32OutputStream.html#gio-GWin32OutputStream.includes">
 <ANCHOR id="gio-GWin32OutputStream.description" href="gio/gio-GWin32OutputStream.html#gio-GWin32OutputStream.description">
 <ANCHOR id="gio-GWin32OutputStream.functions_details" href="gio/gio-GWin32OutputStream.html#gio-GWin32OutputStream.functions_details">
@@ -1133,7 +1128,6 @@
 <ANCHOR id="GPollableOutputStream.see-also" href="gio/GPollableOutputStream.html#GPollableOutputStream.see-also">
 <ANCHOR id="gio-gpollableutils" href="gio/gio-gpollableutils.html">
 <ANCHOR id="gio-gpollableutils.functions" href="gio/gio-gpollableutils.html#gio-gpollableutils.functions">
-<ANCHOR id="gio-gpollableutils.object-hierarchy" href="gio/gio-gpollableutils.html#gio-gpollableutils.object-hierarchy">
 <ANCHOR id="gio-gpollableutils.includes" href="gio/gio-gpollableutils.html#gio-gpollableutils.includes">
 <ANCHOR id="gio-gpollableutils.description" href="gio/gio-gpollableutils.html#gio-gpollableutils.description">
 <ANCHOR id="gio-gpollableutils.functions_details" href="gio/gio-gpollableutils.html#gio-gpollableutils.functions_details">
@@ -1146,7 +1140,6 @@
 <ANCHOR id="gio-gpollableutils.other_details" href="gio/gio-gpollableutils.html#gio-gpollableutils.other_details">
 <ANCHOR id="gio-GContentType" href="gio/gio-GContentType.html">
 <ANCHOR id="gio-GContentType.functions" href="gio/gio-GContentType.html#gio-GContentType.functions">
-<ANCHOR id="gio-GContentType.object-hierarchy" href="gio/gio-GContentType.html#gio-GContentType.object-hierarchy">
 <ANCHOR id="gio-GContentType.includes" href="gio/gio-GContentType.html#gio-GContentType.includes">
 <ANCHOR id="gio-GContentType.description" href="gio/gio-GContentType.html#gio-GContentType.description">
 <ANCHOR id="gio-GContentType.functions_details" href="gio/gio-GContentType.html#gio-GContentType.functions_details">
@@ -1520,7 +1513,6 @@
 <ANCHOR id="gio-GBytesIcon" href="gio/gio-GBytesIcon.html">
 <ANCHOR id="gio-GBytesIcon.functions" href="gio/gio-GBytesIcon.html#gio-GBytesIcon.functions">
 <ANCHOR id="gio-GBytesIcon.other" href="gio/gio-GBytesIcon.html#gio-GBytesIcon.other">
-<ANCHOR id="gio-GBytesIcon.object-hierarchy" href="gio/gio-GBytesIcon.html#gio-GBytesIcon.object-hierarchy">
 <ANCHOR id="gio-GBytesIcon.includes" href="gio/gio-GBytesIcon.html#gio-GBytesIcon.includes">
 <ANCHOR id="gio-GBytesIcon.description" href="gio/gio-GBytesIcon.html#gio-GBytesIcon.description">
 <ANCHOR id="gio-GBytesIcon.functions_details" href="gio/gio-GBytesIcon.html#gio-GBytesIcon.functions_details">
@@ -1688,7 +1680,6 @@
 <ANCHOR id="gio-GSubprocessLauncher" href="gio/gio-GSubprocessLauncher.html">
 <ANCHOR id="gio-GSubprocessLauncher.functions" href="gio/gio-GSubprocessLauncher.html#gio-GSubprocessLauncher.functions">
 <ANCHOR id="gio-GSubprocessLauncher.other" href="gio/gio-GSubprocessLauncher.html#gio-GSubprocessLauncher.other">
-<ANCHOR id="gio-GSubprocessLauncher.object-hierarchy" href="gio/gio-GSubprocessLauncher.html#gio-GSubprocessLauncher.object-hierarchy">
 <ANCHOR id="gio-GSubprocessLauncher.includes" href="gio/gio-GSubprocessLauncher.html#gio-GSubprocessLauncher.includes">
 <ANCHOR id="gio-GSubprocessLauncher.description" href="gio/gio-GSubprocessLauncher.html#gio-GSubprocessLauncher.description">
 <ANCHOR id="gio-GSubprocessLauncher.functions_details" href="gio/gio-GSubprocessLauncher.html#gio-GSubprocessLauncher.functions_details">
@@ -1841,7 +1832,6 @@
 <ANCHOR id="gio-GInetAddressMask" href="gio/gio-GInetAddressMask.html">
 <ANCHOR id="gio-GInetAddressMask.functions" href="gio/gio-GInetAddressMask.html#gio-GInetAddressMask.functions">
 <ANCHOR id="gio-GInetAddressMask.other" href="gio/gio-GInetAddressMask.html#gio-GInetAddressMask.other">
-<ANCHOR id="gio-GInetAddressMask.object-hierarchy" href="gio/gio-GInetAddressMask.html#gio-GInetAddressMask.object-hierarchy">
 <ANCHOR id="gio-GInetAddressMask.includes" href="gio/gio-GInetAddressMask.html#gio-GInetAddressMask.includes">
 <ANCHOR id="gio-GInetAddressMask.description" href="gio/gio-GInetAddressMask.html#gio-GInetAddressMask.description">
 <ANCHOR id="gio-GInetAddressMask.functions_details" href="gio/gio-GInetAddressMask.html#gio-GInetAddressMask.functions_details">
@@ -2053,7 +2043,6 @@
 <ANCHOR id="GProxyAddress--username" href="gio/GProxyAddress.html#GProxyAddress--username">
 <ANCHOR id="gio-gnetworking.h" href="gio/gio-gnetworking.h.html">
 <ANCHOR id="gio-gnetworking.h.functions" href="gio/gio-gnetworking.h.html#gio-gnetworking.h.functions">
-<ANCHOR id="gio-gnetworking.h.object-hierarchy" href="gio/gio-gnetworking.h.html#gio-gnetworking.h.object-hierarchy">
 <ANCHOR id="gio-gnetworking.h.includes" href="gio/gio-gnetworking.h.html#gio-gnetworking.h.includes">
 <ANCHOR id="gio-gnetworking.h.description" href="gio/gio-gnetworking.h.html#gio-gnetworking.h.description">
 <ANCHOR id="gio-gnetworking.h.functions_details" href="gio/gio-gnetworking.h.html#gio-gnetworking.h.functions_details">
@@ -2653,7 +2642,6 @@
 <ANCHOR id="GSrvTarget-struct" href="gio/GSrvTarget.html#GSrvTarget-struct">
 <ANCHOR id="gio-D-Bus-Utilities" href="gio/gio-D-Bus-Utilities.html">
 <ANCHOR id="gio-D-Bus-Utilities.functions" href="gio/gio-D-Bus-Utilities.html#gio-D-Bus-Utilities.functions">
-<ANCHOR id="gio-D-Bus-Utilities.object-hierarchy" href="gio/gio-D-Bus-Utilities.html#gio-D-Bus-Utilities.object-hierarchy">
 <ANCHOR id="gio-D-Bus-Utilities.includes" href="gio/gio-D-Bus-Utilities.html#gio-D-Bus-Utilities.includes">
 <ANCHOR id="gio-D-Bus-Utilities.description" href="gio/gio-D-Bus-Utilities.html#gio-D-Bus-Utilities.description">
 <ANCHOR id="gio-D-Bus-Utilities.functions_details" href="gio/gio-D-Bus-Utilities.html#gio-D-Bus-Utilities.functions_details">
@@ -2668,7 +2656,6 @@
 <ANCHOR id="gio-D-Bus-Utilities.other_details" href="gio/gio-D-Bus-Utilities.html#gio-D-Bus-Utilities.other_details">
 <ANCHOR id="gio-D-Bus-Addresses" href="gio/gio-D-Bus-Addresses.html">
 <ANCHOR id="gio-D-Bus-Addresses.functions" href="gio/gio-D-Bus-Addresses.html#gio-D-Bus-Addresses.functions">
-<ANCHOR id="gio-D-Bus-Addresses.object-hierarchy" href="gio/gio-D-Bus-Addresses.html#gio-D-Bus-Addresses.object-hierarchy">
 <ANCHOR id="gio-D-Bus-Addresses.includes" href="gio/gio-D-Bus-Addresses.html#gio-D-Bus-Addresses.includes">
 <ANCHOR id="gio-D-Bus-Addresses.description" href="gio/gio-D-Bus-Addresses.html#gio-D-Bus-Addresses.description">
 <ANCHOR id="gio-D-Bus-Addresses.functions_details" href="gio/gio-D-Bus-Addresses.html#gio-D-Bus-Addresses.functions_details">
@@ -2736,7 +2723,6 @@
 <ANCHOR id="gio-GDBusError" href="gio/gio-GDBusError.html">
 <ANCHOR id="gio-GDBusError.functions" href="gio/gio-GDBusError.html#gio-GDBusError.functions">
 <ANCHOR id="gio-GDBusError.other" href="gio/gio-GDBusError.html#gio-GDBusError.other">
-<ANCHOR id="gio-GDBusError.object-hierarchy" href="gio/gio-GDBusError.html#gio-GDBusError.object-hierarchy">
 <ANCHOR id="gio-GDBusError.includes" href="gio/gio-GDBusError.html#gio-GDBusError.includes">
 <ANCHOR id="gio-GDBusError.description" href="gio/gio-GDBusError.html#gio-GDBusError.description">
 <ANCHOR id="gio-GDBusError.functions_details" href="gio/gio-GDBusError.html#gio-GDBusError.functions_details">
@@ -2979,7 +2965,6 @@
 <ANCHOR id="gio-Owning-Bus-Names" href="gio/gio-Owning-Bus-Names.html">
 <ANCHOR id="gio-Owning-Bus-Names.functions" href="gio/gio-Owning-Bus-Names.html#gio-Owning-Bus-Names.functions">
 <ANCHOR id="gio-Owning-Bus-Names.other" href="gio/gio-Owning-Bus-Names.html#gio-Owning-Bus-Names.other">
-<ANCHOR id="gio-Owning-Bus-Names.object-hierarchy" href="gio/gio-Owning-Bus-Names.html#gio-Owning-Bus-Names.object-hierarchy">
 <ANCHOR id="gio-Owning-Bus-Names.includes" href="gio/gio-Owning-Bus-Names.html#gio-Owning-Bus-Names.includes">
 <ANCHOR id="gio-Owning-Bus-Names.description" href="gio/gio-Owning-Bus-Names.html#gio-Owning-Bus-Names.description">
 <ANCHOR id="gio-Owning-Bus-Names.functions_details" href="gio/gio-Owning-Bus-Names.html#gio-Owning-Bus-Names.functions_details">
@@ -2996,7 +2981,6 @@
 <ANCHOR id="gio-Watching-Bus-Names" href="gio/gio-Watching-Bus-Names.html">
 <ANCHOR id="gio-Watching-Bus-Names.functions" href="gio/gio-Watching-Bus-Names.html#gio-Watching-Bus-Names.functions">
 <ANCHOR id="gio-Watching-Bus-Names.other" href="gio/gio-Watching-Bus-Names.html#gio-Watching-Bus-Names.other">
-<ANCHOR id="gio-Watching-Bus-Names.object-hierarchy" href="gio/gio-Watching-Bus-Names.html#gio-Watching-Bus-Names.object-hierarchy">
 <ANCHOR id="gio-Watching-Bus-Names.includes" href="gio/gio-Watching-Bus-Names.html#gio-Watching-Bus-Names.includes">
 <ANCHOR id="gio-Watching-Bus-Names.description" href="gio/gio-Watching-Bus-Names.html#gio-Watching-Bus-Names.description">
 <ANCHOR id="gio-Watching-Bus-Names.functions_details" href="gio/gio-Watching-Bus-Names.html#gio-Watching-Bus-Names.functions_details">
@@ -3384,7 +3368,6 @@
 <ANCHOR id="gio-GResource" href="gio/gio-GResource.html">
 <ANCHOR id="gio-GResource.functions" href="gio/gio-GResource.html#gio-GResource.functions">
 <ANCHOR id="gio-GResource.other" href="gio/gio-GResource.html#gio-GResource.other">
-<ANCHOR id="gio-GResource.object-hierarchy" href="gio/gio-GResource.html#gio-GResource.object-hierarchy">
 <ANCHOR id="gio-GResource.includes" href="gio/gio-GResource.html#gio-GResource.includes">
 <ANCHOR id="gio-GResource.description" href="gio/gio-GResource.html#gio-GResource.description">
 <ANCHOR id="gio-GResource.functions_details" href="gio/gio-GResource.html#gio-GResource.functions_details">
@@ -3648,7 +3631,6 @@
 <ANCHOR id="gio-GPropertyAction" href="gio/gio-GPropertyAction.html">
 <ANCHOR id="gio-GPropertyAction.functions" href="gio/gio-GPropertyAction.html#gio-GPropertyAction.functions">
 <ANCHOR id="gio-GPropertyAction.other" href="gio/gio-GPropertyAction.html#gio-GPropertyAction.other">
-<ANCHOR id="gio-GPropertyAction.object-hierarchy" href="gio/gio-GPropertyAction.html#gio-GPropertyAction.object-hierarchy">
 <ANCHOR id="gio-GPropertyAction.includes" href="gio/gio-GPropertyAction.html#gio-GPropertyAction.includes">
 <ANCHOR id="gio-GPropertyAction.description" href="gio/gio-GPropertyAction.html#gio-GPropertyAction.description">
 <ANCHOR id="gio-GPropertyAction.functions_details" href="gio/gio-GPropertyAction.html#gio-GPropertyAction.functions_details">
@@ -3671,7 +3653,6 @@
 <ANCHOR id="GRemoteActionGroupInterface" href="gio/GRemoteActionGroup.html#GRemoteActionGroupInterface">
 <ANCHOR id="gio-GActionGroup-exporter" href="gio/gio-GActionGroup-exporter.html">
 <ANCHOR id="gio-GActionGroup-exporter.functions" href="gio/gio-GActionGroup-exporter.html#gio-GActionGroup-exporter.functions">
-<ANCHOR id="gio-GActionGroup-exporter.object-hierarchy" href="gio/gio-GActionGroup-exporter.html#gio-GActionGroup-exporter.object-hierarchy">
 <ANCHOR id="gio-GActionGroup-exporter.includes" href="gio/gio-GActionGroup-exporter.html#gio-GActionGroup-exporter.includes">
 <ANCHOR id="gio-GActionGroup-exporter.description" href="gio/gio-GActionGroup-exporter.html#gio-GActionGroup-exporter.description">
 <ANCHOR id="gio-GActionGroup-exporter.functions_details" href="gio/gio-GActionGroup-exporter.html#gio-GActionGroup-exporter.functions_details">
@@ -3776,7 +3757,6 @@
 <ANCHOR id="GMenuItem-struct" href="gio/GMenu.html#GMenuItem-struct">
 <ANCHOR id="gio-GMenuModel-exporter" href="gio/gio-GMenuModel-exporter.html">
 <ANCHOR id="gio-GMenuModel-exporter.functions" href="gio/gio-GMenuModel-exporter.html#gio-GMenuModel-exporter.functions">
-<ANCHOR id="gio-GMenuModel-exporter.object-hierarchy" href="gio/gio-GMenuModel-exporter.html#gio-GMenuModel-exporter.object-hierarchy">
 <ANCHOR id="gio-GMenuModel-exporter.includes" href="gio/gio-GMenuModel-exporter.html#gio-GMenuModel-exporter.includes">
 <ANCHOR id="gio-GMenuModel-exporter.description" href="gio/gio-GMenuModel-exporter.html#gio-GMenuModel-exporter.description">
 <ANCHOR id="gio-GMenuModel-exporter.functions_details" href="gio/gio-GMenuModel-exporter.html#gio-GMenuModel-exporter.functions_details">
@@ -3798,7 +3778,6 @@
 <ANCHOR id="gio-GNotification" href="gio/gio-GNotification.html">
 <ANCHOR id="gio-GNotification.functions" href="gio/gio-GNotification.html#gio-GNotification.functions">
 <ANCHOR id="gio-GNotification.other" href="gio/gio-GNotification.html#gio-GNotification.other">
-<ANCHOR id="gio-GNotification.object-hierarchy" href="gio/gio-GNotification.html#gio-GNotification.object-hierarchy">
 <ANCHOR id="gio-GNotification.includes" href="gio/gio-GNotification.html#gio-GNotification.includes">
 <ANCHOR id="gio-GNotification.description" href="gio/gio-GNotification.html#gio-GNotification.description">
 <ANCHOR id="gio-GNotification.functions_details" href="gio/gio-GNotification.html#gio-GNotification.functions_details">
@@ -3858,7 +3837,6 @@
 <ANCHOR id="gio-Extension-Points" href="gio/gio-Extension-Points.html">
 <ANCHOR id="gio-Extension-Points.functions" href="gio/gio-Extension-Points.html#gio-Extension-Points.functions">
 <ANCHOR id="gio-Extension-Points.other" href="gio/gio-Extension-Points.html#gio-Extension-Points.other">
-<ANCHOR id="gio-Extension-Points.object-hierarchy" href="gio/gio-Extension-Points.html#gio-Extension-Points.object-hierarchy">
 <ANCHOR id="gio-Extension-Points.includes" href="gio/gio-Extension-Points.html#gio-Extension-Points.includes">
 <ANCHOR id="gio-Extension-Points.description" href="gio/gio-Extension-Points.html#gio-Extension-Points.description">
 <ANCHOR id="gio-Extension-Points.functions_details" href="gio/gio-Extension-Points.html#gio-Extension-Points.functions_details">

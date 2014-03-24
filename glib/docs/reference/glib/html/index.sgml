@@ -15,7 +15,6 @@
 <ANCHOR id="glib-Version-Information" href="glib/glib-Version-Information.html">
 <ANCHOR id="glib-Version-Information.functions" href="glib/glib-Version-Information.html#glib-Version-Information.functions">
 <ANCHOR id="glib-Version-Information.other" href="glib/glib-Version-Information.html#glib-Version-Information.other">
-<ANCHOR id="glib-Version-Information.object-hierarchy" href="glib/glib-Version-Information.html#glib-Version-Information.object-hierarchy">
 <ANCHOR id="glib-Version-Information.includes" href="glib/glib-Version-Information.html#glib-Version-Information.includes">
 <ANCHOR id="glib-Version-Information.description" href="glib/glib-Version-Information.html#glib-Version-Information.description">
 <ANCHOR id="glib-Version-Information.functions_details" href="glib/glib-Version-Information.html#glib-Version-Information.functions_details">
@@ -42,7 +41,6 @@
 <ANCHOR id="glib-Basic-Types" href="glib/glib-Basic-Types.html">
 <ANCHOR id="glib-Basic-Types.functions" href="glib/glib-Basic-Types.html#glib-Basic-Types.functions">
 <ANCHOR id="glib-Basic-Types.other" href="glib/glib-Basic-Types.html#glib-Basic-Types.other">
-<ANCHOR id="glib-Basic-Types.object-hierarchy" href="glib/glib-Basic-Types.html#glib-Basic-Types.object-hierarchy">
 <ANCHOR id="glib-Basic-Types.includes" href="glib/glib-Basic-Types.html#glib-Basic-Types.includes">
 <ANCHOR id="glib-Basic-Types.description" href="glib/glib-Basic-Types.html#glib-Basic-Types.description">
 <ANCHOR id="glib-Basic-Types.functions_details" href="glib/glib-Basic-Types.html#glib-Basic-Types.functions_details">
@@ -126,7 +124,6 @@
 <ANCHOR id="glib-Standard-Macros" href="glib/glib-Standard-Macros.html">
 <ANCHOR id="glib-Standard-Macros.functions" href="glib/glib-Standard-Macros.html#glib-Standard-Macros.functions">
 <ANCHOR id="glib-Standard-Macros.other" href="glib/glib-Standard-Macros.html#glib-Standard-Macros.other">
-<ANCHOR id="glib-Standard-Macros.object-hierarchy" href="glib/glib-Standard-Macros.html#glib-Standard-Macros.object-hierarchy">
 <ANCHOR id="glib-Standard-Macros.includes" href="glib/glib-Standard-Macros.html#glib-Standard-Macros.includes">
 <ANCHOR id="glib-Standard-Macros.description" href="glib/glib-Standard-Macros.html#glib-Standard-Macros.description">
 <ANCHOR id="glib-Standard-Macros.functions_details" href="glib/glib-Standard-Macros.html#glib-Standard-Macros.functions_details">
@@ -153,7 +150,6 @@
 <ANCHOR id="G-CONST-RETURN:CAPS" href="glib/glib-Standard-Macros.html#G-CONST-RETURN:CAPS">
 <ANCHOR id="glib-Type-Conversion-Macros" href="glib/glib-Type-Conversion-Macros.html">
 <ANCHOR id="glib-Type-Conversion-Macros.functions" href="glib/glib-Type-Conversion-Macros.html#glib-Type-Conversion-Macros.functions">
-<ANCHOR id="glib-Type-Conversion-Macros.object-hierarchy" href="glib/glib-Type-Conversion-Macros.html#glib-Type-Conversion-Macros.object-hierarchy">
 <ANCHOR id="glib-Type-Conversion-Macros.includes" href="glib/glib-Type-Conversion-Macros.html#glib-Type-Conversion-Macros.includes">
 <ANCHOR id="glib-Type-Conversion-Macros.description" href="glib/glib-Type-Conversion-Macros.html#glib-Type-Conversion-Macros.description">
 <ANCHOR id="glib-Type-Conversion-Macros.functions_details" href="glib/glib-Type-Conversion-Macros.html#glib-Type-Conversion-Macros.functions_details">
@@ -167,7 +163,6 @@
 <ANCHOR id="glib-Byte-Order-Macros" href="glib/glib-Byte-Order-Macros.html">
 <ANCHOR id="glib-Byte-Order-Macros.functions" href="glib/glib-Byte-Order-Macros.html#glib-Byte-Order-Macros.functions">
 <ANCHOR id="glib-Byte-Order-Macros.other" href="glib/glib-Byte-Order-Macros.html#glib-Byte-Order-Macros.other">
-<ANCHOR id="glib-Byte-Order-Macros.object-hierarchy" href="glib/glib-Byte-Order-Macros.html#glib-Byte-Order-Macros.object-hierarchy">
 <ANCHOR id="glib-Byte-Order-Macros.includes" href="glib/glib-Byte-Order-Macros.html#glib-Byte-Order-Macros.includes">
 <ANCHOR id="glib-Byte-Order-Macros.description" href="glib/glib-Byte-Order-Macros.html#glib-Byte-Order-Macros.description">
 <ANCHOR id="glib-Byte-Order-Macros.functions_details" href="glib/glib-Byte-Order-Macros.html#glib-Byte-Order-Macros.functions_details">
@@ -237,7 +232,6 @@
 <ANCHOR id="G-PDP-ENDIAN:CAPS" href="glib/glib-Byte-Order-Macros.html#G-PDP-ENDIAN:CAPS">
 <ANCHOR id="glib-Numerical-Definitions" href="glib/glib-Numerical-Definitions.html">
 <ANCHOR id="glib-Numerical-Definitions.other" href="glib/glib-Numerical-Definitions.html#glib-Numerical-Definitions.other">
-<ANCHOR id="glib-Numerical-Definitions.object-hierarchy" href="glib/glib-Numerical-Definitions.html#glib-Numerical-Definitions.object-hierarchy">
 <ANCHOR id="glib-Numerical-Definitions.includes" href="glib/glib-Numerical-Definitions.html#glib-Numerical-Definitions.includes">
 <ANCHOR id="glib-Numerical-Definitions.description" href="glib/glib-Numerical-Definitions.html#glib-Numerical-Definitions.description">
 <ANCHOR id="glib-Numerical-Definitions.functions_details" href="glib/glib-Numerical-Definitions.html#glib-Numerical-Definitions.functions_details">
@@ -257,7 +251,6 @@
 <ANCHOR id="glib-Miscellaneous-Macros" href="glib/glib-Miscellaneous-Macros.html">
 <ANCHOR id="glib-Miscellaneous-Macros.functions" href="glib/glib-Miscellaneous-Macros.html#glib-Miscellaneous-Macros.functions">
 <ANCHOR id="glib-Miscellaneous-Macros.other" href="glib/glib-Miscellaneous-Macros.html#glib-Miscellaneous-Macros.other">
-<ANCHOR id="glib-Miscellaneous-Macros.object-hierarchy" href="glib/glib-Miscellaneous-Macros.html#glib-Miscellaneous-Macros.object-hierarchy">
 <ANCHOR id="glib-Miscellaneous-Macros.includes" href="glib/glib-Miscellaneous-Macros.html#glib-Miscellaneous-Macros.includes">
 <ANCHOR id="glib-Miscellaneous-Macros.description" href="glib/glib-Miscellaneous-Macros.html#glib-Miscellaneous-Macros.description">
 <ANCHOR id="glib-Miscellaneous-Macros.functions_details" href="glib/glib-Miscellaneous-Macros.html#glib-Miscellaneous-Macros.functions_details">
@@ -305,7 +298,6 @@
 <ANCHOR id="glib-Atomic-Operations" href="glib/glib-Atomic-Operations.html">
 <ANCHOR id="glib-Atomic-Operations.functions" href="glib/glib-Atomic-Operations.html#glib-Atomic-Operations.functions">
 <ANCHOR id="glib-Atomic-Operations.other" href="glib/glib-Atomic-Operations.html#glib-Atomic-Operations.other">
-<ANCHOR id="glib-Atomic-Operations.object-hierarchy" href="glib/glib-Atomic-Operations.html#glib-Atomic-Operations.object-hierarchy">
 <ANCHOR id="glib-Atomic-Operations.includes" href="glib/glib-Atomic-Operations.html#glib-Atomic-Operations.includes">
 <ANCHOR id="glib-Atomic-Operations.description" href="glib/glib-Atomic-Operations.html#glib-Atomic-Operations.description">
 <ANCHOR id="glib-Atomic-Operations.functions_details" href="glib/glib-Atomic-Operations.html#glib-Atomic-Operations.functions_details">
@@ -332,7 +324,6 @@
 <ANCHOR id="glib-The-Main-Event-Loop" href="glib/glib-The-Main-Event-Loop.html">
 <ANCHOR id="glib-The-Main-Event-Loop.functions" href="glib/glib-The-Main-Event-Loop.html#glib-The-Main-Event-Loop.functions">
 <ANCHOR id="glib-The-Main-Event-Loop.other" href="glib/glib-The-Main-Event-Loop.html#glib-The-Main-Event-Loop.other">
-<ANCHOR id="glib-The-Main-Event-Loop.object-hierarchy" href="glib/glib-The-Main-Event-Loop.html#glib-The-Main-Event-Loop.object-hierarchy">
 <ANCHOR id="glib-The-Main-Event-Loop.includes" href="glib/glib-The-Main-Event-Loop.html#glib-The-Main-Event-Loop.includes">
 <ANCHOR id="glib-The-Main-Event-Loop.description" href="glib/glib-The-Main-Event-Loop.html#glib-The-Main-Event-Loop.description">
 <ANCHOR id="glib-The-Main-Event-Loop.functions_details" href="glib/glib-The-Main-Event-Loop.html#glib-The-Main-Event-Loop.functions_details">
@@ -451,7 +442,6 @@
 <ANCHOR id="glib-Threads" href="glib/glib-Threads.html">
 <ANCHOR id="glib-Threads.functions" href="glib/glib-Threads.html#glib-Threads.functions">
 <ANCHOR id="glib-Threads.other" href="glib/glib-Threads.html#glib-Threads.other">
-<ANCHOR id="glib-Threads.object-hierarchy" href="glib/glib-Threads.html#glib-Threads.object-hierarchy">
 <ANCHOR id="glib-Threads.includes" href="glib/glib-Threads.html#glib-Threads.includes">
 <ANCHOR id="glib-Threads.description" href="glib/glib-Threads.html#glib-Threads.description">
 <ANCHOR id="glib-Threads.functions_details" href="glib/glib-Threads.html#glib-Threads.functions_details">
@@ -525,7 +515,6 @@
 <ANCHOR id="glib-Thread-Pools" href="glib/glib-Thread-Pools.html">
 <ANCHOR id="glib-Thread-Pools.functions" href="glib/glib-Thread-Pools.html#glib-Thread-Pools.functions">
 <ANCHOR id="glib-Thread-Pools.other" href="glib/glib-Thread-Pools.html#glib-Thread-Pools.other">
-<ANCHOR id="glib-Thread-Pools.object-hierarchy" href="glib/glib-Thread-Pools.html#glib-Thread-Pools.object-hierarchy">
 <ANCHOR id="glib-Thread-Pools.includes" href="glib/glib-Thread-Pools.html#glib-Thread-Pools.includes">
 <ANCHOR id="glib-Thread-Pools.description" href="glib/glib-Thread-Pools.html#glib-Thread-Pools.description">
 <ANCHOR id="glib-Thread-Pools.functions_details" href="glib/glib-Thread-Pools.html#glib-Thread-Pools.functions_details">
@@ -549,7 +538,6 @@
 <ANCHOR id="glib-Asynchronous-Queues" href="glib/glib-Asynchronous-Queues.html">
 <ANCHOR id="glib-Asynchronous-Queues.functions" href="glib/glib-Asynchronous-Queues.html#glib-Asynchronous-Queues.functions">
 <ANCHOR id="glib-Asynchronous-Queues.other" href="glib/glib-Asynchronous-Queues.html#glib-Asynchronous-Queues.other">
-<ANCHOR id="glib-Asynchronous-Queues.object-hierarchy" href="glib/glib-Asynchronous-Queues.html#glib-Asynchronous-Queues.object-hierarchy">
 <ANCHOR id="glib-Asynchronous-Queues.includes" href="glib/glib-Asynchronous-Queues.html#glib-Asynchronous-Queues.includes">
 <ANCHOR id="glib-Asynchronous-Queues.description" href="glib/glib-Asynchronous-Queues.html#glib-Asynchronous-Queues.description">
 <ANCHOR id="glib-Asynchronous-Queues.functions_details" href="glib/glib-Asynchronous-Queues.html#glib-Asynchronous-Queues.functions_details">
@@ -583,7 +571,6 @@
 <ANCHOR id="glib-Dynamic-Loading-of-Modules" href="glib/glib-Dynamic-Loading-of-Modules.html">
 <ANCHOR id="glib-Dynamic-Loading-of-Modules.functions" href="glib/glib-Dynamic-Loading-of-Modules.html#glib-Dynamic-Loading-of-Modules.functions">
 <ANCHOR id="glib-Dynamic-Loading-of-Modules.other" href="glib/glib-Dynamic-Loading-of-Modules.html#glib-Dynamic-Loading-of-Modules.other">
-<ANCHOR id="glib-Dynamic-Loading-of-Modules.object-hierarchy" href="glib/glib-Dynamic-Loading-of-Modules.html#glib-Dynamic-Loading-of-Modules.object-hierarchy">
 <ANCHOR id="glib-Dynamic-Loading-of-Modules.includes" href="glib/glib-Dynamic-Loading-of-Modules.html#glib-Dynamic-Loading-of-Modules.includes">
 <ANCHOR id="glib-Dynamic-Loading-of-Modules.description" href="glib/glib-Dynamic-Loading-of-Modules.html#glib-Dynamic-Loading-of-Modules.description">
 <ANCHOR id="glib-Dynamic-Loading-of-Modules.functions_details" href="glib/glib-Dynamic-Loading-of-Modules.html#glib-Dynamic-Loading-of-Modules.functions_details">
@@ -606,7 +593,6 @@
 <ANCHOR id="glib-Memory-Allocation" href="glib/glib-Memory-Allocation.html">
 <ANCHOR id="glib-Memory-Allocation.functions" href="glib/glib-Memory-Allocation.html#glib-Memory-Allocation.functions">
 <ANCHOR id="glib-Memory-Allocation.other" href="glib/glib-Memory-Allocation.html#glib-Memory-Allocation.other">
-<ANCHOR id="glib-Memory-Allocation.object-hierarchy" href="glib/glib-Memory-Allocation.html#glib-Memory-Allocation.object-hierarchy">
 <ANCHOR id="glib-Memory-Allocation.includes" href="glib/glib-Memory-Allocation.html#glib-Memory-Allocation.includes">
 <ANCHOR id="glib-Memory-Allocation.description" href="glib/glib-Memory-Allocation.html#glib-Memory-Allocation.description">
 <ANCHOR id="glib-Memory-Allocation.functions_details" href="glib/glib-Memory-Allocation.html#glib-Memory-Allocation.functions_details">
@@ -643,7 +629,6 @@
 <ANCHOR id="glib-mem-profiler-table" href="glib/glib-Memory-Allocation.html#glib-mem-profiler-table">
 <ANCHOR id="glib-Memory-Slices" href="glib/glib-Memory-Slices.html">
 <ANCHOR id="glib-Memory-Slices.functions" href="glib/glib-Memory-Slices.html#glib-Memory-Slices.functions">
-<ANCHOR id="glib-Memory-Slices.object-hierarchy" href="glib/glib-Memory-Slices.html#glib-Memory-Slices.object-hierarchy">
 <ANCHOR id="glib-Memory-Slices.includes" href="glib/glib-Memory-Slices.html#glib-Memory-Slices.includes">
 <ANCHOR id="glib-Memory-Slices.description" href="glib/glib-Memory-Slices.html#glib-Memory-Slices.description">
 <ANCHOR id="glib-Memory-Slices.functions_details" href="glib/glib-Memory-Slices.html#glib-Memory-Slices.functions_details">
@@ -661,7 +646,6 @@
 <ANCHOR id="glib-IO-Channels" href="glib/glib-IO-Channels.html">
 <ANCHOR id="glib-IO-Channels.functions" href="glib/glib-IO-Channels.html#glib-IO-Channels.functions">
 <ANCHOR id="glib-IO-Channels.other" href="glib/glib-IO-Channels.html#glib-IO-Channels.other">
-<ANCHOR id="glib-IO-Channels.object-hierarchy" href="glib/glib-IO-Channels.html#glib-IO-Channels.object-hierarchy">
 <ANCHOR id="glib-IO-Channels.includes" href="glib/glib-IO-Channels.html#glib-IO-Channels.includes">
 <ANCHOR id="glib-IO-Channels.description" href="glib/glib-IO-Channels.html#glib-IO-Channels.description">
 <ANCHOR id="glib-IO-Channels.functions_details" href="glib/glib-IO-Channels.html#glib-IO-Channels.functions_details">
@@ -720,7 +704,6 @@
 <ANCHOR id="glib-Error-Reporting" href="glib/glib-Error-Reporting.html">
 <ANCHOR id="glib-Error-Reporting.functions" href="glib/glib-Error-Reporting.html#glib-Error-Reporting.functions">
 <ANCHOR id="glib-Error-Reporting.other" href="glib/glib-Error-Reporting.html#glib-Error-Reporting.other">
-<ANCHOR id="glib-Error-Reporting.object-hierarchy" href="glib/glib-Error-Reporting.html#glib-Error-Reporting.object-hierarchy">
 <ANCHOR id="glib-Error-Reporting.includes" href="glib/glib-Error-Reporting.html#glib-Error-Reporting.includes">
 <ANCHOR id="glib-Error-Reporting.description" href="glib/glib-Error-Reporting.html#glib-Error-Reporting.description">
 <ANCHOR id="glib-Error-Reporting.functions_details" href="glib/glib-Error-Reporting.html#glib-Error-Reporting.functions_details">
@@ -740,7 +723,6 @@
 <ANCHOR id="GError" href="glib/glib-Error-Reporting.html#GError">
 <ANCHOR id="glib-Warnings-and-Assertions" href="glib/glib-Warnings-and-Assertions.html">
 <ANCHOR id="glib-Warnings-and-Assertions.functions" href="glib/glib-Warnings-and-Assertions.html#glib-Warnings-and-Assertions.functions">
-<ANCHOR id="glib-Warnings-and-Assertions.object-hierarchy" href="glib/glib-Warnings-and-Assertions.html#glib-Warnings-and-Assertions.object-hierarchy">
 <ANCHOR id="glib-Warnings-and-Assertions.includes" href="glib/glib-Warnings-and-Assertions.html#glib-Warnings-and-Assertions.includes">
 <ANCHOR id="glib-Warnings-and-Assertions.description" href="glib/glib-Warnings-and-Assertions.html#glib-Warnings-and-Assertions.description">
 <ANCHOR id="glib-Warnings-and-Assertions.functions_details" href="glib/glib-Warnings-and-Assertions.html#glib-Warnings-and-Assertions.functions_details">
@@ -762,7 +744,6 @@
 <ANCHOR id="glib-Message-Logging" href="glib/glib-Message-Logging.html">
 <ANCHOR id="glib-Message-Logging.functions" href="glib/glib-Message-Logging.html#glib-Message-Logging.functions">
 <ANCHOR id="glib-Message-Logging.other" href="glib/glib-Message-Logging.html#glib-Message-Logging.other">
-<ANCHOR id="glib-Message-Logging.object-hierarchy" href="glib/glib-Message-Logging.html#glib-Message-Logging.object-hierarchy">
 <ANCHOR id="glib-Message-Logging.includes" href="glib/glib-Message-Logging.html#glib-Message-Logging.includes">
 <ANCHOR id="glib-Message-Logging.description" href="glib/glib-Message-Logging.html#glib-Message-Logging.description">
 <ANCHOR id="glib-Message-Logging.functions_details" href="glib/glib-Message-Logging.html#glib-Message-Logging.functions_details">
@@ -789,7 +770,6 @@
 <ANCHOR id="glib-String-Utility-Functions" href="glib/glib-String-Utility-Functions.html">
 <ANCHOR id="glib-String-Utility-Functions.functions" href="glib/glib-String-Utility-Functions.html#glib-String-Utility-Functions.functions">
 <ANCHOR id="glib-String-Utility-Functions.other" href="glib/glib-String-Utility-Functions.html#glib-String-Utility-Functions.other">
-<ANCHOR id="glib-String-Utility-Functions.object-hierarchy" href="glib/glib-String-Utility-Functions.html#glib-String-Utility-Functions.object-hierarchy">
 <ANCHOR id="glib-String-Utility-Functions.includes" href="glib/glib-String-Utility-Functions.html#glib-String-Utility-Functions.includes">
 <ANCHOR id="glib-String-Utility-Functions.description" href="glib/glib-String-Utility-Functions.html#glib-String-Utility-Functions.description">
 <ANCHOR id="glib-String-Utility-Functions.functions_details" href="glib/glib-String-Utility-Functions.html#glib-String-Utility-Functions.functions_details">
@@ -804,6 +784,7 @@
 <ANCHOR id="g-str-has-prefix" href="glib/glib-String-Utility-Functions.html#g-str-has-prefix">
 <ANCHOR id="g-str-has-suffix" href="glib/glib-String-Utility-Functions.html#g-str-has-suffix">
 <ANCHOR id="g-strcmp0" href="glib/glib-String-Utility-Functions.html#g-strcmp0">
+<ANCHOR id="g-str-to-ascii" href="glib/glib-String-Utility-Functions.html#g-str-to-ascii">
 <ANCHOR id="g-str-tokenize-and-fold" href="glib/glib-String-Utility-Functions.html#g-str-tokenize-and-fold">
 <ANCHOR id="g-str-match-string" href="glib/glib-String-Utility-Functions.html#g-str-match-string">
 <ANCHOR id="g-strlcpy" href="glib/glib-String-Utility-Functions.html#g-strlcpy">
@@ -875,7 +856,6 @@
 <ANCHOR id="glib-Character-Set-Conversion" href="glib/glib-Character-Set-Conversion.html">
 <ANCHOR id="glib-Character-Set-Conversion.functions" href="glib/glib-Character-Set-Conversion.html#glib-Character-Set-Conversion.functions">
 <ANCHOR id="glib-Character-Set-Conversion.other" href="glib/glib-Character-Set-Conversion.html#glib-Character-Set-Conversion.other">
-<ANCHOR id="glib-Character-Set-Conversion.object-hierarchy" href="glib/glib-Character-Set-Conversion.html#glib-Character-Set-Conversion.object-hierarchy">
 <ANCHOR id="glib-Character-Set-Conversion.includes" href="glib/glib-Character-Set-Conversion.html#glib-Character-Set-Conversion.includes">
 <ANCHOR id="glib-Character-Set-Conversion.description" href="glib/glib-Character-Set-Conversion.html#glib-Character-Set-Conversion.description">
 <ANCHOR id="glib-Character-Set-Conversion.functions_details" href="glib/glib-Character-Set-Conversion.html#glib-Character-Set-Conversion.functions_details">
@@ -901,7 +881,6 @@
 <ANCHOR id="glib-Unicode-Manipulation" href="glib/glib-Unicode-Manipulation.html">
 <ANCHOR id="glib-Unicode-Manipulation.functions" href="glib/glib-Unicode-Manipulation.html#glib-Unicode-Manipulation.functions">
 <ANCHOR id="glib-Unicode-Manipulation.other" href="glib/glib-Unicode-Manipulation.html#glib-Unicode-Manipulation.other">
-<ANCHOR id="glib-Unicode-Manipulation.object-hierarchy" href="glib/glib-Unicode-Manipulation.html#glib-Unicode-Manipulation.object-hierarchy">
 <ANCHOR id="glib-Unicode-Manipulation.includes" href="glib/glib-Unicode-Manipulation.html#glib-Unicode-Manipulation.includes">
 <ANCHOR id="glib-Unicode-Manipulation.description" href="glib/glib-Unicode-Manipulation.html#glib-Unicode-Manipulation.description">
 <ANCHOR id="glib-Unicode-Manipulation.functions_details" href="glib/glib-Unicode-Manipulation.html#glib-Unicode-Manipulation.functions_details">
@@ -982,7 +961,6 @@
 <ANCHOR id="glib-Unicode-Manipulation.see-also" href="glib/glib-Unicode-Manipulation.html#glib-Unicode-Manipulation.see-also">
 <ANCHOR id="glib-Base64-Encoding" href="glib/glib-Base64-Encoding.html">
 <ANCHOR id="glib-Base64-Encoding.functions" href="glib/glib-Base64-Encoding.html#glib-Base64-Encoding.functions">
-<ANCHOR id="glib-Base64-Encoding.object-hierarchy" href="glib/glib-Base64-Encoding.html#glib-Base64-Encoding.object-hierarchy">
 <ANCHOR id="glib-Base64-Encoding.includes" href="glib/glib-Base64-Encoding.html#glib-Base64-Encoding.includes">
 <ANCHOR id="glib-Base64-Encoding.description" href="glib/glib-Base64-Encoding.html#glib-Base64-Encoding.description">
 <ANCHOR id="glib-Base64-Encoding.functions_details" href="glib/glib-Base64-Encoding.html#glib-Base64-Encoding.functions_details">
@@ -996,7 +974,6 @@
 <ANCHOR id="glib-Data-Checksums" href="glib/glib-Data-Checksums.html">
 <ANCHOR id="glib-Data-Checksums.functions" href="glib/glib-Data-Checksums.html#glib-Data-Checksums.functions">
 <ANCHOR id="glib-Data-Checksums.other" href="glib/glib-Data-Checksums.html#glib-Data-Checksums.other">
-<ANCHOR id="glib-Data-Checksums.object-hierarchy" href="glib/glib-Data-Checksums.html#glib-Data-Checksums.object-hierarchy">
 <ANCHOR id="glib-Data-Checksums.includes" href="glib/glib-Data-Checksums.html#glib-Data-Checksums.includes">
 <ANCHOR id="glib-Data-Checksums.description" href="glib/glib-Data-Checksums.html#glib-Data-Checksums.description">
 <ANCHOR id="glib-Data-Checksums.functions_details" href="glib/glib-Data-Checksums.html#glib-Data-Checksums.functions_details">
@@ -1017,7 +994,6 @@
 <ANCHOR id="glib-Data-HMACs" href="glib/glib-Data-HMACs.html">
 <ANCHOR id="glib-Data-HMACs.functions" href="glib/glib-Data-HMACs.html#glib-Data-HMACs.functions">
 <ANCHOR id="glib-Data-HMACs.other" href="glib/glib-Data-HMACs.html#glib-Data-HMACs.other">
-<ANCHOR id="glib-Data-HMACs.object-hierarchy" href="glib/glib-Data-HMACs.html#glib-Data-HMACs.object-hierarchy">
 <ANCHOR id="glib-Data-HMACs.includes" href="glib/glib-Data-HMACs.html#glib-Data-HMACs.includes">
 <ANCHOR id="glib-Data-HMACs.description" href="glib/glib-Data-HMACs.html#glib-Data-HMACs.description">
 <ANCHOR id="glib-Data-HMACs.functions_details" href="glib/glib-Data-HMACs.html#glib-Data-HMACs.functions_details">
@@ -1034,7 +1010,6 @@
 <ANCHOR id="GHmac" href="glib/glib-Data-HMACs.html#GHmac">
 <ANCHOR id="glib-I18N" href="glib/glib-I18N.html">
 <ANCHOR id="glib-I18N.functions" href="glib/glib-I18N.html#glib-I18N.functions">
-<ANCHOR id="glib-I18N.object-hierarchy" href="glib/glib-I18N.html#glib-I18N.object-hierarchy">
 <ANCHOR id="glib-I18N.includes" href="glib/glib-I18N.html#glib-I18N.includes">
 <ANCHOR id="glib-I18N.description" href="glib/glib-I18N.html#glib-I18N.description">
 <ANCHOR id="glib-I18N.functions_details" href="glib/glib-I18N.html#glib-I18N.functions_details">
@@ -1056,7 +1031,6 @@
 <ANCHOR id="glib-Date-and-Time-Functions" href="glib/glib-Date-and-Time-Functions.html">
 <ANCHOR id="glib-Date-and-Time-Functions.functions" href="glib/glib-Date-and-Time-Functions.html#glib-Date-and-Time-Functions.functions">
 <ANCHOR id="glib-Date-and-Time-Functions.other" href="glib/glib-Date-and-Time-Functions.html#glib-Date-and-Time-Functions.other">
-<ANCHOR id="glib-Date-and-Time-Functions.object-hierarchy" href="glib/glib-Date-and-Time-Functions.html#glib-Date-and-Time-Functions.object-hierarchy">
 <ANCHOR id="glib-Date-and-Time-Functions.includes" href="glib/glib-Date-and-Time-Functions.html#glib-Date-and-Time-Functions.includes">
 <ANCHOR id="glib-Date-and-Time-Functions.description" href="glib/glib-Date-and-Time-Functions.html#glib-Date-and-Time-Functions.description">
 <ANCHOR id="glib-Date-and-Time-Functions.functions_details" href="glib/glib-Date-and-Time-Functions.html#glib-Date-and-Time-Functions.functions_details">
@@ -1131,7 +1105,6 @@
 <ANCHOR id="glib-GTimeZone" href="glib/glib-GTimeZone.html">
 <ANCHOR id="glib-GTimeZone.functions" href="glib/glib-GTimeZone.html#glib-GTimeZone.functions">
 <ANCHOR id="glib-GTimeZone.other" href="glib/glib-GTimeZone.html#glib-GTimeZone.other">
-<ANCHOR id="glib-GTimeZone.object-hierarchy" href="glib/glib-GTimeZone.html#glib-GTimeZone.object-hierarchy">
 <ANCHOR id="glib-GTimeZone.includes" href="glib/glib-GTimeZone.html#glib-GTimeZone.includes">
 <ANCHOR id="glib-GTimeZone.description" href="glib/glib-GTimeZone.html#glib-GTimeZone.description">
 <ANCHOR id="glib-GTimeZone.functions_details" href="glib/glib-GTimeZone.html#glib-GTimeZone.functions_details">
@@ -1152,7 +1125,6 @@
 <ANCHOR id="glib-GDateTime" href="glib/glib-GDateTime.html">
 <ANCHOR id="glib-GDateTime.functions" href="glib/glib-GDateTime.html#glib-GDateTime.functions">
 <ANCHOR id="glib-GDateTime.other" href="glib/glib-GDateTime.html#glib-GDateTime.other">
-<ANCHOR id="glib-GDateTime.object-hierarchy" href="glib/glib-GDateTime.html#glib-GDateTime.object-hierarchy">
 <ANCHOR id="glib-GDateTime.includes" href="glib/glib-GDateTime.html#glib-GDateTime.includes">
 <ANCHOR id="glib-GDateTime.description" href="glib/glib-GDateTime.html#glib-GDateTime.description">
 <ANCHOR id="glib-GDateTime.functions_details" href="glib/glib-GDateTime.html#glib-GDateTime.functions_details">
@@ -1215,7 +1187,6 @@
 <ANCHOR id="glib-Random-Numbers" href="glib/glib-Random-Numbers.html">
 <ANCHOR id="glib-Random-Numbers.functions" href="glib/glib-Random-Numbers.html#glib-Random-Numbers.functions">
 <ANCHOR id="glib-Random-Numbers.other" href="glib/glib-Random-Numbers.html#glib-Random-Numbers.other">
-<ANCHOR id="glib-Random-Numbers.object-hierarchy" href="glib/glib-Random-Numbers.html#glib-Random-Numbers.object-hierarchy">
 <ANCHOR id="glib-Random-Numbers.includes" href="glib/glib-Random-Numbers.html#glib-Random-Numbers.includes">
 <ANCHOR id="glib-Random-Numbers.description" href="glib/glib-Random-Numbers.html#glib-Random-Numbers.description">
 <ANCHOR id="glib-Random-Numbers.functions_details" href="glib/glib-Random-Numbers.html#glib-Random-Numbers.functions_details">
@@ -1242,7 +1213,6 @@
 <ANCHOR id="glib-Hook-Functions" href="glib/glib-Hook-Functions.html">
 <ANCHOR id="glib-Hook-Functions.functions" href="glib/glib-Hook-Functions.html#glib-Hook-Functions.functions">
 <ANCHOR id="glib-Hook-Functions.other" href="glib/glib-Hook-Functions.html#glib-Hook-Functions.other">
-<ANCHOR id="glib-Hook-Functions.object-hierarchy" href="glib/glib-Hook-Functions.html#glib-Hook-Functions.object-hierarchy">
 <ANCHOR id="glib-Hook-Functions.includes" href="glib/glib-Hook-Functions.html#glib-Hook-Functions.includes">
 <ANCHOR id="glib-Hook-Functions.description" href="glib/glib-Hook-Functions.html#glib-Hook-Functions.description">
 <ANCHOR id="glib-Hook-Functions.functions_details" href="glib/glib-Hook-Functions.html#glib-Hook-Functions.functions_details">
@@ -1291,7 +1261,6 @@
 <ANCHOR id="glib-Miscellaneous-Utility-Functions" href="glib/glib-Miscellaneous-Utility-Functions.html">
 <ANCHOR id="glib-Miscellaneous-Utility-Functions.functions" href="glib/glib-Miscellaneous-Utility-Functions.html#glib-Miscellaneous-Utility-Functions.functions">
 <ANCHOR id="glib-Miscellaneous-Utility-Functions.other" href="glib/glib-Miscellaneous-Utility-Functions.html#glib-Miscellaneous-Utility-Functions.other">
-<ANCHOR id="glib-Miscellaneous-Utility-Functions.object-hierarchy" href="glib/glib-Miscellaneous-Utility-Functions.html#glib-Miscellaneous-Utility-Functions.object-hierarchy">
 <ANCHOR id="glib-Miscellaneous-Utility-Functions.includes" href="glib/glib-Miscellaneous-Utility-Functions.html#glib-Miscellaneous-Utility-Functions.includes">
 <ANCHOR id="glib-Miscellaneous-Utility-Functions.description" href="glib/glib-Miscellaneous-Utility-Functions.html#glib-Miscellaneous-Utility-Functions.description">
 <ANCHOR id="glib-Miscellaneous-Utility-Functions.functions_details" href="glib/glib-Miscellaneous-Utility-Functions.html#glib-Miscellaneous-Utility-Functions.functions_details">
@@ -1352,7 +1321,6 @@
 <ANCHOR id="glib-Lexical-Scanner" href="glib/glib-Lexical-Scanner.html">
 <ANCHOR id="glib-Lexical-Scanner.functions" href="glib/glib-Lexical-Scanner.html#glib-Lexical-Scanner.functions">
 <ANCHOR id="glib-Lexical-Scanner.other" href="glib/glib-Lexical-Scanner.html#glib-Lexical-Scanner.other">
-<ANCHOR id="glib-Lexical-Scanner.object-hierarchy" href="glib/glib-Lexical-Scanner.html#glib-Lexical-Scanner.object-hierarchy">
 <ANCHOR id="glib-Lexical-Scanner.includes" href="glib/glib-Lexical-Scanner.html#glib-Lexical-Scanner.includes">
 <ANCHOR id="glib-Lexical-Scanner.description" href="glib/glib-Lexical-Scanner.html#glib-Lexical-Scanner.description">
 <ANCHOR id="glib-Lexical-Scanner.functions_details" href="glib/glib-Lexical-Scanner.html#glib-Lexical-Scanner.functions_details">
@@ -1397,7 +1365,6 @@
 <ANCHOR id="glib-Timers" href="glib/glib-Timers.html">
 <ANCHOR id="glib-Timers.functions" href="glib/glib-Timers.html#glib-Timers.functions">
 <ANCHOR id="glib-Timers.other" href="glib/glib-Timers.html#glib-Timers.other">
-<ANCHOR id="glib-Timers.object-hierarchy" href="glib/glib-Timers.html#glib-Timers.object-hierarchy">
 <ANCHOR id="glib-Timers.includes" href="glib/glib-Timers.html#glib-Timers.includes">
 <ANCHOR id="glib-Timers.description" href="glib/glib-Timers.html#glib-Timers.description">
 <ANCHOR id="glib-Timers.functions_details" href="glib/glib-Timers.html#glib-Timers.functions_details">
@@ -1413,7 +1380,6 @@
 <ANCHOR id="glib-Spawning-Processes" href="glib/glib-Spawning-Processes.html">
 <ANCHOR id="glib-Spawning-Processes.functions" href="glib/glib-Spawning-Processes.html#glib-Spawning-Processes.functions">
 <ANCHOR id="glib-Spawning-Processes.other" href="glib/glib-Spawning-Processes.html#glib-Spawning-Processes.other">
-<ANCHOR id="glib-Spawning-Processes.object-hierarchy" href="glib/glib-Spawning-Processes.html#glib-Spawning-Processes.object-hierarchy">
 <ANCHOR id="glib-Spawning-Processes.includes" href="glib/glib-Spawning-Processes.html#glib-Spawning-Processes.includes">
 <ANCHOR id="glib-Spawning-Processes.description" href="glib/glib-Spawning-Processes.html#glib-Spawning-Processes.description">
 <ANCHOR id="glib-Spawning-Processes.functions_details" href="glib/glib-Spawning-Processes.html#glib-Spawning-Processes.functions_details">
@@ -1433,7 +1399,6 @@
 <ANCHOR id="glib-File-Utilities" href="glib/glib-File-Utilities.html">
 <ANCHOR id="glib-File-Utilities.functions" href="glib/glib-File-Utilities.html#glib-File-Utilities.functions">
 <ANCHOR id="glib-File-Utilities.other" href="glib/glib-File-Utilities.html#glib-File-Utilities.other">
-<ANCHOR id="glib-File-Utilities.object-hierarchy" href="glib/glib-File-Utilities.html#glib-File-Utilities.object-hierarchy">
 <ANCHOR id="glib-File-Utilities.includes" href="glib/glib-File-Utilities.html#glib-File-Utilities.includes">
 <ANCHOR id="glib-File-Utilities.description" href="glib/glib-File-Utilities.html#glib-File-Utilities.description">
 <ANCHOR id="glib-File-Utilities.functions_details" href="glib/glib-File-Utilities.html#glib-File-Utilities.functions_details">
@@ -1487,7 +1452,6 @@
 <ANCHOR id="glib-URI-Functions" href="glib/glib-URI-Functions.html">
 <ANCHOR id="glib-URI-Functions.functions" href="glib/glib-URI-Functions.html#glib-URI-Functions.functions">
 <ANCHOR id="glib-URI-Functions.other" href="glib/glib-URI-Functions.html#glib-URI-Functions.other">
-<ANCHOR id="glib-URI-Functions.object-hierarchy" href="glib/glib-URI-Functions.html#glib-URI-Functions.object-hierarchy">
 <ANCHOR id="glib-URI-Functions.includes" href="glib/glib-URI-Functions.html#glib-URI-Functions.includes">
 <ANCHOR id="glib-URI-Functions.description" href="glib/glib-URI-Functions.html#glib-URI-Functions.description">
 <ANCHOR id="glib-URI-Functions.functions_details" href="glib/glib-URI-Functions.html#glib-URI-Functions.functions_details">
@@ -1506,7 +1470,6 @@
 <ANCHOR id="G-URI-RESERVED-CHARS-SUBCOMPONENT-DELIMITERS:CAPS" href="glib/glib-URI-Functions.html#G-URI-RESERVED-CHARS-SUBCOMPONENT-DELIMITERS:CAPS">
 <ANCHOR id="glib-Hostname-Utilities" href="glib/glib-Hostname-Utilities.html">
 <ANCHOR id="glib-Hostname-Utilities.functions" href="glib/glib-Hostname-Utilities.html#glib-Hostname-Utilities.functions">
-<ANCHOR id="glib-Hostname-Utilities.object-hierarchy" href="glib/glib-Hostname-Utilities.html#glib-Hostname-Utilities.object-hierarchy">
 <ANCHOR id="glib-Hostname-Utilities.includes" href="glib/glib-Hostname-Utilities.html#glib-Hostname-Utilities.includes">
 <ANCHOR id="glib-Hostname-Utilities.description" href="glib/glib-Hostname-Utilities.html#glib-Hostname-Utilities.description">
 <ANCHOR id="glib-Hostname-Utilities.functions_details" href="glib/glib-Hostname-Utilities.html#glib-Hostname-Utilities.functions_details">
@@ -1519,7 +1482,6 @@
 <ANCHOR id="glib-Shell-related-Utilities" href="glib/glib-Shell-related-Utilities.html">
 <ANCHOR id="glib-Shell-related-Utilities.functions" href="glib/glib-Shell-related-Utilities.html#glib-Shell-related-Utilities.functions">
 <ANCHOR id="glib-Shell-related-Utilities.other" href="glib/glib-Shell-related-Utilities.html#glib-Shell-related-Utilities.other">
-<ANCHOR id="glib-Shell-related-Utilities.object-hierarchy" href="glib/glib-Shell-related-Utilities.html#glib-Shell-related-Utilities.object-hierarchy">
 <ANCHOR id="glib-Shell-related-Utilities.includes" href="glib/glib-Shell-related-Utilities.html#glib-Shell-related-Utilities.includes">
 <ANCHOR id="glib-Shell-related-Utilities.description" href="glib/glib-Shell-related-Utilities.html#glib-Shell-related-Utilities.description">
 <ANCHOR id="glib-Shell-related-Utilities.functions_details" href="glib/glib-Shell-related-Utilities.html#glib-Shell-related-Utilities.functions_details">
@@ -1532,7 +1494,6 @@
 <ANCHOR id="glib-Commandline-option-parser" href="glib/glib-Commandline-option-parser.html">
 <ANCHOR id="glib-Commandline-option-parser.functions" href="glib/glib-Commandline-option-parser.html#glib-Commandline-option-parser.functions">
 <ANCHOR id="glib-Commandline-option-parser.other" href="glib/glib-Commandline-option-parser.html#glib-Commandline-option-parser.other">
-<ANCHOR id="glib-Commandline-option-parser.object-hierarchy" href="glib/glib-Commandline-option-parser.html#glib-Commandline-option-parser.object-hierarchy">
 <ANCHOR id="glib-Commandline-option-parser.includes" href="glib/glib-Commandline-option-parser.html#glib-Commandline-option-parser.includes">
 <ANCHOR id="glib-Commandline-option-parser.description" href="glib/glib-Commandline-option-parser.html#glib-Commandline-option-parser.description">
 <ANCHOR id="glib-Commandline-option-parser.functions_details" href="glib/glib-Commandline-option-parser.html#glib-Commandline-option-parser.functions_details">
@@ -1578,7 +1539,6 @@
 <ANCHOR id="glib-Glob-style-pattern-matching" href="glib/glib-Glob-style-pattern-matching.html">
 <ANCHOR id="glib-Glob-style-pattern-matching.functions" href="glib/glib-Glob-style-pattern-matching.html#glib-Glob-style-pattern-matching.functions">
 <ANCHOR id="glib-Glob-style-pattern-matching.other" href="glib/glib-Glob-style-pattern-matching.html#glib-Glob-style-pattern-matching.other">
-<ANCHOR id="glib-Glob-style-pattern-matching.object-hierarchy" href="glib/glib-Glob-style-pattern-matching.html#glib-Glob-style-pattern-matching.object-hierarchy">
 <ANCHOR id="glib-Glob-style-pattern-matching.includes" href="glib/glib-Glob-style-pattern-matching.html#glib-Glob-style-pattern-matching.includes">
 <ANCHOR id="glib-Glob-style-pattern-matching.description" href="glib/glib-Glob-style-pattern-matching.html#glib-Glob-style-pattern-matching.description">
 <ANCHOR id="glib-Glob-style-pattern-matching.functions_details" href="glib/glib-Glob-style-pattern-matching.html#glib-Glob-style-pattern-matching.functions_details">
@@ -1593,7 +1553,6 @@
 <ANCHOR id="glib-Perl-compatible-regular-expressions" href="glib/glib-Perl-compatible-regular-expressions.html">
 <ANCHOR id="glib-Perl-compatible-regular-expressions.functions" href="glib/glib-Perl-compatible-regular-expressions.html#glib-Perl-compatible-regular-expressions.functions">
 <ANCHOR id="glib-Perl-compatible-regular-expressions.other" href="glib/glib-Perl-compatible-regular-expressions.html#glib-Perl-compatible-regular-expressions.other">
-<ANCHOR id="glib-Perl-compatible-regular-expressions.object-hierarchy" href="glib/glib-Perl-compatible-regular-expressions.html#glib-Perl-compatible-regular-expressions.object-hierarchy">
 <ANCHOR id="glib-Perl-compatible-regular-expressions.includes" href="glib/glib-Perl-compatible-regular-expressions.html#glib-Perl-compatible-regular-expressions.includes">
 <ANCHOR id="glib-Perl-compatible-regular-expressions.description" href="glib/glib-Perl-compatible-regular-expressions.html#glib-Perl-compatible-regular-expressions.description">
 <ANCHOR id="glib-Perl-compatible-regular-expressions.functions_details" href="glib/glib-Perl-compatible-regular-expressions.html#glib-Perl-compatible-regular-expressions.functions_details">
@@ -1650,7 +1609,6 @@
 <ANCHOR id="glib-Simple-XML-Subset-Parser" href="glib/glib-Simple-XML-Subset-Parser.html">
 <ANCHOR id="glib-Simple-XML-Subset-Parser.functions" href="glib/glib-Simple-XML-Subset-Parser.html#glib-Simple-XML-Subset-Parser.functions">
 <ANCHOR id="glib-Simple-XML-Subset-Parser.other" href="glib/glib-Simple-XML-Subset-Parser.html#glib-Simple-XML-Subset-Parser.other">
-<ANCHOR id="glib-Simple-XML-Subset-Parser.object-hierarchy" href="glib/glib-Simple-XML-Subset-Parser.html#glib-Simple-XML-Subset-Parser.object-hierarchy">
 <ANCHOR id="glib-Simple-XML-Subset-Parser.includes" href="glib/glib-Simple-XML-Subset-Parser.html#glib-Simple-XML-Subset-Parser.includes">
 <ANCHOR id="glib-Simple-XML-Subset-Parser.description" href="glib/glib-Simple-XML-Subset-Parser.html#glib-Simple-XML-Subset-Parser.description">
 <ANCHOR id="glib-Simple-XML-Subset-Parser.functions_details" href="glib/glib-Simple-XML-Subset-Parser.html#glib-Simple-XML-Subset-Parser.functions_details">
@@ -1681,7 +1639,6 @@
 <ANCHOR id="glib-Key-value-file-parser" href="glib/glib-Key-value-file-parser.html">
 <ANCHOR id="glib-Key-value-file-parser.functions" href="glib/glib-Key-value-file-parser.html#glib-Key-value-file-parser.functions">
 <ANCHOR id="glib-Key-value-file-parser.other" href="glib/glib-Key-value-file-parser.html#glib-Key-value-file-parser.other">
-<ANCHOR id="glib-Key-value-file-parser.object-hierarchy" href="glib/glib-Key-value-file-parser.html#glib-Key-value-file-parser.object-hierarchy">
 <ANCHOR id="glib-Key-value-file-parser.includes" href="glib/glib-Key-value-file-parser.html#glib-Key-value-file-parser.includes">
 <ANCHOR id="glib-Key-value-file-parser.description" href="glib/glib-Key-value-file-parser.html#glib-Key-value-file-parser.description">
 <ANCHOR id="glib-Key-value-file-parser.functions_details" href="glib/glib-Key-value-file-parser.html#glib-Key-value-file-parser.functions_details">
@@ -1763,7 +1720,6 @@
 <ANCHOR id="glib-Bookmark-file-parser" href="glib/glib-Bookmark-file-parser.html">
 <ANCHOR id="glib-Bookmark-file-parser.functions" href="glib/glib-Bookmark-file-parser.html#glib-Bookmark-file-parser.functions">
 <ANCHOR id="glib-Bookmark-file-parser.other" href="glib/glib-Bookmark-file-parser.html#glib-Bookmark-file-parser.other">
-<ANCHOR id="glib-Bookmark-file-parser.object-hierarchy" href="glib/glib-Bookmark-file-parser.html#glib-Bookmark-file-parser.object-hierarchy">
 <ANCHOR id="glib-Bookmark-file-parser.includes" href="glib/glib-Bookmark-file-parser.html#glib-Bookmark-file-parser.includes">
 <ANCHOR id="glib-Bookmark-file-parser.description" href="glib/glib-Bookmark-file-parser.html#glib-Bookmark-file-parser.description">
 <ANCHOR id="glib-Bookmark-file-parser.functions_details" href="glib/glib-Bookmark-file-parser.html#glib-Bookmark-file-parser.functions_details">
@@ -1813,7 +1769,6 @@
 <ANCHOR id="glib-Testing" href="glib/glib-Testing.html">
 <ANCHOR id="glib-Testing.functions" href="glib/glib-Testing.html#glib-Testing.functions">
 <ANCHOR id="glib-Testing.other" href="glib/glib-Testing.html#glib-Testing.other">
-<ANCHOR id="glib-Testing.object-hierarchy" href="glib/glib-Testing.html#glib-Testing.object-hierarchy">
 <ANCHOR id="glib-Testing.includes" href="glib/glib-Testing.html#glib-Testing.includes">
 <ANCHOR id="glib-Testing.description" href="glib/glib-Testing.html#glib-Testing.description">
 <ANCHOR id="glib-Testing.functions_details" href="glib/glib-Testing.html#glib-Testing.functions_details">
@@ -1901,7 +1856,6 @@
 <ANCHOR id="glib-Testing.see-also" href="glib/glib-Testing.html#glib-Testing.see-also">
 <ANCHOR id="glib-UNIX-specific-utilities-and-integration" href="glib/glib-UNIX-specific-utilities-and-integration.html">
 <ANCHOR id="glib-UNIX-specific-utilities-and-integration.functions" href="glib/glib-UNIX-specific-utilities-and-integration.html#glib-UNIX-specific-utilities-and-integration.functions">
-<ANCHOR id="glib-UNIX-specific-utilities-and-integration.object-hierarchy" href="glib/glib-UNIX-specific-utilities-and-integration.html#glib-UNIX-specific-utilities-and-integration.object-hierarchy">
 <ANCHOR id="glib-UNIX-specific-utilities-and-integration.includes" href="glib/glib-UNIX-specific-utilities-and-integration.html#glib-UNIX-specific-utilities-and-integration.includes">
 <ANCHOR id="glib-UNIX-specific-utilities-and-integration.description" href="glib/glib-UNIX-specific-utilities-and-integration.html#glib-UNIX-specific-utilities-and-integration.description">
 <ANCHOR id="glib-UNIX-specific-utilities-and-integration.functions_details" href="glib/glib-UNIX-specific-utilities-and-integration.html#glib-UNIX-specific-utilities-and-integration.functions_details">
@@ -1919,7 +1873,6 @@
 <ANCHOR id="glib-Windows-Compatibility-Functions" href="glib/glib-Windows-Compatibility-Functions.html">
 <ANCHOR id="glib-Windows-Compatibility-Functions.functions" href="glib/glib-Windows-Compatibility-Functions.html#glib-Windows-Compatibility-Functions.functions">
 <ANCHOR id="glib-Windows-Compatibility-Functions.other" href="glib/glib-Windows-Compatibility-Functions.html#glib-Windows-Compatibility-Functions.other">
-<ANCHOR id="glib-Windows-Compatibility-Functions.object-hierarchy" href="glib/glib-Windows-Compatibility-Functions.html#glib-Windows-Compatibility-Functions.object-hierarchy">
 <ANCHOR id="glib-Windows-Compatibility-Functions.includes" href="glib/glib-Windows-Compatibility-Functions.html#glib-Windows-Compatibility-Functions.includes">
 <ANCHOR id="glib-Windows-Compatibility-Functions.description" href="glib/glib-Windows-Compatibility-Functions.html#glib-Windows-Compatibility-Functions.description">
 <ANCHOR id="glib-Windows-Compatibility-Functions.functions_details" href="glib/glib-Windows-Compatibility-Functions.html#glib-Windows-Compatibility-Functions.functions_details">
@@ -1939,7 +1892,6 @@
 <ANCHOR id="glib-Doubly-Linked-Lists" href="glib/glib-Doubly-Linked-Lists.html">
 <ANCHOR id="glib-Doubly-Linked-Lists.functions" href="glib/glib-Doubly-Linked-Lists.html#glib-Doubly-Linked-Lists.functions">
 <ANCHOR id="glib-Doubly-Linked-Lists.other" href="glib/glib-Doubly-Linked-Lists.html#glib-Doubly-Linked-Lists.other">
-<ANCHOR id="glib-Doubly-Linked-Lists.object-hierarchy" href="glib/glib-Doubly-Linked-Lists.html#glib-Doubly-Linked-Lists.object-hierarchy">
 <ANCHOR id="glib-Doubly-Linked-Lists.includes" href="glib/glib-Doubly-Linked-Lists.html#glib-Doubly-Linked-Lists.includes">
 <ANCHOR id="glib-Doubly-Linked-Lists.description" href="glib/glib-Doubly-Linked-Lists.html#glib-Doubly-Linked-Lists.description">
 <ANCHOR id="glib-Doubly-Linked-Lists.functions_details" href="glib/glib-Doubly-Linked-Lists.html#glib-Doubly-Linked-Lists.functions_details">
@@ -1985,7 +1937,6 @@
 <ANCHOR id="glib-Singly-Linked-Lists" href="glib/glib-Singly-Linked-Lists.html">
 <ANCHOR id="glib-Singly-Linked-Lists.functions" href="glib/glib-Singly-Linked-Lists.html#glib-Singly-Linked-Lists.functions">
 <ANCHOR id="glib-Singly-Linked-Lists.other" href="glib/glib-Singly-Linked-Lists.html#glib-Singly-Linked-Lists.other">
-<ANCHOR id="glib-Singly-Linked-Lists.object-hierarchy" href="glib/glib-Singly-Linked-Lists.html#glib-Singly-Linked-Lists.object-hierarchy">
 <ANCHOR id="glib-Singly-Linked-Lists.includes" href="glib/glib-Singly-Linked-Lists.html#glib-Singly-Linked-Lists.includes">
 <ANCHOR id="glib-Singly-Linked-Lists.description" href="glib/glib-Singly-Linked-Lists.html#glib-Singly-Linked-Lists.description">
 <ANCHOR id="glib-Singly-Linked-Lists.functions_details" href="glib/glib-Singly-Linked-Lists.html#glib-Singly-Linked-Lists.functions_details">
@@ -2025,7 +1976,6 @@
 <ANCHOR id="glib-Double-ended-Queues" href="glib/glib-Double-ended-Queues.html">
 <ANCHOR id="glib-Double-ended-Queues.functions" href="glib/glib-Double-ended-Queues.html#glib-Double-ended-Queues.functions">
 <ANCHOR id="glib-Double-ended-Queues.other" href="glib/glib-Double-ended-Queues.html#glib-Double-ended-Queues.other">
-<ANCHOR id="glib-Double-ended-Queues.object-hierarchy" href="glib/glib-Double-ended-Queues.html#glib-Double-ended-Queues.object-hierarchy">
 <ANCHOR id="glib-Double-ended-Queues.includes" href="glib/glib-Double-ended-Queues.html#glib-Double-ended-Queues.includes">
 <ANCHOR id="glib-Double-ended-Queues.description" href="glib/glib-Double-ended-Queues.html#glib-Double-ended-Queues.description">
 <ANCHOR id="glib-Double-ended-Queues.functions_details" href="glib/glib-Double-ended-Queues.html#glib-Double-ended-Queues.functions_details">
@@ -2075,7 +2025,6 @@
 <ANCHOR id="glib-Sequences" href="glib/glib-Sequences.html">
 <ANCHOR id="glib-Sequences.functions" href="glib/glib-Sequences.html#glib-Sequences.functions">
 <ANCHOR id="glib-Sequences.other" href="glib/glib-Sequences.html#glib-Sequences.other">
-<ANCHOR id="glib-Sequences.object-hierarchy" href="glib/glib-Sequences.html#glib-Sequences.object-hierarchy">
 <ANCHOR id="glib-Sequences.includes" href="glib/glib-Sequences.html#glib-Sequences.includes">
 <ANCHOR id="glib-Sequences.description" href="glib/glib-Sequences.html#glib-Sequences.description">
 <ANCHOR id="glib-Sequences.functions_details" href="glib/glib-Sequences.html#glib-Sequences.functions_details">
@@ -2123,7 +2072,6 @@
 <ANCHOR id="glib-Trash-Stacks" href="glib/glib-Trash-Stacks.html">
 <ANCHOR id="glib-Trash-Stacks.functions" href="glib/glib-Trash-Stacks.html#glib-Trash-Stacks.functions">
 <ANCHOR id="glib-Trash-Stacks.other" href="glib/glib-Trash-Stacks.html#glib-Trash-Stacks.other">
-<ANCHOR id="glib-Trash-Stacks.object-hierarchy" href="glib/glib-Trash-Stacks.html#glib-Trash-Stacks.object-hierarchy">
 <ANCHOR id="glib-Trash-Stacks.includes" href="glib/glib-Trash-Stacks.html#glib-Trash-Stacks.includes">
 <ANCHOR id="glib-Trash-Stacks.description" href="glib/glib-Trash-Stacks.html#glib-Trash-Stacks.description">
 <ANCHOR id="glib-Trash-Stacks.functions_details" href="glib/glib-Trash-Stacks.html#glib-Trash-Stacks.functions_details">
@@ -2136,7 +2084,6 @@
 <ANCHOR id="glib-Hash-Tables" href="glib/glib-Hash-Tables.html">
 <ANCHOR id="glib-Hash-Tables.functions" href="glib/glib-Hash-Tables.html#glib-Hash-Tables.functions">
 <ANCHOR id="glib-Hash-Tables.other" href="glib/glib-Hash-Tables.html#glib-Hash-Tables.other">
-<ANCHOR id="glib-Hash-Tables.object-hierarchy" href="glib/glib-Hash-Tables.html#glib-Hash-Tables.object-hierarchy">
 <ANCHOR id="glib-Hash-Tables.includes" href="glib/glib-Hash-Tables.html#glib-Hash-Tables.includes">
 <ANCHOR id="glib-Hash-Tables.description" href="glib/glib-Hash-Tables.html#glib-Hash-Tables.description">
 <ANCHOR id="glib-Hash-Tables.functions_details" href="glib/glib-Hash-Tables.html#glib-Hash-Tables.functions_details">
@@ -2191,7 +2138,6 @@
 <ANCHOR id="glib-Strings" href="glib/glib-Strings.html">
 <ANCHOR id="glib-Strings.functions" href="glib/glib-Strings.html#glib-Strings.functions">
 <ANCHOR id="glib-Strings.other" href="glib/glib-Strings.html#glib-Strings.other">
-<ANCHOR id="glib-Strings.object-hierarchy" href="glib/glib-Strings.html#glib-Strings.object-hierarchy">
 <ANCHOR id="glib-Strings.includes" href="glib/glib-Strings.html#glib-Strings.includes">
 <ANCHOR id="glib-Strings.description" href="glib/glib-Strings.html#glib-Strings.description">
 <ANCHOR id="glib-Strings.functions_details" href="glib/glib-Strings.html#glib-Strings.functions_details">
@@ -2234,7 +2180,6 @@
 <ANCHOR id="glib-String-Chunks" href="glib/glib-String-Chunks.html">
 <ANCHOR id="glib-String-Chunks.functions" href="glib/glib-String-Chunks.html#glib-String-Chunks.functions">
 <ANCHOR id="glib-String-Chunks.other" href="glib/glib-String-Chunks.html#glib-String-Chunks.other">
-<ANCHOR id="glib-String-Chunks.object-hierarchy" href="glib/glib-String-Chunks.html#glib-String-Chunks.object-hierarchy">
 <ANCHOR id="glib-String-Chunks.includes" href="glib/glib-String-Chunks.html#glib-String-Chunks.includes">
 <ANCHOR id="glib-String-Chunks.description" href="glib/glib-String-Chunks.html#glib-String-Chunks.description">
 <ANCHOR id="glib-String-Chunks.functions_details" href="glib/glib-String-Chunks.html#glib-String-Chunks.functions_details">
@@ -2249,7 +2194,6 @@
 <ANCHOR id="glib-Arrays" href="glib/glib-Arrays.html">
 <ANCHOR id="glib-Arrays.functions" href="glib/glib-Arrays.html#glib-Arrays.functions">
 <ANCHOR id="glib-Arrays.other" href="glib/glib-Arrays.html#glib-Arrays.other">
-<ANCHOR id="glib-Arrays.object-hierarchy" href="glib/glib-Arrays.html#glib-Arrays.object-hierarchy">
 <ANCHOR id="glib-Arrays.includes" href="glib/glib-Arrays.html#glib-Arrays.includes">
 <ANCHOR id="glib-Arrays.description" href="glib/glib-Arrays.html#glib-Arrays.description">
 <ANCHOR id="glib-Arrays.functions_details" href="glib/glib-Arrays.html#glib-Arrays.functions_details">
@@ -2278,7 +2222,6 @@
 <ANCHOR id="glib-Pointer-Arrays" href="glib/glib-Pointer-Arrays.html">
 <ANCHOR id="glib-Pointer-Arrays.functions" href="glib/glib-Pointer-Arrays.html#glib-Pointer-Arrays.functions">
 <ANCHOR id="glib-Pointer-Arrays.other" href="glib/glib-Pointer-Arrays.html#glib-Pointer-Arrays.other">
-<ANCHOR id="glib-Pointer-Arrays.object-hierarchy" href="glib/glib-Pointer-Arrays.html#glib-Pointer-Arrays.object-hierarchy">
 <ANCHOR id="glib-Pointer-Arrays.includes" href="glib/glib-Pointer-Arrays.html#glib-Pointer-Arrays.includes">
 <ANCHOR id="glib-Pointer-Arrays.description" href="glib/glib-Pointer-Arrays.html#glib-Pointer-Arrays.description">
 <ANCHOR id="glib-Pointer-Arrays.functions_details" href="glib/glib-Pointer-Arrays.html#glib-Pointer-Arrays.functions_details">
@@ -2307,7 +2250,6 @@
 <ANCHOR id="glib-Byte-Arrays" href="glib/glib-Byte-Arrays.html">
 <ANCHOR id="glib-Byte-Arrays.functions" href="glib/glib-Byte-Arrays.html#glib-Byte-Arrays.functions">
 <ANCHOR id="glib-Byte-Arrays.other" href="glib/glib-Byte-Arrays.html#glib-Byte-Arrays.other">
-<ANCHOR id="glib-Byte-Arrays.object-hierarchy" href="glib/glib-Byte-Arrays.html#glib-Byte-Arrays.object-hierarchy">
 <ANCHOR id="glib-Byte-Arrays.includes" href="glib/glib-Byte-Arrays.html#glib-Byte-Arrays.includes">
 <ANCHOR id="glib-Byte-Arrays.description" href="glib/glib-Byte-Arrays.html#glib-Byte-Arrays.description">
 <ANCHOR id="glib-Byte-Arrays.functions_details" href="glib/glib-Byte-Arrays.html#glib-Byte-Arrays.functions_details">
@@ -2346,7 +2288,6 @@
 <ANCHOR id="glib-Balanced-Binary-Trees" href="glib/glib-Balanced-Binary-Trees.html">
 <ANCHOR id="glib-Balanced-Binary-Trees.functions" href="glib/glib-Balanced-Binary-Trees.html#glib-Balanced-Binary-Trees.functions">
 <ANCHOR id="glib-Balanced-Binary-Trees.other" href="glib/glib-Balanced-Binary-Trees.html#glib-Balanced-Binary-Trees.other">
-<ANCHOR id="glib-Balanced-Binary-Trees.object-hierarchy" href="glib/glib-Balanced-Binary-Trees.html#glib-Balanced-Binary-Trees.object-hierarchy">
 <ANCHOR id="glib-Balanced-Binary-Trees.includes" href="glib/glib-Balanced-Binary-Trees.html#glib-Balanced-Binary-Trees.includes">
 <ANCHOR id="glib-Balanced-Binary-Trees.description" href="glib/glib-Balanced-Binary-Trees.html#glib-Balanced-Binary-Trees.description">
 <ANCHOR id="glib-Balanced-Binary-Trees.functions_details" href="glib/glib-Balanced-Binary-Trees.html#glib-Balanced-Binary-Trees.functions_details">
@@ -2373,7 +2314,6 @@
 <ANCHOR id="glib-N-ary-Trees" href="glib/glib-N-ary-Trees.html">
 <ANCHOR id="glib-N-ary-Trees.functions" href="glib/glib-N-ary-Trees.html#glib-N-ary-Trees.functions">
 <ANCHOR id="glib-N-ary-Trees.other" href="glib/glib-N-ary-Trees.html#glib-N-ary-Trees.other">
-<ANCHOR id="glib-N-ary-Trees.object-hierarchy" href="glib/glib-N-ary-Trees.html#glib-N-ary-Trees.object-hierarchy">
 <ANCHOR id="glib-N-ary-Trees.includes" href="glib/glib-N-ary-Trees.html#glib-N-ary-Trees.includes">
 <ANCHOR id="glib-N-ary-Trees.description" href="glib/glib-N-ary-Trees.html#glib-N-ary-Trees.description">
 <ANCHOR id="glib-N-ary-Trees.functions_details" href="glib/glib-N-ary-Trees.html#glib-N-ary-Trees.functions_details">
@@ -2424,7 +2364,6 @@
 <ANCHOR id="glib-Quarks" href="glib/glib-Quarks.html">
 <ANCHOR id="glib-Quarks.functions" href="glib/glib-Quarks.html#glib-Quarks.functions">
 <ANCHOR id="glib-Quarks.other" href="glib/glib-Quarks.html#glib-Quarks.other">
-<ANCHOR id="glib-Quarks.object-hierarchy" href="glib/glib-Quarks.html#glib-Quarks.object-hierarchy">
 <ANCHOR id="glib-Quarks.includes" href="glib/glib-Quarks.html#glib-Quarks.includes">
 <ANCHOR id="glib-Quarks.description" href="glib/glib-Quarks.html#glib-Quarks.description">
 <ANCHOR id="glib-Quarks.functions_details" href="glib/glib-Quarks.html#glib-Quarks.functions_details">
@@ -2440,7 +2379,6 @@
 <ANCHOR id="glib-Keyed-Data-Lists" href="glib/glib-Keyed-Data-Lists.html">
 <ANCHOR id="glib-Keyed-Data-Lists.functions" href="glib/glib-Keyed-Data-Lists.html#glib-Keyed-Data-Lists.functions">
 <ANCHOR id="glib-Keyed-Data-Lists.other" href="glib/glib-Keyed-Data-Lists.html#glib-Keyed-Data-Lists.other">
-<ANCHOR id="glib-Keyed-Data-Lists.object-hierarchy" href="glib/glib-Keyed-Data-Lists.html#glib-Keyed-Data-Lists.object-hierarchy">
 <ANCHOR id="glib-Keyed-Data-Lists.includes" href="glib/glib-Keyed-Data-Lists.html#glib-Keyed-Data-Lists.includes">
 <ANCHOR id="glib-Keyed-Data-Lists.description" href="glib/glib-Keyed-Data-Lists.html#glib-Keyed-Data-Lists.description">
 <ANCHOR id="glib-Keyed-Data-Lists.functions_details" href="glib/glib-Keyed-Data-Lists.html#glib-Keyed-Data-Lists.functions_details">
@@ -2468,7 +2406,6 @@
 <ANCHOR id="G-DATALIST-FLAGS-MASK:CAPS" href="glib/glib-Keyed-Data-Lists.html#G-DATALIST-FLAGS-MASK:CAPS">
 <ANCHOR id="glib-Datasets" href="glib/glib-Datasets.html">
 <ANCHOR id="glib-Datasets.functions" href="glib/glib-Datasets.html#glib-Datasets.functions">
-<ANCHOR id="glib-Datasets.object-hierarchy" href="glib/glib-Datasets.html#glib-Datasets.object-hierarchy">
 <ANCHOR id="glib-Datasets.includes" href="glib/glib-Datasets.html#glib-Datasets.includes">
 <ANCHOR id="glib-Datasets.description" href="glib/glib-Datasets.html#glib-Datasets.description">
 <ANCHOR id="glib-Datasets.functions_details" href="glib/glib-Datasets.html#glib-Datasets.functions_details">
@@ -2490,7 +2427,6 @@
 <ANCHOR id="glib-GVariantType" href="glib/glib-GVariantType.html">
 <ANCHOR id="glib-GVariantType.functions" href="glib/glib-GVariantType.html#glib-GVariantType.functions">
 <ANCHOR id="glib-GVariantType.other" href="glib/glib-GVariantType.html#glib-GVariantType.other">
-<ANCHOR id="glib-GVariantType.object-hierarchy" href="glib/glib-GVariantType.html#glib-GVariantType.object-hierarchy">
 <ANCHOR id="glib-GVariantType.includes" href="glib/glib-GVariantType.html#glib-GVariantType.includes">
 <ANCHOR id="glib-GVariantType.description" href="glib/glib-GVariantType.html#glib-GVariantType.description">
 <ANCHOR id="glib-GVariantType.functions_details" href="glib/glib-GVariantType.html#glib-GVariantType.functions_details">
@@ -2557,7 +2493,6 @@
 <ANCHOR id="glib-GVariant" href="glib/glib-GVariant.html">
 <ANCHOR id="glib-GVariant.functions" href="glib/glib-GVariant.html#glib-GVariant.functions">
 <ANCHOR id="glib-GVariant.other" href="glib/glib-GVariant.html#glib-GVariant.other">
-<ANCHOR id="glib-GVariant.object-hierarchy" href="glib/glib-GVariant.html#glib-GVariant.object-hierarchy">
 <ANCHOR id="glib-GVariant.includes" href="glib/glib-GVariant.html#glib-GVariant.includes">
 <ANCHOR id="glib-GVariant.description" href="glib/glib-GVariant.html#glib-GVariant.description">
 <ANCHOR id="glib-GVariant.functions_details" href="glib/glib-GVariant.html#glib-GVariant.functions_details">
@@ -2716,7 +2651,6 @@
 <ANCHOR id="glib-Deprecated-Thread-APIs" href="glib/glib-Deprecated-Thread-APIs.html">
 <ANCHOR id="glib-Deprecated-Thread-APIs.functions" href="glib/glib-Deprecated-Thread-APIs.html#glib-Deprecated-Thread-APIs.functions">
 <ANCHOR id="glib-Deprecated-Thread-APIs.other" href="glib/glib-Deprecated-Thread-APIs.html#glib-Deprecated-Thread-APIs.other">
-<ANCHOR id="glib-Deprecated-Thread-APIs.object-hierarchy" href="glib/glib-Deprecated-Thread-APIs.html#glib-Deprecated-Thread-APIs.object-hierarchy">
 <ANCHOR id="glib-Deprecated-Thread-APIs.includes" href="glib/glib-Deprecated-Thread-APIs.html#glib-Deprecated-Thread-APIs.includes">
 <ANCHOR id="glib-Deprecated-Thread-APIs.description" href="glib/glib-Deprecated-Thread-APIs.html#glib-Deprecated-Thread-APIs.description">
 <ANCHOR id="glib-Deprecated-Thread-APIs.functions_details" href="glib/glib-Deprecated-Thread-APIs.html#glib-Deprecated-Thread-APIs.functions_details">
@@ -2773,7 +2707,6 @@
 <ANCHOR id="glib-Caches" href="glib/glib-Caches.html">
 <ANCHOR id="glib-Caches.functions" href="glib/glib-Caches.html#glib-Caches.functions">
 <ANCHOR id="glib-Caches.other" href="glib/glib-Caches.html#glib-Caches.other">
-<ANCHOR id="glib-Caches.object-hierarchy" href="glib/glib-Caches.html#glib-Caches.object-hierarchy">
 <ANCHOR id="glib-Caches.includes" href="glib/glib-Caches.html#glib-Caches.includes">
 <ANCHOR id="glib-Caches.description" href="glib/glib-Caches.html#glib-Caches.description">
 <ANCHOR id="glib-Caches.functions_details" href="glib/glib-Caches.html#glib-Caches.functions_details">
@@ -2791,7 +2724,6 @@
 <ANCHOR id="glib-Relations-and-Tuples" href="glib/glib-Relations-and-Tuples.html">
 <ANCHOR id="glib-Relations-and-Tuples.functions" href="glib/glib-Relations-and-Tuples.html#glib-Relations-and-Tuples.functions">
 <ANCHOR id="glib-Relations-and-Tuples.other" href="glib/glib-Relations-and-Tuples.html#glib-Relations-and-Tuples.other">
-<ANCHOR id="glib-Relations-and-Tuples.object-hierarchy" href="glib/glib-Relations-and-Tuples.html#glib-Relations-and-Tuples.object-hierarchy">
 <ANCHOR id="glib-Relations-and-Tuples.includes" href="glib/glib-Relations-and-Tuples.html#glib-Relations-and-Tuples.includes">
 <ANCHOR id="glib-Relations-and-Tuples.description" href="glib/glib-Relations-and-Tuples.html#glib-Relations-and-Tuples.description">
 <ANCHOR id="glib-Relations-and-Tuples.functions_details" href="glib/glib-Relations-and-Tuples.html#glib-Relations-and-Tuples.functions_details">
@@ -2812,7 +2744,6 @@
 <ANCHOR id="glib-Automatic-String-Completion" href="glib/glib-Automatic-String-Completion.html">
 <ANCHOR id="glib-Automatic-String-Completion.functions" href="glib/glib-Automatic-String-Completion.html#glib-Automatic-String-Completion.functions">
 <ANCHOR id="glib-Automatic-String-Completion.other" href="glib/glib-Automatic-String-Completion.html#glib-Automatic-String-Completion.other">
-<ANCHOR id="glib-Automatic-String-Completion.object-hierarchy" href="glib/glib-Automatic-String-Completion.html#glib-Automatic-String-Completion.object-hierarchy">
 <ANCHOR id="glib-Automatic-String-Completion.includes" href="glib/glib-Automatic-String-Completion.html#glib-Automatic-String-Completion.includes">
 <ANCHOR id="glib-Automatic-String-Completion.description" href="glib/glib-Automatic-String-Completion.html#glib-Automatic-String-Completion.description">
 <ANCHOR id="glib-Automatic-String-Completion.functions_details" href="glib/glib-Automatic-String-Completion.html#glib-Automatic-String-Completion.functions_details">

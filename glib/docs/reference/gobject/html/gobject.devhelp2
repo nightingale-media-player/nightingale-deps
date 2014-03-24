@@ -386,6 +386,7 @@
     <keyword type="macro" name="G_TYPE_IO_CHANNEL" link="gobject-Boxed-Types.html#G-TYPE-IO-CHANNEL:CAPS"/>
     <keyword type="macro" name="G_TYPE_IO_CONDITION" link="gobject-Boxed-Types.html#G-TYPE-IO-CONDITION:CAPS"/>
     <keyword type="macro" name="G_TYPE_VARIANT_BUILDER" link="gobject-Boxed-Types.html#G-TYPE-VARIANT-BUILDER:CAPS" since="2.30"/>
+    <keyword type="macro" name="G_TYPE_VARIANT_DICT" link="gobject-Boxed-Types.html#G-TYPE-VARIANT-DICT:CAPS" since="2.40"/>
     <keyword type="macro" name="G_TYPE_KEY_FILE" link="gobject-Boxed-Types.html#G-TYPE-KEY-FILE:CAPS" since="2.32"/>
     <keyword type="macro" name="G_TYPE_MAIN_CONTEXT" link="gobject-Boxed-Types.html#G-TYPE-MAIN-CONTEXT:CAPS" since="2.30"/>
     <keyword type="macro" name="G_TYPE_MAIN_LOOP" link="gobject-Boxed-Types.html#G-TYPE-MAIN-LOOP:CAPS" since="2.30"/>

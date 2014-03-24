@@ -12,13 +12,13 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GAppInfo.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GAppInfo.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_prerequisites"> <span class="dim">|</span> 
-                  <a href="#GAppInfo.prerequisites" class="shortcut">Prerequisites</a></span><span id="nav_implementations"> <span class="dim">|</span> 
-                  <a href="#GAppInfo.implementations" class="shortcut">Known Implementations</a></span><span id="nav_signals"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GAppInfo.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GAppInfo.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_prerequisites">  <span class="dim">|</span> 
+                  <a href="#GAppInfo.prerequisites" class="shortcut">Prerequisites</a></span><span id="nav_implementations">  <span class="dim">|</span> 
+                  <a href="#GAppInfo.implementations" class="shortcut">Known Implementations</a></span><span id="nav_signals">  <span class="dim">|</span> 
                   <a href="#GAppInfo.signals" class="shortcut">Signals</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -402,7 +402,7 @@
 </div>
 <div class="refsect1">
 <a name="GAppInfo.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    GInterface
+<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
     <span class="lineart">╰──</span> GAppInfo
     <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
     <span class="lineart">╰──</span> GAppLaunchContext
@@ -467,20 +467,20 @@ illustrates this:</p>
 12
 13
 14</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="usertype">GFile</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">f</span><span class="symbol">;</span>
-<span class="type">char</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">uri</span><span class="symbol">;</span>
+        <td class="listing_code"><pre class="programlisting">GFile <span class="gtkdoc opt">*</span>f<span class="gtkdoc opt">;</span>
+<span class="gtkdoc kwb">char</span> <span class="gtkdoc opt">*</span>uri<span class="gtkdoc opt">;</span>
 
-<span class="normal">file </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GFile.html#g-file-new-for-commandline-arg">g_file_new_for_commandline_arg</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">uri_from_commandline</span><span class="symbol">);</span>
+file <span class="gtkdoc opt">=</span> <span class="function"><a href="GFile.html#g-file-new-for-commandline-arg">g_file_new_for_commandline_arg</a></span> <span class="gtkdoc opt">(</span>uri_from_commandline<span class="gtkdoc opt">);</span>
 
-<span class="normal">uri </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GFile.html#g-file-get-uri">g_file_get_uri</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">file</span><span class="symbol">);</span>
-<span class="function">strcmp</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">uri</span><span class="symbol">,</span><span class="normal"> uri_from_commandline</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">==</span><span class="normal"> </span><span class="number">0</span><span class="symbol">;</span>
-<span class="function"><a href="../glib/glib-Memory-Allocation.html#g-free">g_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">uri</span><span class="symbol">);</span>
+uri <span class="gtkdoc opt">=</span> <span class="function"><a href="GFile.html#g-file-get-uri">g_file_get_uri</a></span> <span class="gtkdoc opt">(</span>file<span class="gtkdoc opt">);</span>
+<span class="function">strcmp</span> <span class="gtkdoc opt">(</span>uri<span class="gtkdoc opt">,</span> uri_from_commandline<span class="gtkdoc opt">) ==</span> <span class="number">0</span><span class="gtkdoc opt">;</span>
+<span class="function"><a href="../glib/glib-Memory-Allocation.html#g-free">g_free</a></span> <span class="gtkdoc opt">(</span>uri<span class="gtkdoc opt">);</span>
 
-<span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="GFile.html#g-file-has-uri-scheme">g_file_has_uri_scheme</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">file</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"cdda"</span><span class="symbol">))</span>
-<span class="normal">  </span><span class="cbracket">{</span>
-<span class="normal">    </span><span class="comment">// do something special with uri</span>
-<span class="normal">  </span><span class="cbracket">}</span>
-<span class="function"><a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">file</span><span class="symbol">);</span></pre></td>
+<span class="keyword">if</span> <span class="gtkdoc opt">(</span><span class="function"><a href="GFile.html#g-file-has-uri-scheme">g_file_has_uri_scheme</a></span> <span class="gtkdoc opt">(</span>file<span class="gtkdoc opt">,</span> <span class="string">&quot;cdda&quot;</span><span class="gtkdoc opt">))</span>
+  <span class="gtkdoc opt">{</span>
+    <span class="gtkdoc slc">// do something special with uri</span>
+  <span class="gtkdoc opt">}</span>
+<span class="function"><a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span> <span class="gtkdoc opt">(</span>file<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>

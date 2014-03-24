@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Miscellaneous-Macros.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Miscellaneous-Macros.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Miscellaneous-Macros.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-fundamentals.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -245,11 +244,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Miscellaneous-Macros.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Miscellaneous-Macros.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -269,7 +263,7 @@ needed so often by application programmers.</p>
 because this macro may use <code class="function">memmove()</code> and GLib does not include
 string.h for you.</p>
 <div class="refsect3">
-<a name="id-1.3.8.8.2.6"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.2.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -305,8 +299,8 @@ preprocessor argument expansion. For example, the following code:</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="preproc">#define</span><span class="normal"> AGE </span><span class="number">27</span>
-<span class="keyword">const</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">greeting </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Miscellaneous-Macros.html#G-STRINGIFY:CAPS">G_STRINGIFY</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">AGE</span><span class="symbol">)</span><span class="normal"> </span><span class="string">" today!"</span><span class="symbol">;</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc ppc">#define AGE 27</span>
+<span class="gtkdoc kwb">const</span> gchar <span class="gtkdoc opt">*</span>greeting <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Miscellaneous-Macros.html#G-STRINGIFY:CAPS">G_STRINGIFY</a></span> <span class="gtkdoc opt">(</span>AGE<span class="gtkdoc opt">)</span> <span class="string">&quot; today!&quot;</span><span class="gtkdoc opt">;</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -319,7 +313,7 @@ preprocessor argument expansion. For example, the following code:</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">const</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">greeting </span><span class="symbol">=</span><span class="normal"> </span><span class="string">"27 today!"</span><span class="symbol">;</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">const</span> gchar <span class="gtkdoc opt">*</span>greeting <span class="gtkdoc opt">=</span> <span class="string">&quot;27 today!&quot;</span><span class="gtkdoc opt">;</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -327,7 +321,7 @@ preprocessor argument expansion. For example, the following code:</p>
 
 <p></p>
 <div class="refsect3">
-<a name="id-1.3.8.8.3.10"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.3.10"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -362,10 +356,10 @@ the following code:</p>
 2
 3
 4</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="preproc">#define</span><span class="normal"> </span><span class="function">GET</span><span class="symbol">(</span><span class="normal">traveller</span><span class="symbol">,</span><span class="normal">method</span><span class="symbol">)</span><span class="normal"> </span><span class="function"><a href="glib-Miscellaneous-Macros.html#G-PASTE:CAPS">G_PASTE</a></span><span class="symbol">(</span><span class="normal">traveller_get_</span><span class="symbol">,</span><span class="normal"> method</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">traveller</span><span class="symbol">)</span>
-<span class="keyword">const</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">name </span><span class="symbol">=</span><span class="normal"> </span><span class="function">GET</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">traveller</span><span class="symbol">,</span><span class="normal"> name</span><span class="symbol">);</span>
-<span class="keyword">const</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">quest </span><span class="symbol">=</span><span class="normal"> </span><span class="function">GET</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">traveller</span><span class="symbol">,</span><span class="normal"> quest</span><span class="symbol">);</span>
-<span class="usertype">GdkColor</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">favourite </span><span class="symbol">=</span><span class="normal"> </span><span class="function">GET</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">traveller</span><span class="symbol">,</span><span class="normal"> favourite_colour</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc ppc">#define GET(traveller,method) G_PASTE(traveller_get_, method) (traveller)</span>
+<span class="gtkdoc kwb">const</span> gchar <span class="gtkdoc opt">*</span>name <span class="gtkdoc opt">=</span> <span class="function">GET</span> <span class="gtkdoc opt">(</span>traveller<span class="gtkdoc opt">,</span> name<span class="gtkdoc opt">);</span>
+<span class="gtkdoc kwb">const</span> gchar <span class="gtkdoc opt">*</span>quest <span class="gtkdoc opt">=</span> <span class="function">GET</span> <span class="gtkdoc opt">(</span>traveller<span class="gtkdoc opt">,</span> quest<span class="gtkdoc opt">);</span>
+GdkColor <span class="gtkdoc opt">*</span>favourite <span class="gtkdoc opt">=</span> <span class="function">GET</span> <span class="gtkdoc opt">(</span>traveller<span class="gtkdoc opt">,</span> favourite_colour<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -380,9 +374,9 @@ the following code:</p>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">const</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">name </span><span class="symbol">=</span><span class="normal"> </span><span class="function">traveller_get_name</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">traveller</span><span class="symbol">);</span>
-<span class="keyword">const</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">quest </span><span class="symbol">=</span><span class="normal"> </span><span class="function">traveller_get_quest</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">traveller</span><span class="symbol">);</span>
-<span class="usertype">GdkColor</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">favourite </span><span class="symbol">=</span><span class="normal"> </span><span class="function">traveller_get_favourite_colour</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">traveller</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">const</span> gchar <span class="gtkdoc opt">*</span>name <span class="gtkdoc opt">=</span> <span class="function">traveller_get_name</span> <span class="gtkdoc opt">(</span>traveller<span class="gtkdoc opt">);</span>
+<span class="gtkdoc kwb">const</span> gchar <span class="gtkdoc opt">*</span>quest <span class="gtkdoc opt">=</span> <span class="function">traveller_get_quest</span> <span class="gtkdoc opt">(</span>traveller<span class="gtkdoc opt">);</span>
+GdkColor <span class="gtkdoc opt">*</span>favourite <span class="gtkdoc opt">=</span> <span class="function">traveller_get_favourite_colour</span> <span class="gtkdoc opt">(</span>traveller<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -390,7 +384,7 @@ the following code:</p>
 
 <p></p>
 <div class="refsect3">
-<a name="id-1.3.8.8.4.10"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.4.10"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -427,7 +421,7 @@ a variable declaration is allowed. For this reason, you should
 not use <a class="link" href="glib-Miscellaneous-Macros.html#G-STATIC-ASSERT:CAPS" title="G_STATIC_ASSERT()"><code class="function">G_STATIC_ASSERT()</code></a> in the middle of blocks of code.</p>
 <p>The macro should only be used once per source code line.</p>
 <div class="refsect3">
-<a name="id-1.3.8.8.5.7"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.5.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -461,8 +455,8 @@ it as the first argument of a comma expression.</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="preproc">#define</span><span class="normal"> </span><span class="function">ADD_ONE_TO_INT</span><span class="symbol">(</span><span class="normal">x</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">\</span>
-<span class="normal">  </span><span class="symbol">(</span><span class="function"><a href="glib-Miscellaneous-Macros.html#G-STATIC-ASSERT-EXPR:CAPS">G_STATIC_ASSERT_EXPR</a></span><span class="symbol">(</span><span class="keyword">sizeof</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">x</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">==</span><span class="normal"> </span><span class="keyword">sizeof</span><span class="normal"> </span><span class="symbol">(</span><span class="type">int</span><span class="symbol">)),</span><span class="normal"> </span><span class="symbol">((</span><span class="normal">x</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> </span><span class="number">1</span><span class="symbol">))</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc ppc">#define ADD_ONE_TO_INT(x) \</span>
+<span class="gtkdoc ppc">  (G_STATIC_ASSERT_EXPR(sizeof (x) == sizeof (int)), ((x) + 1))</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -470,7 +464,7 @@ it as the first argument of a comma expression.</p>
 
 <p></p>
 <div class="refsect3">
-<a name="id-1.3.8.8.6.8"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.6.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -500,7 +494,7 @@ by the <em class="parameter"><code>xth</code></em>
 semicolon.</p>
 <p>See the GNU C documentation for more details.</p>
 <div class="refsect3">
-<a name="id-1.3.8.8.7.7"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.7.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -529,7 +523,7 @@ function parameters.</p>
 semicolon.</p>
 <p>See the GNU C documentation for more details.</p>
 <div class="refsect3">
-<a name="id-1.3.8.8.8.7"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.8.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -567,7 +561,7 @@ custom deprecation messages.</p>
 You can enclose it in quotes to prevent this. (The quotes will show up
 in the warning, but it's better than showing the macro expansion.)</p>
 <div class="refsect3">
-<a name="id-1.3.8.8.9.10"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.9.10"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -603,10 +597,10 @@ semicolon.</p>
 2
 3
 4</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="usertype">gint</span><span class="normal"> </span><span class="function"><a href="glib-String-Utility-Functions.html#g-snprintf">g_snprintf</a></span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">gchar</span><span class="normal">  </span><span class="symbol">*</span><span class="normal">string</span><span class="symbol">,</span>
-<span class="normal">                 </span><span class="usertype">gulong</span><span class="normal">       n</span><span class="symbol">,</span>
-<span class="normal">                 </span><span class="usertype">gchar</span><span class="normal"> </span><span class="keyword">const</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">format</span><span class="symbol">,</span>
-<span class="normal">                 </span><span class="symbol">...)</span><span class="normal"> </span><span class="function"><a href="glib-Miscellaneous-Macros.html#G-GNUC-PRINTF:CAPS">G_GNUC_PRINTF</a></span><span class="normal"> </span><span class="symbol">(</span><span class="number">3</span><span class="symbol">,</span><span class="normal"> </span><span class="number">4</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">gint <span class="function"><a href="glib-String-Utility-Functions.html#g-snprintf">g_snprintf</a></span> <span class="gtkdoc opt">(</span>gchar  <span class="gtkdoc opt">*</span>string<span class="gtkdoc opt">,</span>
+                 gulong       n<span class="gtkdoc opt">,</span>
+                 gchar <span class="gtkdoc kwb">const</span> <span class="gtkdoc opt">*</span>format<span class="gtkdoc opt">,</span>
+                 <span class="gtkdoc opt">...)</span> <span class="function"><a href="glib-Miscellaneous-Macros.html#G-GNUC-PRINTF:CAPS">G_GNUC_PRINTF</a></span> <span class="gtkdoc opt">(</span><span class="number">3</span><span class="gtkdoc opt">,</span> <span class="number">4</span><span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -614,7 +608,7 @@ semicolon.</p>
 
 <p></p>
 <div class="refsect3">
-<a name="id-1.3.8.8.10.9"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.10.9"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -647,7 +641,7 @@ arguments, with the same syntax as <code class="function">scanf()</code>. It all
 to type-check the arguments passed to the function.</p>
 <p>See the GNU C documentation for details.</p>
 <div class="refsect3">
-<a name="id-1.3.8.8.11.6"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.11.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -689,7 +683,7 @@ semicolon.</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="function"><a href="glib-I18N.html#g-dgettext">g_dgettext</a></span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">domain_name</span><span class="symbol">,</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">msgid</span><span class="symbol">)</span><span class="normal"> </span><span class="function"><a href="glib-Miscellaneous-Macros.html#G-GNUC-FORMAT:CAPS">G_GNUC_FORMAT</a></span><span class="normal"> </span><span class="symbol">(</span><span class="number">2</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">gchar <span class="gtkdoc opt">*</span><span class="function"><a href="glib-I18N.html#g-dgettext">g_dgettext</a></span> <span class="gtkdoc opt">(</span>gchar <span class="gtkdoc opt">*</span>domain_name<span class="gtkdoc opt">,</span> gchar <span class="gtkdoc opt">*</span>msgid<span class="gtkdoc opt">)</span> <span class="function"><a href="glib-Miscellaneous-Macros.html#G-GNUC-FORMAT:CAPS">G_GNUC_FORMAT</a></span> <span class="gtkdoc opt">(</span><span class="number">2</span><span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -697,7 +691,7 @@ semicolon.</p>
 
 <p></p>
 <div class="refsect3">
-<a name="id-1.3.8.8.12.9"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.12.9"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -723,7 +717,7 @@ functions declarations as deprecated. Unlike <a class="link" href="glib-Miscella
 is meant to be portable across different compilers and must be placed
 before the function declaration.</p>
 <div class="refsect3">
-<a name="id-1.3.8.8.13.7"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.13.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -748,7 +742,7 @@ before the function declaration.</p>
 It must be placed before the function declaration. Use of a function
 that has been annotated with this macros will produce a compiler warning.</p>
 <div class="refsect3">
-<a name="id-1.3.8.8.14.5"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.14.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -784,8 +778,8 @@ a true value. The compiler may use this information for optimizations.</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-Miscellaneous-Macros.html#G-LIKELY:CAPS">G_LIKELY</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function">random</span><span class="normal"> </span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">!=</span><span class="normal"> </span><span class="number">1</span><span class="symbol">))</span>
-<span class="normal">  </span><span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"not one"</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="keyword">if</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-Miscellaneous-Macros.html#G-LIKELY:CAPS">G_LIKELY</a></span> <span class="gtkdoc opt">(</span><span class="function">random</span> <span class="gtkdoc opt">() !=</span> <span class="number">1</span><span class="gtkdoc opt">))</span>
+  <span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;not one&quot;</span><span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -793,7 +787,7 @@ a true value. The compiler may use this information for optimizations.</p>
 
 <p></p>
 <div class="refsect3">
-<a name="id-1.3.8.8.15.7"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.15.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -808,7 +802,7 @@ a true value. The compiler may use this information for optimizations.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.3.8.8.15.8"></a><h4>Returns</h4>
+<a name="id-1.3.8.7.15.8"></a><h4>Returns</h4>
 <p> the value of <em class="parameter"><code>expr</code></em>
 </p>
 <p></p>
@@ -828,8 +822,8 @@ a true value. The compiler may use this information for optimizations.</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-Miscellaneous-Macros.html#G-UNLIKELY:CAPS">G_UNLIKELY</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function">random</span><span class="normal"> </span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">==</span><span class="normal"> </span><span class="number">1</span><span class="symbol">))</span>
-<span class="normal">  </span><span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"a random one"</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="keyword">if</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-Miscellaneous-Macros.html#G-UNLIKELY:CAPS">G_UNLIKELY</a></span> <span class="gtkdoc opt">(</span><span class="function">random</span> <span class="gtkdoc opt">() ==</span> <span class="number">1</span><span class="gtkdoc opt">))</span>
+  <span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;a random one&quot;</span><span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -837,7 +831,7 @@ a true value. The compiler may use this information for optimizations.</p>
 
 <p></p>
 <div class="refsect3">
-<a name="id-1.3.8.8.16.7"></a><h4>Parameters</h4>
+<a name="id-1.3.8.7.16.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -852,7 +846,7 @@ a true value. The compiler may use this information for optimizations.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.3.8.8.16.8"></a><h4>Returns</h4>
+<a name="id-1.3.8.7.16.8"></a><h4>Returns</h4>
 <p> the value of <em class="parameter"><code>expr</code></em>
 </p>
 <p></p>
@@ -1036,8 +1030,8 @@ argument declaration.</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="type">void</span><span class="normal"> </span><span class="function">my_unused_function</span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="glib-Miscellaneous-Macros.html#G-GNUC-UNUSED:CAPS">G_GNUC_UNUSED</a> </span><span class="usertype">gint</span><span class="normal"> unused_argument</span><span class="symbol">,</span>
-<span class="normal">                         </span><span class="usertype">gint</span><span class="normal"> other_argument</span><span class="symbol">)</span><span class="normal"> <a href="glib-Miscellaneous-Macros.html#G-GNUC-UNUSED:CAPS">G_GNUC_UNUSED</a></span><span class="symbol">;</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">void</span> <span class="function">my_unused_function</span> <span class="gtkdoc opt">(</span>G_GNUC_UNUSED gint unused_argument<span class="gtkdoc opt">,</span>
+                         gint other_argument<span class="gtkdoc opt">)</span> G_GNUC_UNUSED<span class="gtkdoc opt">;</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1137,11 +1131,11 @@ Sun Studio does not.</p>
 3
 4
 5</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal"><a href="glib-Miscellaneous-Macros.html#G-GNUC-INTERNAL:CAPS">G_GNUC_INTERNAL</a></span>
-<span class="type">void</span><span class="normal"> </span><span class="function">_g_log_fallback_handler</span><span class="normal"> </span><span class="symbol">(</span><span class="keyword">const</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal">    </span><span class="symbol">*</span><span class="normal">log_domain</span><span class="symbol">,</span>
-<span class="normal">                              </span><span class="usertype">GLogLevelFlags</span><span class="normal">  log_level</span><span class="symbol">,</span>
-<span class="normal">                              </span><span class="keyword">const</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal">    </span><span class="symbol">*</span><span class="normal">message</span><span class="symbol">,</span>
-<span class="normal">                              </span><span class="usertype">gpointer</span><span class="normal">        unused_data</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">G_GNUC_INTERNAL
+<span class="gtkdoc kwb">void</span> <span class="function">_g_log_fallback_handler</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">const</span> gchar    <span class="gtkdoc opt">*</span>log_domain<span class="gtkdoc opt">,</span>
+                              GLogLevelFlags  log_level<span class="gtkdoc opt">,</span>
+                              <span class="gtkdoc kwb">const</span> gchar    <span class="gtkdoc opt">*</span>message<span class="gtkdoc opt">,</span>
+                              gpointer        unused_data<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>

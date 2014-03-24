@@ -12,12 +12,12 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GThemedIcon.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GThemedIcon.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces"> <span class="dim">|</span> 
-                  <a href="#GThemedIcon.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GThemedIcon.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GThemedIcon.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#GThemedIcon.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
                   <a href="#GThemedIcon.properties" class="shortcut">Properties</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -254,15 +254,15 @@ that can be created by shortening <em class="parameter"><code>iconname</code></e
 7
 8
 9</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">const</span><span class="normal"> </span><span class="type">char</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">names</span><span class="symbol">[]</span><span class="normal"> </span><span class="symbol">=</span><span class="normal"> </span><span class="cbracket">{</span><span class="normal"> </span>
-<span class="normal">  </span><span class="string">"gnome-dev-cdrom-audio"</span><span class="symbol">,</span>
-<span class="normal">  </span><span class="string">"gnome-dev-cdrom"</span><span class="symbol">,</span>
-<span class="normal">  </span><span class="string">"gnome-dev"</span><span class="symbol">,</span>
-<span class="normal">  </span><span class="string">"gnome"</span>
-<span class="cbracket">}</span><span class="symbol">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">const char</span> <span class="gtkdoc opt">*</span>names<span class="gtkdoc opt">[] = {</span> 
+  <span class="string">&quot;gnome-dev-cdrom-audio&quot;</span><span class="gtkdoc opt">,</span>
+  <span class="string">&quot;gnome-dev-cdrom&quot;</span><span class="gtkdoc opt">,</span>
+  <span class="string">&quot;gnome-dev&quot;</span><span class="gtkdoc opt">,</span>
+  <span class="string">&quot;gnome&quot;</span>
+<span class="gtkdoc opt">};</span>
 
-<span class="normal">icon1 </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GThemedIcon.html#g-themed-icon-new-from-names">g_themed_icon_new_from_names</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">names</span><span class="symbol">,</span><span class="normal"> </span><span class="number">4</span><span class="symbol">);</span>
-<span class="normal">icon2 </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GThemedIcon.html#g-themed-icon-new-with-default-fallbacks">g_themed_icon_new_with_default_fallbacks</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"gnome-dev-cdrom-audio"</span><span class="symbol">);</span></pre></td>
+icon1 <span class="gtkdoc opt">=</span> <span class="function"><a href="GThemedIcon.html#g-themed-icon-new-from-names">g_themed_icon_new_from_names</a></span> <span class="gtkdoc opt">(</span>names<span class="gtkdoc opt">,</span> <span class="number">4</span><span class="gtkdoc opt">);</span>
+icon2 <span class="gtkdoc opt">=</span> <span class="function"><a href="GThemedIcon.html#g-themed-icon-new-with-default-fallbacks">g_themed_icon_new_with_default_fallbacks</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;gnome-dev-cdrom-audio&quot;</span><span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -435,13 +435,13 @@ would become</p>
 5
 6
 7</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="cbracket">{</span>
-<span class="normal">  </span><span class="string">"gnome-dev-cdrom-audio"</span><span class="symbol">,</span>
-<span class="normal">  </span><span class="string">"gnome-dev-cdrom"</span><span class="symbol">,</span>
-<span class="normal">  </span><span class="string">"gnome-dev"</span><span class="symbol">,</span>
-<span class="normal">  </span><span class="string">"gnome"</span><span class="symbol">,</span>
-<span class="normal">  <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span>
-<span class="cbracket">}</span><span class="symbol">;</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">{</span>
+  <span class="string">&quot;gnome-dev-cdrom-audio&quot;</span><span class="gtkdoc opt">,</span>
+  <span class="string">&quot;gnome-dev-cdrom&quot;</span><span class="gtkdoc opt">,</span>
+  <span class="string">&quot;gnome-dev&quot;</span><span class="gtkdoc opt">,</span>
+  <span class="string">&quot;gnome&quot;</span><span class="gtkdoc opt">,</span>
+  NULL
+<span class="gtkdoc opt">};</span></pre></td>
       </tr>
     </tbody>
   </table>

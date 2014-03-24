@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#gobject-Signals.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#gobject-Signals.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gobject-Signals.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="rn01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -465,11 +464,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="gobject-Signals.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="gobject-Signals.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib-object.h&gt;
 </pre>
@@ -539,7 +533,7 @@ creation time, if it is left <a href="../glib/glib-Standard-Macros.html#NULL:CAP
 values is performed. The return value of signal emissions is then the
 value returned by the last callback.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -572,7 +566,7 @@ is the return value of the current signal emission.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.2.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.2.6"></a><h4>Returns</h4>
 <p> The accumulator function returns whether the signal emission
 should be aborted. Returning <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> means to abort the
 current emission and <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> is returned for continuation.</p>
@@ -592,7 +586,7 @@ allows you to tie a hook to the signal type, so that it will trap all
 emissions of that signal, from any object.</p>
 <p>You may not attach these to signals created with the <a class="link" href="gobject-Signals.html#G-SIGNAL-NO-HOOKS:CAPS"><span class="type">G_SIGNAL_NO_HOOKS</span></a> flag.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.3.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -626,7 +620,7 @@ the signal was emitted, followed by the parameters of the emission. </p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.3.7"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.3.7"></a><h4>Returns</h4>
 <p> whether it wants to stay connected. If it returns <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>, the signal
 hook is disconnected (and destroyed).</p>
 <p></p>
@@ -640,9 +634,8 @@ hook is disconnected (and destroyed).</p>
 <p>This macro flags signal argument types for which the signal system may 
 assume that instances thereof remain persistent across all signal emissions
 they are used in. This is only useful for non ref-counted, value-copy types.</p>
-<p>To flag a signal argument in this way, add 
-&lt;literal&gt;| G_SIGNAL_TYPE_STATIC_SCOPE&lt;/literal&gt; to the corresponding argument
-of <a class="link" href="gobject-Signals.html#g-signal-new" title="g_signal_new ()"><code class="function">g_signal_new()</code></a>.</p>
+<p>To flag a signal argument in this way, add <code class="literal">| G_SIGNAL_TYPE_STATIC_SCOPE</code>
+to the corresponding argument of <a class="link" href="gobject-Signals.html#g-signal-new" title="g_signal_new ()"><code class="function">g_signal_new()</code></a>.</p>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -655,14 +648,14 @@ of <a class="link" href="gobject-Signals.html#g-signal-new" title="g_signal_new�
 6
 7
 8</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="gobject-Signals.html#g-signal-new">g_signal_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"size_request"</span><span class="symbol">,</span>
-<span class="normal">  </span><span class="function"><a href="gobject-Type-Information.html#G-TYPE-FROM-CLASS:CAPS">G_TYPE_FROM_CLASS</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">gobject_class</span><span class="symbol">),</span>
-<span class="normal">     G_SIGNAL_RUN_FIRST</span><span class="symbol">,</span>
-<span class="normal">     </span><span class="function"><a href="../glib/glib-Standard-Macros.html#G-STRUCT-OFFSET:CAPS">G_STRUCT_OFFSET</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">GtkWidgetClass</span><span class="symbol">,</span><span class="normal"> size_request</span><span class="symbol">),</span>
-<span class="normal">     <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span>
-<span class="normal">     _gtk_marshal_VOID__BOXED</span><span class="symbol">,</span>
-<span class="normal">     <a href="gobject-Type-Information.html#G-TYPE-NONE:CAPS">G_TYPE_NONE</a></span><span class="symbol">,</span><span class="normal"> </span><span class="number">1</span><span class="symbol">,</span>
-<span class="normal">     GTK_TYPE_REQUISITION </span><span class="symbol">|</span><span class="normal"> <a href="gobject-Signals.html#G-SIGNAL-TYPE-STATIC-SCOPE:CAPS">G_SIGNAL_TYPE_STATIC_SCOPE</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="gobject-Signals.html#g-signal-new">g_signal_new</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;size_request&quot;</span><span class="gtkdoc opt">,</span>
+  <span class="function"><a href="gobject-Type-Information.html#G-TYPE-FROM-CLASS:CAPS">G_TYPE_FROM_CLASS</a></span> <span class="gtkdoc opt">(</span>gobject_class<span class="gtkdoc opt">),</span>
+	 G_SIGNAL_RUN_FIRST<span class="gtkdoc opt">,</span>
+	 <span class="function"><a href="../glib/glib-Standard-Macros.html#G-STRUCT-OFFSET:CAPS">G_STRUCT_OFFSET</a></span> <span class="gtkdoc opt">(</span>GtkWidgetClass<span class="gtkdoc opt">,</span> size_request<span class="gtkdoc opt">),</span>
+	 NULL<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">,</span>
+	 _gtk_marshal_VOID__BOXED<span class="gtkdoc opt">,</span>
+	 G_TYPE_NONE<span class="gtkdoc opt">,</span> <span class="number">1</span><span class="gtkdoc opt">,</span>
+	 GTK_TYPE_REQUISITION <span class="gtkdoc opt">|</span> G_SIGNAL_TYPE_STATIC_SCOPE<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -698,7 +691,7 @@ Instead they will have to use <a class="link" href="gobject-Signals.html#g-signa
 <p>If c_marshaller is <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, <a class="link" href="gobject-Closures.html#g-cclosure-marshal-generic" title="g_cclosure_marshal_generic ()"><code class="function">g_cclosure_marshal_generic()</code></a> will be used as
 the marshaller for this signal.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.5.9"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.5.9"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -768,7 +761,7 @@ without a return value.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.5.10"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.5.10"></a><h4>Returns</h4>
 <p> the signal id</p>
 <p></p>
 </div>
@@ -793,7 +786,7 @@ g_signal_newv (<em class="parameter"><code>const <a href="../glib/glib-Basic-Typ
  will be used as
 the marshaller for this signal.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.6.7"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.6.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -865,7 +858,7 @@ each parameter. </p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.6.8"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.6.8"></a><h4>Returns</h4>
 <p> the signal id</p>
 <p></p>
 </div>
@@ -889,7 +882,7 @@ g_signal_new_valist (<em class="parameter"><code>const <a href="../glib/glib-Bas
 <p>If c_marshaller is <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, <a class="link" href="gobject-Closures.html#g-cclosure-marshal-generic" title="g_cclosure_marshal_generic ()"><code class="function">g_cclosure_marshal_generic()</code></a> will be used as
 the marshaller for this signal.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.7.7"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.7.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -958,7 +951,7 @@ without a return value.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.7.8"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.7.8"></a><h4>Returns</h4>
 <p> the signal id</p>
 <p></p>
 </div>
@@ -985,7 +978,7 @@ signal id is passed in, the <em class="parameter"><code>signal_id</code></em>
 is 0. All members filled into the <a class="link" href="gobject-Signals.html#GSignalQuery" title="struct GSignalQuery"><span class="type">GSignalQuery</span></a> structure should
 be considered constant and have to be left untouched.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.9.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.9.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1020,7 +1013,7 @@ somewhat faster than using the name each time.</p>
 <p>Also tries the ancestors of the given type.</p>
 <p>See <a class="link" href="gobject-Signals.html#g-signal-new" title="g_signal_new ()"><code class="function">g_signal_new()</code></a> for details on allowed signal names.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.10.7"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.10.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1042,7 +1035,7 @@ somewhat faster than using the name each time.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.10.8"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.10.8"></a><h4>Returns</h4>
 <p> the signal's identifying number, or 0 if no signal was found.</p>
 <p></p>
 </div>
@@ -1055,7 +1048,7 @@ g_signal_name (<em class="parameter"><code><a href="../glib/glib-Basic-Types.htm
 <p>Given the signal's identifier, finds its name.</p>
 <p>Two different signals may have the same name, if they have differing types.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.11.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.11.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1070,7 +1063,7 @@ g_signal_name (<em class="parameter"><code><a href="../glib/glib-Basic-Types.htm
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.11.7"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.11.7"></a><h4>Returns</h4>
 <p> the signal name, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the signal number was invalid.</p>
 <p></p>
 </div>
@@ -1085,7 +1078,7 @@ g_signal_list_ids (<em class="parameter"><code><a class="link" href="gobject-Typ
 created. Further information about the signals can be acquired through
 <a class="link" href="gobject-Signals.html#g-signal-query" title="g_signal_query ()"><code class="function">g_signal_query()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.12.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.12.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1108,7 +1101,7 @@ created. Further information about the signals can be acquired through
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.12.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.12.6"></a><h4>Returns</h4>
 <p> Newly allocated array of signal IDs. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=n_ids]</span></p>
 </div>
@@ -1125,7 +1118,7 @@ g_signal_emit (<em class="parameter"><code><a href="../glib/glib-Basic-Types.htm
 <p>Note that <a class="link" href="gobject-Signals.html#g-signal-emit" title="g_signal_emit ()"><code class="function">g_signal_emit()</code></a> resets the return value to the default
 if no handlers are connected, in contrast to <a class="link" href="gobject-Signals.html#g-signal-emitv" title="g_signal_emitv ()"><code class="function">g_signal_emitv()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.13.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.13.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1170,7 +1163,7 @@ g_signal_emit_by_name (<em class="parameter"><code><a href="../glib/glib-Basic-T
 <p>Note that <a class="link" href="gobject-Signals.html#g-signal-emit-by-name" title="g_signal_emit_by_name ()"><code class="function">g_signal_emit_by_name()</code></a> resets the return value to the default
 if no handlers are connected, in contrast to <a class="link" href="gobject-Signals.html#g-signal-emitv" title="g_signal_emitv ()"><code class="function">g_signal_emitv()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.14.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.14.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1212,7 +1205,7 @@ g_signal_emitv (<em class="parameter"><code>const <a class="link" href="gobject-
  if no handlers are
 connected, in contrast to <a class="link" href="gobject-Signals.html#g-signal-emit" title="g_signal_emit ()"><code class="function">g_signal_emit()</code></a> and <a class="link" href="gobject-Signals.html#g-signal-emit-valist" title="g_signal_emit_valist ()"><code class="function">g_signal_emit_valist()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.15.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.15.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1258,7 +1251,7 @@ g_signal_emit_valist (<em class="parameter"><code><a href="../glib/glib-Basic-Ty
 <p>Note that <a class="link" href="gobject-Signals.html#g-signal-emit-valist" title="g_signal_emit_valist ()"><code class="function">g_signal_emit_valist()</code></a> resets the return value to the default
 if no handlers are connected, in contrast to <a class="link" href="gobject-Signals.html#g-signal-emitv" title="g_signal_emitv ()"><code class="function">g_signal_emitv()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.16.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.16.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1299,7 +1292,7 @@ is <a class="link" href="gobject-Type-Information.html#G-TYPE-NONE:CAPS" title="
 <p>Connects a <a class="link" href="gobject-Closures.html#GCallback" title="GCallback ()"><span class="type">GCallback</span></a> function to a signal for a particular object.</p>
 <p>The handler will be called before the default handler of the signal.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.17.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.17.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1332,7 +1325,7 @@ calls.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.17.7"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.17.7"></a><h4>Returns</h4>
 <p> the handler id (always greater than 0 for successful connections)</p>
 <p></p>
 </div>
@@ -1344,7 +1337,7 @@ calls.</p></td>
 <p>Connects a <a class="link" href="gobject-Closures.html#GCallback" title="GCallback ()"><span class="type">GCallback</span></a> function to a signal for a particular object.</p>
 <p>The handler will be called after the default handler of the signal.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.18.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.18.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1377,7 +1370,7 @@ calls.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.18.7"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.18.7"></a><h4>Returns</h4>
 <p> the handler id (always greater than 0 for successful connections)</p>
 <p></p>
 </div>
@@ -1391,7 +1384,7 @@ calls.</p></td>
  will be swapped when 
 calling the handler.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.19.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.19.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1424,7 +1417,7 @@ calls.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.19.7"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.19.7"></a><h4>Returns</h4>
 <p> the handler id (always greater than 0 for successful connections)</p>
 <p></p>
 </div>
@@ -1451,7 +1444,7 @@ emitting a signal while <em class="parameter"><code>gobject</code></em>
  is being destroyed in another thread
 is not safe).</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.20.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.20.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1489,7 +1482,7 @@ is not safe).</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.20.7"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.20.7"></a><h4>Returns</h4>
 <p> the handler id.</p>
 <p></p>
 </div>
@@ -1511,7 +1504,7 @@ used. Specify <em class="parameter"><code>connect_flags</code></em>
  if you need <code class="literal">..._after()</code> or
 <code class="literal">..._swapped()</code> variants of this function.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.21.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.21.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1555,7 +1548,7 @@ calls.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.21.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.21.6"></a><h4>Returns</h4>
 <p> the handler id (always greater than 0 for successful connections)</p>
 <p></p>
 </div>
@@ -1570,7 +1563,7 @@ g_signal_connect_closure (<em class="parameter"><code><a href="../glib/glib-Basi
                           <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> after</code></em>);</pre>
 <p>Connects a closure to a signal for a particular object.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.22.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.22.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1603,7 +1596,7 @@ default handler of the signal.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.22.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.22.6"></a><h4>Returns</h4>
 <p> the handler id (always greater than 0 for successful connections)</p>
 <p></p>
 </div>
@@ -1619,7 +1612,7 @@ g_signal_connect_closure_by_id (<em class="parameter"><code><a href="../glib/gli
                                 <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> after</code></em>);</pre>
 <p>Connects a closure to a signal for a particular object.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.23.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.23.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1657,7 +1650,7 @@ default handler of the signal.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.23.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.23.6"></a><h4>Returns</h4>
 <p> the handler id (always greater than 0 for successful connections)</p>
 <p></p>
 </div>
@@ -1678,7 +1671,7 @@ blocked before to become active again.</p>
 signal of <em class="parameter"><code>instance</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.24.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.24.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1721,7 +1714,7 @@ proceeded yet).</p>
 connected to a signal of <em class="parameter"><code>instance</code></em>
  and is currently blocked.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.25.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.25.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1758,7 +1751,7 @@ connected to. The <em class="parameter"><code>handler_id</code></em>
 signal of <em class="parameter"><code>instance</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.26.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.26.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1798,7 +1791,7 @@ The match <em class="parameter"><code>mask</code></em>
  has to be non-0 for successful matches.
 If no handler was found, 0 is returned.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.27.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.27.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1850,7 +1843,7 @@ the handler has to match.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.27.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.27.6"></a><h4>Returns</h4>
 <p> A valid non-0 signal handler id for a successful match.</p>
 <p></p>
 </div>
@@ -1874,7 +1867,7 @@ or <a class="link" href="gobject-Signals.html#G-SIGNAL-MATCH-DATA:CAPS"><code cl
 If no handlers were found, 0 is returned, the number of blocked handlers
 otherwise.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.28.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.28.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1926,7 +1919,7 @@ the handlers have to match.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.28.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.28.6"></a><h4>Returns</h4>
 <p> The number of handlers that matched.</p>
 <p></p>
 </div>
@@ -1951,7 +1944,7 @@ If no handlers were found, 0 is returned, the number of unblocked handlers
 otherwise. The match criteria should not apply to any handlers that are
 not currently blocked.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.29.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.29.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2003,7 +1996,7 @@ the handlers have to match.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.29.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.29.6"></a><h4>Returns</h4>
 <p> The number of handlers that matched.</p>
 <p></p>
 </div>
@@ -2028,7 +2021,7 @@ passed as arguments.  Passing at least one of the
 matches.  If no handlers were found, 0 is returned, the number of
 disconnected handlers otherwise.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.30.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.30.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2080,7 +2073,7 @@ the handlers have to match.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.30.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.30.6"></a><h4>Returns</h4>
 <p> The number of handlers that matched.</p>
 <p></p>
 </div>
@@ -2095,7 +2088,7 @@ g_signal_handler_is_connected (<em class="parameter"><code><a href="../glib/glib
  is the id of a handler connected to <em class="parameter"><code>instance</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.31.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.31.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2117,7 +2110,7 @@ g_signal_handler_is_connected (<em class="parameter"><code><a href="../glib/glib
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.31.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.31.6"></a><h4>Returns</h4>
 <p> whether <em class="parameter"><code>handler_id</code></em>
 identifies a handler connected to <em class="parameter"><code>instance</code></em>
 .</p>
@@ -2132,7 +2125,7 @@ identifies a handler connected to <em class="parameter"><code>instance</code></e
  and <em class="parameter"><code>data</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.32.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.32.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2159,7 +2152,7 @@ identifies a handler connected to <em class="parameter"><code>instance</code></e
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.32.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.32.6"></a><h4>Returns</h4>
 <p> The number of handlers that matched.</p>
 <p></p>
 </div>
@@ -2172,7 +2165,7 @@ identifies a handler connected to <em class="parameter"><code>instance</code></e
  and <em class="parameter"><code>data</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.33.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.33.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2199,7 +2192,7 @@ identifies a handler connected to <em class="parameter"><code>instance</code></e
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.33.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.33.6"></a><h4>Returns</h4>
 <p> The number of handlers that matched.</p>
 <p></p>
 </div>
@@ -2212,7 +2205,7 @@ identifies a handler connected to <em class="parameter"><code>instance</code></e
  and <em class="parameter"><code>data</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.34.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.34.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2239,7 +2232,7 @@ identifies a handler connected to <em class="parameter"><code>instance</code></e
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.34.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.34.6"></a><h4>Returns</h4>
 <p> The number of handlers that matched.</p>
 <p></p>
 </div>
@@ -2251,7 +2244,7 @@ identifies a handler connected to <em class="parameter"><code>instance</code></e
 <p>Disconnects all handlers on an instance that match <em class="parameter"><code>data</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.35.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.35.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2273,7 +2266,7 @@ identifies a handler connected to <em class="parameter"><code>instance</code></e
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.35.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.35.6"></a><h4>Returns</h4>
 <p> The number of handlers that matched.</p>
 <p></p>
 </div>
@@ -2295,7 +2288,7 @@ signal are difficult to compute. A class implementor may opt to not
 emit the signal if no one is attached anyway, thus saving the cost
 of building the arguments.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.36.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.36.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2327,7 +2320,7 @@ of building the arguments.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.36.7"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.36.7"></a><h4>Returns</h4>
 <p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if a handler is connected to the signal, <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>
 otherwise.</p>
 <p></p>
@@ -2346,7 +2339,7 @@ g_signal_stop_emission (<em class="parameter"><code><a href="../glib/glib-Basic-
 flag).</p>
 <p>Prints a warning if used on a signal which isn't being emitted.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.37.7"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.37.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2383,7 +2376,7 @@ g_signal_stop_emission_by_name (<em class="parameter"><code><a href="../glib/gli
 <p>This is just like <a class="link" href="gobject-Signals.html#g-signal-stop-emission" title="g_signal_stop_emission ()"><code class="function">g_signal_stop_emission()</code></a> except it will look up the
 signal id for you.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.38.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.38.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2421,7 +2414,7 @@ from the type to which the signal belongs.</p>
 <a class="link" href="gobject-Signals.html#g-signal-chain-from-overridden-handler" title="g_signal_chain_from_overridden_handler ()"><code class="function">g_signal_chain_from_overridden_handler()</code></a> for how to chain up to the
 parent class closure from inside the overridden one.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.39.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.39.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2460,7 +2453,7 @@ be called from an overridden class closure; see
 <a class="link" href="gobject-Signals.html#g-signal-override-class-closure" title="g_signal_override_class_closure ()"><code class="function">g_signal_override_class_closure()</code></a> and
 <a class="link" href="gobject-Signals.html#g-signal-override-class-handler" title="g_signal_override_class_handler ()"><code class="function">g_signal_override_class_handler()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.40.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.40.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2513,7 +2506,7 @@ directly and can be overriden by derived classes with
  will be used as
 the marshaller for this signal.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.41.8"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.41.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2583,7 +2576,7 @@ without a return value.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.41.9"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.41.9"></a><h4>Returns</h4>
 <p> the signal id</p>
 <p></p>
 </div>
@@ -2607,7 +2600,7 @@ type to which the signal belongs.</p>
 <a class="link" href="gobject-Signals.html#g-signal-chain-from-overridden-handler" title="g_signal_chain_from_overridden_handler ()"><code class="function">g_signal_chain_from_overridden_handler()</code></a> for how to chain up to the
 parent class closure from inside the overridden one.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.42.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.42.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2648,7 +2641,7 @@ only be called from an overridden class closure; see
 <a class="link" href="gobject-Signals.html#g-signal-override-class-closure" title="g_signal_override_class_closure ()"><code class="function">g_signal_override_class_closure()</code></a> and
 <a class="link" href="gobject-Signals.html#g-signal-override-class-handler" title="g_signal_override_class_handler ()"><code class="function">g_signal_override_class_handler()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.43.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.43.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2686,7 +2679,7 @@ g_signal_add_emission_hook (<em class="parameter"><code><a href="../glib/glib-Ba
 of that signal, independent of the instance. This is possible only
 for signals which don't have <a class="link" href="gobject-Signals.html#G-SIGNAL-NO-HOOKS:CAPS"><span class="type">G_SIGNAL_NO_HOOKS</span></a> flag set.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.44.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.44.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2725,7 +2718,7 @@ for signals which don't have <a class="link" href="gobject-Signals.html#G-SIGNAL
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.44.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.44.6"></a><h4>Returns</h4>
 <p> the hook id, for later use with <a class="link" href="gobject-Signals.html#g-signal-remove-emission-hook" title="g_signal_remove_emission_hook ()"><code class="function">g_signal_remove_emission_hook()</code></a>.</p>
 <p></p>
 </div>
@@ -2738,7 +2731,7 @@ g_signal_remove_emission_hook (<em class="parameter"><code><a href="../glib/glib
                                <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gulong"><span class="type">gulong</span></a> hook_id</code></em>);</pre>
 <p>Deletes an emission hook.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.45.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.45.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2775,7 +2768,7 @@ g_signal_parse_name (<em class="parameter"><code>const <a href="../glib/glib-Bas
 and <em class="parameter"><code>detail</code></em>
  quark.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.46.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.46.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2812,7 +2805,7 @@ and <em class="parameter"><code>detail</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.46.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.46.6"></a><h4>Returns</h4>
 <p> Whether the signal name could successfully be parsed and <em class="parameter"><code>signal_id_p</code></em>
 and <em class="parameter"><code>detail_p</code></em>
 contain valid return values.</p>
@@ -2826,7 +2819,7 @@ contain valid return values.</p>
 g_signal_get_invocation_hint (<em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> instance</code></em>);</pre>
 <p>Returns the invocation hint of the innermost signal emission of instance.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.47.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.47.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2841,7 +2834,7 @@ g_signal_get_invocation_hint (<em class="parameter"><code><a href="../glib/glib-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.47.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.47.6"></a><h4>Returns</h4>
 <p> the invocation hint of the innermost signal  emission. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
 </div>
@@ -2858,7 +2851,7 @@ g_signal_type_cclosure_new (<em class="parameter"><code><a class="link" href="go
 identified by <em class="parameter"><code>itype</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.48.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.48.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2882,7 +2875,7 @@ structure which is to be invoked by the new closure</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.48.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.48.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="gobject-Closures.html#GCClosure" title="struct GCClosure"><span class="type">GCClosure</span></a></p>
 <p></p>
 </div>
@@ -2905,7 +2898,7 @@ usually want the signal connection to override the class handler).</p>
 handler that is run as the return value for the signal and not run
 any further handlers (ie: the first handler "wins").</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.49.6"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.49.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2937,7 +2930,7 @@ any further handlers (ie: the first handler "wins").</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.49.7"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.49.7"></a><h4>Returns</h4>
 <p> standard <a class="link" href="gobject-Signals.html#GSignalAccumulator" title="GSignalAccumulator ()"><span class="type">GSignalAccumulator</span></a> result</p>
 <p></p>
 </div>
@@ -2959,7 +2952,7 @@ the emission to continue. The idea here is that a <a href="../glib/glib-Standard
 indicates that the callback handled the signal, and no further
 handling is needed.</p>
 <div class="refsect3">
-<a name="id-1.4.12.8.50.5"></a><h4>Parameters</h4>
+<a name="id-1.4.12.7.50.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2991,7 +2984,7 @@ handling is needed.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.12.8.50.6"></a><h4>Returns</h4>
+<a name="id-1.4.12.7.50.6"></a><h4>Returns</h4>
 <p> standard <a class="link" href="gobject-Signals.html#GSignalAccumulator" title="GSignalAccumulator ()"><span class="type">GSignalAccumulator</span></a> result</p>
 <p></p>
 </div>
@@ -3011,7 +3004,7 @@ handling is needed.</p>
 <p>The <a class="link" href="gobject-Signals.html#GSignalInvocationHint" title="struct GSignalInvocationHint"><span class="type">GSignalInvocationHint</span></a> structure is used to pass on additional information
 to callbacks during a signal emission.</p>
 <div class="refsect3">
-<a name="id-1.4.12.9.2.5"></a><h4>Members</h4>
+<a name="id-1.4.12.8.2.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">
@@ -3068,7 +3061,7 @@ marshalling the signal argument into GValues.</p>
 signal description outlines how especially the RUN flags control the
 stages of a signal emission.</p>
 <div class="refsect3">
-<a name="id-1.4.12.9.5.5"></a><h4>Members</h4>
+<a name="id-1.4.12.8.5.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -3161,7 +3154,7 @@ stages of a signal emission.</p>
 <a class="link" href="gobject-Signals.html#g-signal-handlers-unblock-matched" title="g_signal_handlers_unblock_matched ()"><code class="function">g_signal_handlers_unblock_matched()</code></a> and <a class="link" href="gobject-Signals.html#g-signal-handlers-disconnect-matched" title="g_signal_handlers_disconnect_matched ()"><code class="function">g_signal_handlers_disconnect_matched()</code></a>
 match signals by.</p>
 <div class="refsect3">
-<a name="id-1.4.12.9.6.4"></a><h4>Members</h4>
+<a name="id-1.4.12.8.6.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -3231,7 +3224,7 @@ match signals by.</p>
 <p>A structure holding in-depth information for a specific signal. It is
 filled in by the <a class="link" href="gobject-Signals.html#g-signal-query" title="g_signal_query ()"><code class="function">g_signal_query()</code></a> function.</p>
 <div class="refsect3">
-<a name="id-1.4.12.9.7.5"></a><h4>Members</h4>
+<a name="id-1.4.12.8.7.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">
@@ -3306,7 +3299,7 @@ gpointer     data2);
 <p>The connection flags are used to specify the behaviour of a signal's 
 connection.</p>
 <div class="refsect3">
-<a name="id-1.4.12.9.10.4"></a><h4>Members</h4>
+<a name="id-1.4.12.8.10.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">

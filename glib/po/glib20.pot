@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=glib&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2014-02-17 18:37-0500\n"
+"POT-Creation-Date: 2014-03-03 16:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -284,13 +284,13 @@ msgstr ""
 
 #: ../gio/gcharsetconverter.c:342 ../gio/gdatainputstream.c:847
 #: ../gio/gdatainputstream.c:1255 ../glib/gconvert.c:438
-#: ../glib/gconvert.c:842 ../glib/giochannel.c:1557 ../glib/giochannel.c:1599
+#: ../glib/gconvert.c:845 ../glib/giochannel.c:1557 ../glib/giochannel.c:1599
 #: ../glib/giochannel.c:2443 ../glib/gutf8.c:837 ../glib/gutf8.c:1289
 msgid "Invalid byte sequence in conversion input"
 msgstr ""
 
 #: ../gio/gcharsetconverter.c:347 ../glib/gconvert.c:446
-#: ../glib/gconvert.c:767 ../glib/giochannel.c:1564 ../glib/giochannel.c:2455
+#: ../glib/gconvert.c:770 ../glib/giochannel.c:1564 ../glib/giochannel.c:2455
 #, c-format
 msgid "Error during conversion: %s"
 msgstr ""
@@ -1089,39 +1089,39 @@ msgstr ""
 msgid "Monitor a remote object."
 msgstr ""
 
-#: ../gio/gdesktopappinfo.c:1419 ../gio/gdesktopappinfo.c:4562
+#: ../gio/gdesktopappinfo.c:1440 ../gio/gdesktopappinfo.c:4583
 #: ../gio/gwin32appinfo.c:219
 msgid "Unnamed"
 msgstr ""
 
-#: ../gio/gdesktopappinfo.c:1838
+#: ../gio/gdesktopappinfo.c:1859
 msgid "Desktop file didn't specify Exec field"
 msgstr ""
 
-#: ../gio/gdesktopappinfo.c:2123
+#: ../gio/gdesktopappinfo.c:2144
 msgid "Unable to find terminal required for application"
 msgstr ""
 
-#: ../gio/gdesktopappinfo.c:2539
+#: ../gio/gdesktopappinfo.c:2560
 #, c-format
 msgid "Can't create user application configuration folder %s: %s"
 msgstr ""
 
-#: ../gio/gdesktopappinfo.c:2543
+#: ../gio/gdesktopappinfo.c:2564
 #, c-format
 msgid "Can't create user MIME configuration folder %s: %s"
 msgstr ""
 
-#: ../gio/gdesktopappinfo.c:2783 ../gio/gdesktopappinfo.c:2807
+#: ../gio/gdesktopappinfo.c:2804 ../gio/gdesktopappinfo.c:2828
 msgid "Application information lacks an identifier"
 msgstr ""
 
-#: ../gio/gdesktopappinfo.c:3040
+#: ../gio/gdesktopappinfo.c:3061
 #, c-format
 msgid "Can't create user desktop file %s"
 msgstr ""
 
-#: ../gio/gdesktopappinfo.c:3174
+#: ../gio/gdesktopappinfo.c:3195
 #, c-format
 msgid "Custom definition for %s"
 msgstr ""
@@ -2139,7 +2139,7 @@ msgstr ""
 msgid "Source stream is already closed"
 msgstr ""
 
-#: ../gio/gresolver.c:316 ../gio/gthreadedresolver.c:108
+#: ../gio/gresolver.c:318 ../gio/gthreadedresolver.c:108
 #, c-format
 msgid "Error resolving '%s': %s"
 msgstr ""
@@ -2467,7 +2467,7 @@ msgstr ""
 msgid "Socket is already closed"
 msgstr ""
 
-#: ../gio/gsocket.c:335 ../gio/gsocket.c:3634 ../gio/gsocket.c:3689
+#: ../gio/gsocket.c:335 ../gio/gsocket.c:3615 ../gio/gsocket.c:3670
 msgid "Socket I/O timed out"
 msgstr ""
 
@@ -2556,31 +2556,31 @@ msgstr ""
 msgid "Error closing socket: %s"
 msgstr ""
 
-#: ../gio/gsocket.c:3627
+#: ../gio/gsocket.c:3608
 #, c-format
 msgid "Waiting for socket condition: %s"
 msgstr ""
 
-#: ../gio/gsocket.c:3905 ../gio/gsocket.c:3986
+#: ../gio/gsocket.c:3886 ../gio/gsocket.c:3967
 #, c-format
 msgid "Error sending message: %s"
 msgstr ""
 
-#: ../gio/gsocket.c:3930
+#: ../gio/gsocket.c:3911
 msgid "GSocketControlMessage not supported on Windows"
 msgstr ""
 
-#: ../gio/gsocket.c:4264 ../gio/gsocket.c:4399
+#: ../gio/gsocket.c:4245 ../gio/gsocket.c:4380
 #, c-format
 msgid "Error receiving message: %s"
 msgstr ""
 
-#: ../gio/gsocket.c:4504
+#: ../gio/gsocket.c:4485
 #, c-format
 msgid "Unable to read socket credentials: %s"
 msgstr ""
 
-#: ../gio/gsocket.c:4513
+#: ../gio/gsocket.c:4494
 msgid "g_socket_get_credentials not implemented for this OS"
 msgstr ""
 
@@ -3005,42 +3005,42 @@ msgstr ""
 msgid "Partial character sequence at end of input"
 msgstr ""
 
-#: ../glib/gconvert.c:739
+#: ../glib/gconvert.c:742
 #, c-format
 msgid "Cannot convert fallback '%s' to codeset '%s'"
 msgstr ""
 
-#: ../glib/gconvert.c:1563
+#: ../glib/gconvert.c:1566
 #, c-format
 msgid "The URI '%s' is not an absolute URI using the \"file\" scheme"
 msgstr ""
 
-#: ../glib/gconvert.c:1573
+#: ../glib/gconvert.c:1576
 #, c-format
 msgid "The local file URI '%s' may not include a '#'"
 msgstr ""
 
-#: ../glib/gconvert.c:1590
+#: ../glib/gconvert.c:1593
 #, c-format
 msgid "The URI '%s' is invalid"
 msgstr ""
 
-#: ../glib/gconvert.c:1602
+#: ../glib/gconvert.c:1605
 #, c-format
 msgid "The hostname of the URI '%s' is invalid"
 msgstr ""
 
-#: ../glib/gconvert.c:1618
+#: ../glib/gconvert.c:1621
 #, c-format
 msgid "The URI '%s' contains invalidly escaped characters"
 msgstr ""
 
-#: ../glib/gconvert.c:1713
+#: ../glib/gconvert.c:1716
 #, c-format
 msgid "The pathname '%s' is not an absolute path"
 msgstr ""
 
-#: ../glib/gconvert.c:1723
+#: ../glib/gconvert.c:1726
 msgid "Invalid hostname"
 msgstr ""
 

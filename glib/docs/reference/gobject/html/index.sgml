@@ -2,7 +2,6 @@
 <ANCHOR id="gobject-Type-Information" href="gobject/gobject-Type-Information.html">
 <ANCHOR id="gobject-Type-Information.functions" href="gobject/gobject-Type-Information.html#gobject-Type-Information.functions">
 <ANCHOR id="gobject-Type-Information.other" href="gobject/gobject-Type-Information.html#gobject-Type-Information.other">
-<ANCHOR id="gobject-Type-Information.object-hierarchy" href="gobject/gobject-Type-Information.html#gobject-Type-Information.object-hierarchy">
 <ANCHOR id="gobject-Type-Information.includes" href="gobject/gobject-Type-Information.html#gobject-Type-Information.includes">
 <ANCHOR id="gobject-Type-Information.description" href="gobject/gobject-Type-Information.html#gobject-Type-Information.description">
 <ANCHOR id="gobject-Type-Information.functions_details" href="gobject/gobject-Type-Information.html#gobject-Type-Information.functions_details">
@@ -286,7 +285,6 @@
 <ANCHOR id="gobject-Enumeration-and-Flag-Types" href="gobject/gobject-Enumeration-and-Flag-Types.html">
 <ANCHOR id="gobject-Enumeration-and-Flag-Types.functions" href="gobject/gobject-Enumeration-and-Flag-Types.html#gobject-Enumeration-and-Flag-Types.functions">
 <ANCHOR id="gobject-Enumeration-and-Flag-Types.other" href="gobject/gobject-Enumeration-and-Flag-Types.html#gobject-Enumeration-and-Flag-Types.other">
-<ANCHOR id="gobject-Enumeration-and-Flag-Types.object-hierarchy" href="gobject/gobject-Enumeration-and-Flag-Types.html#gobject-Enumeration-and-Flag-Types.object-hierarchy">
 <ANCHOR id="gobject-Enumeration-and-Flag-Types.includes" href="gobject/gobject-Enumeration-and-Flag-Types.html#gobject-Enumeration-and-Flag-Types.includes">
 <ANCHOR id="gobject-Enumeration-and-Flag-Types.description" href="gobject/gobject-Enumeration-and-Flag-Types.html#gobject-Enumeration-and-Flag-Types.description">
 <ANCHOR id="gobject-Enumeration-and-Flag-Types.functions_details" href="gobject/gobject-Enumeration-and-Flag-Types.html#gobject-Enumeration-and-Flag-Types.functions_details">
@@ -319,7 +317,6 @@
 <ANCHOR id="gobject-Boxed-Types" href="gobject/gobject-Boxed-Types.html">
 <ANCHOR id="gobject-Boxed-Types.functions" href="gobject/gobject-Boxed-Types.html#gobject-Boxed-Types.functions">
 <ANCHOR id="gobject-Boxed-Types.other" href="gobject/gobject-Boxed-Types.html#gobject-Boxed-Types.other">
-<ANCHOR id="gobject-Boxed-Types.object-hierarchy" href="gobject/gobject-Boxed-Types.html#gobject-Boxed-Types.object-hierarchy">
 <ANCHOR id="gobject-Boxed-Types.includes" href="gobject/gobject-Boxed-Types.html#gobject-Boxed-Types.includes">
 <ANCHOR id="gobject-Boxed-Types.description" href="gobject/gobject-Boxed-Types.html#gobject-Boxed-Types.description">
 <ANCHOR id="gobject-Boxed-Types.functions_details" href="gobject/gobject-Boxed-Types.html#gobject-Boxed-Types.functions_details">
@@ -346,6 +343,7 @@
 <ANCHOR id="G-TYPE-IO-CHANNEL:CAPS" href="gobject/gobject-Boxed-Types.html#G-TYPE-IO-CHANNEL:CAPS">
 <ANCHOR id="G-TYPE-IO-CONDITION:CAPS" href="gobject/gobject-Boxed-Types.html#G-TYPE-IO-CONDITION:CAPS">
 <ANCHOR id="G-TYPE-VARIANT-BUILDER:CAPS" href="gobject/gobject-Boxed-Types.html#G-TYPE-VARIANT-BUILDER:CAPS">
+<ANCHOR id="G-TYPE-VARIANT-DICT:CAPS" href="gobject/gobject-Boxed-Types.html#G-TYPE-VARIANT-DICT:CAPS">
 <ANCHOR id="G-TYPE-KEY-FILE:CAPS" href="gobject/gobject-Boxed-Types.html#G-TYPE-KEY-FILE:CAPS">
 <ANCHOR id="G-TYPE-MAIN-CONTEXT:CAPS" href="gobject/gobject-Boxed-Types.html#G-TYPE-MAIN-CONTEXT:CAPS">
 <ANCHOR id="G-TYPE-MAIN-LOOP:CAPS" href="gobject/gobject-Boxed-Types.html#G-TYPE-MAIN-LOOP:CAPS">
@@ -359,7 +357,6 @@
 <ANCHOR id="gobject-Generic-values" href="gobject/gobject-Generic-values.html">
 <ANCHOR id="gobject-Generic-values.functions" href="gobject/gobject-Generic-values.html#gobject-Generic-values.functions">
 <ANCHOR id="gobject-Generic-values.other" href="gobject/gobject-Generic-values.html#gobject-Generic-values.other">
-<ANCHOR id="gobject-Generic-values.object-hierarchy" href="gobject/gobject-Generic-values.html#gobject-Generic-values.object-hierarchy">
 <ANCHOR id="gobject-Generic-values.includes" href="gobject/gobject-Generic-values.html#gobject-Generic-values.includes">
 <ANCHOR id="gobject-Generic-values.description" href="gobject/gobject-Generic-values.html#gobject-Generic-values.description">
 <ANCHOR id="gobject-Generic-values.functions_details" href="gobject/gobject-Generic-values.html#gobject-Generic-values.functions_details">
@@ -391,7 +388,6 @@
 <ANCHOR id="gobject-Standard-Parameter-and-Value-Types" href="gobject/gobject-Standard-Parameter-and-Value-Types.html">
 <ANCHOR id="gobject-Standard-Parameter-and-Value-Types.functions" href="gobject/gobject-Standard-Parameter-and-Value-Types.html#gobject-Standard-Parameter-and-Value-Types.functions">
 <ANCHOR id="gobject-Standard-Parameter-and-Value-Types.other" href="gobject/gobject-Standard-Parameter-and-Value-Types.html#gobject-Standard-Parameter-and-Value-Types.other">
-<ANCHOR id="gobject-Standard-Parameter-and-Value-Types.object-hierarchy" href="gobject/gobject-Standard-Parameter-and-Value-Types.html#gobject-Standard-Parameter-and-Value-Types.object-hierarchy">
 <ANCHOR id="gobject-Standard-Parameter-and-Value-Types.includes" href="gobject/gobject-Standard-Parameter-and-Value-Types.html#gobject-Standard-Parameter-and-Value-Types.includes">
 <ANCHOR id="gobject-Standard-Parameter-and-Value-Types.description" href="gobject/gobject-Standard-Parameter-and-Value-Types.html#gobject-Standard-Parameter-and-Value-Types.description">
 <ANCHOR id="gobject-Standard-Parameter-and-Value-Types.functions_details" href="gobject/gobject-Standard-Parameter-and-Value-Types.html#gobject-Standard-Parameter-and-Value-Types.functions_details">
@@ -594,7 +590,6 @@
 <ANCHOR id="gobject-GParamSpec" href="gobject/gobject-GParamSpec.html">
 <ANCHOR id="gobject-GParamSpec.functions" href="gobject/gobject-GParamSpec.html#gobject-GParamSpec.functions">
 <ANCHOR id="gobject-GParamSpec.other" href="gobject/gobject-GParamSpec.html#gobject-GParamSpec.other">
-<ANCHOR id="gobject-GParamSpec.object-hierarchy" href="gobject/gobject-GParamSpec.html#gobject-GParamSpec.object-hierarchy">
 <ANCHOR id="gobject-GParamSpec.includes" href="gobject/gobject-GParamSpec.html#gobject-GParamSpec.includes">
 <ANCHOR id="gobject-GParamSpec.description" href="gobject/gobject-GParamSpec.html#gobject-GParamSpec.description">
 <ANCHOR id="gobject-GParamSpec.functions_details" href="gobject/gobject-GParamSpec.html#gobject-GParamSpec.functions_details">
@@ -647,7 +642,6 @@
 <ANCHOR id="gobject-Varargs-Value-Collection" href="gobject/gobject-Varargs-Value-Collection.html">
 <ANCHOR id="gobject-Varargs-Value-Collection.functions" href="gobject/gobject-Varargs-Value-Collection.html#gobject-Varargs-Value-Collection.functions">
 <ANCHOR id="gobject-Varargs-Value-Collection.other" href="gobject/gobject-Varargs-Value-Collection.html#gobject-Varargs-Value-Collection.other">
-<ANCHOR id="gobject-Varargs-Value-Collection.object-hierarchy" href="gobject/gobject-Varargs-Value-Collection.html#gobject-Varargs-Value-Collection.object-hierarchy">
 <ANCHOR id="gobject-Varargs-Value-Collection.includes" href="gobject/gobject-Varargs-Value-Collection.html#gobject-Varargs-Value-Collection.includes">
 <ANCHOR id="gobject-Varargs-Value-Collection.description" href="gobject/gobject-Varargs-Value-Collection.html#gobject-Varargs-Value-Collection.description">
 <ANCHOR id="gobject-Varargs-Value-Collection.functions_details" href="gobject/gobject-Varargs-Value-Collection.html#gobject-Varargs-Value-Collection.functions_details">
@@ -661,7 +655,6 @@
 <ANCHOR id="gobject-Signals" href="gobject/gobject-Signals.html">
 <ANCHOR id="gobject-Signals.functions" href="gobject/gobject-Signals.html#gobject-Signals.functions">
 <ANCHOR id="gobject-Signals.other" href="gobject/gobject-Signals.html#gobject-Signals.other">
-<ANCHOR id="gobject-Signals.object-hierarchy" href="gobject/gobject-Signals.html#gobject-Signals.object-hierarchy">
 <ANCHOR id="gobject-Signals.includes" href="gobject/gobject-Signals.html#gobject-Signals.includes">
 <ANCHOR id="gobject-Signals.description" href="gobject/gobject-Signals.html#gobject-Signals.description">
 <ANCHOR id="gobject-Signals.functions_details" href="gobject/gobject-Signals.html#gobject-Signals.functions_details">
@@ -727,7 +720,6 @@
 <ANCHOR id="gobject-Closures" href="gobject/gobject-Closures.html">
 <ANCHOR id="gobject-Closures.functions" href="gobject/gobject-Closures.html#gobject-Closures.functions">
 <ANCHOR id="gobject-Closures.other" href="gobject/gobject-Closures.html#gobject-Closures.other">
-<ANCHOR id="gobject-Closures.object-hierarchy" href="gobject/gobject-Closures.html#gobject-Closures.object-hierarchy">
 <ANCHOR id="gobject-Closures.includes" href="gobject/gobject-Closures.html#gobject-Closures.includes">
 <ANCHOR id="gobject-Closures.description" href="gobject/gobject-Closures.html#gobject-Closures.description">
 <ANCHOR id="gobject-Closures.functions_details" href="gobject/gobject-Closures.html#gobject-Closures.functions_details">
@@ -814,7 +806,6 @@
 <ANCHOR id="gobject-Value-arrays" href="gobject/gobject-Value-arrays.html">
 <ANCHOR id="gobject-Value-arrays.functions" href="gobject/gobject-Value-arrays.html#gobject-Value-arrays.functions">
 <ANCHOR id="gobject-Value-arrays.other" href="gobject/gobject-Value-arrays.html#gobject-Value-arrays.other">
-<ANCHOR id="gobject-Value-arrays.object-hierarchy" href="gobject/gobject-Value-arrays.html#gobject-Value-arrays.object-hierarchy">
 <ANCHOR id="gobject-Value-arrays.includes" href="gobject/gobject-Value-arrays.html#gobject-Value-arrays.includes">
 <ANCHOR id="gobject-Value-arrays.description" href="gobject/gobject-Value-arrays.html#gobject-Value-arrays.description">
 <ANCHOR id="gobject-Value-arrays.functions_details" href="gobject/gobject-Value-arrays.html#gobject-Value-arrays.functions_details">

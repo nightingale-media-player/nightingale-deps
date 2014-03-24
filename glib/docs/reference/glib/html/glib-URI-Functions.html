@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-URI-Functions.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-URI-Functions.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-URI-Functions.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -131,11 +130,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-URI-Functions.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-URI-Functions.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -160,7 +154,7 @@ g_uri_parse_scheme (<em class="parameter"><code>const <span class="type">char</s
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">URI </span><span class="symbol">=</span><span class="normal"> scheme </span><span class="string">":"</span><span class="normal"> hier</span><span class="symbol">-</span><span class="normal">part </span><span class="symbol">[</span><span class="normal"> </span><span class="string">"?"</span><span class="normal"> query </span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">[</span><span class="normal"> </span><span class="string">"#"</span><span class="normal"> fragment </span><span class="symbol">]</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">URI <span class="gtkdoc opt">=</span> scheme <span class="string">&quot;:&quot;</span> hier<span class="gtkdoc opt">-</span>part <span class="gtkdoc opt">[</span> <span class="string">&quot;?&quot;</span> query <span class="gtkdoc opt">] [</span> <span class="string">&quot;#&quot;</span> fragment <span class="gtkdoc opt">]</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -169,7 +163,7 @@ g_uri_parse_scheme (<em class="parameter"><code>const <span class="type">char</s
 <p>
 Common schemes include "file", "http", "svn+ssh", etc.</p>
 <div class="refsect3">
-<a name="id-1.5.19.8.2.7"></a><h4>Parameters</h4>
+<a name="id-1.5.19.7.2.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -184,7 +178,7 @@ Common schemes include "file", "http", "svn+ssh", etc.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.19.8.2.8"></a><h4>Returns</h4>
+<a name="id-1.5.19.7.2.8"></a><h4>Returns</h4>
 <p> The "Scheme" component of the URI, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> on error.
 The returned string should be freed when no longer needed.</p>
 <p></p>
@@ -207,7 +201,7 @@ escaped. This is useful for the "reserved" characters in the URI
 specification, since those are allowed unescaped in some portions of
 a URI.</p>
 <div class="refsect3">
-<a name="id-1.5.19.8.3.6"></a><h4>Parameters</h4>
+<a name="id-1.5.19.7.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -235,7 +229,7 @@ are allowed to be used, or <a class="link" href="glib-Standard-Macros.html#NULL:
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.19.8.3.7"></a><h4>Returns</h4>
+<a name="id-1.5.19.7.3.7"></a><h4>Returns</h4>
 <p> an escaped version of <em class="parameter"><code>unescaped</code></em>
 . The returned string should be
 freed when no longer needed.</p>
@@ -258,7 +252,7 @@ will be returned. This is useful it you want to avoid for instance having a
 slash being expanded in an escaped path element, which might confuse pathname
 handling.</p>
 <div class="refsect3">
-<a name="id-1.5.19.8.4.6"></a><h4>Parameters</h4>
+<a name="id-1.5.19.7.4.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -281,7 +275,7 @@ allowed, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NU
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.19.8.4.7"></a><h4>Returns</h4>
+<a name="id-1.5.19.7.4.7"></a><h4>Returns</h4>
 <p> an unescaped version of <em class="parameter"><code>escaped_string</code></em>
 . The returned string
 should be freed when no longer needed.</p>
@@ -305,7 +299,7 @@ will be returned. This is useful it you want to avoid for instance having a
 slash being expanded in an escaped path element, which might confuse pathname
 handling.</p>
 <div class="refsect3">
-<a name="id-1.5.19.8.5.6"></a><h4>Parameters</h4>
+<a name="id-1.5.19.7.5.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -333,7 +327,7 @@ handling.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.19.8.5.7"></a><h4>Returns</h4>
+<a name="id-1.5.19.7.5.7"></a><h4>Returns</h4>
 <p> an unescaped version of <em class="parameter"><code>escaped_string</code></em>
 or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> on error.
 The returned string should be freed when no longer needed.  As a
@@ -353,7 +347,7 @@ g_uri_list_extract_uris (<em class="parameter"><code>const <a class="link" href=
 mime type defined in RFC 2483 into individual URIs,
 discarding any comments. The URIs are not validated.</p>
 <div class="refsect3">
-<a name="id-1.5.19.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.5.19.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -368,7 +362,7 @@ discarding any comments. The URIs are not validated.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.19.8.6.6"></a><h4>Returns</h4>
+<a name="id-1.5.19.7.6.6"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>-terminated list
 of strings holding the individual URIs. The array should be freed
 with <a class="link" href="glib-String-Utility-Functions.html#g-strfreev" title="g_strfreev ()"><code class="function">g_strfreev()</code></a>. </p>
@@ -386,7 +380,7 @@ g_filename_from_uri (<em class="parameter"><code>const <a class="link" href="gli
 <p>Converts an escaped ASCII-encoded URI to a local filename in the
 encoding used for filenames.</p>
 <div class="refsect3">
-<a name="id-1.5.19.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.5.19.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -416,7 +410,7 @@ errors. Any of the errors in <a class="link" href="glib-Character-Set-Conversion
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.19.8.7.6"></a><h4>Returns</h4>
+<a name="id-1.5.19.7.7.6"></a><h4>Returns</h4>
 <p> a newly-allocated string holding
 the resulting filename, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> on an error. </p>
 <p><span class="annotation">[<acronym title="Override the parsed C type with given type."><span class="acronym">type</span></acronym> filename]</span></p>
@@ -432,7 +426,7 @@ g_filename_to_uri (<em class="parameter"><code>const <a class="link" href="glib-
 <p>Converts an absolute filename to an escaped ASCII-encoded URI, with the path
 component following Section 3.3. of RFC 2396.</p>
 <div class="refsect3">
-<a name="id-1.5.19.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.5.19.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -462,7 +456,7 @@ errors. Any of the errors in <a class="link" href="glib-Character-Set-Conversion
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.19.8.8.6"></a><h4>Returns</h4>
+<a name="id-1.5.19.7.8.6"></a><h4>Returns</h4>
 <p> a newly-allocated string holding the resulting
 URI, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> on an error.</p>
 <p></p>

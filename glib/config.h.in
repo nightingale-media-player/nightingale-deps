@@ -268,6 +268,9 @@
 /* Define to 1 if you have the `lstat' function. */
 #undef HAVE_LSTAT
 
+/* Define to 1 if you have the <mach/mach_time.h> header file. */
+#undef HAVE_MACH_MACH_TIME_H
+
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
@@ -328,11 +331,8 @@
 /* Have function pthread_condattr_setclock */
 #undef HAVE_PTHREAD_CONDATTR_SETCLOCK
 
-/* Have function pthread_cond_timedwait_monotonic */
-#undef HAVE_PTHREAD_COND_TIMEDWAIT_MONOTONIC
-
-/* Have function pthread_cond_timedwait_monotonic_np */
-#undef HAVE_PTHREAD_COND_TIMEDWAIT_MONOTONIC_NP
+/* Have function pthread_cond_timedwait_relative_np */
+#undef HAVE_PTHREAD_COND_TIMEDWAIT_RELATIVE_NP
 
 /* Define to 1 if the system has the type `ptrdiff_t'. */
 #undef HAVE_PTRDIFF_T

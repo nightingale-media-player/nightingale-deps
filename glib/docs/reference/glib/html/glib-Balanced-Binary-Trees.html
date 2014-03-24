@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Balanced-Binary-Trees.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Balanced-Binary-Trees.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Balanced-Binary-Trees.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-data-types.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -202,11 +201,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Balanced-Binary-Trees.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Balanced-Binary-Trees.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -235,7 +229,7 @@ the traversal, use <a class="link" href="glib-Balanced-Binary-Trees.html#g-tree-
 g_tree_new (<em class="parameter"><code><a class="link" href="glib-Doubly-Linked-Lists.html#GCompareFunc" title="GCompareFunc ()"><span class="type">GCompareFunc</span></a> key_compare_func</code></em>);</pre>
 <p>Creates a new <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -254,7 +248,7 @@ after the second.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.13.8.2.6"></a><h4>Returns</h4>
+<a name="id-1.6.13.7.2.6"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a></p>
 <p></p>
 </div>
@@ -268,7 +262,7 @@ g_tree_ref (<em class="parameter"><code><a class="link" href="glib-Balanced-Bina
  by one.</p>
 <p>It is safe to call this function from any thread.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.3.6"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -283,7 +277,7 @@ g_tree_ref (<em class="parameter"><code><a class="link" href="glib-Balanced-Bina
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.13.8.3.7"></a><h4>Returns</h4>
+<a name="id-1.6.13.7.3.7"></a><h4>Returns</h4>
 <p> the passed in <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a></p>
 <p></p>
 </div>
@@ -302,7 +296,7 @@ memory allocated by <em class="parameter"><code>tree</code></em>
  will be released.</p>
 <p>It is safe to call this function from any thread.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.4.6"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.4.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -327,7 +321,7 @@ g_tree_new_with_data (<em class="parameter"><code><a class="link" href="glib-Dou
 <p>Creates a new <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a> with a comparison function that accepts user data.
 See <a class="link" href="glib-Balanced-Binary-Trees.html#g-tree-new" title="g_tree_new ()"><code class="function">g_tree_new()</code></a> for more details.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -349,7 +343,7 @@ See <a class="link" href="glib-Balanced-Binary-Trees.html#g-tree-new" title="g_t
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.13.8.5.6"></a><h4>Returns</h4>
+<a name="id-1.6.13.7.5.6"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a></p>
 <p></p>
 </div>
@@ -366,7 +360,7 @@ g_tree_new_full (<em class="parameter"><code><a class="link" href="glib-Doubly-L
 to free the memory allocated for the key and value that get called when 
 removing the entry from the <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -402,7 +396,7 @@ don't want to supply such a function</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.13.8.6.6"></a><h4>Returns</h4>
+<a name="id-1.6.13.7.6.6"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a></p>
 <p></p>
 </div>
@@ -425,7 +419,7 @@ key is freed using that function.</p>
 <p>The tree is automatically 'balanced' as new key/value pairs are added,
 so that the distance from the root to every leaf is as small as possible.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.7.7"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.7.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -470,7 +464,7 @@ freed using that function. </p>
 <p>The tree is automatically 'balanced' as new key/value pairs are added,
 so that the distance from the root to every leaf is as small as possible.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.8.6"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.8.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -504,7 +498,7 @@ so that the distance from the root to every leaf is as small as possible.</p>
 g_tree_nnodes (<em class="parameter"><code><a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a> *tree</code></em>);</pre>
 <p>Gets the number of nodes in a <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.9.5"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.9.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -519,7 +513,7 @@ g_tree_nnodes (<em class="parameter"><code><a class="link" href="glib-Balanced-B
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.13.8.9.6"></a><h4>Returns</h4>
+<a name="id-1.6.13.7.9.6"></a><h4>Returns</h4>
 <p> the number of nodes in <em class="parameter"><code>tree</code></em>
 </p>
 <p></p>
@@ -535,7 +529,7 @@ g_tree_height (<em class="parameter"><code><a class="link" href="glib-Balanced-B
 If the <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a> contains only one root node the height is 1.
 If the root node has children the height is 2, etc.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.10.6"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.10.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -550,7 +544,7 @@ If the root node has children the height is 2, etc.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.13.8.10.7"></a><h4>Returns</h4>
+<a name="id-1.6.13.7.10.7"></a><h4>Returns</h4>
 <p> the height of <em class="parameter"><code>tree</code></em>
 </p>
 <p></p>
@@ -566,7 +560,7 @@ g_tree_lookup (<em class="parameter"><code><a class="link" href="glib-Balanced-B
 automatically balanced as key/value pairs are added, key lookup
 is O(log n) (where n is the number of key/value pairs in the tree).</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.11.5"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.11.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -588,7 +582,7 @@ is O(log n) (where n is the number of key/value pairs in the tree).</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.13.8.11.6"></a><h4>Returns</h4>
+<a name="id-1.6.13.7.11.6"></a><h4>Returns</h4>
 <p> the value corresponding to the key, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 if the key was not found</p>
 <p></p>
@@ -607,7 +601,7 @@ associated value. This is useful if you need to free the memory
 allocated for the original key, for example before calling
 <a class="link" href="glib-Balanced-Binary-Trees.html#g-tree-remove" title="g_tree_remove ()"><code class="function">g_tree_remove()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.12.5"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.12.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -639,7 +633,7 @@ allocated for the original key, for example before calling
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.13.8.12.6"></a><h4>Returns</h4>
+<a name="id-1.6.13.7.12.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the key was found in the <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a></p>
 <p></p>
 </div>
@@ -660,7 +654,7 @@ add/remove items). To remove all items matching a predicate, you need
 to add each item to a list in your <a class="link" href="glib-Balanced-Binary-Trees.html#GTraverseFunc" title="GTraverseFunc ()"><span class="type">GTraverseFunc</span></a> as you walk over 
 the tree, then walk the list and remove each item.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.13.6"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.13.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -705,7 +699,7 @@ g_tree_traverse (<em class="parameter"><code><a class="link" href="glib-Balanced
 </div>
 <p>Calls the given function for each node in the <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.14.6"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.14.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -752,7 +746,7 @@ passed the key and value of each node, together with the <em class="parameter"><
 parameter passed to <a class="link" href="glib-Balanced-Binary-Trees.html#g-tree-traverse" title="g_tree_traverse ()"><code class="function">g_tree_traverse()</code></a>. If the function returns
 <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a>, the traversal is stopped.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.15.5"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.15.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -779,7 +773,7 @@ parameter passed to <a class="link" href="glib-Balanced-Binary-Trees.html#g-tree
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.13.8.15.6"></a><h4>Returns</h4>
+<a name="id-1.6.13.7.15.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> to stop the traversal</p>
 <p></p>
 </div>
@@ -806,7 +800,7 @@ will proceed among the key/value pairs that have a smaller key; if
  returns 1, searching will proceed among the key/value
 pairs that have a larger key.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.16.6"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.16.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -834,7 +828,7 @@ pairs that have a larger key.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.13.8.16.7"></a><h4>Returns</h4>
+<a name="id-1.6.13.7.16.7"></a><h4>Returns</h4>
 <p> the value corresponding to the found key, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 if the key was not found</p>
 <p></p>
@@ -852,7 +846,7 @@ are freed using the supplied destroy functions, otherwise you have to
 make sure that any dynamically allocated values are freed yourself.
 If the key does not exist in the <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a>, the function does nothing.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.17.6"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.17.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -874,7 +868,7 @@ If the key does not exist in the <a class="link" href="glib-Balanced-Binary-Tree
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.13.8.17.7"></a><h4>Returns</h4>
+<a name="id-1.6.13.7.17.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the key was found (prior to 2.8, this function
 returned nothing)</p>
 <p></p>
@@ -890,7 +884,7 @@ g_tree_steal (<em class="parameter"><code><a class="link" href="glib-Balanced-Bi
 the key and value destroy functions.</p>
 <p>If the key does not exist in the <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a>, the function does nothing.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.18.6"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.18.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -912,7 +906,7 @@ the key and value destroy functions.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.13.8.18.7"></a><h4>Returns</h4>
+<a name="id-1.6.13.7.18.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the key was found (prior to 2.8, this function
 returned nothing)</p>
 <p></p>
@@ -930,7 +924,7 @@ using <a class="link" href="glib-Balanced-Binary-Trees.html#g-tree-new-full" tit
 you supplied will be called on all keys and values before destroying
 the <a class="link" href="glib-Balanced-Binary-Trees.html#GTree" title="GTree"><span class="type">GTree</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.13.8.19.5"></a><h4>Parameters</h4>
+<a name="id-1.6.13.7.19.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">

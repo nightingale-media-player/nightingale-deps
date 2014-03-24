@@ -762,6 +762,7 @@
     <keyword type="function" name="g_str_has_prefix ()" link="glib-String-Utility-Functions.html#g-str-has-prefix" since="2.2"/>
     <keyword type="function" name="g_str_has_suffix ()" link="glib-String-Utility-Functions.html#g-str-has-suffix" since="2.2"/>
     <keyword type="function" name="g_strcmp0 ()" link="glib-String-Utility-Functions.html#g-strcmp0" since="2.16"/>
+    <keyword type="function" name="g_str_to_ascii ()" link="glib-String-Utility-Functions.html#g-str-to-ascii"/>
     <keyword type="function" name="g_str_tokenize_and_fold ()" link="glib-String-Utility-Functions.html#g-str-tokenize-and-fold" since="2.40"/>
     <keyword type="function" name="g_str_match_string ()" link="glib-String-Utility-Functions.html#g-str-match-string" since="2.40"/>
     <keyword type="function" name="g_strlcpy ()" link="glib-String-Utility-Functions.html#g-strlcpy"/>

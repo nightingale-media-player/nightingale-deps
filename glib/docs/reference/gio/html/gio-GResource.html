@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#gio-GResource.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#gio-GResource.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gio-GResource.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="resources.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -211,11 +210,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="gio-GResource.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="gio-GResource.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;gio/gio.h&gt;
 </pre>
@@ -267,14 +261,14 @@ are combined into a binary resource bundle.</p>
 6
 7
 8</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="symbol">&lt;?</span><span class="usertype">xml</span><span class="normal"> version</span><span class="symbol">=</span><span class="string">"1.0"</span><span class="normal"> encoding</span><span class="symbol">=</span><span class="string">"UTF-8"</span><span class="symbol">?&gt;</span>
-<span class="symbol">&lt;</span><span class="normal">gresources</span><span class="symbol">&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;</span><span class="usertype">gresource</span><span class="normal"> prefix</span><span class="symbol">=</span><span class="string">"/org/gtk/Example"</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="normal">file</span><span class="symbol">&gt;</span><span class="normal">data</span><span class="symbol">/</span><span class="normal">splashscreen</span><span class="symbol">.</span><span class="normal">png</span><span class="symbol">&lt;/</span><span class="normal">file</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">file</span><span class="normal"> compressed</span><span class="symbol">=</span><span class="string">"true"</span><span class="symbol">&gt;</span><span class="normal">dialog</span><span class="symbol">.</span><span class="normal">ui</span><span class="symbol">&lt;/</span><span class="normal">file</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">file</span><span class="normal"> preprocess</span><span class="symbol">=</span><span class="string">"xml-stripblanks"</span><span class="symbol">&gt;</span><span class="normal">menumarkup</span><span class="symbol">.</span><span class="normal">xml</span><span class="symbol">&lt;/</span><span class="normal">file</span><span class="symbol">&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;/</span><span class="normal">gresource</span><span class="symbol">&gt;</span>
-<span class="symbol">&lt;/</span><span class="normal">gresources</span><span class="symbol">&gt;</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">&lt;</span>?xml version<span class="gtkdoc opt">=</span><span class="string">&quot;1.0&quot;</span> encoding<span class="gtkdoc opt">=</span><span class="string">&quot;UTF-8&quot;</span>?<span class="gtkdoc opt">&gt;</span>
+<span class="gtkdoc opt">&lt;</span>gresources<span class="gtkdoc opt">&gt;</span>
+  <span class="gtkdoc opt">&lt;</span>gresource prefix<span class="gtkdoc opt">=</span><span class="string">&quot;/org/gtk/Example&quot;</span><span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>file<span class="gtkdoc opt">&gt;</span>data<span class="gtkdoc opt">/</span>splashscreen<span class="gtkdoc opt">.</span>png<span class="gtkdoc opt">&lt;/</span>file<span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>file compressed<span class="gtkdoc opt">=</span><span class="string">&quot;true&quot;</span><span class="gtkdoc opt">&gt;</span>dialog<span class="gtkdoc opt">.</span>ui<span class="gtkdoc opt">&lt;/</span>file<span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>file preprocess<span class="gtkdoc opt">=</span><span class="string">&quot;xml-stripblanks&quot;</span><span class="gtkdoc opt">&gt;</span>menumarkup<span class="gtkdoc opt">.</span>xml<span class="gtkdoc opt">&lt;/</span>file<span class="gtkdoc opt">&gt;</span>
+  <span class="gtkdoc opt">&lt;/</span>gresource<span class="gtkdoc opt">&gt;</span>
+<span class="gtkdoc opt">&lt;/</span>gresources<span class="gtkdoc opt">&gt;</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -289,9 +283,9 @@ are combined into a binary resource bundle.</p>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="symbol">/</span><span class="normal">org</span><span class="symbol">/</span><span class="normal">gtk</span><span class="symbol">/</span><span class="normal">Example</span><span class="symbol">/</span><span class="normal">data</span><span class="symbol">/</span><span class="normal">splashscreen</span><span class="symbol">.</span><span class="normal">png</span>
-<span class="symbol">/</span><span class="normal">org</span><span class="symbol">/</span><span class="normal">gtk</span><span class="symbol">/</span><span class="normal">Example</span><span class="symbol">/</span><span class="normal">dialog</span><span class="symbol">.</span><span class="normal">ui</span>
-<span class="symbol">/</span><span class="normal">org</span><span class="symbol">/</span><span class="normal">gtk</span><span class="symbol">/</span><span class="normal">Example</span><span class="symbol">/</span><span class="normal">menumarkup</span><span class="symbol">.</span><span class="normal">xml</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">/</span>org<span class="gtkdoc opt">/</span>gtk<span class="gtkdoc opt">/</span>Example<span class="gtkdoc opt">/</span>data<span class="gtkdoc opt">/</span>splashscreen<span class="gtkdoc opt">.</span>png
+<span class="gtkdoc opt">/</span>org<span class="gtkdoc opt">/</span>gtk<span class="gtkdoc opt">/</span>Example<span class="gtkdoc opt">/</span>dialog<span class="gtkdoc opt">.</span>ui
+<span class="gtkdoc opt">/</span>org<span class="gtkdoc opt">/</span>gtk<span class="gtkdoc opt">/</span>Example<span class="gtkdoc opt">/</span>menumarkup<span class="gtkdoc opt">.</span>xml</pre></td>
       </tr>
     </tbody>
   </table>
@@ -329,7 +323,7 @@ you to query it for data.</p>
 <p>If you want to use this resource in the global resource namespace you need
 to register it with <a class="link" href="gio-GResource.html#g-resources-register" title="g_resources_register ()"><code class="function">g_resources_register()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.2.6"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.2.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -351,7 +345,7 @@ to register it with <a class="link" href="gio-GResource.html#g-resources-registe
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.2.7"></a><h4>Returns</h4>
+<a name="id-1.4.20.2.7.2.7"></a><h4>Returns</h4>
 <p> a new <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -370,7 +364,7 @@ the data should not be modified or freed.</p>
 <p>If you want to use this resource in the global resource namespace you need
 to register it with <a class="link" href="gio-GResource.html#g-resources-register" title="g_resources_register ()"><code class="function">g_resources_register()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.3.6"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -392,7 +386,7 @@ to register it with <a class="link" href="gio-GResource.html#g-resources-registe
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.3.7"></a><h4>Returns</h4>
+<a name="id-1.4.20.2.7.3.7"></a><h4>Returns</h4>
 <p> a new <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -407,7 +401,7 @@ g_resource_ref (<em class="parameter"><code><a class="link" href="gio-GResource.
  by one. This
 function is MT-safe and may be called from any thread.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -422,7 +416,7 @@ function is MT-safe and may be called from any thread.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.4.6"></a><h4>Returns</h4>
+<a name="id-1.4.20.2.7.4.6"></a><h4>Returns</h4>
 <p> The passed in <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a></p>
 <p></p>
 </div>
@@ -439,7 +433,7 @@ reference count drops to 0, all memory allocated by the array is
 released. This function is MT-safe and may be called from any
 thread.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -477,7 +471,7 @@ the heap and automatically uncompress the data.</p>
 <p><em class="parameter"><code>lookup_flags</code></em>
  controls the behaviour of the lookup.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.6.8"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.6.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -509,7 +503,7 @@ the heap and automatically uncompress the data.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.6.9"></a><h4>Returns</h4>
+<a name="id-1.4.20.2.7.6.9"></a><h4>Returns</h4>
 <p> <a href="../glib/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.
 Free the returned object with <a href="../glib/glib-Byte-Arrays.html#g-bytes-unref"><code class="function">g_bytes_unref()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -530,7 +524,7 @@ returns a <a class="link" href="GInputStream.html" title="GInputStream"><span cl
 <p><em class="parameter"><code>lookup_flags</code></em>
  controls the behaviour of the lookup.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.7.6"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.7.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -562,7 +556,7 @@ returns a <a class="link" href="GInputStream.html" title="GInputStream"><span cl
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.7.7"></a><h4>Returns</h4>
+<a name="id-1.4.20.2.7.7.7"></a><h4>Returns</h4>
 <p> <a class="link" href="GInputStream.html" title="GInputStream"><span class="type">GInputStream</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.
 Free the returned object with <a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -584,7 +578,7 @@ be released with <a href="../glib/glib-String-Utility-Functions.html#g-strfreev"
 <p><em class="parameter"><code>lookup_flags</code></em>
  controls the behaviour of the lookup.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.8.6"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.8.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -616,7 +610,7 @@ be released with <a href="../glib/glib-String-Utility-Functions.html#g-strfreev"
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.8.7"></a><h4>Returns</h4>
+<a name="id-1.4.20.2.7.8.7"></a><h4>Returns</h4>
 <p> an array of constant strings. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -638,7 +632,7 @@ if found returns information about it.</p>
 <p><em class="parameter"><code>lookup_flags</code></em>
  controls the behaviour of the lookup.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.9.6"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.9.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -682,7 +676,7 @@ or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">N
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.9.7"></a><h4>Returns</h4>
+<a name="id-1.4.20.2.7.9.7"></a><h4>Returns</h4>
 <p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the file was found. <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if there were errors</p>
 <p></p>
 </div>
@@ -699,7 +693,7 @@ GStaticResource.</p>
 <a href="glib-compile-resources.html">glib-compile-resources</a>
 and is not typically used by other code.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.10.6"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.10.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -725,7 +719,7 @@ g_static_resource_fini (<em class="parameter"><code><span class="type">GStaticRe
 <a href="glib-compile-resources.html">glib-compile-resources</a>
 and is not typically used by other code.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.11.6"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.11.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -751,7 +745,7 @@ g_static_resource_get_resource (<em class="parameter"><code><span class="type">G
 <a href="glib-compile-resources.html">glib-compile-resources</a>
 and is not typically used by other code.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.12.6"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.12.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -766,7 +760,7 @@ and is not typically used by other code.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.12.7"></a><h4>Returns</h4>
+<a name="id-1.4.20.2.7.12.7"></a><h4>Returns</h4>
 <p> a <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a>. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
 </div>
@@ -781,7 +775,7 @@ g_resources_register (<em class="parameter"><code><a class="link" href="gio-GRes
 Once a resource is registered the files in it can be accessed
 with the global resource lookup functions like <a class="link" href="gio-GResource.html#g-resources-lookup-data" title="g_resources_lookup_data ()"><code class="function">g_resources_lookup_data()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.13.5"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.13.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -804,7 +798,7 @@ with the global resource lookup functions like <a class="link" href="gio-GResour
 g_resources_unregister (<em class="parameter"><code><a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a> *resource</code></em>);</pre>
 <p>Unregisters the resource from the process-global set of resources.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.14.5"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.14.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -841,7 +835,7 @@ the heap and automatically uncompress the data.</p>
 <p><em class="parameter"><code>lookup_flags</code></em>
  controls the behaviour of the lookup.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.15.8"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.15.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -868,7 +862,7 @@ the heap and automatically uncompress the data.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.15.9"></a><h4>Returns</h4>
+<a name="id-1.4.20.2.7.15.9"></a><h4>Returns</h4>
 <p> <a href="../glib/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.
 Free the returned object with <a href="../glib/glib-Byte-Arrays.html#g-bytes-unref"><code class="function">g_bytes_unref()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -889,7 +883,7 @@ that lets you read the data.</p>
 <p><em class="parameter"><code>lookup_flags</code></em>
  controls the behaviour of the lookup.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.16.6"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.16.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -916,7 +910,7 @@ that lets you read the data.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.16.7"></a><h4>Returns</h4>
+<a name="id-1.4.20.2.7.16.7"></a><h4>Returns</h4>
 <p> <a class="link" href="GInputStream.html" title="GInputStream"><span class="type">GInputStream</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.
 Free the returned object with <a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -938,7 +932,7 @@ be released with <a href="../glib/glib-String-Utility-Functions.html#g-strfreev"
 <p><em class="parameter"><code>lookup_flags</code></em>
  controls the behaviour of the lookup.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.17.6"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.17.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -965,7 +959,7 @@ be released with <a href="../glib/glib-String-Utility-Functions.html#g-strfreev"
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.17.7"></a><h4>Returns</h4>
+<a name="id-1.4.20.2.7.17.7"></a><h4>Returns</h4>
 <p> an array of constant strings. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -986,7 +980,7 @@ globally registered resources and if found returns information about it.</p>
 <p><em class="parameter"><code>lookup_flags</code></em>
  controls the behaviour of the lookup.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.18.6"></a><h4>Parameters</h4>
+<a name="id-1.4.20.2.7.18.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1025,7 +1019,7 @@ or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">N
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.20.2.8.18.7"></a><h4>Returns</h4>
+<a name="id-1.4.20.2.7.18.7"></a><h4>Returns</h4>
 <p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the file was found. <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if there were errors</p>
 <p></p>
 </div>
@@ -1055,7 +1049,7 @@ error domains.</p>
 <p>GResourceFlags give information about a particular file inside a resource
 bundle.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.9.3.4"></a><h4>Members</h4>
+<a name="id-1.4.20.2.8.3.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -1087,7 +1081,7 @@ bundle.</p>
 <a name="GResourceLookupFlags"></a><h3>enum GResourceLookupFlags</h3>
 <p>GResourceLookupFlags determine how resource path lookups are handled.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.9.4.4"></a><h4>Members</h4>
+<a name="id-1.4.20.2.8.4.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -1111,7 +1105,7 @@ bundle.</p>
 <p>An error code used with <a class="link" href="gio-GResource.html#G-RESOURCE-ERROR:CAPS" title="G_RESOURCE_ERROR"><code class="literal">G_RESOURCE_ERROR</code></a> in a <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> returned
 from a <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a> routine.</p>
 <div class="refsect3">
-<a name="id-1.4.20.2.9.5.4"></a><h4>Members</h4>
+<a name="id-1.4.20.2.8.5.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">

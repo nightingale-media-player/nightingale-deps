@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#gio-Watching-Bus-Names.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#gio-Watching-Bus-Names.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gio-Watching-Bus-Names.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="gdbus-convenience.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -113,11 +112,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="gio-Watching-Bus-Names.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="gio-Watching-Bus-Names.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;gio/gio.h&gt;
 </pre>
@@ -139,7 +133,7 @@
                              <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>Invoked when the name being watched is known to have to have a owner.</p>
 <div class="refsect3">
-<a name="id-1.4.18.3.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.4.18.3.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -185,7 +179,7 @@ established has been closed.  In that case, <em class="parameter"><code>connecti
  will be
 <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.18.3.8.3.6"></a><h4>Parameters</h4>
+<a name="id-1.4.18.3.7.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -262,7 +256,7 @@ Basically, the application should create object proxies in
 <em class="parameter"><code>name_vanished_handler</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.18.3.8.4.9"></a><h4>Parameters</h4>
+<a name="id-1.4.18.3.7.4.9"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -312,7 +306,7 @@ or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">N
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.18.3.8.4.10"></a><h4>Returns</h4>
+<a name="id-1.4.18.3.7.4.10"></a><h4>Returns</h4>
 <p> An identifier (never 0) that an be used with
 <a class="link" href="gio-Watching-Bus-Names.html#g-bus-unwatch-name" title="g_bus_unwatch_name ()"><code class="function">g_bus_unwatch_name()</code></a> to stop watching the name.</p>
 <p></p>
@@ -333,7 +327,7 @@ g_bus_watch_name_on_connection (<em class="parameter"><code><a class="link" href
 <p>Like <a class="link" href="gio-Watching-Bus-Names.html#g-bus-watch-name" title="g_bus_watch_name ()"><code class="function">g_bus_watch_name()</code></a> but takes a <a class="link" href="GDBusConnection.html" title="GDBusConnection"><span class="type">GDBusConnection</span></a> instead of a
 <a class="link" href="GDBusConnection.html#GBusType" title="enum GBusType"><span class="type">GBusType</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.18.3.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.4.18.3.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -383,7 +377,7 @@ or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">N
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.18.3.8.5.6"></a><h4>Returns</h4>
+<a name="id-1.4.18.3.7.5.6"></a><h4>Returns</h4>
 <p> An identifier (never 0) that an be used with
 <a class="link" href="gio-Watching-Bus-Names.html#g-bus-unwatch-name" title="g_bus_unwatch_name ()"><code class="function">g_bus_unwatch_name()</code></a> to stop watching the name.</p>
 <p></p>
@@ -397,7 +391,7 @@ or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">N
 g_bus_unwatch_name (<em class="parameter"><code><a href="../glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> watcher_id</code></em>);</pre>
 <p>Stops watching a name.</p>
 <div class="refsect3">
-<a name="id-1.4.18.3.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.4.18.3.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -425,7 +419,7 @@ g_bus_watch_name_with_closures (<em class="parameter"><code><a class="link" href
 <p>Version of <a class="link" href="gio-Watching-Bus-Names.html#g-bus-watch-name" title="g_bus_watch_name ()"><code class="function">g_bus_watch_name()</code></a> using closures instead of callbacks for
 easier binding in other languages.</p>
 <div class="refsect3">
-<a name="id-1.4.18.3.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.4.18.3.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -466,7 +460,7 @@ to not exist or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code clas
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.18.3.8.7.6"></a><h4>Returns</h4>
+<a name="id-1.4.18.3.7.7.6"></a><h4>Returns</h4>
 <p> An identifier (never 0) that an be used with
 <a class="link" href="gio-Watching-Bus-Names.html#g-bus-unwatch-name" title="g_bus_unwatch_name ()"><code class="function">g_bus_unwatch_name()</code></a> to stop watching the name.</p>
 <p>Rename to: g_bus_watch_name</p>
@@ -487,7 +481,7 @@ g_bus_watch_name_on_connection_with_closures
 <p>Version of <a class="link" href="gio-Watching-Bus-Names.html#g-bus-watch-name-on-connection" title="g_bus_watch_name_on_connection ()"><code class="function">g_bus_watch_name_on_connection()</code></a> using closures instead of callbacks for
 easier binding in other languages.</p>
 <div class="refsect3">
-<a name="id-1.4.18.3.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.4.18.3.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -528,7 +522,7 @@ to not exist or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code clas
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.18.3.8.8.6"></a><h4>Returns</h4>
+<a name="id-1.4.18.3.7.8.6"></a><h4>Returns</h4>
 <p> An identifier (never 0) that an be used with
 <a class="link" href="gio-Watching-Bus-Names.html#g-bus-unwatch-name" title="g_bus_unwatch_name ()"><code class="function">g_bus_unwatch_name()</code></a> to stop watching the name.</p>
 <p>Rename to: g_bus_watch_name_on_connection</p>
@@ -543,7 +537,7 @@ to not exist or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code clas
 <a name="GBusNameWatcherFlags"></a><h3>enum GBusNameWatcherFlags</h3>
 <p>Flags used in <a class="link" href="gio-Watching-Bus-Names.html#g-bus-watch-name" title="g_bus_watch_name ()"><code class="function">g_bus_watch_name()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.18.3.9.2.4"></a><h4>Members</h4>
+<a name="id-1.4.18.3.8.2.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">

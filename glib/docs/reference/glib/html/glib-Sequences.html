@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Sequences.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Sequences.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Sequences.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-data-types.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -367,11 +366,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Sequences.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Sequences.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -424,7 +418,7 @@ if <em class="parameter"><code>a</code></em>
  comes before <em class="parameter"><code>a</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -451,7 +445,7 @@ if <em class="parameter"><code>a</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.2.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.2.6"></a><h4>Returns</h4>
 <p> zero if the iterators are equal, a negative value if <em class="parameter"><code>a</code></em>
 comes before <em class="parameter"><code>b</code></em>
 , and a positive value if <em class="parameter"><code>b</code></em>
@@ -470,7 +464,7 @@ g_sequence_new (<em class="parameter"><code><a class="link" href="glib-Datasets.
 be called on all items when the sequence is destroyed and on items that
 are removed from the sequence.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -485,7 +479,7 @@ are removed from the sequence.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.3.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.3.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-Sequences.html#GSequence" title="GSequence"><span class="type">GSequence</span></a></p>
 <p></p>
 </div>
@@ -503,7 +497,7 @@ function associated with it, that function is called on all items
 in <em class="parameter"><code>seq</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -527,7 +521,7 @@ g_sequence_get_length (<em class="parameter"><code><a class="link" href="glib-Se
 <p>Returns the length of <em class="parameter"><code>seq</code></em>
 </p>
 <div class="refsect3">
-<a name="id-1.6.5.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -542,7 +536,7 @@ g_sequence_get_length (<em class="parameter"><code><a class="link" href="glib-Se
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.5.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.5.6"></a><h4>Returns</h4>
 <p> the length of <em class="parameter"><code>seq</code></em>
 </p>
 <p></p>
@@ -561,7 +555,7 @@ g_sequence_foreach (<em class="parameter"><code><a class="link" href="glib-Seque
 
 to the function.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -606,7 +600,7 @@ g_sequence_foreach_range (<em class="parameter"><code><a class="link" href="glib
 <em class="parameter"><code>user_data</code></em>
  to the function.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -657,7 +651,7 @@ return 0 if they are equal, a negative value if the
 first comes before the second, and a positive value
 if the second comes before the first.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.8.6"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.8.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -702,7 +696,7 @@ return 0 if the iterators are equal, a negative value if the first
 iterator comes before the second, and a positive value if the second
 iterator comes before the first.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.9.6"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.9.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -739,7 +733,7 @@ g_sequence_get_begin_iter (<em class="parameter"><code><a class="link" href="gli
 <p>Returns the begin iterator for <em class="parameter"><code>seq</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.10.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.10.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -754,7 +748,7 @@ g_sequence_get_begin_iter (<em class="parameter"><code><a class="link" href="gli
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.10.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.10.6"></a><h4>Returns</h4>
 <p> the begin iterator for <em class="parameter"><code>seq</code></em>
 .</p>
 <p></p>
@@ -769,7 +763,7 @@ g_sequence_get_end_iter (<em class="parameter"><code><a class="link" href="glib-
 <p>Returns the end iterator for <em class="parameter"><code>seg</code></em>
 </p>
 <div class="refsect3">
-<a name="id-1.6.5.8.11.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.11.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -784,7 +778,7 @@ g_sequence_get_end_iter (<em class="parameter"><code><a class="link" href="glib-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.11.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.11.6"></a><h4>Returns</h4>
 <p> the end iterator for <em class="parameter"><code>seq</code></em>
 </p>
 <p></p>
@@ -803,7 +797,7 @@ g_sequence_get_iter_at_pos (<em class="parameter"><code><a class="link" href="gl
 than the number of items in <em class="parameter"><code>seq</code></em>
 , the end iterator is returned.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.12.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.12.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -826,7 +820,7 @@ than the number of items in <em class="parameter"><code>seq</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.12.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.12.6"></a><h4>Returns</h4>
 <p> The <a class="link" href="glib-Sequences.html#GSequenceIter" title="GSequenceIter"><span class="type">GSequenceIter</span></a> at position <em class="parameter"><code>pos</code></em>
 </p>
 <p></p>
@@ -842,7 +836,7 @@ g_sequence_append (<em class="parameter"><code><a class="link" href="glib-Sequen
 <p>Adds a new item to the end of <em class="parameter"><code>seq</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.13.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.13.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -864,7 +858,7 @@ g_sequence_append (<em class="parameter"><code><a class="link" href="glib-Sequen
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.13.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.13.6"></a><h4>Returns</h4>
 <p> an iterator pointing to the new item</p>
 <p></p>
 </div>
@@ -879,7 +873,7 @@ g_sequence_prepend (<em class="parameter"><code><a class="link" href="glib-Seque
 <p>Adds a new item to the front of <em class="parameter"><code>seq</code></em>
 </p>
 <div class="refsect3">
-<a name="id-1.6.5.8.14.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.14.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -901,7 +895,7 @@ g_sequence_prepend (<em class="parameter"><code><a class="link" href="glib-Seque
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.14.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.14.6"></a><h4>Returns</h4>
 <p> an iterator pointing to the new item</p>
 <p></p>
 </div>
@@ -916,7 +910,7 @@ g_sequence_insert_before (<em class="parameter"><code><a class="link" href="glib
 <p>Inserts a new item just before the item pointed to by <em class="parameter"><code>iter</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.15.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.15.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -938,7 +932,7 @@ g_sequence_insert_before (<em class="parameter"><code><a class="link" href="glib
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.15.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.15.6"></a><h4>Returns</h4>
 <p> an iterator pointing to the new item</p>
 <p></p>
 </div>
@@ -961,7 +955,7 @@ after <em class="parameter"><code>src</code></em>
  to point into different
 sequences.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.16.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.16.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -998,7 +992,7 @@ g_sequence_swap (<em class="parameter"><code><a class="link" href="glib-Sequence
 
 to point into difference sequences.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.17.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.17.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1045,7 +1039,7 @@ It should return 0 if the items are equal, a negative value
 if the first item comes before the second, and a positive value
 if the second  item comes before the first.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.18.6"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.18.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1078,7 +1072,7 @@ if the second  item comes before the first.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.18.7"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.18.7"></a><h4>Returns</h4>
 <p> a <a class="link" href="glib-Sequences.html#GSequenceIter" title="GSequenceIter"><span class="type">GSequenceIter</span></a> pointing to the new item.</p>
 <p></p>
 </div>
@@ -1107,7 +1101,7 @@ return 0 if the iterators are equal, a negative value if the
 first iterator comes before the second, and a positive value
 if the second iterator comes before the first.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.19.7"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.19.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1140,7 +1134,7 @@ if the second iterator comes before the first.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.19.8"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.19.8"></a><h4>Returns</h4>
 <p> a <a class="link" href="glib-Sequences.html#GSequenceIter" title="GSequenceIter"><span class="type">GSequenceIter</span></a> pointing to the new item</p>
 <p></p>
 </div>
@@ -1168,7 +1162,7 @@ It should return 0 if the items are equal, a negative value if
 the first item comes before the second, and a positive value if
 the second item comes before the first.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.20.6"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.20.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1214,7 +1208,7 @@ return 0 if the iterators are equal, a negative value if the first
 iterator comes before the second, and a positive value if the second
 iterator comes before the first.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.21.6"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.21.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1254,7 +1248,7 @@ end iterator to this function.</p>
 <p>If the sequence has a data destroy function associated with it, this
 function is called on the data for the removed item.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.22.6"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.22.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1282,7 +1276,7 @@ g_sequence_remove_range (<em class="parameter"><code><a class="link" href="glib-
 <p>If the sequence has a data destroy function associated with it, this
 function is called on the data for the removed items.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.23.6"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.23.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1333,7 +1327,7 @@ the (<em class="parameter"><code>begin</code></em>
 , <em class="parameter"><code>end</code></em>
 ) range, the range does not move.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.24.6"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.24.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1389,7 +1383,7 @@ unsorted.  Use <a class="link" href="glib-Sequences.html#g-sequence-insert-sorte
 you want to add a large amount of data, call <a class="link" href="glib-Sequences.html#g-sequence-sort" title="g_sequence_sort ()"><code class="function">g_sequence_sort()</code></a> after
 doing unsorted insertions.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.25.8"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.25.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1422,7 +1416,7 @@ doing unsorted insertions.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.25.9"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.25.9"></a><h4>Returns</h4>
 <p> an <a class="link" href="glib-Sequences.html#GSequenceIter" title="GSequenceIter"><span class="type">GSequenceIter</span></a> pointing to the position where <em class="parameter"><code>data</code></em>
 would have been inserted according to <em class="parameter"><code>cmp_func</code></em>
 and <em class="parameter"><code>cmp_data</code></em>
@@ -1455,7 +1449,7 @@ unsorted.  Use <a class="link" href="glib-Sequences.html#g-sequence-insert-sorte
 you want to add a large amount of data, call <a class="link" href="glib-Sequences.html#g-sequence-sort" title="g_sequence_sort ()"><code class="function">g_sequence_sort()</code></a> after
 doing unsorted insertions.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.26.8"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.26.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1488,7 +1482,7 @@ doing unsorted insertions.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.26.9"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.26.9"></a><h4>Returns</h4>
 <p> a <a class="link" href="glib-Sequences.html#GSequenceIter" title="GSequenceIter"><span class="type">GSequenceIter</span></a> pointing to the position in <em class="parameter"><code>seq</code></em>
 where <em class="parameter"><code>data</code></em>
 would have been inserted according to <em class="parameter"><code>iter_cmp</code></em>
@@ -1527,7 +1521,7 @@ unsorted.  Use <a class="link" href="glib-Sequences.html#g-sequence-insert-sorte
 you want to add a large amount of data, call <a class="link" href="glib-Sequences.html#g-sequence-sort" title="g_sequence_sort ()"><code class="function">g_sequence_sort()</code></a> after
 doing unsorted insertions.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.27.7"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.27.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1560,7 +1554,7 @@ doing unsorted insertions.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.27.8"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.27.8"></a><h4>Returns</h4>
 <p> an <a class="link" href="glib-Sequences.html#GSequenceIter" title="GSequenceIter"><span class="type">GSequenceIter</span></a> pointing to the position of the
 first item found equal to <em class="parameter"><code>data</code></em>
 according to <em class="parameter"><code>cmp_func</code></em>
@@ -1593,7 +1587,7 @@ unsorted.  Use <a class="link" href="glib-Sequences.html#g-sequence-insert-sorte
 you want to add a large amount of data, call <a class="link" href="glib-Sequences.html#g-sequence-sort" title="g_sequence_sort ()"><code class="function">g_sequence_sort()</code></a> after
 doing unsorted insertions.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.28.7"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.28.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1626,7 +1620,7 @@ doing unsorted insertions.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.28.8"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.28.8"></a><h4>Returns</h4>
 <p> an <a class="link" href="glib-Sequences.html#GSequenceIter" title="GSequenceIter"><span class="type">GSequenceIter</span></a> pointing to the position of
 the first item found equal to <em class="parameter"><code>data</code></em>
 according to <em class="parameter"><code>cmp_func</code></em>
@@ -1644,7 +1638,7 @@ g_sequence_get (<em class="parameter"><code><a class="link" href="glib-Sequences
 <p>Returns the data that <em class="parameter"><code>iter</code></em>
  points to.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.29.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.29.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1659,7 +1653,7 @@ g_sequence_get (<em class="parameter"><code><a class="link" href="glib-Sequences
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.29.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.29.6"></a><h4>Returns</h4>
 <p> the data that <em class="parameter"><code>iter</code></em>
 points to</p>
 <p></p>
@@ -1679,7 +1673,7 @@ the sequence has a data destroy function associated with it, that
 function is called on the existing data that <em class="parameter"><code>iter</code></em>
  pointed to.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.30.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.30.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1710,7 +1704,7 @@ g_sequence_iter_is_begin (<em class="parameter"><code><a class="link" href="glib
 <p>Returns whether <em class="parameter"><code>iter</code></em>
  is the begin iterator</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.31.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.31.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1725,7 +1719,7 @@ g_sequence_iter_is_begin (<em class="parameter"><code><a class="link" href="glib
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.31.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.31.6"></a><h4>Returns</h4>
 <p> whether <em class="parameter"><code>iter</code></em>
 is the begin iterator</p>
 <p></p>
@@ -1740,7 +1734,7 @@ g_sequence_iter_is_end (<em class="parameter"><code><a class="link" href="glib-S
 <p>Returns whether <em class="parameter"><code>iter</code></em>
  is the end iterator</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.32.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.32.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1755,7 +1749,7 @@ g_sequence_iter_is_end (<em class="parameter"><code><a class="link" href="glib-S
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.32.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.32.6"></a><h4>Returns</h4>
 <p> Whether <em class="parameter"><code>iter</code></em>
 is the end iterator</p>
 <p></p>
@@ -1772,7 +1766,7 @@ g_sequence_iter_next (<em class="parameter"><code><a class="link" href="glib-Seq
 If <em class="parameter"><code>iter</code></em>
  is the end iterator, the end iterator is returned.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.33.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.33.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1787,7 +1781,7 @@ If <em class="parameter"><code>iter</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.33.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.33.6"></a><h4>Returns</h4>
 <p> a <a class="link" href="glib-Sequences.html#GSequenceIter" title="GSequenceIter"><span class="type">GSequenceIter</span></a> pointing to the next position after <em class="parameter"><code>iter</code></em>
 </p>
 <p></p>
@@ -1804,7 +1798,7 @@ g_sequence_iter_prev (<em class="parameter"><code><a class="link" href="glib-Seq
 If <em class="parameter"><code>iter</code></em>
  is the begin iterator, the begin iterator is returned.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.34.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.34.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1819,7 +1813,7 @@ If <em class="parameter"><code>iter</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.34.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.34.6"></a><h4>Returns</h4>
 <p> a <a class="link" href="glib-Sequences.html#GSequenceIter" title="GSequenceIter"><span class="type">GSequenceIter</span></a> pointing to the previous position
 before <em class="parameter"><code>iter</code></em>
 </p>
@@ -1835,7 +1829,7 @@ g_sequence_iter_get_position (<em class="parameter"><code><a class="link" href="
 <p>Returns the position of <em class="parameter"><code>iter</code></em>
 </p>
 <div class="refsect3">
-<a name="id-1.6.5.8.35.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.35.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1850,7 +1844,7 @@ g_sequence_iter_get_position (<em class="parameter"><code><a class="link" href="
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.35.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.35.6"></a><h4>Returns</h4>
 <p> the position of <em class="parameter"><code>iter</code></em>
 </p>
 <p></p>
@@ -1874,7 +1868,7 @@ the begin iterator is returned. If <em class="parameter"><code>iter</code></em>
  positions
 to the end of the sequence, the end iterator is returned.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.36.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.36.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1898,7 +1892,7 @@ the returned <a class="link" href="glib-Sequences.html#GSequenceIter" title="GSe
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.36.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.36.6"></a><h4>Returns</h4>
 <p> a <a class="link" href="glib-Sequences.html#GSequenceIter" title="GSequenceIter"><span class="type">GSequenceIter</span></a> which is <em class="parameter"><code>delta</code></em>
 positions away from <em class="parameter"><code>iter</code></em>
 </p>
@@ -1914,7 +1908,7 @@ g_sequence_iter_get_sequence (<em class="parameter"><code><a class="link" href="
 <p>Returns the <a class="link" href="glib-Sequences.html#GSequence" title="GSequence"><span class="type">GSequence</span></a> that <em class="parameter"><code>iter</code></em>
  points into.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.37.5"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.37.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1929,7 +1923,7 @@ g_sequence_iter_get_sequence (<em class="parameter"><code><a class="link" href="
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.37.6"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.37.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Sequences.html#GSequence" title="GSequence"><span class="type">GSequence</span></a> that <em class="parameter"><code>iter</code></em>
 points into</p>
 <p></p>
@@ -1952,7 +1946,7 @@ and a positive number if <em class="parameter"><code>a</code></em>
  and <em class="parameter"><code>b</code></em>
  iterators must point into the same sequence.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.38.6"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.38.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1974,7 +1968,7 @@ and a positive number if <em class="parameter"><code>a</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.38.7"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.38.7"></a><h4>Returns</h4>
 <p> a negative number if <em class="parameter"><code>a</code></em>
 comes before <em class="parameter"><code>b</code></em>
 , 0 if they are
@@ -2003,7 +1997,7 @@ and <em class="parameter"><code>begin</code></em>
  must come before or be equal to <em class="parameter"><code>end</code></em>
  in the sequence.</p>
 <div class="refsect3">
-<a name="id-1.6.5.8.39.6"></a><h4>Parameters</h4>
+<a name="id-1.6.5.7.39.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2025,7 +2019,7 @@ and <em class="parameter"><code>begin</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.5.8.39.7"></a><h4>Returns</h4>
+<a name="id-1.6.5.7.39.7"></a><h4>Returns</h4>
 <p> a <a class="link" href="glib-Sequences.html#GSequenceIter" title="GSequenceIter"><span class="type">GSequenceIter</span></a> pointing somewhere in the
 (<em class="parameter"><code>begin</code></em>
 , <em class="parameter"><code>end</code></em>

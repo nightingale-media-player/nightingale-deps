@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-UNIX-specific-utilities-and-integration.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-UNIX-specific-utilities-and-integration.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-UNIX-specific-utilities-and-integration.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -120,11 +119,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-UNIX-specific-utilities-and-integration.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-UNIX-specific-utilities-and-integration.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib-unix.h&gt;
 </pre>
@@ -150,7 +144,7 @@ exported enumeration mapping <code class="literal">errno</code>. Instead, all fu
 error message is always generated via <a class="link" href="glib-String-Utility-Functions.html#g-strerror" title="g_strerror ()"><code class="function">g_strerror()</code></a>.</p>
 <p>It is expected that most code will not look at <code class="literal">errno</code> from these APIs.
 Important cases where one would want to differentiate between errors are
-already covered by existing cross-platform GLib API, such as e.g. <a href="../gio/GFile.html"><span class="type">GFile</span></a>
+already covered by existing cross-platform GLib API, such as e.g. <span class="type">GFile</span>
 wrapping <code class="literal">ENOENT</code>. However, it is provided for completeness, at least.</p>
 </div>
 <hr>
@@ -168,7 +162,7 @@ must still be done separately with <code class="function">fcntl()</code>.</p>
 <p>This function does not take <code class="literal">O_CLOEXEC</code>, it takes <code class="literal">FD_CLOEXEC</code> as if
 for <code class="function">fcntl()</code>; these are different on Linux/glibc.</p>
 <div class="refsect3">
-<a name="id-1.5.30.7.3.6"></a><h4>Parameters</h4>
+<a name="id-1.5.30.6.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -195,7 +189,7 @@ for <code class="function">fcntl()</code>; these are different on Linux/glibc.</
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.30.7.3.7"></a><h4>Returns</h4>
+<a name="id-1.5.30.6.3.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if not (and errno will be set).</p>
 <p></p>
 </div>
@@ -213,7 +207,7 @@ according to <em class="parameter"><code>nonblock</code></em>
 . On most systems this uses <code class="literal">O_NONBLOCK</code>, but
 on some older ones may use <code class="literal">O_NDELAY</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.30.7.4.5"></a><h4>Parameters</h4>
+<a name="id-1.5.30.6.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -240,7 +234,7 @@ on some older ones may use <code class="literal">O_NDELAY</code>.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.30.7.4.6"></a><h4>Returns</h4>
+<a name="id-1.5.30.6.4.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if successful</p>
 <p></p>
 </div>
@@ -257,7 +251,7 @@ g_unix_signal_add (<em class="parameter"><code><a class="link" href="glib-Basic-
 attaches to the default <a class="link" href="glib-The-Main-Event-Loop.html#GMainContext" title="GMainContext"><span class="type">GMainContext</span></a>.  You can remove the watch
 using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-remove" title="g_source_remove ()"><code class="function">g_source_remove()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.30.7.5.5"></a><h4>Parameters</h4>
+<a name="id-1.5.30.6.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -285,7 +279,7 @@ using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-remove" title
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.30.7.5.6"></a><h4>Returns</h4>
+<a name="id-1.5.30.6.5.6"></a><h4>Returns</h4>
 <p> An ID (greater than 0) for the event source</p>
 <p></p>
 </div>
@@ -304,7 +298,7 @@ g_unix_signal_add_full (<em class="parameter"><code><a class="link" href="glib-B
 attaches to the default <a class="link" href="glib-The-Main-Event-Loop.html#GMainContext" title="GMainContext"><span class="type">GMainContext</span></a>.  You can remove the watch
 using <a class="link" href="glib-The-Main-Event-Loop.html#g-source-remove" title="g_source_remove ()"><code class="function">g_source_remove()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.30.7.6.5"></a><h4>Parameters</h4>
+<a name="id-1.5.30.6.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -344,7 +338,7 @@ the range between <a class="link" href="glib-The-Main-Event-Loop.html#G-PRIORITY
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.30.7.6.6"></a><h4>Returns</h4>
+<a name="id-1.5.30.6.6.6"></a><h4>Returns</h4>
 <p> An ID (greater than 0) for the event source</p>
 <p>Rename to: g_unix_signal_add</p>
 <p></p>
@@ -377,7 +371,7 @@ functions like <code class="function">sigprocmask()</code> is not defined.</p>
 and must be added to one with <a class="link" href="glib-The-Main-Event-Loop.html#g-source-attach" title="g_source_attach ()"><code class="function">g_source_attach()</code></a> before it will be
 executed.</p>
 <div class="refsect3">
-<a name="id-1.5.30.7.7.9"></a><h4>Parameters</h4>
+<a name="id-1.5.30.6.7.9"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -392,7 +386,7 @@ executed.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.30.7.7.10"></a><h4>Returns</h4>
+<a name="id-1.5.30.6.7.10"></a><h4>Returns</h4>
 <p> A newly created <a class="link" href="glib-The-Main-Event-Loop.html#GSource" title="struct GSource"><span class="type">GSource</span></a></p>
 <p></p>
 </div>
@@ -408,7 +402,7 @@ executed.</p>
 <p>The type of functions to be called when a UNIX fd watch source
 triggers.</p>
 <div class="refsect3">
-<a name="id-1.5.30.7.8.5"></a><h4>Parameters</h4>
+<a name="id-1.5.30.6.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -436,7 +430,7 @@ triggers.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.30.7.8.6"></a><h4>Returns</h4>
+<a name="id-1.5.30.6.8.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if the source should be removed</p>
 <p></p>
 </div>
@@ -464,7 +458,7 @@ will be cancelled.</p>
 to cancel the watch at any time that it exists.</p>
 <p>The source will never close the fd -- you must do it yourself.</p>
 <div class="refsect3">
-<a name="id-1.5.30.7.9.8"></a><h4>Parameters</h4>
+<a name="id-1.5.30.6.9.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -498,7 +492,7 @@ to cancel the watch at any time that it exists.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.30.7.9.9"></a><h4>Returns</h4>
+<a name="id-1.5.30.6.9.9"></a><h4>Returns</h4>
 <p> the ID (greater than 0) of the event source</p>
 <p></p>
 </div>
@@ -523,7 +517,7 @@ specify a non-default priority and a provide a <a class="link" href="glib-Datase
 <em class="parameter"><code>user_data</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.30.7.10.6"></a><h4>Parameters</h4>
+<a name="id-1.5.30.6.10.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -567,7 +561,7 @@ specify a non-default priority and a provide a <a class="link" href="glib-Datase
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.30.7.10.7"></a><h4>Returns</h4>
+<a name="id-1.5.30.6.10.7"></a><h4>Returns</h4>
 <p> the ID (greater than 0) of the event source</p>
 <p></p>
 </div>
@@ -583,7 +577,7 @@ g_unix_fd_source_new (<em class="parameter"><code><a class="link" href="glib-Bas
 descriptor.</p>
 <p>The source will never close the fd -- you must do it yourself.</p>
 <div class="refsect3">
-<a name="id-1.5.30.7.11.6"></a><h4>Parameters</h4>
+<a name="id-1.5.30.6.11.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -606,7 +600,7 @@ descriptor.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.30.7.11.7"></a><h4>Returns</h4>
+<a name="id-1.5.30.6.11.7"></a><h4>Returns</h4>
 <p> the newly created <a class="link" href="glib-The-Main-Event-Loop.html#GSource" title="struct GSource"><span class="type">GSource</span></a></p>
 <p></p>
 </div>

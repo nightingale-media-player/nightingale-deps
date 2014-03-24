@@ -12,11 +12,11 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GTestDBus.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GTestDBus.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GTestDBus.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GTestDBus.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
                   <a href="#GTestDBus.properties" class="shortcut">Properties</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -143,7 +143,7 @@
 </div>
 <div class="refsect1">
 <a name="GTestDBus.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    GFlags
+<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/gobject-Enumeration-and-Flag-Types.html">GFlags</a>
     <span class="lineart">╰──</span> GTestDBusFlags
     <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
     <span class="lineart">╰──</span> GTestDBus
@@ -186,9 +186,9 @@ directory and have it processed by configure.</p>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="symbol">[</span><span class="normal">D</span><span class="symbol">-</span><span class="usertype">BUS</span><span class="normal"> Service</span><span class="symbol">]</span>
-<span class="normal">Name</span><span class="symbol">=</span><span class="normal">org</span><span class="symbol">.</span><span class="normal">gtk</span><span class="symbol">.</span><span class="normal">GDBus</span><span class="symbol">.</span><span class="normal">Examples</span><span class="symbol">.</span><span class="normal">ObjectManager</span>
-<span class="normal">Exec</span><span class="symbol">=</span><span class="normal">@abs_top_builddir@</span><span class="symbol">/</span><span class="normal">gio</span><span class="symbol">/</span><span class="normal">tests</span><span class="symbol">/</span><span class="normal"><a href="gdbus.html">gdbus</a></span><span class="symbol">-</span><span class="normal">example</span><span class="symbol">-</span><span class="normal">objectmanager</span><span class="symbol">-</span><span class="normal">server</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">[</span>D<span class="gtkdoc opt">-</span>BUS Service<span class="gtkdoc opt">]</span>
+Name<span class="gtkdoc opt">=</span>org<span class="gtkdoc opt">.</span>gtk<span class="gtkdoc opt">.</span>GDBus<span class="gtkdoc opt">.</span>Examples<span class="gtkdoc opt">.</span>ObjectManager
+Exec<span class="gtkdoc opt">=</span>&#64;abs_top_builddir&#64;<span class="gtkdoc opt">/</span>gio<span class="gtkdoc opt">/</span>tests<span class="gtkdoc opt">/</span>gdbus<span class="gtkdoc opt">-</span>example<span class="gtkdoc opt">-</span>objectmanager<span class="gtkdoc opt">-</span>server</pre></td>
       </tr>
     </tbody>
   </table>
@@ -204,7 +204,7 @@ preprocessor flag specified to compile your tests such as:</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="symbol">-</span><span class="normal">DTEST_SERVICES</span><span class="symbol">=\</span><span class="string">""</span><span class="normal">$</span><span class="symbol">(</span><span class="normal">abs_top_builddir</span><span class="symbol">)/</span><span class="normal">tests</span><span class="symbol">/</span><span class="normal">services</span><span class="string">"</span><span class="specialchar">\"</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">-</span>DTEST_SERVICES<span class="gtkdoc opt">=</span><span class="gtkdoc esc">\&quot;</span><span class="string">&quot;$(abs_top_builddir)/tests/services&quot;</span><span class="gtkdoc esc">\&quot;</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -242,10 +242,10 @@ do the following in the directory holding schemas:</p>
 2
 3
 4</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">all</span><span class="symbol">-</span><span class="normal">am</span><span class="symbol">:</span>
-<span class="normal">        $</span><span class="symbol">(</span><span class="normal">GLIB_COMPILE_SCHEMAS</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">.</span>
+        <td class="listing_code"><pre class="programlisting">all<span class="gtkdoc opt">-</span>am<span class="gtkdoc opt">:</span>
+        $<span class="gtkdoc opt">(</span>GLIB_COMPILE_SCHEMAS<span class="gtkdoc opt">) .</span>
 
-<span class="normal">CLEANFILES </span><span class="symbol">+=</span><span class="normal"> gschemas</span><span class="symbol">.</span><span class="normal">compiled</span></pre></td>
+CLEANFILES <span class="gtkdoc opt">+=</span> gschemas<span class="gtkdoc opt">.</span>compiled</pre></td>
       </tr>
     </tbody>
   </table>

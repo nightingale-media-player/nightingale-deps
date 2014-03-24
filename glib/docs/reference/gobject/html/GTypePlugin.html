@@ -12,11 +12,11 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GTypePlugin.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GTypePlugin.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_implementations"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GTypePlugin.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GTypePlugin.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_implementations">  <span class="dim">|</span> 
                   <a href="#GTypePlugin.implementations" class="shortcut">Known Implementations</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -129,7 +129,7 @@
 </div>
 <div class="refsect1">
 <a name="GTypePlugin.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    GInterface
+<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
     <span class="lineart">╰──</span> GTypePlugin
 </pre>
 </div>
@@ -162,10 +162,10 @@ introduces what types), like this:</p>
 2
 3
 4</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">new_type_id </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="gobject-Type-Information.html#g-type-register-dynamic">g_type_register_dynamic</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">parent_type_id</span><span class="symbol">,</span>
-<span class="normal">                                      </span><span class="string">"TypeName"</span><span class="symbol">,</span>
-<span class="normal">                                      new_type_plugin</span><span class="symbol">,</span>
-<span class="normal">                                      type_flags</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">new_type_id <span class="gtkdoc opt">=</span> <span class="function"><a href="gobject-Type-Information.html#g-type-register-dynamic">g_type_register_dynamic</a></span> <span class="gtkdoc opt">(</span>parent_type_id<span class="gtkdoc opt">,</span>
+                                      <span class="string">&quot;TypeName&quot;</span><span class="gtkdoc opt">,</span>
+                                      new_type_plugin<span class="gtkdoc opt">,</span>
+                                      type_flags<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -532,16 +532,14 @@ the lifecycle of dynamically loaded types.</p>
 <td class="struct_member_name"><p><a class="link" href="GTypePlugin.html#GTypePluginCompleteTypeInfo" title="GTypePluginCompleteTypeInfo ()"><span class="type">GTypePluginCompleteTypeInfo</span></a> <em class="structfield"><code><a name="GTypePluginClass.complete-type-info"></a>complete_type_info</code></em>;</p></td>
 <td class="struct_member_description"><p>Fills in the <a class="link" href="gobject-Type-Information.html#GTypeInfo" title="struct GTypeInfo"><span class="type">GTypeInfo</span></a> and
 <a class="link" href="gobject-Type-Information.html#GTypeValueTable" title="struct GTypeValueTable"><span class="type">GTypeValueTable</span></a> structs for the type. The structs are initialized
-with &lt;literal&gt;memset(s, 0, sizeof (s))&lt;/literal&gt; before calling
-this function.</p></td>
+with <code class="literal">memset(s, 0, sizeof (s))</code> before calling this function.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr>
 <tr>
 <td class="struct_member_name"><p><a class="link" href="GTypePlugin.html#GTypePluginCompleteInterfaceInfo" title="GTypePluginCompleteInterfaceInfo ()"><span class="type">GTypePluginCompleteInterfaceInfo</span></a> <em class="structfield"><code><a name="GTypePluginClass.complete-interface-info"></a>complete_interface_info</code></em>;</p></td>
 <td class="struct_member_description"><p>Fills in missing parts of the <a class="link" href="gobject-Type-Information.html#GInterfaceInfo" title="struct GInterfaceInfo"><span class="type">GInterfaceInfo</span></a>
 for the interface. The structs is initialized with
-&lt;literal&gt;memset(s, 0, sizeof (s))&lt;/literal&gt; before calling
-this function.</p></td>
+<code class="literal">memset(s, 0, sizeof (s))</code> before calling this function.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr>
 </tbody>

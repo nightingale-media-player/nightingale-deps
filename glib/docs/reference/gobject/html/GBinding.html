@@ -12,11 +12,11 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GBinding.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GBinding.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GBinding.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GBinding.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
                   <a href="#GBinding.properties" class="shortcut">Properties</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -207,9 +207,9 @@ binding:</p>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GBinding.html#g-object-bind-property">g_object_bind_property</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">object1</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"property-a"</span><span class="symbol">,</span>
-<span class="normal">                        object2</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"property-b"</span><span class="symbol">,</span>
-<span class="normal">                        G_BINDING_DEFAULT</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GBinding.html#g-object-bind-property">g_object_bind_property</a></span> <span class="gtkdoc opt">(</span>object1<span class="gtkdoc opt">,</span> <span class="string">&quot;property-a&quot;</span><span class="gtkdoc opt">,</span>
+                        object2<span class="gtkdoc opt">,</span> <span class="string">&quot;property-b&quot;</span><span class="gtkdoc opt">,</span>
+                        G_BINDING_DEFAULT<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -231,9 +231,9 @@ other is updated as well, for instance:</p>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GBinding.html#g-object-bind-property">g_object_bind_property</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">object1</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"property-a"</span><span class="symbol">,</span>
-<span class="normal">                        object2</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"property-b"</span><span class="symbol">,</span>
-<span class="normal">                        G_BINDING_BIDIRECTIONAL</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GBinding.html#g-object-bind-property">g_object_bind_property</a></span> <span class="gtkdoc opt">(</span>object1<span class="gtkdoc opt">,</span> <span class="string">&quot;property-a&quot;</span><span class="gtkdoc opt">,</span>
+                        object2<span class="gtkdoc opt">,</span> <span class="string">&quot;property-b&quot;</span><span class="gtkdoc opt">,</span>
+                        G_BINDING_BIDIRECTIONAL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -255,12 +255,12 @@ applying it; for instance, the following binding:</p>
 4
 5
 6</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GBinding.html#g-object-bind-property-full">g_object_bind_property_full</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">adjustment1</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"value"</span><span class="symbol">,</span>
-<span class="normal">                             adjustment2</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"value"</span><span class="symbol">,</span>
-<span class="normal">                             G_BINDING_BIDIRECTIONAL</span><span class="symbol">,</span>
-<span class="normal">                             celsius_to_fahrenheit</span><span class="symbol">,</span>
-<span class="normal">                             fahrenheit_to_celsius</span><span class="symbol">,</span>
-<span class="normal">                             <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GBinding.html#g-object-bind-property-full">g_object_bind_property_full</a></span> <span class="gtkdoc opt">(</span>adjustment1<span class="gtkdoc opt">,</span> <span class="string">&quot;value&quot;</span><span class="gtkdoc opt">,</span>
+                             adjustment2<span class="gtkdoc opt">,</span> <span class="string">&quot;value&quot;</span><span class="gtkdoc opt">,</span>
+                             G_BINDING_BIDIRECTIONAL<span class="gtkdoc opt">,</span>
+                             celsius_to_fahrenheit<span class="gtkdoc opt">,</span>
+                             fahrenheit_to_celsius<span class="gtkdoc opt">,</span>
+                             NULL<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -289,9 +289,9 @@ of <em class="parameter"><code>adjustment1</code></em>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">object1</span><span class="symbol">:</span><span class="normal">propertyA </span><span class="symbol">-&gt;</span><span class="normal"> object2</span><span class="symbol">:</span><span class="normal">propertyB</span>
-<span class="normal">object2</span><span class="symbol">:</span><span class="normal">propertyB </span><span class="symbol">-&gt;</span><span class="normal"> object3</span><span class="symbol">:</span><span class="normal">propertyC</span>
-<span class="normal">object3</span><span class="symbol">:</span><span class="normal">propertyC </span><span class="symbol">-&gt;</span><span class="normal"> object1</span><span class="symbol">:</span><span class="normal">propertyA</span></pre></td>
+        <td class="listing_code"><pre class="programlisting">object1<span class="gtkdoc opt">:</span>propertyA <span class="gtkdoc opt">-&gt;</span> object2<span class="gtkdoc opt">:</span>propertyB
+object2<span class="gtkdoc opt">:</span>propertyB <span class="gtkdoc opt">-&gt;</span> object3<span class="gtkdoc opt">:</span>propertyC
+object3<span class="gtkdoc opt">:</span>propertyC <span class="gtkdoc opt">-&gt;</span> object1<span class="gtkdoc opt">:</span>propertyA</pre></td>
       </tr>
     </tbody>
   </table>
@@ -509,7 +509,7 @@ updated using the same value. For instance:</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GBinding.html#g-object-bind-property">g_object_bind_property</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">action</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"active"</span><span class="symbol">,</span><span class="normal"> widget</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"sensitive"</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GBinding.html#g-object-bind-property">g_object_bind_property</a></span> <span class="gtkdoc opt">(</span>action<span class="gtkdoc opt">,</span> <span class="string">&quot;active&quot;</span><span class="gtkdoc opt">,</span> widget<span class="gtkdoc opt">,</span> <span class="string">&quot;sensitive&quot;</span><span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>

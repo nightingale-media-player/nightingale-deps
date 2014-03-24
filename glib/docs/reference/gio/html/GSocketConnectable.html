@@ -12,13 +12,13 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GSocketConnectable.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GSocketConnectable.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_prerequisites"> <span class="dim">|</span> 
-                  <a href="#GSocketConnectable.prerequisites" class="shortcut">Prerequisites</a></span><span id="nav_implementations"> <span class="dim">|</span> 
-                  <a href="#GSocketConnectable.implementations" class="shortcut">Known Implementations</a></span><span id="nav_properties"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GSocketConnectable.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GSocketConnectable.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_prerequisites">  <span class="dim">|</span> 
+                  <a href="#GSocketConnectable.prerequisites" class="shortcut">Prerequisites</a></span><span id="nav_implementations">  <span class="dim">|</span> 
+                  <a href="#GSocketConnectable.implementations" class="shortcut">Known Implementations</a></span><span id="nav_properties">  <span class="dim">|</span> 
                   <a href="#GSocketConnectable.properties" class="shortcut">Properties</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -150,7 +150,7 @@
 </div>
 <div class="refsect1">
 <a name="GSocketConnectable.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    GInterface
+<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
     <span class="lineart">╰──</span> GSocketConnectable
     <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
     <span class="lineart">├──</span> <a class="link" href="GSocketConnectable.html#GSocketAddressEnumerator">GSocketAddressEnumerator</a>
@@ -236,55 +236,55 @@ in the sample code below.</p>
 47
 48
 49</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="normal">MyConnectionType </span><span class="symbol">*</span>
-<span class="function">connect_to_host</span><span class="normal"> </span><span class="symbol">(</span><span class="keyword">const</span><span class="normal"> </span><span class="type">char</span><span class="normal">    </span><span class="symbol">*</span><span class="normal">hostname</span><span class="symbol">,</span>
-<span class="normal">                 </span><span class="usertype">guint16</span><span class="normal">        port</span><span class="symbol">,</span>
-<span class="normal">                 </span><span class="usertype">GCancellable</span><span class="normal">  </span><span class="symbol">*</span><span class="normal">cancellable</span><span class="symbol">,</span>
-<span class="normal">                 </span><span class="usertype">GError</span><span class="normal">       </span><span class="symbol">**</span><span class="normal">error</span><span class="symbol">)</span>
-<span class="cbracket">{</span>
-<span class="normal">  </span><span class="usertype">MyConnection</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">conn </span><span class="symbol">=</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
-<span class="normal">  </span><span class="usertype">GSocketConnectable</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">addr</span><span class="symbol">;</span>
-<span class="normal">  </span><span class="usertype">GSocketAddressEnumerator</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">enumerator</span><span class="symbol">;</span>
-<span class="normal">  </span><span class="usertype">GSocketAddress</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">sockaddr</span><span class="symbol">;</span>
-<span class="normal">  </span><span class="usertype">GError</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">conn_error </span><span class="symbol">=</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
+        <td class="listing_code"><pre class="programlisting">MyConnectionType <span class="gtkdoc opt">*</span>
+<span class="function">connect_to_host</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">const char</span>    <span class="gtkdoc opt">*</span>hostname<span class="gtkdoc opt">,</span>
+                 guint16        port<span class="gtkdoc opt">,</span>
+                 GCancellable  <span class="gtkdoc opt">*</span>cancellable<span class="gtkdoc opt">,</span>
+                 GError       <span class="gtkdoc opt">**</span>error<span class="gtkdoc opt">)</span>
+<span class="gtkdoc opt">{</span>
+  MyConnection <span class="gtkdoc opt">*</span>conn <span class="gtkdoc opt">=</span> NULL<span class="gtkdoc opt">;</span>
+  GSocketConnectable <span class="gtkdoc opt">*</span>addr<span class="gtkdoc opt">;</span>
+  GSocketAddressEnumerator <span class="gtkdoc opt">*</span>enumerator<span class="gtkdoc opt">;</span>
+  GSocketAddress <span class="gtkdoc opt">*</span>sockaddr<span class="gtkdoc opt">;</span>
+  GError <span class="gtkdoc opt">*</span>conn_error <span class="gtkdoc opt">=</span> NULL<span class="gtkdoc opt">;</span>
 
-<span class="normal">  addr </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GNetworkAddress.html#g-network-address-new">g_network_address_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">hostname</span><span class="symbol">,</span><span class="normal"> port</span><span class="symbol">);</span>
-<span class="normal">  enumerator </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GSocketConnectable.html#g-socket-connectable-enumerate">g_socket_connectable_enumerate</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">addr</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="function"><a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">addr</span><span class="symbol">);</span>
+  addr <span class="gtkdoc opt">=</span> <span class="function"><a href="GNetworkAddress.html#g-network-address-new">g_network_address_new</a></span> <span class="gtkdoc opt">(</span>hostname<span class="gtkdoc opt">,</span> port<span class="gtkdoc opt">);</span>
+  enumerator <span class="gtkdoc opt">=</span> <span class="function"><a href="GSocketConnectable.html#g-socket-connectable-enumerate">g_socket_connectable_enumerate</a></span> <span class="gtkdoc opt">(</span>addr<span class="gtkdoc opt">);</span>
+  <span class="function"><a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span> <span class="gtkdoc opt">(</span>addr<span class="gtkdoc opt">);</span>
 
-<span class="normal">  </span><span class="comment">// Try each sockaddr until we succeed. Record the first connection error,</span>
-<span class="normal">  </span><span class="comment">// but not any further ones (since they'll probably be basically the same</span>
-<span class="normal">  </span><span class="comment">// as the first).</span>
-<span class="normal">  </span><span class="keyword">while</span><span class="normal"> </span><span class="symbol">(!</span><span class="normal">conn </span><span class="symbol">&amp;&amp;</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">sockaddr </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GSocketConnectable.html#g-socket-address-enumerator-next">g_socket_address_enumerator_next</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">enumerator</span><span class="symbol">,</span><span class="normal"> cancellable</span><span class="symbol">,</span><span class="normal"> error</span><span class="symbol">))</span>
-<span class="normal">    </span><span class="cbracket">{</span>
-<span class="normal">      conn </span><span class="symbol">=</span><span class="normal"> </span><span class="function">connect_to_sockaddr</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">sockaddr</span><span class="symbol">,</span><span class="normal"> conn_error </span><span class="symbol">?</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a> </span><span class="symbol">:</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">conn_error</span><span class="symbol">);</span>
-<span class="normal">      </span><span class="function"><a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">sockaddr</span><span class="symbol">);</span>
-<span class="normal">    </span><span class="cbracket">}</span>
-<span class="normal">  </span><span class="function"><a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">enumerator</span><span class="symbol">);</span>
+  <span class="gtkdoc slc">// Try each sockaddr until we succeed. Record the first connection error,</span>
+  <span class="gtkdoc slc">// but not any further ones (since they'll probably be basically the same</span>
+  <span class="gtkdoc slc">// as the first).</span>
+  <span class="keyword">while</span> <span class="gtkdoc opt">(!</span>conn <span class="gtkdoc opt">&amp;&amp; (</span>sockaddr <span class="gtkdoc opt">=</span> <span class="function"><a href="GSocketConnectable.html#g-socket-address-enumerator-next">g_socket_address_enumerator_next</a></span> <span class="gtkdoc opt">(</span>enumerator<span class="gtkdoc opt">,</span> cancellable<span class="gtkdoc opt">,</span> error<span class="gtkdoc opt">))</span>
+    <span class="gtkdoc opt">{</span>
+      conn <span class="gtkdoc opt">=</span> <span class="function">connect_to_sockaddr</span> <span class="gtkdoc opt">(</span>sockaddr<span class="gtkdoc opt">,</span> conn_error ? NULL <span class="gtkdoc opt">: &amp;</span>conn_error<span class="gtkdoc opt">);</span>
+      <span class="function"><a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span> <span class="gtkdoc opt">(</span>sockaddr<span class="gtkdoc opt">);</span>
+    <span class="gtkdoc opt">}</span>
+  <span class="function"><a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref">g_object_unref</a></span> <span class="gtkdoc opt">(</span>enumerator<span class="gtkdoc opt">);</span>
 
-<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">conn</span><span class="symbol">)</span>
-<span class="normal">    </span><span class="cbracket">{</span>
-<span class="normal">      </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">conn_error</span><span class="symbol">)</span>
-<span class="normal">        </span><span class="cbracket">{</span>
-<span class="normal">          </span><span class="comment">// We couldn't connect to the first address, but we succeeded</span>
-<span class="normal">          </span><span class="comment">// in connecting to a later address.</span>
-<span class="normal">          </span><span class="function"><a href="../glib/glib-Error-Reporting.html#g-error-free">g_error_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">conn_error</span><span class="symbol">);</span>
-<span class="normal">        </span><span class="cbracket">}</span>
-<span class="normal">      </span><span class="keyword">return</span><span class="normal"> conn</span><span class="symbol">;</span>
-<span class="normal">    </span><span class="cbracket">}</span>
-<span class="normal">  </span><span class="keyword">else</span><span class="normal"> </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">error</span><span class="symbol">)</span>
-<span class="normal">    </span><span class="cbracket">{</span>
-<span class="normal">      </span><span class="comment">/// Either initial lookup failed, or else the caller cancelled us.</span>
-<span class="normal">      </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">conn_error</span><span class="symbol">)</span>
-<span class="normal">        </span><span class="function"><a href="../glib/glib-Error-Reporting.html#g-error-free">g_error_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">conn_error</span><span class="symbol">);</span>
-<span class="normal">      </span><span class="keyword">return</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
-<span class="normal">    </span><span class="cbracket">}</span>
-<span class="normal">  </span><span class="keyword">else</span>
-<span class="normal">    </span><span class="cbracket">{</span>
-<span class="normal">      </span><span class="function">g_error_propagate</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">error</span><span class="symbol">,</span><span class="normal"> conn_error</span><span class="symbol">);</span>
-<span class="normal">      </span><span class="keyword">return</span><span class="normal"> <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
-<span class="normal">    </span><span class="cbracket">}</span>
-<span class="cbracket">}</span></pre></td>
+  <span class="keyword">if</span> <span class="gtkdoc opt">(</span>conn<span class="gtkdoc opt">)</span>
+    <span class="gtkdoc opt">{</span>
+      <span class="keyword">if</span> <span class="gtkdoc opt">(</span>conn_error<span class="gtkdoc opt">)</span>
+        <span class="gtkdoc opt">{</span>
+          <span class="gtkdoc slc">// We couldn't connect to the first address, but we succeeded</span>
+          <span class="gtkdoc slc">// in connecting to a later address.</span>
+          <span class="function"><a href="../glib/glib-Error-Reporting.html#g-error-free">g_error_free</a></span> <span class="gtkdoc opt">(</span>conn_error<span class="gtkdoc opt">);</span>
+        <span class="gtkdoc opt">}</span>
+      <span class="keyword">return</span> conn<span class="gtkdoc opt">;</span>
+    <span class="gtkdoc opt">}</span>
+  <span class="keyword">else if</span> <span class="gtkdoc opt">(</span>error<span class="gtkdoc opt">)</span>
+    <span class="gtkdoc opt">{</span>
+      <span class="gtkdoc slc">/// Either initial lookup failed, or else the caller cancelled us.</span>
+      <span class="keyword">if</span> <span class="gtkdoc opt">(</span>conn_error<span class="gtkdoc opt">)</span>
+        <span class="function"><a href="../glib/glib-Error-Reporting.html#g-error-free">g_error_free</a></span> <span class="gtkdoc opt">(</span>conn_error<span class="gtkdoc opt">);</span>
+      <span class="keyword">return</span> NULL<span class="gtkdoc opt">;</span>
+    <span class="gtkdoc opt">}</span>
+  <span class="keyword">else</span>
+    <span class="gtkdoc opt">{</span>
+      <span class="function">g_error_propagate</span> <span class="gtkdoc opt">(</span>error<span class="gtkdoc opt">,</span> conn_error<span class="gtkdoc opt">);</span>
+      <span class="keyword">return</span> NULL<span class="gtkdoc opt">;</span>
+    <span class="gtkdoc opt">}</span>
+<span class="gtkdoc opt">}</span></pre></td>
       </tr>
     </tbody>
   </table>

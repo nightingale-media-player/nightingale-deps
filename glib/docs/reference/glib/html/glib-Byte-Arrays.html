@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Byte-Arrays.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Byte-Arrays.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Byte-Arrays.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-data-types.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -295,11 +294,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Byte-Arrays.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Byte-Arrays.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -333,22 +327,22 @@ of bytes which grow automatically as elements are added.</p>
 14
 15
 16</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="usertype">GByteArray</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">gbarray</span><span class="symbol">;</span>
-<span class="usertype">gint</span><span class="normal"> i</span><span class="symbol">;</span>
+        <td class="listing_code"><pre class="programlisting">GByteArray <span class="gtkdoc opt">*</span>gbarray<span class="gtkdoc opt">;</span>
+gint i<span class="gtkdoc opt">;</span>
 
-<span class="normal">gbarray </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Byte-Arrays.html#g-byte-array-new">g_byte_array_new</a></span><span class="normal"> </span><span class="symbol">();</span>
-<span class="keyword">for</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">i </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0</span><span class="symbol">;</span><span class="normal"> i </span><span class="symbol">&lt;</span><span class="normal"> </span><span class="number">10000</span><span class="symbol">;</span><span class="normal"> i</span><span class="symbol">++)</span>
-<span class="normal">  </span><span class="function"><a href="glib-Byte-Arrays.html#g-byte-array-append">g_byte_array_append</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">gbarray</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="glib-Basic-Types.html#guint8">guint8</a></span><span class="symbol">*)</span><span class="normal"> </span><span class="string">"abcd"</span><span class="symbol">,</span><span class="normal"> </span><span class="number">4</span><span class="symbol">);</span>
+gbarray <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Byte-Arrays.html#g-byte-array-new">g_byte_array_new</a></span> <span class="gtkdoc opt">();</span>
+<span class="keyword">for</span> <span class="gtkdoc opt">(</span>i <span class="gtkdoc opt">=</span> <span class="number">0</span><span class="gtkdoc opt">;</span> i <span class="gtkdoc opt">&lt;</span> <span class="number">10000</span><span class="gtkdoc opt">;</span> i<span class="gtkdoc opt">++)</span>
+  <span class="function"><a href="glib-Byte-Arrays.html#g-byte-array-append">g_byte_array_append</a></span> <span class="gtkdoc opt">(</span>gbarray<span class="gtkdoc opt">, (</span>guint8<span class="gtkdoc opt">*)</span> <span class="string">&quot;abcd&quot;</span><span class="gtkdoc opt">,</span> <span class="number">4</span><span class="gtkdoc opt">);</span>
 
-<span class="keyword">for</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">i </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0</span><span class="symbol">;</span><span class="normal"> i </span><span class="symbol">&lt;</span><span class="normal"> </span><span class="number">10000</span><span class="symbol">;</span><span class="normal"> i</span><span class="symbol">++)</span>
-<span class="normal">  </span><span class="cbracket">{</span>
-<span class="normal">    </span><span class="function"><a href="glib-Testing.html#g-assert">g_assert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">gbarray</span><span class="symbol">-&gt;</span><span class="normal">data</span><span class="symbol">[</span><span class="number">4</span><span class="symbol">*</span><span class="normal">i</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">==</span><span class="normal"> </span><span class="string">'a'</span><span class="symbol">);</span>
-<span class="normal">    </span><span class="function"><a href="glib-Testing.html#g-assert">g_assert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">gbarray</span><span class="symbol">-&gt;</span><span class="normal">data</span><span class="symbol">[</span><span class="number">4</span><span class="symbol">*</span><span class="normal">i</span><span class="symbol">+</span><span class="number">1</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">==</span><span class="normal"> </span><span class="string">'b'</span><span class="symbol">);</span>
-<span class="normal">    </span><span class="function"><a href="glib-Testing.html#g-assert">g_assert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">gbarray</span><span class="symbol">-&gt;</span><span class="normal">data</span><span class="symbol">[</span><span class="number">4</span><span class="symbol">*</span><span class="normal">i</span><span class="symbol">+</span><span class="number">2</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">==</span><span class="normal"> </span><span class="string">'c'</span><span class="symbol">);</span>
-<span class="normal">    </span><span class="function"><a href="glib-Testing.html#g-assert">g_assert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">gbarray</span><span class="symbol">-&gt;</span><span class="normal">data</span><span class="symbol">[</span><span class="number">4</span><span class="symbol">*</span><span class="normal">i</span><span class="symbol">+</span><span class="number">3</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">==</span><span class="normal"> </span><span class="string">'d'</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="cbracket">}</span>
+<span class="keyword">for</span> <span class="gtkdoc opt">(</span>i <span class="gtkdoc opt">=</span> <span class="number">0</span><span class="gtkdoc opt">;</span> i <span class="gtkdoc opt">&lt;</span> <span class="number">10000</span><span class="gtkdoc opt">;</span> i<span class="gtkdoc opt">++)</span>
+  <span class="gtkdoc opt">{</span>
+    <span class="function"><a href="glib-Testing.html#g-assert">g_assert</a></span> <span class="gtkdoc opt">(</span>gbarray<span class="gtkdoc opt">-&gt;</span>data<span class="gtkdoc opt">[</span><span class="number">4</span><span class="gtkdoc opt">*</span>i<span class="gtkdoc opt">] ==</span> <span class="string">'a'</span><span class="gtkdoc opt">);</span>
+    <span class="function"><a href="glib-Testing.html#g-assert">g_assert</a></span> <span class="gtkdoc opt">(</span>gbarray<span class="gtkdoc opt">-&gt;</span>data<span class="gtkdoc opt">[</span><span class="number">4</span><span class="gtkdoc opt">*</span>i<span class="gtkdoc opt">+</span><span class="number">1</span><span class="gtkdoc opt">] ==</span> <span class="string">'b'</span><span class="gtkdoc opt">);</span>
+    <span class="function"><a href="glib-Testing.html#g-assert">g_assert</a></span> <span class="gtkdoc opt">(</span>gbarray<span class="gtkdoc opt">-&gt;</span>data<span class="gtkdoc opt">[</span><span class="number">4</span><span class="gtkdoc opt">*</span>i<span class="gtkdoc opt">+</span><span class="number">2</span><span class="gtkdoc opt">] ==</span> <span class="string">'c'</span><span class="gtkdoc opt">);</span>
+    <span class="function"><a href="glib-Testing.html#g-assert">g_assert</a></span> <span class="gtkdoc opt">(</span>gbarray<span class="gtkdoc opt">-&gt;</span>data<span class="gtkdoc opt">[</span><span class="number">4</span><span class="gtkdoc opt">*</span>i<span class="gtkdoc opt">+</span><span class="number">3</span><span class="gtkdoc opt">] ==</span> <span class="string">'d'</span><span class="gtkdoc opt">);</span>
+  <span class="gtkdoc opt">}</span>
 
-<span class="function"><a href="glib-Byte-Arrays.html#g-byte-array-free">g_byte_array_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">gbarray</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#TRUE:CAPS">TRUE</a></span><span class="symbol">);</span></pre></td>
+<span class="function"><a href="glib-Byte-Arrays.html#g-byte-array-free">g_byte_array_free</a></span> <span class="gtkdoc opt">(</span>gbarray<span class="gtkdoc opt">,</span> TRUE<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -366,7 +360,7 @@ sequence of bytes.</p>
 g_byte_array_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>Creates a new <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a> with a reference count of 1.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.2.5"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.2.5"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -380,7 +374,7 @@ g_byte_array_new_take (<em class="parameter"><code><a class="link" href="glib-Ba
 <p>Create byte array containing the data. The data will be owned by the array
 and will be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>, i.e. it could be allocated using <a class="link" href="glib-String-Utility-Functions.html#g-strdup" title="g_strdup ()"><code class="function">g_strdup()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -403,7 +397,7 @@ and will be freed with <a class="link" href="glib-Memory-Allocation.html#g-free"
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.3.6"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.3.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -420,7 +414,7 @@ This avoids frequent reallocation, if you are going to add many
 bytes to the array. Note however that the size of the array is still
 0.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -435,7 +429,7 @@ bytes to the array. Note however that the size of the array is still
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.4.6"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.4.6"></a><h4>Returns</h4>
 <p> the new <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
 <p></p>
 </div>
@@ -449,7 +443,7 @@ g_byte_array_ref (<em class="parameter"><code><a class="link" href="glib-Byte-Ar
  by one.
 This function is thread-safe and may be called from any thread.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -464,7 +458,7 @@ This function is thread-safe and may be called from any thread.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.5.6"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.5.6"></a><h4>Returns</h4>
 <p> The passed in <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
 <p></p>
 </div>
@@ -481,7 +475,7 @@ reference count drops to 0, all memory allocated by the array is
 released. This function is thread-safe and may be called from any
 thread.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -507,7 +501,7 @@ g_byte_array_append (<em class="parameter"><code><a class="link" href="glib-Byte
 <p>Adds the given bytes to the end of the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a>.
 The array will grow in size automatically if necessary.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -534,7 +528,7 @@ The array will grow in size automatically if necessary.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.7.6"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.7.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
 <p></p>
 </div>
@@ -549,7 +543,7 @@ g_byte_array_prepend (<em class="parameter"><code><a class="link" href="glib-Byt
 <p>Adds the given data to the start of the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a>.
 The array will grow in size automatically if necessary.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -576,7 +570,7 @@ The array will grow in size automatically if necessary.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.8.6"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.8.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
 <p></p>
 </div>
@@ -590,7 +584,7 @@ g_byte_array_remove_index (<em class="parameter"><code><a class="link" href="gli
 <p>Removes the byte at the given index from a <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a>.
 The following bytes are moved down one place.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.9.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.9.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -612,7 +606,7 @@ The following bytes are moved down one place.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.9.6"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.9.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
 <p></p>
 </div>
@@ -628,7 +622,7 @@ element in the array is used to fill in the space, so this function
 does not preserve the order of the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a>. But it is faster
 than <a class="link" href="glib-Byte-Arrays.html#g-byte-array-remove-index" title="g_byte_array_remove_index ()"><code class="function">g_byte_array_remove_index()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.10.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.10.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -650,7 +644,7 @@ than <a class="link" href="glib-Byte-Arrays.html#g-byte-array-remove-index" titl
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.10.6"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.10.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
 <p></p>
 </div>
@@ -665,7 +659,7 @@ g_byte_array_remove_range (<em class="parameter"><code><a class="link" href="gli
 <p>Removes the given number of bytes starting at the given index from a
 <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a>.  The following elements are moved to close the gap.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.11.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.11.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -693,7 +687,7 @@ g_byte_array_remove_range (<em class="parameter"><code><a class="link" href="gli
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.11.6"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.11.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
 <p></p>
 </div>
@@ -716,7 +710,7 @@ you want a stable sort) you can write a comparison function that,
 if two elements would otherwise compare equal, compares them by
 their addresses.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.12.6"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.12.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -748,7 +742,7 @@ g_byte_array_sort_with_data (<em class="parameter"><code><a class="link" href="g
 <p>Like <a class="link" href="glib-Byte-Arrays.html#g-byte-array-sort" title="g_byte_array_sort ()"><code class="function">g_byte_array_sort()</code></a>, but the comparison function takes an extra
 user data argument.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.13.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.13.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -784,7 +778,7 @@ g_byte_array_set_size (<em class="parameter"><code><a class="link" href="glib-By
                        <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#guint" title="guint"><span class="type">guint</span></a> length</code></em>);</pre>
 <p>Sets the size of the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a>, expanding it if necessary.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.14.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.14.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -806,7 +800,7 @@ g_byte_array_set_size (<em class="parameter"><code><a class="link" href="glib-By
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.14.6"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.14.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a></p>
 <p></p>
 </div>
@@ -825,7 +819,7 @@ g_byte_array_free (<em class="parameter"><code><a class="link" href="glib-Byte-A
 the size of <em class="parameter"><code>array</code></em>
  will be set to zero.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.15.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.15.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -847,7 +841,7 @@ the size of <em class="parameter"><code>array</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.15.6"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.15.6"></a><h4>Returns</h4>
 <p> the element data if <em class="parameter"><code>free_segment</code></em>
 is <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a>, otherwise
 <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.  The element data should be freed using <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>.</p>
@@ -868,7 +862,7 @@ will be set to zero.</p>
 <p>This is identical to using <a class="link" href="glib-Byte-Arrays.html#g-bytes-new-take" title="g_bytes_new_take ()"><code class="function">g_bytes_new_take()</code></a> and <a class="link" href="glib-Byte-Arrays.html#g-byte-array-free" title="g_byte_array_free ()"><code class="function">g_byte_array_free()</code></a>
 together.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.16.7"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.16.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -883,7 +877,7 @@ together.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.16.8"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.16.8"></a><h4>Returns</h4>
 <p> a new immutable <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a> representing same
 byte data that was in the array. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -903,7 +897,7 @@ g_bytes_new (<em class="parameter"><code><a class="link" href="glib-Basic-Types.
  is 0, <em class="parameter"><code>data</code></em>
  may be <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.17.6"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.17.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -926,7 +920,7 @@ g_bytes_new (<em class="parameter"><code><a class="link" href="glib-Basic-Types.
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.17.7"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.17.7"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -954,7 +948,7 @@ functions that wrap these calls (such as <a class="link" href="glib-Memory-Alloc
  may be <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if <em class="parameter"><code>size</code></em>
  is 0.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.18.8"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.18.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -977,7 +971,7 @@ functions that wrap these calls (such as <a class="link" href="glib-Memory-Alloc
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.18.9"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.18.9"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -995,7 +989,7 @@ g_bytes_new_static (<em class="parameter"><code><a class="link" href="glib-Basic
 
 is 0.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.19.6"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.19.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1018,7 +1012,7 @@ is 0.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.19.7"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.19.7"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -1046,7 +1040,7 @@ been called to indicate that the bytes is no longer in use.</p>
  may be <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if <em class="parameter"><code>size</code></em>
  is 0.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.20.8"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.20.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1080,7 +1074,7 @@ been called to indicate that the bytes is no longer in use.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.20.9"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.20.9"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -1102,7 +1096,7 @@ g_bytes_new_from_bytes (<em class="parameter"><code><a class="link" href="glib-B
  will be held by the newly created <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a> until
 the byte data is no longer needed.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.21.6"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.21.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1129,7 +1123,7 @@ the byte data is no longer needed.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.21.7"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.21.7"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -1151,7 +1145,7 @@ may represent an empty string with <em class="parameter"><code>data</code></em>
 not be returned if <em class="parameter"><code>size</code></em>
  is non-zero.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.22.7"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.22.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1173,7 +1167,7 @@ not be returned if <em class="parameter"><code>size</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.22.8"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.22.8"></a><h4>Returns</h4>
 <p> a pointer to the
 byte data, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>][<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=size][<acronym title="Override the parsed C type with given type."><span class="acronym">type</span></acronym> guint8][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></p>
@@ -1188,7 +1182,7 @@ g_bytes_get_size (<em class="parameter"><code><a class="link" href="glib-Byte-Ar
 <p>Get the size of the byte data in the <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a>.</p>
 <p>This function will always return the same value for a given <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.23.6"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.23.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1203,7 +1197,7 @@ g_bytes_get_size (<em class="parameter"><code><a class="link" href="glib-Byte-Ar
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.23.7"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.23.7"></a><h4>Returns</h4>
 <p> the size</p>
 <p></p>
 </div>
@@ -1219,7 +1213,7 @@ g_bytes_hash (<em class="parameter"><code><a class="link" href="glib-Basic-Types
 
 parameter, when using non-<a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a> pointers as keys in a <a class="link" href="glib-Hash-Tables.html#GHashTable" title="GHashTable"><span class="type">GHashTable</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.24.6"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.24.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1234,7 +1228,7 @@ parameter, when using non-<a class="link" href="glib-Standard-Macros.html#NULL:C
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.24.7"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.24.7"></a><h4>Returns</h4>
 <p> a hash value corresponding to the key.</p>
 <p></p>
 </div>
@@ -1252,7 +1246,7 @@ g_bytes_equal (<em class="parameter"><code><a class="link" href="glib-Basic-Type
 
 parameter, when using non-<a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a> pointers as keys in a <a class="link" href="glib-Hash-Tables.html#GHashTable" title="GHashTable"><span class="type">GHashTable</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.25.6"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.25.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1275,7 +1269,7 @@ parameter, when using non-<a class="link" href="glib-Standard-Macros.html#NULL:C
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.25.7"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.25.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the two keys match.</p>
 <p></p>
 </div>
@@ -1290,7 +1284,7 @@ g_bytes_compare (<em class="parameter"><code><a class="link" href="glib-Basic-Ty
 <p>Compares the two <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a> values.</p>
 <p>This function can be used to sort GBytes instances in lexographical order.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.26.6"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.26.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1313,7 +1307,7 @@ g_bytes_compare (<em class="parameter"><code><a class="link" href="glib-Basic-Ty
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.26.7"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.26.7"></a><h4>Returns</h4>
 <p> a negative value if bytes2 is lesser, a positive value if bytes2 is
 greater, and zero if bytes2 is equal to bytes1</p>
 <p></p>
@@ -1328,7 +1322,7 @@ g_bytes_ref (<em class="parameter"><code><a class="link" href="glib-Byte-Arrays.
 <p>Increase the reference count on <em class="parameter"><code>bytes</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.27.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.27.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1343,7 +1337,7 @@ g_bytes_ref (<em class="parameter"><code><a class="link" href="glib-Byte-Arrays.
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.27.6"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.27.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a></p>
 <p></p>
 </div>
@@ -1358,7 +1352,7 @@ g_bytes_unref (<em class="parameter"><code><a class="link" href="glib-Byte-Array
 .  This may result in the bytes being
 freed.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.28.5"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.28.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1387,7 +1381,7 @@ the last reference to bytes and bytes was created with <a class="link" href="gli
 <a class="link" href="glib-Byte-Arrays.html#g-bytes-new-take" title="g_bytes_new_take ()"><code class="function">g_bytes_new_take()</code></a> or <a class="link" href="glib-Byte-Arrays.html#g-byte-array-free-to-bytes" title="g_byte_array_free_to_bytes ()"><code class="function">g_byte_array_free_to_bytes()</code></a>. In all other cases the
 data is copied.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.29.6"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.29.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1409,7 +1403,7 @@ data is copied.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.29.7"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.29.7"></a><h4>Returns</h4>
 <p> a pointer to the same byte data, which should
 be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
@@ -1428,7 +1422,7 @@ if this was the last reference to bytes and bytes was created with
 <a class="link" href="glib-Byte-Arrays.html#g-bytes-new" title="g_bytes_new ()"><code class="function">g_bytes_new()</code></a>, <a class="link" href="glib-Byte-Arrays.html#g-bytes-new-take" title="g_bytes_new_take ()"><code class="function">g_bytes_new_take()</code></a> or <a class="link" href="glib-Byte-Arrays.html#g-byte-array-free-to-bytes" title="g_byte_array_free_to_bytes ()"><code class="function">g_byte_array_free_to_bytes()</code></a>. In all
 other cases the data is copied.</p>
 <div class="refsect3">
-<a name="id-1.6.12.8.30.6"></a><h4>Parameters</h4>
+<a name="id-1.6.12.7.30.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1443,7 +1437,7 @@ other cases the data is copied.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.6.12.8.30.7"></a><h4>Returns</h4>
+<a name="id-1.6.12.7.30.7"></a><h4>Returns</h4>
 <p> a new mutable <a class="link" href="glib-Byte-Arrays.html#GByteArray" title="struct GByteArray"><span class="type">GByteArray</span></a> containing the same byte data. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -1461,7 +1455,7 @@ other cases the data is copied.</p>
 </pre>
 <p>Contains the public fields of a GByteArray.</p>
 <div class="refsect3">
-<a name="id-1.6.12.9.2.5"></a><h4>Members</h4>
+<a name="id-1.6.12.8.2.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">

@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#gio-GInetAddressMask.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#gio-GInetAddressMask.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gio-GInetAddressMask.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="networking.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -121,11 +120,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="gio-GInetAddressMask.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="gio-GInetAddressMask.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;gio/gio.h&gt;
 </pre>
@@ -150,7 +144,7 @@ first <em class="parameter"><code>length</code></em>
  bits match <em class="parameter"><code>addr</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.4.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -178,7 +172,7 @@ to use</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.2.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.4.7.2.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="gio-GInetAddressMask.html#GInetAddressMask" title="GInetAddressMask"><span class="type">GInetAddressMask</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error</p>
 <p></p>
 </div>
@@ -196,7 +190,7 @@ creates a new <a class="link" href="gio-GInetAddressMask.html#GInetAddressMask" 
 delimited by a "/". If it is not present, then the length is
 assumed to be the full length of the address.</p>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.4.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -218,7 +212,7 @@ assumed to be the full length of the address.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.3.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.4.7.3.6"></a><h4>Returns</h4>
 <p> a new <a class="link" href="gio-GInetAddressMask.html#GInetAddressMask" title="GInetAddressMask"><span class="type">GInetAddressMask</span></a> corresponding to <em class="parameter"><code>string</code></em>
 , or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
 on error.</p>
@@ -234,7 +228,7 @@ g_inet_address_mask_to_string (<em class="parameter"><code><a class="link" href=
 <p>Converts <em class="parameter"><code>mask</code></em>
  back to its corresponding string form.</p>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.4.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -249,7 +243,7 @@ g_inet_address_mask_to_string (<em class="parameter"><code><a class="link" href=
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.4.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.4.7.4.6"></a><h4>Returns</h4>
 <p> a string corresponding to <em class="parameter"><code>mask</code></em>
 .</p>
 <p></p>
@@ -264,7 +258,7 @@ g_inet_address_mask_get_family (<em class="parameter"><code><a class="link" href
 <p>Gets the <a class="link" href="GSocketAddress.html#GSocketFamily" title="enum GSocketFamily"><span class="type">GSocketFamily</span></a> of <em class="parameter"><code>mask</code></em>
 's address</p>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.4.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -279,7 +273,7 @@ g_inet_address_mask_get_family (<em class="parameter"><code><a class="link" href
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.5.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.4.7.5.6"></a><h4>Returns</h4>
 <p> the <a class="link" href="GSocketAddress.html#GSocketFamily" title="enum GSocketFamily"><span class="type">GSocketFamily</span></a> of <em class="parameter"><code>mask</code></em>
 's address</p>
 <p></p>
@@ -294,7 +288,7 @@ g_inet_address_mask_get_address (<em class="parameter"><code><a class="link" hre
 <p>Gets <em class="parameter"><code>mask</code></em>
 's base address</p>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.4.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -309,7 +303,7 @@ g_inet_address_mask_get_address (<em class="parameter"><code><a class="link" hre
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.6.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.4.7.6.6"></a><h4>Returns</h4>
 <p> <em class="parameter"><code>mask</code></em>
 's base address. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
@@ -324,7 +318,7 @@ g_inet_address_mask_get_length (<em class="parameter"><code><a class="link" href
 <p>Gets <em class="parameter"><code>mask</code></em>
 's length</p>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.4.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -339,7 +333,7 @@ g_inet_address_mask_get_length (<em class="parameter"><code><a class="link" href
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.7.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.4.7.7.6"></a><h4>Returns</h4>
 <p> <em class="parameter"><code>mask</code></em>
 's length</p>
 <p></p>
@@ -356,7 +350,7 @@ g_inet_address_mask_matches (<em class="parameter"><code><a class="link" href="g
  falls within the range described by <em class="parameter"><code>mask</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.8.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.4.7.8.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -378,7 +372,7 @@ g_inet_address_mask_matches (<em class="parameter"><code><a class="link" href="g
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.8.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.4.7.8.6"></a><h4>Returns</h4>
 <p> whether <em class="parameter"><code>address</code></em>
 falls within the range described by
 <em class="parameter"><code>mask</code></em>
@@ -397,7 +391,7 @@ g_inet_address_mask_equal (<em class="parameter"><code><a class="link" href="gio
  and <em class="parameter"><code>mask2</code></em>
  are the same mask.</p>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.9.5"></a><h4>Parameters</h4>
+<a name="id-1.4.13.4.7.9.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -419,7 +413,7 @@ g_inet_address_mask_equal (<em class="parameter"><code><a class="link" href="gio
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.13.4.8.9.6"></a><h4>Returns</h4>
+<a name="id-1.4.13.4.7.9.6"></a><h4>Returns</h4>
 <p> whether <em class="parameter"><code>mask</code></em>
 and <em class="parameter"><code>mask2</code></em>
 are the same mask</p>

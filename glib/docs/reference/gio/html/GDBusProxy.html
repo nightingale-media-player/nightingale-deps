@@ -12,13 +12,13 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GDBusProxy.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GDBusProxy.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces"> <span class="dim">|</span> 
-                  <a href="#GDBusProxy.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties"> <span class="dim">|</span> 
-                  <a href="#GDBusProxy.properties" class="shortcut">Properties</a></span><span id="nav_signals"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GDBusProxy.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GDBusProxy.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#GDBusProxy.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#GDBusProxy.properties" class="shortcut">Properties</a></span><span id="nav_signals">  <span class="dim">|</span> 
                   <a href="#GDBusProxy.signals" class="shortcut">Signals</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -353,7 +353,7 @@
 </div>
 <div class="refsect1">
 <a name="GDBusProxy.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    GFlags
+<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/gobject-Enumeration-and-Flag-Types.html">GFlags</a>
     <span class="lineart">╰──</span> GDBusProxyFlags
     <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
     <span class="lineart">╰──</span> GDBusProxy
@@ -1151,11 +1151,11 @@ convenient 'inline' use of <a href="../glib/glib-GVariant.html#g-variant-new"><c
 3
 4
 5</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GDBusProxy.html#g-dbus-proxy-set-cached-property">g_dbus_proxy_set_cached_property</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">proxy</span><span class="symbol">,</span>
-<span class="normal">                                  </span><span class="string">"SomeProperty"</span><span class="symbol">,</span>
-<span class="normal">                                  </span><span class="function"><a href="../glib/glib-GVariant.html#g-variant-new">g_variant_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"(si)"</span><span class="symbol">,</span>
-<span class="normal">                                                </span><span class="string">"A String"</span><span class="symbol">,</span>
-<span class="normal">                                                </span><span class="number">42</span><span class="symbol">));</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GDBusProxy.html#g-dbus-proxy-set-cached-property">g_dbus_proxy_set_cached_property</a></span> <span class="gtkdoc opt">(</span>proxy<span class="gtkdoc opt">,</span>
+                                  <span class="string">&quot;SomeProperty&quot;</span><span class="gtkdoc opt">,</span>
+                                  <span class="function"><a href="../glib/glib-GVariant.html#g-variant-new">g_variant_new</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;(si)&quot;</span><span class="gtkdoc opt">,</span>
+                                                <span class="string">&quot;A String&quot;</span><span class="gtkdoc opt">,</span>
+                                                <span class="number">42</span><span class="gtkdoc opt">));</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1351,16 +1351,16 @@ convenient 'inline' use of <a href="../glib/glib-GVariant.html#g-variant-new"><c
 8
 9
 10</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GDBusProxy.html#g-dbus-proxy-call">g_dbus_proxy_call</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">proxy</span><span class="symbol">,</span>
-<span class="normal">                   </span><span class="string">"TwoStrings"</span><span class="symbol">,</span>
-<span class="normal">                   </span><span class="function"><a href="../glib/glib-GVariant.html#g-variant-new">g_variant_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"(ss)"</span><span class="symbol">,</span>
-<span class="normal">                                  </span><span class="string">"Thing One"</span><span class="symbol">,</span>
-<span class="normal">                                  </span><span class="string">"Thing Two"</span><span class="symbol">),</span>
-<span class="normal">                   G_DBUS_CALL_FLAGS_NONE</span><span class="symbol">,</span>
-<span class="normal">                   </span><span class="symbol">-</span><span class="number">1</span><span class="symbol">,</span>
-<span class="normal">                   <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span>
-<span class="normal">                   </span><span class="symbol">(</span><span class="normal"><a href="GAsyncResult.html#GAsyncReadyCallback">GAsyncReadyCallback</a></span><span class="symbol">)</span><span class="normal"> two_strings_done</span><span class="symbol">,</span>
-<span class="normal">                   </span><span class="symbol">&amp;</span><span class="normal">data</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GDBusProxy.html#g-dbus-proxy-call">g_dbus_proxy_call</a></span> <span class="gtkdoc opt">(</span>proxy<span class="gtkdoc opt">,</span>
+                   <span class="string">&quot;TwoStrings&quot;</span><span class="gtkdoc opt">,</span>
+                   <span class="function"><a href="../glib/glib-GVariant.html#g-variant-new">g_variant_new</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;(ss)&quot;</span><span class="gtkdoc opt">,</span>
+                                  <span class="string">&quot;Thing One&quot;</span><span class="gtkdoc opt">,</span>
+                                  <span class="string">&quot;Thing Two&quot;</span><span class="gtkdoc opt">),</span>
+                   G_DBUS_CALL_FLAGS_NONE<span class="gtkdoc opt">,</span>
+                   <span class="gtkdoc opt">-</span><span class="number">1</span><span class="gtkdoc opt">,</span>
+                   NULL<span class="gtkdoc opt">,</span>
+                   <span class="gtkdoc opt">(</span>GAsyncReadyCallback<span class="gtkdoc opt">)</span> two_strings_done<span class="gtkdoc opt">,</span>
+                   <span class="gtkdoc opt">&amp;</span>data<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1529,15 +1529,15 @@ convenient 'inline' use of <a href="../glib/glib-GVariant.html#g-variant-new"><c
 7
 8
 9</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GDBusProxy.html#g-dbus-proxy-call-sync">g_dbus_proxy_call_sync</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">proxy</span><span class="symbol">,</span>
-<span class="normal">                        </span><span class="string">"TwoStrings"</span><span class="symbol">,</span>
-<span class="normal">                        </span><span class="function"><a href="../glib/glib-GVariant.html#g-variant-new">g_variant_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"(ss)"</span><span class="symbol">,</span>
-<span class="normal">                                       </span><span class="string">"Thing One"</span><span class="symbol">,</span>
-<span class="normal">                                       </span><span class="string">"Thing Two"</span><span class="symbol">),</span>
-<span class="normal">                        G_DBUS_CALL_FLAGS_NONE</span><span class="symbol">,</span>
-<span class="normal">                        </span><span class="symbol">-</span><span class="number">1</span><span class="symbol">,</span>
-<span class="normal">                        <a href="../glib/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span>
-<span class="normal">                        </span><span class="symbol">&amp;</span><span class="normal">error</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="GDBusProxy.html#g-dbus-proxy-call-sync">g_dbus_proxy_call_sync</a></span> <span class="gtkdoc opt">(</span>proxy<span class="gtkdoc opt">,</span>
+                        <span class="string">&quot;TwoStrings&quot;</span><span class="gtkdoc opt">,</span>
+                        <span class="function"><a href="../glib/glib-GVariant.html#g-variant-new">g_variant_new</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;(ss)&quot;</span><span class="gtkdoc opt">,</span>
+                                       <span class="string">&quot;Thing One&quot;</span><span class="gtkdoc opt">,</span>
+                                       <span class="string">&quot;Thing Two&quot;</span><span class="gtkdoc opt">),</span>
+                        G_DBUS_CALL_FLAGS_NONE<span class="gtkdoc opt">,</span>
+                        <span class="gtkdoc opt">-</span><span class="number">1</span><span class="gtkdoc opt">,</span>
+                        NULL<span class="gtkdoc opt">,</span>
+                        <span class="gtkdoc opt">&amp;</span>error<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>

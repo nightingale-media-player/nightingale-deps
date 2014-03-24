@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#gio-GIOError.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#gio-GIOError.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gio-GIOError.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="file_ops.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -79,11 +78,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="gio-GIOError.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="gio-GIOError.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;gio/gio.h&gt;
 </pre>
@@ -100,7 +94,7 @@
 g_io_error_from_errno (<em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> err_no</code></em>);</pre>
 <p>Converts errno.h error codes into GIO error codes.</p>
 <div class="refsect3">
-<a name="id-1.4.2.6.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.4.2.6.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -115,7 +109,7 @@ g_io_error_from_errno (<em class="parameter"><code><a href="../glib/glib-Basic-T
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.6.8.2.6"></a><h4>Returns</h4>
+<a name="id-1.4.2.6.7.2.6"></a><h4>Returns</h4>
 <p> <a class="link" href="gio-GIOError.html#GIOErrorEnum" title="enum GIOErrorEnum"><span class="type">GIOErrorEnum</span></a> value for the given errno.h error number.</p>
 <p></p>
 </div>
@@ -129,7 +123,7 @@ g_io_error_from_win32_error (<em class="parameter"><code><a href="../glib/glib-B
 fallback value G_IO_ERROR_FAILED is returned for error codes not
 handled.</p>
 <div class="refsect3">
-<a name="id-1.4.2.6.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.4.2.6.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -144,7 +138,7 @@ handled.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.6.8.3.6"></a><h4>Returns</h4>
+<a name="id-1.4.2.6.7.3.6"></a><h4>Returns</h4>
 <p> <a class="link" href="gio-GIOError.html#GIOErrorEnum" title="enum GIOErrorEnum"><span class="type">GIOErrorEnum</span></a> value for the given error number.</p>
 <p></p>
 </div>
@@ -165,7 +159,7 @@ See <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError
 <a name="GIOErrorEnum"></a><h3>enum GIOErrorEnum</h3>
 <p>Error codes returned by GIO functions.</p>
 <div class="refsect3">
-<a name="id-1.4.2.6.9.3.4"></a><h4>Members</h4>
+<a name="id-1.4.2.6.8.3.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">

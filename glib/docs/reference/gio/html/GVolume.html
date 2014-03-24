@@ -12,12 +12,12 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GVolume.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GVolume.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_prerequisites"> <span class="dim">|</span> 
-                  <a href="#GVolume.prerequisites" class="shortcut">Prerequisites</a></span><span id="nav_signals"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GVolume.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GVolume.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_prerequisites">  <span class="dim">|</span> 
+                  <a href="#GVolume.prerequisites" class="shortcut">Prerequisites</a></span><span id="nav_signals">  <span class="dim">|</span> 
                   <a href="#GVolume.signals" class="shortcut">Signals</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -263,7 +263,7 @@
 </div>
 <div class="refsect1">
 <a name="GVolume.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    GInterface
+<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
     <span class="lineart">╰──</span> GVolume
 </pre>
 </div>
@@ -584,13 +584,13 @@ other words, in code</p>
 5
 6
 7</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="usertype">GMount</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">mount</span><span class="symbol">;</span>
-<span class="usertype">GFile</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">mount_root</span>
-<span class="usertype">GFile</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">volume_activation_root</span><span class="symbol">;</span>
+        <td class="listing_code"><pre class="programlisting">GMount <span class="gtkdoc opt">*</span>mount<span class="gtkdoc opt">;</span>
+GFile <span class="gtkdoc opt">*</span>mount_root
+GFile <span class="gtkdoc opt">*</span>volume_activation_root<span class="gtkdoc opt">;</span>
 
-<span class="normal">mount </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GVolume.html#g-volume-get-mount">g_volume_get_mount</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">volume</span><span class="symbol">);</span><span class="normal"> </span><span class="comment">// mounted, so never NULL</span>
-<span class="normal">mount_root </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GMount.html#g-mount-get-root">g_mount_get_root</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">mount</span><span class="symbol">);</span>
-<span class="normal">volume_activation_root </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="GVolume.html#g-volume-get-activation-root">g_volume_get_activation_root</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">volume</span><span class="symbol">);</span><span class="normal"> </span><span class="comment">// assume not NULL</span></pre></td>
+mount <span class="gtkdoc opt">=</span> <span class="function"><a href="GVolume.html#g-volume-get-mount">g_volume_get_mount</a></span> <span class="gtkdoc opt">(</span>volume<span class="gtkdoc opt">);</span> <span class="gtkdoc slc">// mounted, so never NULL</span>
+mount_root <span class="gtkdoc opt">=</span> <span class="function"><a href="GMount.html#g-mount-get-root">g_mount_get_root</a></span> <span class="gtkdoc opt">(</span>mount<span class="gtkdoc opt">);</span>
+volume_activation_root <span class="gtkdoc opt">=</span> <span class="function"><a href="GVolume.html#g-volume-get-activation-root">g_volume_get_activation_root</a></span> <span class="gtkdoc opt">(</span>volume<span class="gtkdoc opt">);</span> <span class="gtkdoc slc">// assume not NULL</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -604,8 +604,8 @@ then the expression</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="symbol">(</span><span class="function"><a href="GFile.html#g-file-has-prefix">g_file_has_prefix</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">volume_activation_root</span><span class="symbol">,</span><span class="normal"> mount_root</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">||</span>
-<span class="normal">    </span><span class="function"><a href="GFile.html#g-file-equal">g_file_equal</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">volume_activation_root</span><span class="symbol">,</span><span class="normal"> mount_root</span><span class="symbol">))</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">(</span><span class="function"><a href="GFile.html#g-file-has-prefix">g_file_has_prefix</a></span> <span class="gtkdoc opt">(</span>volume_activation_root<span class="gtkdoc opt">,</span> mount_root<span class="gtkdoc opt">) ||</span>
+    <span class="function"><a href="GFile.html#g-file-equal">g_file_equal</a></span> <span class="gtkdoc opt">(</span>volume_activation_root<span class="gtkdoc opt">,</span> mount_root<span class="gtkdoc opt">))</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1323,16 +1323,13 @@ it is not known.</p></td>
 <a name="G-VOLUME-IDENTIFIER-KIND-CLASS:CAPS"></a><h3>G_VOLUME_IDENTIFIER_KIND_CLASS</h3>
 <pre class="programlisting">#define G_VOLUME_IDENTIFIER_KIND_CLASS "class"
 </pre>
-<p>The string used to obtain the volume &lt;emphasis&gt;class&lt;/emphasis&gt;
-with <a class="link" href="GVolume.html#g-volume-get-identifier" title="g_volume_get_identifier ()"><code class="function">g_volume_get_identifier()</code></a>.</p>
-<p>Known volume classes include &lt;literal&gt;device&lt;/literal&gt; and
-&lt;literal&gt;network&lt;/literal&gt;. Other classes may be added in the
-future.</p>
+<p>The string used to obtain the volume class with <a class="link" href="GVolume.html#g-volume-get-identifier" title="g_volume_get_identifier ()"><code class="function">g_volume_get_identifier()</code></a>.</p>
+<p>Known volume classes include <code class="literal">device</code> and <code class="literal">network</code>. Other classes may
+be added in the future.</p>
 <p>This is intended to be used by applications to classify <a class="link" href="GVolume.html" title="GVolume"><span class="type">GVolume</span></a>
 instances into different sections - for example a file manager or
-file chooser can use this information to show
-&lt;literal&gt;network&lt;/literal&gt; volumes under a "Network" heading and
-&lt;literal&gt;device&lt;/literal&gt; volumes under a "Devices" heading.</p>
+file chooser can use this information to show <code class="literal">network</code> volumes under
+a "Network" heading and <code class="literal">device</code> volumes under a "Devices" heading.</p>
 </div>
 </div>
 <div class="refsect1">

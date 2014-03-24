@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Hostname-Utilities.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Hostname-Utilities.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Hostname-Utilities.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -84,11 +83,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Hostname-Utilities.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Hostname-Utilities.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -118,7 +112,7 @@ g_hostname_to_ascii (<em class="parameter"><code>const <a class="link" href="gli
 string containing no uppercase letters and not ending with a
 trailing dot.</p>
 <div class="refsect3">
-<a name="id-1.5.20.7.2.5"></a><h4>Parameters</h4>
+<a name="id-1.5.20.6.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -133,7 +127,7 @@ trailing dot.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.20.7.2.6"></a><h4>Returns</h4>
+<a name="id-1.5.20.6.2.6"></a><h4>Returns</h4>
 <p> an ASCII hostname, which must be freed, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if
 <em class="parameter"><code>hostname</code></em>
 is in some way invalid.</p>
@@ -155,7 +149,7 @@ and not ending with a trailing dot.</p>
  is not an internationalized hostname, then
 the canonical presentation form will be entirely ASCII.</p>
 <div class="refsect3">
-<a name="id-1.5.20.7.3.6"></a><h4>Parameters</h4>
+<a name="id-1.5.20.6.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -170,7 +164,7 @@ the canonical presentation form will be entirely ASCII.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.20.7.3.7"></a><h4>Returns</h4>
+<a name="id-1.5.20.6.3.7"></a><h4>Returns</h4>
 <p> a UTF-8 hostname, which must be freed, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if
 <em class="parameter"><code>hostname</code></em>
 is in some way invalid.</p>
@@ -191,7 +185,7 @@ before using it in non-IDN-aware contexts.</p>
 segments, and so it is possible for <a class="link" href="glib-Hostname-Utilities.html#g-hostname-is-non-ascii" title="g_hostname_is_non_ascii ()"><code class="function">g_hostname_is_non_ascii()</code></a> and
 <a class="link" href="glib-Hostname-Utilities.html#g-hostname-is-ascii-encoded" title="g_hostname_is_ascii_encoded ()"><code class="function">g_hostname_is_ascii_encoded()</code></a> to both return <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> for a name.</p>
 <div class="refsect3">
-<a name="id-1.5.20.7.4.6"></a><h4>Parameters</h4>
+<a name="id-1.5.20.6.4.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -206,7 +200,7 @@ segments, and so it is possible for <a class="link" href="glib-Hostname-Utilitie
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.20.7.4.7"></a><h4>Returns</h4>
+<a name="id-1.5.20.6.4.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>hostname</code></em>
 contains any non-ASCII characters</p>
 <p></p>
@@ -227,7 +221,7 @@ before displaying it to the user.</p>
 segments, and so it is possible for <a class="link" href="glib-Hostname-Utilities.html#g-hostname-is-non-ascii" title="g_hostname_is_non_ascii ()"><code class="function">g_hostname_is_non_ascii()</code></a> and
 <a class="link" href="glib-Hostname-Utilities.html#g-hostname-is-ascii-encoded" title="g_hostname_is_ascii_encoded ()"><code class="function">g_hostname_is_ascii_encoded()</code></a> to both return <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> for a name.</p>
 <div class="refsect3">
-<a name="id-1.5.20.7.5.6"></a><h4>Parameters</h4>
+<a name="id-1.5.20.6.5.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -242,7 +236,7 @@ segments, and so it is possible for <a class="link" href="glib-Hostname-Utilitie
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.20.7.5.7"></a><h4>Returns</h4>
+<a name="id-1.5.20.6.5.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>hostname</code></em>
 contains any ASCII-encoded
 segments.</p>
@@ -259,7 +253,7 @@ g_hostname_is_ip_address (<em class="parameter"><code>const <a class="link" href
  is the string form of an IPv4 or IPv6 address.
 (Eg, "192.168.0.1".)</p>
 <div class="refsect3">
-<a name="id-1.5.20.7.6.5"></a><h4>Parameters</h4>
+<a name="id-1.5.20.6.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -274,7 +268,7 @@ g_hostname_is_ip_address (<em class="parameter"><code>const <a class="link" href
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.20.7.6.6"></a><h4>Returns</h4>
+<a name="id-1.5.20.6.6.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <em class="parameter"><code>hostname</code></em>
 is an IP address</p>
 <p></p>

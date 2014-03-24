@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Shell-related-Utilities.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Shell-related-Utilities.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Shell-related-Utilities.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -87,11 +86,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Shell-related-Utilities.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Shell-related-Utilities.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -118,7 +112,7 @@ does contain such expansions, they are passed through
 literally. Possible errors are those from the <a class="link" href="glib-Shell-related-Utilities.html#G-SHELL-ERROR:CAPS" title="G_SHELL_ERROR"><span class="type">G_SHELL_ERROR</span></a>
 domain. Free the returned vector with <a class="link" href="glib-String-Utility-Functions.html#g-strfreev" title="g_strfreev ()"><code class="function">g_strfreev()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.21.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.5.21.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -150,7 +144,7 @@ domain. Free the returned vector with <a class="link" href="glib-String-Utility-
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.21.8.2.6"></a><h4>Returns</h4>
+<a name="id-1.5.21.7.2.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if error set</p>
 <p></p>
 </div>
@@ -168,7 +162,7 @@ function.  The return value must be freed with <a class="link" href="glib-Memory
 quoting style used is undefined (single or double quotes may be
 used).</p>
 <div class="refsect3">
-<a name="id-1.5.21.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.5.21.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -183,7 +177,7 @@ used).</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.21.8.3.6"></a><h4>Returns</h4>
+<a name="id-1.5.21.7.3.6"></a><h4>Returns</h4>
 <p> quoted string</p>
 <p></p>
 </div>
@@ -216,7 +210,7 @@ like 'foo'\''bar'.  Double quotes allow $, `, ", \, and newline to
 be escaped with backslash. Otherwise double quotes preserve things
 literally.</p>
 <div class="refsect3">
-<a name="id-1.5.21.8.4.6"></a><h4>Parameters</h4>
+<a name="id-1.5.21.7.4.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -238,7 +232,7 @@ literally.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.21.8.4.7"></a><h4>Returns</h4>
+<a name="id-1.5.21.7.4.7"></a><h4>Returns</h4>
 <p> an unquoted string</p>
 <p></p>
 </div>
@@ -250,7 +244,7 @@ literally.</p>
 <a name="GShellError"></a><h3>enum GShellError</h3>
 <p>Error codes returned by shell functions.</p>
 <div class="refsect3">
-<a name="id-1.5.21.9.2.4"></a><h4>Members</h4>
+<a name="id-1.5.21.8.2.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">

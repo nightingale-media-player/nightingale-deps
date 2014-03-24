@@ -12,13 +12,13 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GSimpleAction.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GSimpleAction.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces"> <span class="dim">|</span> 
-                  <a href="#GSimpleAction.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties"> <span class="dim">|</span> 
-                  <a href="#GSimpleAction.properties" class="shortcut">Properties</a></span><span id="nav_signals"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GSimpleAction.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GSimpleAction.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces">  <span class="dim">|</span> 
+                  <a href="#GSimpleAction.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#GSimpleAction.properties" class="shortcut">Properties</a></span><span id="nav_signals">  <span class="dim">|</span> 
                   <a href="#GSimpleAction.signals" class="shortcut">Signals</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -480,19 +480,19 @@ call <a class="link" href="GSimpleAction.html#g-simple-action-set-state" title="
 11
 12
 13</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">static</span><span class="normal"> </span><span class="type">void</span>
-<span class="function">change_volume_state</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">GSimpleAction</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">action</span><span class="symbol">,</span>
-<span class="normal">                     </span><span class="usertype">GVariant</span><span class="normal">      </span><span class="symbol">*</span><span class="normal">value</span><span class="symbol">,</span>
-<span class="normal">                     </span><span class="usertype">gpointer</span><span class="normal">       user_data</span><span class="symbol">)</span>
-<span class="cbracket">{</span>
-<span class="normal">  </span><span class="usertype">gint</span><span class="normal"> requested</span><span class="symbol">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">static void</span>
+<span class="function">change_volume_state</span> <span class="gtkdoc opt">(</span>GSimpleAction <span class="gtkdoc opt">*</span>action<span class="gtkdoc opt">,</span>
+                     GVariant      <span class="gtkdoc opt">*</span>value<span class="gtkdoc opt">,</span>
+                     gpointer       user_data<span class="gtkdoc opt">)</span>
+<span class="gtkdoc opt">{</span>
+  gint requested<span class="gtkdoc opt">;</span>
 
-<span class="normal">  requested </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="../glib/glib-GVariant.html#g-variant-get-int32">g_variant_get_int32</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">value</span><span class="symbol">);</span>
+  requested <span class="gtkdoc opt">=</span> <span class="function"><a href="../glib/glib-GVariant.html#g-variant-get-int32">g_variant_get_int32</a></span> <span class="gtkdoc opt">(</span>value<span class="gtkdoc opt">);</span>
 
-<span class="normal">  </span><span class="comment">// Volume only goes from 0 to 10</span>
-<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="number">0</span><span class="normal"> </span><span class="symbol">&lt;=</span><span class="normal"> requested </span><span class="symbol">&amp;&amp;</span><span class="normal"> requested </span><span class="symbol">&lt;=</span><span class="normal"> </span><span class="number">10</span><span class="symbol">)</span>
-<span class="normal">    </span><span class="function"><a href="GSimpleAction.html#g-simple-action-set-state">g_simple_action_set_state</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">action</span><span class="symbol">,</span><span class="normal"> value</span><span class="symbol">);</span>
-<span class="cbracket">}</span></pre></td>
+  <span class="gtkdoc slc">// Volume only goes from 0 to 10</span>
+  <span class="keyword">if</span> <span class="gtkdoc opt">(</span><span class="number">0</span> <span class="gtkdoc opt">&lt;=</span> requested <span class="gtkdoc opt">&amp;&amp;</span> requested <span class="gtkdoc opt">&lt;=</span> <span class="number">10</span><span class="gtkdoc opt">)</span>
+    <span class="function"><a href="GSimpleAction.html#g-simple-action-set-state">g_simple_action_set_state</a></span> <span class="gtkdoc opt">(</span>action<span class="gtkdoc opt">,</span> value<span class="gtkdoc opt">);</span>
+<span class="gtkdoc opt">}</span></pre></td>
       </tr>
     </tbody>
   </table>

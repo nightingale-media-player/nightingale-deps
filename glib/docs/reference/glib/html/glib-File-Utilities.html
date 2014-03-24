@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-File-Utilities.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-File-Utilities.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-File-Utilities.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -398,11 +397,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-File-Utilities.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-File-Utilities.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 #include &lt;glib/gstdio.h&gt;
@@ -444,7 +438,7 @@ assume that all <a class="link" href="glib-File-Utilities.html#GFileError" title
 from a function that manipulates files. So you would use
 <a class="link" href="glib-File-Utilities.html#g-file-error-from-errno" title="g_file_error_from_errno ()"><code class="function">g_file_error_from_errno()</code></a> when constructing a <a class="link" href="glib-Error-Reporting.html#GError" title="struct GError"><span class="type">GError</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.2.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.2.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -459,7 +453,7 @@ from a function that manipulates files. So you would use
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.2.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.2.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-File-Utilities.html#GFileError" title="enum GFileError"><span class="type">GFileError</span></a> corresponding to the given <em class="parameter"><code>errno</code></em>
 </p>
 <p></p>
@@ -490,7 +484,7 @@ codes are those in the <a class="link" href="glib-File-Utilities.html#GFileError
  is set to <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> and <em class="parameter"><code>length</code></em>
  is set to zero.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.3.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -523,7 +517,7 @@ the returned string. </p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.3.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.3.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if an error occurred</p>
 <p></p>
 </div>
@@ -567,7 +561,7 @@ Possible error codes are those in the <a class="link" href="glib-File-Utilities.
 to 7 characters to <em class="parameter"><code>filename</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.4.9"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.4.9"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -603,7 +597,7 @@ is a nul-terminated string</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.4.10"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.4.10"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> on success, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> if an error occurred</p>
 <p></p>
 </div>
@@ -643,12 +637,12 @@ tricked into writing into a different location. It doesn't work!</p>
 4
 5
 6</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="comment">// DON'T DO THIS</span>
-<span class="keyword">if</span><span class="normal"> </span><span class="symbol">(!</span><span class="function"><a href="glib-File-Utilities.html#g-file-test">g_file_test</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">filename</span><span class="symbol">,</span><span class="normal"> G_FILE_TEST_IS_SYMLINK</span><span class="symbol">))</span><span class="normal"> </span>
-<span class="normal">  </span><span class="cbracket">{</span>
-<span class="normal">    fd </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-File-Utilities.html#g-open">g_open</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">filename</span><span class="symbol">,</span><span class="normal"> O_WRONLY</span><span class="symbol">);</span>
-<span class="normal">    </span><span class="comment">// write to fd</span>
-<span class="normal">  </span><span class="cbracket">}</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc slc">// DON'T DO THIS</span>
+<span class="keyword">if</span> <span class="gtkdoc opt">(!</span><span class="function"><a href="glib-File-Utilities.html#g-file-test">g_file_test</a></span> <span class="gtkdoc opt">(</span>filename<span class="gtkdoc opt">,</span> G_FILE_TEST_IS_SYMLINK<span class="gtkdoc opt">))</span> 
+  <span class="gtkdoc opt">{</span>
+    fd <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-File-Utilities.html#g-open">g_open</a></span> <span class="gtkdoc opt">(</span>filename<span class="gtkdoc opt">,</span> O_WRONLY<span class="gtkdoc opt">);</span>
+    <span class="gtkdoc slc">// write to fd</span>
+  <span class="gtkdoc opt">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -667,7 +661,7 @@ effective user ID and group ID.</p>
 its name indicates that it is executable, checking for well-known
 extensions and those listed in the <code class="literal">PATHEXT</code> environment variable.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.5.12"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.5.12"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -689,7 +683,7 @@ extensions and those listed in the <code class="literal">PATHEXT</code> environm
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.5.13"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.5.13"></a><h4>Returns</h4>
 <p> whether a test was <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a></p>
 <p></p>
 </div>
@@ -709,7 +703,7 @@ The X string will be modified to form the name of a file that
 didn't exist. The string should be in the GLib file name encoding.
 Most importantly, on Windows it should be in UTF-8.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.6.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.6.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -724,7 +718,7 @@ Most importantly, on Windows it should be in UTF-8.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.6.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.6.7"></a><h4>Returns</h4>
 <p> A file handle (as from <code class="function">open()</code>) to the file
 opened for reading and writing. The file is opened in binary
 mode on platforms where there is a difference. The file handle
@@ -753,7 +747,7 @@ string will be modified to form the name of a file that didn't exist.
 The string should be in the GLib file name encoding. Most importantly,
 on Windows it should be in UTF-8.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.7.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.7.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -781,7 +775,7 @@ and O_CREAT, which are passed automatically</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.7.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.7.7"></a><h4>Returns</h4>
 <p> A file handle (as from <code class="function">open()</code>) to the file
 opened for reading and writing. The file handle should be
 closed with <code class="function">close()</code>. In case of errors, -1 is returned
@@ -815,7 +809,7 @@ is returned in <em class="parameter"><code>name_used</code></em>
 when not needed any longer. The returned name is in the GLib file
 name encoding.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.8.8"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.8.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -844,7 +838,7 @@ or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.8.9"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.8.9"></a><h4>Returns</h4>
 <p> A file handle (as from <code class="function">open()</code>) to the file opened for
 reading and writing. The file is opened in binary mode on platforms
 where there is a difference. The file handle should be closed with
@@ -864,7 +858,7 @@ g_file_read_link (<em class="parameter"><code>const <a class="link" href="glib-B
 <code class="function">readlink()</code> function.  The returned string is in the encoding used
 for filenames. Use <a class="link" href="glib-Character-Set-Conversion.html#g-filename-to-utf8" title="g_filename_to_utf8 ()"><code class="function">g_filename_to_utf8()</code></a> to convert it to UTF-8.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.9.5"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.9.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -886,7 +880,7 @@ for filenames. Use <a class="link" href="glib-Character-Set-Conversion.html#g-fi
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.9.6"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.9.6"></a><h4>Returns</h4>
 <p> A newly-allocated string with the contents of the symbolic link,
 or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if an error occurred.</p>
 <p></p>
@@ -902,7 +896,7 @@ g_mkdir_with_parents (<em class="parameter"><code>const <a class="link" href="gl
 <p>Create a directory if it doesn't already exist. Create intermediate
 parent directories as needed, too.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.10.5"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.10.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -924,7 +918,7 @@ parent directories as needed, too.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.10.6"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.10.6"></a><h4>Returns</h4>
 <p> 0 if the directory already exists, or was successfully
 created. Returns -1 if an error occurred, with errno set.</p>
 <p></p>
@@ -949,7 +943,7 @@ be modified to form the name of a directory that didn't exist.
 The string should be in the GLib file name encoding. Most importantly,
 on Windows it should be in UTF-8.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.11.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.11.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -964,7 +958,7 @@ on Windows it should be in UTF-8.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.11.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.11.7"></a><h4>Returns</h4>
 <p> A pointer to <em class="parameter"><code>tmpl</code></em>
 , which has been modified
 to hold the directory name.  In case of errors, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is
@@ -991,7 +985,7 @@ the name of a directory that didn't exist. The string should be
 in the GLib file name encoding. Most importantly, on Windows it
 should be in UTF-8.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.12.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.12.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1013,7 +1007,7 @@ should be in UTF-8.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.12.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.12.7"></a><h4>Returns</h4>
 <p> A pointer to <em class="parameter"><code>tmpl</code></em>
 , which has been modified
 to hold the directory name. In case of errors, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is
@@ -1040,7 +1034,7 @@ basename, no directory components are allowed. If template is
  is not
 modified, and might thus be a read-only literal string.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.13.7"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.13.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1063,7 +1057,7 @@ as in <a class="link" href="glib-File-Utilities.html#g-mkdtemp" title="g_mkdtemp
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.13.8"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.13.8"></a><h4>Returns</h4>
 <p> The actual name used. This string
 should be freed with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a> when not needed any longer and is
 is in the GLib file name encoding. In case of errors, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is
@@ -1084,7 +1078,7 @@ g_dir_open (<em class="parameter"><code>const <a class="link" href="glib-Basic-T
 directory can then be retrieved using <a class="link" href="glib-File-Utilities.html#g-dir-read-name" title="g_dir_read_name ()"><code class="function">g_dir_read_name()</code></a>.  Note
 that the ordering is not defined.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.14.5"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.14.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1114,7 +1108,7 @@ If non-<a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.14.6"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.14.6"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-File-Utilities.html#GDir" title="GDir"><span class="type">GDir</span></a> on success, <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> on failure.
 If non-<a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>, you must free the result with <a class="link" href="glib-File-Utilities.html#g-dir-close" title="g_dir_close ()"><code class="function">g_dir_close()</code></a>
 when you are finished with it.</p>
@@ -1137,7 +1131,7 @@ name is in the on-disk encoding.</p>
 <p>On Windows, as is true of all GLib functions which operate on
 filenames, the returned name is in UTF-8.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.15.8"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.15.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1152,7 +1146,7 @@ filenames, the returned name is in UTF-8.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.15.9"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.15.9"></a><h4>Returns</h4>
 <p> The entry's name or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if there are no
 more entries. The return value is owned by GLib and
 must not be modified or freed.</p>
@@ -1167,7 +1161,7 @@ g_dir_rewind (<em class="parameter"><code><a class="link" href="glib-File-Utilit
 <p>Resets the given directory. The next call to <a class="link" href="glib-File-Utilities.html#g-dir-read-name" title="g_dir_read_name ()"><code class="function">g_dir_read_name()</code></a>
 will return the first entry again.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.16.5"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.16.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1189,7 +1183,7 @@ will return the first entry again.</p>
 g_dir_close (<em class="parameter"><code><a class="link" href="glib-File-Utilities.html#GDir" title="GDir"><span class="type">GDir</span></a> *dir</code></em>);</pre>
 <p>Closes the directory and deallocates all related resources.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.17.5"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.17.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1228,7 +1222,7 @@ size 0 (e.g. device files such as /dev/null), <em class="parameter"><code>error<
  will be set
 to the <a class="link" href="glib-File-Utilities.html#GFileError" title="enum GFileError"><span class="type">GFileError</span></a> value <a class="link" href="glib-File-Utilities.html#G-FILE-ERROR-INVAL:CAPS"><span class="type">G_FILE_ERROR_INVAL</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.18.8"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.18.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1255,7 +1249,7 @@ to the <a class="link" href="glib-File-Utilities.html#GFileError" title="enum GF
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.18.9"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.18.9"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-File-Utilities.html#GMappedFile" title="GMappedFile"><span class="type">GMappedFile</span></a> which must be unref'd
 with <a class="link" href="glib-File-Utilities.html#g-mapped-file-unref" title="g_mapped_file_unref ()"><code class="function">g_mapped_file_unref()</code></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the mapping failed.</p>
 <p></p>
@@ -1280,7 +1274,7 @@ of the <a class="link" href="glib-File-Utilities.html#GMappedFile" title="GMappe
 will not be modified, or if all modifications of the file are done
 atomically (e.g. using <a class="link" href="glib-File-Utilities.html#g-file-set-contents" title="g_file_set_contents ()"><code class="function">g_file_set_contents()</code></a>).</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.19.7"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.19.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1307,7 +1301,7 @@ atomically (e.g. using <a class="link" href="glib-File-Utilities.html#g-file-set
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.19.8"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.19.8"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-File-Utilities.html#GMappedFile" title="GMappedFile"><span class="type">GMappedFile</span></a> which must be unref'd
 with <a class="link" href="glib-File-Utilities.html#g-mapped-file-unref" title="g_mapped_file_unref ()"><code class="function">g_mapped_file_unref()</code></a>, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if the mapping failed.</p>
 <p></p>
@@ -1323,7 +1317,7 @@ g_mapped_file_ref (<em class="parameter"><code><a class="link" href="glib-File-U
  by one.  It is safe to call
 this function from any thread.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.20.5"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.20.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1338,7 +1332,7 @@ this function from any thread.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.20.6"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.20.6"></a><h4>Returns</h4>
 <p> the passed in <a class="link" href="glib-File-Utilities.html#GMappedFile" title="GMappedFile"><span class="type">GMappedFile</span></a>.</p>
 <p></p>
 </div>
@@ -1356,7 +1350,7 @@ drops to 0, unmaps the buffer of <em class="parameter"><code>file</code></em>
 <p>It is safe to call this function from any thread.</p>
 <p>Since 2.22</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.21.7"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.21.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1383,7 +1377,7 @@ g_mapped_file_free (<em class="parameter"><code><a class="link" href="glib-File-
 <p>This call existed before <a class="link" href="glib-File-Utilities.html#GMappedFile" title="GMappedFile"><span class="type">GMappedFile</span></a> had refcounting and is currently
 exactly the same as <a class="link" href="glib-File-Utilities.html#g-mapped-file-unref" title="g_mapped_file_unref ()"><code class="function">g_mapped_file_unref()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.22.7"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.22.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1406,7 +1400,7 @@ exactly the same as <a class="link" href="glib-File-Utilities.html#g-mapped-file
 g_mapped_file_get_length (<em class="parameter"><code><a class="link" href="glib-File-Utilities.html#GMappedFile" title="GMappedFile"><span class="type">GMappedFile</span></a> *file</code></em>);</pre>
 <p>Returns the length of the contents of a <a class="link" href="glib-File-Utilities.html#GMappedFile" title="GMappedFile"><span class="type">GMappedFile</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.23.5"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.23.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1421,7 +1415,7 @@ g_mapped_file_get_length (<em class="parameter"><code><a class="link" href="glib
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.23.6"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.23.6"></a><h4>Returns</h4>
 <p> the length of the contents of <em class="parameter"><code>file</code></em>
 .</p>
 <p></p>
@@ -1438,7 +1432,7 @@ g_mapped_file_get_contents (<em class="parameter"><code><a class="link" href="gl
 even if the <a class="link" href="glib-File-Utilities.html#GMappedFile" title="GMappedFile"><span class="type">GMappedFile</span></a> is backed by a text file.</p>
 <p>If the file is empty then <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> is returned.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.24.7"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.24.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1453,7 +1447,7 @@ even if the <a class="link" href="glib-File-Utilities.html#GMappedFile" title="G
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.24.8"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.24.8"></a><h4>Returns</h4>
 <p> the contents of <em class="parameter"><code>file</code></em>
 , or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>.</p>
 <p></p>
@@ -1470,7 +1464,7 @@ g_mapped_file_get_bytes (<em class="parameter"><code><a class="link" href="glib-
 The mapped contents of the file must not be modified after creating this
 bytes object, because a <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a> should be immutable.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.25.5"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.25.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1485,7 +1479,7 @@ bytes object, because a <a class="link" href="glib-Byte-Arrays.html#GBytes" titl
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.25.6"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.25.6"></a><h4>Returns</h4>
 <p> A newly allocated <a class="link" href="glib-Byte-Arrays.html#GBytes" title="GBytes"><span class="type">GBytes</span></a> referencing data
 from <em class="parameter"><code>file</code></em>
 . </p>
@@ -1516,7 +1510,7 @@ this function cannot be passed to C library functions like <code class="function
 or <code class="function">read()</code>.</p>
 <p>See your C library manual for more details about <code class="function">open()</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.26.8"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.26.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1543,7 +1537,7 @@ or <code class="function">read()</code>.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.26.9"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.26.9"></a><h4>Returns</h4>
 <p> a new file descriptor, or -1 if an error occurred.
 The return value can be used exactly like the return value
 from <code class="function">open()</code>.</p>
@@ -1563,7 +1557,7 @@ renames a file, moving it between directories if required.</p>
 on your system. It is not possible in general on Windows to rename
 a file that is open to some process.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.27.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.27.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1585,7 +1579,7 @@ a file that is open to some process.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.27.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.27.7"></a><h4>Returns</h4>
 <p> 0 if the renaming succeeded, -1 if an error occurred</p>
 <p></p>
 </div>
@@ -1602,7 +1596,7 @@ attempts to create a directory with the given name and permissions.
 The mode argument is ignored on Windows.</p>
 <p>See your C library manual for more details about <code class="function">mkdir()</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.28.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.28.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1624,7 +1618,7 @@ The mode argument is ignored on Windows.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.28.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.28.7"></a><h4>Returns</h4>
 <p> 0 if the directory was successfully created, -1 if an error
 occurred</p>
 <p></p>
@@ -1656,7 +1650,7 @@ is just struct stat, but note that even on POSIX platforms, <code class="functio
 might be a macro.</p>
 <p>See your C library manual for more details about <code class="function">stat()</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.29.8"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.29.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1679,7 +1673,7 @@ information</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.29.9"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.29.9"></a><h4>Returns</h4>
 <p> 0 if the information was successfully retrieved,
 -1 if an error occurred</p>
 <p></p>
@@ -1699,7 +1693,7 @@ refers to. If the system does not support symbolic links <a class="link" href="g
 is identical to <a class="link" href="glib-File-Utilities.html#g-stat" title="g_stat ()"><code class="function">g_stat()</code></a>.</p>
 <p>See your C library manual for more details about <code class="function">lstat()</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.30.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.30.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1722,7 +1716,7 @@ information</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.30.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.30.7"></a><h4>Returns</h4>
 <p> 0 if the information was successfully retrieved,
 -1 if an error occurred</p>
 <p></p>
@@ -1742,7 +1736,7 @@ file is freed.</p>
 that on Windows, it is in general not possible to delete files that
 are open to some process, or mapped into memory.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.31.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.31.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1757,7 +1751,7 @@ are open to some process, or mapped into memory.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.31.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.31.7"></a><h4>Returns</h4>
 <p> 0 if the name was successfully deleted, -1 if an error
 occurred</p>
 <p></p>
@@ -1784,7 +1778,7 @@ errno value. <code class="function">rmdir()</code> is tried regardless of what c
 fail. Any errno value set by <code class="function">remove()</code> will be overwritten by that
 set by <code class="function">rmdir()</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.32.7"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.32.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1799,7 +1793,7 @@ set by <code class="function">rmdir()</code>.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.32.8"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.32.8"></a><h4>Returns</h4>
 <p> 0 if the file was successfully removed, -1 if an error
 occurred</p>
 <p></p>
@@ -1816,7 +1810,7 @@ deletes a directory from the filesystem.</p>
 <p>See your C library manual for more details about how <code class="function">rmdir()</code> works
 on your system.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.33.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.33.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1831,7 +1825,7 @@ on your system.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.33.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.33.7"></a><h4>Returns</h4>
 <p> 0 if the directory was successfully removed, -1 if an error
 occurred</p>
 <p></p>
@@ -1854,7 +1848,7 @@ the FILE* returned by this function cannot be passed to C library
 functions like <code class="function">fprintf()</code> or <code class="function">fread()</code>.</p>
 <p>See your C library manual for more details about <code class="function">fopen()</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.34.7"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.34.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1876,7 +1870,7 @@ functions like <code class="function">fprintf()</code> or <code class="function"
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.34.8"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.34.8"></a><h4>Returns</h4>
 <p> A FILE* if the file was successfully opened, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if
 an error occurred</p>
 <p></p>
@@ -1894,7 +1888,7 @@ g_freopen (<em class="parameter"><code>const <a class="link" href="glib-Basic-Ty
 opens a file and associates it with an existing stream.</p>
 <p>See your C library manual for more details about <code class="function">freopen()</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.35.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.35.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1921,7 +1915,7 @@ opens a file and associates it with an existing stream.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.35.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.35.7"></a><h4>Returns</h4>
 <p> A FILE* if the file was successfully opened, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a> if
 an error occurred.</p>
 <p></p>
@@ -1943,7 +1937,7 @@ ACL. Software that needs to manage file permissions on Windows
 exactly should use the Win32 API.</p>
 <p>See your C library manual for more details about <code class="function">chmod()</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.36.7"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.36.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1965,7 +1959,7 @@ exactly should use the Win32 API.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.36.8"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.36.8"></a><h4>Returns</h4>
 <p> 0 if the operation succeeded, -1 on error</p>
 <p></p>
 </div>
@@ -1988,7 +1982,7 @@ Windows. Software that needs to handle file permissions on Windows
 more exactly should use the Win32 API.</p>
 <p>See your C library manual for more details about <code class="function">access()</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.37.7"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.37.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2010,7 +2004,7 @@ more exactly should use the Win32 API.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.37.8"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.37.8"></a><h4>Returns</h4>
 <p> zero if the pathname refers to an existing file system
 object that has all the tested permissions, or -1 otherwise
 or on error.</p>
@@ -2041,7 +2035,7 @@ this function cannot be passed to C library functions like <code class="function
 or <code class="function">read()</code>.</p>
 <p>See your C library manual for more details about <code class="function">creat()</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.38.8"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.38.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2063,7 +2057,7 @@ or <code class="function">read()</code>.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.38.9"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.38.9"></a><h4>Returns</h4>
 <p> a new file descriptor, or -1 if an error occurred.
 The return value can be used exactly like the return value
 from <code class="function">creat()</code>.</p>
@@ -2081,7 +2075,7 @@ current directory of the process to <em class="parameter"><code>path</code></em>
 .</p>
 <p>See your C library manual for more details about <code class="function">chdir()</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.39.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.39.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2096,7 +2090,7 @@ current directory of the process to <em class="parameter"><code>path</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.39.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.39.7"></a><h4>Returns</h4>
 <p> 0 on success, -1 if an error occurred.</p>
 <p></p>
 </div>
@@ -2113,7 +2107,7 @@ sets the access and modification timestamps of a file.</p>
 <p>See your C library manual for more details about how <code class="function">utime()</code> works
 on your system.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.40.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.40.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2135,7 +2129,7 @@ on your system.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.18.8.40.7"></a><h4>Returns</h4>
+<a name="id-1.5.18.7.40.7"></a><h4>Returns</h4>
 <p> 0 if the operation was successful, -1 if an error occurred</p>
 <p></p>
 </div>
@@ -2155,7 +2149,7 @@ function over the call provided by the system; on Unix, it will
 attempt to correctly handle <code class="literal">EINTR</code>, which has platform-specific
 semantics.</p>
 <div class="refsect3">
-<a name="id-1.5.18.8.41.6"></a><h4>Parameters</h4>
+<a name="id-1.5.18.7.41.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2197,7 +2191,7 @@ which errors will be returned from a given operation. Some errors
 don't occur on some systems, etc., sometimes there are subtle
 differences in when a system will report a given error, etc.</p>
 <div class="refsect3">
-<a name="id-1.5.18.9.2.5"></a><h4>Members</h4>
+<a name="id-1.5.18.8.2.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -2440,7 +2434,7 @@ on error domains.</p>
 <a name="GFileTest"></a><h3>enum GFileTest</h3>
 <p>A test to perform on a file using <a class="link" href="glib-File-Utilities.html#g-file-test" title="g_file_test ()"><code class="function">g_file_test()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.18.9.4.4"></a><h4>Members</h4>
+<a name="id-1.5.18.8.4.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">

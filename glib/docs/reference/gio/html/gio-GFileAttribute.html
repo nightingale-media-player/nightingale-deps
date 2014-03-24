@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#gio-GFileAttribute.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#gio-GFileAttribute.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#gio-GFileAttribute.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="file_ops.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -122,11 +121,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="gio-GFileAttribute.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="gio-GFileAttribute.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;gio/gio.h&gt;
 </pre>
@@ -151,7 +145,7 @@ install default keys and values for their given file system, architecture,
 and other possible implementation details (e.g., on a UNIX system, a file
 attribute key will be registered for the user id for a given file).</p>
 <div class="refsect3">
-<a name="id-1.4.2.3.7.7"></a><h4>Default Namespaces</h4>
+<a name="id-1.4.2.3.6.7"></a><h4>Default Namespaces</h4>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p><code class="literal">"standard"</code>: The "Standard" namespace. General file information that
 any application may need should be put in this namespace. Examples
@@ -215,7 +209,7 @@ For more information about writing GIO modules, see <a class="link" href="GIOMod
 file systems --&gt;</p>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.3.7.8"></a><h4>Default Keys</h4>
+<a name="id-1.4.2.3.6.8"></a><h4>Default Keys</h4>
 <p>For a list of the built-in keys and their types, see the
 <a class="link" href="GFileInfo.html" title="GFileInfo">GFileInfo</a> documentation.</p>
 <p>Note that there are no predefined keys in the "xattr" and "xattr-sys"
@@ -236,7 +230,7 @@ where <code class="literal">nn</code> is a 2-digit hexadecimal number.</p>
 g_file_attribute_info_list_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>Creates a new file attribute info list.</p>
 <div class="refsect3">
-<a name="id-1.4.2.3.8.2.5"></a><h4>Returns</h4>
+<a name="id-1.4.2.3.7.2.5"></a><h4>Returns</h4>
 <p> a <a class="link" href="gio-GFileAttribute.html#GFileAttributeInfoList" title="GFileAttributeInfoList"><span class="type">GFileAttributeInfoList</span></a>.</p>
 <p></p>
 </div>
@@ -248,7 +242,7 @@ g_file_attribute_info_list_new (<em class="parameter"><code><span class="type">v
 g_file_attribute_info_list_ref (<em class="parameter"><code><a class="link" href="gio-GFileAttribute.html#GFileAttributeInfoList" title="GFileAttributeInfoList"><span class="type">GFileAttributeInfoList</span></a> *list</code></em>);</pre>
 <p>References a file attribute info list.</p>
 <div class="refsect3">
-<a name="id-1.4.2.3.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.4.2.3.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -263,7 +257,7 @@ g_file_attribute_info_list_ref (<em class="parameter"><code><a class="link" href
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.3.8.3.6"></a><h4>Returns</h4>
+<a name="id-1.4.2.3.7.3.6"></a><h4>Returns</h4>
 <p> <a class="link" href="gio-GFileAttribute.html#GFileAttributeInfoList" title="GFileAttributeInfoList"><span class="type">GFileAttributeInfoList</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.</p>
 <p></p>
 </div>
@@ -278,7 +272,7 @@ g_file_attribute_info_list_unref (<em class="parameter"><code><a class="link" hr
 falls to zero, the <em class="parameter"><code>list</code></em>
  is deleted.</p>
 <div class="refsect3">
-<a name="id-1.4.2.3.8.4.5"></a><h4>Parameters</h4>
+<a name="id-1.4.2.3.7.4.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -300,7 +294,7 @@ falls to zero, the <em class="parameter"><code>list</code></em>
 g_file_attribute_info_list_dup (<em class="parameter"><code><a class="link" href="gio-GFileAttribute.html#GFileAttributeInfoList" title="GFileAttributeInfoList"><span class="type">GFileAttributeInfoList</span></a> *list</code></em>);</pre>
 <p>Makes a duplicate of a file attribute info list.</p>
 <div class="refsect3">
-<a name="id-1.4.2.3.8.5.5"></a><h4>Parameters</h4>
+<a name="id-1.4.2.3.7.5.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -315,7 +309,7 @@ g_file_attribute_info_list_dup (<em class="parameter"><code><a class="link" href
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.3.8.5.6"></a><h4>Returns</h4>
+<a name="id-1.4.2.3.7.5.6"></a><h4>Returns</h4>
 <p> a copy of the given <em class="parameter"><code>list</code></em>
 .</p>
 <p></p>
@@ -331,7 +325,7 @@ g_file_attribute_info_list_lookup (<em class="parameter"><code><a class="link" h
  from <em class="parameter"><code>list</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.2.3.8.6.5"></a><h4>Parameters</h4>
+<a name="id-1.4.2.3.7.6.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -353,7 +347,7 @@ g_file_attribute_info_list_lookup (<em class="parameter"><code><a class="link" h
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.3.8.6.6"></a><h4>Returns</h4>
+<a name="id-1.4.2.3.7.6.6"></a><h4>Returns</h4>
 <p> a <a class="link" href="gio-GFileAttribute.html#GFileAttributeInfo" title="GFileAttributeInfo"><span class="type">GFileAttributeInfo</span></a> for the <em class="parameter"><code>name</code></em>
 , or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if an
 attribute isn't found.</p>
@@ -375,7 +369,7 @@ its <em class="parameter"><code>type</code></em>
  and <em class="parameter"><code>flags</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.4.2.3.8.7.5"></a><h4>Parameters</h4>
+<a name="id-1.4.2.3.7.7.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -414,7 +408,7 @@ its <em class="parameter"><code>type</code></em>
 <a name="GFileAttributeType"></a><h3>enum GFileAttributeType</h3>
 <p>The data types for file attributes.</p>
 <div class="refsect3">
-<a name="id-1.4.2.3.9.2.4"></a><h4>Members</h4>
+<a name="id-1.4.2.3.8.2.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -501,7 +495,7 @@ its <em class="parameter"><code>type</code></em>
 <a name="GFileAttributeInfoFlags"></a><h3>enum GFileAttributeInfoFlags</h3>
 <p>Flags specifying the behaviour of an attribute.</p>
 <div class="refsect3">
-<a name="id-1.4.2.3.9.3.4"></a><h4>Members</h4>
+<a name="id-1.4.2.3.8.3.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -539,7 +533,7 @@ its <em class="parameter"><code>type</code></em>
 <a name="GFileAttributeStatus"></a><h3>enum GFileAttributeStatus</h3>
 <p>Used by <a class="link" href="GFile.html#g-file-set-attributes-from-info" title="g_file_set_attributes_from_info ()"><code class="function">g_file_set_attributes_from_info()</code></a> when setting file attributes.</p>
 <div class="refsect3">
-<a name="id-1.4.2.3.9.4.4"></a><h4>Members</h4>
+<a name="id-1.4.2.3.8.4.4"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -583,7 +577,7 @@ its <em class="parameter"><code>type</code></em>
 </pre>
 <p>Information about a specific attribute.</p>
 <div class="refsect3">
-<a name="id-1.4.2.3.9.5.5"></a><h4>Members</h4>
+<a name="id-1.4.2.3.8.5.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">
@@ -621,7 +615,7 @@ its <em class="parameter"><code>type</code></em>
 <p>Acts as a lightweight registry for possible valid file attributes.
 The registry stores Key-Value pair formats as <a class="link" href="gio-GFileAttribute.html#GFileAttributeInfo" title="GFileAttributeInfo"><span class="type">GFileAttributeInfo</span></a>&lt;!-- --&gt;s.</p>
 <div class="refsect3">
-<a name="id-1.4.2.3.9.6.5"></a><h4>Members</h4>
+<a name="id-1.4.2.3.8.6.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="struct_members_name">

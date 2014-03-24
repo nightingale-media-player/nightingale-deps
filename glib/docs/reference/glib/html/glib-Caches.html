@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Caches.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Caches.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Caches.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="deprecated.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -130,11 +129,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Caches.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Caches.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -166,7 +160,7 @@ g_cache_new (<em class="parameter"><code><a class="link" href="glib-Caches.html#
 </div>
 <p>Creates a new <a class="link" href="glib-Caches.html#GCache" title="GCache"><span class="type">GCache</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.7.3.8.2.6"></a><h4>Parameters</h4>
+<a name="id-1.7.3.7.2.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -223,7 +217,7 @@ needed (i.e. its reference count drops to 0)</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.7.3.8.2.7"></a><h4>Returns</h4>
+<a name="id-1.7.3.7.2.7"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-Caches.html#GCache" title="GCache"><span class="type">GCache</span></a></p>
 <p></p>
 </div>
@@ -250,7 +244,7 @@ duplicated by calling <em class="parameter"><code>key_dup_func</code></em>
  and the duplicated key and value
 are inserted into the <a class="link" href="glib-Caches.html#GCache" title="GCache"><span class="type">GCache</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.7.3.8.3.6"></a><h4>Parameters</h4>
+<a name="id-1.7.3.7.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -272,7 +266,7 @@ are inserted into the <a class="link" href="glib-Caches.html#GCache" title="GCac
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.7.3.8.3.7"></a><h4>Returns</h4>
+<a name="id-1.7.3.7.3.7"></a><h4>Returns</h4>
 <p> a pointer to a <a class="link" href="glib-Caches.html#GCache" title="GCache"><span class="type">GCache</span></a> value</p>
 <p></p>
 </div>
@@ -293,7 +287,7 @@ then the value and its corresponding key are destroyed, using the
  and <em class="parameter"><code>key_destroy_func</code></em>
  passed to <a class="link" href="glib-Caches.html#g-cache-new" title="g_cache_new ()"><code class="function">g_cache_new()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.7.3.8.4.6"></a><h4>Parameters</h4>
+<a name="id-1.7.3.7.4.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -328,7 +322,7 @@ g_cache_destroy (<em class="parameter"><code><a class="link" href="glib-Caches.h
 <p>Note that it does not destroy the keys and values which were
 contained in the <a class="link" href="glib-Caches.html#GCache" title="GCache"><span class="type">GCache</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.7.3.8.5.7"></a><h4>Parameters</h4>
+<a name="id-1.7.3.7.5.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -362,7 +356,7 @@ entry and the <em class="parameter"><code>user_data</code></em>
 from the order in which <a class="link" href="glib-Hash-Tables.html#g-hash-table-foreach" title="g_hash_table_foreach ()"><code class="function">g_hash_table_foreach()</code></a> passes key-value
 pairs to its callback function !</p>
 <div class="refsect3">
-<a name="id-1.7.3.8.6.7"></a><h4>Parameters</h4>
+<a name="id-1.7.3.7.6.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -404,7 +398,7 @@ g_cache_value_foreach (<em class="parameter"><code><a class="link" href="glib-Ca
 </div>
 <p>Calls the given function for each of the values in the <a class="link" href="glib-Caches.html#GCache" title="GCache"><span class="type">GCache</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.7.3.8.7.6"></a><h4>Parameters</h4>
+<a name="id-1.7.3.7.7.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -444,7 +438,7 @@ functions passed to <a class="link" href="glib-Caches.html#g-cache-new" title="g
 pointer to the <a class="link" href="glib-Caches.html#GCache" title="GCache"><span class="type">GCache</span></a> key or <a class="link" href="glib-Caches.html#GCache" title="GCache"><span class="type">GCache</span></a> value and should free any
 memory and other resources associated with it.</p>
 <div class="refsect3">
-<a name="id-1.7.3.8.8.6"></a><h4>Parameters</h4>
+<a name="id-1.7.3.7.8.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -471,7 +465,7 @@ memory and other resources associated with it.</p>
 (&lt;emphasis&gt;not&lt;/emphasis&gt; a value as the prototype implies) and
 should return a duplicate of the key.</p>
 <div class="refsect3">
-<a name="id-1.7.3.8.9.6"></a><h4>Parameters</h4>
+<a name="id-1.7.3.7.9.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -487,7 +481,7 @@ should return a duplicate of the key.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.7.3.8.9.7"></a><h4>Returns</h4>
+<a name="id-1.7.3.7.9.7"></a><h4>Returns</h4>
 <p> a copy of the <a class="link" href="glib-Caches.html#GCache" title="GCache"><span class="type">GCache</span></a> key</p>
 <p></p>
 </div>
@@ -503,7 +497,7 @@ should return a duplicate of the key.</p>
 <a class="link" href="glib-Caches.html#g-cache-new" title="g_cache_new ()"><code class="function">g_cache_new()</code></a>. It is passed a <a class="link" href="glib-Caches.html#GCache" title="GCache"><span class="type">GCache</span></a> key and should create the
 value corresponding to the key.</p>
 <div class="refsect3">
-<a name="id-1.7.3.8.10.6"></a><h4>Parameters</h4>
+<a name="id-1.7.3.7.10.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -518,7 +512,7 @@ value corresponding to the key.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.7.3.8.10.7"></a><h4>Returns</h4>
+<a name="id-1.7.3.7.10.7"></a><h4>Returns</h4>
 <p> a new <a class="link" href="glib-Caches.html#GCache" title="GCache"><span class="type">GCache</span></a> value corresponding to the key.</p>
 <p></p>
 </div>

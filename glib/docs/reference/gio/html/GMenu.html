@@ -12,10 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GMenu.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GMenu.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
                   <a href="#GMenu.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -1042,17 +1042,17 @@ format, this would look something like the following:</p>
 9
 10
 11</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="symbol">&lt;</span><span class="usertype">menu</span><span class="normal"> id</span><span class="symbol">=</span><span class="string">'edit-menu'</span><span class="symbol">&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;</span><span class="normal">section</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">item</span><span class="normal"> label</span><span class="symbol">=</span><span class="string">'Undo'</span><span class="symbol">/&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">item</span><span class="normal"> label</span><span class="symbol">=</span><span class="string">'Redo'</span><span class="symbol">/&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;/</span><span class="normal">section</span><span class="symbol">&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;</span><span class="normal">section</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">item</span><span class="normal"> label</span><span class="symbol">=</span><span class="string">'Cut'</span><span class="symbol">/&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">item</span><span class="normal"> label</span><span class="symbol">=</span><span class="string">'Copy'</span><span class="symbol">/&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">item</span><span class="normal"> label</span><span class="symbol">=</span><span class="string">'Paste'</span><span class="symbol">/&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;/</span><span class="normal">section</span><span class="symbol">&gt;</span>
-<span class="symbol">&lt;/</span><span class="normal">menu</span><span class="symbol">&gt;</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">&lt;</span>menu id<span class="gtkdoc opt">=</span><span class="string">'edit-menu'</span><span class="gtkdoc opt">&gt;</span>
+  <span class="gtkdoc opt">&lt;</span>section<span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>item label<span class="gtkdoc opt">=</span><span class="string">'Undo'</span><span class="gtkdoc opt">/&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>item label<span class="gtkdoc opt">=</span><span class="string">'Redo'</span><span class="gtkdoc opt">/&gt;</span>
+  <span class="gtkdoc opt">&lt;/</span>section<span class="gtkdoc opt">&gt;</span>
+  <span class="gtkdoc opt">&lt;</span>section<span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>item label<span class="gtkdoc opt">=</span><span class="string">'Cut'</span><span class="gtkdoc opt">/&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>item label<span class="gtkdoc opt">=</span><span class="string">'Copy'</span><span class="gtkdoc opt">/&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>item label<span class="gtkdoc opt">=</span><span class="string">'Paste'</span><span class="gtkdoc opt">/&gt;</span>
+  <span class="gtkdoc opt">&lt;/</span>section<span class="gtkdoc opt">&gt;</span>
+<span class="gtkdoc opt">&lt;/</span>menu<span class="gtkdoc opt">&gt;</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1084,21 +1084,21 @@ purpose of understanding what is really going on).</p>
 13
 14
 15</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="symbol">&lt;</span><span class="usertype">menu</span><span class="normal"> id</span><span class="symbol">=</span><span class="string">'edit-menu'</span><span class="symbol">&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;</span><span class="normal">item</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">link</span><span class="normal"> name</span><span class="symbol">=</span><span class="string">'section'</span><span class="symbol">&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="usertype">item</span><span class="normal"> label</span><span class="symbol">=</span><span class="string">'Undo'</span><span class="symbol">/&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="usertype">item</span><span class="normal"> label</span><span class="symbol">=</span><span class="string">'Redo'</span><span class="symbol">/&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;/</span><span class="normal">link</span><span class="symbol">&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;/</span><span class="normal">item</span><span class="symbol">&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;</span><span class="normal">item</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">link</span><span class="normal"> name</span><span class="symbol">=</span><span class="string">'section'</span><span class="symbol">&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="usertype">item</span><span class="normal"> label</span><span class="symbol">=</span><span class="string">'Cut'</span><span class="symbol">/&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="usertype">item</span><span class="normal"> label</span><span class="symbol">=</span><span class="string">'Copy'</span><span class="symbol">/&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="usertype">item</span><span class="normal"> label</span><span class="symbol">=</span><span class="string">'Paste'</span><span class="symbol">/&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;/</span><span class="normal">link</span><span class="symbol">&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;/</span><span class="normal">item</span><span class="symbol">&gt;</span>
-<span class="symbol">&lt;/</span><span class="normal">menu</span><span class="symbol">&gt;</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">&lt;</span>menu id<span class="gtkdoc opt">=</span><span class="string">'edit-menu'</span><span class="gtkdoc opt">&gt;</span>
+  <span class="gtkdoc opt">&lt;</span>item<span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>link name<span class="gtkdoc opt">=</span><span class="string">'section'</span><span class="gtkdoc opt">&gt;</span>
+      <span class="gtkdoc opt">&lt;</span>item label<span class="gtkdoc opt">=</span><span class="string">'Undo'</span><span class="gtkdoc opt">/&gt;</span>
+      <span class="gtkdoc opt">&lt;</span>item label<span class="gtkdoc opt">=</span><span class="string">'Redo'</span><span class="gtkdoc opt">/&gt;</span>
+    <span class="gtkdoc opt">&lt;/</span>link<span class="gtkdoc opt">&gt;</span>
+  <span class="gtkdoc opt">&lt;/</span>item<span class="gtkdoc opt">&gt;</span>
+  <span class="gtkdoc opt">&lt;</span>item<span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>link name<span class="gtkdoc opt">=</span><span class="string">'section'</span><span class="gtkdoc opt">&gt;</span>
+      <span class="gtkdoc opt">&lt;</span>item label<span class="gtkdoc opt">=</span><span class="string">'Cut'</span><span class="gtkdoc opt">/&gt;</span>
+      <span class="gtkdoc opt">&lt;</span>item label<span class="gtkdoc opt">=</span><span class="string">'Copy'</span><span class="gtkdoc opt">/&gt;</span>
+      <span class="gtkdoc opt">&lt;</span>item label<span class="gtkdoc opt">=</span><span class="string">'Paste'</span><span class="gtkdoc opt">/&gt;</span>
+    <span class="gtkdoc opt">&lt;/</span>link<span class="gtkdoc opt">&gt;</span>
+  <span class="gtkdoc opt">&lt;/</span>item<span class="gtkdoc opt">&gt;</span>
+<span class="gtkdoc opt">&lt;/</span>menu<span class="gtkdoc opt">&gt;</span></pre></td>
       </tr>
     </tbody>
   </table>

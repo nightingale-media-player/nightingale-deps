@@ -12,12 +12,12 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#GSettings.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#GSettings.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
-                  <a href="#GSettings.properties" class="shortcut">Properties</a></span><span id="nav_signals"> <span class="dim">|</span> 
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#GSettings.description" class="shortcut">Description</a></span><span id="nav_hierarchy">  <span class="dim">|</span> 
+                  <a href="#GSettings.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties">  <span class="dim">|</span> 
+                  <a href="#GSettings.properties" class="shortcut">Properties</a></span><span id="nav_signals">  <span class="dim">|</span> 
                   <a href="#GSettings.signals" class="shortcut">Signals</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
@@ -648,23 +648,23 @@ corresponding to the string value of enum and flags keys.</p>
 15
 16
 17</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="symbol">&lt;</span><span class="normal">schemalist</span><span class="symbol">&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;</span><span class="usertype">schema</span><span class="normal"> id</span><span class="symbol">=</span><span class="string">"org.gtk.Test"</span><span class="normal"> path</span><span class="symbol">=</span><span class="string">"/org/gtk/Test/"</span><span class="normal"> gettext</span><span class="symbol">-</span><span class="normal">domain</span><span class="symbol">=</span><span class="string">"test"</span><span class="symbol">&gt;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">&lt;</span>schemalist<span class="gtkdoc opt">&gt;</span>
+  <span class="gtkdoc opt">&lt;</span>schema id<span class="gtkdoc opt">=</span><span class="string">&quot;org.gtk.Test&quot;</span> path<span class="gtkdoc opt">=</span><span class="string">&quot;/org/gtk/Test/&quot;</span> gettext<span class="gtkdoc opt">-</span>domain<span class="gtkdoc opt">=</span><span class="string">&quot;test&quot;</span><span class="gtkdoc opt">&gt;</span>
 
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">key</span><span class="normal"> name</span><span class="symbol">=</span><span class="string">"greeting"</span><span class="normal"> type</span><span class="symbol">=</span><span class="string">"s"</span><span class="symbol">&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="keyword">default</span><span class="normal"> l10n</span><span class="symbol">=</span><span class="string">"messages"</span><span class="symbol">&gt;</span><span class="string">"Hello, earthlings"</span><span class="symbol">&lt;/</span><span class="keyword">default</span><span class="symbol">&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="normal">summary</span><span class="symbol">&gt;</span><span class="usertype">A</span><span class="normal"> greeting</span><span class="symbol">&lt;/</span><span class="normal">summary</span><span class="symbol">&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="normal">description</span><span class="symbol">&gt;</span>
-<span class="normal">        Greeting of the invading martians</span>
-<span class="normal">      </span><span class="symbol">&lt;/</span><span class="normal">description</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;/</span><span class="normal">key</span><span class="symbol">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>key name<span class="gtkdoc opt">=</span><span class="string">&quot;greeting&quot;</span> type<span class="gtkdoc opt">=</span><span class="string">&quot;s&quot;</span><span class="gtkdoc opt">&gt;</span>
+      <span class="gtkdoc opt">&lt;</span><span class="keyword">default</span> l10n<span class="gtkdoc opt">=</span><span class="string">&quot;messages&quot;</span><span class="gtkdoc opt">&gt;</span><span class="string">&quot;Hello, earthlings&quot;</span><span class="gtkdoc opt">&lt;/</span><span class="keyword">default</span><span class="gtkdoc opt">&gt;</span>
+      <span class="gtkdoc opt">&lt;</span>summary<span class="gtkdoc opt">&gt;</span>A greeting<span class="gtkdoc opt">&lt;/</span>summary<span class="gtkdoc opt">&gt;</span>
+      <span class="gtkdoc opt">&lt;</span>description<span class="gtkdoc opt">&gt;</span>
+        Greeting of the invading martians
+      <span class="gtkdoc opt">&lt;/</span>description<span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;/</span>key<span class="gtkdoc opt">&gt;</span>
 
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">key</span><span class="normal"> name</span><span class="symbol">=</span><span class="string">"box"</span><span class="normal"> type</span><span class="symbol">=</span><span class="string">"(ii)"</span><span class="symbol">&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="keyword">default</span><span class="symbol">&gt;(</span><span class="number">20</span><span class="symbol">,</span><span class="number">30</span><span class="symbol">)&lt;/</span><span class="keyword">default</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;/</span><span class="normal">key</span><span class="symbol">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>key name<span class="gtkdoc opt">=</span><span class="string">&quot;box&quot;</span> type<span class="gtkdoc opt">=</span><span class="string">&quot;(ii)&quot;</span><span class="gtkdoc opt">&gt;</span>
+      <span class="gtkdoc opt">&lt;</span><span class="keyword">default</span><span class="gtkdoc opt">&gt;(</span><span class="number">20</span><span class="gtkdoc opt">,</span><span class="number">30</span><span class="gtkdoc opt">)&lt;/</span><span class="keyword">default</span><span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;/</span>key<span class="gtkdoc opt">&gt;</span>
 
-<span class="normal">  </span><span class="symbol">&lt;/</span><span class="normal">schema</span><span class="symbol">&gt;</span>
-<span class="symbol">&lt;/</span><span class="normal">schemalist</span><span class="symbol">&gt;</span></pre></td>
+  <span class="gtkdoc opt">&lt;/</span>schema<span class="gtkdoc opt">&gt;</span>
+<span class="gtkdoc opt">&lt;/</span>schemalist<span class="gtkdoc opt">&gt;</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -718,45 +718,45 @@ corresponding to the string value of enum and flags keys.</p>
 40
 41
 42</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="symbol">&lt;</span><span class="normal">schemalist</span><span class="symbol">&gt;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">&lt;</span>schemalist<span class="gtkdoc opt">&gt;</span>
 
-<span class="normal">  </span><span class="symbol">&lt;</span><span class="keyword">enum</span><span class="normal"> id</span><span class="symbol">=</span><span class="string">"org.gtk.Test.myenum"</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">value</span><span class="normal"> nick</span><span class="symbol">=</span><span class="string">"first"</span><span class="normal"> value</span><span class="symbol">=</span><span class="string">"1"</span><span class="symbol">/&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">value</span><span class="normal"> nick</span><span class="symbol">=</span><span class="string">"second"</span><span class="normal"> value</span><span class="symbol">=</span><span class="string">"2"</span><span class="symbol">/&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;/</span><span class="keyword">enum</span><span class="symbol">&gt;</span>
+  <span class="gtkdoc opt">&lt;</span><span class="gtkdoc kwb">enum</span> id<span class="gtkdoc opt">=</span><span class="string">&quot;org.gtk.Test.myenum&quot;</span><span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>value nick<span class="gtkdoc opt">=</span><span class="string">&quot;first&quot;</span> value<span class="gtkdoc opt">=</span><span class="string">&quot;1&quot;</span><span class="gtkdoc opt">/&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>value nick<span class="gtkdoc opt">=</span><span class="string">&quot;second&quot;</span> value<span class="gtkdoc opt">=</span><span class="string">&quot;2&quot;</span><span class="gtkdoc opt">/&gt;</span>
+  <span class="gtkdoc opt">&lt;/</span><span class="gtkdoc kwb">enum</span><span class="gtkdoc opt">&gt;</span>
 
-<span class="normal">  </span><span class="symbol">&lt;</span><span class="usertype">flags</span><span class="normal"> id</span><span class="symbol">=</span><span class="string">"org.gtk.Test.myflags"</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">value</span><span class="normal"> nick</span><span class="symbol">=</span><span class="string">"flag1"</span><span class="normal"> value</span><span class="symbol">=</span><span class="string">"1"</span><span class="symbol">/&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">value</span><span class="normal"> nick</span><span class="symbol">=</span><span class="string">"flag2"</span><span class="normal"> value</span><span class="symbol">=</span><span class="string">"2"</span><span class="symbol">/&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">value</span><span class="normal"> nick</span><span class="symbol">=</span><span class="string">"flag3"</span><span class="normal"> value</span><span class="symbol">=</span><span class="string">"4"</span><span class="symbol">/&gt;</span>
-<span class="normal">  </span><span class="symbol">&lt;/</span><span class="normal">flags</span><span class="symbol">&gt;</span>
+  <span class="gtkdoc opt">&lt;</span>flags id<span class="gtkdoc opt">=</span><span class="string">&quot;org.gtk.Test.myflags&quot;</span><span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>value nick<span class="gtkdoc opt">=</span><span class="string">&quot;flag1&quot;</span> value<span class="gtkdoc opt">=</span><span class="string">&quot;1&quot;</span><span class="gtkdoc opt">/&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>value nick<span class="gtkdoc opt">=</span><span class="string">&quot;flag2&quot;</span> value<span class="gtkdoc opt">=</span><span class="string">&quot;2&quot;</span><span class="gtkdoc opt">/&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>value nick<span class="gtkdoc opt">=</span><span class="string">&quot;flag3&quot;</span> value<span class="gtkdoc opt">=</span><span class="string">&quot;4&quot;</span><span class="gtkdoc opt">/&gt;</span>
+  <span class="gtkdoc opt">&lt;/</span>flags<span class="gtkdoc opt">&gt;</span>
 
-<span class="normal">  </span><span class="symbol">&lt;</span><span class="usertype">schema</span><span class="normal"> id</span><span class="symbol">=</span><span class="string">"org.gtk.Test"</span><span class="symbol">&gt;</span>
+  <span class="gtkdoc opt">&lt;</span>schema id<span class="gtkdoc opt">=</span><span class="string">&quot;org.gtk.Test&quot;</span><span class="gtkdoc opt">&gt;</span>
 
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">key</span><span class="normal"> name</span><span class="symbol">=</span><span class="string">"key-with-range"</span><span class="normal"> type</span><span class="symbol">=</span><span class="string">"i"</span><span class="symbol">&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="usertype">range</span><span class="normal"> min</span><span class="symbol">=</span><span class="string">"1"</span><span class="normal"> max</span><span class="symbol">=</span><span class="string">"100"</span><span class="symbol">/&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="keyword">default</span><span class="symbol">&gt;</span><span class="number">10</span><span class="symbol">&lt;/</span><span class="keyword">default</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;/</span><span class="normal">key</span><span class="symbol">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>key name<span class="gtkdoc opt">=</span><span class="string">&quot;key-with-range&quot;</span> type<span class="gtkdoc opt">=</span><span class="string">&quot;i&quot;</span><span class="gtkdoc opt">&gt;</span>
+      <span class="gtkdoc opt">&lt;</span>range min<span class="gtkdoc opt">=</span><span class="string">&quot;1&quot;</span> max<span class="gtkdoc opt">=</span><span class="string">&quot;100&quot;</span><span class="gtkdoc opt">/&gt;</span>
+      <span class="gtkdoc opt">&lt;</span><span class="keyword">default</span><span class="gtkdoc opt">&gt;</span><span class="number">10</span><span class="gtkdoc opt">&lt;/</span><span class="keyword">default</span><span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;/</span>key<span class="gtkdoc opt">&gt;</span>
 
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">key</span><span class="normal"> name</span><span class="symbol">=</span><span class="string">"key-with-choices"</span><span class="normal"> type</span><span class="symbol">=</span><span class="string">"s"</span><span class="symbol">&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="normal">choices</span><span class="symbol">&gt;</span>
-<span class="normal">        </span><span class="symbol">&lt;</span><span class="usertype">choice</span><span class="normal"> value</span><span class="symbol">=</span><span class="string">'Elisabeth'</span><span class="symbol">/&gt;</span>
-<span class="normal">        </span><span class="symbol">&lt;</span><span class="usertype">choice</span><span class="normal"> value</span><span class="symbol">=</span><span class="string">'Annabeth'</span><span class="symbol">/&gt;</span>
-<span class="normal">        </span><span class="symbol">&lt;</span><span class="usertype">choice</span><span class="normal"> value</span><span class="symbol">=</span><span class="string">'Joe'</span><span class="symbol">/&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;/</span><span class="normal">choices</span><span class="symbol">&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="normal">aliases</span><span class="symbol">&gt;</span>
-<span class="normal">        </span><span class="symbol">&lt;</span><span class="usertype">alias</span><span class="normal"> value</span><span class="symbol">=</span><span class="string">'Anna'</span><span class="normal"> target</span><span class="symbol">=</span><span class="string">'Annabeth'</span><span class="symbol">/&gt;</span>
-<span class="normal">        </span><span class="symbol">&lt;</span><span class="usertype">alias</span><span class="normal"> value</span><span class="symbol">=</span><span class="string">'Beth'</span><span class="normal"> target</span><span class="symbol">=</span><span class="string">'Elisabeth'</span><span class="symbol">/&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;/</span><span class="normal">aliases</span><span class="symbol">&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="keyword">default</span><span class="symbol">&gt;</span><span class="string">'Joe'</span><span class="symbol">&lt;/</span><span class="keyword">default</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;/</span><span class="normal">key</span><span class="symbol">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>key name<span class="gtkdoc opt">=</span><span class="string">&quot;key-with-choices&quot;</span> type<span class="gtkdoc opt">=</span><span class="string">&quot;s&quot;</span><span class="gtkdoc opt">&gt;</span>
+      <span class="gtkdoc opt">&lt;</span>choices<span class="gtkdoc opt">&gt;</span>
+        <span class="gtkdoc opt">&lt;</span>choice value<span class="gtkdoc opt">=</span><span class="string">'Elisabeth'</span><span class="gtkdoc opt">/&gt;</span>
+        <span class="gtkdoc opt">&lt;</span>choice value<span class="gtkdoc opt">=</span><span class="string">'Annabeth'</span><span class="gtkdoc opt">/&gt;</span>
+        <span class="gtkdoc opt">&lt;</span>choice value<span class="gtkdoc opt">=</span><span class="string">'Joe'</span><span class="gtkdoc opt">/&gt;</span>
+      <span class="gtkdoc opt">&lt;/</span>choices<span class="gtkdoc opt">&gt;</span>
+      <span class="gtkdoc opt">&lt;</span>aliases<span class="gtkdoc opt">&gt;</span>
+        <span class="gtkdoc opt">&lt;</span>alias value<span class="gtkdoc opt">=</span><span class="string">'Anna'</span> target<span class="gtkdoc opt">=</span><span class="string">'Annabeth'</span><span class="gtkdoc opt">/&gt;</span>
+        <span class="gtkdoc opt">&lt;</span>alias value<span class="gtkdoc opt">=</span><span class="string">'Beth'</span> target<span class="gtkdoc opt">=</span><span class="string">'Elisabeth'</span><span class="gtkdoc opt">/&gt;</span>
+      <span class="gtkdoc opt">&lt;/</span>aliases<span class="gtkdoc opt">&gt;</span>
+      <span class="gtkdoc opt">&lt;</span><span class="keyword">default</span><span class="gtkdoc opt">&gt;</span><span class="string">'Joe'</span><span class="gtkdoc opt">&lt;/</span><span class="keyword">default</span><span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;/</span>key<span class="gtkdoc opt">&gt;</span>
 
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">key</span><span class="normal"> name</span><span class="symbol">=</span><span class="string">'enumerated-key'</span><span class="normal"> </span><span class="keyword">enum</span><span class="symbol">=</span><span class="string">'org.gtk.Test.myenum'</span><span class="symbol">&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="keyword">default</span><span class="symbol">&gt;</span><span class="string">'first'</span><span class="symbol">&lt;/</span><span class="keyword">default</span><span class="symbol">&gt;</span>
-<span class="normal">    </span><span class="symbol">&lt;/</span><span class="normal">key</span><span class="symbol">&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>key name<span class="gtkdoc opt">=</span><span class="string">'enumerated-key'</span> <span class="gtkdoc kwb">enum</span><span class="gtkdoc opt">=</span><span class="string">'org.gtk.Test.myenum'</span><span class="gtkdoc opt">&gt;</span>
+      <span class="gtkdoc opt">&lt;</span><span class="keyword">default</span><span class="gtkdoc opt">&gt;</span><span class="string">'first'</span><span class="gtkdoc opt">&lt;/</span><span class="keyword">default</span><span class="gtkdoc opt">&gt;</span>
+    <span class="gtkdoc opt">&lt;/</span>key<span class="gtkdoc opt">&gt;</span>
 
-<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">key</span><span class="normal"> name</span><span class="symbol">=</span><span class="string">'flags-key'</span><span class="normal"> flags</span><span class="symbol">=</span><span class="string">'org.gtk.Test.myflags'</span><span class="symbol">&gt;</span>
-<span class="normal">      </span><span class="symbol">&lt;</span><span class="keyword">default</span><span class="symbol">&gt;[</span><span class="string">"flag1"</span><span class="symbol">,</span><span class="normal">flag2</span><span class="string">"]&lt;/default&gt;</span>
+    <span class="gtkdoc opt">&lt;</span>key name<span class="gtkdoc opt">=</span><span class="string">'flags-key'</span> flags<span class="gtkdoc opt">=</span><span class="string">'org.gtk.Test.myflags'</span><span class="gtkdoc opt">&gt;</span>
+      <span class="gtkdoc opt">&lt;</span><span class="keyword">default</span><span class="gtkdoc opt">&gt;[</span><span class="string">&quot;flag1&quot;</span><span class="gtkdoc opt">,</span>flag2<span class="string">&quot;]&lt;/default&gt;</span>
 <span class="string">    &lt;/key&gt;</span>
 <span class="string">  &lt;/schema&gt;</span>
 <span class="string">&lt;/schemalist&gt;</span></pre></td>
@@ -784,9 +784,9 @@ serialized GVariant form, as in the following example:</p>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="symbol">[</span><span class="normal">org</span><span class="symbol">.</span><span class="normal">gtk</span><span class="symbol">.</span><span class="normal">Example</span><span class="symbol">]</span>
-<span class="normal">key1</span><span class="symbol">=</span><span class="string">'string'</span>
-<span class="normal">key2</span><span class="symbol">=</span><span class="number">1.5</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">[</span>org<span class="gtkdoc opt">.</span>gtk<span class="gtkdoc opt">.</span>Example<span class="gtkdoc opt">]</span>
+key1<span class="gtkdoc opt">=</span><span class="string">'string'</span>
+key2<span class="gtkdoc opt">=</span><span class="number">1.5</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -3139,7 +3139,7 @@ directions.</p>
 <tr>
 <td class="enum_member_name"><p><a name="G-SETTINGS-BIND-DEFAULT:CAPS"></a>G_SETTINGS_BIND_DEFAULT</p></td>
 <td class="enum_member_description">
-<p>Equivalent to &lt;literal&gt;G_SETTINGS_BIND_GET|G_SETTINGS_BIND_SET&lt;/literal&gt;</p>
+<p>Equivalent to <code class="literal">G_SETTINGS_BIND_GET|G_SETTINGS_BIND_SET</code></p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>

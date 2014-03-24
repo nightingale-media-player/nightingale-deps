@@ -12,11 +12,10 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
 <td width="100%" align="left" class="shortcuts">
-<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
-                  <a href="#glib-Testing.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
-                  <a href="#glib-Testing.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+<a href="#" class="shortcut">Top</a><span id="nav_description">  <span class="dim">|</span> 
+                  <a href="#glib-Testing.description" class="shortcut">Description</a></span>
 </td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
 <td><a accesskey="u" href="glib-utilities.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
@@ -585,11 +584,6 @@
 </table></div>
 </div>
 <div class="refsect1">
-<a name="glib-Testing.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">
-</pre>
-</div>
-<div class="refsect1">
 <a name="glib-Testing.includes"></a><h2>Includes</h2>
 <pre class="synopsis">#include &lt;glib.h&gt;
 </pre>
@@ -619,7 +613,7 @@ and test cases implicitly. A simple call like</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Testing.html#g-test-add-func">g_test_add_func</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"/misc/assertions"</span><span class="symbol">,</span><span class="normal"> test_assertions</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Testing.html#g-test-add-func">g_test_add_func</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;/misc/assertions&quot;</span><span class="gtkdoc opt">,</span> test_assertions<span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -652,7 +646,7 @@ this and <em class="parameter"><code>minimized_quantity</code></em>
  can determine sorting
 order for test result reports.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.2.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -694,7 +688,7 @@ this and <em class="parameter"><code>maximized_quantity</code></em>
  can determine sorting
 order for test result reports.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.3.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -755,7 +749,7 @@ that appropriate assertions or warnings are given</p>
 <li class="listitem"><p><code class="literal">--debug-log</code>: Debug test logging output.</p></li>
 </ul></div>
 <div class="refsect3">
-<a name="id-1.5.29.8.4.7"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.4.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -795,7 +789,7 @@ will cause <a class="link" href="glib-Testing.html#g-test-init" title="g_test_in
 <pre class="programlisting">#define             g_test_initialized()</pre>
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <a class="link" href="glib-Testing.html#g-test-init" title="g_test_init ()"><code class="function">g_test_init()</code></a> has been called.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.5.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.5.5"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if <a class="link" href="glib-Testing.html#g-test-init" title="g_test_init ()"><code class="function">g_test_init()</code></a> has been called.</p>
 <p></p>
 </div>
@@ -809,7 +803,7 @@ will cause <a class="link" href="glib-Testing.html#g-test-init" title="g_test_in
 Exactly one of <a class="link" href="glib-Testing.html#g-test-quick" title="g_test_quick"><code class="function">g_test_quick()</code></a> and <a class="link" href="glib-Testing.html#g-test-slow" title="g_test_slow"><code class="function">g_test_slow()</code></a> is active in any run;
 there is no "medium speed".</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.6.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.6.5"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if in quick mode</p>
 <p></p>
 </div>
@@ -822,7 +816,7 @@ there is no "medium speed".</p>
 Exactly one of <a class="link" href="glib-Testing.html#g-test-quick" title="g_test_quick"><code class="function">g_test_quick()</code></a> and <a class="link" href="glib-Testing.html#g-test-slow" title="g_test_slow"><code class="function">g_test_slow()</code></a> is active in any run;
 there is no "medium speed".</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.7.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.7.5"></a><h4>Returns</h4>
 <p> the opposite of <a class="link" href="glib-Testing.html#g-test-quick" title="g_test_quick"><code class="function">g_test_quick()</code></a></p>
 <p></p>
 </div>
@@ -834,7 +828,7 @@ there is no "medium speed".</p>
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if tests are run in thorough mode, equivalent to
 <a class="link" href="glib-Testing.html#g-test-slow" title="g_test_slow"><code class="function">g_test_slow()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.8.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.8.5"></a><h4>Returns</h4>
 <p> the same thing as <a class="link" href="glib-Testing.html#g-test-slow" title="g_test_slow"><code class="function">g_test_slow()</code></a></p>
 <p></p>
 </div>
@@ -845,7 +839,7 @@ there is no "medium speed".</p>
 <pre class="programlisting">#define             g_test_perf()</pre>
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if tests are run in performance mode.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.9.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.9.5"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if in performance mode</p>
 <p></p>
 </div>
@@ -857,7 +851,7 @@ there is no "medium speed".</p>
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if tests are run in verbose mode.
 The default is neither <a class="link" href="glib-Testing.html#g-test-verbose" title="g_test_verbose"><code class="function">g_test_verbose()</code></a> nor <a class="link" href="glib-Testing.html#g-test-quiet" title="g_test_quiet"><code class="function">g_test_quiet()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.10.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.10.5"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if in verbose mode</p>
 <p></p>
 </div>
@@ -870,7 +864,7 @@ The default is neither <a class="link" href="glib-Testing.html#g-test-verbose" t
 behaviour, to verify that appropriate warnings are given. It might, in some
 cases, be useful to turn this off if running tests under valgrind.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.11.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.11.5"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if tests may provoke programming errors</p>
 <p></p>
 </div>
@@ -882,7 +876,7 @@ cases, be useful to turn this off if running tests under valgrind.</p>
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if tests are run in quiet mode.
 The default is neither <a class="link" href="glib-Testing.html#g-test-verbose" title="g_test_verbose"><code class="function">g_test_verbose()</code></a> nor <a class="link" href="glib-Testing.html#g-test-quiet" title="g_test_quiet"><code class="function">g_test_quiet()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.12.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.12.5"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if in quiet mode</p>
 <p></p>
 </div>
@@ -895,7 +889,7 @@ g_test_subprocess (<em class="parameter"><code><span class="type">void</span></c
 <p>Returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> (after <a class="link" href="glib-Testing.html#g-test-init" title="g_test_init ()"><code class="function">g_test_init()</code></a> has been called) if the test
 program is running under <a class="link" href="glib-Testing.html#g-test-trap-subprocess" title="g_test_trap_subprocess ()"><code class="function">g_test_trap_subprocess()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.13.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.13.5"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the test program is running under
 <a class="link" href="glib-Testing.html#g-test-trap-subprocess" title="g_test_trap_subprocess ()"><code class="function">g_test_trap_subprocess()</code></a>.</p>
 <p></p>
@@ -935,7 +929,7 @@ particular code runs before or after a given test case, use
 <p>If all tests are skipped, this function will return 0 if
 producing TAP output, or 77 (treated as "skip test" by Automake) otherwise.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.14.8"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.14.8"></a><h4>Returns</h4>
 <p> 0 on success, 1 on failure (assuming it returns at all),
 0 or 77 if all tests were skipped with <a class="link" href="glib-Testing.html#g-test-skip" title="g_test_skip ()"><code class="function">g_test_skip()</code></a></p>
 <p></p>
@@ -966,7 +960,7 @@ slash-separated portions of <em class="parameter"><code>testpath</code></em>
 the test will be skipped by default, and only run if explicitly
 required via the <code class="literal">-p</code> command-line option or <a class="link" href="glib-Testing.html#g-test-trap-subprocess" title="g_test_trap_subprocess ()"><code class="function">g_test_trap_subprocess()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.16.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.16.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -997,7 +991,7 @@ required via the <code class="literal">-p</code> command-line option or <a class
 <p>The type used for test case functions that take an extra pointer
 argument.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.17.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.17.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1033,7 +1027,7 @@ will be passed as first argument to <em class="parameter"><code>test_func</code>
 the test will be skipped by default, and only run if explicitly
 required via the <code class="literal">-p</code> command-line option or <a class="link" href="glib-Testing.html#g-test-trap-subprocess" title="g_test_trap_subprocess ()"><code class="function">g_test_trap_subprocess()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.18.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.18.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1073,7 +1067,7 @@ g_test_add_data_func_full (<em class="parameter"><code>const <span class="type">
 <em class="parameter"><code>test_data</code></em>
  after the test run is complete.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.19.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.19.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1120,7 +1114,7 @@ though, similar to <a class="link" href="glib-Testing.html#g-test-create-case" t
  pointer as first argument in
 a type safe manner.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.20.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.20.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1189,7 +1183,7 @@ in the srcdir == builddir case and should also support running of
 installed tests, assuming the data files have been installed in the
 same relative path as the test binary.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.21.9"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.21.9"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1216,7 +1210,7 @@ same relative path as the test binary.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.29.8.21.10"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.21.10"></a><h4>Returns</h4>
 <p> the path of the file, to be freed using <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a></p>
 <p></p>
 </div>
@@ -1240,7 +1234,7 @@ but you must ensure that all such uses occur before the main testcase
 function returns (ie: it is best to ensure that all threads have been
 joined).</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.22.7"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.22.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1267,7 +1261,7 @@ joined).</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.29.8.22.8"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.22.8"></a><h4>Returns</h4>
 <p> the path, automatically freed at the end of the testcase</p>
 <p></p>
 </div>
@@ -1284,7 +1278,7 @@ specified by <em class="parameter"><code>file_type</code></em>
 <p>This is approximately the same as calling g_test_build_filename("."),
 but you don't need to free the return value.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.23.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.23.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1299,7 +1293,7 @@ but you don't need to free the return value.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.29.8.23.7"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.23.7"></a><h4>Returns</h4>
 <p> the path of the directory, owned by GLib</p>
 <p></p>
 </div>
@@ -1334,7 +1328,7 @@ produce additional diagnostic messages or even continue running
 the test.</p>
 <p>If not called from inside a test, this function does nothing.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.25.7"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.25.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1364,7 +1358,7 @@ produce additional diagnostic messages or even continue running
 the test.</p>
 <p>If not called from inside a test, this function does nothing.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.26.7"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.26.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1394,7 +1388,7 @@ continuing after a failed assertion might be harmful.</p>
 <p>The return value of this function is only meaningful
 if it is called from inside a test function.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.27.7"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.27.7"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the test has failed</p>
 <p></p>
 </div>
@@ -1408,7 +1402,7 @@ g_test_message (<em class="parameter"><code>const <span class="type">char</span>
                 <em class="parameter"><code>...</code></em>);</pre>
 <p>Add a message to the test report.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.28.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.28.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1450,7 +1444,7 @@ portion to <em class="parameter"><code>uri_pattern</code></em>
 '%s' within <em class="parameter"><code>uri_pattern</code></em>
  if that is present.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.29.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.29.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1477,7 +1471,7 @@ Bug URIs are constructed from a base URI set with <a class="link" href="glib-Tes
 and <em class="parameter"><code>bug_uri_snippet</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.30.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.30.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1503,7 +1497,7 @@ and <em class="parameter"><code>bug_uri_snippet</code></em>
                       <em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gpointer" title="gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>Specifies the prototype of fatal log handler functions.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.31.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.31.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1535,7 +1529,7 @@ and <em class="parameter"><code>bug_uri_snippet</code></em>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.29.8.31.6"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.31.6"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the program should abort, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise</p>
 <p></p>
 </div>
@@ -1560,7 +1554,7 @@ any test case, so you have to set it inside each test
 function which needs the special behavior.</p>
 <p>This handler has no effect on g_error messages.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.32.8"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.32.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1599,7 +1593,7 @@ to be done. Call this function again to restart the timer.</p>
 g_test_timer_elapsed (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>Get the time since the last start of the timer with <a class="link" href="glib-Testing.html#g-test-timer-start" title="g_test_timer_start ()"><code class="function">g_test_timer_start()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.34.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.34.5"></a><h4>Returns</h4>
 <p> the time since the last start of the timer, as a double</p>
 <p></p>
 </div>
@@ -1612,7 +1606,7 @@ g_test_timer_elapsed (<em class="parameter"><code><span class="type">void</span>
 g_test_timer_last (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>Report the last result of <a class="link" href="glib-Testing.html#g-test-timer-elapsed" title="g_test_timer_elapsed ()"><code class="function">g_test_timer_elapsed()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.35.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.35.5"></a><h4>Returns</h4>
 <p> the last result of <a class="link" href="glib-Testing.html#g-test-timer-elapsed" title="g_test_timer_elapsed ()"><code class="function">g_test_timer_elapsed()</code></a>, as a double</p>
 <p></p>
 </div>
@@ -1627,7 +1621,7 @@ g_test_queue_free (<em class="parameter"><code><a class="link" href="glib-Basic-
 teardown phase. This is equivalent to calling <a class="link" href="glib-Testing.html#g-test-queue-destroy" title="g_test_queue_destroy ()"><code class="function">g_test_queue_destroy()</code></a>
 with a destroy callback of <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.36.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.36.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1657,7 +1651,7 @@ Resources are released in reverse queue order, that means enqueueing
 callback A before callback B will cause <code class="function">B()</code> to be called before
 <code class="function">A()</code> during teardown.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.37.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.37.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1684,11 +1678,11 @@ callback A before callback B will cause <code class="function">B()</code> to be 
 <div class="refsect2">
 <a name="g-test-queue-unref"></a><h3>g_test_queue_unref()</h3>
 <pre class="programlisting">#define             g_test_queue_unref(gobject)</pre>
-<p>Enqueue an object to be released with <a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> during
+<p>Enqueue an object to be released with <code class="function">g_object_unref()</code> during
 the next teardown phase. This is equivalent to calling
-<a class="link" href="glib-Testing.html#g-test-queue-destroy" title="g_test_queue_destroy ()"><code class="function">g_test_queue_destroy()</code></a> with a destroy callback of <a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a>.</p>
+<a class="link" href="glib-Testing.html#g-test-queue-destroy" title="g_test_queue_destroy ()"><code class="function">g_test_queue_destroy()</code></a> with a destroy callback of <code class="function">g_object_unref()</code>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.38.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.38.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1735,13 +1729,13 @@ the same order as the calls to <a class="link" href="glib-Testing.html#g-test-ex
 5
 6
 7</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="comment">// g_main_context_push_thread_default() should fail if the</span>
-<span class="comment">// context is already owned by another thread.</span>
-<span class="function"><a href="glib-Testing.html#g-test-expect-message">g_test_expect_message</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="glib-Message-Logging.html#G-LOG-DOMAIN:CAPS">G_LOG_DOMAIN</a></span><span class="symbol">,</span>
-<span class="normal">                       G_LOG_LEVEL_CRITICAL</span><span class="symbol">,</span>
-<span class="normal">                       </span><span class="string">"assertion*acquired_context*failed"</span><span class="symbol">);</span>
-<span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-context-push-thread-default">g_main_context_push_thread_default</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">bad_context</span><span class="symbol">);</span>
-<span class="function"><a href="glib-Testing.html#g-test-assert-expected-messages">g_test_assert_expected_messages</a></span><span class="normal"> </span><span class="symbol">();</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc slc">// g_main_context_push_thread_default() should fail if the</span>
+<span class="gtkdoc slc">// context is already owned by another thread.</span>
+<span class="function"><a href="glib-Testing.html#g-test-expect-message">g_test_expect_message</a></span> <span class="gtkdoc opt">(</span>G_LOG_DOMAIN<span class="gtkdoc opt">,</span>
+                       G_LOG_LEVEL_CRITICAL<span class="gtkdoc opt">,</span>
+                       <span class="string">&quot;assertion*acquired_context*failed&quot;</span><span class="gtkdoc opt">);</span>
+<span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-context-push-thread-default">g_main_context_push_thread_default</a></span> <span class="gtkdoc opt">(</span>bad_context<span class="gtkdoc opt">);</span>
+<span class="function"><a href="glib-Testing.html#g-test-assert-expected-messages">g_test_assert_expected_messages</a></span> <span class="gtkdoc opt">();</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1754,7 +1748,7 @@ abort; use <a class="link" href="glib-Testing.html#g-test-trap-subprocess" title
 <p>If messages at <a class="link" href="glib-Message-Logging.html#G-LOG-LEVEL-DEBUG:CAPS"><code class="literal">G_LOG_LEVEL_DEBUG</code></a> are emitted, but not explicitly
 expected via <a class="link" href="glib-Testing.html#g-test-expect-message" title="g_test_expect_message ()"><code class="function">g_test_expect_message()</code></a> then they will be ignored.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.39.12"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.39.12"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1859,30 +1853,30 @@ message.</p>
 22
 23
 24</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">static</span><span class="normal"> </span><span class="type">void</span>
-<span class="function">test_create_large_object_subprocess</span><span class="normal"> </span><span class="symbol">(</span><span class="type">void</span><span class="symbol">)</span>
-<span class="cbracket">{</span>
-<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-Testing.html#g-test-subprocess">g_test_subprocess</a></span><span class="normal"> </span><span class="symbol">())</span>
-<span class="normal">    </span><span class="cbracket">{</span>
-<span class="normal">      </span><span class="function">my_object_new</span><span class="normal"> </span><span class="symbol">(</span><span class="number">1000000</span><span class="symbol">);</span>
-<span class="normal">      </span><span class="keyword">return</span><span class="symbol">;</span>
-<span class="normal">    </span><span class="cbracket">}</span>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">static void</span>
+<span class="function">test_create_large_object_subprocess</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">void</span><span class="gtkdoc opt">)</span>
+<span class="gtkdoc opt">{</span>
+  <span class="keyword">if</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-Testing.html#g-test-subprocess">g_test_subprocess</a></span> <span class="gtkdoc opt">())</span>
+    <span class="gtkdoc opt">{</span>
+      <span class="function">my_object_new</span> <span class="gtkdoc opt">(</span><span class="number">1000000</span><span class="gtkdoc opt">);</span>
+      <span class="keyword">return</span><span class="gtkdoc opt">;</span>
+    <span class="gtkdoc opt">}</span>
 
-<span class="normal">  </span><span class="comment">// Reruns this same test in a subprocess</span>
-<span class="normal">  </span><span class="function"><a href="glib-Testing.html#g-test-trap-subprocess">g_test_trap_subprocess</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="function"><a href="glib-Testing.html#g-test-trap-assert-failed">g_test_trap_assert_failed</a></span><span class="normal"> </span><span class="symbol">();</span>
-<span class="normal">  </span><span class="function"><a href="glib-Testing.html#g-test-trap-assert-stderr">g_test_trap_assert_stderr</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"*ERROR*too large*"</span><span class="symbol">);</span>
-<span class="cbracket">}</span>
+  <span class="gtkdoc slc">// Reruns this same test in a subprocess</span>
+  <span class="function"><a href="glib-Testing.html#g-test-trap-subprocess">g_test_trap_subprocess</a></span> <span class="gtkdoc opt">(</span>NULL<span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">);</span>
+  <span class="function"><a href="glib-Testing.html#g-test-trap-assert-failed">g_test_trap_assert_failed</a></span> <span class="gtkdoc opt">();</span>
+  <span class="function"><a href="glib-Testing.html#g-test-trap-assert-stderr">g_test_trap_assert_stderr</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;*ERROR*too large*&quot;</span><span class="gtkdoc opt">);</span>
+<span class="gtkdoc opt">}</span>
 
-<span class="type">int</span>
-<span class="function">main</span><span class="normal"> </span><span class="symbol">(</span><span class="type">int</span><span class="normal"> argc</span><span class="symbol">,</span><span class="normal"> </span><span class="type">char</span><span class="normal"> </span><span class="symbol">**</span><span class="normal">argv</span><span class="symbol">)</span>
-<span class="cbracket">{</span>
-<span class="normal">  </span><span class="function"><a href="glib-Testing.html#g-test-init">g_test_init</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">argc</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">argv</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
+<span class="gtkdoc kwb">int</span>
+<span class="function">main</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">int</span> argc<span class="gtkdoc opt">,</span> <span class="gtkdoc kwb">char</span> <span class="gtkdoc opt">**</span>argv<span class="gtkdoc opt">)</span>
+<span class="gtkdoc opt">{</span>
+  <span class="function"><a href="glib-Testing.html#g-test-init">g_test_init</a></span> <span class="gtkdoc opt">(&amp;</span>argc<span class="gtkdoc opt">, &amp;</span>argv<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span>
 
-<span class="normal">  </span><span class="function"><a href="glib-Testing.html#g-test-add-func">g_test_add_func</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"/myobject/create_large_object"</span><span class="symbol">,</span>
-<span class="normal">                   test_create_large_object</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="keyword">return</span><span class="normal"> </span><span class="function"><a href="glib-Testing.html#g-test-run">g_test_run</a></span><span class="normal"> </span><span class="symbol">();</span>
-<span class="cbracket">}</span></pre></td>
+  <span class="function"><a href="glib-Testing.html#g-test-add-func">g_test_add_func</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;/myobject/create_large_object&quot;</span><span class="gtkdoc opt">,</span>
+                   test_create_large_object<span class="gtkdoc opt">);</span>
+  <span class="keyword">return</span> <span class="function"><a href="glib-Testing.html#g-test-run">g_test_run</a></span> <span class="gtkdoc opt">();</span>
+<span class="gtkdoc opt">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1890,7 +1884,7 @@ message.</p>
 
 <p></p>
 <div class="refsect3">
-<a name="id-1.5.29.8.41.14"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.41.14"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1925,7 +1919,7 @@ message.</p>
 g_test_trap_has_passed (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>Check the result of the last <a class="link" href="glib-Testing.html#g-test-trap-subprocess" title="g_test_trap_subprocess ()"><code class="function">g_test_trap_subprocess()</code></a> call.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.42.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.42.5"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the last test subprocess terminated successfully.</p>
 <p></p>
 </div>
@@ -1938,7 +1932,7 @@ g_test_trap_has_passed (<em class="parameter"><code><span class="type">void</spa
 g_test_trap_reached_timeout (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>Check the result of the last <a class="link" href="glib-Testing.html#g-test-trap-subprocess" title="g_test_trap_subprocess ()"><code class="function">g_test_trap_subprocess()</code></a> call.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.43.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.43.5"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the last test subprocess got killed due to a timeout.</p>
 <p></p>
 </div>
@@ -1973,7 +1967,7 @@ to indicate that undefined behaviour may be tested.</p>
 <em class="parameter"><code>soutpattern</code></em>
 . See <a class="link" href="glib-Testing.html#g-test-trap-subprocess" title="g_test_trap_subprocess ()"><code class="function">g_test_trap_subprocess()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.46.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.46.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -1997,7 +1991,7 @@ to indicate that undefined behaviour may be tested.</p>
 does not match <em class="parameter"><code>soutpattern</code></em>
 . See <a class="link" href="glib-Testing.html#g-test-trap-subprocess" title="g_test_trap_subprocess ()"><code class="function">g_test_trap_subprocess()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.47.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.47.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2027,7 +2021,7 @@ entire test, including the call to <a class="link" href="glib-Testing.html#g-tes
 <a class="link" href="glib-Testing.html#g-test-undefined" title="g_test_undefined"><code class="function">g_test_undefined()</code></a> returns <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> to indicate that undefined
 behaviour may be tested.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.48.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.48.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2051,7 +2045,7 @@ behaviour may be tested.</p>
 does not match <em class="parameter"><code>serrpattern</code></em>
 . See <a class="link" href="glib-Testing.html#g-test-trap-subprocess" title="g_test_trap_subprocess ()"><code class="function">g_test_trap_subprocess()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.49.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.49.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2106,19 +2100,19 @@ termination and validates child program outputs.</p>
 11
 12
 13</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">static</span><span class="normal"> </span><span class="type">void</span>
-<span class="function">test_fork_patterns</span><span class="normal"> </span><span class="symbol">(</span><span class="type">void</span><span class="symbol">)</span>
-<span class="cbracket">{</span>
-<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-Testing.html#g-test-trap-fork">g_test_trap_fork</a></span><span class="normal"> </span><span class="symbol">(</span><span class="number">0</span><span class="symbol">,</span><span class="normal"> G_TEST_TRAP_SILENCE_STDOUT </span><span class="symbol">|</span><span class="normal"> G_TEST_TRAP_SILENCE_STDERR</span><span class="symbol">))</span>
-<span class="normal">    </span><span class="cbracket">{</span>
-<span class="normal">      </span><span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"some stdout text: somagic17</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">);</span>
-<span class="normal">      </span><span class="function"><a href="glib-Warnings-and-Assertions.html#g-printerr">g_printerr</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"some stderr text: semagic43</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">);</span>
-<span class="normal">      </span><span class="function">exit</span><span class="normal"> </span><span class="symbol">(</span><span class="number">0</span><span class="symbol">);</span><span class="normal"> </span><span class="comment">// successful test run</span>
-<span class="normal">    </span><span class="cbracket">}</span>
-<span class="normal">  </span><span class="function"><a href="glib-Testing.html#g-test-trap-assert-passed">g_test_trap_assert_passed</a></span><span class="normal"> </span><span class="symbol">();</span>
-<span class="normal">  </span><span class="function"><a href="glib-Testing.html#g-test-trap-assert-stdout">g_test_trap_assert_stdout</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"*somagic17*"</span><span class="symbol">);</span>
-<span class="normal">  </span><span class="function"><a href="glib-Testing.html#g-test-trap-assert-stderr">g_test_trap_assert_stderr</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"*semagic43*"</span><span class="symbol">);</span>
-<span class="cbracket">}</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">static void</span>
+<span class="function">test_fork_patterns</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">void</span><span class="gtkdoc opt">)</span>
+<span class="gtkdoc opt">{</span>
+  <span class="keyword">if</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-Testing.html#g-test-trap-fork">g_test_trap_fork</a></span> <span class="gtkdoc opt">(</span><span class="number">0</span><span class="gtkdoc opt">,</span> G_TEST_TRAP_SILENCE_STDOUT <span class="gtkdoc opt">|</span> G_TEST_TRAP_SILENCE_STDERR<span class="gtkdoc opt">))</span>
+    <span class="gtkdoc opt">{</span>
+      <span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;some stdout text: somagic17</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">);</span>
+      <span class="function"><a href="glib-Warnings-and-Assertions.html#g-printerr">g_printerr</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;some stderr text: semagic43</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">);</span>
+      <span class="function">exit</span> <span class="gtkdoc opt">(</span><span class="number">0</span><span class="gtkdoc opt">);</span> <span class="gtkdoc slc">// successful test run</span>
+    <span class="gtkdoc opt">}</span>
+  <span class="function"><a href="glib-Testing.html#g-test-trap-assert-passed">g_test_trap_assert_passed</a></span> <span class="gtkdoc opt">();</span>
+  <span class="function"><a href="glib-Testing.html#g-test-trap-assert-stdout">g_test_trap_assert_stdout</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;*somagic17*&quot;</span><span class="gtkdoc opt">);</span>
+  <span class="function"><a href="glib-Testing.html#g-test-trap-assert-stderr">g_test_trap_assert_stderr</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;*semagic43*&quot;</span><span class="gtkdoc opt">);</span>
+<span class="gtkdoc opt">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -2126,7 +2120,7 @@ termination and validates child program outputs.</p>
 
 <p></p>
 <div class="refsect3">
-<a name="id-1.5.29.8.50.12"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.50.12"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2148,7 +2142,7 @@ termination and validates child program outputs.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.29.8.50.13"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.50.13"></a><h4>Returns</h4>
 <p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> for the forked child and <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> for the executing parent process.</p>
 <p></p>
 </div>
@@ -2175,7 +2169,7 @@ given when starting test programs.</p>
 reseeded, to avoid dependencies between tests and to make --seed
 effective for all test cases.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.52.7"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.52.7"></a><h4>Returns</h4>
 <p> a random number from the seeded random number generator.</p>
 <p></p>
 </div>
@@ -2190,7 +2184,7 @@ g_test_rand_int_range (<em class="parameter"><code><a class="link" href="glib-Ba
 <p>Get a reproducible random integer number out of a specified range,
 see <a class="link" href="glib-Testing.html#g-test-rand-int" title="g_test_rand_int ()"><code class="function">g_test_rand_int()</code></a> for details on test case random numbers.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.53.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.53.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2212,7 +2206,7 @@ see <a class="link" href="glib-Testing.html#g-test-rand-int" title="g_test_rand_
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.29.8.53.6"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.53.6"></a><h4>Returns</h4>
 <p> a number with <em class="parameter"><code>begin</code></em>
 &lt;= number &lt; <em class="parameter"><code>end</code></em>
 .</p>
@@ -2228,7 +2222,7 @@ g_test_rand_double (<em class="parameter"><code><span class="type">void</span></
 <p>Get a reproducible random floating point number,
 see <a class="link" href="glib-Testing.html#g-test-rand-int" title="g_test_rand_int ()"><code class="function">g_test_rand_int()</code></a> for details on test case random numbers.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.54.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.54.5"></a><h4>Returns</h4>
 <p> a random number from the seeded random number generator.</p>
 <p></p>
 </div>
@@ -2243,7 +2237,7 @@ g_test_rand_double_range (<em class="parameter"><code><span class="type">double<
 <p>Get a reproducible random floating pointer number out of a specified range,
 see <a class="link" href="glib-Testing.html#g-test-rand-int" title="g_test_rand_int ()"><code class="function">g_test_rand_int()</code></a> for details on test case random numbers.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.55.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.55.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2265,7 +2259,7 @@ see <a class="link" href="glib-Testing.html#g-test-rand-int" title="g_test_rand_
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.29.8.55.6"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.55.6"></a><h4>Returns</h4>
 <p> a number with <em class="parameter"><code>range_start</code></em>
 &lt;= number &lt; <em class="parameter"><code>range_end</code></em>
 .</p>
@@ -2283,7 +2277,7 @@ an error message is logged and the application is terminated.</p>
 <p>The macro can be turned off in final releases of code by defining
 <code class="literal">G_DISABLE_ASSERT</code> when compiling the application.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.56.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.56.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2327,7 +2321,7 @@ includes the actual values of <em class="parameter"><code>s1</code></em>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Testing.html#g-assert-cmpstr">g_assert_cmpstr</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">mystring</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">==,</span><span class="normal"> </span><span class="string">"fubar"</span><span class="symbol">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Testing.html#g-assert-cmpstr">g_assert_cmpstr</a></span> <span class="gtkdoc opt">(</span>mystring<span class="gtkdoc opt">, ==,</span> <span class="string">&quot;fubar&quot;</span><span class="gtkdoc opt">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -2335,7 +2329,7 @@ includes the actual values of <em class="parameter"><code>s1</code></em>
 
 <p></p>
 <div class="refsect3">
-<a name="id-1.5.29.8.58.8"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.58.8"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2376,7 +2370,7 @@ actual values of <em class="parameter"><code>n1</code></em>
  and <em class="parameter"><code>n2</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.59.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.59.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2417,7 +2411,7 @@ actual values of <em class="parameter"><code>n1</code></em>
  and <em class="parameter"><code>n2</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.60.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.60.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2454,7 +2448,7 @@ One of ==, !=, &lt;, &gt;, &lt;=, &gt;=.</p></td>
 <p>This is a variant of <a class="link" href="glib-Testing.html#g-assert-cmpuint" title="g_assert_cmpuint()"><code class="function">g_assert_cmpuint()</code></a> that displays the numbers
 in hexadecimal notation in the message.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.61.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.61.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2495,7 +2489,7 @@ actual values of <em class="parameter"><code>n1</code></em>
  and <em class="parameter"><code>n2</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.62.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.62.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2534,7 +2528,7 @@ the same as <code class="literal">g_assert_true (err == NULL)</code>. The advant
 of this macro is that it can produce a message that includes
 the error message and code.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.63.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.63.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2566,7 +2560,7 @@ test that <em class="parameter"><code>err</code></em>
  is set, but don't care what it's set to, just use
 <code class="literal">g_assert (err != NULL)</code></p>
 <div class="refsect3">
-<a name="id-1.5.29.8.64.7"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.64.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2604,7 +2598,7 @@ an error message is logged and the application is either
 terminated or the testcase marked as failed.</p>
 <p>See <a class="link" href="glib-Testing.html#g-test-set-nonfatal-assertions" title="g_test_set_nonfatal_assertions ()"><code class="function">g_test_set_nonfatal_assertions()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.65.7"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.65.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2630,7 +2624,7 @@ an error message is logged and the application is either
 terminated or the testcase marked as failed.</p>
 <p>See <a class="link" href="glib-Testing.html#g-test-set-nonfatal-assertions" title="g_test_set_nonfatal_assertions ()"><code class="function">g_test_set_nonfatal_assertions()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.66.7"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.66.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2656,7 +2650,7 @@ an error message is logged and the application is either
 terminated or the testcase marked as failed.</p>
 <p>See <a class="link" href="glib-Testing.html#g-test-set-nonfatal-assertions" title="g_test_set_nonfatal_assertions ()"><code class="function">g_test_set_nonfatal_assertions()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.67.7"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.67.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2682,7 +2676,7 @@ an error message is logged and the application is either
 terminated or the testcase marked as failed.</p>
 <p>See <a class="link" href="glib-Testing.html#g-test-set-nonfatal-assertions" title="g_test_set_nonfatal_assertions ()"><code class="function">g_test_set_nonfatal_assertions()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.68.7"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.68.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2735,7 +2729,7 @@ zero then <em class="parameter"><code>fixture</code></em>
  will be equal to <em class="parameter"><code>user_data</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.70.7"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.70.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2789,7 +2783,7 @@ called with the same fixture, but varying <em class="parameter"><code>test_name<
 <em class="parameter"><code>data_test</code></em>
  arguments.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.71.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.71.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2831,7 +2825,7 @@ called with the same fixture, but varying <em class="parameter"><code>test_name<
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.29.8.71.7"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.71.7"></a><h4>Returns</h4>
 <p> a newly allocated <a class="link" href="glib-Testing.html#GTestCase" title="GTestCase"><span class="type">GTestCase</span></a>.</p>
 <p></p>
 </div>
@@ -2845,7 +2839,7 @@ g_test_create_suite (<em class="parameter"><code>const <span class="type">char</
 <p>Create a new test suite with the name <em class="parameter"><code>suite_name</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.72.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.72.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2860,7 +2854,7 @@ g_test_create_suite (<em class="parameter"><code>const <span class="type">char</
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.29.8.72.6"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.72.6"></a><h4>Returns</h4>
 <p> A newly allocated <a class="link" href="glib-Testing.html#GTestSuite" title="GTestSuite"><span class="type">GTestSuite</span></a> instance.</p>
 <p></p>
 </div>
@@ -2873,7 +2867,7 @@ g_test_create_suite (<em class="parameter"><code>const <span class="type">char</
 g_test_get_root (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>Get the toplevel test suite for the test path API.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.73.5"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.73.5"></a><h4>Returns</h4>
 <p> the toplevel <a class="link" href="glib-Testing.html#GTestSuite" title="GTestSuite"><span class="type">GTestSuite</span></a></p>
 <p></p>
 </div>
@@ -2889,7 +2883,7 @@ g_test_suite_add (<em class="parameter"><code><a class="link" href="glib-Testing
  to <em class="parameter"><code>suite</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.74.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.74.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2922,7 +2916,7 @@ g_test_suite_add_suite (<em class="parameter"><code><a class="link" href="glib-T
  to <em class="parameter"><code>suite</code></em>
 .</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.75.5"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.75.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2959,7 +2953,7 @@ order that tests are run in.</p>
 <p>g_test_run_suite() or <a class="link" href="glib-Testing.html#g-test-run" title="g_test_run ()"><code class="function">g_test_run()</code></a> may only be called once
 in a program.</p>
 <div class="refsect3">
-<a name="id-1.5.29.8.76.6"></a><h4>Parameters</h4>
+<a name="id-1.5.29.7.76.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -2974,7 +2968,7 @@ in a program.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.29.8.76.7"></a><h4>Returns</h4>
+<a name="id-1.5.29.7.76.7"></a><h4>Returns</h4>
 <p> 0 on success</p>
 <p></p>
 </div>
@@ -3000,7 +2994,7 @@ part of the build-from-git process (but then are distributed with the
 tarball) always go in srcdir (even if doing a srcdir != builddir
 build from git) and are considered as distributed files.</p>
 <div class="refsect3">
-<a name="id-1.5.29.9.2.6"></a><h4>Members</h4>
+<a name="id-1.5.29.8.2.6"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -3039,7 +3033,7 @@ which is deprecated. <a class="link" href="glib-Testing.html#g-test-trap-subproc
 <p>Test traps are guards around forked tests.
 These flags determine what traps to set.</p>
 <div class="refsect3">
-<a name="id-1.5.29.9.3.5"></a><h4>Members</h4>
+<a name="id-1.5.29.8.3.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -3087,7 +3081,7 @@ These flags determine what traps to set.</p>
 <p>Note that in contrast with <a class="link" href="glib-Testing.html#g-test-trap-fork" title="g_test_trap_fork ()"><code class="function">g_test_trap_fork()</code></a>, the default is to
 not show stdout and stderr.</p>
 <div class="refsect3">
-<a name="id-1.5.29.9.4.5"></a><h4>Members</h4>
+<a name="id-1.5.29.8.4.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
