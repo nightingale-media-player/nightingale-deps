@@ -146,6 +146,7 @@ cd "$objdir/xulrunner/tools/redit" && $CP -Lfpa *redit "$sdkdir/bin"
 
 # POSSIBLY BROKEN - breakpad binaries
 cd "$objdir/toolkit/crashreporter/google-breakpad/src/tools/linux/dump_syms" && $CP -Lfpa *dump_syms "$sdkdir/bin"
+cd "$objdir/toolkit/crashreporter/google-breakpad/src/tools/mac/dump_syms" && $CP -Lfpa *dump_syms "$sdkdir/bin"
 
 notice "copying library files..."
 cd "$sdkdir" && $MKDIR -p lib
