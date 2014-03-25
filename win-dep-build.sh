@@ -62,6 +62,7 @@ case $OSTYPE in
 
         # echo -e "Building FLAC...\n"
         # make -C flac -f Makefile.nightingale
+        # make -C flac-1.2.1 -f Makefile.nightingale
 
         # echo -e "Building taglib...\n"
         # make -C taglib -f Makefile.nightingale
