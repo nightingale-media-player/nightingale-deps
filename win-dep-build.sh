@@ -37,6 +37,9 @@ case $OSTYPE in
         # echo -e "Building libjpeg-turbo...\n"
         # make -C libjpeg-turbo -f Makefile.nightingale
 
+        # echo -e "Building zlib...\n"
+        # make -C zlib -f Makefile.nightingale
+
         ### TIER 1 ###
         # echo -e "Building gettext..."
         # make -C gettext -f Makefile.nightingale
@@ -46,9 +49,6 @@ case $OSTYPE in
 
         # echo -e "Building sqlite...\n"
         # make -C sqlite -f Makefile.nightingale
-
-        # echo -e "Building zlib...\n"
-        # make -C zlib -f Makefile.nightingale
 
         ### TIER 2 ###
         # echo -e "Building libogg...\n"
