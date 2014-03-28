@@ -30,7 +30,9 @@
 #include "video-frame.h"
 #include "gstvideometa.h"
 
+#ifndef WIN32
 GST_DEBUG_CATEGORY_EXTERN (GST_CAT_PERFORMANCE);
+#endif
 
 /**
  * gst_video_frame_map_id:
@@ -244,7 +246,9 @@ gst_video_frame_copy_plane (GstVideoFrame * dest, const GstVideoFrame * src,
       plane) * GST_VIDEO_FRAME_COMP_PSTRIDE (dest, plane);
   h = GST_VIDEO_FRAME_COMP_HEIGHT (dest, plane);
 
+#ifndef WIN32
   GST_CAT_DEBUG (GST_CAT_PERFORMANCE, "copy plane %d, w:%d h:%d ", plane, w, h);
+#endif
 
   for (j = 0; j < h; j++) {
     memcpy (dp, sp, w);
