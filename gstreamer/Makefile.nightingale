@@ -46,7 +46,9 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
       --disable-tests \
       --disable-trace \
       --disable-gtk-doc \
-      --disable-alloc-trace
+      --disable-alloc-trace \
+      --enable-shared \
+      --enable-static
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
   # use clwrapper in libtool-based modules for symbol generation (see bug 6486)
