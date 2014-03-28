@@ -30,6 +30,14 @@
 
 #include "gstvideoconvertorc.h"
 
+/* MSVC doesn't have rint */
+#ifdef WIN32
+static inline
+int rint(float f)
+{
+  return (f >= 0) ? (int) floor(f + 0.5) : (int) ceil(f - 0.5);
+}
+#endif
 
 static void videoconvert_convert_generic (VideoConvert * convert,
     GstVideoFrame * dest, const GstVideoFrame * src);
