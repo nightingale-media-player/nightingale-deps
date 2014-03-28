@@ -28,11 +28,11 @@ case $OSTYPE in
         export DIRECTX_SDK_ROOT="/c/Program Files (x86)/Microsoft DirectX SDK (June 2010)"
         export WINDOWS_SDK_ROOT="/c/Program Files (x86)/Microsoft SDKs/Windows/v7.0A"
 
-        # echo -e "Building libtool..."
-        # make -C libtool -f Makefile.nightingale
+# PAK #        # echo -e "Building libtool..."
+# PAK #        # make -C libtool -f Makefile.nightingale
 
-        # echo -e "Building libiconv..."
-        # make -C libiconv -f Makefile.nightingale
+# GTK #        # echo -e "Building libiconv..."
+# GTK #        # make -C libiconv -f Makefile.nightingale
 
         # echo -e "Building libjpeg-turbo...\n"
         # make -C libjpeg-turbo -f Makefile.nightingale
@@ -41,11 +41,11 @@ case $OSTYPE in
         # make -C zlib -f Makefile.nightingale
 
         ### TIER 1 ###
-        # echo -e "Building gettext..."
-        # make -C gettext -f Makefile.nightingale
+# GTK #        # echo -e "Building gettext..."
+# GTK #        # make -C gettext -f Makefile.nightingale
 
-        # echo -e "Building glib..."
-        # make -C glib -f Makefile.nightingale
+# GTK #        # echo -e "Building glib..."
+# GTK #        # make -C glib -f Makefile.nightingale
 
         # echo -e "Building sqlite...\n"
         # make -C sqlite -f Makefile.nightingale
