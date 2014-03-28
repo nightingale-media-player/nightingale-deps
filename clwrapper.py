@@ -24,12 +24,8 @@ def fix_link_args(fargs):
 			# make sure the path is a windows path
 			linkerargs.append("-LIBPATH:%s" % winpath(libpath))
 		elif fargs[i].startswith("-l") and not fargs[i] == "-link":
-			if fargs[i] == "-lz":
-				libname = "zlib"
-				linkerargs.append("%s.lib" % libname)
-			else:
-				libname = fargs[i][2:]
-				linkerargs.append("%s.lib" % libname)
+			libname = fargs[i][2:]
+			linkerargs.append("%s.lib" % libname)
 		elif fargs[i].startswith("-NODEFAULTLIB") or \
 				fargs[i].startswith("-DEFAULTLIB") or \
 				fargs[i].startswith("-LIBPATH"):
