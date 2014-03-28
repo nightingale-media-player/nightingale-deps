@@ -41,7 +41,7 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-pango \
         --disable-cdparanoia --disable-gio --disable-libvisual
 
-ifneq (Darwin,$(SB_VENDOR_ARCH))
+ifeq (,$(filter Msys Darwin,$(SB_VENDOR_ARCH)))
 	SB_CFLAGS += -Wl,-rpath=$(SB_VENDOR_BINARIES_DIR)/gstreamer/$(SB_BUILD_TYPE)/lib
 endif
 
@@ -54,7 +54,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
   # use clwrapper in libtool-based modules for symbol generation (see bug 6486)
   SB_CC = $(CURDIR)/../clwrapper.py
   SB_CXX = $(CURDIR)/../clwrapper.py
-  SB_CFLAGS += -D_USE_MATH_DEFINES -D_UNICODE -DUNICODE
+  SB_CFLAGS += -D_USE_MATH_DEFINES -D_UNICODE -DUNICODE -Dinline=__inline
   SB_USE_MOZCRT = 1
 endif
 
