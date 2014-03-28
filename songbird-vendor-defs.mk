@@ -488,10 +488,11 @@ endif
 #
 # Zlib
 #
-ifneq (,$(call enable-sb-lib, zlib))
-   ifeq (Msys,$(SB_VENDOR_ARCH))
+ifeq (Msys,$(SB_VENDOR_ARCH))
+   ifneq (,$(call enable-sb-lib, zlib))
       $(info Enabling Songbird vendor lib: zlib)
       SB_ZLIB_DIR := $(call find-dep-dir, zlib)
+      SB_LDFLAGS += -L$(SB_ZLIB_DIR)/lib -lz
       SB_PATH += $(SB_ZLIB_DIR)/bin
       SB_PKG_CONFIG_PATH += $(SB_ZLIB_DIR)/lib/pkgconfig
    endif
@@ -535,7 +536,7 @@ ifneq (,$(call enable-sb-lib, gstreamer))
    SB_GSTREAMER_DIR = $(call find-dep-dir, gstreamer)
    SB_PATH += $(SB_GSTREAMER_DIR)/bin
    SB_PKG_CONFIG_PATH += $(SB_GSTREAMER_DIR)/lib/pkgconfig
-  
+
    # A list of basic dylibs on mac that need to be fixed up across all the
    # gstreamer modules; these are built by various parts of gstreamer and 
    # base
