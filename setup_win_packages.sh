@@ -29,15 +29,28 @@ rmdir cmake-2.8.12.2-win32-x86
 
 
 # Need to build libffi for glib
-echo "Extracting up libffi"
+echo "Extracting libffi"
 tar -x -f libffi-3.0.13.tar.gz
 
-echo "Setting up libffi"
+echo "Building libffi"
 cd libffi-3.0.13
+./configure --prefix=/local && make && make install
+cd ..
+
+# Need to build libtool to prevent linking problems
+echo "Extracting libtool"
+tar -x -f libtool-2.4.2.tar.gz
+
+echo "Building libtool"
+cd libtool-2.4.2
 ./configure --prefix=/local && make && make install
 cd ..
 
 echo "Cleaing up"
 rm -rf libffi-3.0.13
+rm -rf libtool-2.4.2
 
+echo "cd $TOPDIR"
 cd $TOPDIR
+
+echo "Done"
