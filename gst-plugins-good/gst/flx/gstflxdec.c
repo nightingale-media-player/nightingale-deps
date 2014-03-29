@@ -47,6 +47,7 @@ static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_STATIC_CAPS ("video/x-fli")
     );
 
+#ifndef _MSC_VER
 /* output */
 static GstStaticPadTemplate src_video_factory = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -57,6 +58,14 @@ static GstStaticPadTemplate src_video_factory = GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("BGRx"))
 #endif
     );
+#else
+/* output */
+static GstStaticPadTemplate src_video_factory = GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("BGRx"))
+    );
+#endif
 
 static void gst_flxdec_dispose (GstFlxDec * flxdec);
 

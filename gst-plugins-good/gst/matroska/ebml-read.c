@@ -30,9 +30,10 @@
 
 #include <math.h>
 
-/* NAN is supposed to be in math.h, Microsoft defines it in xmath.h */
+/* NAN isn't defined in xmath.h in MSVC10 */
 #ifdef _MSC_VER
-#include <xmath.h>
+#define INFINITY (DBL_MAX+DBL_MAX)
+#define NAN (INFINITY-INFINITY)
 #endif
 
 /* If everything goes wrong try 0.0/0.0 which should be NAN */

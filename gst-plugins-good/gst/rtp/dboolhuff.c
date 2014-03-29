@@ -10,6 +10,10 @@
 
 #include "dboolhuff.h"
 
+#ifdef _MSC_VER
+#define __attribute__(x)
+#endif
+
 const unsigned char vp8_norm[256] __attribute__ ((aligned (16))) = {
 0, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4,
       3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
