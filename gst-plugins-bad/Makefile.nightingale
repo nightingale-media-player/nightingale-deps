@@ -98,6 +98,8 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 
   # autoconf hackery; see bug 16052
   export ac_cv_header_streams_h = yes
+  export DIRECTX_FLAGS = "-I/c/SDKs/Windows-SDK/v7.0/Include"
+  export DIRECTX_LDFLAGS = "-L/c/SDKs/Windows-SDK/v7.0/Lib -ld3d9 -lgdi32 -L/c/Windows/System -luser32"
 endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
