@@ -621,7 +621,7 @@ ifneq (,$(call enable-sb-lib, flac))
    SB_LIBFLAC_DIR = $(call find-dep-dir, flac)
    SB_LDFLAGS += -L$(SB_LIBFLAC_DIR)/lib
    ifeq (Msys,$(SB_VENDOR_ARCH))
-      SB_FLAC_LIBS += -lFLAC-8
+      SB_FLAC_LIBS += -lFLAC
       SB_PATH += $(SB_LIBFLAC_DIR)/bin
       ifeq (debug,$(SB_BUILD_TYPE))
          SB_FLAC_LIBS += -Wl,-Zi
