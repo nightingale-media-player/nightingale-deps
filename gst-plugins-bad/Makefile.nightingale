@@ -126,10 +126,12 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 	unix2dos $(DIRECTSHOW_LIBS_ROOT)/baseclasses.vcproj
 ifeq (debug,$(SB_BUILD_TYPE))
 	cd $(DIRECTSHOW_LIBS_ROOT) && \
+         devenv baseclasses.sln -Upgrade && \
          devenv baseclasses.sln -Build "Debug" -Project baseclasses
 endif
 ifeq (release,$(SB_BUILD_TYPE))
 	cd $(DIRECTSHOW_LIBS_ROOT) && \
+         devenv baseclasses.sln -Upgrade && \
          devenv baseclasses.sln -Build "Release" -Project baseclasses
 endif
 endif
