@@ -427,9 +427,9 @@ MOZ_XR_DIR = $(call find-dep-dir, $(SB_VENDOR_XR_TARGET))
 
 # Supporting SDK paths on Win32
 ifeq (Msys,$(SB_VENDOR_ARCH))
-   DIRECTX_SDK_ROOT ?= /d/ms-sdks/directx-aug08
-   WINDOWS_SDK_ROOT ?= /d/ms-sdks/Windows/v6.0
-   QUICKTIME_SDK_ROOT ?= /d/ms-sdks/QuickTimeSDK
+   DIRECTX_SDK_ROOT ?= /c//Program\ Files\ \(x86\)/Microsoft\ DirectX\ SDK\ \(June\ 2010\)
+   WINDOWS_SDK_ROOT ?= /c/Program\ Files/Microsoft\ SDKs/Windows/v7.0
+   QUICKTIME_SDK_ROOT ?= /c/Program\ Files\ \(x86\)/QuickTime\ SDK
 endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))

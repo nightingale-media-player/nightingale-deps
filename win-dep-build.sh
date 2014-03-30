@@ -25,8 +25,9 @@ case $OSTYPE in
             mkdir -p "checkout/windows-i686-msvc10"
         fi
 
-        export DIRECTX_SDK_ROOT="/c/Program Files (x86)/Microsoft DirectX SDK (June 2010)"
-        export WINDOWS_SDK_ROOT="/c/Program Files (x86)/Microsoft SDKs/Windows/v7.0A"
+        export DIRECTX_SDK_ROOT="/c/Program\ Files\ \(x86\)/Microsoft\ DirectX\ SDK \(June 2010\)"
+        export QUICKTIME_SDK_ROOT="/c/Program\ Files\ \(x86\)/QuickTime\ SDK"
+        export WINDOWS_SDK_ROOT="/c/Program\ Files/Microsoft\ SDKs/Windows/v7.0"
 
 # PAK #        # echo -e "Building libtool..."
 # PAK #        # make -C libtool -f Makefile.nightingale
