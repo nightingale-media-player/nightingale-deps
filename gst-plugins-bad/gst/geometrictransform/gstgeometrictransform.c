@@ -245,8 +245,14 @@ gst_geometric_transform_transform_frame (GstVideoFilter * vfilter,
     /* in AYUV black is not just all zeros:
      * 0x10 is black for Y,
      * 0x80 is black for Cr and Cb */
+#ifndef _MSC_VER
     for (int i = 0; i < out_frame->map[0].size; i += 4)
       GST_WRITE_UINT32_BE (out_data + i, 0xff108080);
+#else
+    gint i;
+    for (i = 0; i < out_frame->map[0].size; i += 4)
+      GST_WRITE_UINT32_BE (out_data + i, 0xff108080);
+#endif
   } else {
     memset (out_data, 0, out_frame->map[0].size);
   }

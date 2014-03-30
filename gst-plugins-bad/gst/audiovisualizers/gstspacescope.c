@@ -38,6 +38,7 @@
 #include <stdlib.h>
 #include "gstspacescope.h"
 
+#ifndef _MSC_VER
 static GstStaticPadTemplate gst_space_scope_src_template =
 GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
@@ -48,6 +49,14 @@ GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("BGRx"))
 #endif
     );
+#else
+static GstStaticPadTemplate gst_space_scope_src_template =
+GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE ("BGRx"))
+    );
+#endif
 
 static GstStaticPadTemplate gst_space_scope_sink_template =
 GST_STATIC_PAD_TEMPLATE ("sink",

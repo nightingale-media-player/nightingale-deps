@@ -41,6 +41,15 @@
 #include "gstaudiochannelmix.h"
 #include <math.h>
 
+/* MSVC doesn't have rint */
+#ifdef WIN32
+static inline
+int rint(float f)
+{
+  return (f >= 0) ? (int) floor(f + 0.5) : (int) ceil(f - 0.5);
+}
+#endif
+
 GST_DEBUG_CATEGORY_STATIC (gst_audio_channel_mix_debug_category);
 #define GST_CAT_DEFAULT gst_audio_channel_mix_debug_category
 
