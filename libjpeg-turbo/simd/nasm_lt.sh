@@ -50,7 +50,11 @@ done
 if [ "$o_opt" != yes ] ; then
     # By default, NASM creates an output file
     # in the same directory as the input file.
-    outfile="-o `echo $infile | sed -e 's%^.*/%%' -e 's%\.[^.]*$%%'`.o"
+    if [ -z "`echo $OS | grep Windows_NT`" ] ; then
+        outfile="-o `echo $infile | sed -e 's%^.*/%%' -e 's%\.[^.]*$%%'`.o"
+    else 
+        outfile="-o `echo $infile | sed -e 's%^.*/%%' -e 's%\.[^.]*$%%'`.obj"
+    fi
     command="$command $outfile"
 fi
 echo $command
