@@ -435,7 +435,7 @@ org/libjpegturbo/turbojpeg/TJLoader.java: $(srcdir)/org/libjpegturbo/turbojpeg/T
 
 @WITH_JAVA_TRUE@docs: all
 @WITH_JAVA_TRUE@	mkdir -p ${srcdir}/doc; \
-@WITH_JAVA_TRUE@	javadoc -d ${srcdir}/doc -sourcepath ${srcdir} org.libjpegturbo.turbojpeg
+@WITH_JAVA_TRUE@	javadoc -notimestamp -d ${srcdir}/doc -sourcepath ${srcdir} org.libjpegturbo.turbojpeg
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

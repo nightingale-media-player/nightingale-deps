@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2009-2012 D. R. Commander.  All Rights Reserved.
+ * Copyright (C)2009-2014 D. R. Commander.  All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -150,7 +150,7 @@ class TJBench {
     if (yuv == YUVDECODE)
       tjd.decompressToYUV(dstBuf, flags);
     else
-      tjd.decompress(dstBuf, scaledw, pitch, scaledh, pf, flags);
+      tjd.decompress(dstBuf, 0, 0, scaledw, pitch, scaledh, pf, flags);
 
     /* Benchmark */
     for (i = 0, start = getTime(); (elapsed = getTime() - start) < benchTime;
@@ -171,6 +171,9 @@ class TJBench {
     }
 
     tjd = null;
+    for (i = 0; i < jpegBuf.length; i++)
+      jpegBuf[i] = null;
+    jpegBuf = null;  jpegSize = null;
     System.gc();
 
     if (quiet != 0)
@@ -257,7 +260,7 @@ class TJBench {
                         (flags & TJ.FLAG_BOTTOMUP) != 0 ? "BU" : "TD",
                         subNameLong[subsamp]);
 
-    tjc = new TJCompressor(srcBuf, w, 0, h, pf);
+    tjc = new TJCompressor(srcBuf, 0, 0, w, 0, h, pf);
     tjc.setSubsamp(subsamp);
 
     /* Execute once to preload cache */
@@ -341,7 +344,7 @@ class TJBench {
                           subNameLong[subsamp], jpegQual);
       for (i = 0; i < h; i++)
         System.arraycopy(srcBuf, w * ps * i, tmpBuf, pitch * i, w * ps);
-      tjc.setSourceImage(srcBuf, tilew, pitch, tileh, pf);
+      tjc.setSourceImage(srcBuf, 0, 0, tilew, pitch, tileh, pf);
       tjc.setJPEGQuality(jpegQual);
       tjc.setSubsamp(subsamp);
 
@@ -401,11 +404,6 @@ class TJBench {
       decompTest(srcBuf, jpegBuf, jpegSize, tmpBuf, w, h, subsamp, jpegQual,
                  fileName, tilew, tileh);
 
-      for (i = 0; i < ntilesw * ntilesh; i++)
-        jpegBuf[i] = null;
-      jpegBuf = null;  jpegSize = null;
-      System.gc();
-
       if (tilew == w && tileh == h) break;
     }
   }
@@ -447,7 +445,7 @@ class TJBench {
                         (doTile ? "Tile " : "Image"));
       System.out.println("Format\tOrder\tSubsamp\tWidth Height\tPerf \tRatio\tPerf\n");
     } else if (quiet == 0) {
-      System.out.format(">>>>>  JPEG %s --> %s (%s)  <<<<<",
+      System.out.format(">>>>>  JPEG %s --> %s (%s)  <<<<<\n",
         subNameLong[subsamp], pixFormatStr[pf],
         (flags & TJ.FLAG_BOTTOMUP) != 0 ? "Bottom-up" : "Top-down");
     }
@@ -539,7 +537,7 @@ class TJBench {
         } else if (quiet == 0) {
           System.out.format("X--> Frame rate:           %f fps\n",
                             1.0 / elapsed);
-          System.out.format("     Output image size:    %lu bytes\n",
+          System.out.format("     Output image size:    %d bytes\n",
                             totalJpegSize);
           System.out.format("     Compression ratio:    %f:1\n",
                             (double)(w * h * ps) / (double)totalJpegSize);
@@ -600,6 +598,9 @@ class TJBench {
     System.out.println("     codec");
     System.out.println("-accuratedct = Use the most accurate DCT/IDCT algorithms available in the");
     System.out.println("     underlying codec");
+    System.out.println("-subsamp <s> = When testing JPEG compression, this option specifies the level");
+    System.out.println("     of chrominance subsampling to use (<s> = 444, 422, 440, 420, or GRAY).");
+    System.out.println("     The default is to test Grayscale, 4:2:0, 4:2:2, and 4:4:4 in sequence.");
     System.out.println("-quiet = Output results in tabular rather than verbose format");
     System.out.println("-yuvencode = Encode RGB input as planar YUV rather than compressing as JPEG");
     System.out.println("-yuvdecode = Decode JPEG image to planar YUV rather than RGB");
@@ -625,7 +626,7 @@ class TJBench {
     System.out.println("     decompression (these options are mutually exclusive)");
     System.out.println("-grayscale = Perform lossless grayscale conversion prior to decompression");
     System.out.println("     test (can be combined with the other transforms above)");
-    System.out.println("-benchTime <t> = Run each benchmark for at least <t> seconds (default = 5.0)\n");
+    System.out.println("-benchtime <t> = Run each benchmark for at least <t> seconds (default = 5.0)\n");
     System.out.println("NOTE:  If the quality is specified as a range (e.g. 90-100), a separate");
     System.out.println("test will be performed for all quality values in the range.\n");
     System.exit(1);
@@ -636,6 +637,7 @@ class TJBench {
     byte[] srcBuf = null;  int w = 0, h = 0;
     int minQual = -1, maxQual = -1;
     int minArg = 1;  int retval = 0;
+    int subsamp = -1;
 
     try {
 
@@ -782,6 +784,19 @@ class TJBench {
             else
               usage();
           }
+          if (argv[i].equalsIgnoreCase("-subsamp") && i < argv.length - 1) {
+            i++;
+            if (argv[i].toUpperCase().startsWith("G"))
+              subsamp = TJ.SAMP_GRAY;
+            else if (argv[i].equals("444"))
+              subsamp = TJ.SAMP_444;
+            else if (argv[i].equals("422"))
+              subsamp = TJ.SAMP_422;
+            else if (argv[i].equals("440"))
+              subsamp = TJ.SAMP_440;
+            else if (argv[i].equals("420"))
+              subsamp = TJ.SAMP_420;
+          }
           if (argv[i].equalsIgnoreCase("-?"))
             usage();
         }
@@ -825,21 +840,27 @@ class TJBench {
       }
 
       System.gc();
-      for (int i = maxQual; i >= minQual; i--)
-        doTest(srcBuf, w, h, TJ.SAMP_GRAY, i, argv[0]);
-      System.out.println("");
-      System.gc();
-      for (int i = maxQual; i >= minQual; i--)
-        doTest(srcBuf, w, h, TJ.SAMP_420, i, argv[0]);
-      System.out.println("");
-      System.gc();
-      for (int i = maxQual; i >= minQual; i--)
-        doTest(srcBuf, w, h, TJ.SAMP_422, i, argv[0]);
-      System.out.println("");
-      System.gc();
-      for (int i = maxQual; i >= minQual; i--)
-        doTest(srcBuf, w, h, TJ.SAMP_444, i, argv[0]);
-      System.out.println("");
+      if (subsamp >= 0 && subsamp < TJ.NUMSAMP) {
+        for (int i = maxQual; i >= minQual; i--)
+          doTest(srcBuf, w, h, subsamp, i, argv[0]);
+        System.out.println("");
+      } else {
+        for (int i = maxQual; i >= minQual; i--)
+          doTest(srcBuf, w, h, TJ.SAMP_GRAY, i, argv[0]);
+        System.out.println("");
+        System.gc();
+        for (int i = maxQual; i >= minQual; i--)
+          doTest(srcBuf, w, h, TJ.SAMP_420, i, argv[0]);
+        System.out.println("");
+        System.gc();
+        for (int i = maxQual; i >= minQual; i--)
+          doTest(srcBuf, w, h, TJ.SAMP_422, i, argv[0]);
+        System.out.println("");
+        System.gc();
+        for (int i = maxQual; i >= minQual; i--)
+          doTest(srcBuf, w, h, TJ.SAMP_444, i, argv[0]);
+        System.out.println("");
+      }
 
     } catch (Exception e) {
       System.out.println("ERROR: " + e.getMessage());
