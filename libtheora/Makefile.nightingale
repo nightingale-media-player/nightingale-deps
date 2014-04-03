@@ -47,7 +47,10 @@ SB_ACLOCAL_FLAGS += -I common/m4 \
                     $(NULL)
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
-  --disable-examples
+  --disable-examples \
+  --enable-shared \
+  --enable-static \
+  $(NULL)
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS := libtheora.0 \
                                  libtheoraenc.1 \
