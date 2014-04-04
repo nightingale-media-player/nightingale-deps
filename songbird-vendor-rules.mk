@@ -55,7 +55,7 @@ ifdef SB_USE_MOZCRT
    # actually runnable; we do this up here because SB_PATH's assignment-type
    # below.
    SB_PATH += $(MOZSDK_DIR)/lib
-   SB_LIBS += -L$(MOZSDK_DIR)/lib -lmozcrt
+   SB_LIBS += -L$(MOZSDK_DIR)/lib -lmozutils -lmozcrt
 endif
 
 SB_PATH := $(subst $(SPACE),:,$(strip $(SB_PATH))):$(PATH)
