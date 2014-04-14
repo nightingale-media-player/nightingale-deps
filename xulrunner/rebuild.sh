@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # XUL Version
-export XUL="9.0.1"
+export XUL="15.0.1"
 
 export ARCH="$(uname -m)"
 

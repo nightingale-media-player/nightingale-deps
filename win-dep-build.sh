@@ -3,7 +3,7 @@
 ARCH="$(uname -m)"
 
 # XUL Version
-export XUL="9.0.1"
+export XUL="15.0.1"
 
 export DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SB_VENDOR_BINARIES_CO_ROOT=$DIR

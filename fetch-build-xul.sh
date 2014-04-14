@@ -16,7 +16,7 @@ export SB_VENDOR_BINARIES_CO_ROOT=$DIR
 export SB_VENDOR_BUILD_ROOT=$DIR
 
 # XUL Version
-export XUL="9.0.1"
+export XUL="15.0.1"
 
 
 if [ ! -d "build" ] ; then
