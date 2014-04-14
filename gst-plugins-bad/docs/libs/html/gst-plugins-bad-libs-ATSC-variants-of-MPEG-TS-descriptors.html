@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ATSC variants of MPEG-TS descriptors</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="mpegts.html" title="Mpeg TS helper library">
+<link rel="prev" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html" title="DVB variants of MPEG-TS sections">
+<link rel="next" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html" title="DVB variants of MPEG-TS descriptors">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-sections.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="mpegts.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 1.0 Library Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-descriptors.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-descriptors.description" class="shortcut">Description</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-descriptors"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-descriptors.top_of_page"></a>ATSC variants of MPEG-TS descriptors</span></h2>
+<p>ATSC variants of MPEG-TS descriptors — Descriptors for the various ATSC specifications</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-descriptors.synopsis"></a><h2>Synopsis</h2>
+<pre class="synopsis">
+#include &lt;gst/mpegts/mpegts.h&gt;
+
+enum                <a class="link" href="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-descriptors.html#GstMpegTsATSCDescriptorType" title="enum GstMpegTsATSCDescriptorType">GstMpegTsATSCDescriptorType</a>;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-descriptors.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-descriptors.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="GstMpegTsATSCDescriptorType"></a><h3>enum GstMpegTsATSCDescriptorType</h3>
+<pre class="programlisting">typedef enum {
+  /* ATSC A/65 2009 */
+  GST_MTS_DESC_ATSC_STUFFING                    = 0x80,
+  GST_MTS_DESC_ATSC_AC3                         = 0x83,
+  GST_MTS_DESC_ATSC_CAPTION_SERVICE             = 0x86,
+  GST_MTS_DESC_ATSC_CONTENT_ADVISORY            = 0x87,
+  GST_MTS_DESC_ATSC_EXTENDED_CHANNEL_NAME       = 0xA0,
+  GST_MTS_DESC_ATSC_SERVICE_LOCATION            = 0xA1,
+  GST_MTS_DESC_ATSC_TIME_SHIFTED_SERVICE        = 0xA2,
+  GST_MTS_DESC_ATSC_COMPONENT_NAME              = 0xA3,
+  GST_MTS_DESC_ATSC_DCC_DEPARTING_REQUEST       = 0xA8,
+  GST_MTS_DESC_ATSC_DCC_ARRIVING_REQUEST        = 0xA9,
+  GST_MTS_DESC_ATSC_REDISTRIBUTION_CONTROL      = 0xAA,
+  GST_MTS_DESC_ATSC_GENRE                       = 0xAB,
+  GST_MTS_DESC_ATSC_PRIVATE_INFORMATION         = 0xAD,
+
+  /* ATSC A/53:3 2009 */
+  GST_MTS_DESC_ATSC_ENHANCED_SIGNALING          = 0xB2,
+
+  /* ATSC A/90 */
+  GST_MTS_DESC_ATSC_DATA_SERVICE                = 0xA4,
+  GST_MTS_DESC_ATSC_PID_COUNT                   = 0xA5,
+  GST_MTS_DESC_ATSC_DOWNLOAD_DESCRIPTOR         = 0xA6,
+  GST_MTS_DESC_ATSC_MULTIPROTOCOL_ENCAPSULATION = 0xA7,
+  GST_MTS_DESC_ATSC_MODULE_LINK                 = 0xB4,
+  GST_MTS_DESC_ATSC_CRC32                       = 0xB5,
+  GST_MTS_DESC_ATSC_GROUP_LINK                  = 0xB8,
+} GstMpegTsATSCDescriptorType;
+</pre>
+<p>
+These values correspond to the registered descriptor type from
+the various ATSC specifications.
+</p>
+<p>
+Consult the relevant specifications for more details.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-STUFFING:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_STUFFING</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-AC3:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_AC3</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-CAPTION-SERVICE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_CAPTION_SERVICE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-CONTENT-ADVISORY:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_CONTENT_ADVISORY</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-EXTENDED-CHANNEL-NAME:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_EXTENDED_CHANNEL_NAME</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-SERVICE-LOCATION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_SERVICE_LOCATION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-TIME-SHIFTED-SERVICE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_TIME_SHIFTED_SERVICE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-COMPONENT-NAME:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_COMPONENT_NAME</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-DCC-DEPARTING-REQUEST:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_DCC_DEPARTING_REQUEST</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-DCC-ARRIVING-REQUEST:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_DCC_ARRIVING_REQUEST</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-REDISTRIBUTION-CONTROL:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_REDISTRIBUTION_CONTROL</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-GENRE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_GENRE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-PRIVATE-INFORMATION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_PRIVATE_INFORMATION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-ENHANCED-SIGNALING:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_ENHANCED_SIGNALING</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-DATA-SERVICE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_DATA_SERVICE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-PID-COUNT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_PID_COUNT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-DOWNLOAD-DESCRIPTOR:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_DOWNLOAD_DESCRIPTOR</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-MULTIPROTOCOL-ENCAPSULATION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_MULTIPROTOCOL_ENCAPSULATION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-MODULE-LINK:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_MODULE_LINK</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-CRC32:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_CRC32</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-ATSC-GROUP-LINK:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_ATSC_GROUP_LINK</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+#!/usr/bin/env make
+#
+# Makefile for SQLITE
+#
+# This makefile is suppose to be configured automatically using the
+# autoconf.  But if that does not work for you, you can configure
+# the makefile manually.  Just set the parameters below to values that
+# work well for your system.
+#
+# If the configure script does not work out-of-the-box, you might
+# be able to get it to work by giving it some hints.  See the comment
+# at the beginning of configure.in for additional information.
+#
+
+# The toplevel directory of the source tree.  This is the directory
+# that contains this "Makefile.in" and the "configure.in" script.
+#
+TOP = @srcdir@
+TOP := @srcdir@
+BCC := @BUILD_CC@
+EXE := @TARGET_EXEEXT@
+TCC := @CC@
+AR  := @AR@
+RANLIB := @RANLIB@
+NAWK := @AWK@
+
+# random things from configure.ac
+SQLITE_OS_UNIX := @SQLITE_OS_UNIX@
+SQLITE_OS_WIN  := @SQLITE_OS_WIN@
+SQLITE_OS_OS2  := @SQLITE_OS_OS2@
+
+CFLAGS += $(filter-out -D%,@CFLAGS@)
+OPTS += $(filter -D%,@CFLAGS@)
+TLIBS += @LIBS@
+ 
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+libdir = @libdir@
+bindir = @bindir@
+includedir = @includedir@
+
+include $(TOP)/main.mk

@@ -50,11 +50,12 @@ ifdef SB_USE_MOZCRT
       $(error SB_USE_MOZCRT is only meaningful on Win32.)
    endif
 
-   # Add the mozsdk lib dir (containing mozcrt19.dll) to the runtime
+   # Add the mozsdk lib dir (containing mozcrt.lib & mozutils.dll) to the runtime
    # path, so that the configure tests that create executables are
    # actually runnable; we do this up here because SB_PATH's assignment-type
    # below.
    SB_PATH += $(MOZSDK_DIR)/lib
+   SB_LIBS += -L$(MOZSDK_DIR)/lib -lmozutils -lmozcrt
 endif
 
 SB_PATH := $(subst $(SPACE),:,$(strip $(SB_PATH))):$(PATH)
@@ -107,7 +108,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
       ifeq (1,$(SB_USE_MOZCRT))
          SB_CFLAGS += -MDd
          SB_LDFLAGS += -LIBPATH:$(call normalizepath,$(MOZSDK_DIR))/lib \
-          -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19d
+          -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt
       else
          SB_CFLAGS += -MTd
       endif
@@ -117,7 +118,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
       ifeq (1,$(SB_USE_MOZCRT))
          SB_CFLAGS += -MD
          SB_LDFLAGS += -LIBPATH:$(call normalizepath,$(MOZSDK_DIR))/lib \
-          -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt19
+          -NODEFAULTLIB:msvcrt -NODEFAULTLIB:msvcrtd -DEFAULTLIB:mozcrt
       else
          SB_CFLAGS += -MT
       endif
@@ -157,7 +158,7 @@ endif
   export JPEG_LIBS = $(SB_JPEG_LIBS)
 
   ifeq (Darwin,$(SB_VENDOR_ARCH))
-    export MACOSX_DEPLOYMENT_TARGET=10.4
+    export MACOSX_DEPLOYMENT_TARGET=10.6
     export DYLD_LIBRARY_PATH = $(SB_DYLD_LIBRARY_PATH)
   endif
 endif
@@ -174,12 +175,14 @@ ifneq (1,$(SB_VENDOR_SKIP_RELEASE_BUILD))
 	$(MAKE) -f $(SB_VENDOR_MAKEFILE) release
 endif
 
-debug: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) copy_symbols
+# debug: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) copy_symbols
+debug: build post_build copy_symbols
 ifneq (,$(SB_VENDOR_BUILD_LOG))
 	-$(CP) $(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 endif
 
-release: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) copy_symbols strip_build
+# release: build post_build $(SB_VENDOR_BREAKPAD_ARCHIVE) copy_symbols strip_build
+release: build post_build copy_symbols strip_build
 ifneq (,$(SB_VENDOR_BUILD_LOG))
 	-$(CP) $(SB_VENDOR_BUILD_LOG) $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 endif

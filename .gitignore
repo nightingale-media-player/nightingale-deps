@@ -2,7 +2,11 @@ xulrunner*/mozilla-release
 xulrunner*/mozilla/*
 xulrunner*/xulrunner*.source.tar.bz2
 xulrunner*/linux*/
+xulrunner*/songbird/*
 build/
 linux-i686*/*
 linux-x86_64*/*
-sqlite/autom4te.cache*
+*/autom4te.cache*
+windows-i686-msvc*/*
+macosx-i686*/*
+*.DS_Store

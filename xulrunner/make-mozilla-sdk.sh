@@ -8,7 +8,7 @@ RM=${RM:-rm}
 
 # bin_files are relative to $objdir/dist/bin/
 bin_files="js*
-xpidl*"
+"
 
 # lib_files are relative to $objdir/dist/lib/
 lib_files="*js3250.*
@@ -19,7 +19,7 @@ lib_files="*js3250.*
            *xpcom.*
            *xpcomglue_s*
            *mozjs*
-           *mozcrt19*
+           *mozcrt*
            *xul*
            *smime3*
            *ssl3*
@@ -27,12 +27,13 @@ lib_files="*js3250.*
            *nssutil3*
            *sqlite3*
            *mozalloc*
+           *mozutils*
 "
 
 # symbol_files are relative to $objdir
 symbol_files="intl/unicharutil/util/nsunicharutils.pdb
               intl/unicharutil/util/unicharutil_external_s.pdb
-              js/src/js3250.pdb
+              js/src/mozjs.pdb
               toolkit/library/xul.pdb
               xpcom/glue/nsarrayenumerator.pdb
               xpcom/glue/nsarrayutils.pdb
@@ -60,8 +61,9 @@ symbol_files="intl/unicharutil/util/nsunicharutils.pdb
               xpcom/stub/xpcom.pdb
               xulrunner/app/xulrunner.pdb
               xulrunner/stub/xulrunner-stub.pdb
-              memory/jemalloc/mozcrt19*.pdb
               memory/jemalloc/libc*.pdb
+              memory/mozalloc/mozalloc.pdb
+              memory/mozutils/mozutils*
 "
 
 # update_bin_files are relative to $objdir/dist/host/bin/
@@ -141,10 +143,11 @@ cd "$distdir/bin" && $CP -Lfp $bin_files "$sdkdir/bin"
 cd "$distdir/host/bin" && $CP -Lfp $update_bin_files "$sdkdir/bin"
 
 # POSSIBLY BROKEN
-cd "$srcdir/xulrunner/tools" && $CP -Lfpa *redit* "$sdkdir/bin"
+cd "$objdir/xulrunner/tools/redit" && $CP -Lfpa *redit "$sdkdir/bin"
 
 # POSSIBLY BROKEN - breakpad binaries
-cd "$objdir/toolkit/crashreporter/google-breakpad/src/tools/linux" && $CP -Lfpa *dump_syms* "$sdkdir/bin"
+cd "$objdir/toolkit/crashreporter/google-breakpad/src/tools/linux/dump_syms" && $CP -Lfpa *dump_syms "$sdkdir/bin"
+cd "$objdir/toolkit/crashreporter/google-breakpad/src/tools/mac/dump_syms" && $CP -Lfpa *dump_syms "$sdkdir/bin"
 
 notice "copying library files..."
 cd "$sdkdir" && $MKDIR -p lib

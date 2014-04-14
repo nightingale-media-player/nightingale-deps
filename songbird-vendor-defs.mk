@@ -119,7 +119,7 @@ ifeq (Linux,$(SB_VENDOR_ARCH))
 endif
 
 ifeq (Msys,$(SB_VENDOR_OS))
-   SB_TARGET_ARCH := windows-i686-msvc8
+   SB_TARGET_ARCH := windows-i686-msvc10
    SB_ARCH_DETECTED := 1
    # We redefine SB_VENDOR_ARCH here to make it more useful to us; in Msys,
    # uname returns some some long, difficult string to compare against...
@@ -168,6 +168,12 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
    OTOOL ?= otool
    INSTALL_NAME_TOOL ?= install_name_tool
 
+   SB_CFLAGS += -m32 -arch i386
+   SB_CXXFLAGS += -m32 -arch i386
+   SB_CPPFLAGS += -m32 -arch i386
+   SB_LDFLAGS += -m32 -arch i386
+   SB_OBJCFLAGS += -m32 -arch i386
+
    ifeq (i386,$(SB_VENDOR_SUBARCH))
       DUMP_SYMS_ARGS += -a i386
    else
@@ -212,7 +218,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
      -D_CRT_SECURE_NO_WARNINGS -DHAVE_WIN32 -D_WINDOWS \
      -wd4820 -wd4668 -wd4100 -wd4706 -wd4127 -wd4255 -wd4710 -wd4055
 
-   SB_CFLAGS += -Zi 
+   SB_CFLAGS += -Zi
    SB_CXXFLAGS += -Zi
    SB_LDFLAGS += -DEBUG
 
@@ -221,6 +227,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
    # We need these for all builds on Win32, since the system doesn't provide
    # it...
    SB_VENDOR_TARGET_DEP_MODULES += iconv glib gettext
+   # SB_VENDOR_TARGET_DEP_MODULES += iconv glib gettext zlib
 endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
@@ -376,7 +383,7 @@ AUTOCONF_GENERATED_TRASH = autoregen.sh \
 # other vendor packages don't need this step, so it's a no-op
 SB_REGEN_MAKEFILE_PKGS = flac\
                          gst% \
-                         libjpeg \
+                         libjpeg-turbo \
                          libogg \
                          libvorbis \
                          libtheora \
@@ -420,13 +427,13 @@ MOZ_XR_DIR = $(call find-dep-dir, $(SB_VENDOR_XR_TARGET))
 
 # Supporting SDK paths on Win32
 ifeq (Msys,$(SB_VENDOR_ARCH))
-   DIRECTX_SDK_ROOT ?= /d/ms-sdks/directx-aug08
-   WINDOWS_SDK_ROOT ?= /d/ms-sdks/Windows/v6.0
-   QUICKTIME_SDK_ROOT ?= /d/ms-sdks/QuickTimeSDK
+   DIRECTX_SDK_ROOT ?= /c//Program\ Files\ \(x86\)/Microsoft\ DirectX\ SDK\ \(June\ 2010\)
+   WINDOWS_SDK_ROOT ?= /c/Program\ Files/Microsoft\ SDKs/Windows/v7.0
+   QUICKTIME_SDK_ROOT ?= /c/Program\ Files\ \(x86\)/QuickTime\ SDK
 endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
-   MACOSX_SDK ?= /Developer/SDKs/MacOSX10.4u.sdk
+   MACOSX_SDK ?= /Developer/SDKs/MacOSX10.6.sdk
 endif
 
 #
@@ -479,6 +486,19 @@ ifneq (,$(call enable-sb-lib, iconv))
    endif
 endif
 
+# #
+# # Zlib
+# #
+# ifeq (Msys,$(SB_VENDOR_ARCH))
+#    ifneq (,$(call enable-sb-lib, zlib))
+#       $(info Enabling Songbird vendor lib: zlib)
+#       SB_ZLIB_DIR := $(call find-dep-dir, zlib)
+#       SB_LDFLAGS += -L$(SB_ZLIB_DIR)/lib -lz
+#       SB_PATH += $(SB_ZLIB_DIR)/bin
+#       SB_PKG_CONFIG_PATH += $(SB_ZLIB_DIR)/lib/pkgconfig
+#    endif
+# endif
+
 #
 # Glib
 # 
@@ -517,7 +537,7 @@ ifneq (,$(call enable-sb-lib, gstreamer))
    SB_GSTREAMER_DIR = $(call find-dep-dir, gstreamer)
    SB_PATH += $(SB_GSTREAMER_DIR)/bin
    SB_PKG_CONFIG_PATH += $(SB_GSTREAMER_DIR)/lib/pkgconfig
-  
+
    # A list of basic dylibs on mac that need to be fixed up across all the
    # gstreamer modules; these are built by various parts of gstreamer and 
    # base
@@ -601,7 +621,7 @@ ifneq (,$(call enable-sb-lib, flac))
    SB_LIBFLAC_DIR = $(call find-dep-dir, flac)
    SB_LDFLAGS += -L$(SB_LIBFLAC_DIR)/lib
    ifeq (Msys,$(SB_VENDOR_ARCH))
-      SB_FLAC_LIBS += -lFLAC-8
+      SB_FLAC_LIBS += -lFLAC
       SB_PATH += $(SB_LIBFLAC_DIR)/bin
       ifeq (debug,$(SB_BUILD_TYPE))
          SB_FLAC_LIBS += -Wl,-Zi
@@ -612,17 +632,17 @@ ifneq (,$(call enable-sb-lib, flac))
 endif
 
 #
-# libjpeg
+# libjpeg-turbo
 #
 ifneq (,$(call enable-sb-lib, jpeg))
    $(info Enabling Songbird vendor lib: jpeg)
-   SB_LIBJPEG_DIR = $(call find-dep-dir, libjpeg)
+   SB_LIBJPEG_DIR = $(call find-dep-dir, libjpeg-turbo)
    SB_LDFLAGS += -L$(SB_LIBJPEG_DIR)/lib
 
-   SB_CFLAGS = -I$(SB_LIBJPEG_DIR)/include
+   SB_CFLAGS += -I$(SB_LIBJPEG_DIR)/include
 
    ifeq (Msys,$(SB_VENDOR_ARCH))
-      SB_JPEG_LIBS += "-ljpeg-7"
+      SB_JPEG_LIBS += "-ljpeg"
       SB_PATH += $(SB_LIBJPEG_DIR)/bin
       ifeq (debug,$(SB_BUILD_TYPE))
          SB_JPEG_LIBS += -Wl,-Zi

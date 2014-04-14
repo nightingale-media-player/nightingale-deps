@@ -1,0 +1,126 @@
+
+Release notes for GStreamer Bad Plugins 1.2.3
+
+
+The GStreamer team is proud to announce a new bug-fix release
+in the 1.x stable series of the
+core of the GStreamer streaming media framework.
+
+
+The 1.x series is a stable series targeted at end users.
+It is not API or ABI compatible with the stable 0.10.x series.
+It is, however, parallel installable with the 0.10.x series and
+will not affect an existing 0.10.x installation.
+
+
+
+"That an accusation?"
+
+
+No perfectly groomed moustache or any amount of fine clothing is going to
+cover up the truth - these plugins are Bad with a capital B.
+They look fine on the outside, and might even appear to get the job done, but
+at the end of the day they're a black sheep. Without a golden-haired angel
+to watch over them, they'll probably land in an unmarked grave at the final
+showdown.
+
+
+Don't bug us about their quality - exercise your Free Software rights,
+patch up the offender and send us the patch on the fastest steed you can
+steal from the Confederates. Because you see, in this world, there's two
+kinds of people, my friend: those with loaded guns and those who dig.
+You dig.
+
+
+This module contains a set of plugins that aren't up to par compared to the
+rest.  They might be close to being good quality, but they're missing something
+- be it a good code review, some documentation, a set of tests, a real live
+maintainer, or some actual wide use.  If the blanks are filled in they might be
+upgraded to become part of either gst-plugins-good or gst-plugins-ugly,
+depending on the other factors.
+If the plugins break, you can't complain - instead, you can fix the
+problem and send us a patch, or bribe someone into fixing them for you.
+New contributors can start here for things to work on.
+
+
+Other modules containing plugins are:
+
+
+gst-plugins-base
+contains a basic set of well-supported plugins
+gst-plugins-good
+contains a set of well-supported plugins under our preferred license
+gst-plugins-ugly
+contains a set of well-supported plugins, but might pose problems for
+    distributors
+gst-libav
+contains a set of codecs plugins based on libav (formerly gst-ffmpeg)
+
+
+
+  
+
+Bugs fixed in this release
+     
+      * 709241 : applemedia: Enable I420 on input pad
+      * 711163 : amcvideodec: Add the xvid and divx variants for mpeg4 video
+      * 721382 : srtpdec: fix GstCaps memory leak
+      * 721384 : h264parse: clears keyframe flags when passing through byte-stream AUs (regression)
+      * 721715 : h264parse: Multiple SEI messages in SEI RBSP
+      * 722158 : facedetect: element non-functional because of unreasonable, hardcoded max-size setting
+      * 722414 : vp8pay: Memory leak
+      * 722622 : d3dvideosink: Unable to register Direct3D hidden window class
+      * 723127 : hlsdemux: Seeks sometimes deadlock
+      * 723134 : hlsdemux: Playback may not always start when using a file:// url because of racy EOS handling
+      * 723230 : opencv: works with 2.4.8 too
+      * 723398 : fisheye: plugin has wrong description
+
+==== Download ====
+
+You can find source releases of gst-plugins-bad in the download
+directory: http://gstreamer.freedesktop.org/src/gst-plugins-bad/
+
+The git repository and details how to clone it can be found at
+http://cgit.freedesktop.org/gstreamer/gst-plugins-bad/
+
+==== Homepage ====
+
+The project's website is http://gstreamer.freedesktop.org/
+
+==== Support and Bugs ====
+
+We use GNOME's bugzilla for bug reports and feature requests:
+http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer
+
+Please submit patches via bugzilla as well.
+
+For help and support, please subscribe to and send questions to the
+gstreamer-devel mailing list (see below for details).
+
+There is also a #gstreamer IRC channel on the Freenode IRC network.
+
+==== Developers ====
+
+GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned
+from there (see link above).
+
+Interested developers of the core library, plugins, and applications should
+subscribe to the gstreamer-devel list.
+
+        
+Contributors to this release
+    
+      * Alexey Chernov
+      * Aurélien Zanelli
+      * Colin Macdonald
+      * Dominik Röttsches
+      * Duncan Palmer
+      * Jorge Zapata
+      * Kipp Cannon
+      * Mark Nauwelaerts
+      * Miguel París Díaz
+      * Nicola Murino
+      * Sebastian Dröge
+      * Thiago Santos
+      * Vincent Penquerc'h
+ 

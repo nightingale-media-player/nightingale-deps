@@ -1,0 +1,158 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: gst-plugins-bad 1.2.3\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
+"POT-Creation-Date: 2014-02-08 12:44+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ext/resindvd/resindvdsrc.c:361
+msgid "Could not read title information for DVD."
+msgstr ""
+
+#: ext/resindvd/resindvdsrc.c:367
+#, c-format
+msgid "Failed to open DVD device '%s'."
+msgstr ""
+
+#: ext/resindvd/resindvdsrc.c:373
+msgid "Failed to set PGC based seeking."
+msgstr ""
+
+#: ext/resindvd/resindvdsrc.c:1165
+msgid ""
+"Could not read DVD. This may be because the DVD is encrypted and a DVD "
+"decryption library is not installed."
+msgstr ""
+
+#: ext/resindvd/resindvdsrc.c:1170 ext/resindvd/resindvdsrc.c:1179
+msgid "Could not read DVD."
+msgstr ""
+
+#: ext/smoothstreaming/gstmssdemux.c:776 ext/smoothstreaming/gstmssdemux.c:947
+msgid "This file contains no playable streams."
+msgstr ""
+
+#: ext/smoothstreaming/gstmssdemux.c:913
+msgid "Couldn't get the Manifest's URI"
+msgstr ""
+
+#: ext/smoothstreaming/gstmssdemux.c:1146
+msgid "Failed to get fragment URL."
+msgstr ""
+
+#: ext/smoothstreaming/gstmssdemux.c:1214
+msgid "Couldn't download fragments"
+msgstr ""
+
+#: ext/sndfile/gstsfsink.c:277 ext/sndfile/gstsfsrc.c:346
+#: gst/videomeasure/gstvideomeasure_collector.c:297
+msgid "No file name specified for writing."
+msgstr ""
+
+#: ext/sndfile/gstsfsink.c:290 ext/sndfile/gstsfsrc.c:352
+#: gst/videomeasure/gstvideomeasure_collector.c:310
+#, c-format
+msgid "Could not open file \"%s\" for writing."
+msgstr ""
+
+#: ext/sndfile/gstsfsink.c:439 gst/mpegtsdemux/mpegtsbase.c:1306
+#: gst/mpegtsdemux/mpegtsbase.c:1310 gst/nuvdemux/gstnuvdemux.c:737
+msgid "Internal data stream error."
+msgstr ""
+
+#: ext/sndfile/gstsfsink.c:493 ext/sndfile/gstsfsink.c:501
+#, c-format
+msgid "Could not write to file \"%s\"."
+msgstr ""
+
+#: ext/sndio/sndiosink.c:324 ext/sndio/sndiosrc.c:321
+msgid "Could not establish connection to sndio"
+msgstr ""
+
+#: ext/sndio/sndiosink.c:331 ext/sndio/sndiosrc.c:328
+msgid "Failed to query sndio capabilities"
+msgstr ""
+
+#: ext/sndio/sndiosink.c:424 ext/sndio/sndiosrc.c:422
+msgid "Could not configure sndio"
+msgstr ""
+
+#: ext/sndio/sndiosink.c:430 ext/sndio/sndiosrc.c:428
+msgid "Could not start sndio"
+msgstr ""
+
+#: gst/aiff/aiffparse.c:1412
+msgid "Internal data flow error."
+msgstr ""
+
+#: gst/asfmux/gstasfmux.c:1799
+msgid "Generated file has a larger preroll time than its streams duration"
+msgstr ""
+
+#: gst/camerabin2/camerabingeneral.c:166 gst/camerabin2/gstcamerabin2.c:1860
+#: gst/camerabin2/gstviewfinderbin.c:271
+#, c-format
+msgid "Missing element '%s' - check your GStreamer installation."
+msgstr ""
+
+#: gst/camerabin2/gstcamerabin2.c:370
+msgid "File location is set to NULL, please set it to a valid filename"
+msgstr ""
+
+#: gst/dvdspu/gstdvdspu.c:1042
+msgid "Subpicture format was not configured before data flow"
+msgstr ""
+
+#: gst/videomeasure/gstvideomeasure_collector.c:303
+#, c-format
+msgid "Given file name \"%s\" can't be converted to local file name encoding."
+msgstr ""
+
+#: sys/dvb/gstdvbsrc.c:760 sys/dvb/gstdvbsrc.c:857
+#, c-format
+msgid "Device \"%s\" does not exist."
+msgstr ""
+
+#: sys/dvb/gstdvbsrc.c:764
+#, c-format
+msgid "Could not open frontend device \"%s\"."
+msgstr ""
+
+#: sys/dvb/gstdvbsrc.c:778
+#, c-format
+msgid "Could not get settings from frontend device \"%s\"."
+msgstr ""
+
+#: sys/dvb/gstdvbsrc.c:861
+#, c-format
+msgid "Could not open file \"%s\" for reading."
+msgstr ""
+
+#: sys/dvb/parsechannels.c:157
+msgid "Couldn't find DVB channel configuration file"
+msgstr ""
+
+#: sys/dvb/parsechannels.c:160
+#, c-format
+msgid "Couldn't load DVB channel configuration file: %s"
+msgstr ""
+
+#: sys/dvb/parsechannels.c:169
+msgid "DVB channel configuration file doesn't contain any channels"
+msgstr ""
+
+#: sys/dvb/parsechannels.c:437
+#, c-format
+msgid "Couldn't find details for DVB channel %s"
+msgstr ""

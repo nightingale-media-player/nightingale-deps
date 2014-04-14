@@ -1,0 +1,1263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>DVB variants of MPEG-TS descriptors</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Library Reference Manual">
+<link rel="up" href="mpegts.html" title="Mpeg TS helper library">
+<link rel="prev" href="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-descriptors.html" title="ATSC variants of MPEG-TS descriptors">
+<link rel="next" href="gst-plugins-bad-libs-ISDB-variants-of-MPEG-TS-descriptors.html" title="ISDB variants of MPEG-TS descriptors">
+<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
+<tr valign="middle">
+<td><a accesskey="p" href="gst-plugins-bad-libs-ATSC-variants-of-MPEG-TS-descriptors.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
+<td><a accesskey="u" href="mpegts.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
+<th width="100%" align="center">GStreamer Bad Plugins 1.0 Library Reference Manual</th>
+<td><a accesskey="n" href="gst-plugins-bad-libs-ISDB-variants-of-MPEG-TS-descriptors.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+</tr>
+<tr><td colspan="5" class="shortcuts">
+<a href="#gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.synopsis" class="shortcut">Top</a>
+                   | 
+                  <a href="#gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.description" class="shortcut">Description</a>
+                   | 
+                  <a href="#gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.object-hierarchy" class="shortcut">Object Hierarchy</a>
+</td></tr>
+</table>
+<div class="refentry">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.top_of_page"></a>DVB variants of MPEG-TS descriptors</span></h2>
+<p>DVB variants of MPEG-TS descriptors — Descriptors for the various DVB specifications</p>
+</td>
+<td valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsynopsisdiv">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.synopsis"></a><h2>Synopsis</h2>
+<a name="GstMpegTsDVBCodeRate"></a><a name="GstMpegTsModulationType"></a><a name="GstMpegTsSatellitePolarizationType"></a><a name="GstMpegTsSatelliteRolloff"></a><a name="GstMpegTsCableOuterFECScheme"></a><a name="GstMpegTsDVBServiceType"></a><pre class="synopsis">
+#include &lt;gst/mpegts/mpegts.h&gt;
+
+enum                <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsDVBDescriptorType" title="enum GstMpegTsDVBDescriptorType">GstMpegTsDVBDescriptorType</a>;
+
+struct              <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsComponentDescriptor" title="struct GstMpegTsComponentDescriptor">GstMpegTsComponentDescriptor</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#gst-mpegts-descriptor-parse-dvb-component" title="gst_mpegts_descriptor_parse_dvb_component ()">gst_mpegts_descriptor_parse_dvb_component</a>
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsComponentDescriptor" title="struct GstMpegTsComponentDescriptor"><span class="type">GstMpegTsComponentDescriptor</span></a> *res</code></em>);
+
+struct              <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsExtendedEventItem" title="struct GstMpegTsExtendedEventItem">GstMpegTsExtendedEventItem</a>;
+struct              <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsExtendedEventDescriptor" title="struct GstMpegTsExtendedEventDescriptor">GstMpegTsExtendedEventDescriptor</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#gst-mpegts-descriptor-parse-dvb-extended-event" title="gst_mpegts_descriptor_parse_dvb_extended_event ()">gst_mpegts_descriptor_parse_dvb_extended_event</a>
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsExtendedEventDescriptor" title="struct GstMpegTsExtendedEventDescriptor"><span class="type">GstMpegTsExtendedEventDescriptor</span></a> *res</code></em>);
+
+struct              <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsSatelliteDeliverySystemDescriptor" title="struct GstMpegTsSatelliteDeliverySystemDescriptor">GstMpegTsSatelliteDeliverySystemDescriptor</a>;
+enum                <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsDVBCodeRate-enum" title="enum GstMpegTsDVBCodeRate">GstMpegTsDVBCodeRate</a>;
+enum                <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsModulationType-enum" title="enum GstMpegTsModulationType">GstMpegTsModulationType</a>;
+enum                <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsSatellitePolarizationType-enum" title="enum GstMpegTsSatellitePolarizationType">GstMpegTsSatellitePolarizationType</a>;
+enum                <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsSatelliteRolloff-enum" title="enum GstMpegTsSatelliteRolloff">GstMpegTsSatelliteRolloff</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#gst-mpegts-descriptor-parse-satellite-delivery-system" title="gst_mpegts_descriptor_parse_satellite_delivery_system ()">gst_mpegts_descriptor_parse_satellite_delivery_system</a>
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsSatelliteDeliverySystemDescriptor" title="struct GstMpegTsSatelliteDeliverySystemDescriptor"><span class="type">GstMpegTsSatelliteDeliverySystemDescriptor</span></a> *res</code></em>);
+
+struct              <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsCableDeliverySystemDescriptor" title="struct GstMpegTsCableDeliverySystemDescriptor">GstMpegTsCableDeliverySystemDescriptor</a>;
+enum                <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsCableOuterFECScheme-enum" title="enum GstMpegTsCableOuterFECScheme">GstMpegTsCableOuterFECScheme</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#gst-mpegts-descriptor-parse-cable-delivery-system" title="gst_mpegts_descriptor_parse_cable_delivery_system ()">gst_mpegts_descriptor_parse_cable_delivery_system</a>
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsCableDeliverySystemDescriptor" title="struct GstMpegTsCableDeliverySystemDescriptor"><span class="type">GstMpegTsCableDeliverySystemDescriptor</span></a> *res</code></em>);
+
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#gst-mpegts-descriptor-parse-dvb-short-event" title="gst_mpegts_descriptor_parse_dvb_short_event ()">gst_mpegts_descriptor_parse_dvb_short_event</a>
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **language_code</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **event_name</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **text</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#gst-mpegts-descriptor-parse-dvb-network-name" title="gst_mpegts_descriptor_parse_dvb_network_name ()">gst_mpegts_descriptor_parse_dvb_network_name</a>
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **name</code></em>);
+
+enum                <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsDVBServiceType-enum" title="enum GstMpegTsDVBServiceType">GstMpegTsDVBServiceType</a>;
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#gst-mpegts-descriptor-parse-dvb-service" title="gst_mpegts_descriptor_parse_dvb_service ()">gst_mpegts_descriptor_parse_dvb_service</a>
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsDVBServiceType"><span class="type">GstMpegTsDVBServiceType</span></a> *service_type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **service_name</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **provider_name</code></em>);
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="synopsis">
+  GEnum
+   +----GstMpegTsDVBCodeRate
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----GstMpegTsModulationType
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----GstMpegTsSatellitePolarizationType
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----GstMpegTsSatelliteRolloff
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----GstMpegTsCableOuterFECScheme
+</pre>
+<pre class="synopsis">
+  GEnum
+   +----GstMpegTsDVBServiceType
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.description"></a><h2>Description</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.details"></a><h2>Details</h2>
+<div class="refsect2">
+<a name="GstMpegTsDVBDescriptorType"></a><h3>enum GstMpegTsDVBDescriptorType</h3>
+<pre class="programlisting">typedef enum {
+  /* 64-127 DVB tags ETSI EN 300 468
+   * (Specification for Service Information (SI) in DVB systems)
+   */
+  GST_MTS_DESC_DVB_NETWORK_NAME                 = 0x40,
+  GST_MTS_DESC_DVB_SERVICE_LIST                 = 0x41,
+  GST_MTS_DESC_DVB_STUFFING                     = 0x42,
+  GST_MTS_DESC_DVB_SATELLITE_DELIVERY_SYSTEM    = 0x43,
+  GST_MTS_DESC_DVB_CABLE_DELIVERY_SYSTEM        = 0x44,
+  GST_MTS_DESC_DVB_VBI_DATA                     = 0x45,
+  GST_MTS_DESC_DVB_VBI_TELETEXT                 = 0x46,
+  GST_MTS_DESC_DVB_BOUQUET_NAME                 = 0x47,
+  GST_MTS_DESC_DVB_SERVICE                      = 0x48,
+  GST_MTS_DESC_DVB_COUNTRY_AVAILABILITY         = 0x49,
+  GST_MTS_DESC_DVB_LINKAGE                      = 0x4A,
+  GST_MTS_DESC_DVB_NVOD_REFERENCE               = 0x4B,
+  GST_MTS_DESC_DVB_TIME_SHIFTED_SERVICE         = 0x4C,
+  GST_MTS_DESC_DVB_SHORT_EVENT                  = 0x4D,
+  GST_MTS_DESC_DVB_EXTENDED_EVENT               = 0x4E,
+  GST_MTS_DESC_DVB_TIME_SHIFTED_EVENT           = 0x4F,
+  GST_MTS_DESC_DVB_COMPONENT                    = 0x50,
+  GST_MTS_DESC_DVB_MOSAIC                       = 0x51,
+  GST_MTS_DESC_DVB_STREAM_IDENTIFIER            = 0x52,
+  GST_MTS_DESC_DVB_CA_IDENTIFIER                = 0x53,
+  GST_MTS_DESC_DVB_CONTENT                      = 0x54,
+  GST_MTS_DESC_DVB_PARENTAL_RATING              = 0x55,
+  GST_MTS_DESC_DVB_TELETEXT                     = 0x56,
+  GST_MTS_DESC_DVB_TELEPHONE                    = 0x57,
+  GST_MTS_DESC_DVB_LOCAL_TIME_OFFSET            = 0x58,
+  GST_MTS_DESC_DVB_SUBTITLING                   = 0x59,
+  GST_MTS_DESC_DVB_TERRESTRIAL_DELIVERY_SYSTEM  = 0x5A,
+  GST_MTS_DESC_DVB_MULTILINGUAL_NETWORK_NAME    = 0x5B,
+  GST_MTS_DESC_DVB_MULTILINGUAL_BOUQUET_NAME    = 0x5C,
+  GST_MTS_DESC_DVB_MULTILINGUAL_SERVICE_NAME    = 0x5D,
+  GST_MTS_DESC_DVB_MULTILINGUAL_COMPONENT       = 0x5E,
+  GST_MTS_DESC_DVB_PRIVATE_DATA_SPECIFIER       = 0x5F,
+  GST_MTS_DESC_DVB_SERVICE_MOVE                 = 0x60,
+  GST_MTS_DESC_DVB_SHORT_SMOOTHING_BUFFER       = 0x61,
+  GST_MTS_DESC_DVB_FREQUENCY_LIST               = 0x62,
+  GST_MTS_DESC_DVB_PARTIAL_TRANSPORT_STREAM     = 0x63,
+  GST_MTS_DESC_DVB_DATA_BROADCAST               = 0x64,
+  GST_MTS_DESC_DVB_SCRAMBLING                   = 0x65,
+  GST_MTS_DESC_DVB_DATA_BROADCAST_ID            = 0x66,
+  GST_MTS_DESC_DVB_TRANSPORT_STREAM             = 0x67,
+  GST_MTS_DESC_DVB_DSNG                         = 0x68,
+  GST_MTS_DESC_DVB_PDC                          = 0x69,
+  GST_MTS_DESC_DVB_AC3                          = 0x6A,
+  GST_MTS_DESC_DVB_ANCILLARY_DATA               = 0x6B,
+  GST_MTS_DESC_DVB_CELL_LIST                    = 0x6C,
+  GST_MTS_DESC_DVB_CELL_FREQUENCY_LINK          = 0x6D,
+  GST_MTS_DESC_DVB_ANNOUNCEMENT_SUPPORT         = 0x6E,
+  GST_MTS_DESC_DVB_APPLICATION_SIGNALLING       = 0x6F,
+  GST_MTS_DESC_DVB_ADAPTATION_FIELD_DATA        = 0x70,
+  GST_MTS_DESC_DVB_SERVICE_IDENTIFIER           = 0x71,
+  GST_MTS_DESC_DVB_SERVICE_AVAILABILITY         = 0x72,
+  GST_MTS_DESC_DVB_DEFAULT_AUTHORITY            = 0x73,
+  GST_MTS_DESC_DVB_RELATED_CONTENT              = 0x74,
+  GST_MTS_DESC_DVB_TVA_ID                       = 0x75,
+  GST_MTS_DESC_DVB_CONTENT_IDENTIFIER           = 0x76,
+  GST_MTS_DESC_DVB_TIMESLICE_FEC_IDENTIFIER     = 0x77,
+  GST_MTS_DESC_DVB_ECM_REPETITION_RATE          = 0x78,
+  GST_MTS_DESC_DVB_S2_SATELLITE_DELIVERY_SYSTEM = 0x79,
+  GST_MTS_DESC_DVB_ENHANCED_AC3                 = 0x7A,
+  GST_MTS_DESC_DVB_DTS                          = 0x7B,
+  GST_MTS_DESC_DVB_AAC                          = 0x7C,
+  GST_MTS_DESC_DVB_XAIT_LOCATION                = 0x7D,
+  GST_MTS_DESC_DVB_FTA_CONTENT_MANAGEMENT       = 0x7E,
+  GST_MTS_DESC_DVB_EXTENSION                    = 0x7F,
+} GstMpegTsDVBDescriptorType;
+</pre>
+<p>
+The type of <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a>
+</p>
+<p>
+These values correspond to the registered descriptor type from
+the various DVB specifications.
+</p>
+<p>
+Consult the relevant specifications for more details.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-NETWORK-NAME:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_NETWORK_NAME</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-SERVICE-LIST:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_SERVICE_LIST</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-STUFFING:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_STUFFING</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-SATELLITE-DELIVERY-SYSTEM:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_SATELLITE_DELIVERY_SYSTEM</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-CABLE-DELIVERY-SYSTEM:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_CABLE_DELIVERY_SYSTEM</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-VBI-DATA:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_VBI_DATA</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-VBI-TELETEXT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_VBI_TELETEXT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-BOUQUET-NAME:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_BOUQUET_NAME</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-SERVICE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_SERVICE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-COUNTRY-AVAILABILITY:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_COUNTRY_AVAILABILITY</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-LINKAGE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_LINKAGE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-NVOD-REFERENCE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_NVOD_REFERENCE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-TIME-SHIFTED-SERVICE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_TIME_SHIFTED_SERVICE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-SHORT-EVENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_SHORT_EVENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-EXTENDED-EVENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_EXTENDED_EVENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-TIME-SHIFTED-EVENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_TIME_SHIFTED_EVENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-COMPONENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_COMPONENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-MOSAIC:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_MOSAIC</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-STREAM-IDENTIFIER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_STREAM_IDENTIFIER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-CA-IDENTIFIER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_CA_IDENTIFIER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-CONTENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_CONTENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-PARENTAL-RATING:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_PARENTAL_RATING</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-TELETEXT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_TELETEXT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-TELEPHONE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_TELEPHONE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-LOCAL-TIME-OFFSET:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_LOCAL_TIME_OFFSET</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-SUBTITLING:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_SUBTITLING</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-TERRESTRIAL-DELIVERY-SYSTEM:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_TERRESTRIAL_DELIVERY_SYSTEM</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-MULTILINGUAL-NETWORK-NAME:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_MULTILINGUAL_NETWORK_NAME</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-MULTILINGUAL-BOUQUET-NAME:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_MULTILINGUAL_BOUQUET_NAME</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-MULTILINGUAL-SERVICE-NAME:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_MULTILINGUAL_SERVICE_NAME</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-MULTILINGUAL-COMPONENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_MULTILINGUAL_COMPONENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-PRIVATE-DATA-SPECIFIER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_PRIVATE_DATA_SPECIFIER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-SERVICE-MOVE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_SERVICE_MOVE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-SHORT-SMOOTHING-BUFFER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_SHORT_SMOOTHING_BUFFER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-FREQUENCY-LIST:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_FREQUENCY_LIST</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-PARTIAL-TRANSPORT-STREAM:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_PARTIAL_TRANSPORT_STREAM</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-DATA-BROADCAST:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_DATA_BROADCAST</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-SCRAMBLING:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_SCRAMBLING</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-DATA-BROADCAST-ID:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_DATA_BROADCAST_ID</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-TRANSPORT-STREAM:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_TRANSPORT_STREAM</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-DSNG:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_DSNG</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-PDC:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_PDC</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-AC3:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_AC3</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-ANCILLARY-DATA:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_ANCILLARY_DATA</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-CELL-LIST:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_CELL_LIST</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-CELL-FREQUENCY-LINK:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_CELL_FREQUENCY_LINK</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-ANNOUNCEMENT-SUPPORT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_ANNOUNCEMENT_SUPPORT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-APPLICATION-SIGNALLING:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_APPLICATION_SIGNALLING</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-ADAPTATION-FIELD-DATA:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_ADAPTATION_FIELD_DATA</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-SERVICE-IDENTIFIER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_SERVICE_IDENTIFIER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-SERVICE-AVAILABILITY:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_SERVICE_AVAILABILITY</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-DEFAULT-AUTHORITY:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_DEFAULT_AUTHORITY</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-RELATED-CONTENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_RELATED_CONTENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-TVA-ID:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_TVA_ID</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-CONTENT-IDENTIFIER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_CONTENT_IDENTIFIER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-TIMESLICE-FEC-IDENTIFIER:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_TIMESLICE_FEC_IDENTIFIER</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-ECM-REPETITION-RATE:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_ECM_REPETITION_RATE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-S2-SATELLITE-DELIVERY-SYSTEM:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_S2_SATELLITE_DELIVERY_SYSTEM</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-ENHANCED-AC3:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_ENHANCED_AC3</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-DTS:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_DTS</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-AAC:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_AAC</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-XAIT-LOCATION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_XAIT_LOCATION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-FTA-CONTENT-MANAGEMENT:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_FTA_CONTENT_MANAGEMENT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MTS-DESC-DVB-EXTENSION:CAPS"></a><span class="term"><code class="literal">GST_MTS_DESC_DVB_EXTENSION</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsComponentDescriptor"></a><h3>struct GstMpegTsComponentDescriptor</h3>
+<pre class="programlisting">struct GstMpegTsComponentDescriptor {
+  guint8 stream_content;
+  guint8 component_type;
+  guint8 component_tag;
+  /* FIXME : Make it a separate (allocated, null-terminated) return value  */
+  gchar  language_code[3];
+  gchar *text;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-descriptor-parse-dvb-component"></a><h3>gst_mpegts_descriptor_parse_dvb_component ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_mpegts_descriptor_parse_dvb_component
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsComponentDescriptor" title="struct GstMpegTsComponentDescriptor"><span class="type">GstMpegTsComponentDescriptor</span></a> *res</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsExtendedEventItem"></a><h3>struct GstMpegTsExtendedEventItem</h3>
+<pre class="programlisting">struct GstMpegTsExtendedEventItem {
+  gchar *item_description;
+  gchar *item;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsExtendedEventDescriptor"></a><h3>struct GstMpegTsExtendedEventDescriptor</h3>
+<pre class="programlisting">struct GstMpegTsExtendedEventDescriptor {
+  guint8 descriptor_number;
+  guint8 last_descriptor_number;
+  gchar  language_code[3];
+  guint8 nb_items;
+  GstMpegTsExtendedEventItem items[128];
+  gchar *text;
+};
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-descriptor-parse-dvb-extended-event"></a><h3>gst_mpegts_descriptor_parse_dvb_extended_event ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_mpegts_descriptor_parse_dvb_extended_event
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsExtendedEventDescriptor" title="struct GstMpegTsExtendedEventDescriptor"><span class="type">GstMpegTsExtendedEventDescriptor</span></a> *res</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsSatelliteDeliverySystemDescriptor"></a><h3>struct GstMpegTsSatelliteDeliverySystemDescriptor</h3>
+<pre class="programlisting">struct GstMpegTsSatelliteDeliverySystemDescriptor {
+  guint32                            frequency;
+  gfloat                             orbital_position;
+  gboolean                           west_east; 
+  GstMpegTsSatellitePolarizationType polarization;
+
+  GstMpegTsSatelliteRolloff          roll_off;
+  gboolean                           modulation_system;
+  GstMpegTsModulationType            modulation_type;
+
+  guint32                            symbol_rate;
+  GstMpegTsDVBCodeRate               fec_inner;
+};
+</pre>
+<p>
+Satellite Delivery System Descriptor (EN 300 468 v.1.13.1)
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><span class="type">guint32</span> <em class="structfield"><code><a name="GstMpegTsSatelliteDeliverySystemDescriptor.frequency"></a>frequency</code></em>;</span></p></td>
+<td>the frequency in kHz (kiloHertz)</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a> <em class="structfield"><code><a name="GstMpegTsSatelliteDeliverySystemDescriptor.orbital-position"></a>orbital_position</code></em>;</span></p></td>
+<td>the orbital position in degrees</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstMpegTsSatelliteDeliverySystemDescriptor.west-east"></a>west_east</code></em>;</span></p></td>
+<td>If <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, the satellite is in the eastern part of the orbit,
+else in the western part.</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsSatellitePolarizationType"><span class="type">GstMpegTsSatellitePolarizationType</span></a> <em class="structfield"><code><a name="GstMpegTsSatelliteDeliverySystemDescriptor.polarization"></a>polarization</code></em>;</span></p></td>
+<td>The polarization of the transmitted signal</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsSatelliteRolloff"><span class="type">GstMpegTsSatelliteRolloff</span></a> <em class="structfield"><code><a name="GstMpegTsSatelliteDeliverySystemDescriptor.roll-off"></a>roll_off</code></em>;</span></p></td>
+<td>Roll-off factor used in DVB-S2</td>
+</tr>
+<tr>
+<td><p><span class="term"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstMpegTsSatelliteDeliverySystemDescriptor.modulation-system"></a>modulation_system</code></em>;</span></p></td>
+<td>modulation system, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if DVB-S2, else DVB-S</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsModulationType"><span class="type">GstMpegTsModulationType</span></a> <em class="structfield"><code><a name="GstMpegTsSatelliteDeliverySystemDescriptor.modulation-type"></a>modulation_type</code></em>;</span></p></td>
+<td>Modulation scheme used</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="type">guint32</span> <em class="structfield"><code><a name="GstMpegTsSatelliteDeliverySystemDescriptor.symbol-rate"></a>symbol_rate</code></em>;</span></p></td>
+<td>Symbol rate (in symbols per second)</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsDVBCodeRate"><span class="type">GstMpegTsDVBCodeRate</span></a> <em class="structfield"><code><a name="GstMpegTsSatelliteDeliverySystemDescriptor.fec-inner"></a>fec_inner</code></em>;</span></p></td>
+<td>inner FEC scheme used</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsDVBCodeRate-enum"></a><h3>enum GstMpegTsDVBCodeRate</h3>
+<pre class="programlisting">typedef enum {
+  GST_MPEGTS_FEC_NONE = 0,
+  GST_MPEGTS_FEC_1_2,
+  GST_MPEGTS_FEC_2_3,
+  GST_MPEGTS_FEC_3_4,
+  GST_MPEGTS_FEC_4_5,
+  GST_MPEGTS_FEC_5_6,
+  GST_MPEGTS_FEC_6_7,
+  GST_MPEGTS_FEC_7_8,
+  GST_MPEGTS_FEC_8_9,
+  GST_MPEGTS_FEC_AUTO,
+  GST_MPEGTS_FEC_3_5,
+  GST_MPEGTS_FEC_9_10,
+  GST_MPEGTS_FEC_2_5
+} GstMpegTsDVBCodeRate;
+</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-NONE:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_NONE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-1-2:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_1_2</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-2-3:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_2_3</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-3-4:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_3_4</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-4-5:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_4_5</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-5-6:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_5_6</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-6-7:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_6_7</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-7-8:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_7_8</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-8-9:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_8_9</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-AUTO:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_AUTO</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-3-5:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_3_5</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-9-10:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_9_10</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-FEC-2-5:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_FEC_2_5</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsModulationType-enum"></a><h3>enum GstMpegTsModulationType</h3>
+<pre class="programlisting">typedef enum {
+  GST_MPEGTS_MODULATION_QPSK    = 0,
+  GST_MPEGTS_MODULATION_QAM_16,
+  GST_MPEGTS_MODULATION_QAM_32,
+  GST_MPEGTS_MODULATION_QAM_64,
+  GST_MPEGTS_MODULATION_QAM_128,
+  GST_MPEGTS_MODULATION_QAM_256,
+  GST_MPEGTS_MODULATION_QAM_AUTO,
+  GST_MPEGTS_MODULATION_VSB_8,
+  GST_MPEGTS_MODULATION_VSB_16,
+  GST_MPEGTS_MODULATION_PSK_8,
+  GST_MPEGTS_MODULATION_APSK_16,
+  GST_MPEGTS_MODULATION_APSK_32,
+  GST_MPEGTS_MODULATION_DQPSK,
+  GST_MPEGTS_MODULATION_QAM_4_NR_,
+  GST_MPEGTS_MODULATION_NONE
+} GstMpegTsModulationType;
+</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-QPSK:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_QPSK</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-QAM-16:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_QAM_16</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-QAM-32:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_QAM_32</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-QAM-64:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_QAM_64</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-QAM-128:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_QAM_128</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-QAM-256:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_QAM_256</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-QAM-AUTO:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_QAM_AUTO</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-VSB-8:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_VSB_8</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-VSB-16:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_VSB_16</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-PSK-8:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_PSK_8</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-APSK-16:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_APSK_16</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-APSK-32:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_APSK_32</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-DQPSK:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_DQPSK</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-QAM-4-NR-:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_QAM_4_NR_</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-MODULATION-NONE:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_MODULATION_NONE</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsSatellitePolarizationType-enum"></a><h3>enum GstMpegTsSatellitePolarizationType</h3>
+<pre class="programlisting">typedef enum {
+  GST_MPEGTS_POLARIZATION_LINEAR_HORIZONTAL = 0,
+  GST_MPEGTS_POLARIZATION_LINEAR_VERTICAL,
+  GST_MPEGTS_POLARIZATION_CIRCULAR_LEFT,
+  GST_MPEGTS_POLARIZATION_CIRCULAR_RIGHT
+} GstMpegTsSatellitePolarizationType;
+</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="GST-MPEGTS-POLARIZATION-LINEAR-HORIZONTAL:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_POLARIZATION_LINEAR_HORIZONTAL</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-POLARIZATION-LINEAR-VERTICAL:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_POLARIZATION_LINEAR_VERTICAL</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-POLARIZATION-CIRCULAR-LEFT:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_POLARIZATION_CIRCULAR_LEFT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-POLARIZATION-CIRCULAR-RIGHT:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_POLARIZATION_CIRCULAR_RIGHT</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsSatelliteRolloff-enum"></a><h3>enum GstMpegTsSatelliteRolloff</h3>
+<pre class="programlisting">typedef enum {
+  GST_MPEGTS_ROLLOFF_35 = 0,
+  GST_MPEGTS_ROLLOFF_20,
+  GST_MPEGTS_ROLLOFF_25,
+  GST_MPEGTS_ROLLOFF_RESERVED,
+  GST_MPEGTS_ROLLOFF_AUTO
+} GstMpegTsSatelliteRolloff;
+</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="GST-MPEGTS-ROLLOFF-35:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_ROLLOFF_35</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-ROLLOFF-20:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_ROLLOFF_20</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-ROLLOFF-25:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_ROLLOFF_25</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-ROLLOFF-RESERVED:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_ROLLOFF_RESERVED</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-ROLLOFF-AUTO:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_ROLLOFF_AUTO</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-descriptor-parse-satellite-delivery-system"></a><h3>gst_mpegts_descriptor_parse_satellite_delivery_system ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_mpegts_descriptor_parse_satellite_delivery_system
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsSatelliteDeliverySystemDescriptor" title="struct GstMpegTsSatelliteDeliverySystemDescriptor"><span class="type">GstMpegTsSatelliteDeliverySystemDescriptor</span></a> *res</code></em>);</pre>
+<p>
+Extracts the satellite delivery system information from <em class="parameter"><code>descriptor</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>descriptor</code></em> :</span></p></td>
+<td>a <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GST-MTS-DESC-DVB-SATELLITE-DELIVERY-SYSTEM:CAPS"><code class="literal">GST_MTS_DESC_DVB_SATELLITE_DELIVERY_SYSTEM</code></a> <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em> :</span></p></td>
+<td>the <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsSatelliteDeliverySystemDescriptor" title="struct GstMpegTsSatelliteDeliverySystemDescriptor"><span class="type">GstMpegTsSatelliteDeliverySystemDescriptor</span></a> to fill. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if parsing succeeded, else <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsCableDeliverySystemDescriptor"></a><h3>struct GstMpegTsCableDeliverySystemDescriptor</h3>
+<pre class="programlisting">struct GstMpegTsCableDeliverySystemDescriptor {
+  guint32                            frequency;
+  GstMpegTsCableOuterFECScheme       outer_fec;
+  GstMpegTsModulationType            modulation;
+
+  guint32                            symbol_rate;
+  GstMpegTsDVBCodeRate               fec_inner;
+};
+</pre>
+<p>
+Cable Delivery System Descriptor (EN 300 468 v.1.13.1)
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><span class="type">guint32</span> <em class="structfield"><code><a name="GstMpegTsCableDeliverySystemDescriptor.frequency"></a>frequency</code></em>;</span></p></td>
+<td>the frequency in Hz (Hertz)</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsCableOuterFECScheme"><span class="type">GstMpegTsCableOuterFECScheme</span></a> <em class="structfield"><code><a name="GstMpegTsCableDeliverySystemDescriptor.outer-fec"></a>outer_fec</code></em>;</span></p></td>
+<td>the outer FEC scheme used</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsModulationType"><span class="type">GstMpegTsModulationType</span></a> <em class="structfield"><code><a name="GstMpegTsCableDeliverySystemDescriptor.modulation"></a>modulation</code></em>;</span></p></td>
+<td>Modulation scheme used</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="type">guint32</span> <em class="structfield"><code><a name="GstMpegTsCableDeliverySystemDescriptor.symbol-rate"></a>symbol_rate</code></em>;</span></p></td>
+<td>Symbol rate (in symbols per second)</td>
+</tr>
+<tr>
+<td><p><span class="term"><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsDVBCodeRate"><span class="type">GstMpegTsDVBCodeRate</span></a> <em class="structfield"><code><a name="GstMpegTsCableDeliverySystemDescriptor.fec-inner"></a>fec_inner</code></em>;</span></p></td>
+<td>inner FEC scheme used</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsCableOuterFECScheme-enum"></a><h3>enum GstMpegTsCableOuterFECScheme</h3>
+<pre class="programlisting">typedef enum {
+  GST_MPEGTS_CABLE_OUTER_FEC_UNDEFINED = 0,
+  GST_MPEGTS_CABLE_OUTER_FEC_NONE,
+  GST_MPEGTS_CABLE_OUTER_FEC_RS_204_188,
+} GstMpegTsCableOuterFECScheme;
+</pre>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="GST-MPEGTS-CABLE-OUTER-FEC-UNDEFINED:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_CABLE_OUTER_FEC_UNDEFINED</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-CABLE-OUTER-FEC-NONE:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_CABLE_OUTER_FEC_NONE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-MPEGTS-CABLE-OUTER-FEC-RS-204-188:CAPS"></a><span class="term"><code class="literal">GST_MPEGTS_CABLE_OUTER_FEC_RS_204_188</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-descriptor-parse-cable-delivery-system"></a><h3>gst_mpegts_descriptor_parse_cable_delivery_system ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_mpegts_descriptor_parse_cable_delivery_system
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsCableDeliverySystemDescriptor" title="struct GstMpegTsCableDeliverySystemDescriptor"><span class="type">GstMpegTsCableDeliverySystemDescriptor</span></a> *res</code></em>);</pre>
+<p>
+Extracts the cable delivery system information from <em class="parameter"><code>descriptor</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>descriptor</code></em> :</span></p></td>
+<td>a <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GST-MTS-DESC-DVB-CABLE-DELIVERY-SYSTEM:CAPS"><code class="literal">GST_MTS_DESC_DVB_CABLE_DELIVERY_SYSTEM</code></a> <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>res</code></em> :</span></p></td>
+<td>the <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsCableDeliverySystemDescriptor" title="struct GstMpegTsCableDeliverySystemDescriptor"><span class="type">GstMpegTsCableDeliverySystemDescriptor</span></a> to fill. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if parsing succeeded, else <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-descriptor-parse-dvb-short-event"></a><h3>gst_mpegts_descriptor_parse_dvb_short_event ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_mpegts_descriptor_parse_dvb_short_event
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **language_code</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **event_name</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **text</code></em>);</pre>
+<p>
+Extracts the DVB short event information from <em class="parameter"><code>descriptor</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>descriptor</code></em> :</span></p></td>
+<td>a <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GST-MTS-DESC-DVB-SHORT-EVENT:CAPS"><code class="literal">GST_MTS_DESC_DVB_SHORT_EVENT</code></a> <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>language_code</code></em> :</span></p></td>
+<td>the language code. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>event_name</code></em> :</span></p></td>
+<td>the event name. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>text</code></em> :</span></p></td>
+<td>the event text. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if parsing succeeded, else <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-descriptor-parse-dvb-network-name"></a><h3>gst_mpegts_descriptor_parse_dvb_network_name ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_mpegts_descriptor_parse_dvb_network_name
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **name</code></em>);</pre>
+<p>
+Parses out the dvb network name from the <em class="parameter"><code>descriptor</code></em>:
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>descriptor</code></em> :</span></p></td>
+<td>a <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GST-MTS-DESC-DVB-NETWORK-NAME:CAPS"><code class="literal">GST_MTS_DESC_DVB_NETWORK_NAME</code></a> <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>name</code></em> :</span></p></td>
+<td>the extracted name. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the parsing happened correctly, else <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMpegTsDVBServiceType-enum"></a><h3>enum GstMpegTsDVBServiceType</h3>
+<pre class="programlisting">typedef enum {
+  GST_DVB_SERVICE_RESERVED_00               = 0x00,
+  GST_DVB_SERVICE_DIGITAL_TELEVISION,
+  GST_DVB_SERVICE_DIGITAL_RADIO_SOUND,
+  GST_DVB_SERVICE_TELETEXT,
+  GST_DVB_SERVICE_NVOD_REFERENCE,
+  GST_DVB_SERVICE_NVOD_TIME_SHIFTED,
+  GST_DVB_SERVICE_MOSAIC,
+  GST_DVB_SERVICE_FM_RADIO,
+  GST_DVB_SERVICE_DVB_SRM,
+  GST_DVB_SERVICE_RESERVED_09,
+  GST_DVB_SERVICE_ADVANCED_CODEC_DIGITAL_RADIO_SOUND,
+  GST_DVB_SERVICE_ADVANCED_CODEC_MOSAIC,
+  GST_DVB_SERVICE_DATA_BROADCAST,
+  GST_DVB_SERVICE_RESERVED_0D_COMMON_INTERFACE,
+  GST_DVB_SERVICE_RCS_MAP,
+  GST_DVB_SERVICE_RCS_FLS,
+  GST_DVB_SERVICE_DVB_MHP,
+  GST_DVB_SERVICE_MPEG2_HD_DIGITAL_TELEVISION,
+  /* 0x12 - 015 Reserved for future use */
+  GST_DVB_SERVICE_ADVANCED_CODEC_SD_DIGITAL_TELEVISION = 0x16,
+  GST_DVB_SERVICE_ADVANCED_CODEC_SD_NVOD_TIME_SHIFTED,
+  GST_DVB_SERVICE_ADVANCED_CODEC_SD_NVOD_REFERENCE,
+  GST_DVB_SERVICE_ADVANCED_CODEC_HD_DIGITAL_TELEVISION,
+  GST_DVB_SERVICE_ADVANCED_CODEC_HD_NVOD_TIME_SHIFTED,
+  GST_DVB_SERVICE_ADVANCED_CODEC_HD_NVOD_REFERENCE,
+  GST_DVB_SERVICE_ADVANCED_CODEC_STEREO_HD_DIGITAL_TELEVISION,
+  GST_DVB_SERVICE_ADVANCED_CODEC_STEREO_HD_NVOD_TIME_SHIFTED,
+  GST_DVB_SERVICE_ADVANCED_CODEC_STEREO_HD_NVOD_REFERENCE,
+  /* 0x1F - 0x7f Reserved for future use */
+  /* 0x80 - 0xfe user defined */
+  /* 0xff Reserved for future use */
+  GST_DVB_SERVICE_RESERVED_FF
+} GstMpegTsDVBServiceType;
+</pre>
+<p>
+The type of service of a channel.
+</p>
+<p>
+As specified in Table 87 of ETSI EN 300 468 v1.13.1
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-RESERVED-00:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_RESERVED_00</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-DIGITAL-TELEVISION:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_DIGITAL_TELEVISION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-DIGITAL-RADIO-SOUND:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_DIGITAL_RADIO_SOUND</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-TELETEXT:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_TELETEXT</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-NVOD-REFERENCE:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_NVOD_REFERENCE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-NVOD-TIME-SHIFTED:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_NVOD_TIME_SHIFTED</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-MOSAIC:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_MOSAIC</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-FM-RADIO:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_FM_RADIO</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-DVB-SRM:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_DVB_SRM</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-RESERVED-09:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_RESERVED_09</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-ADVANCED-CODEC-DIGITAL-RADIO-SOUND:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_ADVANCED_CODEC_DIGITAL_RADIO_SOUND</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-ADVANCED-CODEC-MOSAIC:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_ADVANCED_CODEC_MOSAIC</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-DATA-BROADCAST:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_DATA_BROADCAST</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-RESERVED-0D-COMMON-INTERFACE:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_RESERVED_0D_COMMON_INTERFACE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-RCS-MAP:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_RCS_MAP</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-RCS-FLS:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_RCS_FLS</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-DVB-MHP:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_DVB_MHP</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-MPEG2-HD-DIGITAL-TELEVISION:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_MPEG2_HD_DIGITAL_TELEVISION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-ADVANCED-CODEC-SD-DIGITAL-TELEVISION:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_ADVANCED_CODEC_SD_DIGITAL_TELEVISION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-ADVANCED-CODEC-SD-NVOD-TIME-SHIFTED:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_ADVANCED_CODEC_SD_NVOD_TIME_SHIFTED</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-ADVANCED-CODEC-SD-NVOD-REFERENCE:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_ADVANCED_CODEC_SD_NVOD_REFERENCE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-ADVANCED-CODEC-HD-DIGITAL-TELEVISION:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_ADVANCED_CODEC_HD_DIGITAL_TELEVISION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-ADVANCED-CODEC-HD-NVOD-TIME-SHIFTED:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_ADVANCED_CODEC_HD_NVOD_TIME_SHIFTED</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-ADVANCED-CODEC-HD-NVOD-REFERENCE:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_ADVANCED_CODEC_HD_NVOD_REFERENCE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-ADVANCED-CODEC-STEREO-HD-DIGITAL-TELEVISION:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_ADVANCED_CODEC_STEREO_HD_DIGITAL_TELEVISION</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-ADVANCED-CODEC-STEREO-HD-NVOD-TIME-SHIFTED:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_ADVANCED_CODEC_STEREO_HD_NVOD_TIME_SHIFTED</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-ADVANCED-CODEC-STEREO-HD-NVOD-REFERENCE:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_ADVANCED_CODEC_STEREO_HD_NVOD_REFERENCE</code></span></p></td>
+<td></td>
+</tr>
+<tr>
+<td><p><a name="GST-DVB-SERVICE-RESERVED-FF:CAPS"></a><span class="term"><code class="literal">GST_DVB_SERVICE_RESERVED_FF</code></span></p></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mpegts-descriptor-parse-dvb-service"></a><h3>gst_mpegts_descriptor_parse_dvb_service ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_mpegts_descriptor_parse_dvb_service
+                                                        (<em class="parameter"><code>const <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a> *descriptor</code></em>,
+                                                         <em class="parameter"><code><a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GstMpegTsDVBServiceType"><span class="type">GstMpegTsDVBServiceType</span></a> *service_type</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **service_name</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **provider_name</code></em>);</pre>
+<p>
+Extracts the dvb service information from <em class="parameter"><code>descriptor</code></em>.
+</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>descriptor</code></em> :</span></p></td>
+<td>a <a class="link" href="gst-plugins-bad-libs-DVB-variants-of-MPEG-TS-descriptors.html#GST-MTS-DESC-DVB-SERVICE:CAPS"><code class="literal">GST_MTS_DESC_DVB_SERVICE</code></a> <a class="link" href="gst-plugins-bad-libs-Base-MPEG-TS-descriptors.html#GstMpegTsDescriptor"><span class="type">GstMpegTsDescriptor</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>service_type</code></em> :</span></p></td>
+<td>the service type. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>service_name</code></em> :</span></p></td>
+<td>the service name. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>provider_name</code></em> :</span></p></td>
+<td>the provider name. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if parsing succeeded, else <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.19</div>
+</body>
+</html>

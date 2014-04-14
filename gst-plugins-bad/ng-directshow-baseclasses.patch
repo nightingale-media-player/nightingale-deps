@@ -1,0 +1,29 @@
+--- baseclasses.vcproj	2009-07-14 18:54:40 -0400
++++ baseclasses.vcproj  2014-03-30 14:01:28 -0400
+@@ -47,7 +47,7 @@
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+-				RuntimeLibrary="3"
++				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="4"
+@@ -64,7 +64,7 @@
+			<Tool
+				Name="VCLibrarianTool"
+				AdditionalDependencies="strmiids.lib"
+-				OutputFile="$(OutDir)\strmbasd.lib"
++				OutputFile="$(OutDir)\strmbase.lib"
+				AdditionalLibraryDirectories=""
+			/>
+			<Tool
+@@ -110,7 +110,7 @@
+				Optimization="2"
+				AdditionalIncludeDirectories="."
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;"
+-				RuntimeLibrary="2"
++				RuntimeLibrary="0"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="3"
