@@ -17,3 +17,5 @@ ac_add_options --disable-dbus
 ac_add_options --disable-safe-browsing
 ac_add_options --disable-url-classifier
 ac_add_options --disable-mochitest
+
+mk_add_options MOZ_MAKE_FLAGS="-j2"
