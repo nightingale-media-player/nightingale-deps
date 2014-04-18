@@ -40,17 +40,21 @@ SB_VENDOR_GENERATE_SYMBOLS = 0
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
-# Set compiler flags.
-ifneq (Msys,$(SB_VENDOR_ARCH))
-   $(error zlib is only expected to be built on Windows)
+ifneq (Mingw, $(SB_VENDOR_ARCH))
+  # Set compiler flags.
+  ifneq (Msys,$(SB_VENDOR_ARCH))
+    $(error zlib is only expected to be built on Windows)
+  endif
+
+  SB_USE_MOZCRT = 1
+  LOC := "-Zi -Zc:wchar_t-"
+
+  # we kinda want to end up running make with different arguments
+  SUBMAKE_CMD = $(MAKE) -f Makefile.songbird.proxy \
+                LOC=$(LOC)
+else
+  SUBMAKE_CMD = $(MAKE) -f Makefile.nightingale.proxy
 endif
-
-SB_USE_MOZCRT = 1
-LOC := "-Zi -Zc:wchar_t-"
-
-# we kinda want to end up running make with different arguments
-SUBMAKE_CMD = $(MAKE) -f Makefile.songbird.proxy \
-               LOC=$(LOC)
 
 SB_RUN_CONFIGURE := 0
 
@@ -67,5 +71,6 @@ export FINAL_RELEASE_INSTALL_DIR = $(SB_VENDOR_BINARIES_DIR)/$(SB_VENDOR_TARGET)
 export CP
 export MKDIR
 export SB_VENDOR_CHECKOUT
+export SB_VENDOR_ARCH
 
 include $(CURDIR)/../songbird-vendor-rules.mk
