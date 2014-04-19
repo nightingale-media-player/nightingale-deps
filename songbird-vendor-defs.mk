@@ -458,15 +458,17 @@ endif
 # GNU Gettext 
 #
 ifneq (,$(call enable-sb-lib, gettext))
-   $(info Enabling Songbird vendor lib: gettext)
-   SB_GETTEXT_DIR = $(call find-dep-dir, gettext)
-   SB_LDFLAGS += -L$(SB_GETTEXT_DIR)/lib -lintl
-   SB_CFLAGS += -I$(SB_GETTEXT_DIR)/include
-   SB_CPPFLAGS += -I$(SB_GETTEXT_DIR)/include
-   SB_PATH += $(SB_GETTEXT_DIR)/bin
+   ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/gettext/$(SB_BUILD_TYPE)),)
+      $(info Enabling Songbird vendor lib: gettext)
+      SB_GETTEXT_DIR = $(call find-dep-dir, gettext)
+      SB_LDFLAGS += -L$(SB_GETTEXT_DIR)/lib -lintl
+      SB_CFLAGS += -I$(SB_GETTEXT_DIR)/include
+      SB_CPPFLAGS += -I$(SB_GETTEXT_DIR)/include
+      SB_PATH += $(SB_GETTEXT_DIR)/bin
 
-   ifeq (Darwin,$(SB_VENDOR_ARCH))
-      SB_DYLD_LIBRARY_PATH += $(SB_GETTEXT_DIR)/lib
+      ifeq (Darwin,$(SB_VENDOR_ARCH))
+         SB_DYLD_LIBRARY_PATH += $(SB_GETTEXT_DIR)/lib
+      endif
    endif
 endif
 
@@ -474,14 +476,16 @@ endif
 # GNU iconv
 #
 ifneq (,$(call enable-sb-lib, iconv))
-   $(info Enabling Songbird vendor lib: iconv)
-   SB_ICONV_DIR := $(call find-dep-dir, libiconv)
-   SB_LDFLAGS += -L$(SB_ICONV_DIR)/lib -liconv
-   SB_CFLAGS += -I$(SB_ICONV_DIR)/include
-   SB_PATH += $(SB_ICONV_DIR)/bin
+   ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libiconv/$(SB_BUILD_TYPE)),)
+      $(info Enabling Songbird vendor lib: iconv)
+      SB_ICONV_DIR := $(call find-dep-dir, libiconv)
+      SB_LDFLAGS += -L$(SB_ICONV_DIR)/lib -liconv
+      SB_CFLAGS += -I$(SB_ICONV_DIR)/include
+      SB_PATH += $(SB_ICONV_DIR)/bin
 
-   ifeq (Darwin,$(SB_VENDOR_ARCH))
-      LDFLAGS += -Wl,-dylib_file -Wl,libiconv.dylib:$(SB_ICONV_DIR)/lib/libiconv.dylib
+      ifeq (Darwin,$(SB_VENDOR_ARCH))
+         LDFLAGS += -Wl,-dylib_file -Wl,libiconv.dylib:$(SB_ICONV_DIR)/lib/libiconv.dylib
+      endif
    endif
 endif
 
@@ -489,16 +493,18 @@ endif
 # Glib
 # 
 ifneq (,$(call enable-sb-lib, glib))
-   $(info Enabling Songbird vendor lib: glib)
-   SB_GLIB_DIR := $(call find-dep-dir, glib)
-   SB_PATH += $(SB_GLIB_DIR)/bin
-   SB_PKG_CONFIG_PATH += $(SB_GLIB_DIR)/lib/pkgconfig
+   ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/glib/$(SB_BUILD_TYPE)),)
+      $(info Enabling Songbird vendor lib: glib)
+      SB_GLIB_DIR := $(call find-dep-dir, glib)
+      SB_PATH += $(SB_GLIB_DIR)/bin
+      SB_PKG_CONFIG_PATH += $(SB_GLIB_DIR)/lib/pkgconfig
 
-   GLIB_PARTS := glib gobject gmodule gthread
+      GLIB_PARTS := glib gobject gmodule gthread
 
-   ifeq (Darwin,$(SB_VENDOR_ARCH))
-      LDFLAGS += $(foreach GLIB_PART, $(GLIB_PARTS), -Wl,-dylib_file -Wl,libgobject-2.0.dylib:$(SB_GLIB_DIR)/lib/lib$(GLIB_PART)-2.0.dylib)
-      SB_DYLD_LIBRARY_PATH += $(SB_GLIB_DIR)/lib
+      ifeq (Darwin,$(SB_VENDOR_ARCH))
+         LDFLAGS += $(foreach GLIB_PART, $(GLIB_PARTS), -Wl,-dylib_file -Wl,libgobject-2.0.dylib:$(SB_GLIB_DIR)/lib/lib$(GLIB_PART)-2.0.dylib)
+         SB_DYLD_LIBRARY_PATH += $(SB_GLIB_DIR)/lib
+      endif
    endif
 endif
 
@@ -506,12 +512,14 @@ endif
 # libIDL
 #
 ifeq (Darwin,$(SB_VENDOR_ARCH))
-   ifneq (,$(call enable-sb-lib, libIDL))
-      $(info Enabling Songbird vendor lib: libIDL)
-      SB_LIBIDL_DIR := $(call find-dep-dir, libIDL)
-      SB_PATH += $(SB_LIBIDL_DIR)/bin
-      SB_PKG_CONFIG_PATH += $(SB_LIBIDL_DIR)/lib/pkgconfig
-      SB_DYLD_LIBRARY_PATH += $(SB_LIBIDL_DIR)/lib
+   ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libIDL/$(SB_BUILD_TYPE)),)
+      ifneq (,$(call enable-sb-lib, libIDL))
+         $(info Enabling Songbird vendor lib: libIDL)
+         SB_LIBIDL_DIR := $(call find-dep-dir, libIDL)
+         SB_PATH += $(SB_LIBIDL_DIR)/bin
+         SB_PKG_CONFIG_PATH += $(SB_LIBIDL_DIR)/lib/pkgconfig
+         SB_DYLD_LIBRARY_PATH += $(SB_LIBIDL_DIR)/lib
+      endif
    endif
 endif
 
