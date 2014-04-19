@@ -25,6 +25,8 @@ def fix_link_args(fargs):
 			linkerargs.append("-LIBPATH:%s" % winpath(libpath))
 		elif fargs[i].startswith("-l") and not fargs[i] == "-link":
 			libname = fargs[i][2:]
+			if libname == "z":
+				libname = "zlib"
 			linkerargs.append("%s.lib" % libname)
 		elif fargs[i].startswith("-NODEFAULTLIB") or \
 				fargs[i].startswith("-DEFAULTLIB") or \
@@ -33,6 +35,9 @@ def fix_link_args(fargs):
 		elif fargs[i].startswith("-Wl,-DLL,-IMPLIB:"):
 			linkerargs.append("-DLL")
 			linkerargs.append("-IMPLIB:%s" % fargs[i][17:])
+		elif fargs[i].startswith("-Wl,--export-all-symbols"):
+			# no-op
+			linkerargs.append("")
 		else:
 			cargs.append(fargs[i])
 	resultargs = ["cl"] + cargs[1:] + ["-link"] + linkerargs
