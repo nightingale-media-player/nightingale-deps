@@ -31,7 +31,7 @@
 ################################################################################
 
 SB_VENDOR_TARGET = gst-plugins-ugly
-SB_VENDOR_TARGET_VERSION = 1.0.4
+SB_VENDOR_TARGET_VERSION = 0.10.20
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
