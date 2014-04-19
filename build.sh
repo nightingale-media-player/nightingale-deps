@@ -72,7 +72,7 @@ case $OSTYPE in
         make CC=gcc CXX=g++ -C flac -f Makefile.songbird
         echo -e "Building libjpeg..."
         make CC=gcc CXX=g++ -C libjpeg -f Makefile.songbird
-        echo -e "libogg gettext..."
+        echo -e "Building libogg..."
         make CC=gcc CXX=g++ -C libogg -f Makefile.songbird
         echo -e "Building libtheora..."
         make CC=gcc CXX=g++ -C libtheora -f Makefile.songbird
