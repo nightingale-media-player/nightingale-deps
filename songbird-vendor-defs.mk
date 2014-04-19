@@ -168,6 +168,12 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
    OTOOL ?= otool
    INSTALL_NAME_TOOL ?= install_name_tool
 
+   SB_CFLAGS += -m32 -arch i386
+   SB_CXXFLAGS += -m32 -arch i386
+   SB_CPPFLAGS += -m32 -arch i386
+   SB_LDFLAGS += -m32 -arch i386
+   SB_OBJCFLAGS += -m32 -arch i386
+
    ifeq (i386,$(SB_VENDOR_SUBARCH))
       DUMP_SYMS_ARGS += -a i386
    else
