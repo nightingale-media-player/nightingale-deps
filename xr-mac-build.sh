@@ -6,8 +6,7 @@ export DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SB_VENDOR_BINARIES_CO_ROOT=$DIR
 export SB_VENDOR_BUILD_ROOT=$DIR
 
-# Currently, we build both debug and release, which takes a lot longer,
-# especially on xulrunner... TODO: make it optional to build debug
+export MACOSX_SDK="/Developer/SDKs/MacOSX10.6.sdk"
 
 # rm -rf build
 if [ ! -d build ] ; then
@@ -33,16 +32,48 @@ case $OSTYPE in
             fi
         fi
 
+        # echo -e "Building libtool..."
+        # make CC=gcc-4.2 CXX=g++-4.2 -C libtool -f Makefile.songbird
+
+        # echo -e "Building libiconv..."
+        # make CC=gcc-4.2 CXX=g++-4.2 -C libiconv -f Makefile.songbird
         # echo -e "Building gettext..."
-        # make CC=gcc CXX=g++ -C gettext -f Makefile.songbird
+        # make CC=gcc-4.2 CXX=g++-4.2 -C gettext -f Makefile.songbird
         # echo -e "Building glib..."
-        # make CC=gcc CXX=g++ -C glib -f Makefile.songbird
+        # make CC=gcc-4.2 CXX=g++-4.2 -C glib -f Makefile.songbird
         # echo -e "Building libidl..."
-        # make CC=gcc CXX=g++ -C libIDL -f Makefile.songbird
+        # make CC=gcc-4.2 CXX=g++-4.2 -C libIDL -f Makefile.songbird
 
-        echo -e "Building xulrunner and crossing our fingers..."
-        make CC=gcc-4.2 CXX=g++-4.2 -C xulrunner-1.9.2 -f Makefile.songbird xr-all
+        # echo -e "Building flac..."
+        # make CC=gcc-4.2 CXX=g++-4.2 -C flac -f Makefile.songbird
+        # echo -e "Building libjpeg..."
+        # make CC=gcc-4.2 CXX=g++-4.2 -C libjpeg -f Makefile.songbird
 
+        # echo -e "Building libogg..."
+        # make CC=gcc-4.2 CXX=g++-4.2 -C libogg -f Makefile.songbird
+        # echo -e "Building libtheora..."
+        # make CC=gcc-4.2 CXX=g++-4.2 -C libtheora -f Makefile.songbird
+        # echo -e "Building libvorbis..."        
+        # make CC=gcc-4.2 CXX=g++-4.2 -C libvorbis -f Makefile.songbird
+
+        # echo -e "Building sqlite..."
+        # make CC=gcc-4.2 CXX=g++-4.2 -C sqlite -f Makefile.songbird
+        # echo -e "Building taglib..."        
+        # make CC=gcc-4.2 CXX=g++-4.2 -C taglib -f Makefile.songbird
+
+        # echo -e "Building gstreamer bits..."
+        # make -C gstreamer -f Makefile.songbird
+
+        # echo -e "Building gst plugins...here's hoping these all build!"
+        # make -C gst-plugins-base -f Makefile.songbird
+        # make -C gst-plugins-good -f Makefile.songbird
+        # make -C gst-plugins-bad -f Makefile.songbird
+        # make -C gst-plugins-ugly -f Makefile.songbird
+
+        # echo -e "Building xulrunner and crossing our fingers..."
+        # make -C xulrunner-1.9.2 -f Makefile.songbird xr-all
+        ### make -C xulrunner-1.9.2 -f Makefile.songbird xr-symbols
+        ### make -C xulrunner-1.9.2 -f Makefile.songbird xr-packaging
     ;;
     *)
         echo "This script isn't for you"
