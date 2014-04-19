@@ -9,3 +9,5 @@ linux-x86_64*/*
 windows-i686*/*
 macosx-i686*/*
 *.DS_Store
+ignore*/
+*.sublime*
