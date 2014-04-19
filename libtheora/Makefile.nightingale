@@ -37,20 +37,22 @@ SB_VENDOR_TARGET_VERSION = 1.1.1
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
-ifeq (Msys,$(SB_VENDOR_ARCH))
-   SB_CC = $(CURDIR)/../clwrapper.py
-   SB_CXX = $(CURDIR)/../clwrapper.py
-   SB_USE_MOZCRT = 1
-endif
 
 SB_ACLOCAL_FLAGS += -I common/m4 \
                     $(NULL)
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
   --disable-examples \
-  --enable-shared \
-  --enable-static \
   $(NULL)
+
+ifeq (Msys,$(SB_VENDOR_ARCH))
+   SB_VENDOR_TARGET_CONFIGURE_OPTS += --enable-shared \
+                                      --enable-static \
+                                      $(NULL)
+   SB_CC = $(CURDIR)/../clwrapper.py
+   SB_CXX = $(CURDIR)/../clwrapper.py
+   SB_USE_MOZCRT = 1
+endif
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS := libtheora.0 \
                                  libtheoraenc.1 \

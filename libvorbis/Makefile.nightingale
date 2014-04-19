@@ -42,14 +42,14 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := --disable-docs \
                                    --disable-tests \
                                    $(NULL)
 
-SB_ACLOCAL_FLAGS += -I common/m4 \
-                    $(NULL)
-
 ifeq (Msys,$(SB_VENDOR_ARCH))
    SB_CC = $(CURDIR)/../clwrapper.py
    SB_CXX = $(CURDIR)/../clwrapper.py
    SB_USE_MOZCRT = 1
 endif
+
+SB_ACLOCAL_FLAGS += -I common/m4 \
+                    $(NULL)
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS := libvorbis.0 \
                                  libvorbisenc.2 \

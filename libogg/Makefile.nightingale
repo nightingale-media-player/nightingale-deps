@@ -41,6 +41,9 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := --disable-docs \
                                    $(NULL)
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
+   SB_VENDOR_TARGET_CONFIGURE_OPTS += --enable-shared \
+                                      --enable-static \
+                                      $(NULL)
    SB_CC = $(CURDIR)/../clwrapper.py
    SB_CXX = $(CURDIR)/../clwrapper.py
    SB_USE_MOZCRT = 1
