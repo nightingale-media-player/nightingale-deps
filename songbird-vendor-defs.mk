@@ -240,7 +240,7 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
    -Wl,-syslibroot,$(MACOSX_SDK)
 
    # We need these for all builds on OSX, since the system doesn't provide them
-   SB_VENDOR_TARGET_DEP_MODULES += glib gettext
+   SB_VENDOR_TARGET_DEP_MODULES += iconv glib gettext
 endif
 
 ifeq (Linux,$(SB_VENDOR_ARCH))
