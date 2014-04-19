@@ -122,6 +122,7 @@ HEADERS = \
   localcharset.h \
   lock.h \
   relocatable.h \
+  relocatex.h \
   tsearch.h tsearch.c \
   verify.h \
   xsize.h \
@@ -152,6 +153,8 @@ SOURCES = \
   threadlib.c \
   lock.c \
   relocatable.c \
+  relocatex.c \
+  canonicalize.c \
   langprefs.c \
   localename.c \
   log.c \
@@ -185,6 +188,8 @@ OBJECTS = \
   threadlib.$lo \
   lock.$lo \
   relocatable.$lo \
+  relocatex.$lo \
+  canonicalize.$lo \
   langprefs.$lo \
   localename.$lo \
   log.$lo \
@@ -287,6 +292,10 @@ threadlib.lo: $(srcdir)/threadlib.c
 	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/threadlib.c
 lock.lo: $(srcdir)/lock.c
 	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/lock.c
+relocatex.lo: $(srcdir)/relocatex.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/relocatex.c
+canonicalize.lo: $(srcdir)/canonicalize.c
+	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/canonicalize.c
 relocatable.lo: $(srcdir)/relocatable.c
 	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC --mode=compile $(COMPILE) $(srcdir)/relocatable.c
 langprefs.lo: $(srcdir)/langprefs.c
