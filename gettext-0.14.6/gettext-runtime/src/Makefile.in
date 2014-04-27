@@ -91,15 +91,15 @@ CONFIG_CLEAN_FILES = gettext.sh
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_envsubst_OBJECTS = envsubst-envsubst.$(OBJEXT)
+am_envsubst_OBJECTS = envsubst.$(OBJEXT)
 envsubst_OBJECTS = $(am_envsubst_OBJECTS)
 envsubst_LDADD = $(LDADD)
 envsubst_DEPENDENCIES = ../lib/libgrt.a
-am_gettext_OBJECTS = gettext-gettext.$(OBJEXT)
+am_gettext_OBJECTS = gettext.$(OBJEXT)
 gettext_OBJECTS = $(am_gettext_OBJECTS)
 gettext_LDADD = $(LDADD)
 gettext_DEPENDENCIES = ../lib/libgrt.a
-am_ngettext_OBJECTS = ngettext-ngettext.$(OBJEXT)
+am_ngettext_OBJECTS = ngettext.$(OBJEXT)
 ngettext_OBJECTS = $(am_ngettext_OBJECTS)
 ngettext_LDADD = $(LDADD)
 ngettext_DEPENDENCIES = ../lib/libgrt.a
@@ -465,23 +465,23 @@ distclean-compile:
 .c.lo:
 	$(LTCOMPILE) -c -o $@ $<
 
-envsubst-envsubst.o: envsubst.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(envsubst_CFLAGS) $(CFLAGS) -c -o envsubst-envsubst.o `test -f 'envsubst.c' || echo '$(srcdir)/'`envsubst.c
+envsubst.o: envsubst.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(envsubst_CFLAGS) $(CFLAGS) -c -o envsubst.o `test -f 'envsubst.c' || echo '$(srcdir)/'`envsubst.c
 
-envsubst-envsubst.obj: envsubst.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(envsubst_CFLAGS) $(CFLAGS) -c -o envsubst-envsubst.obj `if test -f 'envsubst.c'; then $(CYGPATH_W) 'envsubst.c'; else $(CYGPATH_W) '$(srcdir)/envsubst.c'; fi`
+envsubst.obj: envsubst.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(envsubst_CFLAGS) $(CFLAGS) -c -o envsubst.obj `if test -f 'envsubst.c'; then $(CYGPATH_W) 'envsubst.c'; else $(CYGPATH_W) '$(srcdir)/envsubst.c'; fi`
 
-gettext-gettext.o: gettext.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gettext_CFLAGS) $(CFLAGS) -c -o gettext-gettext.o `test -f 'gettext.c' || echo '$(srcdir)/'`gettext.c
+gettext.o: gettext.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gettext_CFLAGS) $(CFLAGS) -c -o gettext.o `test -f 'gettext.c' || echo '$(srcdir)/'`gettext.c
 
-gettext-gettext.obj: gettext.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gettext_CFLAGS) $(CFLAGS) -c -o gettext-gettext.obj `if test -f 'gettext.c'; then $(CYGPATH_W) 'gettext.c'; else $(CYGPATH_W) '$(srcdir)/gettext.c'; fi`
+gettext.obj: gettext.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gettext_CFLAGS) $(CFLAGS) -c -o gettext.obj `if test -f 'gettext.c'; then $(CYGPATH_W) 'gettext.c'; else $(CYGPATH_W) '$(srcdir)/gettext.c'; fi`
 
-ngettext-ngettext.o: ngettext.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ngettext_CFLAGS) $(CFLAGS) -c -o ngettext-ngettext.o `test -f 'ngettext.c' || echo '$(srcdir)/'`ngettext.c
+ngettext.o: ngettext.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ngettext_CFLAGS) $(CFLAGS) -c -o ngettext.o `test -f 'ngettext.c' || echo '$(srcdir)/'`ngettext.c
 
-ngettext-ngettext.obj: ngettext.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ngettext_CFLAGS) $(CFLAGS) -c -o ngettext-ngettext.obj `if test -f 'ngettext.c'; then $(CYGPATH_W) 'ngettext.c'; else $(CYGPATH_W) '$(srcdir)/ngettext.c'; fi`
+ngettext.obj: ngettext.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ngettext_CFLAGS) $(CFLAGS) -c -o ngettext.obj `if test -f 'ngettext.c'; then $(CYGPATH_W) 'ngettext.c'; else $(CYGPATH_W) '$(srcdir)/ngettext.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
