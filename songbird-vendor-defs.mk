@@ -476,7 +476,7 @@ endef
 # GNU libtool
 #
 ifneq (,$(call enable-sb-lib, libtool))
-  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libtool/$(SB_BUILD_TYPE)), )
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libtool/release), )
     $(info Enabling Songbird vendor lib: libtool)
     SB_LIBTOOL_DIR = $(call find-dep-dir, libtool)
     SB_PATH += $(SB_LIBTOOL_DIR)/bin
