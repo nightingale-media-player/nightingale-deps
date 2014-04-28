@@ -142,7 +142,7 @@ am_libgettextsrc_la_OBJECTS = $(am__objects_1) read-po.lo \
 libgettextsrc_la_OBJECTS = $(am_libgettextsrc_la_OBJECTS)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
-am_hostname_OBJECTS = hostname-hostname.$(OBJEXT)
+am_hostname_OBJECTS = hostname.$(OBJEXT)
 hostname_OBJECTS = $(am_hostname_OBJECTS)
 hostname_LDADD = $(LDADD)
 hostname_DEPENDENCIES = ../lib/libgettextlib.la
@@ -199,7 +199,7 @@ msgunfmt_DEPENDENCIES = libgettextsrc.la
 am_msguniq_OBJECTS = msguniq.$(OBJEXT)
 msguniq_OBJECTS = $(am_msguniq_OBJECTS)
 msguniq_DEPENDENCIES = libgettextsrc.la
-am_urlget_OBJECTS = urlget-urlget.$(OBJEXT)
+am_urlget_OBJECTS = urlget.$(OBJEXT)
 urlget_OBJECTS = $(am_urlget_OBJECTS)
 urlget_LDADD = $(LDADD)
 urlget_DEPENDENCIES = ../lib/libgettextlib.la
@@ -863,11 +863,11 @@ distclean-compile:
 .c.lo:
 	$(LTCOMPILE) -c -o $@ $<
 
-hostname-hostname.o: hostname.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hostname_CFLAGS) $(CFLAGS) -c -o hostname-hostname.o `test -f 'hostname.c' || echo '$(srcdir)/'`hostname.c
+hostname.o: hostname.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hostname_CFLAGS) $(CFLAGS) -c -o hostname.o `test -f 'hostname.c' || echo '$(srcdir)/'`hostname.c
 
-hostname-hostname.obj: hostname.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hostname_CFLAGS) $(CFLAGS) -c -o hostname-hostname.obj `if test -f 'hostname.c'; then $(CYGPATH_W) 'hostname.c'; else $(CYGPATH_W) '$(srcdir)/hostname.c'; fi`
+hostname.obj: hostname.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hostname_CFLAGS) $(CFLAGS) -c -o hostname.obj `if test -f 'hostname.c'; then $(CYGPATH_W) 'hostname.c'; else $(CYGPATH_W) '$(srcdir)/hostname.c'; fi`
 
 msgattrib.o: msgattrib.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(msgattrib_CFLAGS) $(CFLAGS) -c -o msgattrib.o `test -f 'msgattrib.c' || echo '$(srcdir)/'`msgattrib.c
@@ -1043,11 +1043,11 @@ msguniq.o: msguniq.c
 msguniq.obj: msguniq.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(msguniq_CFLAGS) $(CFLAGS) -c -o msguniq.obj `if test -f 'msguniq.c'; then $(CYGPATH_W) 'msguniq.c'; else $(CYGPATH_W) '$(srcdir)/msguniq.c'; fi`
 
-urlget-urlget.o: urlget.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(urlget_CFLAGS) $(CFLAGS) -c -o urlget-urlget.o `test -f 'urlget.c' || echo '$(srcdir)/'`urlget.c
+urlget.o: urlget.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(urlget_CFLAGS) $(CFLAGS) -c -o urlget.o `test -f 'urlget.c' || echo '$(srcdir)/'`urlget.c
 
-urlget-urlget.obj: urlget.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(urlget_CFLAGS) $(CFLAGS) -c -o urlget-urlget.obj `if test -f 'urlget.c'; then $(CYGPATH_W) 'urlget.c'; else $(CYGPATH_W) '$(srcdir)/urlget.c'; fi`
+urlget.obj: urlget.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(urlget_CFLAGS) $(CFLAGS) -c -o urlget.obj `if test -f 'urlget.c'; then $(CYGPATH_W) 'urlget.c'; else $(CYGPATH_W) '$(srcdir)/urlget.c'; fi`
 
 xgettext.o: xgettext.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(xgettext_CFLAGS) $(CFLAGS) -c -o xgettext.o `test -f 'xgettext.c' || echo '$(srcdir)/'`xgettext.c
@@ -1486,7 +1486,7 @@ msgfmt.net.exe: msgfmt.cs
 	$(CSHARPCOMP) $(CSHARPCOMPFLAGS) -o $@ $(srcdir)/msgfmt.cs
 
 msgunfmt.net.exe: msgunfmt.cs
-	$(CSHARPCOMP) $(CSHARPCOMPFLAGS) -o $@ -L ../../gettext-runtime/intl-csharp -l GNU.Gettext $(srcdir)/msgunfmt.cs
+	$(CSHARPCOMP) $(CSHARPCOMPFLAGS) -o $@ -L ../../gettext-runtime/intl-csharp -l GNU.Gettext.dll $(srcdir)/msgunfmt.cs
 
 install-exec-local: install-exec-csharp-@BUILDCSHARP@
 install-exec-csharp-yes: all-csharp-yes

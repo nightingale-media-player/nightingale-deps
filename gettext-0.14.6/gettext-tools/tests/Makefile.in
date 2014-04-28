@@ -124,12 +124,12 @@ am_testlocale_OBJECTS = testlocale.$(OBJEXT)
 testlocale_OBJECTS = $(am_testlocale_OBJECTS)
 testlocale_LDADD = $(LDADD)
 testlocale_DEPENDENCIES =
-am_tstgettext_OBJECTS = tstgettext-tstgettext.$(OBJEXT) \
+am_tstgettext_OBJECTS = tstgettext.$(OBJEXT) \
 	tstgettext-setlocale.$(OBJEXT)
 tstgettext_OBJECTS = $(am_tstgettext_OBJECTS)
 tstgettext_DEPENDENCIES = ../lib/libgettextlib.la \
 	$(am__DEPENDENCIES_1)
-am_tstngettext_OBJECTS = tstngettext-tstngettext.$(OBJEXT) \
+am_tstngettext_OBJECTS = tstngettext.$(OBJEXT) \
 	tstngettext-setlocale.$(OBJEXT)
 tstngettext_OBJECTS = $(am_tstngettext_OBJECTS)
 tstngettext_DEPENDENCIES = ../lib/libgettextlib.la \
@@ -592,11 +592,11 @@ distclean-compile:
 .c.lo:
 	$(LTCOMPILE) -c -o $@ $<
 
-tstgettext-tstgettext.o: tstgettext.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tstgettext_CFLAGS) $(CFLAGS) -c -o tstgettext-tstgettext.o `test -f 'tstgettext.c' || echo '$(srcdir)/'`tstgettext.c
+tstgettext.o: tstgettext.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tstgettext_CFLAGS) $(CFLAGS) -c -o tstgettext.o `test -f 'tstgettext.c' || echo '$(srcdir)/'`tstgettext.c
 
-tstgettext-tstgettext.obj: tstgettext.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tstgettext_CFLAGS) $(CFLAGS) -c -o tstgettext-tstgettext.obj `if test -f 'tstgettext.c'; then $(CYGPATH_W) 'tstgettext.c'; else $(CYGPATH_W) '$(srcdir)/tstgettext.c'; fi`
+tstgettext.obj: tstgettext.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tstgettext_CFLAGS) $(CFLAGS) -c -o tstgettext.obj `if test -f 'tstgettext.c'; then $(CYGPATH_W) 'tstgettext.c'; else $(CYGPATH_W) '$(srcdir)/tstgettext.c'; fi`
 
 tstgettext-setlocale.o: setlocale.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tstgettext_CFLAGS) $(CFLAGS) -c -o tstgettext-setlocale.o `test -f 'setlocale.c' || echo '$(srcdir)/'`setlocale.c
@@ -604,11 +604,11 @@ tstgettext-setlocale.o: setlocale.c
 tstgettext-setlocale.obj: setlocale.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tstgettext_CFLAGS) $(CFLAGS) -c -o tstgettext-setlocale.obj `if test -f 'setlocale.c'; then $(CYGPATH_W) 'setlocale.c'; else $(CYGPATH_W) '$(srcdir)/setlocale.c'; fi`
 
-tstngettext-tstngettext.o: tstngettext.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tstngettext_CFLAGS) $(CFLAGS) -c -o tstngettext-tstngettext.o `test -f 'tstngettext.c' || echo '$(srcdir)/'`tstngettext.c
+tstngettext.o: tstngettext.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tstngettext_CFLAGS) $(CFLAGS) -c -o tstngettext.o `test -f 'tstngettext.c' || echo '$(srcdir)/'`tstngettext.c
 
-tstngettext-tstngettext.obj: tstngettext.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tstngettext_CFLAGS) $(CFLAGS) -c -o tstngettext-tstngettext.obj `if test -f 'tstngettext.c'; then $(CYGPATH_W) 'tstngettext.c'; else $(CYGPATH_W) '$(srcdir)/tstngettext.c'; fi`
+tstngettext.obj: tstngettext.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tstngettext_CFLAGS) $(CFLAGS) -c -o tstngettext.obj `if test -f 'tstngettext.c'; then $(CYGPATH_W) 'tstngettext.c'; else $(CYGPATH_W) '$(srcdir)/tstngettext.c'; fi`
 
 tstngettext-setlocale.o: setlocale.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tstngettext_CFLAGS) $(CFLAGS) -c -o tstngettext-setlocale.o `test -f 'setlocale.c' || echo '$(srcdir)/'`setlocale.c

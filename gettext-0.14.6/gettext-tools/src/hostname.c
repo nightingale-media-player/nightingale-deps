@@ -49,8 +49,10 @@
 # endif
 #endif
 
+#ifndef WIN32
 /* Get MAXHOSTNAMELEN.  */
 #include <sys/param.h>
+#endif
 #ifndef MAXHOSTNAMELEN
 # define MAXHOSTNAMELEN 64
 #endif
