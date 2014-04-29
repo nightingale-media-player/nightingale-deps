@@ -538,7 +538,7 @@ endif
 # Glib
 # 
 ifneq (,$(call enable-sb-lib, glib))
-  ifneq ($(wildcard $(NG_VENDOR_BINARIES_DIR)/glib/$(SB_BUILD_TYPE)), )
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/glib/$(SB_BUILD_TYPE)), )
     $(info Enabling Songbird vendor lib: glib)
     SB_GLIB_DIR := $(call find-dep-dir, glib)
     SB_PATH += $(SB_GLIB_DIR)/bin
@@ -557,7 +557,7 @@ endif
 # libIDL
 #
 ifeq (Darwin,$(SB_VENDOR_ARCH))
-  ifneq ($(wildcard $(NG_VENDOR_BINARIES_DIR)/libIDL/$(SB_BUILD_TYPE)), )
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libIDL/$(SB_BUILD_TYPE)), )
     ifneq (,$(call enable-sb-lib, libIDL))
       $(info Enabling Songbird vendor lib: libIDL)
       SB_LIBIDL_DIR := $(call find-dep-dir, libIDL)
@@ -572,7 +572,7 @@ endif
 # gstreamer
 #
 ifneq (,$(call enable-sb-lib, gstreamer))
-  ifneq ($(wildcard $(NG_VENDOR_BINARIES_DIR)/gstreamer/$(SB_BUILD_TYPE)), )
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/gstreamer/$(SB_BUILD_TYPE)), )
     $(info Enabling Songbird vendor lib: gstreamer)
     SB_GSTREAMER_DIR = $(call find-dep-dir, gstreamer)
     SB_PATH += $(SB_GSTREAMER_DIR)/bin
@@ -590,7 +590,7 @@ endif
 # gstreamer-plugins-base
 #
 ifneq (,$(call enable-sb-lib, gst-plugins-base))
-  ifneq ($(wildcard $(NG_VENDOR_BINARIES_DIR)/gst-plugins-base/$(SB_BUILD_TYPE)), )
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/gst-plugins-base/$(SB_BUILD_TYPE)), )
     $(info Enabling Songbird vendor lib: gst-plugins-base)
     SB_GST_PLUGINS_BASE_DIR = $(call find-dep-dir, gst-plugins-base)
     SB_PATH += $(SB_GST_PLUGINS_BASE_DIR)/bin
@@ -602,7 +602,7 @@ endif
 # libogg
 #
 ifneq (,$(call enable-sb-lib, ogg))
-  ifneq ($(wildcard $(NG_VENDOR_BINARIES_DIR)/libogg/$(SB_BUILD_TYPE)), )
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libogg/$(SB_BUILD_TYPE)), )
     $(info Enabling Songbird vendor lib: ogg)
     SB_LIBOGG_DIR = $(call find-dep-dir, libogg)
     SB_OGG_LIBS = -L$(SB_LIBOGG_DIR)/lib -logg
@@ -622,7 +622,7 @@ endif
 # libtheora
 #
 ifneq (,$(call enable-sb-lib, theora))
-  ifneq ($(wildcard $(NG_VENDOR_BINARIES_DIR)/libtheora/$(SB_BUILD_TYPE)), )
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libtheora/$(SB_BUILD_TYPE)), )
     $(info Enabling Songbird vendor lib: theora)
     SB_LIBTHEORA_DIR = $(call find-dep-dir, libtheora)
     SB_THEORA_LIBS := -L$(SB_LIBTHEORA_DIR)/lib -ltheora
@@ -644,7 +644,7 @@ endif
 # libvorbis
 #
 ifneq (,$(call enable-sb-lib, vorbis))
-  ifneq ($(wildcard $(NG_VENDOR_BINARIES_DIR)/libvorbis/$(SB_BUILD_TYPE)), )
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libvorbis/$(SB_BUILD_TYPE)), )
     $(info Enabling Songbird vendor lib: vorbis)
     SB_LIBVORBIS_DIR = $(call find-dep-dir, libvorbis)
     SB_VORBIS_LIBS := -L$(SB_LIBVORBIS_DIR)/lib -lvorbis -lvorbisenc
@@ -666,7 +666,7 @@ endif
 # libFLAC
 #
 ifneq (,$(call enable-sb-lib, flac))
-  ifneq ($(wildcard $(NG_VENDOR_BINARIES_DIR)/flac/$(SB_BUILD_TYPE)), )
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/flac/$(SB_BUILD_TYPE)), )
     $(info Enabling Songbird vendor lib: flac)
     SB_LIBFLAC_DIR = $(call find-dep-dir, flac)
     SB_LDFLAGS += -L$(SB_LIBFLAC_DIR)/lib
