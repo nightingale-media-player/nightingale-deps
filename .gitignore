@@ -1,4 +1,6 @@
 *.DS_Store*
+*.pyc
+ignore*/*
 sqlite/autom4te.cache
 linux-*
 checkout
