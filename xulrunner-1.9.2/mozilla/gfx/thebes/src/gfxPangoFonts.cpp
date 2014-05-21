@@ -61,7 +61,7 @@
 #include "gfxFontconfigUtils.h"
 #include "gfxUserFontSet.h"
 
-#include <freetype/tttables.h>
+#include <tttables.h>
 
 #include <cairo.h>
 #include <cairo-ft.h>
