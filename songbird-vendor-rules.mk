@@ -128,9 +128,15 @@ endif
 # TODO: define these as a list of exportable targets and expand that, so
 # we can match the printouts in -rules.mk
 ifneq (,$(BUILD_TARGET_SET))
-  export CC = $(SB_CC)
-  export CXX = $(SB_CXX)
-  export LD = $(SB_LD)
+  ifneq (, $(SB_CC))
+    export CC = $(SB_CC)
+  endif
+  ifneq (, $(SB_CXX))
+    export CXX = $(SB_CXX)
+  endif
+  ifneq (, $(SB_LD))
+    export LD = $(SB_LD)
+  endif
   export AR = $(SB_AR)
   export OBJDUMP = $(SB_OBJDUMP)
 
