@@ -67,7 +67,7 @@ else
       CMAKE_C_FLAGS_DEBUG += -g
       CMAKE_CXX_FLAGS_DEBUG += -g
    else
-      ifeq (, $(filter-out $(wildcard clang), $(CC)))
+      ifneq (, $(filter $(wildcard clang), $(CC)))
          CMAKE_C_FLAGS_DEBUG += -g -gstabs+
          CMAKE_CXX_FLAGS_DEBUG += -g -gstabs+
          CMAKE_C_FLAGS_RELEASE += -gstabs+
