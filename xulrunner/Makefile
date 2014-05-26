@@ -125,7 +125,7 @@ endif
 	$(CP) $(CURDIR)/mozconfigs/$(MOZCONFIG) $(CURDIR)/mozilla/.mozconfig
 	$(RM) -r $(CURDIR)/mozilla/compiled/xulrunner-$*
 	$(MKDIR) $(CURDIR)/mozilla/compiled/xulrunner-$*
-	$(MAKE) -j1 -C $(CURDIR)/mozilla -f client.mk build
+	$(MAKE) -C $(CURDIR)/mozilla -f client.mk build
 
 .PHONY: xr-% FORCE
 
