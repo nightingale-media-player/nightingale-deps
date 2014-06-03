@@ -45,8 +45,6 @@ SB_VENDOR_TARGET_DEP_MODULES := glib \
                                 libIDL \
                                 $(NULL)
 
-SB_BRANCH ?= trunk
-
 include $(CURDIR)/../songbird-vendor-defs.mk
 
 ifneq ($(SB_VENDOR_XR_TARGET),$(SB_VENDOR_TARGET))
@@ -92,7 +90,7 @@ ifneq (,$(SB_VENDOR_BUILD_LOG))
 endif
 
 xr-clean: FORCE
-	$(RM) -rf $(CURDIR)/songbird
+	$(RM) -rf $(CURDIR)/compiled
 	$(RM) -rf $(CURDIR)/mozilla/compiled
 
 xr-packaging-%:
@@ -105,13 +103,13 @@ xr-packaging-%:
       fi; \
     fi
 	@if $(HAVE_XR_$*_BUILD); then \
-      $(call sh_make,$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $(SB_BRANCH) $*); \
+      $(call sh_make,$(XR_PACKAGE_DEPS) $(SB_XR_PLATFORM)-$(SB_XR_ARCH) $*); \
       $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}/$*); \
       $(call sh_make,$(MKDIR) -p $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}); \
-      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/mozilla/$* $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}/); \
+      $(call sh_make,$(MV) $(CURDIR)/compiled/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/mozilla/$* $(SB_VENDOR_BINARIES_DIR)/mozilla-${XUL}/); \
       $(call sh_make,$(RM) -r $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}/$*); \
       $(call sh_make,$(MKDIR) -p $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}); \
-      $(call sh_make,$(MV) $(CURDIR)/songbird/$(SB_BRANCH)/dependencies/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner/$* $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}/); \
+      $(call sh_make,$(MV) $(CURDIR)/compiled/$(SB_XR_PLATFORM)-$(SB_XR_ARCH)/xulrunner/$* $(SB_VENDOR_BINARIES_DIR)/xulrunner-${XUL}/); \
     fi
 
 xr-build-%: setup_environment
