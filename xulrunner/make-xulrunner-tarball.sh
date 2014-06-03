@@ -58,7 +58,10 @@ fi
 # All of the xpts are linked and removed, but the 'mega' xpt isn't registered
 # in the manifest, while all the ones just removed are listed still.
 # So, overwrite the manifest containing the old list with our new, single, one.
-echo -e 'interfaces xulrunner.xpt\n' > interfaces.manifest
+if test -z "$(cat interfaces.manifest | $GREP xulrunner.xpt)" ; then
+  $CP interfaces.manifest interfaces.manifest.bak
+  echo -e 'interfaces xulrunner.xpt\n' > interfaces.manifest
+fi
 popd > /dev/null
 
 EXTRA_TAR_FLAGS=""
