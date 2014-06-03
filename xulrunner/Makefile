@@ -60,7 +60,6 @@ MOZCONFIG = xulrunner.$(SB_XR_PLATFORM).$*.$(SB_XR_ARCH).mozconfig
 
 XR_STRIP_SYMBOLS = $(CURDIR)/xr_strip_symbols.sh
 XR_PACKAGE_DEPS = $(CURDIR)/xr_pack_deps.sh
-XR_CLENAUP = $(CURDIR)/xr_cleanup.sh
 
 # These are named weird because the targets construct these variable names
 HAVE_XR_release_BUILD = test -d $(CURDIR)/mozilla/compiled/xulrunner-release
