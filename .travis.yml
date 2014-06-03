@@ -1,0 +1,18 @@
+language: cpp
+compiler: gcc
+before_install:
+ - "sudo apt-get update -qq"
+ - "sudo apt-get install -qq autoconf2.13 yasm libgtk2.0-dev libglib2.0-dev libdbus-1-dev libdbus-glib-1-dev libasound2-dev libcurl4-openssl-dev libiw-dev libxt-dev mesa-common-dev libpulse-dev help2man texinfo"
+ - "sudo dpkg -i packages/linux/automake_1.14.1-2ubuntu1_all.deb"
+script: "./build-no-xul.sh | grep -i -w 'warning\\|error\\|critical\\|stopped\\|fatal'"
+branches:
+  only:
+    - xul-9.0.1
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+  irc: "irc.mozilla.org#nightingale"
+  webhooks:
+    urls:
+        - http://buildborg.jasonincode.com/hook/012ri4c1
