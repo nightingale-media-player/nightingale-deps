@@ -146,8 +146,9 @@ cd "$distdir/bin" && $CP -Lfp $bin_files "$sdkdir/bin"
 cd "$distdir/host/bin" && $CP -Lfp $update_bin_files "$sdkdir/bin"
 cd "$distdir/host/bin" && $CP -Lfp $breakpad_bin_files "$sdkdir/bin"
 
-# POSSIBLY BROKEN
-cd "$objdir/xulrunner/tools/redit" && $CP -Lfpa *redit "$sdkdir/bin"
+if test -d "$objdir/xulrunner/tools/redit"; then
+  cd "$objdir/xulrunner/tools/redit" && $CP -Lfpa *redit "$sdkdir/bin"
+fi
 
 notice "copying library files..."
 cd "$sdkdir" && $MKDIR -p lib
