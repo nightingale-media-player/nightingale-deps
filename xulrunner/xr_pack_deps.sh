@@ -31,10 +31,10 @@ $MKDIR -p songbird/$tree/dependencies/$plat/xulrunner/$buildMode/
 
 # make mozilla sdk
 shellExec ./make-mozilla-sdk.sh mozilla/ \
-                      mozilla/compiled/xulrunner-$buildMode/ \
-                      songbird/$tree/dependencies/$plat/mozilla/$buildMode/
+                                mozilla/compiled/xulrunner-$buildMode/ \
+                                compiled/$plat/mozilla/$buildMode/
 
 # make xulrunner tarball
 shellExec ./make-xulrunner-tarball.sh mozilla/compiled/xulrunner-$buildMode/dist/bin/ \
-                            songbird/$tree/dependencies/$plat/xulrunner/$buildMode/ \
-                            xulrunner.tar.bz2
+                                      compiled/$plat/xulrunner/$buildMode/ \
+                                      xulrunner.tar.bz2
