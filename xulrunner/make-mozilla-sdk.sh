@@ -78,7 +78,7 @@ update_script_files="common.sh
                      unwrap_full_update.pl
 "
 
-# build_scripts are relative to $srcdir
+# build_script_files are relative to $srcdir
 build_script_files="build/autoconf/acoutput-fast.pl
                     build/autoconf/make-makefile
                     config/configobj.py
@@ -92,7 +92,11 @@ build_script_files="build/autoconf/acoutput-fast.pl
                     config/utils.py
 "
 
-# breakpad script files are relative to $srcdir
+# breakpad_bin_files are relative to $objdir/dist/host/bin/
+breakpad_bin_files="dump_syms
+"
+
+# breakpad_script_files are relative to $srcdir
 breakpad_script_files="toolkit/crashreporter/tools/symbolstore.py
                        toolkit/crashreporter/tools/upload_symbols.sh
 "
@@ -140,13 +144,10 @@ notice "copying binary files..."
 cd "$sdkdir" && $MKDIR -p bin
 cd "$distdir/bin" && $CP -Lfp $bin_files "$sdkdir/bin"
 cd "$distdir/host/bin" && $CP -Lfp $update_bin_files "$sdkdir/bin"
+cd "$distdir/host/bin" && $CP -Lfp $breakpad_bin_files "$sdkdir/bin"
 
 # POSSIBLY BROKEN
 cd "$objdir/xulrunner/tools/redit" && $CP -Lfpa *redit "$sdkdir/bin"
-
-# POSSIBLY BROKEN - breakpad binaries
-cd "$objdir/toolkit/crashreporter/google-breakpad/src/tools/linux/dump_syms" && $CP -Lfpa *dump_syms "$sdkdir/bin"
-cd "$objdir/toolkit/crashreporter/google-breakpad/src/tools/mac/dump_syms" && $CP -Lfpa *dump_syms "$sdkdir/bin"
 
 notice "copying library files..."
 cd "$sdkdir" && $MKDIR -p lib
