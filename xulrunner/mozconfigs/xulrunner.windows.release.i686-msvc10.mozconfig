@@ -20,5 +20,6 @@ ac_add_options --disable-necko-wifi
 ac_add_options --enable-shared-js
 ac_add_options --enable-chrome-format=omni
 
-export WIN32_REDIST_DIR="C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\redist\x86\Microsoft.VC100.CRT"
-# export WIN32_REDIST_DIR="C:\Program Files (x86)\Microsoft Visual Studio 9\VC\redist\x86\Microsoft.VC90.CRT"
+mk_add_options MOZ_MAKE_FLAGS=-j1
+
+WIN32_REDIST_DIR=$VCINSTALLDIR/redist/x86/Microsoft.VC100.CRT
