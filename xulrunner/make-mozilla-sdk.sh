@@ -63,7 +63,7 @@ symbol_files="intl/unicharutil/util/nsunicharutils.pdb
               xulrunner/stub/xulrunner-stub.pdb
               memory/jemalloc/libc*.pdb
               memory/mozalloc/mozalloc.pdb
-              memory/mozutils/mozutils*
+              memory/mozutils/mozutils.pdb
 "
 
 # update_bin_files are relative to $objdir/dist/host/bin/
@@ -147,7 +147,7 @@ cd "$distdir/host/bin" && $CP -Lfp $update_bin_files "$sdkdir/bin"
 cd "$distdir/host/bin" && $CP -Lfp $breakpad_bin_files "$sdkdir/bin"
 
 if test -d "$objdir/xulrunner/tools/redit"; then
-  cd "$objdir/xulrunner/tools/redit" && $CP -Lfpa *redit "$sdkdir/bin"
+  cd "$objdir/xulrunner/tools/redit" && $CP -Lfpa "redit" "$sdkdir/bin"
 fi
 
 notice "copying library files..."
