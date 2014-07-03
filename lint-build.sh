@@ -42,18 +42,14 @@ case $OSTYPE in
         fi
         cd ../
 
-        # echo -e "Building xulrunner 1.9.2...\n"
-        # make -C xulrunner-1.9.2 -f Makefile.songbird xr-all
-        # make -C xulrunner-1.9.2 -f Makefile.songbird xr-build-debug
-        # make -C xulrunner-1.9.2 -f Makefile.songbird xr-build-release
-        # make -C xulrunner-1.9.2 -f Makefile.songbird xr-symbols
-        # make -C xulrunner-1.9.2 -f Makefile.songbird xr-packaging
+        echo -e "Building xulrunner 1.9.2...\n"
+        make -C xulrunner-1.9.2 -f Makefile.songbird xr-all
 
-        # echo -e "Building sqlite...\n"
-        # make -C sqlite -f Makefile.songbird
+        echo -e "Building sqlite...\n"
+        make -C sqlite -f Makefile.songbird
 
-        # echo -e "Building taglib...\n"
-        # make -C taglib -f Makefile.songbird
+        echo -e "Building taglib...\n"
+        make -C taglib -f Makefile.songbird
 
     ;;
     *)
