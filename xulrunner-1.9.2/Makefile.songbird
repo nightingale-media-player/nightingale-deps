@@ -58,6 +58,12 @@ SB_XR_ARCH := $(shell echo $(SB_TARGET_ARCH) | $(CUT) -d- -f 2-)
 
 MOZCONFIG = xulrunner.$(SB_XR_PLATFORM).$*.$(SB_XR_ARCH).mozconfig
 
+ifeq (Linux, $(SB_VENDOR_ARCH))
+  ifeq (1, $(LINT_BUILD))
+    MOZCONFIG = xulrunner.$(SB_XR_PLATFORM).$*.$(SB_XR_ARCH).lintian.mozconfig
+  endif
+endif
+
 XR_STRIP_SYMBOLS = $(CURDIR)/xr_strip_symbols.sh
 XR_PACKAGE_DEPS = $(CURDIR)/xr_pack_deps.sh
 XR_CLENAUP = $(CURDIR)/xr_cleanup.sh

@@ -6,16 +6,20 @@ export DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export SB_VENDOR_BINARIES_CO_ROOT=$DIR
 export SB_VENDOR_BUILD_ROOT=$DIR
 
+export LINT_BUILD=1
+
 if [ ! -d "build" ]; then
     mkdir build
 fi
 
 case $OSTYPE in
     linux*)
-        # hardening flags
-        export CFLAGS="-fstack-protector --param=ssp-buffer-size=4"
-        export CXXFLAGS="-D_FORTIFY_SOURCE=2"
-        export LDFLAGS="-Wl,-z,now -Wl,-z,relro"
+        if [ "$LINT_BUILD" -eq "1" ] ; then
+            # hardening flags
+            export CFLAGS="-fstack-protector --param=ssp-buffer-size=4"
+            export CXXFLAGS="-D_FORTIFY_SOURCE=2"
+            export LDFLAGS="-Wl,-z,now -Wl,-z,relro"
+        fi
 
         export SB_CFLAGS=$CFLAGS
         export SB_CCFLAGS=$CFLAGS
