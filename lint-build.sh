@@ -37,8 +37,8 @@ case $OSTYPE in
 
         cd "xulrunner-1.9.2"
         # fix for kernels > 3.X on versions of xul without security setup for them
-        if [ ! -f mozilla/security/coreconf/Linux$(uname -r|sed -e 's/\-.*//'|grep -o "[0-9]\.[0-9]{1,2}").mk ]; then
-            ln -s $(pwd)/mozilla/security/coreconf/Linux2.6.mk $(pwd)/mozilla/security/coreconf/Linux$(uname -r|sed -e 's/\-.*//'|grep -o "[0-9]\.[0-9]{1,2}").mk
+        if [ ! -f mozilla/security/coreconf/Linux$(uname -r|sed -e 's/\-.*//'|grep -o -E "[0-9]\.[0-9]{1,2}").mk ]; then
+            ln -s $(pwd)/mozilla/security/coreconf/Linux2.6.mk $(pwd)/mozilla/security/coreconf/Linux$(uname -r|sed -e 's/\-.*//'|grep -o -E "[0-9]\.[0-9]{1,2}").mk
         fi
         cd ../
 
