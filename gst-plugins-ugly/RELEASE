@@ -1,0 +1,106 @@
+
+Release notes for GStreamer Ugly Plugins 1.4.0
+
+
+The GStreamer team is pleased to announce the first release of
+the stable 1.4 release series. The 1.4 release series is adding new
+features on top of the 1.0 and 1.2 series and is part of the API and
+ABI-stable 1.x release series of the GStreamer multimedia framework.
+
+
+
+Binaries for Android, iOS, Mac OS X and Windows are provided together
+with this release.
+
+
+
+The stable 1.4 release series is API and ABI compatible with 1.0.x,
+1.2.x and any other 1.x release series in the future. Compared to 1.2.x
+it contains some new features and more intrusive changes that were
+considered too risky as a bugfix.
+
+
+
+"When you have to shoot, shoot.  Don't talk."
+
+
+There are times when the world needs a color between black and white.
+Quality code to match the good's, but two-timing, backstabbing and ready to
+sell your freedom down the river.  These plugins might have a patent noose
+around their neck, or a lock-up license, or any other problem that makes you
+think twice about shipping them.
+
+
+We don't call them ugly because we like them less.  Does a mother love her
+son less because he's not as pretty as the other ones ? No  - she commends
+him on his great personality.  These plugins are the life of the party.
+And we'll still step in and set them straight if you report any unacceptable
+behaviour - because there are two kinds of people in the world, my friend:
+those with a rope around their neck and the people who do the cutting.
+
+
+This module contains a set of plugins that have good quality and correct
+functionality, but distributing them might pose problems.  The license
+on either the plugins or the supporting libraries might not be how we'd
+like. The code might be widely known to present patent problems.
+Distributors should check if they want/can ship these plugins.
+
+
+Other modules containing plugins are:
+
+
+gst-plugins-base
+contains a basic set of well-supported plugins
+gst-plugins-good
+contains a set of well-supported plugins under our preferred license
+gst-plugins-bad
+contains a set of less supported plugins that haven't passed the
+    rigorous quality testing we expect, or are still missing documentation
+    and/or unit tests
+gst-libav
+contains a set of codecs plugins based on libav (formerly gst-ffmpeg)
+
+
+
+  
+
+There were no bugs fixed in this release
+    
+
+==== Download ====
+
+You can find source releases of gst-plugins-ugly in the download
+directory: http://gstreamer.freedesktop.org/src/gst-plugins-ugly/
+
+The git repository and details how to clone it can be found at
+http://cgit.freedesktop.org/gstreamer/gst-plugins-ugly/
+
+==== Homepage ====
+
+The project's website is http://gstreamer.freedesktop.org/
+
+==== Support and Bugs ====
+
+We use GNOME's bugzilla for bug reports and feature requests:
+http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer
+
+Please submit patches via bugzilla as well.
+
+For help and support, please subscribe to and send questions to the
+gstreamer-devel mailing list (see below for details).
+
+There is also a #gstreamer IRC channel on the Freenode IRC network.
+
+==== Developers ====
+
+GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned
+from there (see link above).
+
+Interested developers of the core library, plugins, and applications should
+subscribe to the gstreamer-devel list.
+
+        
+Contributors to this release
+    
+      * Sebastian Dröge
+ 

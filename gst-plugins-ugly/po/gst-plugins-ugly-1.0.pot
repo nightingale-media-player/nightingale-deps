@@ -1,0 +1,85 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: gst-plugins-ugly 1.4.0\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
+"POT-Creation-Date: 2014-07-19 16:48+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ext/cdio/gstcdiocddasrc.c:199
+msgid "Could not read from CD."
+msgstr ""
+
+#: ext/cdio/gstcdiocddasrc.c:406
+msgid "Could not open CD device for reading."
+msgstr ""
+
+#: ext/cdio/gstcdiocddasrc.c:413
+msgid "Disc is not an Audio CD."
+msgstr ""
+
+#: ext/dvdread/dvdreadsrc.c:228 ext/dvdread/dvdreadsrc.c:235
+msgid "Could not open DVD"
+msgstr ""
+
+#: ext/dvdread/dvdreadsrc.c:242 ext/dvdread/dvdreadsrc.c:618
+#: ext/dvdread/dvdreadsrc.c:625
+#, c-format
+msgid "Could not open DVD title %d"
+msgstr ""
+
+#: ext/dvdread/dvdreadsrc.c:248
+#, c-format
+msgid "Failed to go to chapter %d of DVD title %d"
+msgstr ""
+
+#: ext/dvdread/dvdreadsrc.c:632
+#, c-format
+msgid ""
+"Could not open DVD title %d. Interactive titles are not supported by this "
+"element"
+msgstr ""
+
+#: ext/dvdread/dvdreadsrc.c:986
+msgid ""
+"Could not read DVD. This may be because the DVD is encrypted and a DVD "
+"decryption library is not installed."
+msgstr ""
+
+#: ext/dvdread/dvdreadsrc.c:989
+msgid "Could not read DVD."
+msgstr ""
+
+#: ext/lame/gstlamemp3enc.c:394
+msgid ""
+"Failed to configure LAME mp3 audio encoder. Check your encoding parameters."
+msgstr ""
+
+#: ext/lame/gstlamemp3enc.c:426 ext/twolame/gsttwolamemp2enc.c:486
+#, c-format
+msgid ""
+"The requested bitrate %d kbit/s for property '%s' is not allowed. The "
+"bitrate was changed to %d kbit/s."
+msgstr ""
+
+#: ext/twolame/gsttwolamemp2enc.c:411
+msgid "Failed to configure TwoLAME encoder. Check your encoding parameters."
+msgstr ""
+
+#: gst/asfdemux/gstasfdemux.c:413
+msgid "This stream contains no data."
+msgstr ""
+
+#: gst/asfdemux/gstasfdemux.c:420 gst/asfdemux/gstasfdemux.c:1961
+msgid "Internal data stream error."
+msgstr ""

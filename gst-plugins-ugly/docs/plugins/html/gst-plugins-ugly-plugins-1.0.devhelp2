@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
+<book xmlns="http://www.devhelp.net/book" title="GStreamer Ugly Plugins 1.0 Plugins Reference Manual" link="index.html" author="" name="gst-plugins-ugly-plugins-1.0" version="2" language="c">
+  <chapters>
+    <sub name="gst-plugins-ugly Elements" link="ch01.html">
+      <sub name="a52dec" link="gst-plugins-ugly-plugins-a52dec.html"/>
+      <sub name="amrnbdec" link="gst-plugins-ugly-plugins-amrnbdec.html"/>
+      <sub name="amrnbenc" link="gst-plugins-ugly-plugins-amrnbenc.html"/>
+      <sub name="amrwbdec" link="gst-plugins-ugly-plugins-amrwbdec.html"/>
+      <sub name="cdiocddasrc" link="gst-plugins-ugly-plugins-cdiocddasrc.html"/>
+      <sub name="lamemp3enc" link="gst-plugins-ugly-plugins-lamemp3enc.html"/>
+      <sub name="mad" link="gst-plugins-ugly-plugins-mad.html"/>
+      <sub name="rademux" link="gst-plugins-ugly-plugins-rademux.html"/>
+      <sub name="rmdemux" link="gst-plugins-ugly-plugins-rmdemux.html"/>
+      <sub name="rdtmanager" link="gst-plugins-ugly-plugins-rdtmanager.html"/>
+      <sub name="rtspreal" link="gst-plugins-ugly-plugins-rtspreal.html"/>
+      <sub name="rtspwms" link="gst-plugins-ugly-plugins-rtspwms.html"/>
+      <sub name="siddec" link="gst-plugins-ugly-plugins-siddec.html"/>
+      <sub name="twolame" link="gst-plugins-ugly-plugins-twolame.html"/>
+      <sub name="x264enc" link="gst-plugins-ugly-plugins-x264enc.html"/>
+      <sub name="xingmux" link="gst-plugins-ugly-plugins-xingmux.html"/>
+    </sub>
+    <sub name="gst-plugins-ugly Plugins" link="ch02.html">
+      <sub name="a52dec" link="gst-plugins-ugly-plugins-plugin-a52dec.html"/>
+      <sub name="amrnb" link="gst-plugins-ugly-plugins-plugin-amrnb.html"/>
+      <sub name="amrwbdec" link="gst-plugins-ugly-plugins-plugin-amrwbdec.html"/>
+      <sub name="asf" link="gst-plugins-ugly-plugins-plugin-asf.html"/>
+      <sub name="cdio" link="gst-plugins-ugly-plugins-plugin-cdio.html"/>
+      <sub name="dvdlpcmdec" link="gst-plugins-ugly-plugins-plugin-dvdlpcmdec.html"/>
+      <sub name="dvdread" link="gst-plugins-ugly-plugins-plugin-dvdread.html"/>
+      <sub name="dvdsub" link="gst-plugins-ugly-plugins-plugin-dvdsub.html"/>
+      <sub name="lame" link="gst-plugins-ugly-plugins-plugin-lame.html"/>
+      <sub name="mad" link="gst-plugins-ugly-plugins-plugin-mad.html"/>
+      <sub name="mpeg2dec" link="gst-plugins-ugly-plugins-plugin-mpeg2dec.html"/>
+      <sub name="realmedia" link="gst-plugins-ugly-plugins-plugin-realmedia.html"/>
+      <sub name="siddec" link="gst-plugins-ugly-plugins-plugin-siddec.html"/>
+      <sub name="twolame" link="gst-plugins-ugly-plugins-plugin-twolame.html"/>
+      <sub name="x264" link="gst-plugins-ugly-plugins-plugin-x264.html"/>
+    </sub>
+  </chapters>
+  <functions>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-a52dec.html#id-1.2.2.7.2.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-a52dec.html#id-1.2.2.7.2.2"/>
+    <keyword type="struct" name="struct GstA52Dec" link="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec-struct"/>
+    <keyword type="property" name="The “drc” property" link="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--drc"/>
+    <keyword type="property" name="The “lfe” property" link="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--lfe"/>
+    <keyword type="property" name="The “mode” property" link="gst-plugins-ugly-plugins-a52dec.html#GstA52Dec--mode"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-amrnbdec.html#id-1.2.3.7.2.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-amrnbdec.html#id-1.2.3.7.2.2"/>
+    <keyword type="struct" name="struct GstAmrnbDec" link="gst-plugins-ugly-plugins-amrnbdec.html#GstAmrnbDec-struct"/>
+    <keyword type="property" name="The “variant” property" link="gst-plugins-ugly-plugins-amrnbdec.html#GstAmrnbDec--variant"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-amrnbenc.html#id-1.2.4.8.2.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-amrnbenc.html#id-1.2.4.8.2.2"/>
+    <keyword type="struct" name="struct GstAmrnbEnc" link="gst-plugins-ugly-plugins-amrnbenc.html#GstAmrnbEnc-struct"/>
+    <keyword type="property" name="The “band-mode” property" link="gst-plugins-ugly-plugins-amrnbenc.html#GstAmrnbEnc--band-mode"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-amrwbdec.html#id-1.2.5.6.2.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-amrwbdec.html#id-1.2.5.6.2.2"/>
+    <keyword type="struct" name="struct GstAmrwbDec" link="gst-plugins-ugly-plugins-amrwbdec.html#GstAmrwbDec-struct"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-cdiocddasrc.html#id-1.2.6.8.2.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-cdiocddasrc.html#id-1.2.6.8.2.2"/>
+    <keyword type="struct" name="struct GstCdioCddaSrc" link="gst-plugins-ugly-plugins-cdiocddasrc.html#GstCdioCddaSrc-struct"/>
+    <keyword type="property" name="The “read-speed” property" link="gst-plugins-ugly-plugins-cdiocddasrc.html#GstCdioCddaSrc--read-speed"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-lamemp3enc.html#id-1.2.7.8.2.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-lamemp3enc.html#id-1.2.7.8.2.2"/>
+    <keyword type="struct" name="struct GstLameMP3Enc" link="gst-plugins-ugly-plugins-lamemp3enc.html#GstLameMP3Enc-struct"/>
+    <keyword type="property" name="The “bitrate” property" link="gst-plugins-ugly-plugins-lamemp3enc.html#GstLameMP3Enc--bitrate"/>
+    <keyword type="property" name="The “cbr” property" link="gst-plugins-ugly-plugins-lamemp3enc.html#GstLameMP3Enc--cbr"/>
+    <keyword type="property" name="The “encoding-engine-quality” property" link="gst-plugins-ugly-plugins-lamemp3enc.html#GstLameMP3Enc--encoding-engine-quality"/>
+    <keyword type="property" name="The “mono” property" link="gst-plugins-ugly-plugins-lamemp3enc.html#GstLameMP3Enc--mono"/>
+    <keyword type="property" name="The “quality” property" link="gst-plugins-ugly-plugins-lamemp3enc.html#GstLameMP3Enc--quality"/>
+    <keyword type="property" name="The “target” property" link="gst-plugins-ugly-plugins-lamemp3enc.html#GstLameMP3Enc--target"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-mad.html#id-1.2.8.7.2.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-mad.html#id-1.2.8.7.2.2"/>
+    <keyword type="struct" name="struct GstMad" link="gst-plugins-ugly-plugins-mad.html#GstMad-struct"/>
+    <keyword type="property" name="The “half” property" link="gst-plugins-ugly-plugins-mad.html#GstMad--half"/>
+    <keyword type="property" name="The “ignore-crc” property" link="gst-plugins-ugly-plugins-mad.html#GstMad--ignore-crc"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-rademux.html#id-1.2.9.6.3"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-rademux.html#id-1.2.9.6.4.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-rademux.html#id-1.2.9.6.4.2"/>
+    <keyword type="struct" name="struct GstRealAudioDemux" link="gst-plugins-ugly-plugins-rademux.html#GstRealAudioDemux-struct"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-rmdemux.html#id-1.2.10.6.2.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-rmdemux.html#id-1.2.10.6.2.2"/>
+    <keyword type="struct" name="struct GstRMDemux" link="gst-plugins-ugly-plugins-rmdemux.html#GstRMDemux-struct"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-rdtmanager.html#id-1.2.11.8.2.1.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-rdtmanager.html#id-1.2.11.8.2.1.2"/>
+    <keyword type="struct" name="struct GstRDTManager" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-struct"/>
+    <keyword type="property" name="The “latency” property" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager--latency"/>
+    <keyword type="signal" name="The “clear-pt-map” signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-clear-pt-map"/>
+    <keyword type="signal" name="The “on-bye-ssrc” signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-on-bye-ssrc"/>
+    <keyword type="signal" name="The “on-bye-timeout” signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-on-bye-timeout"/>
+    <keyword type="signal" name="The “on-timeout” signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-on-timeout"/>
+    <keyword type="signal" name="The “request-pt-map” signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-request-pt-map"/>
+    <keyword type="signal" name="The “on-npt-stop” signal" link="gst-plugins-ugly-plugins-rdtmanager.html#GstRDTManager-on-npt-stop"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-rtspreal.html#id-1.2.12.7.2.1.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-rtspreal.html#id-1.2.12.7.2.1.2"/>
+    <keyword type="struct" name="struct GstRTSPReal" link="gst-plugins-ugly-plugins-rtspreal.html#GstRTSPReal-struct"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-rtspwms.html#id-1.2.13.7.2.1.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-rtspwms.html#id-1.2.13.7.2.1.2"/>
+    <keyword type="struct" name="struct GstRTSPWMS" link="gst-plugins-ugly-plugins-rtspwms.html#GstRTSPWMS-struct"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-siddec.html#id-1.2.14.7.2.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-siddec.html#id-1.2.14.7.2.2"/>
+    <keyword type="struct" name="struct GstSidDec" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec-struct"/>
+    <keyword type="property" name="The “blocksize” property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--blocksize"/>
+    <keyword type="property" name="The “clock” property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--clock"/>
+    <keyword type="property" name="The “filter” property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--filter"/>
+    <keyword type="property" name="The “force-speed” property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--force-speed"/>
+    <keyword type="property" name="The “measured-volume” property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--measured-volume"/>
+    <keyword type="property" name="The “memory” property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--memory"/>
+    <keyword type="property" name="The “metadata” property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--metadata"/>
+    <keyword type="property" name="The “mos8580” property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--mos8580"/>
+    <keyword type="property" name="The “tune” property" link="gst-plugins-ugly-plugins-siddec.html#GstSidDec--tune"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-twolame.html#id-1.2.15.8.2.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-twolame.html#id-1.2.15.8.2.2"/>
+    <keyword type="struct" name="struct GstTwoLame" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame-struct"/>
+    <keyword type="property" name="The “ath-level” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--ath-level"/>
+    <keyword type="property" name="The “bitrate” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--bitrate"/>
+    <keyword type="property" name="The “copyright” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--copyright"/>
+    <keyword type="property" name="The “emphasis” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--emphasis"/>
+    <keyword type="property" name="The “energy-level-extension” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--energy-level-extension"/>
+    <keyword type="property" name="The “error-protection” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--error-protection"/>
+    <keyword type="property" name="The “mode” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--mode"/>
+    <keyword type="property" name="The “original” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--original"/>
+    <keyword type="property" name="The “padding” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--padding"/>
+    <keyword type="property" name="The “psymodel” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--psymodel"/>
+    <keyword type="property" name="The “quick-mode” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--quick-mode"/>
+    <keyword type="property" name="The “quick-mode-count” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--quick-mode-count"/>
+    <keyword type="property" name="The “vbr” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--vbr"/>
+    <keyword type="property" name="The “vbr-level” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--vbr-level"/>
+    <keyword type="property" name="The “vbr-max-bitrate” property" link="gst-plugins-ugly-plugins-twolame.html#GstTwoLame--vbr-max-bitrate"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-x264enc.html#id-1.2.16.8.2.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-x264enc.html#id-1.2.16.8.2.2"/>
+    <keyword type="struct" name="struct GstX264Enc" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc-struct"/>
+    <keyword type="property" name="The “analyse” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--analyse"/>
+    <keyword type="property" name="The “aud” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--aud"/>
+    <keyword type="property" name="The “b-adapt” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--b-adapt"/>
+    <keyword type="property" name="The “b-pyramid” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--b-pyramid"/>
+    <keyword type="property" name="The “bframes” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--bframes"/>
+    <keyword type="property" name="The “bitrate” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--bitrate"/>
+    <keyword type="property" name="The “byte-stream” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--byte-stream"/>
+    <keyword type="property" name="The “cabac” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--cabac"/>
+    <keyword type="property" name="The “dct8x8” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--dct8x8"/>
+    <keyword type="property" name="The “interlaced” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--interlaced"/>
+    <keyword type="property" name="The “ip-factor” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--ip-factor"/>
+    <keyword type="property" name="The “key-int-max” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--key-int-max"/>
+    <keyword type="property" name="The “me” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--me"/>
+    <keyword type="property" name="The “multipass-cache-file” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--multipass-cache-file"/>
+    <keyword type="property" name="The “noise-reduction” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--noise-reduction"/>
+    <keyword type="property" name="The “pass” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--pass"/>
+    <keyword type="property" name="The “pb-factor” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--pb-factor"/>
+    <keyword type="property" name="The “qp-max” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--qp-max"/>
+    <keyword type="property" name="The “qp-min” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--qp-min"/>
+    <keyword type="property" name="The “qp-step” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--qp-step"/>
+    <keyword type="property" name="The “quantizer” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--quantizer"/>
+    <keyword type="property" name="The “ref” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--ref"/>
+    <keyword type="property" name="The “sps-id” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--sps-id"/>
+    <keyword type="property" name="The “stats-file” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--stats-file"/>
+    <keyword type="property" name="The “subme” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--subme"/>
+    <keyword type="property" name="The “threads” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--threads"/>
+    <keyword type="property" name="The “trellis” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--trellis"/>
+    <keyword type="property" name="The “vbv-buf-capacity” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--vbv-buf-capacity"/>
+    <keyword type="property" name="The “weightb” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--weightb"/>
+    <keyword type="property" name="The “intra-refresh” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--intra-refresh"/>
+    <keyword type="property" name="The “mb-tree” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--mb-tree"/>
+    <keyword type="property" name="The “rc-lookahead” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--rc-lookahead"/>
+    <keyword type="property" name="The “sliced-threads” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--sliced-threads"/>
+    <keyword type="property" name="The “sync-lookahead” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--sync-lookahead"/>
+    <keyword type="property" name="The “option-string” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--option-string"/>
+    <keyword type="property" name="The “profile” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--profile"/>
+    <keyword type="property" name="The “psy-tune” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--psy-tune"/>
+    <keyword type="property" name="The “speed-preset” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--speed-preset"/>
+    <keyword type="property" name="The “tune” property" link="gst-plugins-ugly-plugins-x264enc.html#GstX264Enc--tune"/>
+    <keyword type="" name="Example launch line" link="gst-plugins-ugly-plugins-xingmux.html#id-1.2.17.6.4"/>
+    <keyword type="" name="Element Information" link="gst-plugins-ugly-plugins-xingmux.html#id-1.2.17.6.5.1"/>
+    <keyword type="" name="Element Pads" link="gst-plugins-ugly-plugins-xingmux.html#id-1.2.17.6.5.2"/>
+    <keyword type="struct" name="struct GstXingMux" link="gst-plugins-ugly-plugins-xingmux.html#GstXingMux-struct"/>
+  </functions>
+</book>
