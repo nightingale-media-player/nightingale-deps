@@ -277,16 +277,19 @@ gst_deinterlace_locking_get_type (void)
 
 #define DEINTERLACE_CAPS GST_VIDEO_CAPS_MAKE(DEINTERLACE_VIDEO_FORMATS)
 
+#define DEINTERLACE_ALL_CAPS DEINTERLACE_CAPS ";" \
+    GST_VIDEO_CAPS_MAKE_WITH_FEATURES ("ANY", GST_VIDEO_FORMATS_ALL)
+
 static GstStaticPadTemplate src_templ = GST_STATIC_PAD_TEMPLATE ("src",
     GST_PAD_SRC,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (DEINTERLACE_CAPS)
+    GST_STATIC_CAPS (DEINTERLACE_ALL_CAPS)
     );
 
 static GstStaticPadTemplate sink_templ = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (DEINTERLACE_CAPS)
+    GST_STATIC_CAPS (DEINTERLACE_ALL_CAPS)
     );
 
 static void gst_deinterlace_finalize (GObject * self);
@@ -501,12 +504,11 @@ gst_deinterlace_class_init (GstDeinterlaceClass * klass)
   gobject_class->finalize = gst_deinterlace_finalize;
 
   /**
-   * GstDeinterlace:mode
+   * GstDeinterlace:mode:
    *
    * This selects whether the deinterlacing methods should
    * always be applied or if they should only be applied
    * on content that has the "interlaced" flag on the caps.
-   *
    */
   g_object_class_install_property (gobject_class, PROP_MODE,
       g_param_spec_enum ("mode",
@@ -517,7 +519,7 @@ gst_deinterlace_class_init (GstDeinterlaceClass * klass)
       );
 
   /**
-   * GstDeinterlace:method
+   * GstDeinterlace:method:
    *
    * Selects the different deinterlacing algorithms that can be used.
    * These provide different quality and CPU usage.
@@ -599,11 +601,10 @@ gst_deinterlace_class_init (GstDeinterlaceClass * klass)
       );
 
   /**
-   * GstDeinterlace:fields
+   * GstDeinterlace:fields:
    *
    * This selects which fields should be output. If "all" is selected
    * the output framerate will be double.
-   *
    */
   g_object_class_install_property (gobject_class, PROP_FIELDS,
       g_param_spec_enum ("fields",
@@ -614,7 +615,7 @@ gst_deinterlace_class_init (GstDeinterlaceClass * klass)
       );
 
   /**
-   * GstDeinterlace:layout
+   * GstDeinterlace:layout:
    *
    * This selects which fields is the first in time.
    *
@@ -628,14 +629,11 @@ gst_deinterlace_class_init (GstDeinterlaceClass * klass)
       );
 
   /**
-   * GstDeinterlace:locking
+   * GstDeinterlace:locking:
    *
    * This selects which approach to pattern locking is used which affects
    * processing latency and accuracy of timestamp adjustment for telecine
    * streams.
-   *
-   * Since: 0.10.31
-   *
    */
   g_object_class_install_property (gobject_class, PROP_LOCKING,
       g_param_spec_enum ("locking", "locking", "Pattern locking mode",
@@ -643,13 +641,10 @@ gst_deinterlace_class_init (GstDeinterlaceClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstDeinterlace:ignore-obscure
+   * GstDeinterlace:ignore-obscure:
    *
    * This selects whether to ignore obscure/rare telecine patterns.
    * NTSC 2:3 pulldown variants are the only really common patterns.
-   *
-   * Since: 0.10.31
-   *
    */
   g_object_class_install_property (gobject_class, PROP_IGNORE_OBSCURE,
       g_param_spec_boolean ("ignore-obscure", "ignore-obscure",
@@ -658,13 +653,10 @@ gst_deinterlace_class_init (GstDeinterlaceClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstDeinterlace:drop-orphans
+   * GstDeinterlace:drop-orphans:
    *
    * This selects whether to drop orphan fields at the beginning of telecine
    * patterns in active locking mode.
-   *
-   * Since: 0.10.31
-   *
    */
   g_object_class_install_property (gobject_class, PROP_DROP_ORPHANS,
       g_param_spec_boolean ("drop-orphans", "drop-orphans",
@@ -831,9 +823,9 @@ gst_deinterlace_reset (GstDeinterlace * self)
   self->passthrough = FALSE;
 
   self->reconfigure = FALSE;
-  if (self->new_mode != -1)
+  if ((gint) self->new_mode != -1)
     self->mode = self->new_mode;
-  if (self->new_fields != -1)
+  if ((gint) self->new_fields != -1)
     self->fields = self->new_fields;
   self->new_mode = -1;
   self->new_fields = -1;
@@ -1433,6 +1425,11 @@ gst_deinterlace_get_pattern_lock (GstDeinterlace * self, gboolean * flush_one)
     }
   }
 
+  if (pattern < 0) {
+    GST_WARNING_OBJECT (self, "Failed to select a pattern");
+    return;
+  }
+
   GST_DEBUG_OBJECT (self,
       "Final pattern match result: pa %d, ph %d, l %d, s %d", pattern, phase,
       telecine_patterns[pattern].length, score);
@@ -1499,6 +1496,8 @@ gst_deinterlace_output_frame (GstDeinterlace * self, gboolean flushing)
   TelecinePattern pattern;
   guint8 phase, count;
   const GstDeinterlaceLocking locking = self->locking;
+
+  memset (&pattern, 0, sizeof (pattern));
 
 restart:
   ret = GST_FLOW_OK;
@@ -1875,8 +1874,8 @@ restart:
     if (ret != GST_FLOW_OK)
       goto no_buffer;
 
-    g_return_val_if_fail (self->history_count - 1 -
-        gst_deinterlace_method_get_latency (self->method) >= 0, GST_FLOW_ERROR);
+    g_return_val_if_fail (self->history_count >=
+        gst_deinterlace_method_get_latency (self->method) + 1, GST_FLOW_ERROR);
 
     buf =
         self->field_history[self->history_count - 1 -
@@ -2035,9 +2034,9 @@ gst_deinterlace_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
   if (self->reconfigure) {      /* FIXME: reconfigure should probably work differently */
     GstCaps *caps;
 
-    if (self->new_fields != -1)
+    if ((gint) self->new_fields != -1)
       self->fields = self->new_fields;
-    if (self->new_mode != -1)
+    if ((gint) self->new_mode != -1)
       self->mode = self->new_mode;
     self->new_mode = -1;
     self->new_fields = -1;
@@ -2137,12 +2136,21 @@ gst_deinterlace_getcaps (GstDeinterlace * self, GstPad * pad, GstCaps * filter)
   GstCaps *ourcaps;
   GstCaps *peercaps;
   gboolean half;
+  GstVideoInterlaceMode interlacing_mode;
 
   otherpad = (pad == self->srcpad) ? self->sinkpad : self->srcpad;
   half = pad != self->srcpad;
 
   ourcaps = gst_pad_get_pad_template_caps (pad);
   peercaps = gst_pad_peer_query_caps (otherpad, NULL);
+
+  interlacing_mode = GST_VIDEO_INFO_INTERLACE_MODE (&self->vinfo);
+  if (self->mode == GST_DEINTERLACE_MODE_INTERLACED ||
+      (self->mode == GST_DEINTERLACE_MODE_AUTO &&
+          interlacing_mode != GST_VIDEO_INTERLACE_MODE_PROGRESSIVE)) {
+    gst_caps_unref (ourcaps);
+    ourcaps = gst_caps_from_string (DEINTERLACE_CAPS);
+  }
 
   if (peercaps) {
     GST_DEBUG_OBJECT (pad, "Peer has caps %" GST_PTR_FORMAT, peercaps);
@@ -2219,11 +2227,10 @@ gst_deinterlace_getcaps (GstDeinterlace * self, GstPad * pad, GstCaps * filter)
         gst_value_set_fraction (&nmax, n, d);
         gst_value_set_fraction_range (&nrange, &nmin, &nmax);
 
-        gst_structure_set_value (s, "framerate", &nrange);
+        gst_structure_take_value (s, "framerate", &nrange);
 
         g_value_unset (&nmin);
         g_value_unset (&nmax);
-        g_value_unset (&nrange);
       } else if (G_VALUE_TYPE (val) == GST_TYPE_LIST) {
         const GValue *lval;
         GValue nlist = { 0, };
@@ -2251,11 +2258,9 @@ gst_deinterlace_getcaps (GstDeinterlace * self, GstPad * pad, GstCaps * filter)
           g_value_init (&nval, GST_TYPE_FRACTION);
 
           gst_value_set_fraction (&nval, n, d);
-          gst_value_list_append_value (&nlist, &nval);
-          g_value_unset (&nval);
+          gst_value_list_append_and_take_value (&nlist, &nval);
         }
-        gst_structure_set_value (s, "framerate", &nlist);
-        g_value_unset (&nlist);
+        gst_structure_take_value (s, "framerate", &nlist);
       }
     }
   }
@@ -2474,8 +2479,10 @@ gst_deinterlace_setcaps (GstDeinterlace * self, GstPad * pad, GstCaps * caps)
     self->field_duration = 0;
   }
 
-  gst_deinterlace_set_method (self, self->method_id);
-  gst_deinterlace_method_setup (self->method, &self->vinfo);
+  if (!self->passthrough) {
+    gst_deinterlace_set_method (self, self->method_id);
+    gst_deinterlace_method_setup (self->method, &self->vinfo);
+  }
 
   GST_DEBUG_OBJECT (pad, "Sink caps: %" GST_PTR_FORMAT, caps);
   GST_DEBUG_OBJECT (pad, "Src  caps: %" GST_PTR_FORMAT, srccaps);

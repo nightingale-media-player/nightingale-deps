@@ -58,9 +58,8 @@
 #include <string.h>
 #include <gst/tag/tag.h>
 #include <gst/audio/audio.h>
-
-#include <gst/base/gstbitreader.h>
-#include <gst/base/gstbytereader.h>
+#include <gst/base/base.h>
+#include <gst/pbutils/pbutils.h>
 
 GST_DEBUG_CATEGORY_STATIC (flacparse_debug);
 #define GST_CAT_DEFAULT flacparse_debug
@@ -258,6 +257,7 @@ static void
 gst_flac_parse_init (GstFlacParse * flacparse)
 {
   flacparse->check_frame_checksums = DEFAULT_CHECK_FRAME_CHECKSUMS;
+  GST_PAD_SET_ACCEPT_INTERSECT (GST_BASE_PARSE_SINK_PAD (flacparse));
 }
 
 static void
@@ -336,6 +336,8 @@ gst_flac_parse_start (GstBaseParse * parse)
   flacparse->block_size = 0;
   flacparse->sample_number = 0;
   flacparse->strategy_checked = FALSE;
+
+  flacparse->sent_codec_tag = FALSE;
 
   /* "fLaC" marker */
   gst_base_parse_set_min_frame_size (GST_BASE_PARSE (flacparse), 4);
@@ -503,9 +505,7 @@ gst_flac_parse_frame_header_is_valid (GstFlacParse * flacparse,
   }
 
   /* calculate real blocksize from the blocksize index */
-  if (block_size == 0) {
-    goto error;
-  } else if (block_size == 6) {
+  if (block_size == 6) {
     if (!gst_bit_reader_get_bits_uint16 (&reader, &block_size, 8))
       goto need_more_data;
     block_size++;
@@ -1136,8 +1136,11 @@ gst_flac_parse_handle_picture (GstFlacParse * flacparse, GstBuffer * buffer)
     flacparse->tags = gst_tag_list_new_empty ();
 
   GST_INFO_OBJECT (flacparse, "Got image of %d bytes", img_len);
-  gst_tag_list_add_id3_image (flacparse->tags,
-      map.data + gst_byte_reader_get_pos (&reader), img_len, img_type);
+
+  if (img_len > 0) {
+    gst_tag_list_add_id3_image (flacparse->tags,
+        map.data + gst_byte_reader_get_pos (&reader), img_len, img_type);
+  }
 
   if (gst_tag_list_is_empty (flacparse->tags)) {
     gst_tag_list_unref (flacparse->tags);
@@ -1689,6 +1692,25 @@ gst_flac_parse_pre_push_frame (GstBaseParse * parse, GstBaseParseFrame * frame)
 {
   GstFlacParse *flacparse = GST_FLAC_PARSE (parse);
 
+  if (!flacparse->sent_codec_tag) {
+    GstTagList *taglist;
+    GstCaps *caps;
+
+    taglist = gst_tag_list_new_empty ();
+
+    /* codec tag */
+    caps = gst_pad_get_current_caps (GST_BASE_PARSE_SRC_PAD (parse));
+    gst_pb_utils_add_codec_description_to_tag_list (taglist,
+        GST_TAG_AUDIO_CODEC, caps);
+    gst_caps_unref (caps);
+
+    gst_pad_push_event (GST_BASE_PARSE_SRC_PAD (flacparse),
+        gst_event_new_tag (taglist));
+
+    /* also signals the end of first-frame processing */
+    flacparse->sent_codec_tag = TRUE;
+  }
+
   /* Push tags */
   if (flacparse->tags) {
     gst_pad_push_event (GST_BASE_PARSE_SRC_PAD (flacparse),
@@ -1793,6 +1815,19 @@ gst_flac_parse_src_event (GstBaseParse * parse, GstEvent * event)
   return res;
 }
 
+static void
+remove_fields (GstCaps * caps)
+{
+  guint i, n;
+
+  n = gst_caps_get_size (caps);
+  for (i = 0; i < n; i++) {
+    GstStructure *s = gst_caps_get_structure (caps, i);
+
+    gst_structure_remove_field (s, "framed");
+  }
+}
+
 static GstCaps *
 gst_flac_parse_get_sink_caps (GstBaseParse * parse, GstCaps * filter)
 {
@@ -1800,29 +1835,23 @@ gst_flac_parse_get_sink_caps (GstBaseParse * parse, GstCaps * filter)
   GstCaps *res;
 
   templ = gst_pad_get_pad_template_caps (GST_BASE_PARSE_SINK_PAD (parse));
-  peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), filter);
+  if (filter) {
+    GstCaps *fcopy = gst_caps_copy (filter);
+    /* Remove the fields we convert */
+    remove_fields (fcopy);
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), fcopy);
+    gst_caps_unref (fcopy);
+  } else
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), NULL);
 
   if (peercaps) {
-    guint i, n;
-
     /* Remove the framed field */
     peercaps = gst_caps_make_writable (peercaps);
-    n = gst_caps_get_size (peercaps);
-    for (i = 0; i < n; i++) {
-      GstStructure *s = gst_caps_get_structure (peercaps, i);
-
-      gst_structure_remove_field (s, "framed");
-    }
+    remove_fields (peercaps);
 
     res = gst_caps_intersect_full (peercaps, templ, GST_CAPS_INTERSECT_FIRST);
     gst_caps_unref (peercaps);
-    res = gst_caps_make_writable (res);
-
-    /* Append the template caps because we still want to accept
-     * caps without any fields in the case upstream does not
-     * know anything.
-     */
-    gst_caps_append (res, templ);
+    gst_caps_unref (templ);
   } else {
     res = templ;
   }

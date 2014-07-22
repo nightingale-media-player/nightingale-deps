@@ -662,6 +662,8 @@ gst_rtp_jpeg_pay_scan_marker (const guint8 * data, guint size, guint * offset)
   }
 }
 
+#define RTP_HEADER_LEN 12
+
 static GstFlowReturn
 gst_rtp_jpeg_pay_handle_buffer (GstRTPBasePayload * basepayload,
     GstBuffer * buffer)
@@ -678,7 +680,7 @@ gst_rtp_jpeg_pay_handle_buffer (GstRTPBasePayload * basepayload,
   GstMapInfo map;
   guint8 *data;
   gsize size;
-  guint mtu;
+  guint mtu, max_payload_size;
   guint bytes_left;
   guint jpeg_header_size = 0;
   guint offset;
@@ -686,6 +688,7 @@ gst_rtp_jpeg_pay_handle_buffer (GstRTPBasePayload * basepayload,
   gboolean sos_found, sof_found, dqt_found, dri_found;
   gint i;
   GstBufferList *list = NULL;
+  gboolean discont;
 
   pay = GST_RTP_JPEG_PAY (basepayload);
   mtu = GST_RTP_BASE_PAYLOAD_MTU (pay);
@@ -695,6 +698,7 @@ gst_rtp_jpeg_pay_handle_buffer (GstRTPBasePayload * basepayload,
   size = map.size;
   timestamp = GST_BUFFER_TIMESTAMP (buffer);
   offset = 0;
+  discont = GST_BUFFER_IS_DISCONT (buffer);
 
   GST_LOG_OBJECT (pay, "got buffer size %" G_GSIZE_FORMAT
       " , timestamp %" GST_TIME_FORMAT, size, GST_TIME_ARGS (timestamp));
@@ -802,21 +806,28 @@ gst_rtp_jpeg_pay_handle_buffer (GstRTPBasePayload * basepayload,
 
   GST_LOG_OBJECT (pay, "quant_data size %u", quant_data_size);
 
-  list = gst_buffer_list_new ();
-
   bytes_left = sizeof (jpeg_header) + quant_data_size + size;
 
   if (dri_found)
     bytes_left += sizeof (restart_marker_header);
 
+  max_payload_size = mtu - (RTP_HEADER_LEN + sizeof (jpeg_header));
+  list = gst_buffer_list_new_sized ((bytes_left / max_payload_size) + 1);
+
   frame_done = FALSE;
   do {
     GstBuffer *outbuf;
     guint8 *payload;
-    guint payload_size = (bytes_left < mtu ? bytes_left : mtu);
+    guint payload_size;
     guint header_size;
     GstBuffer *paybuf;
     GstRTPBuffer rtp = { NULL };
+    guint rtp_header_size = gst_rtp_buffer_calc_header_len (0);
+
+    /* The available room is the packet MTU, minus the RTP header length. */
+    payload_size =
+        (bytes_left < (mtu - rtp_header_size) ? bytes_left :
+        (mtu - rtp_header_size));
 
     header_size = sizeof (jpeg_header) + quant_data_size;
     if (dri_found)
@@ -885,6 +896,12 @@ gst_rtp_jpeg_pay_handle_buffer (GstRTPBasePayload * basepayload,
     outbuf = gst_buffer_append (outbuf, paybuf);
 
     GST_BUFFER_TIMESTAMP (outbuf) = timestamp;
+
+    if (discont) {
+      GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_FLAG_DISCONT);
+      /* Only the first outputted buffer has the DISCONT flag */
+      discont = FALSE;
+    }
 
     /* and add to list */
     gst_buffer_list_insert (list, -1, outbuf);

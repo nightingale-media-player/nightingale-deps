@@ -2,34 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>vp8dec</title>
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: vp8dec</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-videomixer.html" title="videomixer">
 <link rel="next" href="gst-plugins-good-plugins-vp8enc.html" title="vp8enc">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-videomixer.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-vp8enc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-vp8dec.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-vp8dec.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-vp8dec.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-vp8dec.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-vp8dec.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-vp8dec.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-vp8dec.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-videomixer.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-vp8enc.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-good-plugins-vp8dec"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -37,32 +31,66 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-vp8dec.top_of_page"></a>vp8dec</span></h2>
 <p>vp8dec — Decode VP8 video streams</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-good-plugins-vp8dec.synopsis"></a><h2>Synopsis</h2>
-<a name="GstVP8Dec"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-vp8dec.html#GstVP8Dec-struct" title="struct GstVP8Dec">GstVP8Dec</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-vp8dec.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-vp8dec.html#GstVP8Dec--deblocking-level" title="The “deblocking-level” property">deblocking-level</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-vp8dec.html#GstVP8Dec--noise-level" title="The “noise-level” property">noise-level</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-vp8dec.html#GstVP8Dec--post-processing" title="The “post-processing” property">post-processing</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">GstVP8DecPostProcessingFlags</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-vp8dec.html#GstVP8Dec--post-processing-flags" title="The “post-processing-flags” property">post-processing-flags</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-vp8dec.html#GstVP8Dec--threads" title="The “threads” property">threads</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstVP8Dec"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-vp8dec.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-vp8dec.html#GstVP8Dec-struct" title="struct GstVP8Dec">GstVP8Dec</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-vp8dec.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder">GstVideoDecoder</a>
-                           +----GstVP8Dec
-</pre>
-</div>
-<div class="refsect1">
-<a name="gst-plugins-good-plugins-vp8dec.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-vp8dec.html#GstVP8Dec--deblocking-level" title='The "deblocking-level" property'>deblocking-level</a>"         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-vp8dec.html#GstVP8Dec--noise-level" title='The "noise-level" property'>noise-level</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-vp8dec.html#GstVP8Dec--post-processing" title='The "post-processing" property'>post-processing</a>"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-vp8dec.html#GstVP8Dec--post-processing-flags" title='The "post-processing-flags" property'>post-processing-flags</a>"    <span class="type">GstVP8DecPostProcessingFlags</span>  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-vp8dec.html#GstVP8Dec--threads" title='The "threads" property'>threads</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder">GstVideoDecoder</a>
+                    <span class="lineart">╰──</span> GstVP8Dec
 </pre>
 </div>
 <div class="refsect1">
@@ -70,7 +98,7 @@
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.156.6.2.1"></a><h3>Element Information</h3>
+<a name="id-1.2.159.7.2.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -96,7 +124,7 @@
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.156.6.2.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.159.7.2.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -151,7 +179,10 @@
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-vp8dec.details"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-vp8dec.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-vp8dec.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstVP8Dec-struct"></a><h3>struct GstVP8Dec</h3>
 <pre class="programlisting">struct GstVP8Dec;</pre>
@@ -162,39 +193,44 @@
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-vp8dec.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstVP8Dec--deblocking-level"></a><h3>The <code class="literal">"deblocking-level"</code> property</h3>
-<pre class="programlisting">  "deblocking-level"         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstVP8Dec--deblocking-level"></a><h3>The <code class="literal">“deblocking-level”</code> property</h3>
+<pre class="programlisting">  “deblocking-level”         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>Deblocking level.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 16</p>
 <p>Default value: 4</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstVP8Dec--noise-level"></a><h3>The <code class="literal">"noise-level"</code> property</h3>
-<pre class="programlisting">  "noise-level"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstVP8Dec--noise-level"></a><h3>The <code class="literal">“noise-level”</code> property</h3>
+<pre class="programlisting">  “noise-level”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>Noise level.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 16</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstVP8Dec--post-processing"></a><h3>The <code class="literal">"post-processing"</code> property</h3>
-<pre class="programlisting">  "post-processing"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstVP8Dec--post-processing"></a><h3>The <code class="literal">“post-processing”</code> property</h3>
+<pre class="programlisting">  “post-processing”          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Enable post processing.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstVP8Dec--post-processing-flags"></a><h3>The <code class="literal">"post-processing-flags"</code> property</h3>
-<pre class="programlisting">  "post-processing-flags"    <span class="type">GstVP8DecPostProcessingFlags</span>  : Read / Write</pre>
+<a name="GstVP8Dec--post-processing-flags"></a><h3>The <code class="literal">“post-processing-flags”</code> property</h3>
+<pre class="programlisting">  “post-processing-flags”    <span class="type">GstVP8DecPostProcessingFlags</span></pre>
 <p>Flags to control post processing.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: Deblock|Demacroblock|Multi-frame quality enhancement</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstVP8Dec--threads"></a><h3>The <code class="literal">"threads"</code> property</h3>
-<pre class="programlisting">  "threads"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstVP8Dec--threads"></a><h3>The <code class="literal">“threads”</code> property</h3>
+<pre class="programlisting">  “threads”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>Maximum number of decoding threads.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [1,16]</p>
 <p>Default value: 1</p>
 </div>
@@ -202,6 +238,6 @@
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

@@ -2,36 +2,29 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>audiofirfilter</title>
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: audiofirfilter</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-audiocheblimit.html" title="audiocheblimit">
 <link rel="next" href="gst-plugins-good-plugins-audioiirfilter.html" title="audioiirfilter">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-audiocheblimit.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-audioiirfilter.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-audiofirfilter.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-audiofirfilter.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-audiofirfilter.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-audiofirfilter.properties" class="shortcut">Properties</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-audiofirfilter.signals" class="shortcut">Signals</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-audiofirfilter.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-audiofirfilter.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-audiofirfilter.properties" class="shortcut">Properties</a></span><span id="nav_signals"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-audiofirfilter.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-audiocheblimit.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-audioiirfilter.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-good-plugins-audiofirfilter"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -39,63 +32,87 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-audiofirfilter.top_of_page"></a>audiofirfilter</span></h2>
 <p>audiofirfilter — Generic audio FIR filter with custom filter kernel</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-good-plugins-audiofirfilter.synopsis"></a><h2>Synopsis</h2>
-<a name="GstAudioFIRFilter"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-audiofirfilter.html#GstAudioFIRFilter-struct" title="struct GstAudioFIRFilter">GstAudioFIRFilter</a>;
-</pre>
-</div>
-<div class="refsect1">
-<a name="gst-plugins-good-plugins-audiofirfilter.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
-                           +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter">GstAudioFilter</a>
-                                 +----GstAudioFXBaseFIRFilter
-                                       +----GstAudioFIRFilter
-</pre>
-</div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-audiofirfilter.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-audiofirfilter.html#GstAudioFIRFilter--kernel" title='The "kernel" property'>kernel</a>"                   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Value-arrays.html#GValueArray"><span class="type">GValueArray</span></a>*          : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-audiofirfilter.html#GstAudioFIRFilter--latency" title='The "latency" property'>latency</a>"                  <span class="type">guint64</span>               : Read / Write
-</pre>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Value-arrays.html#GValueArray"><span class="type">GValueArray</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-audiofirfilter.html#GstAudioFIRFilter--kernel" title="The “kernel” property">kernel</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-audiofirfilter.html#GstAudioFIRFilter--latency" title="The “latency” property">latency</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-audiofirfilter.signals"></a><h2>Signals</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-audiofirfilter.html#GstAudioFIRFilter-rate-changed" title='The "rate-changed" signal'>rate-changed</a>"                                   : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody><tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-audiofirfilter.html#GstAudioFIRFilter-rate-changed" title="The “rate-changed” signal">rate-changed</a></td>
+<td class="signal_flags">Run Last</td>
+</tr></tbody>
+</table></div>
+</div>
+<a name="GstAudioFIRFilter"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-audiofirfilter.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-audiofirfilter.html#GstAudioFIRFilter-struct" title="struct GstAudioFIRFilter">GstAudioFIRFilter</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-audiofirfilter.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter">GstAudioFilter</a>
+                        <span class="lineart">╰──</span> GstAudioFXBaseFIRFilter
+                            <span class="lineart">╰──</span> GstAudioFIRFilter
 </pre>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-audiofirfilter.description"></a><h2>Description</h2>
-<p>
-audiofirfilter implements a generic audio <a class="ulink" href="http://en.wikipedia.org/wiki/Finite_impulse_response" target="_top">FIR filter</a>. Before usage the
+<p>audiofirfilter implements a generic audio <a class="ulink" href="http://en.wikipedia.org/wiki/Finite_impulse_response" target="_top">FIR filter</a>. Before usage the
 "kernel" property has to be set to the filter kernel that should be
 used and the "latency" property has to be set to the latency (in samples)
 that is introduced by the filter kernel. Setting a latency of n samples
 will lead to the first n samples being dropped from the output and
-n samples added to the end.
-</p>
-<p>
-The filter kernel describes the impulse response of the filter. To
+n samples added to the end.</p>
+<p>The filter kernel describes the impulse response of the filter. To
 calculate the frequency response of the filter you have to calculate
-the Fourier Transform of the impulse response.
-</p>
-<p>
-To change the filter kernel whenever the sampling rate changes the
+the Fourier Transform of the impulse response.</p>
+<p>To change the filter kernel whenever the sampling rate changes the
 "rate-changed" signal can be used. This should be done for most
-FIR filters as they're depending on the sampling rate.
-</p>
-<p>
-</p>
+FIR filters as they're depending on the sampling rate.</p>
 <div class="refsect2">
-<a name="id-1.2.18.7.5.1"></a><h3>Example application</h3>
+<a name="id-1.2.18.8.5"></a><h3>Example application</h3>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -436,12 +453,10 @@ gint
 </div>
 
 </div>
-<p>
-</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.18.7.6.1"></a><h3>Element Information</h3>
+<a name="id-1.2.18.8.6.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -467,7 +482,7 @@ gint
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.18.7.6.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.18.8.6.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -522,67 +537,77 @@ gint
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-audiofirfilter.details"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-audiofirfilter.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-audiofirfilter.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstAudioFIRFilter-struct"></a><h3>struct GstAudioFIRFilter</h3>
 <pre class="programlisting">struct GstAudioFIRFilter;</pre>
-<p>
-Opaque data structure.
-</p>
+<p>Opaque data structure.</p>
 </div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-audiofirfilter.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstAudioFIRFilter--kernel"></a><h3>The <code class="literal">"kernel"</code> property</h3>
-<pre class="programlisting">  "kernel"                   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Value-arrays.html#GValueArray"><span class="type">GValueArray</span></a>*          : Read / Write</pre>
+<a name="GstAudioFIRFilter--kernel"></a><h3>The <code class="literal">“kernel”</code> property</h3>
+<pre class="programlisting">  “kernel”                   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Value-arrays.html#GValueArray"><span class="type">GValueArray</span></a> *</pre>
 <p>Filter kernel for the FIR filter.</p>
+<p>Flags: Read / Write</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAudioFIRFilter--latency"></a><h3>The <code class="literal">"latency"</code> property</h3>
-<pre class="programlisting">  "latency"                  <span class="type">guint64</span>               : Read / Write</pre>
+<a name="GstAudioFIRFilter--latency"></a><h3>The <code class="literal">“latency”</code> property</h3>
+<pre class="programlisting">  “latency”                  <span class="type">guint64</span></pre>
 <p>Filter latency in samples.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: 0</p>
 </div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-audiofirfilter.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2">
-<a name="GstAudioFIRFilter-rate-changed"></a><h3>The <code class="literal">"rate-changed"</code> signal</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-audiofirfilter.html#GstAudioFIRFilter"><span class="type">GstAudioFIRFilter</span></a> *filter,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>               rate,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>           user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
-<p>
-Will be emitted when the sampling rate changes. The callbacks
+<a name="GstAudioFIRFilter-rate-changed"></a><h3>The <code class="literal">“rate-changed”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-audiofirfilter.html#GstAudioFIRFilter"><span class="type">GstAudioFIRFilter</span></a> *filter,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>               rate,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>           user_data)</pre>
+<p>Will be emitted when the sampling rate changes. The callbacks
 will be called from the streaming thread and processing will
-stop until the event is handled.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+stop until the event is handled.</p>
+<div class="refsect3">
+<a name="id-1.2.18.12.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>filter</code></em> :</span></p></td>
-<td>the filter on which the signal is emitted</td>
+<td class="parameter_name"><p>filter</p></td>
+<td class="parameter_description"><p>the filter on which the signal is emitted</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>rate</code></em> :</span></p></td>
-<td>the new sampling rate</td>
+<td class="parameter_name"><p>rate</p></td>
+<td class="parameter_description"><p>the new sampling rate</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
+</div>
+<p>Flags: Run Last</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

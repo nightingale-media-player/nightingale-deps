@@ -2,34 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>spectrum</title>
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: spectrum</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-souphttpsrc.html" title="souphttpsrc">
 <link rel="next" href="gst-plugins-good-plugins-speexenc.html" title="speexenc">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-souphttpsrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-speexenc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-spectrum.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-spectrum.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-spectrum.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-spectrum.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-spectrum.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-spectrum.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-spectrum.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-souphttpsrc.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-speexenc.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-good-plugins-spectrum"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -37,50 +31,92 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-spectrum.top_of_page"></a>spectrum</span></h2>
 <p>spectrum — Run an FFT on the audio signal, output spectrum data</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-good-plugins-spectrum.synopsis"></a><h2>Synopsis</h2>
-<a name="GstSpectrum"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum-struct" title="struct GstSpectrum">GstSpectrum</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-spectrum.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--bands" title="The “bands” property">bands</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--interval" title="The “interval” property">interval</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message" title="The “message” property">message</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--threshold" title="The “threshold” property">threshold</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message-magnitude" title="The “message-magnitude” property">message-magnitude</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message-phase" title="The “message-phase” property">message-phase</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--post-messages" title="The “post-messages” property">post-messages</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--multi-channel" title="The “multi-channel” property">multi-channel</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstSpectrum"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-spectrum.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum-struct" title="struct GstSpectrum">GstSpectrum</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-spectrum.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
-                           +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter">GstAudioFilter</a>
-                                 +----GstSpectrum
-</pre>
-</div>
-<div class="refsect1">
-<a name="gst-plugins-good-plugins-spectrum.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--bands" title='The "bands" property'>bands</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--interval" title='The "interval" property'>interval</a>"                 <span class="type">guint64</span>               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message" title='The "message" property'>message</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--threshold" title='The "threshold" property'>threshold</a>"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message-magnitude" title='The "message-magnitude" property'>message-magnitude</a>"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message-phase" title='The "message-phase" property'>message-phase</a>"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--post-messages" title='The "post-messages" property'>post-messages</a>"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--multi-channel" title='The "multi-channel" property'>multi-channel</a>"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter">GstAudioFilter</a>
+                        <span class="lineart">╰──</span> GstSpectrum
 </pre>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-spectrum.description"></a><h2>Description</h2>
-<p>
-The Spectrum element analyzes the frequency spectrum of an audio signal.
-If the <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--post-messages" title='The "post-messages" property'><span class="type">"post-messages"</span></a> property is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a>, it sends analysis results
-as element messages named
+<p>The Spectrum element analyzes the frequency spectrum of an audio signal.
+If the <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--post-messages" title="The “post-messages” property"><span class="type">“post-messages”</span></a> property is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a>, it sends analysis results
+as element messages named</p>
 <code class="classname">"spectrum"</code> after each interval of time given
-by the <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--interval" title='The "interval" property'><span class="type">"interval"</span></a> property.
-</p>
-<p>
-The message's structure contains some combination of these fields:
-</p>
+<p>by the <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--interval" title="The “interval” property"><span class="type">“interval”</span></a> property.</p>
+<p>The message's structure contains some combination of these fields:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>
   <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a>
@@ -112,27 +148,21 @@ The message's structure contains some combination of these fields:
   <span class="type">GstValueList</span> of <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>
   <code class="classname">"magnitude"</code>:
   the level for each frequency band in dB. All values below the value of the
-  <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--threshold" title='The "threshold" property'><span class="type">"threshold"</span></a> property will be set to the threshold. Only present
-  if the <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message-magnitude" title='The "message-magnitude" property'><span class="type">"message-magnitude"</span></a> property is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>.
+  <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--threshold" title="The “threshold” property"><span class="type">“threshold”</span></a> property will be set to the threshold. Only present
+  if the <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message-magnitude" title="The “message-magnitude” property"><span class="type">“message-magnitude”</span></a> property is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>.
   </p></li>
 <li class="listitem"><p>
   <span class="type">GstValueList</span> of <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>
   <code class="classname">"phase"</code>:
   The phase for each frequency band. The value is between -pi and pi. Only
-  present if the <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message-phase" title='The "message-phase" property'><span class="type">"message-phase"</span></a> property is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>.
+  present if the <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--message-phase" title="The “message-phase” property"><span class="type">“message-phase”</span></a> property is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>.
   </p></li>
 </ul></div>
-<p>
-</p>
-<p>
-If <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--multi-channel" title='The "multi-channel" property'><span class="type">"multi-channel"</span></a> property is set to true. magnitude and phase
+<p>If <a class="link" href="gst-plugins-good-plugins-spectrum.html#GstSpectrum--multi-channel" title="The “multi-channel” property"><span class="type">“multi-channel”</span></a> property is set to true. magnitude and phase
 fields will be each a nested <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstControlSource.html#GstValueArray"><span class="type">GstValueArray</span></a>. The first dimension are the
-channels and the second dimension are the values.
-</p>
-<p>
-</p>
+channels and the second dimension are the values.</p>
 <div class="refsect2">
-<a name="id-1.2.139.6.5.1"></a><h3>Example application</h3>
+<a name="id-1.2.142.7.8"></a><h3>Example application</h3>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -391,15 +421,10 @@ channels and the second dimension are the values.
 </div>
 
 </div>
-<p>
-</p>
-<p>
-Last reviewed on 2011-03-10 (0.10.29)
-</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.139.6.7.1"></a><h3>Element Information</h3>
+<a name="id-1.2.142.7.9.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -425,7 +450,7 @@ Last reviewed on 2011-03-10 (0.10.29)
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.139.6.7.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.142.7.9.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -480,7 +505,10 @@ Last reviewed on 2011-03-10 (0.10.29)
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-spectrum.details"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-spectrum.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-spectrum.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstSpectrum-struct"></a><h3>struct GstSpectrum</h3>
 <pre class="programlisting">struct GstSpectrum;</pre>
@@ -491,66 +519,74 @@ Last reviewed on 2011-03-10 (0.10.29)
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-spectrum.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstSpectrum--bands"></a><h3>The <code class="literal">"bands"</code> property</h3>
-<pre class="programlisting">  "bands"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstSpectrum--bands"></a><h3>The <code class="literal">“bands”</code> property</h3>
+<pre class="programlisting">  “bands”                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>Number of frequency bands.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: 128</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSpectrum--interval"></a><h3>The <code class="literal">"interval"</code> property</h3>
-<pre class="programlisting">  "interval"                 <span class="type">guint64</span>               : Read / Write</pre>
+<a name="GstSpectrum--interval"></a><h3>The <code class="literal">“interval”</code> property</h3>
+<pre class="programlisting">  “interval”                 <span class="type">guint64</span></pre>
 <p>Interval of time between message posts (in nanoseconds).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 100000000</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSpectrum--message"></a><h3>The <code class="literal">"message"</code> property</h3>
-<pre class="programlisting">  "message"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstSpectrum--message"></a><h3>The <code class="literal">“message”</code> property</h3>
+<pre class="programlisting">  “message”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Whether to post a 'spectrum' element message on the bus for each passed interval (deprecated, use post-messages).</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSpectrum--threshold"></a><h3>The <code class="literal">"threshold"</code> property</h3>
-<pre class="programlisting">  "threshold"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<a name="GstSpectrum--threshold"></a><h3>The <code class="literal">“threshold”</code> property</h3>
+<pre class="programlisting">  “threshold”                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>dB threshold for result. All lower values will be set to this.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 0</p>
 <p>Default value: -60</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSpectrum--message-magnitude"></a><h3>The <code class="literal">"message-magnitude"</code> property</h3>
-<pre class="programlisting">  "message-magnitude"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstSpectrum--message-magnitude"></a><h3>The <code class="literal">“message-magnitude”</code> property</h3>
+<pre class="programlisting">  “message-magnitude”        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Whether to add a 'magnitude' field to the structure of any 'spectrum' element messages posted on the bus.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSpectrum--message-phase"></a><h3>The <code class="literal">"message-phase"</code> property</h3>
-<pre class="programlisting">  "message-phase"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstSpectrum--message-phase"></a><h3>The <code class="literal">“message-phase”</code> property</h3>
+<pre class="programlisting">  “message-phase”            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Whether to add a 'phase' field to the structure of any 'spectrum' element messages posted on the bus.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSpectrum--post-messages"></a><h3>The <code class="literal">"post-messages"</code> property</h3>
-<pre class="programlisting">  "post-messages"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstSpectrum--post-messages"></a><h3>The <code class="literal">“post-messages”</code> property</h3>
+<pre class="programlisting">  “post-messages”            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Whether to post a 'spectrum' element message on the bus for each passed interval.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSpectrum--multi-channel"></a><h3>The <code class="literal">"multi-channel"</code> property</h3>
-<pre class="programlisting">  "multi-channel"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstSpectrum--multi-channel"></a><h3>The <code class="literal">“multi-channel”</code> property</h3>
+<pre class="programlisting">  “multi-channel”            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Send separate results for each channel.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

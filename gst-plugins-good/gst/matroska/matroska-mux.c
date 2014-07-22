@@ -103,6 +103,8 @@ static GstStaticPadTemplate videosink_templ =
         COMMON_VIDEO_CAPS "; "
         "video/x-h264, stream-format=avc, alignment=au, "
         COMMON_VIDEO_CAPS "; "
+        "video/x-h265, stream-format=hvc1, alignment=au, "
+        COMMON_VIDEO_CAPS "; "
         "video/x-divx, "
         COMMON_VIDEO_CAPS "; "
         "video/x-huffyuv, "
@@ -124,7 +126,7 @@ static GstStaticPadTemplate videosink_templ =
         "video/x-vp8, "
         COMMON_VIDEO_CAPS "; "
         "video/x-raw, "
-        "format = (string) { YUY2, I420, YV12, UYVY, AYUV }, "
+        "format = (string) { YUY2, I420, YV12, UYVY, AYUV, GRAY8, BGR, RGB }, "
         COMMON_VIDEO_CAPS "; "
         "video/x-wmv, " "wmvversion = (int) [ 1, 3 ], " COMMON_VIDEO_CAPS)
     );
@@ -158,6 +160,7 @@ static GstStaticPadTemplate audiosink_templ =
         COMMON_AUDIO_CAPS "; "
         "audio/x-flac, "
         COMMON_AUDIO_CAPS "; "
+        "audio/x-opus; "
         "audio/x-speex, "
         COMMON_AUDIO_CAPS "; "
         "audio/x-raw, "
@@ -175,7 +178,13 @@ static GstStaticPadTemplate audiosink_templ =
         "audio/x-alaw, "
         "channels = (int) {1, 2}, " "rate = (int) [ 8000, 192000 ]; "
         "audio/x-mulaw, "
-        "channels = (int) {1, 2}, " "rate = (int) [ 8000, 192000 ]")
+        "channels = (int) {1, 2}, " "rate = (int) [ 8000, 192000 ]; "
+        "audio/x-adpcm, "
+        "layout = (string)dvi, "
+        "block_align = (int)[64, 8192], "
+        "channels = (int) { 1, 2 }, " "rate = (int) [ 8000, 96000 ]; "
+        "audio/x-adpcm, "
+        "layout = (string)g726, " "channels = (int)1," "rate = (int)8000; ")
     );
 
 static GstStaticPadTemplate subtitlesink_templ =
@@ -187,9 +196,6 @@ static GstStaticPadTemplate subtitlesink_templ =
         "application/x-usf; subpicture/x-dvd; "
         "application/x-subtitle-unknown")
     );
-
-static GArray *used_uids;
-G_LOCK_DEFINE_STATIC (used_uids);
 
 static gpointer parent_class;   /* NULL */
 
@@ -225,7 +231,7 @@ static void gst_matroska_mux_get_property (GObject * object,
 static void gst_matroska_mux_reset (GstElement * element);
 
 /* uid generation */
-static guint64 gst_matroska_mux_create_uid ();
+static guint64 gst_matroska_mux_create_uid (GstMatroskaMux * mux);
 
 static gboolean theora_streamheader_to_codecdata (const GValue * streamheader,
     GstMatroskaTrackContext * context);
@@ -469,6 +475,9 @@ gst_matroska_mux_init (GstMatroskaMux * mux, gpointer g_class)
   mux->num_t_streams = 0;
   mux->num_v_streams = 0;
 
+  /* create used uid list */
+  mux->used_uids = g_array_sized_new (FALSE, FALSE, sizeof (guint64), 10);
+
   /* initialize remaining variables */
   gst_matroska_mux_reset (GST_ELEMENT (mux));
 }
@@ -492,41 +501,38 @@ gst_matroska_mux_finalize (GObject * object)
   if (mux->writing_app)
     g_free (mux->writing_app);
 
+  g_array_free (mux->used_uids, TRUE);
+
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 
 /**
  * gst_matroska_mux_create_uid:
+ * @mux: #GstMatroskaMux to generate UID for.
  *
  * Generate new unused track UID.
  *
  * Returns: New track UID.
  */
 static guint64
-gst_matroska_mux_create_uid (void)
+gst_matroska_mux_create_uid (GstMatroskaMux * mux)
 {
   guint64 uid = 0;
-
-  G_LOCK (used_uids);
-
-  if (!used_uids)
-    used_uids = g_array_sized_new (FALSE, FALSE, sizeof (guint64), 10);
 
   while (!uid) {
     guint i;
 
     uid = (((guint64) g_random_int ()) << 32) | g_random_int ();
-    for (i = 0; i < used_uids->len; i++) {
-      if (g_array_index (used_uids, guint64, i) == uid) {
+    for (i = 0; i < mux->used_uids->len; i++) {
+      if (g_array_index (mux->used_uids, guint64, i) == uid) {
         uid = 0;
         break;
       }
     }
-    g_array_append_val (used_uids, uid);
+    g_array_append_val (mux->used_uids, uid);
   }
 
-  G_UNLOCK (used_uids);
   return uid;
 }
 
@@ -668,6 +674,11 @@ gst_matroska_mux_reset (GstElement * element)
   gst_toc_setter_reset (GST_TOC_SETTER (mux));
 
   mux->chapters_pos = 0;
+
+  /* clear used uids */
+  if (mux->used_uids->len > 0) {
+    g_array_remove_range (mux->used_uids, 0, mux->used_uids->len);
+  }
 }
 
 /**
@@ -798,6 +809,7 @@ gst_matroska_mux_handle_sink_event (GstCollectPads * pads,
         lang_code = gst_tag_get_language_code_iso_639_2B (lang);
         if (lang_code) {
           GST_INFO_OBJECT (pad, "Setting language to '%s'", lang_code);
+          g_free (context->language);
           context->language = g_strdup (lang_code);
         } else {
           GST_WARNING_OBJECT (pad, "Did not get language code for '%s'", lang);
@@ -841,7 +853,8 @@ gst_matroska_mux_handle_sink_event (GstCollectPads * pads,
       event = NULL;
       break;
     }
-    case GST_EVENT_CUSTOM_DOWNSTREAM:{
+    case GST_EVENT_CUSTOM_DOWNSTREAM:
+    case GST_EVENT_CUSTOM_DOWNSTREAM_STICKY:{
       const GstStructure *structure;
 
       structure = gst_event_get_structure (event);
@@ -867,7 +880,7 @@ gst_matroska_mux_handle_sink_event (GstCollectPads * pads,
           if (!gst_structure_get_int (structure, name, &value)) {
             GST_ERROR_OBJECT (mux, "dvd-spu-clut-change event did not "
                 "contain %s field", name);
-            break;
+            goto break_hard;
           }
           clut[i] = value;
         }
@@ -881,6 +894,7 @@ gst_matroska_mux_handle_sink_event (GstCollectPads * pads,
       break;
   }
 
+break_hard:
   if (event != NULL)
     return gst_collect_pads_event_default (pads, data, event, FALSE);
 
@@ -1009,8 +1023,16 @@ skip_details:
     gst_matroska_mux_set_codec_id (context,
         GST_MATROSKA_CODEC_ID_VIDEO_UNCOMPRESSED);
     fstr = gst_structure_get_string (structure, "format");
-    if (fstr && strlen (fstr) == 4)
-      videocontext->fourcc = GST_STR_FOURCC (fstr);
+    if (fstr) {
+      if (strlen (fstr) == 4)
+        videocontext->fourcc = GST_STR_FOURCC (fstr);
+      else if (!strcmp (fstr, "GRAY8"))
+        videocontext->fourcc = GST_MAKE_FOURCC ('Y', '8', '0', '0');
+      else if (!strcmp (fstr, "BGR"))
+        videocontext->fourcc = GST_MAKE_FOURCC ('B', 'G', 'R', 24);
+      else if (!strcmp (fstr, "RGB"))
+        videocontext->fourcc = GST_MAKE_FOURCC ('R', 'G', 'B', 24);
+    }
   } else if (!strcmp (mimetype, "video/x-huffyuv")      /* MS/VfW compatibility cases */
       ||!strcmp (mimetype, "video/x-divx")
       || !strcmp (mimetype, "video/x-dv")
@@ -1110,6 +1132,16 @@ skip_details:
         GST_MATROSKA_CODEC_ID_VIDEO_MPEG4_AVC);
     gst_matroska_mux_free_codec_priv (context);
     /* Create avcC header */
+    if (codec_buf != NULL) {
+      context->codec_priv_size = gst_buffer_get_size (codec_buf);
+      context->codec_priv = g_malloc0 (context->codec_priv_size);
+      gst_buffer_extract (codec_buf, 0, context->codec_priv, -1);
+    }
+  } else if (!strcmp (mimetype, "video/x-h265")) {
+    gst_matroska_mux_set_codec_id (context,
+        GST_MATROSKA_CODEC_ID_VIDEO_MPEGH_HEVC);
+    gst_matroska_mux_free_codec_priv (context);
+    /* Create hvcC header */
     if (codec_buf != NULL) {
       context->codec_priv_size = gst_buffer_get_size (codec_buf);
       context->codec_priv = g_malloc0 (context->codec_priv_size);
@@ -1388,7 +1420,7 @@ theora_streamheader_to_codecdata (const GValue * streamheader,
     hdr += 4 + 4;
     par_num = GST_READ_UINT32_BE (hdr) >> 8;
     par_denom = GST_READ_UINT32_BE (hdr + 3) >> 8;
-    if (par_num > 0 && par_num > 0) {
+    if (par_num > 0 && par_denom > 0) {
       if (par_num > par_denom) {
         videocontext->display_width =
             videocontext->pixel_width * par_num / par_denom;
@@ -1814,6 +1846,8 @@ gst_matroska_mux_audio_pad_setcaps (GstPad * pad, GstCaps * caps)
           ("speex stream headers missing or malformed"));
       goto refuse_caps;
     }
+  } else if (!strcmp (mimetype, "audio/x-opus")) {
+    gst_matroska_mux_set_codec_id (context, GST_MATROSKA_CODEC_ID_AUDIO_OPUS);
   } else if (!strcmp (mimetype, "audio/x-ac3")) {
     gst_matroska_mux_set_codec_id (context, GST_MATROSKA_CODEC_ID_AUDIO_AC3);
   } else if (!strcmp (mimetype, "audio/x-eac3")) {
@@ -1872,12 +1906,13 @@ gst_matroska_mux_audio_pad_setcaps (GstPad * pad, GstCaps * caps)
 
   } else if (!strcmp (mimetype, "audio/x-wma")
       || !strcmp (mimetype, "audio/x-alaw")
-      || !strcmp (mimetype, "audio/x-mulaw")) {
+      || !strcmp (mimetype, "audio/x-mulaw")
+      || !strcmp (mimetype, "audio/x-adpcm")) {
     guint8 *codec_priv;
     guint codec_priv_size;
     guint16 format = 0;
-    gint block_align;
-    gint bitrate;
+    gint block_align = 0;
+    gint bitrate = 0;
 
     if (samplerate == 0 || channels == 0) {
       GST_WARNING_OBJECT (mux, "Missing channels/samplerate on caps");
@@ -1923,6 +1958,33 @@ gst_matroska_mux_audio_pad_setcaps (GstPad * pad, GstCaps * caps)
 
       block_align = channels;
       bitrate = block_align * samplerate;
+    } else if (!strcmp (mimetype, "audio/x-adpcm")) {
+      const char *layout;
+
+      layout = gst_structure_get_string (structure, "layout");
+      if (!layout) {
+        GST_WARNING_OBJECT (mux, "Missing layout on adpcm caps");
+        goto refuse_caps;
+      }
+
+      if (!gst_structure_get_int (structure, "block_align", &block_align)) {
+        GST_WARNING_OBJECT (mux, "Missing block_align on adpcm caps");
+        goto refuse_caps;
+      }
+
+      if (!strcmp (layout, "dvi")) {
+        format = GST_RIFF_WAVE_FORMAT_DVI_ADPCM;
+      } else if (!strcmp (layout, "g726")) {
+        format = GST_RIFF_WAVE_FORMAT_ITU_G726_ADPCM;
+        if (!gst_structure_get_int (structure, "bitrate", &bitrate)) {
+          GST_WARNING_OBJECT (mux, "Missing bitrate on adpcm g726 caps");
+          goto refuse_caps;
+        }
+      } else {
+        GST_WARNING_OBJECT (mux, "Unknown layout on adpcm caps");
+        goto refuse_caps;
+      }
+
     }
     g_assert (format != 0);
 
@@ -2257,7 +2319,7 @@ gst_matroska_mux_track_header (GstMatroskaMux * mux,
   gst_ebml_write_uint (ebml, GST_MATROSKA_ID_TRACKTYPE, context->type);
 
   gst_ebml_write_uint (ebml, GST_MATROSKA_ID_TRACKUID,
-      gst_matroska_mux_create_uid ());
+      gst_matroska_mux_create_uid (mux));
   if (context->default_duration) {
     gst_ebml_write_uint (ebml, GST_MATROSKA_ID_TRACKDEFAULTDURATION,
         context->default_duration);
@@ -2466,7 +2528,6 @@ gst_matroska_mux_start (GstMatroskaMux * mux)
   };
   const gchar *media_type;
   gboolean audio_only;
-  gboolean is_webm = FALSE;
   guint64 master, child;
   GSList *collected;
   int i;
@@ -2507,13 +2568,9 @@ gst_matroska_mux_start (GstMatroskaMux * mux)
   g_snprintf (s_id, sizeof (s_id), "matroskamux-%08x", g_random_int ());
   gst_pad_push_event (mux->srcpad, gst_event_new_stream_start (s_id));
 
-  /* Are we muxing a WebM stream? */
-  if (!strcmp (mux->doctype, GST_MATROSKA_DOCTYPE_WEBM)) {
-    is_webm = TRUE;
-  }
   /* output caps */
   audio_only = mux->num_v_streams == 0 && mux->num_a_streams > 0;
-  if (is_webm) {
+  if (mux->is_webm) {
     media_type = (audio_only) ? "audio/webm" : "video/webm";
   } else {
     media_type = (audio_only) ? "audio/x-matroska" : "video/x-matroska";
@@ -2573,7 +2630,7 @@ gst_matroska_mux_start (GstMatroskaMux * mux)
   master = gst_ebml_write_master_start (ebml, GST_MATROSKA_ID_SEGMENTINFO);
 
   /* WebM does not support SegmentUID field on SegmentInfo */
-  if (!is_webm) {
+  if (!mux->is_webm) {
     for (i = 0; i < 4; i++) {
       segment_uid[i] = g_random_int ();
     }
@@ -3427,7 +3484,7 @@ gst_matroska_mux_handle_buffer (GstCollectPads * pads, GstCollectData * data,
 
   /* if there is no best pad, we have reached EOS */
   if (best == NULL) {
-    GST_DEBUG_OBJECT (mux, "No best pad finishing...");
+    GST_DEBUG_OBJECT (mux, "No best pad. Finishing...");
     if (!mux->streamable) {
       gst_matroska_mux_finish (mux);
     } else {

@@ -487,6 +487,38 @@ sample_entry_mp4v_new (AtomsContext * context)
 }
 
 static void
+sample_entry_tx3g_init (SampleTableEntryTX3G * tx3g)
+{
+  atom_sample_entry_init (&tx3g->se, FOURCC_tx3g);
+
+  tx3g->display_flags = 0;
+  tx3g->font_id = 1;            /* must be 1 as there is a single font */
+  tx3g->font_face = 0;
+  tx3g->foreground_color_rgba = 0xFFFFFFFF;     /* white, opaque */
+
+  /* can't set this now */
+  tx3g->default_text_box = 0;
+  tx3g->font_size = 0;
+}
+
+static void
+sample_entry_tx3g_free (SampleTableEntryTX3G * tx3g)
+{
+  atom_sample_entry_free (&tx3g->se);
+  g_free (tx3g);
+}
+
+static SampleTableEntryTX3G *
+sample_entry_tx3g_new (void)
+{
+  SampleTableEntryTX3G *tx3g = g_new0 (SampleTableEntryTX3G, 1);
+
+  sample_entry_tx3g_init (tx3g);
+  return tx3g;
+}
+
+
+static void
 atom_stsd_init (AtomSTSD * stsd)
 {
   guint8 flags[3] = { 0, 0, 0 };
@@ -515,6 +547,9 @@ atom_stsd_remove_entries (AtomSTSD * stsd)
         break;
       case VIDEO:
         sample_entry_mp4v_free ((SampleTableEntryMP4V *) se);
+        break;
+      case SUBTITLE:
+        sample_entry_tx3g_free ((SampleTableEntryTX3G *) se);
         break;
       default:
         /* best possible cleanup */
@@ -739,7 +774,7 @@ atom_hmhd_free (AtomHMHD * hmhd)
 }
 
 static void
-atom_hdlr_init (AtomHDLR * hdlr)
+atom_hdlr_init (AtomHDLR * hdlr, AtomsContext * context)
 {
   guint8 flags[3] = { 0, 0, 0 };
 
@@ -751,14 +786,17 @@ atom_hdlr_init (AtomHDLR * hdlr)
   hdlr->flags = 0;
   hdlr->flags_mask = 0;
   hdlr->name = g_strdup ("");
+
+  /* Store the flavor to know how to serialize the 'name' string */
+  hdlr->flavor = context->flavor;
 }
 
 static AtomHDLR *
-atom_hdlr_new (void)
+atom_hdlr_new (AtomsContext * context)
 {
   AtomHDLR *hdlr = g_new0 (AtomHDLR, 1);
 
-  atom_hdlr_init (hdlr);
+  atom_hdlr_init (hdlr, context);
   return hdlr;
 }
 
@@ -889,7 +927,7 @@ atom_minf_init (AtomMINF * minf, AtomsContext * context)
   minf->hmhd = NULL;
 
   if (context->flavor == ATOMS_TREE_FLAVOR_MOV) {
-    minf->hdlr = atom_hdlr_new ();
+    minf->hdlr = atom_hdlr_new (context);
     minf->hdlr->component_type = FOURCC_dhlr;
     minf->hdlr->handler_type = FOURCC_alis;
   } else {
@@ -951,7 +989,7 @@ atom_mdia_init (AtomMDIA * mdia, AtomsContext * context)
   atom_header_set (&mdia->header, FOURCC_mdia, 0, 0);
 
   atom_mdhd_init (&mdia->mdhd);
-  atom_hdlr_init (&mdia->hdlr);
+  atom_hdlr_init (&mdia->hdlr, context);
   atom_minf_init (&mdia->minf, context);
 }
 
@@ -1063,12 +1101,12 @@ atom_ilst_free (AtomILST * ilst)
 }
 
 static void
-atom_meta_init (AtomMETA * meta)
+atom_meta_init (AtomMETA * meta, AtomsContext * context)
 {
   guint8 flags[3] = { 0, 0, 0 };
 
   atom_full_init (&meta->header, FOURCC_meta, 0, 0, 0, flags);
-  atom_hdlr_init (&meta->hdlr);
+  atom_hdlr_init (&meta->hdlr, context);
   /* FIXME (ISOM says this is always 0) */
   meta->hdlr.component_type = FOURCC_mhlr;
   meta->hdlr.handler_type = FOURCC_mdir;
@@ -1076,11 +1114,11 @@ atom_meta_init (AtomMETA * meta)
 }
 
 static AtomMETA *
-atom_meta_new (void)
+atom_meta_new (AtomsContext * context)
 {
   AtomMETA *meta = g_new0 (AtomMETA, 1);
 
-  atom_meta_init (meta);
+  atom_meta_init (meta, context);
   return meta;
 }
 
@@ -1521,8 +1559,13 @@ atom_hdlr_copy_data (AtomHDLR * hdlr, guint8 ** buffer, guint64 * size,
   prop_copy_uint32 (hdlr->flags, buffer, size, offset);
   prop_copy_uint32 (hdlr->flags_mask, buffer, size, offset);
 
-  prop_copy_size_string ((guint8 *) hdlr->name, strlen (hdlr->name), buffer,
-      size, offset);
+  if (hdlr->flavor == ATOMS_TREE_FLAVOR_MOV) {
+    prop_copy_size_string ((guint8 *) hdlr->name, strlen (hdlr->name), buffer,
+        size, offset);
+  } else {
+    /* assume isomedia base is more generic and use null terminated */
+    prop_copy_null_terminated_string (hdlr->name, buffer, size, offset);
+  }
 
   atom_write_size (buffer, size, offset, original_offset);
   return *offset - original_offset;
@@ -1787,6 +1830,48 @@ sample_entry_mp4v_copy_data (SampleTableEntryMP4V * mp4v, guint8 ** buffer,
   return *offset - original_offset;
 }
 
+static guint64
+sample_entry_tx3g_copy_data (SampleTableEntryTX3G * tx3g, guint8 ** buffer,
+    guint64 * size, guint64 * offset)
+{
+  guint64 original_offset = *offset;
+
+  if (!atom_sample_entry_copy_data (&tx3g->se, buffer, size, offset)) {
+    return 0;
+  }
+
+  prop_copy_uint32 (tx3g->display_flags, buffer, size, offset);
+
+  /* reserved */
+  prop_copy_uint8 (1, buffer, size, offset);
+  prop_copy_uint8 (-1, buffer, size, offset);
+  prop_copy_uint32 (0, buffer, size, offset);
+
+  prop_copy_uint64 (tx3g->default_text_box, buffer, size, offset);
+
+  /* reserved */
+  prop_copy_uint32 (0, buffer, size, offset);
+
+  prop_copy_uint16 (tx3g->font_id, buffer, size, offset);
+  prop_copy_uint8 (tx3g->font_face, buffer, size, offset);
+  prop_copy_uint8 (tx3g->font_size, buffer, size, offset);
+  prop_copy_uint32 (tx3g->foreground_color_rgba, buffer, size, offset);
+
+  /* it must have a fonttable atom */
+  {
+    Atom atom;
+
+    atom_header_set (&atom, FOURCC_ftab, 18, 0);
+    atom_copy_data (&atom, buffer, size, offset);
+    prop_copy_uint16 (1, buffer, size, offset); /* Count must be 1 */
+    prop_copy_uint16 (1, buffer, size, offset); /* Font id: 1 */
+    prop_copy_size_string ((guint8 *) "Serif", 5, buffer, size, offset);
+  }
+
+  atom_write_size (buffer, size, offset, original_offset);
+  return *offset - original_offset;
+}
+
 guint64
 atom_stsz_copy_data (AtomSTSZ * stsz, guint8 ** buffer, guint64 * size,
     guint64 * offset)
@@ -1977,6 +2062,11 @@ atom_stsd_copy_data (AtomSTSD * stsd, guint8 ** buffer, guint64 * size,
                   walker->data, buffer, size, offset)) {
             return 0;
           }
+        } else if (se->kind == SUBTITLE) {
+          if (!sample_entry_tx3g_copy_data ((SampleTableEntryTX3G *)
+                  walker->data, buffer, size, offset)) {
+            return 0;
+          }
         } else {
           if (!atom_hint_sample_entry_copy_data (
                   (AtomHintSampleEntry *) walker->data, buffer, size, offset)) {
@@ -2053,9 +2143,11 @@ atom_dref_copy_data (AtomDREF * dref, guint8 ** buffer, guint64 * size,
     Atom *atom = (Atom *) walker->data;
 
     if (atom->type == FOURCC_url_) {
-      atom_url_copy_data ((AtomURL *) atom, buffer, size, offset);
+      if (!atom_url_copy_data ((AtomURL *) atom, buffer, size, offset))
+        return 0;
     } else if (atom->type == FOURCC_alis) {
-      atom_full_copy_data ((AtomFull *) atom, buffer, size, offset);
+      if (!atom_full_copy_data ((AtomFull *) atom, buffer, size, offset))
+        return 0;
     } else {
       g_error ("Unsupported atom used inside dref atom");
     }
@@ -2818,6 +2910,40 @@ atom_trak_update_bitrates (AtomTRAK * trak, guint32 avg_bitrate,
   }
 }
 
+void
+atom_trak_tx3g_update_dimension (AtomTRAK * trak, guint32 width, guint32 height)
+{
+  AtomSTSD *stsd;
+  GList *iter;
+  SampleTableEntryTX3G *tx3g = NULL;
+
+  stsd = &trak->mdia.minf.stbl.stsd;
+  for (iter = stsd->entries; iter && tx3g == NULL; iter = g_list_next (iter)) {
+    SampleTableEntry *entry = iter->data;
+
+    switch (entry->kind) {
+      case SUBTITLE:{
+        tx3g = (SampleTableEntryTX3G *) entry;
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  /* Currently we never set the vertical placement flag, so we don't
+   * check for it to set the dimensions differently as the spec says.
+   * Always do it for the not set case */
+  if (tx3g) {
+    tx3g->font_size = 0.05 * height;
+
+    height = 0.15 * height;
+    trak->tkhd.width = width << 16;
+    trak->tkhd.height = height << 16;
+    tx3g->default_text_box = width | (height << 16);
+  }
+}
+
 /*
  * Meta tags functions
  */
@@ -2829,7 +2955,7 @@ atom_moov_init_metatags (AtomMOOV * moov, AtomsContext * context)
   }
   if (context->flavor != ATOMS_TREE_FLAVOR_3GP) {
     if (!moov->udta->meta) {
-      moov->udta->meta = atom_meta_new ();
+      moov->udta->meta = atom_meta_new (context);
     }
     if (!moov->udta->meta->ilst) {
       moov->udta->meta->ilst = atom_ilst_new ();
@@ -2870,7 +2996,7 @@ atom_moov_add_tag (AtomMOOV * moov, guint32 fourcc, guint32 flags,
   tag = atom_tag_new (fourcc, flags);
   tdata = &tag->data;
   atom_tag_data_alloc_data (tdata, size);
-  g_memmove (tdata->data, data, size);
+  memmove (tdata->data, data, size);
 
   atom_moov_append_tag (moov,
       build_atom_info_wrapper ((Atom *) tag, atom_tag_copy_data,
@@ -3060,6 +3186,12 @@ atom_minf_set_video (AtomMINF * minf, AtomsContext * context)
 }
 
 static void
+atom_minf_set_subtitle (AtomMINF * minf)
+{
+  atom_minf_clear_handlers (minf);
+}
+
+static void
 atom_hdlr_set_type (AtomHDLR * hdlr, AtomsContext * context, guint32 comp_type,
     guint32 hdlr_type)
 {
@@ -3096,6 +3228,15 @@ atom_mdia_set_hdlr_type_video (AtomMDIA * mdia, AtomsContext * context)
 }
 
 static void
+atom_mdia_set_hdlr_type_subtitle (AtomMDIA * mdia, AtomsContext * context)
+{
+  atom_hdlr_set_type (&mdia->hdlr, context, FOURCC_mhlr, FOURCC_sbtl);
+
+  /* Just follows the pattern from video and audio above */
+  atom_hdlr_set_name (&mdia->hdlr, "SubtitleHandler");
+}
+
+static void
 atom_mdia_set_audio (AtomMDIA * mdia, AtomsContext * context)
 {
   atom_mdia_set_hdlr_type_audio (mdia, context);
@@ -3107,6 +3248,13 @@ atom_mdia_set_video (AtomMDIA * mdia, AtomsContext * context)
 {
   atom_mdia_set_hdlr_type_video (mdia, context);
   atom_minf_set_video (&mdia->minf, context);
+}
+
+static void
+atom_mdia_set_subtitle (AtomMDIA * mdia, AtomsContext * context)
+{
+  atom_mdia_set_hdlr_type_subtitle (mdia, context);
+  atom_minf_set_subtitle (&mdia->minf);
 }
 
 static void
@@ -3126,6 +3274,18 @@ atom_tkhd_set_video (AtomTKHD * tkhd, AtomsContext * context, guint32 width,
   tkhd->width = width;
   tkhd->height = height;
 }
+
+static void
+atom_tkhd_set_subtitle (AtomTKHD * tkhd, AtomsContext * context, guint32 width,
+    guint32 height)
+{
+  tkhd->volume = 0;
+
+  /* qt and ISO base media do not contradict, and examples agree */
+  tkhd->width = width;
+  tkhd->height = height;
+}
+
 
 static void
 atom_edts_add_entry (AtomEDTS * edts, EditListEntry * entry)
@@ -3197,6 +3357,23 @@ atom_trak_add_video_entry (AtomTRAK * trak, AtomsContext * context,
   return mp4v;
 }
 
+static SampleTableEntryTX3G *
+atom_trak_add_subtitle_entry (AtomTRAK * trak, AtomsContext * context,
+    guint32 type)
+{
+  SampleTableEntryTX3G *tx3g = sample_entry_tx3g_new ();
+  AtomSTSD *stsd = &trak->mdia.minf.stbl.stsd;
+
+  tx3g->se.header.type = type;
+  tx3g->se.kind = SUBTITLE;
+  tx3g->se.data_reference_index = 1;
+
+  stsd->entries = g_list_prepend (stsd->entries, tx3g);
+  stsd->n_entries++;
+  return tx3g;
+}
+
+
 static void
 atom_trak_set_constant_size_samples (AtomTRAK * trak, guint32 sample_size)
 {
@@ -3219,6 +3396,13 @@ atom_trak_set_video (AtomTRAK * trak, AtomsContext * context, guint32 width,
 }
 
 static void
+atom_trak_set_subtitle (AtomTRAK * trak, AtomsContext * context)
+{
+  atom_tkhd_set_subtitle (&trak->tkhd, context, 0, 0);
+  atom_mdia_set_subtitle (&trak->mdia, context);
+}
+
+static void
 atom_trak_set_audio_commons (AtomTRAK * trak, AtomsContext * context,
     guint32 rate)
 {
@@ -3234,6 +3418,13 @@ atom_trak_set_video_commons (AtomTRAK * trak, AtomsContext * context,
   trak->mdia.mdhd.time_info.timescale = rate;
   trak->tkhd.width = width << 16;
   trak->tkhd.height = height << 16;
+}
+
+static void
+atom_trak_set_subtitle_commons (AtomTRAK * trak, AtomsContext * context)
+{
+  atom_trak_set_subtitle (trak, context);
+  trak->mdia.mdhd.time_info.timescale = 1000;
 }
 
 void
@@ -3338,6 +3529,32 @@ atom_trak_set_video_type (AtomTRAK * trak, AtomsContext * context,
     ste->extension_atoms = g_list_append (ste->extension_atoms,
         build_pasp_extension (trak, par_n, par_d));
   }
+}
+
+void
+subtitle_sample_entry_init (SubtitleSampleEntry * entry)
+{
+  entry->font_size = 0;
+  entry->font_face = 0;
+  entry->foreground_color_rgba = 0xFFFFFFFF;    /* all white, opaque */
+}
+
+void
+atom_trak_set_subtitle_type (AtomTRAK * trak, AtomsContext * context,
+    SubtitleSampleEntry * entry)
+{
+  SampleTableEntryTX3G *tx3g;
+
+  atom_trak_set_subtitle_commons (trak, context);
+  atom_stsd_remove_entries (&trak->mdia.minf.stbl.stsd);
+  tx3g = atom_trak_add_subtitle_entry (trak, context, entry->fourcc);
+
+  tx3g->font_face = entry->font_face;
+  tx3g->font_size = entry->font_size;
+  tx3g->foreground_color_rgba = entry->foreground_color_rgba;
+
+  trak->is_video = FALSE;
+  trak->is_h264 = FALSE;
 }
 
 static void
@@ -3682,7 +3899,7 @@ atom_trun_add_samples (AtomTRUN * trun, guint32 delta, guint32 size,
   TRUNSampleEntry nentry;
 
   if (pts_offset != 0)
-    trun->header.flags[1] |= TR_COMPOSITION_TIME_OFFSETS;
+    trun->header.flags[1] |= (TR_COMPOSITION_TIME_OFFSETS >> 8);
 
   nentry.sample_duration = delta;
   nentry.sample_size = size;

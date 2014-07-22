@@ -57,9 +57,6 @@
 
 #include "gstv4l2colorbalance.h"
 #include "gstv4l2tuner.h"
-#ifdef HAVE_XVIDEO
-#include "gstv4l2videooverlay.h"
-#endif
 #include "gstv4l2vidorient.h"
 
 #include "gstv4l2sink.h"
@@ -89,29 +86,11 @@ enum
 
 GST_IMPLEMENT_V4L2_COLOR_BALANCE_METHODS (GstV4l2Sink, gst_v4l2sink);
 GST_IMPLEMENT_V4L2_TUNER_METHODS (GstV4l2Sink, gst_v4l2sink);
-#ifdef HAVE_XVIDEO
-GST_IMPLEMENT_V4L2_VIDEO_OVERLAY_METHODS (GstV4l2Sink, gst_v4l2sink);
-#endif
 GST_IMPLEMENT_V4L2_VIDORIENT_METHODS (GstV4l2Sink, gst_v4l2sink);
-
-#ifdef HAVE_XVIDEO
-static void gst_v4l2sink_navigation_send_event (GstNavigation * navigation,
-    GstStructure * structure);
-static void
-gst_v4l2sink_navigation_init (GstNavigationInterface * iface)
-{
-  iface->send_event = gst_v4l2sink_navigation_send_event;
-}
-#endif
 
 #define gst_v4l2sink_parent_class parent_class
 G_DEFINE_TYPE_WITH_CODE (GstV4l2Sink, gst_v4l2sink, GST_TYPE_VIDEO_SINK,
     G_IMPLEMENT_INTERFACE (GST_TYPE_TUNER, gst_v4l2sink_tuner_interface_init);
-#ifdef HAVE_XVIDEO
-    G_IMPLEMENT_INTERFACE (GST_TYPE_VIDEO_OVERLAY,
-        gst_v4l2sink_video_overlay_interface_init);
-    G_IMPLEMENT_INTERFACE (GST_TYPE_NAVIGATION, gst_v4l2sink_navigation_init);
-#endif
     G_IMPLEMENT_INTERFACE (GST_TYPE_COLOR_BALANCE,
         gst_v4l2sink_color_balance_interface_init);
     G_IMPLEMENT_INTERFACE (GST_TYPE_VIDEO_ORIENTATION,
@@ -135,11 +114,7 @@ static gboolean gst_v4l2sink_propose_allocation (GstBaseSink * bsink,
     GstQuery * query);
 static GstCaps *gst_v4l2sink_get_caps (GstBaseSink * bsink, GstCaps * filter);
 static gboolean gst_v4l2sink_set_caps (GstBaseSink * bsink, GstCaps * caps);
-#if 0
-static GstFlowReturn gst_v4l2sink_buffer_alloc (GstBaseSink * bsink,
-    guint64 offset, guint size, GstCaps * caps, GstBuffer ** buf);
-#endif
-static GstFlowReturn gst_v4l2sink_show_frame (GstBaseSink * bsink,
+static GstFlowReturn gst_v4l2sink_show_frame (GstVideoSink * bsink,
     GstBuffer * buf);
 
 static void
@@ -148,10 +123,12 @@ gst_v4l2sink_class_init (GstV4l2SinkClass * klass)
   GObjectClass *gobject_class;
   GstElementClass *element_class;
   GstBaseSinkClass *basesink_class;
+  GstVideoSinkClass *videosink_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
   element_class = GST_ELEMENT_CLASS (klass);
   basesink_class = GST_BASE_SINK_CLASS (klass);
+  videosink_class = GST_VIDEO_SINK_CLASS (klass);
 
   gobject_class->finalize = (GObjectFinalizeFunc) gst_v4l2sink_finalize;
   gobject_class->set_property = gst_v4l2sink_set_property;
@@ -208,7 +185,8 @@ gst_v4l2sink_class_init (GstV4l2SinkClass * klass)
   basesink_class->set_caps = GST_DEBUG_FUNCPTR (gst_v4l2sink_set_caps);
   basesink_class->propose_allocation =
       GST_DEBUG_FUNCPTR (gst_v4l2sink_propose_allocation);
-  basesink_class->render = GST_DEBUG_FUNCPTR (gst_v4l2sink_show_frame);
+
+  videosink_class->show_frame = GST_DEBUG_FUNCPTR (gst_v4l2sink_show_frame);
 
   klass->v4l2_class_devices = NULL;
 
@@ -526,10 +504,6 @@ gst_v4l2sink_set_caps (GstBaseSink * bsink, GstCaps * caps)
   gst_v4l2sink_sync_overlay_fields (v4l2sink);
   gst_v4l2sink_sync_crop_fields (v4l2sink);
 
-#ifdef HAVE_XVIDEO
-  gst_v4l2_video_overlay_prepare_window_handle (v4l2sink->v4l2object, TRUE);
-#endif
-
   GST_INFO_OBJECT (v4l2sink, "outputting buffers via mmap()");
 
   v4l2sink->video_width = GST_V4L2_WIDTH (v4l2sink->v4l2object);
@@ -561,129 +535,75 @@ static gboolean
 gst_v4l2sink_propose_allocation (GstBaseSink * bsink, GstQuery * query)
 {
   GstV4l2Sink *v4l2sink = GST_V4L2SINK (bsink);
-  GstV4l2Object *obj = v4l2sink->v4l2object;
-  GstBufferPool *pool;
-  guint size = 0;
-  GstCaps *caps;
-  gboolean need_pool;
+  gboolean last_sample_enabled;
 
-  gst_query_parse_allocation (query, &caps, &need_pool);
+  if (!gst_v4l2_object_propose_allocation (v4l2sink->v4l2object, query))
+    return FALSE;
 
-  if (caps == NULL)
-    goto no_caps;
+  g_object_get (bsink, "enable-last-sample", &last_sample_enabled, NULL);
 
-  if ((pool = obj->pool))
-    gst_object_ref (pool);
+  if (last_sample_enabled) {
+    GstBufferPool *pool;
+    guint size, min, max;
 
-  if (pool != NULL) {
-    GstCaps *pcaps;
-    GstStructure *config;
+    gst_query_parse_nth_allocation_pool (query, 0, &pool, &size, &min, &max);
 
-    /* we had a pool, check caps */
-    config = gst_buffer_pool_get_config (pool);
-    gst_buffer_pool_config_get_params (config, &pcaps, &size, NULL, NULL);
+    /* we need 1 more, otherwise we'll run out of buffers at preroll */
+    min++;
+    if (max < min)
+      max = min;
 
-    GST_DEBUG_OBJECT (v4l2sink,
-        "we had a pool with caps %" GST_PTR_FORMAT, pcaps);
-    if (!gst_caps_is_equal (caps, pcaps)) {
-      gst_structure_free (config);
-      gst_object_unref (pool);
-      goto different_caps;
-    }
-    gst_structure_free (config);
+    gst_query_set_nth_allocation_pool (query, 0, pool, size, min, max);
   }
-  /* we need at least 2 buffers to operate */
-  gst_query_add_allocation_pool (query, pool, size, 2, 0);
-
-  /* we also support various metadata */
-  gst_query_add_allocation_meta (query, GST_VIDEO_META_API_TYPE, NULL);
-  gst_query_add_allocation_meta (query, GST_VIDEO_CROP_META_API_TYPE, NULL);
-
-  if (pool)
-    gst_object_unref (pool);
 
   return TRUE;
-
-  /* ERRORS */
-no_caps:
-  {
-    GST_DEBUG_OBJECT (v4l2sink, "no caps specified");
-    return FALSE;
-  }
-different_caps:
-  {
-    /* different caps, we can't use this pool */
-    GST_DEBUG_OBJECT (v4l2sink, "pool has different caps");
-    return FALSE;
-  }
 }
 
 /* called after A/V sync to render frame */
 static GstFlowReturn
-gst_v4l2sink_show_frame (GstBaseSink * bsink, GstBuffer * buf)
+gst_v4l2sink_show_frame (GstVideoSink * vsink, GstBuffer * buf)
 {
   GstFlowReturn ret;
-  GstV4l2Sink *v4l2sink = GST_V4L2SINK (bsink);
+  GstV4l2Sink *v4l2sink = GST_V4L2SINK (vsink);
   GstV4l2Object *obj = v4l2sink->v4l2object;
+  GstBufferPool *bpool = GST_BUFFER_POOL (obj->pool);
 
   GST_DEBUG_OBJECT (v4l2sink, "render buffer: %p", buf);
 
   if (G_UNLIKELY (obj->pool == NULL))
     goto not_negotiated;
 
-  ret =
-      gst_v4l2_buffer_pool_process (GST_V4L2_BUFFER_POOL_CAST (obj->pool), buf);
+  if (G_UNLIKELY (!gst_buffer_pool_is_active (bpool))) {
+    GstStructure *config;
+
+    /* this pool was not activated, configure and activate */
+    GST_DEBUG_OBJECT (v4l2sink, "activating pool");
+
+    config = gst_buffer_pool_get_config (bpool);
+    gst_buffer_pool_config_add_option (config,
+        GST_BUFFER_POOL_OPTION_VIDEO_META);
+    gst_buffer_pool_set_config (bpool, config);
+
+    if (!gst_buffer_pool_set_active (bpool, TRUE))
+      goto activate_failed;
+  }
+
+  ret = gst_v4l2_buffer_pool_process (GST_V4L2_BUFFER_POOL_CAST (obj->pool),
+      &buf);
 
   return ret;
 
   /* ERRORS */
 not_negotiated:
   {
-    GST_ERROR_OBJECT (bsink, "not negotiated");
+    GST_ERROR_OBJECT (v4l2sink, "not negotiated");
     return GST_FLOW_NOT_NEGOTIATED;
   }
-}
-
-#ifdef HAVE_XVIDEO
-static void
-gst_v4l2sink_navigation_send_event (GstNavigation * navigation,
-    GstStructure * structure)
-{
-  GstV4l2Sink *v4l2sink = GST_V4L2SINK (navigation);
-  GstV4l2Xv *xv = v4l2sink->v4l2object->xv;
-  GstPad *peer;
-
-  if (!xv)
-    return;
-
-  if ((peer = gst_pad_get_peer (GST_VIDEO_SINK_PAD (v4l2sink)))) {
-    GstVideoRectangle rect;
-    gdouble x, y, xscale = 1.0, yscale = 1.0;
-
-    gst_v4l2_video_overlay_get_render_rect (v4l2sink->v4l2object, &rect);
-
-    /* We calculate scaling using the original video frames geometry to
-     * include pixel aspect ratio scaling.
-     */
-    xscale = (gdouble) v4l2sink->video_width / rect.w;
-    yscale = (gdouble) v4l2sink->video_height / rect.h;
-
-    /* Converting pointer coordinates to the non scaled geometry */
-    if (gst_structure_get_double (structure, "pointer_x", &x)) {
-      x = MIN (x, rect.x + rect.w);
-      x = MAX (x - rect.x, 0);
-      gst_structure_set (structure, "pointer_x", G_TYPE_DOUBLE,
-          (gdouble) x * xscale, NULL);
-    }
-    if (gst_structure_get_double (structure, "pointer_y", &y)) {
-      y = MIN (y, rect.y + rect.h);
-      y = MAX (y - rect.y, 0);
-      gst_structure_set (structure, "pointer_y", G_TYPE_DOUBLE,
-          (gdouble) y * yscale, NULL);
-    }
-
-    gst_pad_send_event (peer, gst_event_new_navigation (structure));
-    gst_object_unref (peer);
+activate_failed:
+  {
+    GST_ELEMENT_ERROR (v4l2sink, RESOURCE, SETTINGS,
+        (_("Failed to allocated required memory.")),
+        ("Buffer pool activation failed"));
+    return GST_FLOW_ERROR;
   }
 }
-#endif

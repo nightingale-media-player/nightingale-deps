@@ -24,30 +24,7 @@
 #ifndef __GST_V4L2_OBJECT_H__
 #define __GST_V4L2_OBJECT_H__
 
-/* Because of some really cool feature in video4linux1, also known as
- * 'not including sys/types.h and sys/time.h', we had to include it
- * ourselves. In all their intelligence, these people decided to fix
- * this in the next version (video4linux2) in such a cool way that it
- * breaks all compilations of old stuff...
- * The real problem is actually that linux/time.h doesn't use proper
- * macro checks before defining types like struct timeval. The proper
- * fix here is to either fuck the kernel header (which is what we do
- * by defining _LINUX_TIME_H, an innocent little hack) or by fixing it
- * upstream, which I'll consider doing later on. If you get compiler
- * errors here, check your linux/time.h && sys/time.h header setup.
- */
-#include <sys/ioctl.h>
-#include <sys/types.h>
-#ifdef __sun
-#include <sys/videodev2.h>
-#elif defined(__FreeBSD__)
-#include <linux/videodev2.h>
-#else /* linux */
-#include <linux/types.h>
-#define _LINUX_TIME_H
-#define __user
-#include <linux/videodev2.h>
-#endif
+#include "ext/videodev2.h"
 
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
@@ -61,22 +38,25 @@ typedef struct _GstV4l2Xv GstV4l2Xv;
 #include <gstv4l2bufferpool.h>
 
 /* size of v4l2 buffer pool in streaming case */
-#define GST_V4L2_MAX_BUFFERS 16
-#define GST_V4L2_MIN_BUFFERS 1
+#define GST_V4L2_MIN_BUFFERS 2
 
 /* max frame width/height */
 #define GST_V4L2_MAX_SIZE (1<<15) /* 2^15 == 32768 */
 
 G_BEGIN_DECLS
 
+#define GST_TYPE_V4L2_IO_MODE (gst_v4l2_io_mode_get_type ())
+GType gst_v4l2_io_mode_get_type (void);
+
 #define GST_V4L2_OBJECT(obj) (GstV4l2Object *)(obj)
 
 typedef enum {
-  GST_V4L2_IO_AUTO    = 0,
-  GST_V4L2_IO_RW      = 1,
-  GST_V4L2_IO_MMAP    = 2,
-  GST_V4L2_IO_USERPTR = 3,
-  GST_V4L2_IO_DMABUF  = 4
+  GST_V4L2_IO_AUTO          = 0,
+  GST_V4L2_IO_RW            = 1,
+  GST_V4L2_IO_MMAP          = 2,
+  GST_V4L2_IO_USERPTR       = 3,
+  GST_V4L2_IO_DMABUF        = 4,
+  GST_V4L2_IO_DMABUF_IMPORT = 5
 } GstV4l2IOMode;
 
 typedef gboolean  (*GstV4l2GetInOutFunction)  (GstV4l2Object * v4l2object, gint * input);
@@ -108,19 +88,38 @@ struct _GstV4l2Object {
   /* the video-device's file descriptor */
   gint video_fd;
   GstV4l2IOMode mode;
-  GstPoll * poll;
-  gboolean can_poll_device;
 
   gboolean active;
   gboolean streaming;
 
   /* the current format */
   struct v4l2_fmtdesc *fmtdesc;
+  struct v4l2_format format;
   GstVideoInfo info;
+  GstVideoAlignment align;
 
-  guint32 bytesperline;
-  guint32 sizeimage;
+  /* Features */
+  gboolean need_video_meta;
+  gboolean has_alpha_component;
+
+  /* only used if the device supports MPLANE
+   * nb planes is meaning of v4l2 planes
+   * the gstreamer equivalent is gst_buffer_n_memory
+   */
+  gint n_v4l2_planes;
+
+  /* We cache the frame duration if known */
   GstClockTime duration;
+
+  /* if the MPLANE device support both contiguous and non contiguous
+   * it allows to select which one we want. But we prefered_non_contiguous
+   * non contiguous mode.
+   */
+  gboolean prefered_non_contiguous;
+
+  /* This will be set if supported in decide_allocation. It can be used to
+   * calculate the minimum latency of a m2m decoder. */
+  guint32 min_buffers_for_capture;
 
   /* wanted mode */
   GstV4l2IOMode req_mode;
@@ -162,6 +161,13 @@ struct _GstV4l2Object {
   GstV4l2GetInOutFunction  get_in_out_func;
   GstV4l2SetInOutFunction  set_in_out_func;
   GstV4l2UpdateFpsFunction update_fps_func;
+
+  /* Quirks */
+  /* Skips interlacing probes */
+  gboolean never_interlaced;
+  /* Allow to skip reading initial format through G_FMT. Some devices
+   * just fails if you don't call S_FMT first. (ex: M2M decoders) */
+  gboolean no_initial_format;
 };
 
 struct _GstV4l2ObjectClassHelper {
@@ -171,43 +177,51 @@ struct _GstV4l2ObjectClassHelper {
 
 GType gst_v4l2_object_get_type (void);
 
-#define V4L2_STD_OBJECT_PROPS		\
-    PROP_DEVICE,			\
-    PROP_DEVICE_NAME,			\
-    PROP_DEVICE_FD,			\
-    PROP_FLAGS,                         \
-    PROP_BRIGHTNESS,			\
-    PROP_CONTRAST,			\
-    PROP_SATURATION,			\
-    PROP_HUE,                           \
-    PROP_TV_NORM,                       \
-    PROP_IO_MODE,                       \
-    PROP_EXTRA_CONTROLS,                \
-    PROP_PIXEL_ASPECT_RATIO,            \
+#define V4L2_STD_OBJECT_PROPS \
+    PROP_DEVICE,              \
+    PROP_DEVICE_NAME,         \
+    PROP_DEVICE_FD,           \
+    PROP_FLAGS,               \
+    PROP_BRIGHTNESS,          \
+    PROP_CONTRAST,            \
+    PROP_SATURATION,          \
+    PROP_HUE,                 \
+    PROP_TV_NORM,             \
+    PROP_IO_MODE,             \
+    PROP_OUTPUT_IO_MODE,      \
+    PROP_CAPTURE_IO_MODE,     \
+    PROP_EXTRA_CONTROLS,      \
+    PROP_PIXEL_ASPECT_RATIO,  \
     PROP_FORCE_ASPECT_RATIO
 
 /* create/destroy */
-GstV4l2Object *	gst_v4l2_object_new 		 (GstElement * element,
-                                                  enum v4l2_buf_type  type,
-                                                  const char *default_device,
-                   				  GstV4l2GetInOutFunction get_in_out_func,
-                   				  GstV4l2SetInOutFunction set_in_out_func,
-		   				  GstV4l2UpdateFpsFunction   update_fps_func);
-void 	        gst_v4l2_object_destroy 	 (GstV4l2Object * v4l2object);
+GstV4l2Object*  gst_v4l2_object_new       (GstElement * element,
+                                           enum v4l2_buf_type  type,
+                                           const char * default_device,
+                                           GstV4l2GetInOutFunction get_in_out_func,
+                                           GstV4l2SetInOutFunction set_in_out_func,
+                                           GstV4l2UpdateFpsFunction update_fps_func);
+
+void            gst_v4l2_object_destroy   (GstV4l2Object * v4l2object);
 
 /* properties */
 
-void 	  gst_v4l2_object_install_properties_helper (GObjectClass *gobject_class, const char *default_device);
+void         gst_v4l2_object_install_properties_helper (GObjectClass * gobject_class,
+                                                        const char * default_device);
 
-gboolean  gst_v4l2_object_set_property_helper       (GstV4l2Object *v4l2object,
-				                     guint prop_id, const GValue * value,
-						     GParamSpec * pspec);
-gboolean  gst_v4l2_object_get_property_helper       (GstV4l2Object *v4l2object,
-				                     guint prop_id, GValue * value,
-						     GParamSpec * pspec);
+void         gst_v4l2_object_install_m2m_properties_helper (GObjectClass * gobject_class);
+
+gboolean     gst_v4l2_object_set_property_helper       (GstV4l2Object * v4l2object,
+                                                        guint prop_id,
+                                                        const GValue * value,
+                                                        GParamSpec * pspec);
+gboolean     gst_v4l2_object_get_property_helper       (GstV4l2Object *v4l2object,
+                                                        guint prop_id, GValue * value,
+                                                        GParamSpec * pspec);
 /* open/close */
-gboolean  gst_v4l2_object_open               (GstV4l2Object *v4l2object);
-gboolean  gst_v4l2_object_close              (GstV4l2Object *v4l2object);
+gboolean     gst_v4l2_object_open            (GstV4l2Object *v4l2object);
+gboolean     gst_v4l2_object_open_shared     (GstV4l2Object *v4l2object, GstV4l2Object *other);
+gboolean     gst_v4l2_object_close           (GstV4l2Object *v4l2object);
 
 /* probing */
 #if 0
@@ -226,64 +240,75 @@ GValueArray* gst_v4l2_probe_get_values      (GstPropertyProbe * probe, guint pro
 
 GstCaps*      gst_v4l2_object_get_all_caps (void);
 
-GstStructure* gst_v4l2_object_v4l2fourcc_to_structure (guint32 fourcc);
+GstCaps*      gst_v4l2_object_get_raw_caps (void);
 
-gboolean      gst_v4l2_object_set_format (GstV4l2Object *v4l2object, GstCaps * caps);
+GstCaps*      gst_v4l2_object_get_codec_caps (void);
+
+gboolean      gst_v4l2_object_set_format  (GstV4l2Object * v4l2object, GstCaps * caps);
 
 gboolean      gst_v4l2_object_caps_equal  (GstV4l2Object * v4l2object, GstCaps * caps);
 
-gboolean      gst_v4l2_object_unlock      (GstV4l2Object *v4l2object);
-gboolean      gst_v4l2_object_unlock_stop (GstV4l2Object *v4l2object);
+gboolean      gst_v4l2_object_unlock      (GstV4l2Object * v4l2object);
+gboolean      gst_v4l2_object_unlock_stop (GstV4l2Object * v4l2object);
 
-gboolean      gst_v4l2_object_stop        (GstV4l2Object *v4l2object);
-
-
-gboolean      gst_v4l2_object_copy        (GstV4l2Object * v4l2object,
-                                           GstBuffer * dest, GstBuffer *src);
+gboolean      gst_v4l2_object_stop        (GstV4l2Object * v4l2object);
 
 GstCaps *     gst_v4l2_object_get_caps    (GstV4l2Object * v4l2object,
                                            GstCaps * filter);
+
+gboolean      gst_v4l2_object_acquire_format (GstV4l2Object * v4l2object,
+                                              GstVideoInfo * info);
+
+gboolean      gst_v4l2_object_set_crop    (GstV4l2Object * obj);
+
+gboolean      gst_v4l2_object_decide_allocation (GstV4l2Object * v4l2object,
+                                                 GstQuery * query);
+
+gboolean      gst_v4l2_object_propose_allocation (GstV4l2Object * obj,
+                                                  GstQuery * query);
+
+GstStructure * gst_v4l2_object_v4l2fourcc_to_structure (guint32 fourcc);
 
 
 #define GST_IMPLEMENT_V4L2_PROBE_METHODS(Type_Class, interface_as_function)                 \
                                                                                             \
 static void                                                                                 \
 interface_as_function ## _probe_probe_property (GstPropertyProbe * probe,                   \
-			                        guint prop_id,                              \
+                                                guint prop_id,                              \
                                                 const GParamSpec * pspec)                   \
 {                                                                                           \
   Type_Class *this_class = (Type_Class*) G_OBJECT_GET_CLASS (probe);                        \
   gst_v4l2_probe_probe_property (probe, prop_id, pspec,                                     \
-                                        &this_class->v4l2_class_devices);	            \
+                                 &this_class->v4l2_class_devices);                          \
 }                                                                                           \
                                                                                             \
 static gboolean                                                                             \
 interface_as_function ## _probe_needs_probe (GstPropertyProbe * probe,                      \
-			                     guint prop_id,                                 \
+                                             guint prop_id,                                 \
                                              const GParamSpec * pspec)                      \
 {                                                                                           \
   Type_Class *this_class = (Type_Class*) G_OBJECT_GET_CLASS (probe);                        \
   return gst_v4l2_probe_needs_probe (probe, prop_id, pspec,                                 \
-                                        &this_class->v4l2_class_devices);	            \
+                                     &this_class->v4l2_class_devices);                      \
 }                                                                                           \
                                                                                             \
 static GValueArray *                                                                        \
 interface_as_function ## _probe_get_values (GstPropertyProbe * probe,                       \
-			                    guint prop_id,                                  \
+                                            guint prop_id,                                  \
                                             const GParamSpec * pspec)                       \
 {                                                                                           \
   Type_Class *this_class = (Type_Class*) G_OBJECT_GET_CLASS (probe);                        \
   return gst_v4l2_probe_get_values (probe, prop_id, pspec,                                  \
-                                    &this_class->v4l2_class_devices);	                    \
+                                    &this_class->v4l2_class_devices);                       \
 }                                                                                           \
                                                                                             \
-static void								                    \
+static void                                                                                 \
 interface_as_function ## _property_probe_interface_init (GstPropertyProbeInterface * iface) \
 {                                                                                           \
   iface->get_properties = gst_v4l2_probe_get_properties;                                    \
   iface->probe_property = interface_as_function ## _probe_probe_property;                   \
   iface->needs_probe = interface_as_function ## _probe_needs_probe;                         \
-  iface->get_values = interface_as_function ## _probe_get_values;                                            \
+  iface->get_values = interface_as_function ## _probe_get_values;                           \
 }
 
 G_END_DECLS

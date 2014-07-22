@@ -44,8 +44,6 @@
 #include <config.h>
 #endif
 
-#undef HAVE_XVIDEO
-
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
@@ -57,9 +55,6 @@
 
 #include "gstv4l2colorbalance.h"
 #include "gstv4l2tuner.h"
-#ifdef HAVE_XVIDEO
-#include "gstv4l2xoverlay.h"
-#endif
 #include "gstv4l2vidorient.h"
 
 #include "gst/gst-i18n-plugin.h"
@@ -87,9 +82,6 @@ static guint gst_v4l2_signals[LAST_SIGNAL] = { 0 };
 
 GST_IMPLEMENT_V4L2_COLOR_BALANCE_METHODS (GstV4l2Src, gst_v4l2src);
 GST_IMPLEMENT_V4L2_TUNER_METHODS (GstV4l2Src, gst_v4l2src);
-#ifdef HAVE_XVIDEO
-GST_IMPLEMENT_V4L2_XOVERLAY_METHODS (GstV4l2Src, gst_v4l2src);
-#endif
 GST_IMPLEMENT_V4L2_VIDORIENT_METHODS (GstV4l2Src, gst_v4l2src);
 
 static void gst_v4l2src_uri_handler_init (gpointer g_iface,
@@ -99,11 +91,6 @@ static void gst_v4l2src_uri_handler_init (gpointer g_iface,
 G_DEFINE_TYPE_WITH_CODE (GstV4l2Src, gst_v4l2src, GST_TYPE_PUSH_SRC,
     G_IMPLEMENT_INTERFACE (GST_TYPE_URI_HANDLER, gst_v4l2src_uri_handler_init);
     G_IMPLEMENT_INTERFACE (GST_TYPE_TUNER, gst_v4l2src_tuner_interface_init);
-#ifdef HAVE_XVIDEO
-    /* FIXME: does GstXOverlay for v4l2src make sense in a GStreamer context? */
-    G_IMPLEMENT_INTERFACE (GST_TYPE_X_OVERLAY,
-        gst_v4l2src_xoverlay_interface_init);
-#endif
     G_IMPLEMENT_INTERFACE (GST_TYPE_COLOR_BALANCE,
         gst_v4l2src_color_balance_interface_init);
     G_IMPLEMENT_INTERFACE (GST_TYPE_VIDEO_ORIENTATION,
@@ -125,7 +112,7 @@ static GstCaps *gst_v4l2src_get_caps (GstBaseSrc * src, GstCaps * filter);
 static gboolean gst_v4l2src_query (GstBaseSrc * bsrc, GstQuery * query);
 static gboolean gst_v4l2src_decide_allocation (GstBaseSrc * src,
     GstQuery * query);
-static GstFlowReturn gst_v4l2src_fill (GstPushSrc * src, GstBuffer * out);
+static GstFlowReturn gst_v4l2src_create (GstPushSrc * src, GstBuffer ** out);
 static GstCaps *gst_v4l2src_fixate (GstBaseSrc * basesrc, GstCaps * caps);
 static gboolean gst_v4l2src_negotiate (GstBaseSrc * basesrc);
 
@@ -198,7 +185,7 @@ gst_v4l2src_class_init (GstV4l2SrcClass * klass)
   basesrc_class->decide_allocation =
       GST_DEBUG_FUNCPTR (gst_v4l2src_decide_allocation);
 
-  pushsrc_class->fill = GST_DEBUG_FUNCPTR (gst_v4l2src_fill);
+  pushsrc_class->create = GST_DEBUG_FUNCPTR (gst_v4l2src_create);
 
   klass->v4l2_class_devices = NULL;
 
@@ -273,13 +260,20 @@ gst_v4l2src_fixate (GstBaseSrc * basesrc, GstCaps * caps)
   for (i = 0; i < gst_caps_get_size (caps); ++i) {
     structure = gst_caps_get_structure (caps, i);
 
-    /* We are fixating to a resonable 320x200 resolution
+    /* We are fixating to a reasonable 320x200 resolution
        and the maximum framerate resolution for that size */
-    gst_structure_fixate_field_nearest_int (structure, "width", 320);
-    gst_structure_fixate_field_nearest_int (structure, "height", 200);
-    gst_structure_fixate_field_nearest_fraction (structure, "framerate",
-        G_MAXINT, 1);
-    gst_structure_fixate_field (structure, "format");
+    if (gst_structure_has_field (structure, "width"))
+      gst_structure_fixate_field_nearest_int (structure, "width", 320);
+
+    if (gst_structure_has_field (structure, "height"))
+      gst_structure_fixate_field_nearest_int (structure, "height", 200);
+
+    if (gst_structure_has_field (structure, "framerate"))
+      gst_structure_fixate_field_nearest_fraction (structure, "framerate",
+          G_MAXINT, 1);
+
+    if (gst_structure_has_field (structure, "format"))
+      gst_structure_fixate_field (structure, "format");
   }
 
   GST_DEBUG_OBJECT (basesrc, "fixated caps %" GST_PTR_FORMAT, caps);
@@ -464,94 +458,26 @@ gst_v4l2src_set_caps (GstBaseSrc * src, GstCaps * caps)
 static gboolean
 gst_v4l2src_decide_allocation (GstBaseSrc * bsrc, GstQuery * query)
 {
-  GstV4l2Src *src;
-  GstV4l2Object *obj;
-  GstBufferPool *pool;
-  guint size, min, max;
-  gboolean update;
+  GstV4l2Src *src = GST_V4L2SRC (bsrc);
+  gboolean ret = FALSE;
 
-  src = GST_V4L2SRC (bsrc);
-  obj = src->v4l2object;
+  if (gst_v4l2_object_decide_allocation (src->v4l2object, query))
+    ret = GST_BASE_SRC_CLASS (parent_class)->decide_allocation (bsrc, query);
 
-  if (gst_query_get_n_allocation_pools (query) > 0) {
-    gst_query_parse_nth_allocation_pool (query, 0, &pool, &size, &min, &max);
-    update = TRUE;
-  } else {
-    pool = NULL;
-    min = max = 0;
-    size = 0;
-    update = FALSE;
+  if (ret) {
+    if (!gst_buffer_pool_set_active (src->v4l2object->pool, TRUE))
+      goto activate_failed;
   }
 
-  GST_DEBUG_OBJECT (src, "allocation: size:%u min:%u max:%u pool:%"
-      GST_PTR_FORMAT, size, min, max, pool);
+  return ret;
 
-  if (min != 0) {
-    /* if there is a min-buffers suggestion, use it. We add 1 because we need 1
-     * buffer extra to capture while the other two buffers are downstream */
-    min += 1;
-  } else {
-    min = 2;
+activate_failed:
+  {
+    GST_ELEMENT_ERROR (src, RESOURCE, SETTINGS,
+        (_("Failed to allocate required memory.")),
+        ("Buffer pool activation failed"));
+    return FALSE;
   }
-
-  /* select a pool */
-  switch (obj->mode) {
-    case GST_V4L2_IO_RW:
-      if (pool == NULL) {
-        /* no downstream pool, use our own then */
-        GST_DEBUG_OBJECT (src,
-            "read/write mode: no downstream pool, using our own");
-        pool = GST_BUFFER_POOL_CAST (obj->pool);
-        size = obj->sizeimage;
-      } else {
-        /* in READ/WRITE mode, prefer a downstream pool because our own pool
-         * doesn't help much, we have to write to it as well */
-        GST_DEBUG_OBJECT (src, "read/write mode: using downstream pool");
-        /* use the bigest size, when we use our own pool we can't really do any
-         * other size than what the hardware gives us but for downstream pools
-         * we can try */
-        size = MAX (size, obj->sizeimage);
-      }
-      break;
-    case GST_V4L2_IO_MMAP:
-    case GST_V4L2_IO_USERPTR:
-    case GST_V4L2_IO_DMABUF:
-      /* in streaming mode, prefer our own pool */
-      pool = GST_BUFFER_POOL_CAST (obj->pool);
-      size = obj->sizeimage;
-      GST_DEBUG_OBJECT (src,
-          "streaming mode: using our own pool %" GST_PTR_FORMAT, pool);
-      break;
-    case GST_V4L2_IO_AUTO:
-    default:
-      GST_WARNING_OBJECT (src, "unhandled mode");
-      break;
-  }
-
-  if (pool) {
-    GstStructure *config;
-    GstCaps *caps;
-
-    config = gst_buffer_pool_get_config (pool);
-    gst_buffer_pool_config_get_params (config, &caps, NULL, NULL, NULL);
-    gst_buffer_pool_config_set_params (config, caps, size, min, max);
-
-    /* if downstream supports video metadata, add this to the pool config */
-    if (gst_query_find_allocation_meta (query, GST_VIDEO_META_API_TYPE, NULL)) {
-      GST_DEBUG_OBJECT (pool, "activate Video Meta");
-      gst_buffer_pool_config_add_option (config,
-          GST_BUFFER_POOL_OPTION_VIDEO_META);
-    }
-
-    gst_buffer_pool_set_config (pool, config);
-  }
-
-  if (update)
-    gst_query_set_nth_allocation_pool (query, 0, pool, size, min, max);
-  else
-    gst_query_add_allocation_pool (query, pool, size, min, max);
-
-  return GST_BASE_SRC_CLASS (parent_class)->decide_allocation (bsrc, query);
 }
 
 static gboolean
@@ -592,7 +518,7 @@ gst_v4l2src_query (GstBaseSrc * bsrc, GstQuery * query)
 
       /* max latency is total duration of the frame buffer */
       if (obj->pool != NULL)
-        num_buffers = GST_V4L2_BUFFER_POOL_CAST (obj->pool)->num_buffers;
+        num_buffers = GST_V4L2_BUFFER_POOL_CAST (obj->pool)->max_latency;
 
       if (num_buffers == 0)
         max_latency = -1;
@@ -699,7 +625,7 @@ gst_v4l2src_change_state (GstElement * element, GstStateChange transition)
 }
 
 static GstFlowReturn
-gst_v4l2src_fill (GstPushSrc * src, GstBuffer * buf)
+gst_v4l2src_create (GstPushSrc * src, GstBuffer ** buf)
 {
   GstV4l2Src *v4l2src = GST_V4L2SRC (src);
   GstV4l2Object *obj = v4l2src->v4l2object;
@@ -708,14 +634,19 @@ gst_v4l2src_fill (GstPushSrc * src, GstBuffer * buf)
   GstClockTime abs_time, base_time, timestamp, duration;
   GstClockTime delay;
 
+  ret = GST_BASE_SRC_CLASS (parent_class)->alloc (GST_BASE_SRC (src), 0,
+      obj->info.size, buf);
+
+  if (G_UNLIKELY (ret != GST_FLOW_OK))
+    goto alloc_failed;
+
   ret =
       gst_v4l2_buffer_pool_process (GST_V4L2_BUFFER_POOL_CAST (obj->pool), buf);
 
   if (G_UNLIKELY (ret != GST_FLOW_OK))
     goto error;
 
-
-  timestamp = GST_BUFFER_TIMESTAMP (buf);
+  timestamp = GST_BUFFER_TIMESTAMP (*buf);
   duration = obj->duration;
 
   /* timestamps, LOCK to get clock and base time. */
@@ -775,8 +706,8 @@ gst_v4l2src_fill (GstPushSrc * src, GstBuffer * buf)
   }
 
   /* set buffer metadata */
-  GST_BUFFER_OFFSET (buf) = v4l2src->offset++;
-  GST_BUFFER_OFFSET_END (buf) = v4l2src->offset;
+  GST_BUFFER_OFFSET (*buf) = v4l2src->offset++;
+  GST_BUFFER_OFFSET_END (*buf) = v4l2src->offset;
 
   if (G_LIKELY (abs_time != GST_CLOCK_TIME_NONE)) {
     /* the time now is the time of the clock minus the base time */
@@ -805,12 +736,19 @@ gst_v4l2src_fill (GstPushSrc * src, GstBuffer * buf)
   GST_INFO_OBJECT (src, "sync to %" GST_TIME_FORMAT " out ts %" GST_TIME_FORMAT,
       GST_TIME_ARGS (v4l2src->ctrl_time), GST_TIME_ARGS (timestamp));
 
-  GST_BUFFER_TIMESTAMP (buf) = timestamp;
-  GST_BUFFER_DURATION (buf) = duration;
+  GST_BUFFER_TIMESTAMP (*buf) = timestamp;
+  GST_BUFFER_DURATION (*buf) = duration;
 
   return ret;
 
   /* ERROR */
+alloc_failed:
+  {
+    if (ret != GST_FLOW_FLUSHING)
+      GST_ELEMENT_ERROR (src, RESOURCE, NO_SPACE_LEFT,
+          ("Failed to allocate a buffer"), (NULL));
+    return ret;
+  }
 error:
   {
     GST_DEBUG_OBJECT (src, "error processing buffer %d (%s)", ret,

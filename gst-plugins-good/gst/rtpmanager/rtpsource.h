@@ -136,6 +136,8 @@ struct _RTPSource {
   guint32       ssrc;
 
   guint16       generation;
+  GHashTable    *reported_in_sr_of;     /* set of SSRCs */
+
   guint         probation;
   guint         curr_probation;
   gboolean      validated;
@@ -264,9 +266,20 @@ void            rtp_source_add_conflicting_address (RTPSource * src,
                                                 GSocketAddress *address,
                                                 GstClockTime time);
 
+gboolean        find_conflicting_address       (GList * conflicting_address,
+                                                GSocketAddress * address,
+                                                GstClockTime time);
+
+GList *         add_conflicting_address        (GList * conflicting_addresses,
+                                                GSocketAddress * address,
+                                                GstClockTime time);
+GList *         timeout_conflicting_addresses  (GList * conflicting_addresses,
+                                                GstClockTime current_time);
+
+void            rtp_conflicting_address_free   (RTPConflictingAddress * addr);
+
 void            rtp_source_timeout             (RTPSource * src,
                                                 GstClockTime current_time,
-                                                GstClockTime collision_timeout,
                                                 GstClockTime feedback_retention_window);
 
 void            rtp_source_retain_rtcp_packet  (RTPSource * src,

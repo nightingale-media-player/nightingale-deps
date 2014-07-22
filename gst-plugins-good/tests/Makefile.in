@@ -86,7 +86,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-gcc-inline-assembly.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -459,7 +458,6 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
-XVIDEO_LIBS = @XVIDEO_LIBS@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@

@@ -171,12 +171,13 @@ gst_rtp_vp8_pay_get_property (GObject * object,
 }
 
 static gboolean
-gst_rtp_vp8_pay_parse_frame (GstRtpVP8Pay * self, GstBuffer * buffer)
+gst_rtp_vp8_pay_parse_frame (GstRtpVP8Pay * self, GstBuffer * buffer,
+    gsize buffer_size)
 {
-  GstBitReader *reader = NULL;
+  GstMapInfo map = GST_MAP_INFO_INIT;
+  GstBitReader reader;
   guint8 *data;
   gsize size;
-  GstMapInfo map;
   int i;
   gboolean keyframe;
   guint32 partition0_size;
@@ -187,7 +188,7 @@ gst_rtp_vp8_pay_parse_frame (GstRtpVP8Pay * self, GstBuffer * buffer)
   BOOL_DECODER bc;
   guint8 *pdata;
 
-  if (G_UNLIKELY (gst_buffer_get_size (buffer) < 3))
+  if (G_UNLIKELY (buffer_size < 3))
     goto error;
 
   if (!gst_buffer_map (buffer, &map, GST_MAP_READ) || !map.data)
@@ -195,7 +196,8 @@ gst_rtp_vp8_pay_parse_frame (GstRtpVP8Pay * self, GstBuffer * buffer)
 
   data = map.data;
   size = map.size;
-  reader = gst_bit_reader_new (data, size);
+
+  gst_bit_reader_init (&reader, data, size);
 
   self->is_keyframe = keyframe = ((data[0] & 0x1) == 0);
   version = (data[0] >> 1) & 0x7;
@@ -212,22 +214,22 @@ gst_rtp_vp8_pay_parse_frame (GstRtpVP8Pay * self, GstBuffer * buffer)
   offset = keyframe ? 10 : 3;
   partition0_size += offset;
 
-  if (!gst_bit_reader_skip (reader, 24))
+  if (!gst_bit_reader_skip (&reader, 24))
     goto error;
 
   if (keyframe) {
     /* check start tag: 0x9d 0x01 0x2a */
-    if (!gst_bit_reader_get_bits_uint8 (reader, &tmp8, 8) || tmp8 != 0x9d)
+    if (!gst_bit_reader_get_bits_uint8 (&reader, &tmp8, 8) || tmp8 != 0x9d)
       goto error;
 
-    if (!gst_bit_reader_get_bits_uint8 (reader, &tmp8, 8) || tmp8 != 0x01)
+    if (!gst_bit_reader_get_bits_uint8 (&reader, &tmp8, 8) || tmp8 != 0x01)
       goto error;
 
-    if (!gst_bit_reader_get_bits_uint8 (reader, &tmp8, 8) || tmp8 != 0x2a)
+    if (!gst_bit_reader_get_bits_uint8 (&reader, &tmp8, 8) || tmp8 != 0x2a)
       goto error;
 
     /* Skip horizontal size code (16 bits) vertical size code (16 bits) */
-    if (!gst_bit_reader_skip (reader, 32))
+    if (!gst_bit_reader_skip (&reader, 32))
       goto error;
   }
 
@@ -332,14 +334,12 @@ gst_rtp_vp8_pay_parse_frame (GstRtpVP8Pay * self, GstBuffer * buffer)
 
   self->partition_offset[i + 1] = size;
 
-  gst_bit_reader_free (reader);
   gst_buffer_unmap (buffer, &map);
   return TRUE;
 
 error:
   GST_DEBUG ("Failed to parse frame");
-  if (reader) {
-    gst_bit_reader_free (reader);
+  if (map.memory != NULL) {
     gst_buffer_unmap (buffer, &map);
   }
   return FALSE;
@@ -373,16 +373,7 @@ gst_rtp_vp8_calc_header_len (GstRtpVP8Pay * self)
   }
 }
 
-static gsize
-gst_rtp_vp8_calc_payload_len (GstRtpVP8Pay * self)
-{
-  GstRTPBasePayload *payload = GST_RTP_BASE_PAYLOAD (self);
-
-  return gst_rtp_buffer_calc_payload_len (GST_RTP_BASE_PAYLOAD_MTU (payload) -
-      gst_rtp_vp8_calc_header_len (self), 0, 0);
-}
-
-/* When growing the vp8 header keep gst_rtp_vp8_calc_payload_len in sync */
+/* When growing the vp8 header keep max payload len calculation in sync */
 static GstBuffer *
 gst_rtp_vp8_create_header_buffer (GstRtpVP8Pay * self, guint8 partid,
     gboolean start, gboolean mark, GstBuffer * in)
@@ -423,8 +414,8 @@ gst_rtp_vp8_create_header_buffer (GstRtpVP8Pay * self, guint8 partid,
 
 
 static guint
-gst_rtp_vp8_payload_next (GstRtpVP8Pay * self,
-    GstBufferList * list, guint offset, GstBuffer * buffer)
+gst_rtp_vp8_payload_next (GstRtpVP8Pay * self, GstBufferList * list,
+    guint offset, GstBuffer * buffer, gsize buffer_size, gsize max_payload_len)
 {
   guint partition;
   GstBuffer *header;
@@ -434,8 +425,8 @@ gst_rtp_vp8_payload_next (GstRtpVP8Pay * self,
   gsize remaining;
   gsize available;
 
-  remaining = gst_buffer_get_size (buffer) - offset;
-  available = gst_rtp_vp8_calc_payload_len (self);
+  remaining = buffer_size - offset;
+  available = max_payload_len;
   if (available > remaining)
     available = remaining;
 
@@ -462,17 +453,28 @@ gst_rtp_vp8_pay_handle_buffer (GstRTPBasePayload * payload, GstBuffer * buffer)
   GstRtpVP8Pay *self = GST_RTP_VP8_PAY (payload);
   GstFlowReturn ret;
   GstBufferList *list;
-  guint offset;
+  gsize size, max_paylen;
+  guint offset, mtu, vp8_hdr_len;
 
-  if (G_UNLIKELY (!gst_rtp_vp8_pay_parse_frame (self, buffer))) {
-    g_message ("Failed to parse frame");
+  size = gst_buffer_get_size (buffer);
+
+  if (G_UNLIKELY (!gst_rtp_vp8_pay_parse_frame (self, buffer, size))) {
+    GST_ELEMENT_ERROR (self, STREAM, ENCODE, (NULL),
+        ("Failed to parse VP8 frame"));
     return GST_FLOW_ERROR;
   }
 
-  list = gst_buffer_list_new ();
+  mtu = GST_RTP_BASE_PAYLOAD_MTU (payload);
+  vp8_hdr_len = gst_rtp_vp8_calc_header_len (self);
+  max_paylen = gst_rtp_buffer_calc_payload_len (mtu - vp8_hdr_len, 0, 0);
 
-  for (offset = 0; offset < gst_buffer_get_size (buffer);)
-    offset += gst_rtp_vp8_payload_next (self, list, offset, buffer);
+  list = gst_buffer_list_new_sized ((size / max_paylen) + 1);
+
+  offset = 0;
+  while (offset < size) {
+    offset +=
+        gst_rtp_vp8_payload_next (self, list, offset, buffer, size, max_paylen);
+  }
 
   ret = gst_rtp_base_payload_push_list (payload, list);
 

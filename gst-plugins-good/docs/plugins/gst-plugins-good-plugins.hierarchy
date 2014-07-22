@@ -14,6 +14,9 @@ GObject
           GstAudioClock
       GstControlBinding
       GstControlSource
+      GstDeviceProvider
+        GstPulseDeviceProvider
+        GstV4l2DeviceProvider
       GstElement
         Gst3GPPMux
         GstALawDec
@@ -40,6 +43,7 @@ GObject
           GstDcaParse
           GstFlacParse
           GstMpegAudioParse
+          GstRtpStreamDepay
           GstSbcParse
           GstWavpackParse
         GstBaseSink
@@ -137,10 +141,11 @@ GObject
             GstWarpTV
         GstBin
           GstAspectRatioCrop
-          GstAutoAudioSink
-          GstAutoAudioSrc
-          GstAutoVideoSink
-          GstAutoVideoSrc
+          GstAutoDetect
+            GstAutoAudioSink
+            GstAutoAudioSrc
+            GstAutoVideoSink
+            GstAutoVideoSrc
           GstPipeline
             GstQTMoovRecover
           GstPushFileSrc
@@ -258,8 +263,11 @@ GObject
         GstRndBufferSize
         GstRtpJitterBuffer
         GstRtpPtDemux
+        GstRtpRtxReceive
+        GstRtpRtxSend
         GstRtpSession
         GstRtpSsrcDemux
+        GstRtpStreamPay
         GstSMPTE
         GstShapeWipe
         GstTagDemux
@@ -289,12 +297,16 @@ GObject
       GstPadTemplate
       GstPlugin
       GstPluginFeature
+        GstDeviceProviderFactory
         GstElementFactory
         GstTypeFindFactory
       GstRegistry
       GstTask
       GstTaskPool
   GSocket
+  GTlsDatabase
+  GUdevClient
+  GUdevDevice
   GdkPixbuf
   GstColorBalanceChannel
   GstTunerChannel
@@ -304,10 +316,10 @@ GObject
 GInterface
   GIcon
   GInitable
+  GLoadableIcon
   GTypePlugin
   GstChildProxy
   GstColorBalance
-  GstNavigation
   GstPreset
   GstStreamVolume
   GstTagSetter
@@ -316,4 +328,3 @@ GInterface
   GstTuner
   GstURIHandler
   GstVideoOrientation
-  GstVideoOverlay

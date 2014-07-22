@@ -2,36 +2,29 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>souphttpsrc</title>
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: souphttpsrc</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-smptealpha.html" title="smptealpha">
 <link rel="next" href="gst-plugins-good-plugins-spectrum.html" title="spectrum">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-smptealpha.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-spectrum.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-souphttpsrc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-souphttpsrc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-souphttpsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-souphttpsrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-souphttpsrc.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-souphttpsrc.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-souphttpsrc.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-souphttpsrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-souphttpsrc.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-smptealpha.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-spectrum.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-good-plugins-souphttpsrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -39,23 +32,175 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-souphttpsrc.top_of_page"></a>souphttpsrc</span></h2>
 <p>souphttpsrc — Receive data as a client over the network via HTTP using SOUP</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-good-plugins-souphttpsrc.synopsis"></a><h2>Synopsis</h2>
-<a name="GstSoupHTTPSrc"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc-struct" title="struct GstSoupHTTPSrc">GstSoupHTTPSrc</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-souphttpsrc.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--automatic-redirect" title="The “automatic-redirect” property">automatic-redirect</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GStrv"><span class="type">GStrv</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--cookies" title="The “cookies” property">cookies</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-genre" title="The “iradio-genre” property">iradio-genre</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-mode" title="The “iradio-mode” property">iradio-mode</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-name" title="The “iradio-name” property">iradio-name</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-title" title="The “iradio-title” property">iradio-title</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-url" title="The “iradio-url” property">iradio-url</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--location" title="The “location” property">location</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--proxy" title="The “proxy” property">proxy</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--user-agent" title="The “user-agent” property">user-agent</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--is-live" title="The “is-live” property">is-live</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--proxy-id" title="The “proxy-id” property">proxy-id</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--proxy-pw" title="The “proxy-pw” property">proxy-pw</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--user-id" title="The “user-id” property">user-id</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--user-pw" title="The “user-pw” property">user-pw</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--extra-headers" title="The “extra-headers” property">extra-headers</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--timeout" title="The “timeout” property">timeout</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--compress" title="The “compress” property">compress</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="/usr/share/gtk-doc/html/libsoup-2.4/SoupLogger.html#SoupLoggerLogLevel"><span class="type">SoupLoggerLogLevel</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--http-log-level" title="The “http-log-level” property">http-log-level</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--keep-alive" title="The “keep-alive” property">keep-alive</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--retries" title="The “retries” property">retries</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--ssl-ca-file" title="The “ssl-ca-file” property">ssl-ca-file</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--ssl-strict" title="The “ssl-strict” property">ssl-strict</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--ssl-use-system-ca-file" title="The “ssl-use-system-ca-file” property">ssl-use-system-ca-file</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstSoupHTTPSrc"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-souphttpsrc.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc-struct" title="struct GstSoupHTTPSrc">GstSoupHTTPSrc</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-souphttpsrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSrc.html">GstBaseSrc</a>
-                           +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstPushSrc.html">GstPushSrc</a>
-                                 +----GstSoupHTTPSrc
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSrc.html">GstBaseSrc</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstPushSrc.html">GstPushSrc</a>
+                        <span class="lineart">╰──</span> GstSoupHTTPSrc
 </pre>
 </div>
 <div class="refsect1">
@@ -65,33 +210,11 @@ GstSoupHTTPSrc implements
  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstUriHandler.html#GstURIHandler">GstURIHandler</a>.</p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-souphttpsrc.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--automatic-redirect" title='The "automatic-redirect" property'>automatic-redirect</a>"       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--cookies" title='The "cookies" property'>cookies</a>"                  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GStrv"><span class="type">GStrv</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-genre" title='The "iradio-genre" property'>iradio-genre</a>"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-mode" title='The "iradio-mode" property'>iradio-mode</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-name" title='The "iradio-name" property'>iradio-name</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-title" title='The "iradio-title" property'>iradio-title</a>"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--iradio-url" title='The "iradio-url" property'>iradio-url</a>"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--location" title='The "location" property'>location</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--proxy" title='The "proxy" property'>proxy</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--user-agent" title='The "user-agent" property'>user-agent</a>"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--is-live" title='The "is-live" property'>is-live</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--proxy-id" title='The "proxy-id" property'>proxy-id</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--proxy-pw" title='The "proxy-pw" property'>proxy-pw</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--user-id" title='The "user-id" property'>user-id</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--user-pw" title='The "user-pw" property'>user-pw</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--extra-headers" title='The "extra-headers" property'>extra-headers</a>"            <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>*         : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-souphttpsrc.html#GstSoupHTTPSrc--timeout" title='The "timeout" property'>timeout</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-</pre>
-</div>
-<div class="refsect1">
 <a name="gst-plugins-good-plugins-souphttpsrc.description"></a><h2>Description</h2>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.138.7.2.1"></a><h3>Element Information</h3>
+<a name="id-1.2.141.8.2.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -117,7 +240,7 @@ GstSoupHTTPSrc implements
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.138.7.2.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.141.8.2.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -148,7 +271,10 @@ GstSoupHTTPSrc implements
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-souphttpsrc.details"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-souphttpsrc.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-souphttpsrc.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstSoupHTTPSrc-struct"></a><h3>struct GstSoupHTTPSrc</h3>
 <pre class="programlisting">struct GstSoupHTTPSrc;</pre>
@@ -159,126 +285,200 @@ GstSoupHTTPSrc implements
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-souphttpsrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--automatic-redirect"></a><h3>The <code class="literal">"automatic-redirect"</code> property</h3>
-<pre class="programlisting">  "automatic-redirect"       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstSoupHTTPSrc--automatic-redirect"></a><h3>The <code class="literal">“automatic-redirect”</code> property</h3>
+<pre class="programlisting">  “automatic-redirect”       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Automatically follow HTTP redirects (HTTP Status Code 3xx).</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--cookies"></a><h3>The <code class="literal">"cookies"</code> property</h3>
-<pre class="programlisting">  "cookies"                  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GStrv"><span class="type">GStrv</span></a>                 : Read / Write</pre>
+<a name="GstSoupHTTPSrc--cookies"></a><h3>The <code class="literal">“cookies”</code> property</h3>
+<pre class="programlisting">  “cookies”                  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Boxed-Types.html#GStrv"><span class="type">GStrv</span></a></pre>
 <p>HTTP request cookies.</p>
+<p>Flags: Read / Write</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--iradio-genre"></a><h3>The <code class="literal">"iradio-genre"</code> property</h3>
-<pre class="programlisting">  "iradio-genre"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
+<a name="GstSoupHTTPSrc--iradio-genre"></a><h3>The <code class="literal">“iradio-genre”</code> property</h3>
+<pre class="programlisting">  “iradio-genre”             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>Genre of the stream.</p>
+<p>Flags: Read</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--iradio-mode"></a><h3>The <code class="literal">"iradio-mode"</code> property</h3>
-<pre class="programlisting">  "iradio-mode"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstSoupHTTPSrc--iradio-mode"></a><h3>The <code class="literal">“iradio-mode”</code> property</h3>
+<pre class="programlisting">  “iradio-mode”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Enable internet radio mode (ask server to send shoutcast/icecast metadata interleaved with the actual stream data).</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--iradio-name"></a><h3>The <code class="literal">"iradio-name"</code> property</h3>
-<pre class="programlisting">  "iradio-name"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
+<a name="GstSoupHTTPSrc--iradio-name"></a><h3>The <code class="literal">“iradio-name”</code> property</h3>
+<pre class="programlisting">  “iradio-name”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>Name of the stream.</p>
+<p>Flags: Read</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--iradio-title"></a><h3>The <code class="literal">"iradio-title"</code> property</h3>
-<pre class="programlisting">  "iradio-title"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
+<a name="GstSoupHTTPSrc--iradio-title"></a><h3>The <code class="literal">“iradio-title”</code> property</h3>
+<pre class="programlisting">  “iradio-title”             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>Name of currently playing song.</p>
+<p>Flags: Read</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--iradio-url"></a><h3>The <code class="literal">"iradio-url"</code> property</h3>
-<pre class="programlisting">  "iradio-url"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
+<a name="GstSoupHTTPSrc--iradio-url"></a><h3>The <code class="literal">“iradio-url”</code> property</h3>
+<pre class="programlisting">  “iradio-url”               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>Homepage URL for radio stream.</p>
+<p>Flags: Read</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--location"></a><h3>The <code class="literal">"location"</code> property</h3>
-<pre class="programlisting">  "location"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<a name="GstSoupHTTPSrc--location"></a><h3>The <code class="literal">“location”</code> property</h3>
+<pre class="programlisting">  “location”                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>Location to read from.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: ""</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--proxy"></a><h3>The <code class="literal">"proxy"</code> property</h3>
-<pre class="programlisting">  "proxy"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<a name="GstSoupHTTPSrc--proxy"></a><h3>The <code class="literal">“proxy”</code> property</h3>
+<pre class="programlisting">  “proxy”                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>HTTP proxy server URI.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: ""</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--user-agent"></a><h3>The <code class="literal">"user-agent"</code> property</h3>
-<pre class="programlisting">  "user-agent"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<a name="GstSoupHTTPSrc--user-agent"></a><h3>The <code class="literal">“user-agent”</code> property</h3>
+<pre class="programlisting">  “user-agent”               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>Value of the User-Agent HTTP request header field.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: "GStreamer souphttpsrc "</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--is-live"></a><h3>The <code class="literal">"is-live"</code> property</h3>
-<pre class="programlisting">  "is-live"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstSoupHTTPSrc--is-live"></a><h3>The <code class="literal">“is-live”</code> property</h3>
+<pre class="programlisting">  “is-live”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Act like a live source.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--proxy-id"></a><h3>The <code class="literal">"proxy-id"</code> property</h3>
-<pre class="programlisting">  "proxy-id"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<a name="GstSoupHTTPSrc--proxy-id"></a><h3>The <code class="literal">“proxy-id”</code> property</h3>
+<pre class="programlisting">  “proxy-id”                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>HTTP proxy URI user id for authentication.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: ""</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--proxy-pw"></a><h3>The <code class="literal">"proxy-pw"</code> property</h3>
-<pre class="programlisting">  "proxy-pw"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<a name="GstSoupHTTPSrc--proxy-pw"></a><h3>The <code class="literal">“proxy-pw”</code> property</h3>
+<pre class="programlisting">  “proxy-pw”                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>HTTP proxy URI user password for authentication.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: ""</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--user-id"></a><h3>The <code class="literal">"user-id"</code> property</h3>
-<pre class="programlisting">  "user-id"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<a name="GstSoupHTTPSrc--user-id"></a><h3>The <code class="literal">“user-id”</code> property</h3>
+<pre class="programlisting">  “user-id”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>HTTP location URI user id for authentication.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: ""</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--user-pw"></a><h3>The <code class="literal">"user-pw"</code> property</h3>
-<pre class="programlisting">  "user-pw"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<a name="GstSoupHTTPSrc--user-pw"></a><h3>The <code class="literal">“user-pw”</code> property</h3>
+<pre class="programlisting">  “user-pw”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>HTTP location URI user password for authentication.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: ""</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--extra-headers"></a><h3>The <code class="literal">"extra-headers"</code> property</h3>
-<pre class="programlisting">  "extra-headers"            <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>*         : Read / Write</pre>
+<a name="GstSoupHTTPSrc--extra-headers"></a><h3>The <code class="literal">“extra-headers”</code> property</h3>
+<pre class="programlisting">  “extra-headers”            <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> *</pre>
 <p>Extra headers to append to the HTTP request.</p>
+<p>Flags: Read / Write</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSoupHTTPSrc--timeout"></a><h3>The <code class="literal">"timeout"</code> property</h3>
-<pre class="programlisting">  "timeout"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstSoupHTTPSrc--timeout"></a><h3>The <code class="literal">“timeout”</code> property</h3>
+<pre class="programlisting">  “timeout”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>Value in seconds to timeout a blocking I/O (0 = No timeout).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 3600</p>
-<p>Default value: 0</p>
+<p>Default value: 15</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSoupHTTPSrc--compress"></a><h3>The <code class="literal">“compress”</code> property</h3>
+<pre class="programlisting">  “compress”                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Allow compressed content encodings.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSoupHTTPSrc--http-log-level"></a><h3>The <code class="literal">“http-log-level”</code> property</h3>
+<pre class="programlisting">  “http-log-level”           <a href="/usr/share/gtk-doc/html/libsoup-2.4/SoupLogger.html#SoupLoggerLogLevel"><span class="type">SoupLoggerLogLevel</span></a></pre>
+<p>Set log level for soup's HTTP session log.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: SOUP_LOGGER_LOG_HEADERS</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSoupHTTPSrc--keep-alive"></a><h3>The <code class="literal">“keep-alive”</code> property</h3>
+<pre class="programlisting">  “keep-alive”               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Use HTTP persistent connections.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSoupHTTPSrc--retries"></a><h3>The <code class="literal">“retries”</code> property</h3>
+<pre class="programlisting">  “retries”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Maximum number of retries until giving up (-1=infinite).</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: 3</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSoupHTTPSrc--ssl-ca-file"></a><h3>The <code class="literal">“ssl-ca-file”</code> property</h3>
+<pre class="programlisting">  “ssl-ca-file”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Location of a SSL anchor CA file to use.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: NULL</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSoupHTTPSrc--ssl-strict"></a><h3>The <code class="literal">“ssl-strict”</code> property</h3>
+<pre class="programlisting">  “ssl-strict”               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Strict SSL certificate checking.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstSoupHTTPSrc--ssl-use-system-ca-file"></a><h3>The <code class="literal">“ssl-use-system-ca-file”</code> property</h3>
+<pre class="programlisting">  “ssl-use-system-ca-file”   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Use system CA file.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: TRUE</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

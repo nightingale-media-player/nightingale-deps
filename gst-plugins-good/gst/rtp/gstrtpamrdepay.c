@@ -31,8 +31,6 @@
  * ]| This example pipeline will depayload and decode an RTP AMR stream. Refer to
  * the rtpamrpay example to create the RTP stream.
  * </refsect2>
- *
- * Last reviewed on 2013-04-25 (1.1.0)
  */
 
 /*
@@ -78,7 +76,8 @@ static GstStaticPadTemplate gst_rtp_amr_depay_sink_template =
         "media = (string) \"audio\", "
         "clock-rate = (int) 8000, "
         "encoding-name = (string) \"AMR\", "
-        "encoding-params = (string) \"1\", "
+        /* This is the default, so the peer doesn't have to specify it
+         * "encoding-params = (string) \"1\", " */
         /* NOTE that all values must be strings in orde to be able to do SDP <->
          * GstCaps mapping. */
         "octet-align = (string) \"1\";"
@@ -97,7 +96,8 @@ static GstStaticPadTemplate gst_rtp_amr_depay_sink_template =
         "media = (string) \"audio\", "
         "clock-rate = (int) 16000, "
         "encoding-name = (string) \"AMR-WB\", "
-        "encoding-params = (string) \"1\", "
+        /* This is the default, so the peer doesn't have to specify it
+         * "encoding-params = (string) \"1\", " */
         /* NOTE that all values must be strings in orde to be able to do SDP <->
          * GstCaps mapping. */
         "octet-align = (string) \"1\";"

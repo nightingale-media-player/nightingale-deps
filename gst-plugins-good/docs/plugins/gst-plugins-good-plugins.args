@@ -989,6 +989,16 @@
 </ARG>
 
 <ARG>
+<NAME>GstRTSPSrc::tls-database</NAME>
+<TYPE>GTlsDatabase*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>TLS database</NICK>
+<BLURB>TLS database with anchor certificate authorities used to validate the server certificate.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstRTSPSrc::tls-validation-flags</NAME>
 <TYPE>GTlsCertificateFlags</TYPE>
 <RANGE></RANGE>
@@ -1274,7 +1284,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>ip</NICK>
-<BLURB>ip.</BLURB>
+<BLURB>IP address or hostname.</BLURB>
 <DEFAULT>"127.0.0.1"</DEFAULT>
 </ARG>
 
@@ -1344,7 +1354,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>url</NICK>
-<BLURB>url.</BLURB>
+<BLURB>the stream's homepage URL.</BLURB>
 <DEFAULT>""</DEFAULT>
 </ARG>
 
@@ -2442,7 +2452,7 @@
 <NAME>GstVideoFlip::method</NAME>
 <TYPE>GstVideoFlipMethod</TYPE>
 <RANGE></RANGE>
-<FLAGS>rw</FLAGS>
+<FLAGS>rwx</FLAGS>
 <NICK>method</NICK>
 <BLURB>method.</BLURB>
 <DEFAULT>Identity (no rotation)</DEFAULT>
@@ -3224,7 +3234,7 @@
 <RANGE>>= G_MAXULONG</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Maximum Consecutive Decoding Errors</NICK>
-<BLURB>Error out after receiving N consecutive decoding errors (-1 = never fail, 0 = automatic, 1 = fail on first error).</BLURB>
+<BLURB>(Deprecated) Error out after receiving N consecutive decoding errors (-1 = never fail, 0 = automatic, 1 = fail on first error).</BLURB>
 <DEFAULT>0</DEFAULT>
 </ARG>
 
@@ -4175,7 +4185,77 @@
 <FLAGS>rw</FLAGS>
 <NICK>timeout</NICK>
 <BLURB>Value in seconds to timeout a blocking I/O (0 = No timeout).</BLURB>
-<DEFAULT>0</DEFAULT>
+<DEFAULT>15</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::compress</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Compress</NICK>
+<BLURB>Allow compressed content encodings.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::http-log-level</NAME>
+<TYPE>SoupLoggerLogLevel</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>HTTP log level</NICK>
+<BLURB>Set log level for soup's HTTP session log.</BLURB>
+<DEFAULT>SOUP_LOGGER_LOG_HEADERS</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::keep-alive</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>keep-alive</NICK>
+<BLURB>Use HTTP persistent connections.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::retries</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= G_MAXULONG</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Retries</NICK>
+<BLURB>Maximum number of retries until giving up (-1=infinite).</BLURB>
+<DEFAULT>3</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::ssl-ca-file</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>SSL CA File</NICK>
+<BLURB>Location of a SSL anchor CA file to use.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::ssl-strict</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>SSL Strict</NICK>
+<BLURB>Strict SSL certificate checking.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSoupHTTPSrc::ssl-use-system-ca-file</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Use System CA File</NICK>
+<BLURB>Use system CA file.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
 </ARG>
 
 <ARG>
@@ -21345,7 +21425,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>RTX Delay</NICK>
 <BLURB>Extra time in ms to wait before sending retransmission event (-1 automatic).</BLURB>
-<DEFAULT>20</DEFAULT>
+<DEFAULT>-1</DEFAULT>
 </ARG>
 
 <ARG>
@@ -21365,7 +21445,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>RTX Retry Period</NICK>
 <BLURB>Try to get a retransmission for this many ms (-1 automatic).</BLURB>
-<DEFAULT>160</DEFAULT>
+<DEFAULT>-1</DEFAULT>
 </ARG>
 
 <ARG>
@@ -21375,7 +21455,17 @@
 <FLAGS>rw</FLAGS>
 <NICK>RTX Retry Timeout</NICK>
 <BLURB>Retry sending a transmission event after this timeout in ms (-1 automatic).</BLURB>
-<DEFAULT>40</DEFAULT>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpJitterBuffer::stats</NAME>
+<TYPE>GstStructure*</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Statistics</NICK>
+<BLURB>Various statistics.</BLURB>
+<DEFAULT></DEFAULT>
 </ARG>
 
 <ARG>
@@ -21496,6 +21586,136 @@
 <NICK>Number of probations</NICK>
 <BLURB>Consecutive packet sequence numbers to accept the source.</BLURB>
 <DEFAULT>2</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpSession::stats</NAME>
+<TYPE>GstStructure*</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Statistics</NICK>
+<BLURB>Various statistics.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpRtxSend::rtx-payload-type</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>RTX Payload Type</NICK>
+<BLURB>Payload type of the retransmission stream (fmtp in SDP).</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpRtxSend::max-size-time</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Max Size Time</NICK>
+<BLURB>Amount of ms to queue (0 = unlimited).</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpRtxSend::max-size-packets</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 32767</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Max Size Packets</NICK>
+<BLURB>Amount of packets to queue (0 = unlimited).</BLURB>
+<DEFAULT>100</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpRtxSend::num-rtx-requests</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Num RTX Requests</NICK>
+<BLURB>Number of retransmission events received.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpRtxSend::num-rtx-packets</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Num RTX Packets</NICK>
+<BLURB> Number of retransmission packets sent.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpRtxSend::payload-type-map</NAME>
+<TYPE>GstStructure*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Payload Type Map</NICK>
+<BLURB>Map of original payload types to their retransmission payload types.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpRtxSend::ssrc-map</NAME>
+<TYPE>GstStructure*</TYPE>
+<RANGE></RANGE>
+<FLAGS>w</FLAGS>
+<NICK>SSRC Map</NICK>
+<BLURB>Map of SSRCs to their retransmission SSRCs for SSRC-multiplexed mode (default = random).</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpRtxReceive::rtx-payload-types</NAME>
+<TYPE>string</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Colon separated list of payload format type</NICK>
+<BLURB>Set through SDP (fmtp), it helps to detect restransmission streams.</BLURB>
+<DEFAULT>""</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpRtxReceive::num-rtx-requests</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Num RTX Requests</NICK>
+<BLURB>Number of retransmission events received.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpRtxReceive::num-rtx-packets</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Num RTX Packets</NICK>
+<BLURB> Number of retransmission packets received.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpRtxReceive::num-rtx-assoc-packets</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>r</FLAGS>
+<NICK>Num RTX Associated Packets</NICK>
+<BLURB>Number of retransmission packets correctly associated with retransmission requests.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpRtxReceive::payload-type-map</NAME>
+<TYPE>GstStructure*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Payload Type Map</NICK>
+<BLURB>Map of original payload types to their retransmission payload types.</BLURB>
+<DEFAULT></DEFAULT>
 </ARG>
 
 <ARG>
@@ -23009,6 +23229,16 @@
 </ARG>
 
 <ARG>
+<NAME>GstSoupHttpClientSink::http-log-level</NAME>
+<TYPE>SoupLoggerLogLevel</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>HTTP log level</NICK>
+<BLURB>Set log level for soup's HTTP session log.</BLURB>
+<DEFAULT>SOUP_LOGGER_LOG_NONE</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstWavParse::ignore-length</NAME>
 <TYPE>gboolean</TYPE>
 <RANGE></RANGE>
@@ -24496,5 +24726,15 @@
 <NICK>Max Threads</NICK>
 <BLURB>Maximum number of decoding threads.</BLURB>
 <DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstRtpVRawPay::chunks-per-frame</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Chunks per Frame</NICK>
+<BLURB>Split and send out each frame in multiple chunks to reduce overhead.</BLURB>
+<DEFAULT>10</DEFAULT>
 </ARG>
 

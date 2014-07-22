@@ -2,34 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>interleave</title>
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: interleave</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-imagefreeze.html" title="imagefreeze">
 <link rel="next" href="gst-plugins-good-plugins-ismlmux.html" title="ismlmux">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-imagefreeze.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-ismlmux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-interleave.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-interleave.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-interleave.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-interleave.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-interleave.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-interleave.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-interleave.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-imagefreeze.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-ismlmux.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-good-plugins-interleave"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -37,52 +31,65 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-interleave.top_of_page"></a>interleave</span></h2>
 <p>interleave — Folds many mono channels into one interleaved audio stream</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-good-plugins-interleave.synopsis"></a><h2>Synopsis</h2>
-<a name="GstInterleave"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-interleave.html#GstInterleave-struct" title="struct GstInterleave">GstInterleave</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-interleave.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Value-arrays.html#GValueArray"><span class="type">GValueArray</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-interleave.html#GstInterleave--channel-positions" title="The “channel-positions” property">channel-positions</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-interleave.html#GstInterleave--channel-positions-from-input" title="The “channel-positions-from-input” property">channel-positions-from-input</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstInterleave"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-interleave.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-interleave.html#GstInterleave-struct" title="struct GstInterleave">GstInterleave</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-interleave.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----GstInterleave
-</pre>
-</div>
-<div class="refsect1">
-<a name="gst-plugins-good-plugins-interleave.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-interleave.html#GstInterleave--channel-positions" title='The "channel-positions" property'>channel-positions</a>"        <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Value-arrays.html#GValueArray"><span class="type">GValueArray</span></a>*          : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-interleave.html#GstInterleave--channel-positions-from-input" title='The "channel-positions-from-input" property'>channel-positions-from-input</a>" <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstInterleave
 </pre>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-interleave.description"></a><h2>Description</h2>
-<p>
-Merges separate mono inputs into one interleaved stream.
-</p>
-<p>
-This element handles all raw floating point sample formats and all signed integer sample formats. The first
+<p>Merges separate mono inputs into one interleaved stream.</p>
+<p>This element handles all raw floating point sample formats and all signed integer sample formats. The first
 caps on one of the sinkpads will set the caps of the output so usually an audioconvert element should be
-placed before every sinkpad of interleave.
-</p>
-<p>
-It's possible to change the number of channels while the pipeline is running by adding or removing
+placed before every sinkpad of interleave.</p>
+<p>It's possible to change the number of channels while the pipeline is running by adding or removing
 some of the request pads but this will change the caps of the output buffers. Changing the input
-caps is _not_ supported yet.
-</p>
-<p>
-The channel number of every sinkpad in the out can be retrieved from the "channel" property of the pad.
-</p>
-<p>
-</p>
+caps is _not_ supported yet.</p>
+<p>The channel number of every sinkpad in the out can be retrieved from the "channel" property of the pad.</p>
 <div class="refsect2">
-<a name="id-1.2.68.6.6.1"></a><h3>Example launch line</h3>
+<a name="id-1.2.68.7.6"></a><h3>Example launch line</h3>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -108,12 +115,10 @@ channels exchanged.
 </div>
  Interleaves two Mono WAV files to a single Stereo WAV file.
 </div>
-<p>
-</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.68.6.7.1"></a><h3>Element Information</h3>
+<a name="id-1.2.68.7.7.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -139,7 +144,7 @@ channels exchanged.
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.68.6.7.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.68.7.7.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -194,7 +199,10 @@ channels exchanged.
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-interleave.details"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-interleave.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-interleave.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstInterleave-struct"></a><h3>struct GstInterleave</h3>
 <pre class="programlisting">struct GstInterleave;</pre>
@@ -205,41 +213,37 @@ channels exchanged.
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-interleave.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstInterleave--channel-positions"></a><h3>The <code class="literal">"channel-positions"</code> property</h3>
-<pre class="programlisting">  "channel-positions"        <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Value-arrays.html#GValueArray"><span class="type">GValueArray</span></a>*          : Read / Write</pre>
-<p>
-Channel positions: This property controls the channel positions
+<a name="GstInterleave--channel-positions"></a><h3>The <code class="literal">“channel-positions”</code> property</h3>
+<pre class="programlisting">  “channel-positions”        <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Value-arrays.html#GValueArray"><span class="type">GValueArray</span></a> *</pre>
+<p>Channel positions: This property controls the channel positions
 that are used on the src caps. The number of elements should be
 the same as the number of sink pads and the array should contain
 a valid list of channel positions. The n-th element of the array
-is the position of the n-th sink pad.
-</p>
-<p>
-These channel positions will only be used if they're valid and the
+is the position of the n-th sink pad.</p>
+<p>These channel positions will only be used if they're valid and the
 number of elements is the same as the number of channels. If this
-is not given a NONE layout will be used.
-</p>
+is not given a NONE layout will be used.</p>
+<p>Flags: Read / Write</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstInterleave--channel-positions-from-input"></a><h3>The <code class="literal">"channel-positions-from-input"</code> property</h3>
-<pre class="programlisting">  "channel-positions-from-input" <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
-<p>
-Channel positions from input: If this property is set to <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> the channel
+<a name="GstInterleave--channel-positions-from-input"></a><h3>The <code class="literal">“channel-positions-from-input”</code> property</h3>
+<pre class="programlisting">  “channel-positions-from-input” <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Channel positions from input: If this property is set to <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> the channel
 positions will be taken from the input caps if valid channel positions for
 the output can be constructed from them. If this is set to <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> setting the
-channel-positions property overwrites this property again.
-</p>
+channel-positions property overwrites this property again.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-interleave.see-also"></a><h2>See Also</h2>
-deinterleave
+<p>deinterleave</p>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

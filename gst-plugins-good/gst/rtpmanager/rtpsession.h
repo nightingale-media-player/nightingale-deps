@@ -147,12 +147,23 @@ typedef GstClockTime (*RTPSessionRequestTime) (RTPSession *sess,
  * @sess: an #RTPSession
  * @seqnum: the missing seqnum
  * @blp: other missing seqnums
+ * @ssrc: SSRC of requested stream
  * @user_data: user data specified when registering
  *
  * Notifies of NACKed frames.
  */
 typedef void (*RTPSessionNotifyNACK) (RTPSession *sess,
-    guint16 seqnum, guint16 blp, gpointer user_data);
+    guint16 seqnum, guint16 blp, guint32 ssrc, gpointer user_data);
+
+/**
+ * RTPSessionReconfigure:
+ * @sess: an #RTPSession
+ * @user_data: user data specified when registering
+ *
+ * This callback will be called when @sess wants to reconfigure the
+ * negotiated parameters.
+ */
+typedef void (*RTPSessionReconfigure) (RTPSession *sess, gpointer user_data);
 
 /**
  * RTPSessionCallbacks:
@@ -164,6 +175,7 @@ typedef void (*RTPSessionNotifyNACK) (RTPSession *sess,
  * @RTPSessionRequestKeyUnit: callback for requesting a new key unit
  * @RTPSessionRequestTime: callback for requesting the current time
  * @RTPSessionNotifyNACK: callback for notifying NACK
+ * @RTPSessionReconfigure: callback for requesting reconfiguration
  *
  * These callbacks can be installed on the session manager to get notification
  * when RTP and RTCP packets are ready for further processing. These callbacks
@@ -179,6 +191,7 @@ typedef struct {
   RTPSessionRequestKeyUnit request_key_unit;
   RTPSessionRequestTime request_time;
   RTPSessionNotifyNACK  notify_nack;
+  RTPSessionReconfigure reconfigure;
 } RTPSessionCallbacks;
 
 /**
@@ -191,6 +204,7 @@ typedef struct {
  * @callbacks: callbacks
  * @user_data: user data passed in callbacks
  * @stats: session statistics
+ * @conflicting_addresses: GList of conflicting addresses
  *
  * The RTP session manager object
  */
@@ -243,8 +257,10 @@ struct _RTPSession {
   gpointer              request_key_unit_user_data;
   gpointer              request_time_user_data;
   gpointer              notify_nack_user_data;
+  gpointer              reconfigure_user_data;
 
   RTPSessionStats stats;
+  RTPSessionStats bye_stats;
 
   gboolean      favor_new;
   GstClockTime  rtcp_feedback_retention_window;
@@ -252,6 +268,10 @@ struct _RTPSession {
 
   GstClockTime last_keyframe_request;
   gboolean     last_keyframe_all_headers;
+
+  gboolean      is_doing_ptp;
+
+  GList         *conflicting_addresses;
 };
 
 /**

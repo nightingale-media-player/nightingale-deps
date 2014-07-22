@@ -349,7 +349,7 @@ gst_ebml_write_element_size (guint8 ** data_inout, guint64 size)
 
   if (size != GST_EBML_SIZE_UNKNOWN) {
     /* how many bytes? - use mask-1 because an all-1 bitset is not allowed */
-    while ((size >> ((bytes - 1) * 8)) >= (mask - 1) && bytes <= 8) {
+    while (bytes <= 8 && (size >> ((bytes - 1) * 8)) >= (mask - 1)) {
       mask >>= 1;
       bytes++;
     }
@@ -427,7 +427,10 @@ gst_ebml_write_element_push (GstEbmlWrite * ebml, GstBuffer * buf,
       gst_buffer_map (buf, &map, GST_MAP_READ);
       buf_data = map.data;
     }
-    if (!gst_byte_writer_put_data (ebml->streamheader, buf_data, data_size))
+    if (!buf_data)
+      GST_WARNING ("Failed to map buffer");
+    else if (!gst_byte_writer_put_data (ebml->streamheader, buf_data,
+            data_size))
       GST_WARNING ("Error writing data to streamheader");
   }
   if (ebml->cache) {
@@ -435,7 +438,9 @@ gst_ebml_write_element_push (GstEbmlWrite * ebml, GstBuffer * buf,
       gst_buffer_map (buf, &map, GST_MAP_READ);
       buf_data = map.data;
     }
-    if (!gst_byte_writer_put_data (ebml->cache, buf_data, data_size))
+    if (!buf_data)
+      GST_WARNING ("Failed to map buffer");
+    else if (!gst_byte_writer_put_data (ebml->cache, buf_data, data_size))
       GST_WARNING ("Error writing data to cache");
     if (map.data)
       gst_buffer_unmap (buf, &map);
@@ -525,7 +530,7 @@ gst_ebml_write_get_uint_size (guint64 num)
   guint size = 1;
 
   /* get size */
-  while (num >= (G_GINT64_CONSTANT (1) << (size * 8)) && size < 8) {
+  while (size < 8 && num >= (G_GINT64_CONSTANT (1) << (size * 8))) {
     size++;
   }
 
@@ -614,9 +619,9 @@ gst_ebml_write_sint (GstEbmlWrite * ebml, guint32 id, gint64 num)
   if (num >= 0) {
     unum = num;
   } else {
-    unum = 0x80 << (size - 1);
+    unum = ((guint64) 0x80) << ((size - 1) * 8);
     unum += num;
-    unum |= 0x80 << (size - 1);
+    unum |= ((guint64) 0x80) << ((size - 1) * 8);
   }
 
   /* write */

@@ -1780,10 +1780,17 @@ fill_rgb32 (GstVideoBoxFill fill_type, guint b_alpha,
 
   b_alpha = CLAMP (b_alpha, 0, 255);
 
-  empty_pixel = GUINT32_FROM_LE ((b_alpha << (p[0] * 8)) |
-      (rgb_colors_R[fill_type] << (p[1] * 8)) |
-      (rgb_colors_G[fill_type] << (p[2] * 8)) |
-      (rgb_colors_B[fill_type] << (p[3] * 8)));
+  if (GST_VIDEO_FRAME_N_COMPONENTS (frame) == 4) {
+    empty_pixel = GUINT32_FROM_LE ((b_alpha << (p[0] * 8)) |
+        (rgb_colors_R[fill_type] << (p[1] * 8)) |
+        (rgb_colors_G[fill_type] << (p[2] * 8)) |
+        (rgb_colors_B[fill_type] << (p[3] * 8)));
+  } else {
+    empty_pixel = GUINT32_FROM_LE (
+        (rgb_colors_R[fill_type] << (p[1] * 8)) |
+        (rgb_colors_G[fill_type] << (p[2] * 8)) |
+        (rgb_colors_B[fill_type] << (p[3] * 8)));
+  }
 
   if (stride == width * 4) {
     video_box_orc_splat_u32 ((guint32 *) dest, empty_pixel, width * height);
@@ -2501,13 +2508,11 @@ gst_video_box_class_init (GstVideoBoxClass * klass)
           "Alpha value of the border", 0.0, 1.0, DEFAULT_BORDER_ALPHA,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | GST_PARAM_CONTROLLABLE));
   /**
-   * GstVideoBox:autocrop
+   * GstVideoBox:autocrop:
    *
    * If set to %TRUE videobox will automatically crop/pad the input
    * video to be centered in the output.
-   *
-   * Since: 0.10.16
-   **/
+   */
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_AUTOCROP,
       g_param_spec_boolean ("autocrop", "Auto crop",
           "Auto crop", FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
@@ -2864,22 +2869,27 @@ gst_video_box_transform_caps (GstBaseTransform * trans,
       for (j = 0; j < gst_value_list_get_size (fval); j++) {
         lval = gst_value_list_get_value (fval, j);
         if ((str = g_value_get_string (lval))) {
-          if (strstr (str, "RGB") || strstr (str, "BGR") ||
-              strcmp (str, "AYUV") == 0)
-            seen_rgb = TRUE;
-          else if (strcmp (str, "I420") == 0 || strcmp (str, "YV12") == 0 ||
-              strcmp (str, "AYUV") == 0)
+          if (strcmp (str, "AYUV") == 0) {
             seen_yuv = TRUE;
+            seen_rgb = TRUE;
+            break;
+          } else if (strstr (str, "RGB") || strstr (str, "BGR")) {
+            seen_rgb = TRUE;
+          } else if (strcmp (str, "I420") == 0 || strcmp (str, "YV12") == 0) {
+            seen_yuv = TRUE;
+          }
         }
       }
     } else if (fval && G_VALUE_HOLDS_STRING (fval)) {
       if ((str = g_value_get_string (fval))) {
-        if (strstr (str, "RGB") || strstr (str, "BGR") ||
-            strcmp (str, "AYUV") == 0)
-          seen_rgb = TRUE;
-        else if (strcmp (str, "I420") == 0 || strcmp (str, "YV12") == 0 ||
-            strcmp (str, "AYUV") == 0)
+        if (strcmp (str, "AYUV") == 0) {
           seen_yuv = TRUE;
+          seen_rgb = TRUE;
+        } else if (strstr (str, "RGB") || strstr (str, "BGR")) {
+          seen_rgb = TRUE;
+        } else if (strcmp (str, "I420") == 0 || strcmp (str, "YV12") == 0) {
+          seen_yuv = TRUE;
+        }
       }
     }
 

@@ -106,8 +106,6 @@
  * packets are sent in the PAUSED state). Applications should manually set and
  * keep (see gst_element_set_locked_state()) the RTCP udpsink to the PLAYING state.
  * </refsect2>
- *
- * Last reviewed on 2007-05-28 (0.10.5)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -218,6 +216,7 @@ enum
   PROP_USE_PIPELINE_CLOCK,
   PROP_RTCP_MIN_INTERVAL,
   PROP_PROBATION,
+  PROP_STATS,
   PROP_LAST
 };
 
@@ -251,6 +250,8 @@ struct _GstRtpSessionPrivate
   GstClockTime send_latency;
 
   gboolean use_pipeline_clock;
+
+  guint rtx_count;
 };
 
 /* callbacks to handle actions from the session manager */
@@ -270,7 +271,8 @@ static void gst_rtp_session_request_key_unit (RTPSession * sess,
 static GstClockTime gst_rtp_session_request_time (RTPSession * session,
     gpointer user_data);
 static void gst_rtp_session_notify_nack (RTPSession * sess,
-    guint16 seqnum, guint16 blp, gpointer user_data);
+    guint16 seqnum, guint16 blp, guint32 ssrc, gpointer user_data);
+static void gst_rtp_session_reconfigure (RTPSession * sess, gpointer user_data);
 
 static RTPSessionCallbacks callbacks = {
   gst_rtp_session_process_rtp,
@@ -281,7 +283,8 @@ static RTPSessionCallbacks callbacks = {
   gst_rtp_session_reconsider,
   gst_rtp_session_request_key_unit,
   gst_rtp_session_request_time,
-  gst_rtp_session_notify_nack
+  gst_rtp_session_notify_nack,
+  gst_rtp_session_reconfigure
 };
 
 /* GObject vmethods */
@@ -305,6 +308,8 @@ static gboolean gst_rtp_session_setcaps_send_rtp (GstPad * pad,
 
 static void gst_rtp_session_clear_pt_map (GstRtpSession * rtpsession);
 
+static GstStructure *gst_rtp_session_create_stats (GstRtpSession * rtpsession);
+
 static guint gst_rtp_session_signals[LAST_SIGNAL] = { 0 };
 
 static void
@@ -317,19 +322,38 @@ on_new_ssrc (RTPSession * session, RTPSource * src, GstRtpSession * sess)
 static void
 on_ssrc_collision (RTPSession * session, RTPSource * src, GstRtpSession * sess)
 {
-  GstPad *recv_rtp_sink;
+  GstPad *send_rtp_sink;
 
   g_signal_emit (sess, gst_rtp_session_signals[SIGNAL_ON_SSRC_COLLISION], 0,
       src->ssrc);
 
   GST_RTP_SESSION_LOCK (sess);
-  if ((recv_rtp_sink = sess->recv_rtp_sink))
-    gst_object_ref (recv_rtp_sink);
+  if ((send_rtp_sink = sess->send_rtp_sink))
+    gst_object_ref (send_rtp_sink);
   GST_RTP_SESSION_UNLOCK (sess);
 
-  if (recv_rtp_sink) {
-    gst_pad_push_event (recv_rtp_sink, gst_event_new_reconfigure ());
-    gst_object_unref (recv_rtp_sink);
+  if (send_rtp_sink) {
+    GstStructure *structure;
+    GstEvent *event;
+    RTPSource *internal_src;
+    guint32 suggested_ssrc;
+
+    structure = gst_structure_new ("GstRTPCollision", "ssrc", G_TYPE_UINT,
+        (guint) src->ssrc, NULL);
+
+    /* if there is no source using the suggested ssrc, most probably because
+     * this ssrc has just collided, suggest upstream to use it */
+    suggested_ssrc = rtp_session_suggest_ssrc (session);
+    internal_src = rtp_session_get_source_by_ssrc (session, suggested_ssrc);
+    if (!internal_src)
+      gst_structure_set (structure, "suggested-ssrc", G_TYPE_UINT,
+          (guint) suggested_ssrc, NULL);
+    else
+      g_object_unref (internal_src);
+
+    event = gst_event_new_custom (GST_EVENT_CUSTOM_UPSTREAM, structure);
+    gst_pad_push_event (send_rtp_sink, event);
+    gst_object_unref (send_rtp_sink);
   }
 }
 
@@ -602,6 +626,26 @@ gst_rtp_session_class_init (GstRtpSessionClass * klass)
           0, G_MAXUINT, DEFAULT_PROBATION,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  /**
+   * GstRtpSession::stats:
+   *
+   * Various session statistics. This property returns a GstStructure
+   * with name application/x-rtp-session-stats with the following fields:
+   *
+   *  "rtx-count"       G_TYPE_UINT   The number of retransmission events
+   *      received from downstream (in receiver mode)
+   *  "rtx-drop-count"  G_TYPE_UINT   The number of retransmission events
+   *      dropped (due to bandwidth constraints)
+   *  "sent-nack-count" G_TYPE_UINT   Number of NACKs sent
+   *  "recv-nack-count" G_TYPE_UINT   Number of NACKs received
+   *
+   * Since: 1.4
+   */
+  g_object_class_install_property (gobject_class, PROP_STATS,
+      g_param_spec_boxed ("stats", "Statistics",
+          "Various statistics", GST_TYPE_STRUCTURE,
+          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
   gstelement_class->change_state =
       GST_DEBUG_FUNCPTR (gst_rtp_session_change_state);
   gstelement_class->request_new_pad =
@@ -675,6 +719,8 @@ gst_rtp_session_init (GstRtpSession * rtpsession)
   gst_segment_init (&rtpsession->send_rtp_seg, GST_FORMAT_UNDEFINED);
 
   rtpsession->priv->thread_stopped = TRUE;
+
+  rtpsession->priv->rtx_count = 0;
 }
 
 static void
@@ -785,10 +831,25 @@ gst_rtp_session_get_property (GObject * object, guint prop_id,
     case PROP_PROBATION:
       g_object_get_property (G_OBJECT (priv->session), "probation", value);
       break;
+    case PROP_STATS:
+      g_value_take_boxed (value, gst_rtp_session_create_stats (rtpsession));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
+}
+
+static GstStructure *
+gst_rtp_session_create_stats (GstRtpSession * rtpsession)
+{
+  GstStructure *s;
+
+  g_object_get (rtpsession->priv->session, "stats", &s, NULL);
+  gst_structure_set (s, "rtx-count", G_TYPE_UINT, rtpsession->priv->rtx_count,
+      NULL);
+
+  return s;
 }
 
 static void
@@ -1435,6 +1496,27 @@ gst_rtp_session_event_recv_rtp_sink (GstPad * pad, GstObject * parent,
       ret = gst_pad_push_event (rtpsession->recv_rtp_src, event);
       break;
     }
+    case GST_EVENT_EOS:
+    {
+      GstPad *rtcp_src;
+
+      ret =
+          gst_pad_push_event (rtpsession->recv_rtp_src, gst_event_ref (event));
+
+      GST_RTP_SESSION_LOCK (rtpsession);
+      if ((rtcp_src = rtpsession->send_rtcp_src))
+        gst_object_ref (rtcp_src);
+      GST_RTP_SESSION_UNLOCK (rtpsession);
+
+      if (rtcp_src) {
+        ret = gst_pad_push_event (rtcp_src, event);
+        gst_object_unref (rtcp_src);
+      } else {
+        gst_event_unref (event);
+        ret = TRUE;
+      }
+      break;
+    }
     default:
       ret = gst_pad_push_event (rtpsession->recv_rtp_src, event);
       break;
@@ -1506,7 +1588,11 @@ gst_rtp_session_event_recv_rtp_src (GstPad * pad, GstObject * parent,
           forward = FALSE;
       } else if (gst_structure_has_name (s, "GstRTPRetransmissionRequest")) {
         GstClockTime running_time;
-        guint seqnum, delay, deadline, max_delay;
+        guint seqnum, delay, deadline, max_delay, avg_rtt;
+
+        GST_RTP_SESSION_LOCK (rtpsession);
+        rtpsession->priv->rtx_count++;
+        GST_RTP_SESSION_UNLOCK (rtpsession);
 
         if (!gst_structure_get_clock_time (s, "running-time", &running_time))
           running_time = -1;
@@ -1518,14 +1604,16 @@ gst_rtp_session_event_recv_rtp_src (GstPad * pad, GstObject * parent,
           delay = 0;
         if (!gst_structure_get_uint (s, "deadline", &deadline))
           deadline = 100;
+        if (!gst_structure_get_uint (s, "avg-rtt", &avg_rtt))
+          avg_rtt = 40;
 
         /* remaining time to receive the packet */
         max_delay = deadline;
         if (max_delay > delay)
           max_delay -= delay;
         /* estimated RTT */
-        if (max_delay > 40)
-          max_delay -= 40;
+        if (max_delay > avg_rtt)
+          max_delay -= avg_rtt;
         else
           max_delay = 0;
 
@@ -2032,6 +2120,7 @@ create_recv_rtp_sink (GstRtpSession * rtpsession)
       gst_rtp_session_event_recv_rtp_sink);
   gst_pad_set_iterate_internal_links_function (rtpsession->recv_rtp_sink,
       gst_rtp_session_iterate_internal_links);
+  GST_PAD_SET_PROXY_ALLOCATION (rtpsession->recv_rtp_sink);
   gst_pad_set_active (rtpsession->recv_rtp_sink, TRUE);
   gst_element_add_pad (GST_ELEMENT_CAST (rtpsession),
       rtpsession->recv_rtp_sink);
@@ -2146,6 +2235,8 @@ create_send_rtp_sink (GstRtpSession * rtpsession)
       gst_rtp_session_event_send_rtp_sink);
   gst_pad_set_iterate_internal_links_function (rtpsession->send_rtp_sink,
       gst_rtp_session_iterate_internal_links);
+  GST_PAD_SET_PROXY_CAPS (rtpsession->send_rtp_sink);
+  GST_PAD_SET_PROXY_ALLOCATION (rtpsession->send_rtp_sink);
   gst_pad_set_active (rtpsession->send_rtp_sink, TRUE);
   gst_element_add_pad (GST_ELEMENT_CAST (rtpsession),
       rtpsession->send_rtp_sink);
@@ -2157,6 +2248,7 @@ create_send_rtp_sink (GstRtpSession * rtpsession)
       gst_rtp_session_iterate_internal_links);
   gst_pad_set_event_function (rtpsession->send_rtp_src,
       gst_rtp_session_event_send_rtp_src);
+  GST_PAD_SET_PROXY_CAPS (rtpsession->send_rtp_src);
   gst_pad_set_active (rtpsession->send_rtp_src, TRUE);
   gst_element_add_pad (GST_ELEMENT_CAST (rtpsession), rtpsession->send_rtp_src);
 
@@ -2352,7 +2444,7 @@ gst_rtp_session_request_time (RTPSession * session, gpointer user_data)
 
 static void
 gst_rtp_session_notify_nack (RTPSession * sess, guint16 seqnum,
-    guint16 blp, gpointer user_data)
+    guint16 blp, guint32 ssrc, gpointer user_data)
 {
   GstRtpSession *rtpsession = GST_RTP_SESSION (user_data);
   GstEvent *event;
@@ -2367,7 +2459,8 @@ gst_rtp_session_notify_nack (RTPSession * sess, guint16 seqnum,
     while (TRUE) {
       event = gst_event_new_custom (GST_EVENT_CUSTOM_UPSTREAM,
           gst_structure_new ("GstRTPRetransmissionRequest",
-              "seqnum", G_TYPE_UINT, (guint) seqnum, NULL));
+              "seqnum", G_TYPE_UINT, (guint) seqnum,
+              "ssrc", G_TYPE_UINT, (guint) ssrc, NULL));
       gst_pad_push_event (send_rtp_sink, event);
 
       if (blp == 0)
@@ -2380,6 +2473,23 @@ gst_rtp_session_notify_nack (RTPSession * sess, guint16 seqnum,
       }
       blp >>= 1;
     }
+    gst_object_unref (send_rtp_sink);
+  }
+}
+
+static void
+gst_rtp_session_reconfigure (RTPSession * sess, gpointer user_data)
+{
+  GstRtpSession *rtpsession = GST_RTP_SESSION (user_data);
+  GstPad *send_rtp_sink;
+
+  GST_RTP_SESSION_LOCK (rtpsession);
+  if ((send_rtp_sink = rtpsession->send_rtp_sink))
+    gst_object_ref (send_rtp_sink);
+  GST_RTP_SESSION_UNLOCK (rtpsession);
+
+  if (send_rtp_sink) {
+    gst_pad_push_event (send_rtp_sink, gst_event_new_reconfigure ());
     gst_object_unref (send_rtp_sink);
   }
 }

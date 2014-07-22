@@ -26,8 +26,8 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch-1.0 -v filesrc location=/path/to/audio ! decodebin2 ! queue ! flvmux name=m ! filesink location=file.flv   filesrc location=/path/to/video ! decodebin2 ! queue ! m.
- * ]| This pipeline muxes an audio and video file into a single FLV file.
+ * gst-launch-1.0 -v flvmux name=mux ! filesink location=test.flv  audiotestsrc samplesperbuffer=44100 num-buffers=10 ! faac ! mux.  videotestsrc num-buffers=250 ! video/x-raw,framerate=25/1 ! x264enc ! mux.
+ * ]| This pipeline encodes a test audio and video stream and muxes both into an FLV file.
  * </refsect2>
  */
 
@@ -81,7 +81,7 @@ static GstStaticPadTemplate audiosink_templ = GST_STATIC_PAD_TEMPLATE ("audio",
         "audio/x-raw, format = (string) { U8, S16LE}, layout = (string) interleaved, channels = (int) { 1, 2 }, rate = (int) { 5512, 11025, 22050, 44100 }; "
         "audio/x-alaw, channels = (int) { 1, 2 }, rate = (int) { 5512, 11025, 22050, 44100 }; "
         "audio/x-mulaw, channels = (int) { 1, 2 }, rate = (int) { 5512, 11025, 22050, 44100 }; "
-        "audio/x-speex, channels = (int) { 1, 2 }, rate = (int) { 5512, 11025, 22050, 44100 };")
+        "audio/x-speex, channels = (int) 1, rate = (int) 16000;")
     );
 
 #define gst_flv_mux_parent_class parent_class
@@ -174,9 +174,7 @@ gst_flv_mux_class_init (GstFlvMuxClass * klass)
    *
    * If True, the output will be streaming friendly. (ie without indexes and
    * duration)
-   *
-   * Since: 0.10.24
-   **/
+   */
   g_object_class_install_property (gobject_class, PROP_STREAMABLE,
       g_param_spec_boolean ("streamable", "streamable",
           "If set to true, the output should be as if it is to be streamed "
@@ -466,7 +464,8 @@ gst_flv_mux_audio_pad_setcaps (GstPad * pad, GstCaps * caps)
       else if (rate == 8000 && (cpad->audio_codec == 5
               || cpad->audio_codec == 14))
         cpad->rate = 0;
-      else if (rate == 16000 && cpad->audio_codec == 4)
+      else if (rate == 16000 && (cpad->audio_codec == 4
+              || cpad->audio_codec == 11))
         cpad->rate = 0;
       else
         ret = FALSE;
@@ -478,7 +477,7 @@ gst_flv_mux_audio_pad_setcaps (GstPad * pad, GstCaps * caps)
 
     if (gst_structure_get_int (s, "channels", &channels)) {
       if (cpad->audio_codec == 4 || cpad->audio_codec == 5
-          || cpad->audio_codec == 6)
+          || cpad->audio_codec == 6 || cpad->audio_codec == 11)
         cpad->channels = 0;
       else if (cpad->audio_codec == 10)
         cpad->channels = 1;

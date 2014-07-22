@@ -92,7 +92,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-gcc-inline-assembly.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -129,7 +128,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 @HAVE_GTK_TRUE@am__EXEEXT_1 = gdkpixbufsink-test$(EXEEXT)
 @USE_OSS4_TRUE@am__EXEEXT_2 = test-oss4$(EXEEXT)
-@USE_GST_V4L2_TRUE@am__EXEEXT_3 = v4l2src-test$(EXEEXT)
+am__EXEEXT_3 = v4l2src-test$(EXEEXT)
 @USE_X_TRUE@am__EXEEXT_4 = ximagesrc-test$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 am_equalizer_test_OBJECTS = equalizer_test-equalizer-test.$(OBJEXT)
@@ -161,11 +160,9 @@ test_oss4_OBJECTS = $(am_test_oss4_OBJECTS)
 test_oss4_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_oss4_CFLAGS) \
 	$(CFLAGS) $(test_oss4_LDFLAGS) $(LDFLAGS) -o $@
-am__v4l2src_test_SOURCES_DIST = v4l2src-test.c
-@USE_GST_V4L2_TRUE@am_v4l2src_test_OBJECTS =  \
-@USE_GST_V4L2_TRUE@	v4l2src_test-v4l2src-test.$(OBJEXT)
+am_v4l2src_test_OBJECTS = v4l2src_test-v4l2src-test.$(OBJEXT)
 v4l2src_test_OBJECTS = $(am_v4l2src_test_OBJECTS)
-@USE_GST_V4L2_TRUE@v4l2src_test_DEPENDENCIES = $(am__DEPENDENCIES_1)
+v4l2src_test_DEPENDENCIES = $(am__DEPENDENCIES_1)
 v4l2src_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(v4l2src_test_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -239,7 +236,7 @@ SOURCES = $(equalizer_test_SOURCES) $(gdkpixbufsink_test_SOURCES) \
 	$(videocrop2_test_SOURCES) $(ximagesrc_test_SOURCES)
 DIST_SOURCES = $(equalizer_test_SOURCES) \
 	$(am__gdkpixbufsink_test_SOURCES_DIST) \
-	$(am__test_oss4_SOURCES_DIST) $(am__v4l2src_test_SOURCES_DIST) \
+	$(am__test_oss4_SOURCES_DIST) $(v4l2src_test_SOURCES) \
 	$(videobox_test_SOURCES) $(videocrop_test_SOURCES) \
 	$(videocrop2_test_SOURCES) $(am__ximagesrc_test_SOURCES_DIST)
 am__can_run_installinfo = \
@@ -525,7 +522,6 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
-XVIDEO_LIBS = @XVIDEO_LIBS@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -599,12 +595,11 @@ top_srcdir = @top_srcdir@
 @HAVE_GTK_TRUE@gdkpixbufsink_test_SOURCES = gdkpixbufsink-test.c
 @HAVE_GTK_TRUE@gdkpixbufsink_test_CFLAGS = $(GST_CFLAGS) $(GTK_CFLAGS)
 @HAVE_GTK_TRUE@gdkpixbufsink_test_LDADD = $(GST_LIBS) $(GTK_LIBS)
-@USE_GST_V4L2_FALSE@V4L2_TESTS = 
-@USE_GST_V4L2_TRUE@V4L2_TESTS = v4l2src-test
-@USE_GST_V4L2_TRUE@v4l2src_test_SOURCES = v4l2src-test.c
-@USE_GST_V4L2_TRUE@v4l2src_test_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
-@USE_GST_V4L2_TRUE@v4l2src_test_LDADD = $(GST_PLUGINS_BASE_LIBS) \
-@USE_GST_V4L2_TRUE@		     -lgstvideo-$(GST_API_VERSION)
+V4L2_TESTS = v4l2src-test
+v4l2src_test_SOURCES = v4l2src-test.c
+v4l2src_test_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS)
+v4l2src_test_LDADD = $(GST_PLUGINS_BASE_LIBS) \
+		     -lgstvideo-$(GST_API_VERSION)
 
 @USE_OSS4_FALSE@OSS4_TESTS = 
 @USE_OSS4_TRUE@OSS4_TESTS = test-oss4

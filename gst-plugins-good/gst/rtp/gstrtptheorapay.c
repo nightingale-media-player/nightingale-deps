@@ -507,6 +507,8 @@ gst_rtp_theora_pay_finish_headers (GstRTPBasePayload * basepayload)
   configuration = g_base64_encode (config, configlen);
 
   /* store for later re-sending */
+  if (rtptheorapay->config_data)
+    g_free (rtptheorapay->config_data);
   rtptheorapay->config_size = configlen - 4 - 3 - 2;
   rtptheorapay->config_data = g_malloc (rtptheorapay->config_size);
   rtptheorapay->config_extra_len = extralen;
@@ -769,8 +771,14 @@ gst_rtp_theora_pay_handle_buffer (GstRTPBasePayload * basepayload,
     ret = GST_FLOW_OK;
     goto done;
   } else if (rtptheorapay->headers) {
-    if (!gst_rtp_theora_pay_finish_headers (basepayload))
-      goto header_error;
+    if (rtptheorapay->need_headers) {
+      if (!gst_rtp_theora_pay_finish_headers (basepayload))
+        goto header_error;
+    } else {
+      g_list_free_full (rtptheorapay->headers,
+          (GDestroyNotify) gst_buffer_unref);
+      rtptheorapay->headers = NULL;
+    }
   }
 
   /* there is a config request, see if we need to insert it */

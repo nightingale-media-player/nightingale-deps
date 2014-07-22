@@ -58,8 +58,6 @@
  * gst-launch-1.0 filesrc location=sine.ogg ! oggdemux ! vorbisdec ! audioconvert ! audioresample ! osxaudiosink
  * ]| Play an Ogg/Vorbis file.
  * </refsect2>
- *
- * Last reviewed on 2006-03-01 (0.10.4)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -394,10 +392,6 @@ done:
 static GstBuffer *
 gst_osx_audio_sink_sink_payload (GstAudioBaseSink * sink, GstBuffer * buf)
 {
-  GstOsxAudioSink *osxsink;
-
-  osxsink = GST_OSX_AUDIO_SINK (sink);
-
   if (RINGBUFFER_IS_SPDIF (sink->ringbuffer->spec.type)) {
     gint framesize = gst_audio_iec61937_frame_size (&sink->ringbuffer->spec);
     GstBuffer *out;

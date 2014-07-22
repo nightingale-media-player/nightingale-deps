@@ -2,38 +2,30 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>rtspsrc</title>
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: rtspsrc</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-rtpsbcpay.html" title="rtpsbcpay">
 <link rel="next" href="gst-plugins-good-plugins-rtpbin.html" title="rtpbin">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-rtpsbcpay.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-rtpbin.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-rtspsrc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-rtspsrc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-rtspsrc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-rtspsrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-rtspsrc.properties" class="shortcut">Properties</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-rtspsrc.signals" class="shortcut">Signals</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtspsrc.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtspsrc.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtspsrc.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtspsrc.properties" class="shortcut">Properties</a></span><span id="nav_signals"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtspsrc.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-rtpsbcpay.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-rtpbin.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-good-plugins-rtspsrc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -41,22 +33,239 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-rtspsrc.top_of_page"></a>rtspsrc</span></h2>
 <p>rtspsrc — Receive data over the network via RTSP (RFC 2326)</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-good-plugins-rtspsrc.synopsis"></a><h2>Synopsis</h2>
-<a name="GstRTSPSrc"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc-struct" title="struct GstRTSPSrc">GstRTSPSrc</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtspsrc.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--debug" title="The “debug” property">debug</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--location" title="The “location” property">location</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstrtsptransport.html#GstRTSPLowerTrans"><span class="type">GstRTSPLowerTrans</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--protocols" title="The “protocols” property">protocols</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--retry" title="The “retry” property">retry</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--timeout" title="The “timeout” property">timeout</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--latency" title="The “latency” property">latency</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--tcp-timeout" title="The “tcp-timeout” property">tcp-timeout</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--connection-speed" title="The “connection-speed” property">connection-speed</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">GstRTSPNatMethod</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--nat-method" title="The “nat-method” property">nat-method</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--do-rtcp" title="The “do-rtcp” property">do-rtcp</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--proxy" title="The “proxy” property">proxy</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--rtp-blocksize" title="The “rtp-blocksize” property">rtp-blocksize</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--user-id" title="The “user-id” property">user-id</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--user-pw" title="The “user-pw” property">user-pw</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">GstRTSPSrcBufferMode</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--buffer-mode" title="The “buffer-mode” property">buffer-mode</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--port-range" title="The “port-range” property">port-range</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--udp-buffer-size" title="The “udp-buffer-size” property">udp-buffer-size</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--short-header" title="The “short-header” property">short-header</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--do-rtsp-keep-alive" title="The “do-rtsp-keep-alive” property">do-rtsp-keep-alive</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--drop-on-latency" title="The “drop-on-latency” property">drop-on-latency</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--probation" title="The “probation” property">probation</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--udp-reconnect" title="The “udp-reconnect” property">udp-reconnect</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--proxy-id" title="The “proxy-id” property">proxy-id</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--proxy-pw" title="The “proxy-pw” property">proxy-pw</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--multicast-iface" title="The “multicast-iface” property">multicast-iface</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--ntp-sync" title="The “ntp-sync” property">ntp-sync</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--use-pipeline-clock" title="The “use-pipeline-clock” property">use-pipeline-clock</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--sdes" title="The “sdes” property">sdes</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/gio/unstable/GTlsDatabase.html"><span class="type">GTlsDatabase</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--tls-database" title="The “tls-database” property">tls-database</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/gio/unstable/gio-TLS-Overview.html#GTlsCertificateFlags"><span class="type">GTlsCertificateFlags</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--tls-validation-flags" title="The “tls-validation-flags” property">tls-validation-flags</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtspsrc.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc-handle-request" title="The “handle-request” signal">handle-request</a></td>
+<td class="signal_flags"> </td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc-on-sdp" title="The “on-sdp” signal">on-sdp</a></td>
+<td class="signal_flags"> </td>
+</tr>
+<tr>
+<td class="signal_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc-select-stream" title="The “select-stream” signal">select-stream</a></td>
+<td class="signal_flags">Run First</td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc-new-manager" title="The “new-manager” signal">new-manager</a></td>
+<td class="signal_flags">Run First</td>
+</tr>
+<tr>
+<td class="signal_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc-request-rtcp-key" title="The “request-rtcp-key” signal">request-rtcp-key</a></td>
+<td class="signal_flags">Run Last</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstRTSPSrc"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-rtspsrc.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc-struct" title="struct GstRTSPSrc">GstRTSPSrc</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-rtspsrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBin.html">GstBin</a>
-                           +----GstRTSPSrc
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBin.html">GstBin</a>
+                    <span class="lineart">╰──</span> GstRTSPSrc
 </pre>
 </div>
 <div class="refsect1">
@@ -66,81 +275,27 @@ GstRTSPSrc implements
  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstChildProxy.html">GstChildProxy</a> and  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstUriHandler.html#GstURIHandler">GstURIHandler</a>.</p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-rtspsrc.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--debug" title='The "debug" property'>debug</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--location" title='The "location" property'>location</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--protocols" title='The "protocols" property'>protocols</a>"                <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstrtsptransport.html#GstRTSPLowerTrans"><span class="type">GstRTSPLowerTrans</span></a>     : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--retry" title='The "retry" property'>retry</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--timeout" title='The "timeout" property'>timeout</a>"                  <span class="type">guint64</span>               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--latency" title='The "latency" property'>latency</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--tcp-timeout" title='The "tcp-timeout" property'>tcp-timeout</a>"              <span class="type">guint64</span>               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--connection-speed" title='The "connection-speed" property'>connection-speed</a>"         <span class="type">guint64</span>               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--nat-method" title='The "nat-method" property'>nat-method</a>"               <span class="type">GstRTSPNatMethod</span>      : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--do-rtcp" title='The "do-rtcp" property'>do-rtcp</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--proxy" title='The "proxy" property'>proxy</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--rtp-blocksize" title='The "rtp-blocksize" property'>rtp-blocksize</a>"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--user-id" title='The "user-id" property'>user-id</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--user-pw" title='The "user-pw" property'>user-pw</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--buffer-mode" title='The "buffer-mode" property'>buffer-mode</a>"              <span class="type">GstRTSPSrcBufferMode</span>  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--port-range" title='The "port-range" property'>port-range</a>"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--udp-buffer-size" title='The "udp-buffer-size" property'>udp-buffer-size</a>"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--short-header" title='The "short-header" property'>short-header</a>"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--do-rtsp-keep-alive" title='The "do-rtsp-keep-alive" property'>do-rtsp-keep-alive</a>"       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--drop-on-latency" title='The "drop-on-latency" property'>drop-on-latency</a>"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--probation" title='The "probation" property'>probation</a>"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--udp-reconnect" title='The "udp-reconnect" property'>udp-reconnect</a>"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--proxy-id" title='The "proxy-id" property'>proxy-id</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--proxy-pw" title='The "proxy-pw" property'>proxy-pw</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--multicast-iface" title='The "multicast-iface" property'>multicast-iface</a>"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--ntp-sync" title='The "ntp-sync" property'>ntp-sync</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--use-pipeline-clock" title='The "use-pipeline-clock" property'>use-pipeline-clock</a>"       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--sdes" title='The "sdes" property'>sdes</a>"                     <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>*         : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--tls-validation-flags" title='The "tls-validation-flags" property'>tls-validation-flags</a>"     <a href="http://library.gnome.org/devel/gio/unstable/gio-TLS-Overview.html#GTlsCertificateFlags"><span class="type">GTlsCertificateFlags</span></a>  : Read / Write
-</pre>
-</div>
-<div class="refsect1">
-<a name="gst-plugins-good-plugins-rtspsrc.signals"></a><h2>Signals</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc-handle-request" title='The "handle-request" signal'>handle-request</a>"                                 
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc-on-sdp" title='The "on-sdp" signal'>on-sdp</a>"                                         
-  "<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc-select-stream" title='The "select-stream" signal'>select-stream</a>"                                  : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS"><code class="literal">Run First</code></a>
-</pre>
-</div>
-<div class="refsect1">
 <a name="gst-plugins-good-plugins-rtspsrc.description"></a><h2>Description</h2>
-<p>
-Makes a connection to an RTSP server and read the data.
+<p>Makes a connection to an RTSP server and read the data.
 rtspsrc strictly follows RFC 2326 and therefore does not (yet) support
-RealMedia/Quicktime/Microsoft extensions.
-</p>
-<p>
-RTSP supports transport over TCP or UDP in unicast or multicast mode. By
+RealMedia/Quicktime/Microsoft extensions.</p>
+<p>RTSP supports transport over TCP or UDP in unicast or multicast mode. By
 default rtspsrc will negotiate a connection in the following order:
 UDP unicast/UDP multicast/TCP. The order cannot be changed but the allowed
-protocols can be controlled with the <a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--protocols" title='The "protocols" property'><span class="type">"protocols"</span></a> property.
-</p>
-<p>
-rtspsrc currently understands SDP as the format of the session description.
+protocols can be controlled with the <a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc--protocols" title="The “protocols” property"><span class="type">“protocols”</span></a> property.</p>
+<p>rtspsrc currently understands SDP as the format of the session description.
 For each stream listed in the SDP a new rtp_stream<code class="literal">d</code> pad will be created
 with caps derived from the SDP media description. This is a caps of mime type
 "application/x-rtp" that can be connected to any available RTP depayloader
-element.
-</p>
-<p>
-rtspsrc will internally instantiate an RTP session manager element
+element.</p>
+<p>rtspsrc will internally instantiate an RTP session manager element
 that will handle the RTCP messages to and from the server, jitter removal,
 packet reordering along with providing a clock for the pipeline.
-This feature is implemented using the gstrtpbin element.
-</p>
-<p>
-rtspsrc acts like a live source and will therefore only generate data in the
-PLAYING state.
-</p>
-<p>
-</p>
+This feature is implemented using the gstrtpbin element.</p>
+<p>rtspsrc acts like a live source and will therefore only generate data in the
+PLAYING state.</p>
 <div class="refsect2">
-<a name="id-1.2.123.8.7.1"></a><h3>Example launch line</h3>
+<a name="id-1.2.123.9.7"></a><h3>Example launch line</h3>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -154,15 +309,10 @@ PLAYING state.
  Establish a connection to an RTSP server and send the raw RTP packets to a
 fakesink.
 </div>
-<p>
-</p>
-<p>
-Last reviewed on 2006-08-18 (0.10.5)
-</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.123.8.9.1"></a><h3>Element Information</h3>
+<a name="id-1.2.123.9.8.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -188,7 +338,7 @@ Last reviewed on 2006-08-18 (0.10.5)
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.123.8.9.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.123.9.8.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -223,7 +373,10 @@ Last reviewed on 2006-08-18 (0.10.5)
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-rtspsrc.details"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-rtspsrc.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtspsrc.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstRTSPSrc-struct"></a><h3>struct GstRTSPSrc</h3>
 <pre class="programlisting">struct GstRTSPSrc;</pre>
@@ -234,347 +387,488 @@ Last reviewed on 2006-08-18 (0.10.5)
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-rtspsrc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstRTSPSrc--debug"></a><h3>The <code class="literal">"debug"</code> property</h3>
-<pre class="programlisting">  "debug"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstRTSPSrc--debug"></a><h3>The <code class="literal">“debug”</code> property</h3>
+<pre class="programlisting">  “debug”                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Dump request and response messages to stdout.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--location"></a><h3>The <code class="literal">"location"</code> property</h3>
-<pre class="programlisting">  "location"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<a name="GstRTSPSrc--location"></a><h3>The <code class="literal">“location”</code> property</h3>
+<pre class="programlisting">  “location”                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>Location of the RTSP url to read.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--protocols"></a><h3>The <code class="literal">"protocols"</code> property</h3>
-<pre class="programlisting">  "protocols"                <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstrtsptransport.html#GstRTSPLowerTrans"><span class="type">GstRTSPLowerTrans</span></a>     : Read / Write</pre>
+<a name="GstRTSPSrc--protocols"></a><h3>The <code class="literal">“protocols”</code> property</h3>
+<pre class="programlisting">  “protocols”                <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstrtsptransport.html#GstRTSPLowerTrans"><span class="type">GstRTSPLowerTrans</span></a></pre>
 <p>Allowed lower transport protocols.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: GST_RTSP_LOWER_TRANS_UDP|GST_RTSP_LOWER_TRANS_UDP_MCAST|GST_RTSP_LOWER_TRANS_TCP</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--retry"></a><h3>The <code class="literal">"retry"</code> property</h3>
-<pre class="programlisting">  "retry"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstRTSPSrc--retry"></a><h3>The <code class="literal">“retry”</code> property</h3>
+<pre class="programlisting">  “retry”                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>Max number of retries when allocating RTP ports.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 65535</p>
 <p>Default value: 20</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--timeout"></a><h3>The <code class="literal">"timeout"</code> property</h3>
-<pre class="programlisting">  "timeout"                  <span class="type">guint64</span>               : Read / Write</pre>
+<a name="GstRTSPSrc--timeout"></a><h3>The <code class="literal">“timeout”</code> property</h3>
+<pre class="programlisting">  “timeout”                  <span class="type">guint64</span></pre>
 <p>Retry TCP transport after UDP timeout microseconds (0 = disabled).</p>
+<p>Flags: Read / Write</p>
 <p>Default value: 5000000</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--latency"></a><h3>The <code class="literal">"latency"</code> property</h3>
-<pre class="programlisting">  "latency"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstRTSPSrc--latency"></a><h3>The <code class="literal">“latency”</code> property</h3>
+<pre class="programlisting">  “latency”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>Amount of ms to buffer.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: 2000</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--tcp-timeout"></a><h3>The <code class="literal">"tcp-timeout"</code> property</h3>
-<pre class="programlisting">  "tcp-timeout"              <span class="type">guint64</span>               : Read / Write</pre>
+<a name="GstRTSPSrc--tcp-timeout"></a><h3>The <code class="literal">“tcp-timeout”</code> property</h3>
+<pre class="programlisting">  “tcp-timeout”              <span class="type">guint64</span></pre>
 <p>Fail after timeout microseconds on TCP connections (0 = disabled).</p>
+<p>Flags: Read / Write</p>
 <p>Default value: 20000000</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--connection-speed"></a><h3>The <code class="literal">"connection-speed"</code> property</h3>
-<pre class="programlisting">  "connection-speed"         <span class="type">guint64</span>               : Read / Write</pre>
+<a name="GstRTSPSrc--connection-speed"></a><h3>The <code class="literal">“connection-speed”</code> property</h3>
+<pre class="programlisting">  “connection-speed”         <span class="type">guint64</span></pre>
 <p>Network connection speed in kbps (0 = unknown).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 18446744073709551</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--nat-method"></a><h3>The <code class="literal">"nat-method"</code> property</h3>
-<pre class="programlisting">  "nat-method"               <span class="type">GstRTSPNatMethod</span>      : Read / Write</pre>
+<a name="GstRTSPSrc--nat-method"></a><h3>The <code class="literal">“nat-method”</code> property</h3>
+<pre class="programlisting">  “nat-method”               <span class="type">GstRTSPNatMethod</span></pre>
 <p>Method to use for traversing firewalls and NAT.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: Send Dummy packets</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--do-rtcp"></a><h3>The <code class="literal">"do-rtcp"</code> property</h3>
-<pre class="programlisting">  "do-rtcp"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
-<p>Send RTCP packets, disable for old incompatible server.</p>
+<a name="GstRTSPSrc--do-rtcp"></a><h3>The <code class="literal">“do-rtcp”</code> property</h3>
+<pre class="programlisting">  “do-rtcp”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Enable RTCP support. Some old server don't like RTCP and then this property
+needs to be set to FALSE.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--proxy"></a><h3>The <code class="literal">"proxy"</code> property</h3>
-<pre class="programlisting">  "proxy"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
-<p>Proxy settings for HTTP tunneling. Format: [http://][user:passwd@]host[:port].</p>
+<a name="GstRTSPSrc--proxy"></a><h3>The <code class="literal">“proxy”</code> property</h3>
+<pre class="programlisting">  “proxy”                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Set the proxy parameters. This has to be a string of the format
+http://host[:port].</p>
+<p>Flags: Read / Write</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--rtp-blocksize"></a><h3>The <code class="literal">"rtp-blocksize"</code> property</h3>
-<pre class="programlisting">  "rtp-blocksize"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
-<p>RTP package size to suggest to server (0 = disabled).</p>
+<a name="GstRTSPSrc--rtp-blocksize"></a><h3>The <code class="literal">“rtp-blocksize”</code> property</h3>
+<pre class="programlisting">  “rtp-blocksize”            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>RTP package size to suggest to server.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 65536</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--user-id"></a><h3>The <code class="literal">"user-id"</code> property</h3>
-<pre class="programlisting">  "user-id"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<a name="GstRTSPSrc--user-id"></a><h3>The <code class="literal">“user-id”</code> property</h3>
+<pre class="programlisting">  “user-id”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>RTSP location URI user id for authentication.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--user-pw"></a><h3>The <code class="literal">"user-pw"</code> property</h3>
-<pre class="programlisting">  "user-pw"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<a name="GstRTSPSrc--user-pw"></a><h3>The <code class="literal">“user-pw”</code> property</h3>
+<pre class="programlisting">  “user-pw”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>RTSP location URI user password for authentication.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--buffer-mode"></a><h3>The <code class="literal">"buffer-mode"</code> property</h3>
-<pre class="programlisting">  "buffer-mode"              <span class="type">GstRTSPSrcBufferMode</span>  : Read / Write</pre>
-<p>Control the buffering algorithm in use.</p>
+<a name="GstRTSPSrc--buffer-mode"></a><h3>The <code class="literal">“buffer-mode”</code> property</h3>
+<pre class="programlisting">  “buffer-mode”              <span class="type">GstRTSPSrcBufferMode</span></pre>
+<p>Control the buffering and timestamping mode used by the jitterbuffer.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: Choose mode depending on stream live</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--port-range"></a><h3>The <code class="literal">"port-range"</code> property</h3>
-<pre class="programlisting">  "port-range"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
-<p>Client port range that can be used to receive RTP and RTCP data, eg. 3000-3005 (NULL = no restrictions).</p>
+<a name="GstRTSPSrc--port-range"></a><h3>The <code class="literal">“port-range”</code> property</h3>
+<pre class="programlisting">  “port-range”               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Configure the client port numbers that can be used to recieve RTP and
+RTCP.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--udp-buffer-size"></a><h3>The <code class="literal">"udp-buffer-size"</code> property</h3>
-<pre class="programlisting">  "udp-buffer-size"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
-<p>Size of the kernel UDP receive buffer in bytes, 0=default.</p>
+<a name="GstRTSPSrc--udp-buffer-size"></a><h3>The <code class="literal">“udp-buffer-size”</code> property</h3>
+<pre class="programlisting">  “udp-buffer-size”          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Size of the kernel UDP receive buffer in bytes.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 524288</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--short-header"></a><h3>The <code class="literal">"short-header"</code> property</h3>
-<pre class="programlisting">  "short-header"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstRTSPSrc--short-header"></a><h3>The <code class="literal">“short-header”</code> property</h3>
+<pre class="programlisting">  “short-header”             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Only send the basic RTSP headers for broken encoders.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--do-rtsp-keep-alive"></a><h3>The <code class="literal">"do-rtsp-keep-alive"</code> property</h3>
-<pre class="programlisting">  "do-rtsp-keep-alive"       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
-<p>Send RTSP keep alive packets, disable for old incompatible server.</p>
+<a name="GstRTSPSrc--do-rtsp-keep-alive"></a><h3>The <code class="literal">“do-rtsp-keep-alive”</code> property</h3>
+<pre class="programlisting">  “do-rtsp-keep-alive”       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Enable RTSP keep alive support. Some old server don't like RTSP
+keep alive and then this property needs to be set to FALSE.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--drop-on-latency"></a><h3>The <code class="literal">"drop-on-latency"</code> property</h3>
-<pre class="programlisting">  "drop-on-latency"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstRTSPSrc--drop-on-latency"></a><h3>The <code class="literal">“drop-on-latency”</code> property</h3>
+<pre class="programlisting">  “drop-on-latency”          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Tells the jitterbuffer to never exceed the given latency in size.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--probation"></a><h3>The <code class="literal">"probation"</code> property</h3>
-<pre class="programlisting">  "probation"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstRTSPSrc--probation"></a><h3>The <code class="literal">“probation”</code> property</h3>
+<pre class="programlisting">  “probation”                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>Consecutive packet sequence numbers to accept the source.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: 2</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--udp-reconnect"></a><h3>The <code class="literal">"udp-reconnect"</code> property</h3>
-<pre class="programlisting">  "udp-reconnect"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstRTSPSrc--udp-reconnect"></a><h3>The <code class="literal">“udp-reconnect”</code> property</h3>
+<pre class="programlisting">  “udp-reconnect”            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Reconnect to the server if RTSP connection is closed when doing UDP.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--proxy-id"></a><h3>The <code class="literal">"proxy-id"</code> property</h3>
-<pre class="programlisting">  "proxy-id"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
-<p>HTTP proxy URI user id for authentication.</p>
+<a name="GstRTSPSrc--proxy-id"></a><h3>The <code class="literal">“proxy-id”</code> property</h3>
+<pre class="programlisting">  “proxy-id”                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Sets the proxy URI user id for authentication. If the URI set via the
+"proxy" property contains a user-id already, that will take precedence.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: ""</p>
+<p class="since">Since 1.2</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--proxy-pw"></a><h3>The <code class="literal">"proxy-pw"</code> property</h3>
-<pre class="programlisting">  "proxy-pw"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
-<p>HTTP proxy URI user password for authentication.</p>
+<a name="GstRTSPSrc--proxy-pw"></a><h3>The <code class="literal">“proxy-pw”</code> property</h3>
+<pre class="programlisting">  “proxy-pw”                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<p>Sets the proxy URI password for authentication. If the URI set via the
+"proxy" property contains a password already, that will take precedence.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: ""</p>
+<p class="since">Since 1.2</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--multicast-iface"></a><h3>The <code class="literal">"multicast-iface"</code> property</h3>
-<pre class="programlisting">  "multicast-iface"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
+<a name="GstRTSPSrc--multicast-iface"></a><h3>The <code class="literal">“multicast-iface”</code> property</h3>
+<pre class="programlisting">  “multicast-iface”          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>The network interface on which to join the multicast group.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--ntp-sync"></a><h3>The <code class="literal">"ntp-sync"</code> property</h3>
-<pre class="programlisting">  "ntp-sync"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstRTSPSrc--ntp-sync"></a><h3>The <code class="literal">“ntp-sync”</code> property</h3>
+<pre class="programlisting">  “ntp-sync”                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Synchronize received streams to the NTP clock.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--use-pipeline-clock"></a><h3>The <code class="literal">"use-pipeline-clock"</code> property</h3>
-<pre class="programlisting">  "use-pipeline-clock"       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstRTSPSrc--use-pipeline-clock"></a><h3>The <code class="literal">“use-pipeline-clock”</code> property</h3>
+<pre class="programlisting">  “use-pipeline-clock”       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Use the pipeline running-time to set the NTP time in the RTCP SR messages.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--sdes"></a><h3>The <code class="literal">"sdes"</code> property</h3>
-<pre class="programlisting">  "sdes"                     <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>*         : Read / Write</pre>
+<a name="GstRTSPSrc--sdes"></a><h3>The <code class="literal">“sdes”</code> property</h3>
+<pre class="programlisting">  “sdes”                     <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> *</pre>
 <p>The SDES items of this session.</p>
+<p>Flags: Read / Write</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc--tls-validation-flags"></a><h3>The <code class="literal">"tls-validation-flags"</code> property</h3>
-<pre class="programlisting">  "tls-validation-flags"     <a href="http://library.gnome.org/devel/gio/unstable/gio-TLS-Overview.html#GTlsCertificateFlags"><span class="type">GTlsCertificateFlags</span></a>  : Read / Write</pre>
+<a name="GstRTSPSrc--tls-database"></a><h3>The <code class="literal">“tls-database”</code> property</h3>
+<pre class="programlisting">  “tls-database”             <a href="http://library.gnome.org/devel/gio/unstable/GTlsDatabase.html"><span class="type">GTlsDatabase</span></a> *</pre>
+<p>TLS database with anchor certificate authorities used to validate the server certificate.</p>
+<p>Flags: Read / Write</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRTSPSrc--tls-validation-flags"></a><h3>The <code class="literal">“tls-validation-flags”</code> property</h3>
+<pre class="programlisting">  “tls-validation-flags”     <a href="http://library.gnome.org/devel/gio/unstable/gio-TLS-Overview.html#GTlsCertificateFlags"><span class="type">GTlsCertificateFlags</span></a></pre>
 <p>TLS certificate validation flags used to validate the server certificate.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: G_TLS_CERTIFICATE_UNKNOWN_CA|G_TLS_CERTIFICATE_BAD_IDENTITY|G_TLS_CERTIFICATE_NOT_ACTIVATED|G_TLS_CERTIFICATE_EXPIRED|G_TLS_CERTIFICATE_REVOKED|G_TLS_CERTIFICATE_INSECURE|G_TLS_CERTIFICATE_GENERIC_ERROR</p>
 </div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-rtspsrc.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2">
-<a name="GstRTSPSrc-handle-request"></a><h3>The <code class="literal">"handle-request"</code> signal</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a> *rtspsrc,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    request,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    response,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
-<p>
-Handle a server request in <em class="parameter"><code>request</code></em> and prepare <em class="parameter"><code>response</code></em>.
-</p>
-<p>
-This signal is called from the streaming thread, you should therefore not
-do any state changes on <em class="parameter"><code>rtspsrc</code></em> because this might deadlock. If you want
+<a name="GstRTSPSrc-handle-request"></a><h3>The <code class="literal">“handle-request”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a> *rtspsrc,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    request,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    response,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>Handle a server request in <em class="parameter"><code>request</code></em>
+ and prepare <em class="parameter"><code>response</code></em>
+.</p>
+<p>This signal is called from the streaming thread, you should therefore not
+do any state changes on <em class="parameter"><code>rtspsrc</code></em>
+ because this might deadlock. If you want
 to modify the state as a result of this signal, post a
 <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstMessage.html#GST-MESSAGE-REQUEST-STATE:CAPS"><span class="type">GST_MESSAGE_REQUEST_STATE</span></a> message on the bus or signal the main thread
-in some other way.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+in some other way.</p>
+<div class="refsect3">
+<a name="id-1.2.123.13.2.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>rtspsrc</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a>
-</td>
+<td class="parameter_name"><p>rtspsrc</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>request</code></em> :</span></p></td>
-<td>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
-</td>
+<td class="parameter_name"><p>request</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>response</code></em> :</span></p></td>
-<td>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a>
-</td>
+<td class="parameter_name"><p>response</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstrtspmessage.html#GstRTSPMessage"><span class="type">GstRTSPMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
+</div>
 <p class="since">Since 1.2</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc-on-sdp"></a><h3>The <code class="literal">"on-sdp"</code> signal</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a>    *rtspsrc,
-                                                        <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a> *sdp,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>       user_data)</pre>
-<p>
-Emited when the client has retrieved the SDP and before it configures the
-streams in the SDP. <em class="parameter"><code>sdp</code></em> can be inspected and modified.
-</p>
-<p>
-This signal is called from the streaming thread, you should therefore not
-do any state changes on <em class="parameter"><code>rtspsrc</code></em> because this might deadlock. If you want
+<a name="GstRTSPSrc-on-sdp"></a><h3>The <code class="literal">“on-sdp”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a>    *rtspsrc,
+               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a> *sdp,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>       user_data)</pre>
+<p>Emited when the client has retrieved the SDP and before it configures the
+streams in the SDP. <em class="parameter"><code>sdp</code></em>
+ can be inspected and modified.</p>
+<p>This signal is called from the streaming thread, you should therefore not
+do any state changes on <em class="parameter"><code>rtspsrc</code></em>
+ because this might deadlock. If you want
 to modify the state as a result of this signal, post a
 <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstMessage.html#GST-MESSAGE-REQUEST-STATE:CAPS"><span class="type">GST_MESSAGE_REQUEST_STATE</span></a> message on the bus or signal the main thread
-in some other way.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+in some other way.</p>
+<div class="refsect3">
+<a name="id-1.2.123.13.3.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>rtspsrc</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a>
-</td>
+<td class="parameter_name"><p>rtspsrc</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>sdp</code></em> :</span></p></td>
-<td>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a>
-</td>
+<td class="parameter_name"><p>sdp</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstsdpmessage.html#GstSDPMessage"><span class="type">GstSDPMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
+</div>
 <p class="since">Since 1.2</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstRTSPSrc-select-stream"></a><h3>The <code class="literal">"select-stream"</code> signal</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            user_function                      (<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a> *rtspsrc,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>       num,
-                                                        <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a>    *caps,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-FIRST:CAPS"><code class="literal">Run First</code></a></pre>
-<p>
-Emited before the client decides to configure the stream <em class="parameter"><code>num</code></em> with
-<em class="parameter"><code>caps</code></em>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="GstRTSPSrc-select-stream"></a><h3>The <code class="literal">“select-stream”</code> signal</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+user_function (<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a> *rtspsrc,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>       num,
+               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a>    *caps,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>Emited before the client decides to configure the stream <em class="parameter"><code>num</code></em>
+ with
+<em class="parameter"><code>caps</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.123.13.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>rtspsrc</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a>
-</td>
+<td class="parameter_name"><p>rtspsrc</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>num</code></em> :</span></p></td>
-<td>the stream number</td>
+<td class="parameter_name"><p>num</p></td>
+<td class="parameter_description"><p>the stream number</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>caps</code></em> :</span></p></td>
-<td>the stream caps</td>
+<td class="parameter_name"><p>caps</p></td>
+<td class="parameter_description"><p>the stream caps</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> when the stream should be selected, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> when the stream
-is to be ignored.</td>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.123.13.4.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> when the stream should be selected, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> when the stream
+is to be ignored.</p>
+<p></p>
+</div>
+<p>Flags: Run First</p>
 <p class="since">Since 1.2</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRTSPSrc-new-manager"></a><h3>The <code class="literal">“new-manager”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a> *rtspsrc,
+               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a> *manager,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>Emited after a new manager (like rtpbin) was created and the default
+properties were configured.</p>
+<div class="refsect3">
+<a name="id-1.2.123.13.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>rtspsrc</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>manager</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html"><span class="type">GstElement</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: Run First</p>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRTSPSrc-request-rtcp-key"></a><h3>The <code class="literal">“request-rtcp-key”</code> signal</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a>*
+user_function (<a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a> *rtspsrc,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>       num,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>    user_data)</pre>
+<p>Signal emited to get the crypto parameters relevant to the RTCP
+stream. User should provide the key and the RTCP encryption ciphers
+and authentication, and return them wrapped in a GstCaps.</p>
+<div class="refsect3">
+<a name="id-1.2.123.13.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>rtspsrc</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-good-plugins-rtspsrc.html#GstRTSPSrc"><span class="type">GstRTSPSrc</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>num</p></td>
+<td class="parameter_description"><p>the stream number</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: Run Last</p>
+<p class="since">Since 1.4</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

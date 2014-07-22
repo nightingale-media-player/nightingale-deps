@@ -40,9 +40,8 @@
 #include <string.h>
 #include <gst/tag/tag.h>
 #include <gst/audio/audio.h>
-
-#include <gst/base/gstbitreader.h>
-#include <gst/base/gstbytereader.h>
+#include <gst/base/base.h>
+#include <gst/pbutils/pbutils.h>
 
 #define SBC_SYNCBYTE 0x9C
 
@@ -67,6 +66,8 @@ static gboolean gst_sbc_parse_start (GstBaseParse * parse);
 static gboolean gst_sbc_parse_stop (GstBaseParse * parse);
 static GstFlowReturn gst_sbc_parse_handle_frame (GstBaseParse * parse,
     GstBaseParseFrame * frame, gint * skipsize);
+static GstFlowReturn gst_sbc_parse_pre_push_frame (GstBaseParse * parse,
+    GstBaseParseFrame * frame);
 static GstCaps *gst_sbc_parse_get_sink_caps (GstBaseParse * parse,
     GstCaps * filter);
 
@@ -90,7 +91,8 @@ gst_sbc_parse_class_init (GstSbcParseClass * klass)
 
   baseparse_class->start = GST_DEBUG_FUNCPTR (gst_sbc_parse_start);
   baseparse_class->stop = GST_DEBUG_FUNCPTR (gst_sbc_parse_stop);
-
+  baseparse_class->pre_push_frame =
+      GST_DEBUG_FUNCPTR (gst_sbc_parse_pre_push_frame);
   baseparse_class->handle_frame =
       GST_DEBUG_FUNCPTR (gst_sbc_parse_handle_frame);
   baseparse_class->get_sink_caps =
@@ -115,12 +117,14 @@ gst_sbc_parse_reset (GstSbcParse * sbcparse)
   sbcparse->n_blocks = -1;
   sbcparse->n_subbands = -1;
   sbcparse->bitpool = -1;
+  sbcparse->sent_codec_tag = FALSE;
 }
 
 static void
 gst_sbc_parse_init (GstSbcParse * sbcparse)
 {
   gst_sbc_parse_reset (sbcparse);
+  GST_PAD_SET_ACCEPT_INTERSECT (GST_BASE_PARSE_SINK_PAD (sbcparse));
 }
 
 static gboolean
@@ -299,6 +303,19 @@ need_more_data:
   }
 }
 
+static void
+remove_fields (GstCaps * caps)
+{
+  guint i, n;
+
+  n = gst_caps_get_size (caps);
+  for (i = 0; i < n; i++) {
+    GstStructure *s = gst_caps_get_structure (caps, i);
+
+    gst_structure_remove_field (s, "parsed");
+  }
+}
+
 static GstCaps *
 gst_sbc_parse_get_sink_caps (GstBaseParse * parse, GstCaps * filter)
 {
@@ -306,29 +323,23 @@ gst_sbc_parse_get_sink_caps (GstBaseParse * parse, GstCaps * filter)
   GstCaps *res;
 
   templ = gst_pad_get_pad_template_caps (GST_BASE_PARSE_SINK_PAD (parse));
-  peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), filter);
+  if (filter) {
+    GstCaps *fcopy = gst_caps_copy (filter);
+    /* Remove the fields we convert */
+    remove_fields (fcopy);
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), fcopy);
+    gst_caps_unref (fcopy);
+  } else
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), NULL);
 
   if (peercaps) {
-    guint i, n;
-
     /* Remove the parsed field */
     peercaps = gst_caps_make_writable (peercaps);
-    n = gst_caps_get_size (peercaps);
-    for (i = 0; i < n; i++) {
-      GstStructure *s = gst_caps_get_structure (peercaps, i);
-
-      gst_structure_remove_field (s, "parsed");
-    }
+    remove_fields (peercaps);
 
     res = gst_caps_intersect_full (peercaps, templ, GST_CAPS_INTERSECT_FIRST);
     gst_caps_unref (peercaps);
-    res = gst_caps_make_writable (res);
-
-    /* Append the template caps because we still want to accept
-     * caps without any fields in the case upstream does not
-     * know anything.
-     */
-    gst_caps_append (res, templ);
+    gst_caps_unref (templ);
   } else {
     res = templ;
   }
@@ -484,4 +495,31 @@ gst_sbc_parse_header (const guint8 * data, guint * rate, guint * n_blocks,
   }
 
   return gst_sbc_calc_framelen (*n_subbands, *ch_mode, *n_blocks, *bitpool);
+}
+
+static GstFlowReturn
+gst_sbc_parse_pre_push_frame (GstBaseParse * parse, GstBaseParseFrame * frame)
+{
+  GstSbcParse *sbcparse = GST_SBC_PARSE (parse);
+
+  if (!sbcparse->sent_codec_tag) {
+    GstTagList *taglist;
+    GstCaps *caps;
+
+    taglist = gst_tag_list_new_empty ();
+
+    /* codec tag */
+    caps = gst_pad_get_current_caps (GST_BASE_PARSE_SRC_PAD (parse));
+    gst_pb_utils_add_codec_description_to_tag_list (taglist,
+        GST_TAG_AUDIO_CODEC, caps);
+    gst_caps_unref (caps);
+
+    gst_pad_push_event (GST_BASE_PARSE_SRC_PAD (sbcparse),
+        gst_event_new_tag (taglist));
+
+    /* also signals the end of first-frame processing */
+    sbcparse->sent_codec_tag = TRUE;
+  }
+
+  return GST_FLOW_OK;
 }

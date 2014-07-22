@@ -50,6 +50,7 @@ struct _GstSoupHTTPSrc {
 
   gchar *location;             /* Full URI. */
   gchar *redirection_uri;      /* Full URI after redirections. */
+  gboolean redirection_permanent; /* Permanent or temporary redirect? */
   gchar *user_agent;           /* User-Agent HTTP header. */
   gboolean automatic_redirect; /* Follow redirects. */
   SoupURI *proxy;              /* HTTP proxy URI. */
@@ -68,6 +69,8 @@ struct _GstSoupHTTPSrc {
   GstBuffer **outbuf;          /* Return buffer allocated by callback. */
   gboolean interrupted;        /* Signal unlock(). */
   gboolean retry;              /* Should attempt to reconnect. */
+  gint retry_count;            /* Number of retries since we received data */
+  gint max_retries;            /* Maximum number of retries */
 
   gboolean got_headers;        /* Already received headers from the server */
   gboolean have_size;          /* Received and parsed Content-Length
@@ -83,6 +86,10 @@ struct _GstSoupHTTPSrc {
                                 * decide if an out of range request should be
                                 * handled as an error or EOS when the content
                                 * size is unknown */
+  gboolean keep_alive;         /* Use keep-alive sessions */
+  gboolean ssl_strict;
+  gchar *ssl_ca_file;
+  gboolean ssl_use_system_ca_file;
 
   /* Shoutcast/icecast metadata extraction handling. */
   gboolean iradio_mode;
@@ -93,10 +100,16 @@ struct _GstSoupHTTPSrc {
 
   GstStructure *extra_headers;
 
+  SoupLoggerLogLevel log_level;/* Soup HTTP session logger level */
+
+  gboolean compress;
+
   guint timeout;
 
   GMutex mutex;
   GCond request_finished_cond;
+
+  GstEvent *http_headers_event;
 };
 
 struct _GstSoupHTTPSrcClass {

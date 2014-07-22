@@ -115,9 +115,9 @@ static GstFlowReturn gst_flac_dec_handle_frame (GstAudioDecoder * audio_dec,
 G_DEFINE_TYPE (GstFlacDec, gst_flac_dec, GST_TYPE_AUDIO_DECODER);
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
-#define FORMATS "{ S8LE, S16LE, S24_32LE, S32LE } "
+#define FORMATS "{ S8, S16LE, S24_32LE, S32LE } "
 #else
-#define FORMATS "{ S8BE, S16BE, S24_32BE, S32BE } "
+#define FORMATS "{ S8, S16BE, S24_32BE, S32BE } "
 #endif
 
 #define GST_FLAC_DEC_SRC_CAPS                             \
@@ -176,7 +176,7 @@ gst_flac_dec_class_init (GstFlacDecClass * klass)
 static void
 gst_flac_dec_init (GstFlacDec * flacdec)
 {
-  /* nothing to do here */
+  gst_audio_decoder_set_needs_format (GST_AUDIO_DECODER (flacdec), TRUE);
 }
 
 static gboolean
@@ -317,7 +317,7 @@ static const guint8 crc8_table[256] = {
 };
 
 static guint8
-gst_flac_calculate_crc8 (guint8 * data, guint length)
+gst_flac_calculate_crc8 (const guint8 * data, guint length)
 {
   guint8 crc = 0;
 
@@ -332,14 +332,15 @@ gst_flac_calculate_crc8 (guint8 * data, guint length)
 /* FIXME: for our purposes it's probably enough to just check for the sync
  * marker - we just want to know if it's a header frame or not */
 static gboolean
-gst_flac_dec_scan_got_frame (GstFlacDec * flacdec, guint8 * data, guint size,
-    gint64 * last_sample_num)
+gst_flac_dec_scan_got_frame (GstFlacDec * flacdec, const guint8 * data,
+    guint size)
 {
   guint headerlen;
   guint sr_from_end = 0;        /* can be 0, 8 or 16 */
   guint bs_from_end = 0;        /* can be 0, 8 or 16 */
   guint32 val = 0;
   guint8 bs, sr, ca, ss, pb;
+  gboolean vbs;
 
   if (size < 10)
     return FALSE;
@@ -347,11 +348,8 @@ gst_flac_dec_scan_got_frame (GstFlacDec * flacdec, guint8 * data, guint size,
   /* sync */
   if (data[0] != 0xFF || (data[1] & 0xFC) != 0xF8)
     return FALSE;
-  if (data[1] & 1) {
-    GST_WARNING_OBJECT (flacdec, "Variable block size FLAC unsupported");
-    return FALSE;
-  }
 
+  vbs = ! !(data[1] & 1);       /* variable blocksize */
   bs = (data[2] & 0xF0) >> 4;   /* blocksize marker   */
   sr = (data[2] & 0x0F);        /* samplerate marker  */
   ca = (data[3] & 0xF0) >> 4;   /* channel assignment */
@@ -359,7 +357,8 @@ gst_flac_dec_scan_got_frame (GstFlacDec * flacdec, guint8 * data, guint size,
   pb = (data[3] & 0x01);        /* padding bit        */
 
   GST_LOG_OBJECT (flacdec,
-      "got sync, bs=%x,sr=%x,ca=%x,ss=%x,pb=%x", bs, sr, ca, ss, pb);
+      "got sync, vbs=%d,bs=%x,sr=%x,ca=%x,ss=%x,pb=%x", vbs, bs, sr, ca, ss,
+      pb);
 
   if (bs == 0 || sr == 0x0F || ca >= 0x0B || ss == 0x03 || ss == 0x07) {
     return FALSE;
@@ -404,36 +403,6 @@ gst_flac_dec_scan_got_frame (GstFlacDec * flacdec, guint8 * data, guint size,
   if (gst_flac_calculate_crc8 (data, headerlen) != data[headerlen]) {
     GST_LOG_OBJECT (flacdec, "invalid checksum");
     return FALSE;
-  }
-
-  if (!last_sample_num)
-    return TRUE;
-
-  /* FIXME: This is can be 36 bit if variable block size is used,
-   * fortunately not encoder supports this yet and we check for that
-   * above.
-   */
-  val = (guint32) g_utf8_get_char_validated ((gchar *) data + 4, -1);
-
-  if (val == (guint32) - 1 || val == (guint32) - 2) {
-    GST_LOG_OBJECT (flacdec, "failed to read sample/frame");
-    return FALSE;
-  }
-
-  if (flacdec->min_blocksize == flacdec->max_blocksize) {
-    *last_sample_num = (val + 1) * flacdec->min_blocksize;
-  } else {
-    *last_sample_num = 0;       /* FIXME: + length of last block in samples */
-  }
-
-  /* FIXME: only valid for fixed block size streams */
-  GST_DEBUG_OBJECT (flacdec, "frame number: %" G_GINT64_FORMAT,
-      *last_sample_num);
-
-  if (flacdec->info.rate > 0 && *last_sample_num != 0) {
-    GST_DEBUG_OBJECT (flacdec, "last sample %" G_GINT64_FORMAT " = %"
-        GST_TIME_FORMAT, *last_sample_num,
-        GST_TIME_ARGS (*last_sample_num * GST_SECOND / flacdec->info.rate));
   }
 
   return TRUE;
@@ -670,18 +639,10 @@ gst_flac_dec_write (GstFlacDec * flacdec, const FLAC__Frame * frame,
     gint8 *outbuffer = (gint8 *) map.data;
     gint *reorder_map = flacdec->channel_reorder_map;
 
-    if (gdepth != depth) {
-      for (i = 0; i < samples; i++) {
-        for (j = 0; j < channels; j++) {
-          *outbuffer++ =
-              (gint8) (buffer[reorder_map[j]][i] << (gdepth - depth));
-        }
-      }
-    } else {
-      for (i = 0; i < samples; i++) {
-        for (j = 0; j < channels; j++) {
-          *outbuffer++ = (gint8) buffer[reorder_map[j]][i];
-        }
+    g_assert (gdepth == 8 && depth == 8);
+    for (i = 0; i < samples; i++) {
+      for (j = 0; j < channels; j++) {
+        *outbuffer++ = (gint8) buffer[reorder_map[j]][i];
       }
     }
   } else if (width == 16) {
@@ -796,8 +757,7 @@ gst_flac_dec_handle_frame (GstAudioDecoder * audio_dec, GstBuffer * buf)
 
     /* check if this is a flac audio frame (rather than a header or junk) */
     gst_buffer_map (buf, &map, GST_MAP_READ);
-    got_audio_frame =
-        gst_flac_dec_scan_got_frame (dec, map.data, map.size, NULL);
+    got_audio_frame = gst_flac_dec_scan_got_frame (dec, map.data, map.size);
     gst_buffer_unmap (buf, &map);
 
     if (!got_audio_frame) {

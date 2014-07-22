@@ -346,6 +346,7 @@
 #define GST_MATROSKA_CODEC_ID_VIDEO_DIRAC        "V_DIRAC"
 #define GST_MATROSKA_CODEC_ID_VIDEO_VP8          "V_VP8"
 #define GST_MATROSKA_CODEC_ID_VIDEO_VP9          "V_VP9"
+#define GST_MATROSKA_CODEC_ID_VIDEO_MPEGH_HEVC   "V_MPEGH/ISO/HEVC"
 
 #define GST_MATROSKA_CODEC_ID_AUDIO_MPEG1_L1       "A_MPEG/L1"
 #define GST_MATROSKA_CODEC_ID_AUDIO_MPEG1_L2       "A_MPEG/L2"
@@ -377,6 +378,7 @@
 #define GST_MATROSKA_CODEC_ID_AUDIO_AAC_MPEG4      "A_AAC/MPEG4/"
 #define GST_MATROSKA_CODEC_ID_AUDIO_QUICKTIME_QDMC "A_QUICKTIME/QDMC"
 #define GST_MATROSKA_CODEC_ID_AUDIO_QUICKTIME_QDM2 "A_QUICKTIME/QDM2"
+#define GST_MATROSKA_CODEC_ID_AUDIO_OPUS           "A_OPUS"
 /* Undefined for now:
 #define GST_MATROSKA_CODEC_ID_AUDIO_MPC            "A_MPC"
 */
@@ -495,7 +497,6 @@ struct _GstMatroskaTrackContext {
   GstPad       *pad;
   GstCaps      *caps;
   guint         index;
-  GstFlowReturn last_flow;
   /* reverse playback */
   GstClockTime  from_time;
   gint64                   from_offset;
@@ -641,5 +642,6 @@ GstBufferList * gst_matroska_parse_speex_stream_headers (gpointer codec_data,
 
 GstBufferList * gst_matroska_parse_flac_stream_headers  (gpointer codec_data,
                                                          gsize codec_data_size);
+void gst_matroska_track_free (GstMatroskaTrackContext * track);
 
 #endif /* __GST_MATROSKA_IDS_H__ */

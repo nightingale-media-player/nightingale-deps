@@ -224,6 +224,7 @@ rtp_source_reset (RTPSource * src)
     g_free (src->bye_reason);
   src->bye_reason = NULL;
   src->sent_bye = FALSE;
+  g_hash_table_remove_all (src->reported_in_sr_of);
 
   src->stats.cycles = -1;
   src->stats.jitter = 0;
@@ -261,14 +262,16 @@ rtp_source_init (RTPSource * src)
   src->retained_feedback = g_queue_new ();
   src->nacks = g_array_new (FALSE, FALSE, sizeof (guint32));
 
+  src->reported_in_sr_of = g_hash_table_new (g_direct_hash, g_direct_equal);
+
   rtp_source_reset (src);
 }
 
-static void
+void
 rtp_conflicting_address_free (RTPConflictingAddress * addr)
 {
   g_object_unref (addr->address);
-  g_free (addr);
+  g_slice_free (RTPConflictingAddress, addr);
 }
 
 static void
@@ -289,10 +292,8 @@ rtp_source_finalize (GObject * object)
 
   gst_caps_replace (&src->caps, NULL);
 
-  g_list_foreach (src->conflicting_addresses,
-      (GFunc) rtp_conflicting_address_free, NULL);
-  g_list_free (src->conflicting_addresses);
-
+  g_list_free_full (src->conflicting_addresses,
+      (GDestroyNotify) rtp_conflicting_address_free);
   while ((buffer = g_queue_pop_head (src->retained_feedback)))
     gst_buffer_unref (buffer);
   g_queue_free (src->retained_feedback);
@@ -303,6 +304,8 @@ rtp_source_finalize (GObject * object)
     g_object_unref (src->rtp_from);
   if (src->rtcp_from)
     g_object_unref (src->rtcp_from);
+
+  g_hash_table_unref (src->reported_in_sr_of);
 
   G_OBJECT_CLASS (rtp_source_parent_class)->finalize (object);
 }
@@ -977,25 +980,12 @@ do_bitrate_estimation (RTPSource * src, GstClockTime running_time,
   }
 }
 
-/**
- * rtp_source_process_rtp:
- * @src: an #RTPSource
- * @pinfo: an #RTPPacketInfo
- *
- * Let @src handle the incomming RTP packet described in @pinfo.
- *
- * Returns: a #GstFlowReturn.
- */
-GstFlowReturn
-rtp_source_process_rtp (RTPSource * src, RTPPacketInfo * pinfo)
+static gboolean
+update_receiver_stats (RTPSource * src, RTPPacketInfo * pinfo)
 {
-  GstFlowReturn result = GST_FLOW_OK;
   guint16 seqnr, udelta;
   RTPSourceStats *stats;
   guint16 expected;
-
-  g_return_val_if_fail (RTP_IS_SOURCE (src), GST_FLOW_ERROR);
-  g_return_val_if_fail (pinfo != NULL, GST_FLOW_ERROR);
 
   stats = &src->stats;
 
@@ -1071,14 +1061,56 @@ rtp_source_process_rtp (RTPSource * src, RTPPacketInfo * pinfo)
   src->stats.packets_received++;
   /* for the bitrate estimation */
   src->bytes_received += pinfo->payload_len;
+
+  GST_LOG ("seq %d, PC: %" G_GUINT64_FORMAT ", OC: %" G_GUINT64_FORMAT,
+      seqnr, src->stats.packets_received, src->stats.octets_received);
+
+  return TRUE;
+
+  /* ERRORS */
+done:
+  {
+    return FALSE;
+  }
+bad_sequence:
+  {
+    GST_WARNING ("unacceptable seqnum received");
+    return FALSE;
+  }
+probation_seqnum:
+  {
+    GST_WARNING ("probation: seqnr %d != expected %d", seqnr, expected);
+    src->curr_probation = src->probation;
+    src->stats.max_seq = seqnr;
+    return FALSE;
+  }
+}
+
+/**
+ * rtp_source_process_rtp:
+ * @src: an #RTPSource
+ * @pinfo: an #RTPPacketInfo
+ *
+ * Let @src handle the incomming RTP packet described in @pinfo.
+ *
+ * Returns: a #GstFlowReturn.
+ */
+GstFlowReturn
+rtp_source_process_rtp (RTPSource * src, RTPPacketInfo * pinfo)
+{
+  GstFlowReturn result;
+
+  g_return_val_if_fail (RTP_IS_SOURCE (src), GST_FLOW_ERROR);
+  g_return_val_if_fail (pinfo != NULL, GST_FLOW_ERROR);
+
+  if (!update_receiver_stats (src, pinfo))
+    return GST_FLOW_OK;
+
   /* the source that sent the packet must be a sender */
   src->is_sender = TRUE;
   src->validated = TRUE;
 
   do_bitrate_estimation (src, pinfo->running_time, &src->bytes_received);
-
-  GST_LOG ("seq %d, PC: %" G_GUINT64_FORMAT ", OC: %" G_GUINT64_FORMAT,
-      seqnr, src->stats.packets_received, src->stats.octets_received);
 
   /* calculate jitter for the stats */
   calculate_jitter (src, pinfo);
@@ -1087,22 +1119,7 @@ rtp_source_process_rtp (RTPSource * src, RTPPacketInfo * pinfo)
   result = push_packet (src, pinfo->data);
   pinfo->data = NULL;
 
-done:
   return result;
-
-  /* ERRORS */
-bad_sequence:
-  {
-    GST_WARNING ("unacceptable seqnum received");
-    return GST_FLOW_OK;
-  }
-probation_seqnum:
-  {
-    GST_WARNING ("probation: seqnr %d != expected %d", seqnr, expected);
-    src->curr_probation = src->probation;
-    src->stats.max_seq = seqnr;
-    return GST_FLOW_OK;
-  }
 }
 
 /**
@@ -1160,6 +1177,8 @@ rtp_source_send_rtp (RTPSource * src, RTPPacketInfo * pinfo)
   src->stats.packets_sent += pinfo->packets;
   src->stats.octets_sent += pinfo->payload_len;
   src->bytes_sent += pinfo->payload_len;
+  /* we are also a receiver of our packets */
+  update_receiver_stats (src, pinfo);
 
   running_time = pinfo->running_time;
 
@@ -1579,6 +1598,67 @@ rtp_source_get_last_rb (RTPSource * src, guint8 * fractionlost,
   return TRUE;
 }
 
+gboolean
+find_conflicting_address (GList * conflicting_addresses,
+    GSocketAddress * address, GstClockTime time)
+{
+  GList *item;
+
+  for (item = conflicting_addresses; item; item = g_list_next (item)) {
+    RTPConflictingAddress *known_conflict = item->data;
+
+    if (__g_socket_address_equal (address, known_conflict->address)) {
+      known_conflict->time = time;
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+GList *
+add_conflicting_address (GList * conflicting_addresses,
+    GSocketAddress * address, GstClockTime time)
+{
+  RTPConflictingAddress *new_conflict;
+
+  new_conflict = g_slice_new (RTPConflictingAddress);
+
+  new_conflict->address = G_SOCKET_ADDRESS (g_object_ref (address));
+  new_conflict->time = time;
+
+  return g_list_prepend (conflicting_addresses, new_conflict);
+}
+
+GList *
+timeout_conflicting_addresses (GList * conflicting_addresses,
+    GstClockTime current_time)
+{
+  GList *item;
+  /* "a relatively long time" -- RFC 3550 section 8.2 */
+  const GstClockTime collision_timeout =
+      RTP_STATS_MIN_INTERVAL * GST_SECOND * 10;
+
+  item = g_list_first (conflicting_addresses);
+  while (item) {
+    RTPConflictingAddress *known_conflict = item->data;
+    GList *next_item = g_list_next (item);
+
+    if (known_conflict->time < current_time - collision_timeout) {
+      gchar *buf;
+
+      conflicting_addresses = g_list_delete_link (conflicting_addresses, item);
+      buf = __g_socket_address_to_string (known_conflict->address);
+      GST_DEBUG ("collision %p timed out: %s", known_conflict, buf);
+      g_free (buf);
+      rtp_conflicting_address_free (known_conflict);
+    }
+    item = next_item;
+  }
+
+  return conflicting_addresses;
+}
+
 /**
  * rtp_source_find_conflicting_address:
  * @src: The source the packet came in
@@ -1594,19 +1674,7 @@ gboolean
 rtp_source_find_conflicting_address (RTPSource * src, GSocketAddress * address,
     GstClockTime time)
 {
-  GList *item;
-
-  for (item = g_list_first (src->conflicting_addresses);
-      item; item = g_list_next (item)) {
-    RTPConflictingAddress *known_conflict = item->data;
-
-    if (__g_socket_address_equal (address, known_conflict->address)) {
-      known_conflict->time = time;
-      return TRUE;
-    }
-  }
-
-  return FALSE;
+  return find_conflicting_address (src->conflicting_addresses, address, time);
 }
 
 /**
@@ -1621,22 +1689,14 @@ void
 rtp_source_add_conflicting_address (RTPSource * src,
     GSocketAddress * address, GstClockTime time)
 {
-  RTPConflictingAddress *new_conflict;
-
-  new_conflict = g_new0 (RTPConflictingAddress, 1);
-
-  new_conflict->address = G_SOCKET_ADDRESS (g_object_ref (address));
-  new_conflict->time = time;
-
-  src->conflicting_addresses = g_list_prepend (src->conflicting_addresses,
-      new_conflict);
+  src->conflicting_addresses =
+      add_conflicting_address (src->conflicting_addresses, address, time);
 }
 
 /**
  * rtp_source_timeout:
  * @src: The #RTPSource
  * @current_time: The current time
- * @collision_timeout: The amount of time after which a collision is timed out
  * @feedback_retention_window: The running time before which retained feedback
  * packets have to be discarded
  *
@@ -1645,29 +1705,12 @@ rtp_source_add_conflicting_address (RTPSource * src,
  */
 void
 rtp_source_timeout (RTPSource * src, GstClockTime current_time,
-    GstClockTime collision_timeout, GstClockTime feedback_retention_window)
+    GstClockTime feedback_retention_window)
 {
-  GList *item;
   GstRTCPPacket *pkt;
 
-  item = g_list_first (src->conflicting_addresses);
-  while (item) {
-    RTPConflictingAddress *known_conflict = item->data;
-    GList *next_item = g_list_next (item);
-
-    if (known_conflict->time < current_time - collision_timeout) {
-      gchar *buf;
-
-      src->conflicting_addresses =
-          g_list_delete_link (src->conflicting_addresses, item);
-      buf = __g_socket_address_to_string (known_conflict->address);
-      GST_DEBUG ("collision %p timed out: %s", known_conflict, buf);
-      g_free (buf);
-      g_object_unref (known_conflict->address);
-      g_free (known_conflict);
-    }
-    item = next_item;
-  }
+  src->conflicting_addresses =
+      timeout_conflicting_addresses (src->conflicting_addresses, current_time);
 
   /* Time out AVPF packets that are older than the desired length */
   while ((pkt = g_queue_peek_tail (src->retained_feedback)) &&

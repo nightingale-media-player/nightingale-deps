@@ -89,7 +89,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-gcc-inline-assembly.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -163,6 +162,8 @@ am_libgstrtpmanager_la_OBJECTS = libgstrtpmanager_la-gstrtpmanager.lo \
 	libgstrtpmanager_la-gstrtpmux.lo \
 	libgstrtpmanager_la-gstrtpptdemux.lo \
 	libgstrtpmanager_la-gstrtprtxqueue.lo \
+	libgstrtpmanager_la-gstrtprtxreceive.lo \
+	libgstrtpmanager_la-gstrtprtxsend.lo \
 	libgstrtpmanager_la-gstrtpssrcdemux.lo \
 	libgstrtpmanager_la-rtpjitterbuffer.lo \
 	libgstrtpmanager_la-rtpsession.lo \
@@ -289,9 +290,7 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
-
-# FIXME 0.11: ignore GValueArray warnings for now until this is sorted
-ERROR_CFLAGS = 
+ERROR_CFLAGS = @ERROR_CFLAGS@
 ERROR_CXXFLAGS = @ERROR_CXXFLAGS@
 ERROR_OBJCFLAGS = @ERROR_OBJCFLAGS@
 EXEEXT = @EXEEXT@
@@ -500,7 +499,6 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
-XVIDEO_LIBS = @XVIDEO_LIBS@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -577,6 +575,8 @@ libgstrtpmanager_la_SOURCES = gstrtpmanager.c \
 			      gstrtpmux.c \
 			      gstrtpptdemux.c \
 			      gstrtprtxqueue.c \
+			      gstrtprtxreceive.c \
+			      gstrtprtxsend.c \
 			      gstrtpssrcdemux.c \
 			      rtpjitterbuffer.c      \
 			      rtpsession.c      \
@@ -591,6 +591,8 @@ noinst_HEADERS = gstrtpbin.h \
                  gstrtpptdemux.h \
                  gstrtpssrcdemux.h \
                  gstrtprtxqueue.h \
+                 gstrtprtxreceive.h \
+                 gstrtprtxsend.h \
                  rtpjitterbuffer.h \
 		 rtpsession.h  \
 		 rtpsource.h  \
@@ -692,6 +694,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtpmanager_la-gstrtpmux.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtpmanager_la-gstrtpptdemux.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtpmanager_la-gstrtprtxqueue.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtpmanager_la-gstrtprtxreceive.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtpmanager_la-gstrtprtxsend.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtpmanager_la-gstrtpsession.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtpmanager_la-gstrtpssrcdemux.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstrtpmanager_la-rtpjitterbuffer.Plo@am__quote@
@@ -771,6 +775,20 @@ libgstrtpmanager_la-gstrtprtxqueue.lo: gstrtprtxqueue.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstrtprtxqueue.c' object='libgstrtpmanager_la-gstrtprtxqueue.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstrtpmanager_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtpmanager_la_CFLAGS) $(CFLAGS) -c -o libgstrtpmanager_la-gstrtprtxqueue.lo `test -f 'gstrtprtxqueue.c' || echo '$(srcdir)/'`gstrtprtxqueue.c
+
+libgstrtpmanager_la-gstrtprtxreceive.lo: gstrtprtxreceive.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstrtpmanager_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtpmanager_la_CFLAGS) $(CFLAGS) -MT libgstrtpmanager_la-gstrtprtxreceive.lo -MD -MP -MF $(DEPDIR)/libgstrtpmanager_la-gstrtprtxreceive.Tpo -c -o libgstrtpmanager_la-gstrtprtxreceive.lo `test -f 'gstrtprtxreceive.c' || echo '$(srcdir)/'`gstrtprtxreceive.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstrtpmanager_la-gstrtprtxreceive.Tpo $(DEPDIR)/libgstrtpmanager_la-gstrtprtxreceive.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstrtprtxreceive.c' object='libgstrtpmanager_la-gstrtprtxreceive.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstrtpmanager_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtpmanager_la_CFLAGS) $(CFLAGS) -c -o libgstrtpmanager_la-gstrtprtxreceive.lo `test -f 'gstrtprtxreceive.c' || echo '$(srcdir)/'`gstrtprtxreceive.c
+
+libgstrtpmanager_la-gstrtprtxsend.lo: gstrtprtxsend.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstrtpmanager_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtpmanager_la_CFLAGS) $(CFLAGS) -MT libgstrtpmanager_la-gstrtprtxsend.lo -MD -MP -MF $(DEPDIR)/libgstrtpmanager_la-gstrtprtxsend.Tpo -c -o libgstrtpmanager_la-gstrtprtxsend.lo `test -f 'gstrtprtxsend.c' || echo '$(srcdir)/'`gstrtprtxsend.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstrtpmanager_la-gstrtprtxsend.Tpo $(DEPDIR)/libgstrtpmanager_la-gstrtprtxsend.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstrtprtxsend.c' object='libgstrtpmanager_la-gstrtprtxsend.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstrtpmanager_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtpmanager_la_CFLAGS) $(CFLAGS) -c -o libgstrtpmanager_la-gstrtprtxsend.lo `test -f 'gstrtprtxsend.c' || echo '$(srcdir)/'`gstrtprtxsend.c
 
 libgstrtpmanager_la-gstrtpssrcdemux.lo: gstrtpssrcdemux.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstrtpmanager_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstrtpmanager_la_CFLAGS) $(CFLAGS) -MT libgstrtpmanager_la-gstrtpssrcdemux.lo -MD -MP -MF $(DEPDIR)/libgstrtpmanager_la-gstrtpssrcdemux.Tpo -c -o libgstrtpmanager_la-gstrtpssrcdemux.lo `test -f 'gstrtpssrcdemux.c' || echo '$(srcdir)/'`gstrtpssrcdemux.c

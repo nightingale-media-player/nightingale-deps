@@ -129,6 +129,12 @@ typedef struct _GstMatroskaMux {
 
   /* GstForceKeyUnit event */
   GstEvent       *force_key_unit_event;
+
+  /* Flag to ease handling of WebM specifics */
+  gboolean is_webm;
+
+  /* used uids */
+  GArray *used_uids;
 } GstMatroskaMux;
 
 typedef struct _GstMatroskaMuxClass {

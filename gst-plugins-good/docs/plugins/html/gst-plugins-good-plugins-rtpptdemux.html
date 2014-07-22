@@ -2,34 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>rtpptdemux</title>
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: rtpptdemux</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-rtpmux.html" title="rtpmux">
 <link rel="next" href="gst-plugins-good-plugins-rtpsession.html" title="rtpsession">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-rtpmux.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-rtpsession.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-rtpptdemux.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-rtpptdemux.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-rtpptdemux.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-rtpptdemux.signals" class="shortcut">Signals</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtpptdemux.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtpptdemux.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_signals"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtpptdemux.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-rtpmux.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-rtpsession.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-good-plugins-rtpptdemux"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -37,54 +31,77 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-rtpptdemux.top_of_page"></a>rtpptdemux</span></h2>
 <p>rtpptdemux — Parses codec streams transmitted in the same RTP session</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-good-plugins-rtpptdemux.synopsis"></a><h2>Synopsis</h2>
-<a name="GstRtpPtDemux"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-struct" title="struct GstRtpPtDemux">GstRtpPtDemux</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpptdemux.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-clear-pt-map" title="The “clear-pt-map” signal">clear-pt-map</a></td>
+<td class="signal_flags">Action</td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-new-payload-type" title="The “new-payload-type” signal">new-payload-type</a></td>
+<td class="signal_flags">Run Last</td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-payload-type-change" title="The “payload-type-change” signal">payload-type-change</a></td>
+<td class="signal_flags">Run Last</td>
+</tr>
+<tr>
+<td class="signal_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-request-pt-map" title="The “request-pt-map” signal">request-pt-map</a></td>
+<td class="signal_flags">Run Last</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstRtpPtDemux"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpptdemux.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-struct" title="struct GstRtpPtDemux">GstRtpPtDemux</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-rtpptdemux.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----GstRtpPtDemux
-</pre>
-</div>
-<div class="refsect1">
-<a name="gst-plugins-good-plugins-rtpptdemux.signals"></a><h2>Signals</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-clear-pt-map" title='The "clear-pt-map" signal'>clear-pt-map</a>"                                   : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS"><code class="literal">Action</code></a>
-  "<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-new-payload-type" title='The "new-payload-type" signal'>new-payload-type</a>"                               : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
-  "<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-payload-type-change" title='The "payload-type-change" signal'>payload-type-change</a>"                            : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
-  "<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-request-pt-map" title='The "request-pt-map" signal'>request-pt-map</a>"                                 : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstRtpPtDemux
 </pre>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-rtpptdemux.description"></a><h2>Description</h2>
-<p>
-rtpptdemux acts as a demuxer for RTP packets based on the payload type of
+<p>rtpptdemux acts as a demuxer for RTP packets based on the payload type of
 the packets. Its main purpose is to allow an application to easily receive
-and decode an RTP stream with multiple payload types.
-</p>
-<p>
-For each payload type that is detected, a new pad will be created and the
-<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-new-payload-type" title='The "new-payload-type" signal'><span class="type">"new-payload-type"</span></a> signal will be emitted. When the payload for
-the RTP stream changes, the <a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-payload-type-change" title='The "payload-type-change" signal'><span class="type">"payload-type-change"</span></a> signal will be
-emitted.
-</p>
-<p>
-The element will try to set complete and unique application/x-rtp caps on the
+and decode an RTP stream with multiple payload types.</p>
+<p>For each payload type that is detected, a new pad will be created and the
+<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-new-payload-type" title="The “new-payload-type” signal"><span class="type">“new-payload-type”</span></a> signal will be emitted. When the payload for
+the RTP stream changes, the <a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-payload-type-change" title="The “payload-type-change” signal"><span class="type">“payload-type-change”</span></a> signal will be
+emitted.</p>
+<p>The element will try to set complete and unique application/x-rtp caps on the
 outgoing buffers and pads based on the result of the
-<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-request-pt-map" title='The "request-pt-map" signal'><span class="type">"request-pt-map"</span></a> signal.
-</p>
-<p>
-</p>
+<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux-request-pt-map" title="The “request-pt-map” signal"><span class="type">“request-pt-map”</span></a> signal.</p>
 <div class="refsect2">
-<a name="id-1.2.129.6.5.1"></a><h3>Example pipelines</h3>
+<a name="id-1.2.129.7.5"></a><h3>Example pipelines</h3>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -98,15 +115,10 @@ outgoing buffers and pads based on the result of the
  Takes an RTP stream and send the RTP packets with the first detected
 payload type to fakesink, discarding the other payload types.
 </div>
-<p>
-</p>
-<p>
-Last reviewed on 2007-05-28 (0.10.5)
-</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.129.6.7.1"></a><h3>Element Information</h3>
+<a name="id-1.2.129.7.6.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -132,7 +144,7 @@ Last reviewed on 2007-05-28 (0.10.5)
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.129.6.7.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.129.7.6.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -187,7 +199,10 @@ Last reviewed on 2007-05-28 (0.10.5)
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-rtpptdemux.details"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-rtpptdemux.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpptdemux.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstRtpPtDemux-struct"></a><h3>struct GstRtpPtDemux</h3>
 <pre class="programlisting">struct GstRtpPtDemux;</pre>
@@ -198,129 +213,159 @@ Last reviewed on 2007-05-28 (0.10.5)
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-rtpptdemux.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2">
-<a name="GstRtpPtDemux-clear-pt-map"></a><h3>The <code class="literal">"clear-pt-map"</code> signal</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux"><span class="type">GstRtpPtDemux</span></a> *demux,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>       user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-ACTION:CAPS"><code class="literal">Action</code></a></pre>
-<p>
-The application can call this signal to instruct the element to discard the
-currently cached payload type map.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="GstRtpPtDemux-clear-pt-map"></a><h3>The <code class="literal">“clear-pt-map”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux"><span class="type">GstRtpPtDemux</span></a> *demux,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>       user_data)</pre>
+<p>The application can call this signal to instruct the element to discard the
+currently cached payload type map.</p>
+<div class="refsect3">
+<a name="id-1.2.129.10.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>demux</code></em> :</span></p></td>
-<td>the object which received the signal</td>
+<td class="parameter_name"><p>demux</p></td>
+<td class="parameter_description"><p>the object which received the signal</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<p>Flags: Action</p>
+</div>
 <hr>
 <div class="refsect2">
-<a name="GstRtpPtDemux-new-payload-type"></a><h3>The <code class="literal">"new-payload-type"</code> signal</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux"><span class="type">GstRtpPtDemux</span></a> *demux,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>          pt,
-                                                        <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a>        *pad,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>       user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
-<p>
-Emited when a new payload type pad has been created in <em class="parameter"><code>demux</code></em>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="GstRtpPtDemux-new-payload-type"></a><h3>The <code class="literal">“new-payload-type”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux"><span class="type">GstRtpPtDemux</span></a> *demux,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>          pt,
+               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a>        *pad,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>       user_data)</pre>
+<p>Emited when a new payload type pad has been created in <em class="parameter"><code>demux</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.129.10.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>demux</code></em> :</span></p></td>
-<td>the object which received the signal</td>
+<td class="parameter_name"><p>demux</p></td>
+<td class="parameter_description"><p>the object which received the signal</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pt</code></em> :</span></p></td>
-<td>the payload type</td>
+<td class="parameter_name"><p>pt</p></td>
+<td class="parameter_description"><p>the payload type</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pad</code></em> :</span></p></td>
-<td>the pad with the new payload</td>
+<td class="parameter_name"><p>pad</p></td>
+<td class="parameter_description"><p>the pad with the new payload</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<p>Flags: Run Last</p>
+</div>
 <hr>
 <div class="refsect2">
-<a name="GstRtpPtDemux-payload-type-change"></a><h3>The <code class="literal">"payload-type-change"</code> signal</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux"><span class="type">GstRtpPtDemux</span></a> *demux,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>          pt,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>       user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
-<p>
-Emited when the payload type changed.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="GstRtpPtDemux-payload-type-change"></a><h3>The <code class="literal">“payload-type-change”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux"><span class="type">GstRtpPtDemux</span></a> *demux,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>          pt,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>       user_data)</pre>
+<p>Emited when the payload type changed.</p>
+<div class="refsect3">
+<a name="id-1.2.129.10.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>demux</code></em> :</span></p></td>
-<td>the object which received the signal</td>
+<td class="parameter_name"><p>demux</p></td>
+<td class="parameter_description"><p>the object which received the signal</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pt</code></em> :</span></p></td>
-<td>the new payload type</td>
+<td class="parameter_name"><p>pt</p></td>
+<td class="parameter_description"><p>the new payload type</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<p>Flags: Run Last</p>
+</div>
 <hr>
 <div class="refsect2">
-<a name="GstRtpPtDemux-request-pt-map"></a><h3>The <code class="literal">"request-pt-map"</code> signal</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a>*            user_function                      (<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux"><span class="type">GstRtpPtDemux</span></a> *demux,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>          pt,
-                                                        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>       user_data)      : <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Signals.html#G-SIGNAL-RUN-LAST:CAPS"><code class="literal">Run Last</code></a></pre>
-<p>
-Request the payload type as <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> for <em class="parameter"><code>pt</code></em>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="GstRtpPtDemux-request-pt-map"></a><h3>The <code class="literal">“request-pt-map”</code> signal</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a>*
+user_function (<a class="link" href="gst-plugins-good-plugins-rtpptdemux.html#GstRtpPtDemux"><span class="type">GstRtpPtDemux</span></a> *demux,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>          pt,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>       user_data)</pre>
+<p>Request the payload type as <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> for <em class="parameter"><code>pt</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.129.10.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>demux</code></em> :</span></p></td>
-<td>the object which received the signal</td>
+<td class="parameter_name"><p>demux</p></td>
+<td class="parameter_description"><p>the object which received the signal</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>pt</code></em> :</span></p></td>
-<td>the payload type</td>
+<td class="parameter_name"><p>pt</p></td>
+<td class="parameter_description"><p>the payload type</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>user_data</code></em> :</span></p></td>
-<td>user data set when the signal handler was connected.</td>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
+</div>
+<p>Flags: Run Last</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

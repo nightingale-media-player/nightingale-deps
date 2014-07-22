@@ -19,6 +19,22 @@
  * Boston, MA 02110-1301, USA.
  */
 
+/**
+ * SECTION:element-shout2send
+ *
+ * shout2send pushes a media stream to an Icecast server
+ *
+ * <refsect2>
+ * <title>Example launch line</title>
+ * |[
+ * gst-launch uridecodebin uri=file:///path/to/audiofile ! audioconvert ! vorbisenc ! oggmux ! shout2send mount=/stream.ogg port=8000 username=source password=somepassword ip=server_IP_address_or_hostname
+ * ]| This pipeline demuxes, decodes, re-encodes and re-muxes an audio
+ * media file into oggvorbis and sends the resulting stream to an Icecast
+ * server. Properties mount, port, username and password are all server-config
+ * dependent.
+ * </refsect2>
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -35,14 +51,14 @@ GST_DEBUG_CATEGORY_STATIC (shout2_debug);
 
 enum
 {
-  SIGNAL_CONNECTION_PROBLEM,    /* 0.11 FIXME: remove this */
+  SIGNAL_CONNECTION_PROBLEM,    /* FIXME 2.0: remove this */
   LAST_SIGNAL
 };
 
 enum
 {
   ARG_0,
-  ARG_IP,                       /* the ip of the server */
+  ARG_IP,                       /* the IP address or hostname of the server */
   ARG_PORT,                     /* the encoder port number on the server */
   ARG_PASSWORD,                 /* the encoder password on the server */
   ARG_USERNAME,                 /* the encoder username on the server */
@@ -54,7 +70,7 @@ enum
   ARG_PROTOCOL,                 /* Protocol to connect with */
 
   ARG_MOUNT,                    /* mountpoint of stream (icecast only) */
-  ARG_URL                       /* Url of stream (I'm guessing) */
+  ARG_URL                       /* the stream's homepage URL */
 };
 
 #define DEFAULT_IP           "127.0.0.1"
@@ -142,8 +158,9 @@ gst_shout2send_class_init (GstShout2sendClass * klass)
   gobject_class->get_property = gst_shout2send_get_property;
   gobject_class->finalize = (GObjectFinalizeFunc) gst_shout2send_finalize;
 
+  /* FIXME: 2.0 Should probably change this prop name to "server" */
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_IP,
-      g_param_spec_string ("ip", "ip", "ip", DEFAULT_IP,
+      g_param_spec_string ("ip", "ip", "IP address or hostname", DEFAULT_IP,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_PORT,
       g_param_spec_int ("port", "port", "port", 1, G_MAXUSHORT, DEFAULT_PORT,
@@ -187,8 +204,8 @@ gst_shout2send_class_init (GstShout2sendClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_URL,
-      g_param_spec_string ("url", "url", "url", DEFAULT_URL,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+      g_param_spec_string ("url", "url", "the stream's homepage URL",
+          DEFAULT_URL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /* signals */
   gst_shout2send_signals[SIGNAL_CONNECTION_PROBLEM] =
@@ -238,9 +255,9 @@ gst_shout2send_init (GstShout2send * shout2send)
   shout2send->protocol = DEFAULT_PROTOCOL;
   shout2send->ispublic = DEFAULT_PUBLIC;
 
+  shout2send->format = -1;
   shout2send->tags = gst_tag_list_new_empty ();
   shout2send->conn = NULL;
-  shout2send->audio_format = SHOUT_FORMAT_VORBIS;
   shout2send->connected = FALSE;
   shout2send->songmetadata = NULL;
   shout2send->songartist = NULL;
@@ -365,8 +382,8 @@ gst_shout2send_event (GstBaseSink * sink, GstEvent * event)
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_TAG:{
-      /* vorbis audio doesnt need metadata setting on the icecast level, only mp3 */
-      if (shout2send->tags && shout2send->audio_format == SHOUT_FORMAT_MP3) {
+      /* vorbis audio doesn't need metadata setting on the icecast level, only mp3 */
+      if (shout2send->tags && shout2send->format == SHOUT_FORMAT_MP3) {
         GstTagList *list;
 
         gst_event_parse_tag (event, &list);
@@ -433,10 +450,8 @@ gst_shout2send_start (GstBaseSink * basesink)
   if (shout_set_protocol (sink->conn, proto) != SHOUTERR_SUCCESS)
     goto set_failed;
 
-  /* --- FIXME: shout requires an ip, and fails if it is given a host. */
-  /* may want to put convert_to_ip(shout2send->ip) here */
   cur_prop = "ip";
-  GST_DEBUG_OBJECT (sink, "setting ip: %s", sink->ip);
+  GST_DEBUG_OBJECT (sink, "setting IP/hostname: %s", sink->ip);
   if (shout_set_host (sink->conn, sink->ip) != SHOUTERR_SUCCESS)
     goto set_failed;
 
@@ -501,19 +516,15 @@ set_failed:
   }
 }
 
-static gboolean
+static GstFlowReturn
 gst_shout2send_connect (GstShout2send * sink)
 {
-  const char *format =
-      (sink->audio_format == SHOUT_FORMAT_VORBIS) ? "vorbis" :
-      ((sink->audio_format == SHOUT_FORMAT_MP3) ? "mp3" : "unknown");
-#ifdef SHOUT_FORMAT_WEBM
-  if (sink->audio_format == SHOUT_FORMAT_WEBM)
-    format = "webm";
-#endif
-  GST_DEBUG_OBJECT (sink, "Connection format is: %s", format);
+  GST_DEBUG_OBJECT (sink, "Connection format is: %d", sink->format);
 
-  if (shout_set_format (sink->conn, sink->audio_format) != SHOUTERR_SUCCESS)
+  if (sink->format == -1)
+    goto no_caps;
+
+  if (shout_set_format (sink->conn, sink->format) != SHOUTERR_SUCCESS)
     goto could_not_set_format;
 
   if (shout_open (sink->conn) != SHOUTERR_SUCCESS)
@@ -533,14 +544,21 @@ gst_shout2send_connect (GstShout2send * sink)
     shout_metadata_free (pmetadata);
   }
 
-  return TRUE;
+  return GST_FLOW_OK;
 
 /* ERRORS */
+no_caps:
+  {
+    GST_ELEMENT_ERROR (sink, CORE, NEGOTIATION, (NULL),
+        ("No input caps received."));
+    return GST_FLOW_NOT_NEGOTIATED;
+  }
+
 could_not_set_format:
   {
     GST_ELEMENT_ERROR (sink, LIBRARY, SETTINGS, (NULL),
         ("Error setting connection format: %s", shout_get_error (sink->conn)));
-    return FALSE;
+    return GST_FLOW_ERROR;
   }
 
 could_not_connect:
@@ -550,7 +568,7 @@ could_not_connect:
         ("shout_open() failed: err=%s", shout_get_error (sink->conn)));
     g_signal_emit (sink, gst_shout2send_signals[SIGNAL_CONNECTION_PROBLEM], 0,
         shout_get_errno (sink->conn));
-    return FALSE;
+    return GST_FLOW_ERROR;
   }
 }
 
@@ -572,6 +590,7 @@ gst_shout2send_stop (GstBaseSink * basesink)
   }
 
   sink->connected = FALSE;
+  sink->format = -1;
 
   return TRUE;
 }
@@ -608,16 +627,18 @@ gst_shout2send_render (GstBaseSink * basesink, GstBuffer * buf)
   GstShout2send *sink;
   glong ret;
   gint delay;
-  GstFlowReturn fret;
+  GstFlowReturn fret = GST_FLOW_OK;
   GstMapInfo map;
 
   sink = GST_SHOUT2SEND (basesink);
 
-  /* presumably we connect here because we need to know the format before
-   * we can set up the connection, which we don't know yet in _start() */
+  /* we connect here because we need to know the format before we can set up
+   * the connection, which we don't know yet in _start(), and also because we
+   * don't want to block the application thread */
   if (!sink->connected) {
-    if (!gst_shout2send_connect (sink))
-      return GST_FLOW_ERROR;
+    fret = gst_shout2send_connect (sink);
+    if (fret != GST_FLOW_OK)
+      goto done;
   }
 
   delay = shout_delay (sink->conn);
@@ -629,7 +650,7 @@ gst_shout2send_render (GstBaseSink * basesink, GstBuffer * buf)
 
       fret = gst_base_sink_wait_preroll (basesink);
       if (fret != GST_FLOW_OK)
-        return fret;
+        goto done;
     }
   } else {
     GST_LOG_OBJECT (sink, "we're %d msec late", -delay);
@@ -642,7 +663,9 @@ gst_shout2send_render (GstBaseSink * basesink, GstBuffer * buf)
   if (ret != SHOUTERR_SUCCESS)
     goto send_error;
 
-  return GST_FLOW_OK;
+done:
+
+  return fret;
 
 /* ERRORS */
 send_error:
@@ -708,7 +731,7 @@ gst_shout2send_set_property (GObject * object, guint prop_id,
         g_free (shout2send->mount);
       shout2send->mount = g_strdup (g_value_get_string (value));
       break;
-    case ARG_URL:              /* Url of the stream (I'm guessing) */
+    case ARG_URL:              /* the stream's homepage URL */
       if (shout2send->url)
         g_free (shout2send->url);
       shout2send->url = g_strdup (g_value_get_string (value));
@@ -758,7 +781,7 @@ gst_shout2send_get_property (GObject * object, guint prop_id,
     case ARG_MOUNT:            /* mountpoint of stream (icecast only) */
       g_value_set_string (value, shout2send->mount);
       break;
-    case ARG_URL:              /* Url of stream (I'm guessing) */
+    case ARG_URL:              /* the stream's homepage URL */
       g_value_set_string (value, shout2send->url);
       break;
     default:
@@ -781,12 +804,12 @@ gst_shout2send_setcaps (GstBaseSink * basesink, GstCaps * caps)
   GST_DEBUG_OBJECT (shout2send, "mimetype of caps given is: %s", mimetype);
 
   if (!strcmp (mimetype, "audio/mpeg")) {
-    shout2send->audio_format = SHOUT_FORMAT_MP3;
-  } else if (!strcmp (mimetype, "application/ogg")) {
-    shout2send->audio_format = SHOUT_FORMAT_VORBIS;
+    shout2send->format = SHOUT_FORMAT_MP3;
+  } else if (g_str_has_suffix (mimetype, "/ogg")) {
+    shout2send->format = SHOUT_FORMAT_OGG;
 #ifdef SHOUT_FORMAT_WEBM
-  } else if (!strcmp (mimetype, "video/webm")) {
-    shout2send->audio_format = SHOUT_FORMAT_WEBM;
+  } else if (g_str_has_suffix (mimetype, "/webm")) {
+    shout2send->format = SHOUT_FORMAT_WEBM;
 #endif
   } else {
     ret = FALSE;

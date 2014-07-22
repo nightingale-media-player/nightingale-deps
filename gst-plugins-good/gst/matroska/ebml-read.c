@@ -30,10 +30,9 @@
 
 #include <math.h>
 
-/* NAN isn't defined in xmath.h in MSVC10 */
+/* NAN is supposed to be in math.h, Microsoft defines it in xmath.h */
 #ifdef _MSC_VER
-#define INFINITY (DBL_MAX+DBL_MAX)
-#define NAN (INFINITY-INFINITY)
+#include <xmath.h>
 #endif
 
 /* If everything goes wrong try 0.0/0.0 which should be NAN */
@@ -378,7 +377,7 @@ gst_ebml_read_bytes (GstEbmlRead * ebml, guint32 * id, const guint8 ** data,
     return GST_FLOW_ERROR;      /* FIXME: do proper error handling */
 
   *data = NULL;
-  if (G_LIKELY (length >= 0)) {
+  if (G_LIKELY (length > 0)) {
     if (!gst_byte_reader_get_data (gst_ebml_read_br (ebml), length, data))
       return GST_FLOW_PARSE;
   }

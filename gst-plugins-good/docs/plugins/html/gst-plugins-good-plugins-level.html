@@ -2,34 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>level</title>
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: level</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-jpegenc.html" title="jpegenc">
 <link rel="next" href="gst-plugins-good-plugins-matroskamux.html" title="matroskamux">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-jpegenc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-matroskamux.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-level.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-level.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-level.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-level.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-level.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-level.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-level.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-jpegenc.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-matroskamux.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-good-plugins-level"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -37,43 +31,75 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-level.top_of_page"></a>level</span></h2>
 <p>level — RMS/Peak/Decaying Peak Level messager for audio/raw</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-good-plugins-level.synopsis"></a><h2>Synopsis</h2>
-<a name="GstLevel"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel-struct" title="struct GstLevel">GstLevel</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-level.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--interval" title="The “interval” property">interval</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--message" title="The “message” property">message</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--peak-falloff" title="The “peak-falloff” property">peak-falloff</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">guint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--peak-ttl" title="The “peak-ttl” property">peak-ttl</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--post-messages" title="The “post-messages” property">post-messages</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstLevel"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-level.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-level.html#GstLevel-struct" title="struct GstLevel">GstLevel</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-level.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
-                           +----GstLevel
-</pre>
-</div>
-<div class="refsect1">
-<a name="gst-plugins-good-plugins-level.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--interval" title='The "interval" property'>interval</a>"                 <span class="type">guint64</span>               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--message" title='The "message" property'>message</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--peak-falloff" title='The "peak-falloff" property'>peak-falloff</a>"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--peak-ttl" title='The "peak-ttl" property'>peak-ttl</a>"                 <span class="type">guint64</span>               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--post-messages" title='The "post-messages" property'>post-messages</a>"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
+                    <span class="lineart">╰──</span> GstLevel
 </pre>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-level.description"></a><h2>Description</h2>
-<p>
-Level analyses incoming audio buffers and, if the <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--message" title='The "message" property'><span class="type">"message"</span></a> property
-is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a>, generates an element message named
+<p>Level analyses incoming audio buffers and, if the <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--message" title="The “message” property"><span class="type">“message”</span></a> property
+is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a>, generates an element message named</p>
 <code class="classname">"level"</code>:
-after each interval of time given by the <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--interval" title='The "interval" property'><span class="type">"interval"</span></a> property.
-The message's structure contains these fields:
-</p>
+<p>after each interval of time given by the <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--interval" title="The “interval” property"><span class="type">“interval”</span></a> property.
+The message's structure contains these fields:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>
   <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a>
@@ -110,12 +136,10 @@ The message's structure contains these fields:
   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Value-arrays.html#GValueArray"><span class="type">GValueArray</span></a> of <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>
   <code class="classname">"decay"</code>:
   the decaying peak power level in dB for each channel
-  the decaying peak level follows the peak level, but starts dropping
-  if no new peak is reached after the time given by
-  the <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--peak-ttl" title='The "peak-ttl" property'>the time to live</a>.
-  When the decaying peak level drops, it does so at the decay rate
-  as specified by the
-  <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--peak-falloff" title='The "peak-falloff" property'>the peak falloff rate</a>.
+  The decaying peak level follows the peak level, but starts dropping if no
+  new peak is reached after the time given by the <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--peak-ttl" title="The “peak-ttl” property"><span class="type">“peak-ttl”</span></a>.
+  When the decaying peak level drops, it does so at the decay rate as
+  specified by the <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--peak-falloff" title="The “peak-falloff” property"><span class="type">“peak-falloff”</span></a>.
   </p></li>
 <li class="listitem"><p>
   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Value-arrays.html#GValueArray"><span class="type">GValueArray</span></a> of <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>
@@ -123,12 +147,8 @@ The message's structure contains these fields:
   the Root Mean Square (or average power) level in dB for each channel
   </p></li>
 </ul></div>
-<p>
-</p>
-<p>
-</p>
 <div class="refsect2">
-<a name="id-1.2.74.6.3.1"></a><h3>Example application</h3>
+<a name="id-1.2.74.7.6"></a><h3>Example application</h3>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -419,12 +439,10 @@ The message's structure contains these fields:
 </div>
 
 </div>
-<p>
-</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.74.6.4.1"></a><h3>Element Information</h3>
+<a name="id-1.2.74.7.7.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -450,7 +468,7 @@ The message's structure contains these fields:
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.74.6.4.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.74.7.7.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -505,57 +523,61 @@ The message's structure contains these fields:
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-level.details"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-level.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-level.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstLevel-struct"></a><h3>struct GstLevel</h3>
 <pre class="programlisting">struct GstLevel;</pre>
-<p>
-Opaque data structure.
-</p>
+<p>Opaque data structure.</p>
 </div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-level.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstLevel--interval"></a><h3>The <code class="literal">"interval"</code> property</h3>
-<pre class="programlisting">  "interval"                 <span class="type">guint64</span>               : Read / Write</pre>
+<a name="GstLevel--interval"></a><h3>The <code class="literal">“interval”</code> property</h3>
+<pre class="programlisting">  “interval”                 <span class="type">guint64</span></pre>
 <p>Interval of time between message posts (in nanoseconds).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 100000000</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstLevel--message"></a><h3>The <code class="literal">"message"</code> property</h3>
-<pre class="programlisting">  "message"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstLevel--message"></a><h3>The <code class="literal">“message”</code> property</h3>
+<pre class="programlisting">  “message”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Post a 'level' message for each passed interval (deprecated).</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstLevel--peak-falloff"></a><h3>The <code class="literal">"peak-falloff"</code> property</h3>
-<pre class="programlisting">  "peak-falloff"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write</pre>
+<a name="GstLevel--peak-falloff"></a><h3>The <code class="literal">“peak-falloff”</code> property</h3>
+<pre class="programlisting">  “peak-falloff”             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a></pre>
 <p>Decay rate of decay peak after TTL (in dB/sec).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &gt;= 0</p>
 <p>Default value: 10</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstLevel--peak-ttl"></a><h3>The <code class="literal">"peak-ttl"</code> property</h3>
-<pre class="programlisting">  "peak-ttl"                 <span class="type">guint64</span>               : Read / Write</pre>
+<a name="GstLevel--peak-ttl"></a><h3>The <code class="literal">“peak-ttl”</code> property</h3>
+<pre class="programlisting">  “peak-ttl”                 <span class="type">guint64</span></pre>
 <p>Time To Live of decay peak before it falls back (in nanoseconds).</p>
+<p>Flags: Read / Write</p>
 <p>Default value: 300000000</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstLevel--post-messages"></a><h3>The <code class="literal">"post-messages"</code> property</h3>
-<pre class="programlisting">  "post-messages"            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
-<div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
-<h3 class="title">Warning</h3>
-<p><code class="literal">GstLevel:post-messages</code> is deprecated and should not be used in newly-written code. use the <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--post-messages" title='The "post-messages" property'><span class="type">"post-messages"</span></a> property</p>
+<a name="GstLevel--post-messages"></a><h3>The <code class="literal">“post-messages”</code> property</h3>
+<pre class="programlisting">  “post-messages”            <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Post messages on the bus with level information.</p>
+<div class="warning">
+<p><code class="literal">GstLevel:post-messages</code> is deprecated and should not be used in newly-written code.</p>
+<p>use the <a class="link" href="gst-plugins-good-plugins-level.html#GstLevel--post-messages" title="The “post-messages” property"><span class="type">“post-messages”</span></a> property</p>
 </div>
-<p>
-Post messages on the bus with level information.
-</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 <p class="since">Since 1.1.0</p>
 </div>
@@ -563,6 +585,6 @@ Post messages on the bus with level information.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

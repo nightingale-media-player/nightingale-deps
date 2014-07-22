@@ -886,18 +886,20 @@ gst_vp9_enc_set_property (GObject * object, guint prop_id,
 
       memset (&gst_vp9_enc->cfg.ts_target_bitrate, 0,
           sizeof (gst_vp9_enc->cfg.ts_target_bitrate));
-      if (va->n_values > VPX_TS_MAX_LAYERS) {
-        g_warning ("%s: Only %d layers allowed at maximum",
-            GST_ELEMENT_NAME (gst_vp9_enc), VPX_TS_MAX_LAYERS);
-      } else if (va) {
-        gint i;
-
-        for (i = 0; i < va->n_values; i++)
-          gst_vp9_enc->cfg.ts_target_bitrate[i] =
-              g_value_get_int (g_value_array_get_nth (va, i));
-        gst_vp9_enc->n_ts_target_bitrate = va->n_values;
-      } else {
+      if (va == NULL) {
         gst_vp9_enc->n_ts_target_bitrate = 0;
+      } else {
+        if (va->n_values > VPX_TS_MAX_LAYERS) {
+          g_warning ("%s: Only %d layers allowed at maximum",
+              GST_ELEMENT_NAME (gst_vp9_enc), VPX_TS_MAX_LAYERS);
+        } else {
+          gint i;
+
+          for (i = 0; i < va->n_values; i++)
+            gst_vp9_enc->cfg.ts_target_bitrate[i] =
+                g_value_get_int (g_value_array_get_nth (va, i));
+          gst_vp9_enc->n_ts_target_bitrate = va->n_values;
+        }
       }
       global = TRUE;
       break;
@@ -907,18 +909,18 @@ gst_vp9_enc_set_property (GObject * object, guint prop_id,
 
       memset (&gst_vp9_enc->cfg.ts_rate_decimator, 0,
           sizeof (gst_vp9_enc->cfg.ts_rate_decimator));
-      if (va->n_values > VPX_TS_MAX_LAYERS) {
+      if (va == NULL) {
+        gst_vp9_enc->n_ts_rate_decimator = 0;
+      } else if (va->n_values > VPX_TS_MAX_LAYERS) {
         g_warning ("%s: Only %d layers allowed at maximum",
             GST_ELEMENT_NAME (gst_vp9_enc), VPX_TS_MAX_LAYERS);
-      } else if (va) {
+      } else {
         gint i;
 
         for (i = 0; i < va->n_values; i++)
           gst_vp9_enc->cfg.ts_rate_decimator[i] =
               g_value_get_int (g_value_array_get_nth (va, i));
         gst_vp9_enc->n_ts_rate_decimator = va->n_values;
-      } else {
-        gst_vp9_enc->n_ts_rate_decimator = 0;
       }
       global = TRUE;
       break;
@@ -932,7 +934,7 @@ gst_vp9_enc_set_property (GObject * object, guint prop_id,
 
       memset (&gst_vp9_enc->cfg.ts_layer_id, 0,
           sizeof (gst_vp9_enc->cfg.ts_layer_id));
-      if (va->n_values > VPX_TS_MAX_PERIODICITY) {
+      if (va && va->n_values > VPX_TS_MAX_PERIODICITY) {
         g_warning ("%s: Only %d sized layer sequences allowed at maximum",
             GST_ELEMENT_NAME (gst_vp9_enc), VPX_TS_MAX_PERIODICITY);
       } else if (va) {

@@ -58,12 +58,6 @@
 /* Define if static plugins should be built */
 #undef GST_PLUGIN_BUILD_STATIC
 
-/* struct v4l2_buffer missing */
-#undef GST_V4L2_MISSING_BUFDECL
-
-/* I know the API is subject to change. */
-#undef G_UDEV_API_IS_SUBJECT_TO_CHANGE
-
 /* Define to enable aalib ASCII Art library (used by aasink). */
 #undef HAVE_AALIB
 
@@ -137,10 +131,6 @@
    */
 #undef HAVE_DCGETTEXT
 
-/* Define to 1 if you have the declaration of `V4L2_MEMORY_DMABUF', and to 0
-   if you don't. */
-#undef HAVE_DECL_V4L2_MEMORY_DMABUF
-
 /* Define to enable DirectSound plug-in (used by directsoundsink). */
 #undef HAVE_DIRECTSOUND
 
@@ -186,7 +176,7 @@
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
 
-/* Define to enable Video 4 Linux 2 (used by v4l2src). */
+/* Define to enable Video 4 Linux 2 (used by video4linux2). */
 #undef HAVE_GST_V4L2
 
 /* Whether gudev is available for device detection */
@@ -353,9 +343,6 @@
 
 /* Define to enable X Shared Memory extension. */
 #undef HAVE_XSHM
-
-/* Define to enable X11 XVideo extensions. */
-#undef HAVE_XVIDEO
 
 /* Define to enable zlib support for qtdemux/matroska. */
 #undef HAVE_ZLIB

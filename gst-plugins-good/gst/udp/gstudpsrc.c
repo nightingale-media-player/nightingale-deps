@@ -78,8 +78,7 @@
  * </itemizedlist>
  * The message is typically used to detect that no UDP arrives in the receiver
  * because it is blocked by a firewall.
- * </para>
- * <para>
+ *
  * A custom file descriptor can be configured with the
  * #GstUDPSrc:sockfd property. The socket will be closed when setting the
  * element to READY by default. This behaviour can be
@@ -101,8 +100,6 @@
  * gst-launch-1.0 -v udpsrc port=0 ! fakesink
  * ]| read udp packets from a free port.
  * </refsect2>
- *
- * Last reviewed on 2007-09-20 (0.10.7)
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -181,15 +178,9 @@ enum
 static void gst_udpsrc_uri_handler_init (gpointer g_iface, gpointer iface_data);
 
 static GstCaps *gst_udpsrc_getcaps (GstBaseSrc * src, GstCaps * filter);
-
 static GstFlowReturn gst_udpsrc_create (GstPushSrc * psrc, GstBuffer ** buf);
-
-static gboolean gst_udpsrc_start (GstBaseSrc * bsrc);
-
-static gboolean gst_udpsrc_stop (GstBaseSrc * bsrc);
-
+static gboolean gst_udpsrc_close (GstUDPSrc * src);
 static gboolean gst_udpsrc_unlock (GstBaseSrc * bsrc);
-
 static gboolean gst_udpsrc_unlock_stop (GstBaseSrc * bsrc);
 
 static void gst_udpsrc_finalize (GObject * object);
@@ -198,6 +189,9 @@ static void gst_udpsrc_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_udpsrc_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
+
+static GstStateChangeReturn gst_udpsrc_change_state (GstElement * element,
+    GstStateChange transition);
 
 #define gst_udpsrc_parent_class parent_class
 G_DEFINE_TYPE_WITH_CODE (GstUDPSrc, gst_udpsrc, GST_TYPE_PUSH_SRC,
@@ -295,8 +289,8 @@ gst_udpsrc_class_init (GstUDPSrcClass * klass)
       "Wim Taymans <wim@fluendo.com>, "
       "Thijs Vermeir <thijs.vermeir@barco.com>");
 
-  gstbasesrc_class->start = gst_udpsrc_start;
-  gstbasesrc_class->stop = gst_udpsrc_stop;
+  gstelement_class->change_state = gst_udpsrc_change_state;
+
   gstbasesrc_class->unlock = gst_udpsrc_unlock;
   gstbasesrc_class->unlock_stop = gst_udpsrc_unlock_stop;
   gstbasesrc_class->get_caps = gst_udpsrc_getcaps;
@@ -374,15 +368,26 @@ static GstCaps *
 gst_udpsrc_getcaps (GstBaseSrc * src, GstCaps * filter)
 {
   GstUDPSrc *udpsrc;
+  GstCaps *caps, *result;
 
   udpsrc = GST_UDPSRC (src);
 
-  if (udpsrc->caps) {
-    return (filter) ? gst_caps_intersect_full (filter, udpsrc->caps,
-        GST_CAPS_INTERSECT_FIRST) : gst_caps_ref (udpsrc->caps);
+  GST_OBJECT_LOCK (src);
+  if ((caps = udpsrc->caps))
+    gst_caps_ref (caps);
+  GST_OBJECT_UNLOCK (src);
+
+  if (caps) {
+    if (filter) {
+      result = gst_caps_intersect_full (filter, caps, GST_CAPS_INTERSECT_FIRST);
+      gst_caps_unref (caps);
+    } else {
+      result = caps;
+    }
   } else {
-    return (filter) ? gst_caps_ref (filter) : gst_caps_new_any ();
+    result = (filter) ? gst_caps_ref (filter) : gst_caps_new_any ();
   }
+  return result;
 }
 
 static GstFlowReturn
@@ -390,7 +395,7 @@ gst_udpsrc_create (GstPushSrc * psrc, GstBuffer ** buf)
 {
   GstFlowReturn ret;
   GstUDPSrc *udpsrc;
-  GstBuffer *outbuf;
+  GstBuffer *outbuf = NULL;
   GstMapInfo info;
   GSocketAddress *saddr = NULL;
   gsize offset;
@@ -417,8 +422,7 @@ retry:
     else
       timeout = -1;
 
-    GST_LOG_OBJECT (udpsrc, "doing select, timeout %" G_GUINT64_FORMAT,
-        timeout);
+    GST_LOG_OBJECT (udpsrc, "doing select, timeout %" G_GINT64_FORMAT, timeout);
 
     if (!g_socket_condition_timed_wait (udpsrc->used_socket, G_IO_IN | G_IO_PRI,
             timeout, udpsrc->cancellable, &err)) {
@@ -555,8 +559,10 @@ alloc_failed:
   }
 receive_error:
   {
-    gst_buffer_unmap (outbuf, &info);
-    gst_buffer_unref (outbuf);
+    if (outbuf != NULL) {
+      gst_buffer_unmap (outbuf, &info);
+      gst_buffer_unref (outbuf);
+    }
 
     if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_BUSY) ||
         g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
@@ -658,9 +664,7 @@ gst_udpsrc_set_property (GObject * object, guint prop_id, const GValue * value,
     case PROP_CAPS:
     {
       const GstCaps *new_caps_val = gst_value_get_caps (value);
-
       GstCaps *new_caps;
-
       GstCaps *old_caps;
 
       if (new_caps_val == NULL) {
@@ -669,11 +673,14 @@ gst_udpsrc_set_property (GObject * object, guint prop_id, const GValue * value,
         new_caps = gst_caps_copy (new_caps_val);
       }
 
+      GST_OBJECT_LOCK (udpsrc);
       old_caps = udpsrc->caps;
       udpsrc->caps = new_caps;
+      GST_OBJECT_UNLOCK (udpsrc);
       if (old_caps)
         gst_caps_unref (old_caps);
-      gst_pad_set_caps (GST_BASE_SRC (udpsrc)->srcpad, new_caps);
+
+      gst_pad_mark_reconfigure (GST_BASE_SRC_PAD (udpsrc));
       break;
     }
     case PROP_SOCKET:
@@ -736,7 +743,9 @@ gst_udpsrc_get_property (GObject * object, guint prop_id, GValue * value,
       g_value_set_string (value, udpsrc->uri);
       break;
     case PROP_CAPS:
+      GST_OBJECT_LOCK (udpsrc);
       gst_value_set_caps (value, udpsrc->caps);
+      GST_OBJECT_UNLOCK (udpsrc);
       break;
     case PROP_SOCKET:
       g_value_set_object (value, udpsrc->socket);
@@ -809,14 +818,11 @@ name_resolve:
 
 /* create a socket for sending to remote machine */
 static gboolean
-gst_udpsrc_start (GstBaseSrc * bsrc)
+gst_udpsrc_open (GstUDPSrc * src)
 {
-  GstUDPSrc *src;
   GInetAddress *addr, *bind_addr;
   GSocketAddress *bind_saddr;
   GError *err = NULL;
-
-  src = GST_UDPSRC (bsrc);
 
   if (src->socket == NULL) {
     /* need to allocate a socket */
@@ -1012,7 +1018,7 @@ bind_error:
         ("bind failed: %s", err->message));
     g_clear_error (&err);
     g_object_unref (bind_saddr);
-    gst_udpsrc_stop (GST_BASE_SRC (src));
+    gst_udpsrc_close (src);
     return FALSE;
   }
 membership:
@@ -1020,7 +1026,7 @@ membership:
     GST_ELEMENT_ERROR (src, RESOURCE, SETTINGS, (NULL),
         ("could add membership: %s", err->message));
     g_clear_error (&err);
-    gst_udpsrc_stop (GST_BASE_SRC (src));
+    gst_udpsrc_close (src);
     return FALSE;
   }
 getsockname_error:
@@ -1028,7 +1034,7 @@ getsockname_error:
     GST_ELEMENT_ERROR (src, RESOURCE, SETTINGS, (NULL),
         ("getsockname failed: %s", err->message));
     g_clear_error (&err);
-    gst_udpsrc_stop (GST_BASE_SRC (src));
+    gst_udpsrc_close (src);
     return FALSE;
   }
 }
@@ -1060,13 +1066,9 @@ gst_udpsrc_unlock_stop (GstBaseSrc * bsrc)
 }
 
 static gboolean
-gst_udpsrc_stop (GstBaseSrc * bsrc)
+gst_udpsrc_close (GstUDPSrc * src)
 {
-  GstUDPSrc *src;
-
-  src = GST_UDPSRC (bsrc);
-
-  GST_DEBUG ("stopping, closing sockets");
+  GST_DEBUG ("closing sockets");
 
   if (src->used_socket) {
     if (src->auto_multicast
@@ -1102,6 +1104,52 @@ gst_udpsrc_stop (GstBaseSrc * bsrc)
 
   return TRUE;
 }
+
+
+static GstStateChangeReturn
+gst_udpsrc_change_state (GstElement * element, GstStateChange transition)
+{
+  GstUDPSrc *src;
+  GstStateChangeReturn result;
+
+  src = GST_UDPSRC (element);
+
+  switch (transition) {
+    case GST_STATE_CHANGE_NULL_TO_READY:
+      if (!gst_udpsrc_open (src))
+        goto open_failed;
+      break;
+    default:
+      break;
+  }
+  if ((result =
+          GST_ELEMENT_CLASS (parent_class)->change_state (element,
+              transition)) == GST_STATE_CHANGE_FAILURE)
+    goto failure;
+
+  switch (transition) {
+    case GST_STATE_CHANGE_READY_TO_NULL:
+      gst_udpsrc_close (src);
+      break;
+    default:
+      break;
+  }
+  return result;
+  /* ERRORS */
+open_failed:
+  {
+    GST_DEBUG_OBJECT (src, "failed to open socket");
+    return GST_STATE_CHANGE_FAILURE;
+  }
+failure:
+  {
+    GST_DEBUG_OBJECT (src, "parent failed state change");
+    return result;
+  }
+}
+
+
+
 
 /*** GSTURIHANDLER INTERFACE *************************************************/
 

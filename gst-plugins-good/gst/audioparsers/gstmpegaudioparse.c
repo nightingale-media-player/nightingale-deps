@@ -49,6 +49,7 @@
 
 #include "gstmpegaudioparse.h"
 #include <gst/base/gstbytereader.h>
+#include <gst/pbutils/pbutils.h>
 
 GST_DEBUG_CATEGORY_STATIC (mpeg_audio_parse_debug);
 #define GST_CAT_DEFAULT mpeg_audio_parse_debug
@@ -225,6 +226,7 @@ static void
 gst_mpeg_audio_parse_init (GstMpegAudioParse * mp3parse)
 {
   gst_mpeg_audio_parse_reset (mp3parse);
+  GST_PAD_SET_ACCEPT_INTERSECT (GST_BASE_PARSE_SINK_PAD (mp3parse));
 }
 
 static void
@@ -1086,13 +1088,6 @@ gst_mpeg_audio_parse_handle_first_frame (GstMpegAudioParse * mp3parse,
         goto out_vbri;
       }
 
-      if (avail < offset_vbri + 26) {
-        GST_DEBUG_OBJECT (mp3parse,
-            "Not enough data to read VBRI header (need %d)",
-            offset_vbri + 26 + nseek_points * seek_bytes);
-        goto cleanup;
-      }
-
       data = map.data;
       data += offset_vbri + 26;
 
@@ -1331,17 +1326,16 @@ gst_mpeg_audio_parse_pre_push_frame (GstBaseParse * parse,
    * have already been sent */
 
   if (!mp3parse->sent_codec_tag) {
-    gchar *codec;
+    GstCaps *caps;
+
+    taglist = gst_tag_list_new_empty ();
 
     /* codec tag */
-    if (mp3parse->layer == 3) {
-      codec = g_strdup_printf ("MPEG %d Audio, Layer %d (MP3)",
-          mp3parse->version, mp3parse->layer);
-    } else {
-      codec = g_strdup_printf ("MPEG %d Audio, Layer %d",
-          mp3parse->version, mp3parse->layer);
-    }
-    taglist = gst_tag_list_new (GST_TAG_AUDIO_CODEC, codec, NULL);
+    caps = gst_pad_get_current_caps (GST_BASE_PARSE_SRC_PAD (parse));
+    gst_pb_utils_add_codec_description_to_tag_list (taglist,
+        GST_TAG_AUDIO_CODEC, caps);
+    gst_caps_unref (caps);
+
     if (mp3parse->hdr_bitrate > 0 && mp3parse->xing_bitrate == 0 &&
         mp3parse->vbri_bitrate == 0) {
       /* We don't have a VBR bitrate, so post the available bitrate as
@@ -1351,7 +1345,6 @@ gst_mpeg_audio_parse_pre_push_frame (GstBaseParse * parse,
     }
     gst_pad_push_event (GST_BASE_PARSE_SRC_PAD (mp3parse),
         gst_event_new_tag (taglist));
-    g_free (codec);
 
     /* also signals the end of first-frame processing */
     mp3parse->sent_codec_tag = TRUE;
@@ -1398,6 +1391,19 @@ gst_mpeg_audio_parse_pre_push_frame (GstBaseParse * parse,
   return GST_FLOW_OK;
 }
 
+static void
+remove_fields (GstCaps * caps)
+{
+  guint i, n;
+
+  n = gst_caps_get_size (caps);
+  for (i = 0; i < n; i++) {
+    GstStructure *s = gst_caps_get_structure (caps, i);
+
+    gst_structure_remove_field (s, "parsed");
+  }
+}
+
 static GstCaps *
 gst_mpeg_audio_parse_get_sink_caps (GstBaseParse * parse, GstCaps * filter)
 {
@@ -1405,29 +1411,23 @@ gst_mpeg_audio_parse_get_sink_caps (GstBaseParse * parse, GstCaps * filter)
   GstCaps *res;
 
   templ = gst_pad_get_pad_template_caps (GST_BASE_PARSE_SINK_PAD (parse));
-  peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), filter);
+  if (filter) {
+    GstCaps *fcopy = gst_caps_copy (filter);
+    /* Remove the fields we convert */
+    remove_fields (fcopy);
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), fcopy);
+    gst_caps_unref (fcopy);
+  } else
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), NULL);
 
   if (peercaps) {
-    guint i, n;
-
     /* Remove the parsed field */
     peercaps = gst_caps_make_writable (peercaps);
-    n = gst_caps_get_size (peercaps);
-    for (i = 0; i < n; i++) {
-      GstStructure *s = gst_caps_get_structure (peercaps, i);
-
-      gst_structure_remove_field (s, "parsed");
-    }
+    remove_fields (peercaps);
 
     res = gst_caps_intersect_full (peercaps, templ, GST_CAPS_INTERSECT_FIRST);
     gst_caps_unref (peercaps);
-    res = gst_caps_make_writable (res);
-
-    /* Append the template caps because we still want to accept
-     * caps without any fields in the case upstream does not
-     * know anything.
-     */
-    gst_caps_append (res, templ);
+    gst_caps_unref (templ);
   } else {
     res = templ;
   }

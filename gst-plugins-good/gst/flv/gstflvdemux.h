@@ -22,6 +22,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
+#include <gst/base/gstflowcombiner.h>
 #include "gstindex.h"
 
 G_BEGIN_DECLS
@@ -47,6 +48,7 @@ typedef enum
   FLV_STATE_TAG_SCRIPT,
   FLV_STATE_SEEK,
   FLV_STATE_DONE,
+  FLV_STATE_SKIP,
   FLV_STATE_NONE
 } GstFlvDemuxState;
 
@@ -72,6 +74,8 @@ struct _GstFlvDemux
   GArray * filepositions;
 
   GstAdapter *adapter;
+
+  GstFlowCombiner *flowcombiner;
 
   GstSegment segment;
 

@@ -30,30 +30,19 @@
 
 #include "videomixerorc.h"
 
-/* MSVC doesn't have rint */
-#ifdef WIN32
-static inline
-int rint(float f)
-{
-  return (f >= 0) ? (int) floor(f + 0.5) : (int) ceil(f - 0.5);
-}
-#endif
 
-static void videomixer_videoconvert_convert_generic (VideoConvert * convert,
+static void videoconvert_convert_generic (VideoConvert * convert,
     GstVideoFrame * dest, const GstVideoFrame * src);
-static void videomixer_videoconvert_convert_matrix8 (VideoConvert * convert,
+static void videoconvert_convert_matrix8 (VideoConvert * convert,
     gpointer pixels);
-static void videomixer_videoconvert_convert_matrix16 (VideoConvert * convert,
+static void videoconvert_convert_matrix16 (VideoConvert * convert,
     gpointer pixels);
-static gboolean videomixer_videoconvert_convert_lookup_fastpath (VideoConvert *
-    convert);
-static gboolean videomixer_videoconvert_convert_compute_matrix (VideoConvert *
-    convert);
-static gboolean videomixer_videoconvert_convert_compute_resample (VideoConvert *
-    convert);
-static void videomixer_videoconvert_dither_verterr (VideoConvert * convert,
+static gboolean videoconvert_convert_lookup_fastpath (VideoConvert * convert);
+static gboolean videoconvert_convert_compute_matrix (VideoConvert * convert);
+static gboolean videoconvert_convert_compute_resample (VideoConvert * convert);
+static void videoconvert_dither_verterr (VideoConvert * convert,
     guint16 * pixels, int j);
-static void videomixer_videoconvert_dither_halftone (VideoConvert * convert,
+static void videoconvert_dither_halftone (VideoConvert * convert,
     guint16 * pixels, int j);
 
 
@@ -73,12 +62,12 @@ videomixer_videoconvert_convert_new (GstVideoInfo * in_info,
   convert->width = GST_VIDEO_INFO_WIDTH (in_info);
   convert->height = GST_VIDEO_INFO_HEIGHT (in_info);
 
-  if (!videomixer_videoconvert_convert_lookup_fastpath (convert)) {
-    convert->convert = videomixer_videoconvert_convert_generic;
-    if (!videomixer_videoconvert_convert_compute_matrix (convert))
+  if (!videoconvert_convert_lookup_fastpath (convert)) {
+    convert->convert = videoconvert_convert_generic;
+    if (!videoconvert_convert_compute_matrix (convert))
       goto no_convert;
 
-    if (!videomixer_videoconvert_convert_compute_resample (convert))
+    if (!videoconvert_convert_compute_resample (convert))
       goto no_convert;
   }
 
@@ -124,10 +113,10 @@ videomixer_videoconvert_convert_set_dither (VideoConvert * convert, int type)
       convert->dither16 = NULL;
       break;
     case 1:
-      convert->dither16 = videomixer_videoconvert_dither_verterr;
+      convert->dither16 = videoconvert_dither_verterr;
       break;
     case 2:
-      convert->dither16 = videomixer_videoconvert_dither_halftone;
+      convert->dither16 = videoconvert_dither_halftone;
       break;
   }
 }
@@ -143,8 +132,7 @@ videomixer_videoconvert_convert_convert (VideoConvert * convert,
 #define SCALE_F  ((float) (1 << SCALE))
 
 static void
-videomixer_videoconvert_convert_matrix8 (VideoConvert * convert,
-    gpointer pixels)
+videoconvert_convert_matrix8 (VideoConvert * convert, gpointer pixels)
 {
   int i;
   int r, g, b;
@@ -170,8 +158,7 @@ videomixer_videoconvert_convert_matrix8 (VideoConvert * convert,
 }
 
 static void
-videomixer_videoconvert_convert_matrix16 (VideoConvert * convert,
-    gpointer pixels)
+videoconvert_convert_matrix16 (VideoConvert * convert, gpointer pixels)
 {
   int i;
   int r, g, b;
@@ -230,7 +217,7 @@ get_Kr_Kb (GstVideoColorMatrix matrix, gdouble * Kr, gdouble * Kb)
 }
 
 static gboolean
-videomixer_videoconvert_convert_compute_matrix (VideoConvert * convert)
+videoconvert_convert_compute_matrix (VideoConvert * convert)
 {
   GstVideoInfo *in_info, *out_info;
   ColorMatrix dst;
@@ -270,7 +257,7 @@ videomixer_videoconvert_convert_compute_matrix (VideoConvert * convert)
   /* calculate intermediate format for the matrix. When unpacking, we expand
    * input to 16 when one of the inputs is 16 bits */
   if (convert->in_bits == 16 || convert->out_bits == 16) {
-    convert->matrix = videomixer_videoconvert_convert_matrix16;
+    convert->matrix = videoconvert_convert_matrix16;
 
     if (GST_VIDEO_FORMAT_INFO_IS_RGB (suinfo))
       suinfo = gst_video_format_get_info (GST_VIDEO_FORMAT_ARGB64);
@@ -282,22 +269,24 @@ videomixer_videoconvert_convert_compute_matrix (VideoConvert * convert)
     else
       duinfo = gst_video_format_get_info (GST_VIDEO_FORMAT_AYUV64);
   } else {
-    convert->matrix = videomixer_videoconvert_convert_matrix8;
+    convert->matrix = videoconvert_convert_matrix8;
   }
 
-  color_matrix_set_identity (&dst);
+  videomixer_color_matrix_set_identity (&dst);
 
   /* 1, bring color components to [0..1.0] range */
   gst_video_color_range_offsets (in_info->colorimetry.range, suinfo, offset,
       scale);
-  color_matrix_offset_components (&dst, -offset[0], -offset[1], -offset[2]);
 
-  color_matrix_scale_components (&dst, 1 / ((float) scale[0]),
+  videomixer_color_matrix_offset_components (&dst, -offset[0], -offset[1],
+      -offset[2]);
+
+  videomixer_color_matrix_scale_components (&dst, 1 / ((float) scale[0]),
       1 / ((float) scale[1]), 1 / ((float) scale[2]));
 
   /* 2. bring components to R'G'B' space */
   if (get_Kr_Kb (in_info->colorimetry.matrix, &Kr, &Kb))
-    color_matrix_YCbCr_to_RGB (&dst, Kr, Kb);
+    videomixer_color_matrix_YCbCr_to_RGB (&dst, Kr, Kb);
 
   /* 3. inverse transfer function. R'G'B' to linear RGB */
 
@@ -309,18 +298,20 @@ videomixer_videoconvert_convert_compute_matrix (VideoConvert * convert)
 
   /* 7. bring components to YCbCr space */
   if (get_Kr_Kb (out_info->colorimetry.matrix, &Kr, &Kb))
-    color_matrix_RGB_to_YCbCr (&dst, Kr, Kb);
+    videomixer_color_matrix_RGB_to_YCbCr (&dst, Kr, Kb);
 
   /* 8, bring color components to nominal range */
   gst_video_color_range_offsets (out_info->colorimetry.range, duinfo, offset,
       scale);
-  color_matrix_scale_components (&dst, (float) scale[0], (float) scale[1],
-      (float) scale[2]);
 
-  color_matrix_offset_components (&dst, offset[0], offset[1], offset[2]);
+  videomixer_color_matrix_scale_components (&dst, (float) scale[0],
+      (float) scale[1], (float) scale[2]);
+
+  videomixer_color_matrix_offset_components (&dst, offset[0], offset[1],
+      offset[2]);
 
   /* because we're doing fixed point matrix coefficients */
-  color_matrix_scale_components (&dst, SCALE_F, SCALE_F, SCALE_F);
+  videomixer_color_matrix_scale_components (&dst, SCALE_F, SCALE_F, SCALE_F);
 
   for (i = 0; i < 4; i++)
     for (j = 0; j < 4; j++)
@@ -353,8 +344,7 @@ no_pack_func:
 }
 
 static void
-videomixer_videoconvert_dither_verterr (VideoConvert * convert,
-    guint16 * pixels, int j)
+videoconvert_dither_verterr (VideoConvert * convert, guint16 * pixels, int j)
 {
   int i;
   guint16 *errline = convert->errline;
@@ -370,8 +360,7 @@ videomixer_videoconvert_dither_verterr (VideoConvert * convert,
 }
 
 static void
-videomixer_videoconvert_dither_halftone (VideoConvert * convert,
-    guint16 * pixels, int j)
+videoconvert_dither_halftone (VideoConvert * convert, guint16 * pixels, int j)
 {
   int i;
   static guint16 halftone[8][8] = {
@@ -406,7 +395,7 @@ alloc_tmplines (VideoConvert * convert, guint lines, gint width)
 }
 
 static gboolean
-videomixer_videoconvert_convert_compute_resample (VideoConvert * convert)
+videoconvert_convert_compute_resample (VideoConvert * convert)
 {
   GstVideoInfo *in_info, *out_info;
   const GstVideoFormatInfo *sfinfo, *dfinfo;
@@ -502,8 +491,8 @@ convert_to8 (gpointer line, gint width)
       frame->info.chroma_site, line, width);
 
 static void
-videomixer_videoconvert_convert_generic (VideoConvert * convert,
-    GstVideoFrame * dest, const GstVideoFrame * src)
+videoconvert_convert_generic (VideoConvert * convert, GstVideoFrame * dest,
+    const GstVideoFrame * src)
 {
   int j, k;
   gint width, height, lines, max_lines;
@@ -613,7 +602,7 @@ videomixer_videoconvert_convert_generic (VideoConvert * convert,
       for (j = 0; j < down_n_lines; j += lines) {
         idx = down_offset + j;
 
-        if (idx >= 0 && idx < height) {
+        if (idx < height) {
           GST_DEBUG ("packing line %d %d %d", j + start, down_offset, idx);
           /* FIXME, not correct if lines > 1 */
           PACK_FRAME (dest, out_tmplines[j + start], idx, width);
@@ -1218,7 +1207,9 @@ convert_AYUV_ARGB (VideoConvert * convert, GstVideoFrame * dest,
 
   videomixer_video_convert_orc_convert_AYUV_ARGB (FRAME_GET_LINE (dest, 0),
       FRAME_GET_STRIDE (dest), FRAME_GET_LINE (src, 0),
-      FRAME_GET_STRIDE (src), width, height);
+      FRAME_GET_STRIDE (src), convert->cmatrix[0][0], convert->cmatrix[0][2],
+      convert->cmatrix[2][1], convert->cmatrix[1][1], convert->cmatrix[1][2],
+      width, height);
 }
 
 static void
@@ -1230,7 +1221,9 @@ convert_AYUV_BGRA (VideoConvert * convert, GstVideoFrame * dest,
 
   videomixer_video_convert_orc_convert_AYUV_BGRA (FRAME_GET_LINE (dest, 0),
       FRAME_GET_STRIDE (dest), FRAME_GET_LINE (src, 0),
-      FRAME_GET_STRIDE (src), width, height);
+      FRAME_GET_STRIDE (src), convert->cmatrix[0][0], convert->cmatrix[0][2],
+      convert->cmatrix[2][1], convert->cmatrix[1][1], convert->cmatrix[1][2],
+      width, height);
 }
 
 static void
@@ -1242,7 +1235,9 @@ convert_AYUV_ABGR (VideoConvert * convert, GstVideoFrame * dest,
 
   videomixer_video_convert_orc_convert_AYUV_ABGR (FRAME_GET_LINE (dest, 0),
       FRAME_GET_STRIDE (dest), FRAME_GET_LINE (src, 0),
-      FRAME_GET_STRIDE (src), width, height);
+      FRAME_GET_STRIDE (src), convert->cmatrix[0][0], convert->cmatrix[0][2],
+      convert->cmatrix[2][1], convert->cmatrix[1][1], convert->cmatrix[1][2],
+      width, height);
 }
 
 static void
@@ -1254,7 +1249,9 @@ convert_AYUV_RGBA (VideoConvert * convert, GstVideoFrame * dest,
 
   videomixer_video_convert_orc_convert_AYUV_RGBA (FRAME_GET_LINE (dest, 0),
       FRAME_GET_STRIDE (dest), FRAME_GET_LINE (src, 0),
-      FRAME_GET_STRIDE (src), width, height);
+      FRAME_GET_STRIDE (src), convert->cmatrix[0][0], convert->cmatrix[0][2],
+      convert->cmatrix[2][1], convert->cmatrix[1][1], convert->cmatrix[1][2],
+      width, height);
 }
 
 static void
@@ -1262,31 +1259,16 @@ convert_I420_BGRA (VideoConvert * convert, GstVideoFrame * dest,
     const GstVideoFrame * src)
 {
   int i;
-  int quality = 0;
   gint width = convert->width;
   gint height = convert->height;
 
-  if (quality > 3) {
-    for (i = 0; i < height; i++) {
-      if (i & 1) {
-        videomixer_video_convert_orc_convert_I420_BGRA_avg (FRAME_GET_LINE
-            (dest, i), FRAME_GET_Y_LINE (src, i), FRAME_GET_U_LINE (src,
-                i >> 1), FRAME_GET_U_LINE (src, (i >> 1) + 1),
-            FRAME_GET_V_LINE (src, i >> 1), FRAME_GET_V_LINE (src,
-                (i >> 1) + 1), width);
-      } else {
-        videomixer_video_convert_orc_convert_I420_BGRA (FRAME_GET_LINE (dest,
-                i), FRAME_GET_Y_LINE (src, i), FRAME_GET_U_LINE (src, i >> 1),
-            FRAME_GET_V_LINE (src, i >> 1), width);
-      }
-    }
-  } else {
-    for (i = 0; i < height; i++) {
-      videomixer_video_convert_orc_convert_I420_BGRA (FRAME_GET_LINE (dest, i),
-          FRAME_GET_Y_LINE (src, i),
-          FRAME_GET_U_LINE (src, i >> 1),
-          FRAME_GET_V_LINE (src, i >> 1), width);
-    }
+  for (i = 0; i < height; i++) {
+    videomixer_video_convert_orc_convert_I420_BGRA (FRAME_GET_LINE (dest, i),
+        FRAME_GET_Y_LINE (src, i),
+        FRAME_GET_U_LINE (src, i >> 1), FRAME_GET_V_LINE (src, i >> 1),
+        convert->cmatrix[0][0], convert->cmatrix[0][2],
+        convert->cmatrix[2][1], convert->cmatrix[1][1], convert->cmatrix[1][2],
+        width);
   }
 }
 #endif
@@ -1303,6 +1285,7 @@ typedef struct
   GstVideoColorMatrix out_matrix;
   gboolean keeps_color_matrix;
   gboolean keeps_interlaced;
+  gboolean needs_color_matrix;
   gint width_align, height_align;
   void (*convert) (VideoConvert * convert, GstVideoFrame * dest,
       const GstVideoFrame * src);
@@ -1310,123 +1293,170 @@ typedef struct
 
 static const VideoTransform transforms[] = {
   {GST_VIDEO_FORMAT_I420, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_YUY2,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_I420_YUY2},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_I420_YUY2},
   {GST_VIDEO_FORMAT_I420, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_UYVY,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_I420_UYVY},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_I420_UYVY},
   {GST_VIDEO_FORMAT_I420, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_AYUV,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_I420_AYUV},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_I420_AYUV},
   {GST_VIDEO_FORMAT_I420, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_Y42B,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, 0, 0, convert_I420_Y42B},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, FALSE, 0, 0,
+      convert_I420_Y42B},
   {GST_VIDEO_FORMAT_I420, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_Y444,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, 0, 0, convert_I420_Y444},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, FALSE, 0, 0,
+      convert_I420_Y444},
 
   {GST_VIDEO_FORMAT_YV12, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_YUY2,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_I420_YUY2},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_I420_YUY2},
   {GST_VIDEO_FORMAT_YV12, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_UYVY,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_I420_UYVY},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_I420_UYVY},
   {GST_VIDEO_FORMAT_YV12, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_AYUV,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_I420_AYUV},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_I420_AYUV},
   {GST_VIDEO_FORMAT_YV12, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_Y42B,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, 0, 0, convert_I420_Y42B},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, FALSE, 0, 0,
+      convert_I420_Y42B},
   {GST_VIDEO_FORMAT_YV12, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_Y444,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, 0, 0, convert_I420_Y444},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, FALSE, 0, 0,
+      convert_I420_Y444},
 
   {GST_VIDEO_FORMAT_YUY2, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_I420,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_YUY2_I420},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_YUY2_I420},
   {GST_VIDEO_FORMAT_YUY2, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_YV12,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_YUY2_I420},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_YUY2_I420},
   {GST_VIDEO_FORMAT_YUY2, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_UYVY,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_UYVY_YUY2},     /* alias */
+      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0, convert_UYVY_YUY2},      /* alias */
   {GST_VIDEO_FORMAT_YUY2, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_AYUV,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_YUY2_AYUV},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_YUY2_AYUV},
   {GST_VIDEO_FORMAT_YUY2, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_Y42B,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_YUY2_Y42B},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_YUY2_Y42B},
   {GST_VIDEO_FORMAT_YUY2, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_Y444,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_YUY2_Y444},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_YUY2_Y444},
 
   {GST_VIDEO_FORMAT_UYVY, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_I420,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_UYVY_I420},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_UYVY_I420},
   {GST_VIDEO_FORMAT_UYVY, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_YV12,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_UYVY_I420},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_UYVY_I420},
   {GST_VIDEO_FORMAT_UYVY, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_YUY2,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_UYVY_YUY2},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_UYVY_YUY2},
   {GST_VIDEO_FORMAT_UYVY, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_AYUV,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_UYVY_AYUV},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_UYVY_AYUV},
   {GST_VIDEO_FORMAT_UYVY, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_Y42B,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_UYVY_Y42B},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_UYVY_Y42B},
   {GST_VIDEO_FORMAT_UYVY, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_Y444,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_UYVY_Y444},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_UYVY_Y444},
 
   {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_I420,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, 1, 1, convert_AYUV_I420},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, FALSE, 1, 1,
+      convert_AYUV_I420},
   {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_YV12,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, 1, 1, convert_AYUV_I420},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, FALSE, 1, 1,
+      convert_AYUV_I420},
   {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_YUY2,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 1, 0, convert_AYUV_YUY2},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 1, 0,
+      convert_AYUV_YUY2},
   {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_UYVY,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 1, 0, convert_AYUV_UYVY},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 1, 0,
+      convert_AYUV_UYVY},
   {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_Y42B,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 1, 0, convert_AYUV_Y42B},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 1, 0,
+      convert_AYUV_Y42B},
   {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_Y444,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_AYUV_Y444},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_AYUV_Y444},
 
   {GST_VIDEO_FORMAT_Y42B, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_I420,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, 0, 0, convert_Y42B_I420},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, FALSE, 0, 0,
+      convert_Y42B_I420},
   {GST_VIDEO_FORMAT_Y42B, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_YV12,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, 0, 0, convert_Y42B_I420},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, FALSE, 0, 0,
+      convert_Y42B_I420},
   {GST_VIDEO_FORMAT_Y42B, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_YUY2,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_Y42B_YUY2},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_Y42B_YUY2},
   {GST_VIDEO_FORMAT_Y42B, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_UYVY,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_Y42B_UYVY},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_Y42B_UYVY},
   {GST_VIDEO_FORMAT_Y42B, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_AYUV,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 1, 0, convert_Y42B_AYUV},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 1, 0,
+      convert_Y42B_AYUV},
   {GST_VIDEO_FORMAT_Y42B, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_Y444,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_Y42B_Y444},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_Y42B_Y444},
 
   {GST_VIDEO_FORMAT_Y444, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_I420,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, 1, 0, convert_Y444_I420},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, FALSE, 1, 0,
+      convert_Y444_I420},
   {GST_VIDEO_FORMAT_Y444, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_YV12,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, 1, 0, convert_Y444_I420},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, FALSE, 1, 0,
+      convert_Y444_I420},
   {GST_VIDEO_FORMAT_Y444, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_YUY2,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 1, 0, convert_Y444_YUY2},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 1, 0,
+      convert_Y444_YUY2},
   {GST_VIDEO_FORMAT_Y444, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_UYVY,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 1, 0, convert_Y444_UYVY},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 1, 0,
+      convert_Y444_UYVY},
   {GST_VIDEO_FORMAT_Y444, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_AYUV,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 0, 0, convert_Y444_AYUV},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 0, 0,
+      convert_Y444_AYUV},
   {GST_VIDEO_FORMAT_Y444, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_Y42B,
-      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, 1, 0, convert_Y444_Y42B},
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, FALSE, 1, 0,
+      convert_Y444_Y42B},
 
 #if G_BYTE_ORDER == G_LITTLE_ENDIAN
-  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_BT601, GST_VIDEO_FORMAT_ARGB,
-      GST_VIDEO_COLOR_MATRIX_RGB, FALSE, TRUE, 0, 0, convert_AYUV_ARGB},
-  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_BT601, GST_VIDEO_FORMAT_BGRA,
-      GST_VIDEO_COLOR_MATRIX_RGB, FALSE, TRUE, 0, 0, convert_AYUV_BGRA},
-  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_BT601, GST_VIDEO_FORMAT_xRGB,
-      GST_VIDEO_COLOR_MATRIX_RGB, FALSE, TRUE, 0, 0, convert_AYUV_ARGB},        /* alias */
-  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_BT601, GST_VIDEO_FORMAT_BGRx,
-      GST_VIDEO_COLOR_MATRIX_RGB, FALSE, TRUE, 0, 0, convert_AYUV_BGRA},        /* alias */
-  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_BT601, GST_VIDEO_FORMAT_ABGR,
-      GST_VIDEO_COLOR_MATRIX_RGB, FALSE, TRUE, 0, 0, convert_AYUV_ABGR},
-  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_BT601, GST_VIDEO_FORMAT_RGBA,
-      GST_VIDEO_COLOR_MATRIX_RGB, FALSE, TRUE, 0, 0, convert_AYUV_RGBA},
-  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_BT601, GST_VIDEO_FORMAT_xBGR,
-      GST_VIDEO_COLOR_MATRIX_RGB, FALSE, TRUE, 0, 0, convert_AYUV_ABGR},        /* alias */
-  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_BT601, GST_VIDEO_FORMAT_RGBx,
-      GST_VIDEO_COLOR_MATRIX_RGB, FALSE, TRUE, 0, 0, convert_AYUV_RGBA},        /* alias */
+  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_ARGB,
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, TRUE, 0, 0,
+      convert_AYUV_ARGB},
+  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_BGRA,
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, TRUE, 0, 0,
+      convert_AYUV_BGRA},
+  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_xRGB,
+      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, TRUE, 0, 0, convert_AYUV_ARGB},       /* alias */
+  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_BGRx,
+      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, TRUE, 0, 0, convert_AYUV_BGRA},       /* alias */
+  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_ABGR,
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, TRUE, 0, 0,
+      convert_AYUV_ABGR},
+  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_RGBA,
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, TRUE, 0, 0,
+      convert_AYUV_RGBA},
+  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_xBGR,
+      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, TRUE, 0, 0, convert_AYUV_ABGR},       /* alias */
+  {GST_VIDEO_FORMAT_AYUV, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_RGBx,
+      GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, TRUE, TRUE, 0, 0, convert_AYUV_RGBA},       /* alias */
 
-  {GST_VIDEO_FORMAT_I420, GST_VIDEO_COLOR_MATRIX_BT601, GST_VIDEO_FORMAT_BGRA,
-      GST_VIDEO_COLOR_MATRIX_RGB, FALSE, FALSE, 0, 0, convert_I420_BGRA},
-  {GST_VIDEO_FORMAT_I420, GST_VIDEO_COLOR_MATRIX_BT601, GST_VIDEO_FORMAT_BGRx,
-      GST_VIDEO_COLOR_MATRIX_RGB, FALSE, FALSE, 0, 0, convert_I420_BGRA},
-  {GST_VIDEO_FORMAT_YV12, GST_VIDEO_COLOR_MATRIX_BT601, GST_VIDEO_FORMAT_BGRA,
-      GST_VIDEO_COLOR_MATRIX_RGB, FALSE, FALSE, 0, 0, convert_I420_BGRA},
-  {GST_VIDEO_FORMAT_YV12, GST_VIDEO_COLOR_MATRIX_BT601, GST_VIDEO_FORMAT_BGRx,
-      GST_VIDEO_COLOR_MATRIX_RGB, FALSE, FALSE, 0, 0, convert_I420_BGRA},
+  {GST_VIDEO_FORMAT_I420, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_BGRA,
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, TRUE, 0, 0,
+      convert_I420_BGRA},
+  {GST_VIDEO_FORMAT_I420, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_BGRx,
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, TRUE, 0, 0,
+      convert_I420_BGRA},
+  {GST_VIDEO_FORMAT_YV12, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_BGRA,
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, TRUE, 0, 0,
+      convert_I420_BGRA},
+  {GST_VIDEO_FORMAT_YV12, GST_VIDEO_COLOR_MATRIX_UNKNOWN, GST_VIDEO_FORMAT_BGRx,
+        GST_VIDEO_COLOR_MATRIX_UNKNOWN, TRUE, FALSE, TRUE, 0, 0,
+      convert_I420_BGRA},
 #endif
 };
 
 static gboolean
-videomixer_videoconvert_convert_lookup_fastpath (VideoConvert * convert)
+videoconvert_convert_lookup_fastpath (VideoConvert * convert)
 {
   int i;
   GstVideoFormat in_format, out_format;
@@ -1456,10 +1486,20 @@ videomixer_videoconvert_convert_lookup_fastpath (VideoConvert * convert)
         (transforms[i].width_align & width) == 0 &&
         (transforms[i].height_align & height) == 0) {
       GST_DEBUG ("using fastpath");
+      if (transforms[i].needs_color_matrix)
+        if (!videoconvert_convert_compute_matrix (convert))
+          goto no_convert;
       convert->convert = transforms[i].convert;
       alloc_tmplines (convert, 1, GST_VIDEO_INFO_WIDTH (&convert->in_info));
       return TRUE;
     }
   }
+  GST_DEBUG ("no fastpath found");
   return FALSE;
+
+no_convert:
+  {
+    GST_DEBUG ("can't create matrix");
+    return FALSE;
+  }
 }

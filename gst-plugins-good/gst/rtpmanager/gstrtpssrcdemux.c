@@ -36,8 +36,6 @@
  * ]| Takes an RTP stream and send the RTP packets with the first detected SSRC
  * to fakesink, discarding the other SSRCs.
  * </refsect2>
- *
- * Last reviewed on 2007-05-28 (0.10.5)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -217,7 +215,7 @@ forward_initial_events (GstRtpSsrcDemux * demux, guint32 ssrc, GstPad * pad,
     PadType padtype)
 {
   struct ForwardStickyEventData fdata;
-  GstPad *sinkpad;
+  GstPad *sinkpad = NULL;
 
   if (padtype == RTP_PAD)
     sinkpad = demux->rtp_sink;
@@ -695,6 +693,9 @@ gst_rtp_ssrc_demux_rtcp_chain (GstPad * pad, GstObject * parent,
       /* get the ssrc so that we can route it to the right source pad */
       gst_rtcp_packet_sr_get_sender_info (&packet, &ssrc, NULL, NULL, NULL,
           NULL);
+      break;
+    case GST_RTCP_TYPE_RR:
+      ssrc = gst_rtcp_packet_rr_get_ssrc (&packet);
       break;
     default:
       goto unexpected_rtcp;

@@ -16,8 +16,8 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
  * Boston, MA 02110-1301, USA.
- * 
- * The development of this code was made possible due to the involvement of Pioneers 
+ *
+ * The development of this code was made possible due to the involvement of Pioneers
  * of the Inevitable, the creators of the Songbird Music player
  *
  */
@@ -40,54 +40,6 @@
 
 /* Debugging category */
 #include <gst/gstinfo.h>
-
-#if MAC_OS_X_VERSION_MAX_ALLOWED <= 1040
-#define kVK_ANSI_Keypad0 0x52
-#define kVK_ANSI_Keypad1 0x53
-#define kVK_ANSI_Keypad2 0x54
-#define kVK_ANSI_Keypad3 0x55
-#define kVK_ANSI_Keypad4 0x56
-#define kVK_ANSI_Keypad5 0x57
-#define kVK_ANSI_Keypad6 0x58
-#define kVK_ANSI_Keypad7 0x59
-#define kVK_ANSI_Keypad8 0x5b
-#define kVK_ANSI_Keypad9 0x5c
-#define kVK_ANSI_KeypadDecimal 0x41
-#define kVK_ANSI_KeypadDivide 0x4b
-#define kVK_ANSI_KeypadEnter 0x4c
-#define kVK_ANSI_KeypadMinus 0x4e
-#define kVK_ANSI_KeypadMultiply 0x43
-#define kVK_ANSI_KeypadPlus 0x45
-#define kVK_Control 0x3b
-#define kVK_Delete 0x33
-#define kVK_DownArrow 0x7d
-#define kVK_End 0x77
-#define kVK_Escape 0x35
-#define kVK_F1 0x7a
-#define kVK_F10 0x6d
-#define kVK_F11 0x67
-#define kVK_F12 0x6f
-#define kVK_F2 0x78
-#define kVK_F3 0x63
-#define kVK_F4 0x76
-#define kVK_F5 0x60
-#define kVK_F6 0x61
-#define kVK_F7 0x62
-#define kVK_F8 0x64
-#define kVK_F9 0x65
-#define kVK_ForwardDelete 0x75
-#define kVK_Help 0x72
-#define kVK_Home 0x73
-#define kVK_LeftArrow 0x7b
-#define kVK_Option 0x3a
-#define kVK_PageDown 0x79
-#define kVK_PageUp 0x74
-#define kVK_Return 0x24
-#define kVK_RightArrow 0x7c
-#define kVK_Shift 0x38
-#define kVK_Tab 0x30
-#define kVK_UpArrow 0x7e
-#endif /* MAC_OS_X_VERSION_MAX_ALLOWED <= 1040 */
 
 static
 const gchar* gst_keycode_to_keyname(gint16 keycode)
@@ -331,20 +283,20 @@ const gchar* gst_keycode_to_keyname(gint16 keycode)
 /* The object has to be released */
 - (id) initWithContentNSRect: (NSRect) rect
 		 styleMask: (unsigned int) styleMask
-		   backing: (NSBackingStoreType) bufferingType 
+		   backing: (NSBackingStoreType) bufferingType
 		     defer: (BOOL) flag
 		    screen:(NSScreen *) aScreen
 {
   self = [super initWithContentRect: rect
 		styleMask: styleMask
-		backing: bufferingType 
-		defer: flag 
+		backing: bufferingType
+		defer: flag
 		screen:aScreen];
 
   GST_DEBUG ("Initializing GstOSXvideoSinkWindow");
 
   gstview = [[GstGLView alloc] initWithFrame:rect];
-  
+
   if (gstview)
     [self setContentView:gstview];
   [self setTitle:@"GStreamer Video Output"];
@@ -496,7 +448,7 @@ const gchar* gst_keycode_to_keyname(gint16 keycode)
 
   glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
   glPixelStorei (GL_UNPACK_ROW_LENGTH, width);
-  
+
   glBindTexture (GL_TEXTURE_RECTANGLE_EXT, pi_texture);
 
   /* Use VRAM texturing */
@@ -520,7 +472,7 @@ const gchar* gst_keycode_to_keyname(gint16 keycode)
   // glPixelStorei (GL_UNPACK_ROW_LENGTH, 0); WHY ??
 
   glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA,
-		width, height, 0, 
+		width, height, 0,
 		GL_YCBCR_422_APPLE, GL_UNSIGNED_SHORT_8_8_APPLE, data);
 
 
@@ -661,7 +613,7 @@ const gchar* gst_keycode_to_keyname(gint16 keycode)
   } else if (fullscreen && !flag) {
     // fullscreen now and needs to go back to normal
     initDone = NO;
-    
+
     actualContext = [self openGLContext];
 
     [NSOpenGLContext clearCurrentContext];
@@ -681,15 +633,12 @@ const gchar* gst_keycode_to_keyname(gint16 keycode)
   }
 }
 
-- (void) setVideoSize: (int) w:(int) h {
+- (void) setVideoSize: (int)w : (int)h {
   GST_LOG ("width:%d, height:%d", w, h);
 
   width = w;
   height = h;
 
-//  if (data) g_free(data);
-
-//  data = g_malloc0 (2 * w * h);
   [self initTextures];
   [self reshape];
 }
@@ -769,7 +718,7 @@ const gchar* gst_keycode_to_keyname(gint16 keycode)
   navigation = nav;
 }
 
-- (void)sendMouseEvent:(NSEvent *)event: (const char *)event_name
+- (void)sendMouseEvent:(NSEvent *)event : (const char *)event_name
 {
   NSPoint location;
   gint button;
@@ -806,7 +755,7 @@ const gchar* gst_keycode_to_keyname(gint16 keycode)
   gst_navigation_send_mouse_event (navigation, event_name, button, x, y);
 }
 
-- (void)sendKeyEvent:(NSEvent *)event: (const char *)event_name
+- (void)sendKeyEvent:(NSEvent *)event : (const char *)event_name
 {
   if (!navigation)
     return;

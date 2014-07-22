@@ -80,7 +80,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-noinst_PROGRAMS = server-alsasrc-PCMA$(EXEEXT) client-PCMA$(EXEEXT)
+noinst_PROGRAMS = server-alsasrc-PCMA$(EXEEXT) client-PCMA$(EXEEXT) \
+	client-rtpaux$(EXEEXT) server-rtpaux$(EXEEXT)
 subdir = tests/examples/rtp
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
@@ -90,7 +91,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-gcc-inline-assembly.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -137,6 +137,12 @@ am__v_lt_1 =
 client_PCMA_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(client_PCMA_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_client_rtpaux_OBJECTS = client_rtpaux-client-rtpaux.$(OBJEXT)
+client_rtpaux_OBJECTS = $(am_client_rtpaux_OBJECTS)
+client_rtpaux_DEPENDENCIES = $(am__DEPENDENCIES_1)
+client_rtpaux_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(client_rtpaux_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_server_alsasrc_PCMA_OBJECTS =  \
 	server_alsasrc_PCMA-server-alsasrc-PCMA.$(OBJEXT)
 server_alsasrc_PCMA_OBJECTS = $(am_server_alsasrc_PCMA_OBJECTS)
@@ -146,6 +152,12 @@ server_alsasrc_PCMA_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(server_alsasrc_PCMA_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
+am_server_rtpaux_OBJECTS = server_rtpaux-server-rtpaux.$(OBJEXT)
+server_rtpaux_OBJECTS = $(am_server_rtpaux_OBJECTS)
+server_rtpaux_DEPENDENCIES = $(am__DEPENDENCIES_1)
+server_rtpaux_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(server_rtpaux_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SCRIPTS = $(noinst_SCRIPTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -181,8 +193,10 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(client_PCMA_SOURCES) $(server_alsasrc_PCMA_SOURCES)
-DIST_SOURCES = $(client_PCMA_SOURCES) $(server_alsasrc_PCMA_SOURCES)
+SOURCES = $(client_PCMA_SOURCES) $(client_rtpaux_SOURCES) \
+	$(server_alsasrc_PCMA_SOURCES) $(server_rtpaux_SOURCES)
+DIST_SOURCES = $(client_PCMA_SOURCES) $(client_rtpaux_SOURCES) \
+	$(server_alsasrc_PCMA_SOURCES) $(server_rtpaux_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -468,7 +482,6 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
-XVIDEO_LIBS = @XVIDEO_LIBS@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -537,6 +550,12 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+server_rtpaux_SOURCES = server-rtpaux.c
+server_rtpaux_CFLAGS = $(GST_CFLAGS)
+server_rtpaux_LDADD = $(GST_LIBS)
+client_rtpaux_SOURCES = client-rtpaux.c
+client_rtpaux_CFLAGS = $(GST_CFLAGS)
+client_rtpaux_LDADD = $(GST_LIBS)
 server_alsasrc_PCMA_SOURCES = server-alsasrc-PCMA.c
 server_alsasrc_PCMA_CFLAGS = $(GST_CFLAGS)
 server_alsasrc_PCMA_LDADD = $(GST_LIBS) $(LIBM)
@@ -604,9 +623,17 @@ client-PCMA$(EXEEXT): $(client_PCMA_OBJECTS) $(client_PCMA_DEPENDENCIES) $(EXTRA
 	@rm -f client-PCMA$(EXEEXT)
 	$(AM_V_CCLD)$(client_PCMA_LINK) $(client_PCMA_OBJECTS) $(client_PCMA_LDADD) $(LIBS)
 
+client-rtpaux$(EXEEXT): $(client_rtpaux_OBJECTS) $(client_rtpaux_DEPENDENCIES) $(EXTRA_client_rtpaux_DEPENDENCIES) 
+	@rm -f client-rtpaux$(EXEEXT)
+	$(AM_V_CCLD)$(client_rtpaux_LINK) $(client_rtpaux_OBJECTS) $(client_rtpaux_LDADD) $(LIBS)
+
 server-alsasrc-PCMA$(EXEEXT): $(server_alsasrc_PCMA_OBJECTS) $(server_alsasrc_PCMA_DEPENDENCIES) $(EXTRA_server_alsasrc_PCMA_DEPENDENCIES) 
 	@rm -f server-alsasrc-PCMA$(EXEEXT)
 	$(AM_V_CCLD)$(server_alsasrc_PCMA_LINK) $(server_alsasrc_PCMA_OBJECTS) $(server_alsasrc_PCMA_LDADD) $(LIBS)
+
+server-rtpaux$(EXEEXT): $(server_rtpaux_OBJECTS) $(server_rtpaux_DEPENDENCIES) $(EXTRA_server_rtpaux_DEPENDENCIES) 
+	@rm -f server-rtpaux$(EXEEXT)
+	$(AM_V_CCLD)$(server_rtpaux_LINK) $(server_rtpaux_OBJECTS) $(server_rtpaux_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -615,7 +642,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/client_PCMA-client-PCMA.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/client_rtpaux-client-rtpaux.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server_alsasrc_PCMA-server-alsasrc-PCMA.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server_rtpaux-server-rtpaux.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -655,6 +684,20 @@ client_PCMA-client-PCMA.obj: client-PCMA.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(client_PCMA_CFLAGS) $(CFLAGS) -c -o client_PCMA-client-PCMA.obj `if test -f 'client-PCMA.c'; then $(CYGPATH_W) 'client-PCMA.c'; else $(CYGPATH_W) '$(srcdir)/client-PCMA.c'; fi`
 
+client_rtpaux-client-rtpaux.o: client-rtpaux.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(client_rtpaux_CFLAGS) $(CFLAGS) -MT client_rtpaux-client-rtpaux.o -MD -MP -MF $(DEPDIR)/client_rtpaux-client-rtpaux.Tpo -c -o client_rtpaux-client-rtpaux.o `test -f 'client-rtpaux.c' || echo '$(srcdir)/'`client-rtpaux.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/client_rtpaux-client-rtpaux.Tpo $(DEPDIR)/client_rtpaux-client-rtpaux.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='client-rtpaux.c' object='client_rtpaux-client-rtpaux.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(client_rtpaux_CFLAGS) $(CFLAGS) -c -o client_rtpaux-client-rtpaux.o `test -f 'client-rtpaux.c' || echo '$(srcdir)/'`client-rtpaux.c
+
+client_rtpaux-client-rtpaux.obj: client-rtpaux.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(client_rtpaux_CFLAGS) $(CFLAGS) -MT client_rtpaux-client-rtpaux.obj -MD -MP -MF $(DEPDIR)/client_rtpaux-client-rtpaux.Tpo -c -o client_rtpaux-client-rtpaux.obj `if test -f 'client-rtpaux.c'; then $(CYGPATH_W) 'client-rtpaux.c'; else $(CYGPATH_W) '$(srcdir)/client-rtpaux.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/client_rtpaux-client-rtpaux.Tpo $(DEPDIR)/client_rtpaux-client-rtpaux.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='client-rtpaux.c' object='client_rtpaux-client-rtpaux.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(client_rtpaux_CFLAGS) $(CFLAGS) -c -o client_rtpaux-client-rtpaux.obj `if test -f 'client-rtpaux.c'; then $(CYGPATH_W) 'client-rtpaux.c'; else $(CYGPATH_W) '$(srcdir)/client-rtpaux.c'; fi`
+
 server_alsasrc_PCMA-server-alsasrc-PCMA.o: server-alsasrc-PCMA.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(server_alsasrc_PCMA_CFLAGS) $(CFLAGS) -MT server_alsasrc_PCMA-server-alsasrc-PCMA.o -MD -MP -MF $(DEPDIR)/server_alsasrc_PCMA-server-alsasrc-PCMA.Tpo -c -o server_alsasrc_PCMA-server-alsasrc-PCMA.o `test -f 'server-alsasrc-PCMA.c' || echo '$(srcdir)/'`server-alsasrc-PCMA.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/server_alsasrc_PCMA-server-alsasrc-PCMA.Tpo $(DEPDIR)/server_alsasrc_PCMA-server-alsasrc-PCMA.Po
@@ -668,6 +711,20 @@ server_alsasrc_PCMA-server-alsasrc-PCMA.obj: server-alsasrc-PCMA.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='server-alsasrc-PCMA.c' object='server_alsasrc_PCMA-server-alsasrc-PCMA.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(server_alsasrc_PCMA_CFLAGS) $(CFLAGS) -c -o server_alsasrc_PCMA-server-alsasrc-PCMA.obj `if test -f 'server-alsasrc-PCMA.c'; then $(CYGPATH_W) 'server-alsasrc-PCMA.c'; else $(CYGPATH_W) '$(srcdir)/server-alsasrc-PCMA.c'; fi`
+
+server_rtpaux-server-rtpaux.o: server-rtpaux.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(server_rtpaux_CFLAGS) $(CFLAGS) -MT server_rtpaux-server-rtpaux.o -MD -MP -MF $(DEPDIR)/server_rtpaux-server-rtpaux.Tpo -c -o server_rtpaux-server-rtpaux.o `test -f 'server-rtpaux.c' || echo '$(srcdir)/'`server-rtpaux.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/server_rtpaux-server-rtpaux.Tpo $(DEPDIR)/server_rtpaux-server-rtpaux.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='server-rtpaux.c' object='server_rtpaux-server-rtpaux.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(server_rtpaux_CFLAGS) $(CFLAGS) -c -o server_rtpaux-server-rtpaux.o `test -f 'server-rtpaux.c' || echo '$(srcdir)/'`server-rtpaux.c
+
+server_rtpaux-server-rtpaux.obj: server-rtpaux.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(server_rtpaux_CFLAGS) $(CFLAGS) -MT server_rtpaux-server-rtpaux.obj -MD -MP -MF $(DEPDIR)/server_rtpaux-server-rtpaux.Tpo -c -o server_rtpaux-server-rtpaux.obj `if test -f 'server-rtpaux.c'; then $(CYGPATH_W) 'server-rtpaux.c'; else $(CYGPATH_W) '$(srcdir)/server-rtpaux.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/server_rtpaux-server-rtpaux.Tpo $(DEPDIR)/server_rtpaux-server-rtpaux.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='server-rtpaux.c' object='server_rtpaux-server-rtpaux.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(server_rtpaux_CFLAGS) $(CFLAGS) -c -o server_rtpaux-server-rtpaux.obj `if test -f 'server-rtpaux.c'; then $(CYGPATH_W) 'server-rtpaux.c'; else $(CYGPATH_W) '$(srcdir)/server-rtpaux.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -1899,7 +1899,7 @@ gst_pulsesink_class_init (GstPulseSinkClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstPulseSink:client-name
+   * GstPulseSink:client-name:
    *
    * The PulseAudio client name to use.
    */
@@ -1913,7 +1913,7 @@ gst_pulsesink_class_init (GstPulseSinkClass * klass)
   g_free (clientname);
 
   /**
-   * GstPulseSink:stream-properties
+   * GstPulseSink:stream-properties:
    *
    * List of pulseaudio stream properties. A list of defined properties can be
    * found in the <ulink url="http://0pointer.de/lennart/projects/pulseaudio/doxygen/proplist_8h.html">pulseaudio api docs</ulink>.
@@ -1926,8 +1926,6 @@ gst_pulsesink_class_init (GstPulseSinkClass * klass)
    * g_object_set (pulse, "stream-properties", props, NULL);
    * gst_structure_free
    * ]|
-   *
-   * Since: 0.10.26
    */
   g_object_class_install_property (gobject_class,
       PROP_STREAM_PROPERTIES,
@@ -2024,116 +2022,6 @@ gst_pulsesink_sink_info_cb (pa_context * c, const pa_sink_info * i, int eol,
 
 done:
   pa_threaded_mainloop_signal (mainloop, 0);
-}
-
-static gboolean
-gst_pulse_format_info_int_prop_to_value (pa_format_info * format,
-    const char *key, GValue * value)
-{
-  GValue v = { 0, };
-  int i;
-  int *a, n;
-  int min, max;
-
-  if (pa_format_info_get_prop_int (format, key, &i) == 0) {
-    g_value_init (value, G_TYPE_INT);
-    g_value_set_int (value, i);
-
-  } else if (pa_format_info_get_prop_int_array (format, key, &a, &n) == 0) {
-    g_value_init (value, GST_TYPE_LIST);
-    g_value_init (&v, G_TYPE_INT);
-
-    for (i = 0; i < n; i++) {
-      g_value_set_int (&v, a[i]);
-      gst_value_list_append_value (value, &v);
-    }
-
-    pa_xfree (a);
-
-  } else if (pa_format_info_get_prop_int_range (format, key, &min, &max) == 0) {
-    g_value_init (value, GST_TYPE_INT_RANGE);
-    gst_value_set_int_range (value, min, max);
-
-  } else {
-    /* Property not available or is not an int type */
-    return FALSE;
-  }
-
-  return TRUE;
-}
-
-static GstCaps *
-gst_pulse_format_info_to_caps (pa_format_info * format)
-{
-  GstCaps *ret = NULL;
-  GValue v = { 0, };
-  pa_sample_spec ss;
-
-  switch (format->encoding) {
-    case PA_ENCODING_PCM:{
-      char *tmp = NULL;
-
-      pa_format_info_to_sample_spec (format, &ss, NULL);
-
-      if (pa_format_info_get_prop_string (format,
-              PA_PROP_FORMAT_SAMPLE_FORMAT, &tmp)) {
-        /* No specific sample format means any sample format */
-        ret = gst_caps_from_string (_PULSE_CAPS_PCM);
-        goto out;
-
-      } else if (ss.format == PA_SAMPLE_ALAW) {
-        ret = gst_caps_from_string (_PULSE_CAPS_ALAW);
-
-      } else if (ss.format == PA_SAMPLE_ULAW) {
-        ret = gst_caps_from_string (_PULSE_CAPS_MP3);
-
-      } else {
-        /* Linear PCM format */
-        const char *sformat =
-            gst_pulse_sample_format_to_caps_format (ss.format);
-
-        ret = gst_caps_from_string (_PULSE_CAPS_LINEAR);
-
-        if (sformat)
-          gst_caps_set_simple (ret, "format", G_TYPE_STRING, NULL);
-      }
-
-      pa_xfree (tmp);
-      break;
-    }
-
-    case PA_ENCODING_AC3_IEC61937:
-      ret = gst_caps_from_string (_PULSE_CAPS_AC3);
-      break;
-
-    case PA_ENCODING_EAC3_IEC61937:
-      ret = gst_caps_from_string (_PULSE_CAPS_EAC3);
-      break;
-
-    case PA_ENCODING_DTS_IEC61937:
-      ret = gst_caps_from_string (_PULSE_CAPS_DTS);
-      break;
-
-    case PA_ENCODING_MPEG_IEC61937:
-      ret = gst_caps_from_string (_PULSE_CAPS_MP3);
-      break;
-
-    default:
-      GST_WARNING ("Found a PA format that we don't support yet");
-      goto out;
-  }
-
-  if (gst_pulse_format_info_int_prop_to_value (format, PA_PROP_FORMAT_RATE, &v))
-    gst_caps_set_value (ret, "rate", &v);
-
-  g_value_unset (&v);
-
-  if (gst_pulse_format_info_int_prop_to_value (format, PA_PROP_FORMAT_CHANNELS,
-          &v))
-    gst_caps_set_value (ret, "channels", &v);
-
-out:
-  return ret;
 }
 
 /* Call with mainloop lock held */
@@ -2790,7 +2678,7 @@ no_mainloop:
 no_buffer:
   {
     GST_DEBUG_OBJECT (pulsesink, "we have no ringbuffer");
-    goto unlock;
+    return NULL;
   }
 info_failed:
   {

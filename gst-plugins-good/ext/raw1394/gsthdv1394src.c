@@ -152,12 +152,10 @@ gst_hdv1394src_class_init (GstHDV1394SrcClass * klass)
           "like 0xhhhhhhhhhhhhhhhh. (0 = no guid)", 0, G_MAXUINT64,
           DEFAULT_GUID, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
-   * GstHDV1394Src:device-name
+   * GstHDV1394Src:device-name:
    *
    * Descriptive name of the currently opened device
-   *
-   * Since: 0.10.7
-   **/
+   */
   g_object_class_install_property (G_OBJECT_CLASS (klass), PROP_DEVICE_NAME,
       g_param_spec_string ("device-name", "device name",
           "user-friendly name of the device", "Default",
@@ -561,6 +559,22 @@ gst_hdv1394src_start (GstBaseSrc * bsrc)
 
   raw1394_set_userdata (src->handle, src);
   raw1394_set_bus_reset_handler (src->handle, gst_hdv1394src_bus_reset);
+
+  {
+    nodeid_t m_node = (src->avc_node | 0xffc0);
+    int m_channel = -1;
+    int m_bandwidth = 0;
+    int m_outputPort = -1;
+    int m_inputPort = -1;
+
+    m_channel = iec61883_cmp_connect (src->handle, m_node, &m_outputPort,
+        raw1394_get_local_id (src->handle), &m_inputPort, &m_bandwidth);
+
+    if (m_channel >= 0) {
+      src->channel = m_channel;
+    }
+  }
+
 
   if ((src->iec61883mpeg2 =
           iec61883_mpeg2_recv_init (src->handle,

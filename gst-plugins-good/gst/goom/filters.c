@@ -74,16 +74,6 @@ setPixelRGB_ (Pixel * buffer, Uint x, Color c)
 }
 
 static inline void
-getPixelRGB (PluginInfo * goomInfo, Pixel * buffer, Uint x, Uint y, Color * c)
-{
-  Pixel i = *(buffer + (x + y * goomInfo->screen.width));
-
-  c->b = i.channels.b;
-  c->v = i.channels.g;
-  c->r = i.channels.r;
-}
-
-static inline void
 getPixelRGB_ (Pixel * buffer, Uint x, Color * c)
 {
   Pixel i = *(buffer + x);
@@ -741,7 +731,7 @@ generatePrecalCoef (int precalCoef[16][16])
       if (!(coefh || coefv)) {
         i = 255;
       } else {
-        int i1, i2, i3, i4;
+        Uint i1, i2, i3, i4;
 
         i1 = diffcoeffh * diffcoeffv;
         i2 = coefh * diffcoeffv;

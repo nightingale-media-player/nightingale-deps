@@ -2,36 +2,29 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>autovideosink</title>
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: autovideosink</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-autoaudiosrc.html" title="autoaudiosrc">
 <link rel="next" href="gst-plugins-good-plugins-autovideosrc.html" title="autovideosrc">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-autoaudiosrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-autovideosrc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-autovideosink.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-autovideosink.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-autovideosink.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-autovideosink.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-autovideosink.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-autovideosink.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-autovideosink.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-autovideosink.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-autovideosink.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-autoaudiosrc.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-autovideosrc.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-good-plugins-autovideosink"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -39,22 +32,58 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-autovideosink.top_of_page"></a>autovideosink</span></h2>
 <p>autovideosink — Wrapper video sink for automatically detected video sink</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-good-plugins-autovideosink.synopsis"></a><h2>Synopsis</h2>
-<a name="GstAutoVideoSink"></a><pre class="synopsis">                    <a class="link" href="gst-plugins-good-plugins-autovideosink.html#GstAutoVideoSink-struct" title="GstAutoVideoSink">GstAutoVideoSink</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-autovideosink.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-autovideosink.html#GstAutoVideoSink--filter-caps" title="The “filter-caps” property">filter-caps</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-autovideosink.html#GstAutoVideoSink--ts-offset" title="The “ts-offset” property">ts-offset</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-autovideosink.html#GstAutoVideoSink--sync" title="The “sync” property">sync</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstAutoVideoSink"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-autovideosink.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-autovideosink.html#GstAutoVideoSink-struct" title="GstAutoVideoSink">GstAutoVideoSink</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-autovideosink.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBin.html">GstBin</a>
-                           +----GstAutoVideoSink
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBin.html">GstBin</a>
+                    <span class="lineart">╰──</span> GstAutoDetect
+                        <span class="lineart">╰──</span> GstAutoVideoSink
 </pre>
 </div>
 <div class="refsect1">
@@ -64,25 +93,13 @@ GstAutoVideoSink implements
  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstChildProxy.html">GstChildProxy</a>.</p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-autovideosink.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-autovideosink.html#GstAutoVideoSink--filter-caps" title='The "filter-caps" property'>filter-caps</a>"              <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a>*              : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-autovideosink.html#GstAutoVideoSink--ts-offset" title='The "ts-offset" property'>ts-offset</a>"                <span class="type">gint64</span>                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-autovideosink.html#GstAutoVideoSink--sync" title='The "sync" property'>sync</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-</pre>
-</div>
-<div class="refsect1">
 <a name="gst-plugins-good-plugins-autovideosink.description"></a><h2>Description</h2>
-<p>
-autovideosink is a video sink that automatically detects an appropriate
+<p>autovideosink is a video sink that automatically detects an appropriate
 video sink to use.  It does so by scanning the registry for all elements
 that have <span class="quote">“<span class="quote">Sink</span>”</span> and <span class="quote">“<span class="quote">Video</span>”</span> in the class field
-of their element information, and also have a non-zero autoplugging rank.
-</p>
-<p>
-</p>
+of their element information, and also have a non-zero autoplugging rank.</p>
 <div class="refsect2">
-<a name="id-1.2.30.7.3.1"></a><h3>Example launch line</h3>
+<a name="id-1.2.30.8.3"></a><h3>Example launch line</h3>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -95,12 +112,10 @@ of their element information, and also have a non-zero autoplugging rank.
 </div>
 
 </div>
-<p>
-</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.30.7.4.1"></a><h3>Element Information</h3>
+<a name="id-1.2.30.8.4.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -126,7 +141,7 @@ of their element information, and also have a non-zero autoplugging rank.
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.30.7.4.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.30.8.4.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -157,7 +172,10 @@ of their element information, and also have a non-zero autoplugging rank.
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-autovideosink.details"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-autovideosink.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-autovideosink.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstAutoVideoSink-struct"></a><h3>GstAutoVideoSink</h3>
 <pre class="programlisting">typedef struct _GstAutoVideoSink GstAutoVideoSink;</pre>
@@ -168,40 +186,35 @@ of their element information, and also have a non-zero autoplugging rank.
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-autovideosink.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstAutoVideoSink--filter-caps"></a><h3>The <code class="literal">"filter-caps"</code> property</h3>
-<pre class="programlisting">  "filter-caps"              <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a>*              : Read / Write</pre>
-<p>
-This property will filter out candidate sinks that can handle the specified
-caps. By default only video sinks that support raw rgb and yuv video
-are selected.
-</p>
-<p>
-This property can only be set before the element goes to the READY state.
-</p>
-<p class="since">Since 0.10.7</p>
+<a name="GstAutoVideoSink--filter-caps"></a><h3>The <code class="literal">“filter-caps”</code> property</h3>
+<pre class="programlisting">  “filter-caps”              <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> *</pre>
+<p>Filter sink candidates using these caps.</p>
+<p>Flags: Read / Write</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAutoVideoSink--ts-offset"></a><h3>The <code class="literal">"ts-offset"</code> property</h3>
-<pre class="programlisting">  "ts-offset"                <span class="type">gint64</span>                : Read / Write</pre>
+<a name="GstAutoVideoSink--ts-offset"></a><h3>The <code class="literal">“ts-offset”</code> property</h3>
+<pre class="programlisting">  “ts-offset”                <span class="type">gint64</span></pre>
 <p>Timestamp offset in nanoseconds.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAutoVideoSink--sync"></a><h3>The <code class="literal">"sync"</code> property</h3>
-<pre class="programlisting">  "sync"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstAutoVideoSink--sync"></a><h3>The <code class="literal">“sync”</code> property</h3>
+<pre class="programlisting">  “sync”                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Sync on the clock.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-autovideosink.see-also"></a><h2>See Also</h2>
-autoaudiosink, ximagesink, xvimagesink, sdlvideosink
+<p>autoaudiosink, ximagesink, xvimagesink, sdlvideosink</p>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

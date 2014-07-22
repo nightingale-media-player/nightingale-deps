@@ -51,8 +51,6 @@
  * gst-launch-1.0 audiotestsrc ! jackaudiosink
  * ]| Play a sine wave to using jack.
  * </refsect2>
- *
- * Last reviewed on 2006-11-30 (0.10.4)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -736,11 +734,9 @@ gst_jack_audio_sink_class_init (GstJackAudioSinkClass * klass)
           DEFAULT_PROP_SERVER, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstJackAudioSink:client-name
+   * GstJackAudioSink:client-name:
    *
    * The client name to use.
-   *
-   * Since: 0.10.31
    */
   g_object_class_install_property (gobject_class, PROP_CLIENT_NAME,
       g_param_spec_string ("client-name", "Client name",
@@ -755,11 +751,9 @@ gst_jack_audio_sink_class_init (GstJackAudioSinkClass * klass)
           G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstJackAudioSink:transport
+   * GstJackAudioSink:transport:
    *
    * The jack transport behaviour for the client.
-   *
-   * Since: 0.10.31
    */
   g_object_class_install_property (gobject_class, PROP_TRANSPORT,
       g_param_spec_flags ("transport", "Transport mode",

@@ -89,7 +89,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-gcc-inline-assembly.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -159,6 +158,7 @@ libgstpulse_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_libgstpulse_la_OBJECTS = libgstpulse_la-plugin.lo \
 	libgstpulse_la-pulsesink.lo libgstpulse_la-pulsesrc.lo \
+	libgstpulse_la-pulsedeviceprovider.lo \
 	libgstpulse_la-pulseutil.lo
 libgstpulse_la_OBJECTS = $(am_libgstpulse_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -489,7 +489,6 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
-XVIDEO_LIBS = @XVIDEO_LIBS@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -563,6 +562,7 @@ libgstpulse_la_SOURCES = \
 	plugin.c \
 	pulsesink.c \
 	pulsesrc.c \
+	pulsedeviceprovider.c \
 	pulseutil.c
 
 libgstpulse_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS) $(PULSE_CFLAGS)
@@ -575,6 +575,7 @@ libgstpulse_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
 noinst_HEADERS = \
 	pulsesink.h \
 	pulsesrc.h \
+	pulsedeviceprovider.h \
 	pulseutil.h
 
 all: all-am
@@ -657,6 +658,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstpulse_la-plugin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstpulse_la-pulsedeviceprovider.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstpulse_la-pulsesink.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstpulse_la-pulsesrc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstpulse_la-pulseutil.Plo@am__quote@
@@ -705,6 +707,13 @@ libgstpulse_la-pulsesrc.lo: pulsesrc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pulsesrc.c' object='libgstpulse_la-pulsesrc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstpulse_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstpulse_la_CFLAGS) $(CFLAGS) -c -o libgstpulse_la-pulsesrc.lo `test -f 'pulsesrc.c' || echo '$(srcdir)/'`pulsesrc.c
+
+libgstpulse_la-pulsedeviceprovider.lo: pulsedeviceprovider.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstpulse_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstpulse_la_CFLAGS) $(CFLAGS) -MT libgstpulse_la-pulsedeviceprovider.lo -MD -MP -MF $(DEPDIR)/libgstpulse_la-pulsedeviceprovider.Tpo -c -o libgstpulse_la-pulsedeviceprovider.lo `test -f 'pulsedeviceprovider.c' || echo '$(srcdir)/'`pulsedeviceprovider.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstpulse_la-pulsedeviceprovider.Tpo $(DEPDIR)/libgstpulse_la-pulsedeviceprovider.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pulsedeviceprovider.c' object='libgstpulse_la-pulsedeviceprovider.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstpulse_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstpulse_la_CFLAGS) $(CFLAGS) -c -o libgstpulse_la-pulsedeviceprovider.lo `test -f 'pulsedeviceprovider.c' || echo '$(srcdir)/'`pulsedeviceprovider.c
 
 libgstpulse_la-pulseutil.lo: pulseutil.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstpulse_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstpulse_la_CFLAGS) $(CFLAGS) -MT libgstpulse_la-pulseutil.lo -MD -MP -MF $(DEPDIR)/libgstpulse_la-pulseutil.Tpo -c -o libgstpulse_la-pulseutil.lo `test -f 'pulseutil.c' || echo '$(srcdir)/'`pulseutil.c

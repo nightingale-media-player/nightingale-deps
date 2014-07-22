@@ -32,6 +32,7 @@ typedef struct _GstV4l2BufferPoolClass GstV4l2BufferPoolClass;
 typedef struct _GstV4l2Meta GstV4l2Meta;
 
 #include "gstv4l2object.h"
+#include "gstv4l2allocator.h"
 
 GST_DEBUG_CATEGORY_EXTERN (v4l2buffer_debug);
 
@@ -49,21 +50,34 @@ struct _GstV4l2BufferPool
 
   GstV4l2Object *obj;        /* the v4l2 object */
   gint video_fd;             /* a dup(2) of the v4l2object's video_fd */
+  GstPoll *poll;             /* a poll for video_fd */
+  GstPollFD pollfd;
+  gboolean can_poll_device;
 
+  gboolean empty;
+  GCond empty_cond;
+
+  GstV4l2Allocator *vallocator;
   GstAllocator *allocator;
   GstAllocationParams params;
+  GstBufferPool *other_pool;
   guint size;
-  gboolean add_videometa;
-  gboolean can_alloc;        /* if extra buffers can be allocated */
+  GstVideoInfo caps_info;   /* Default video information */
 
-  guint num_buffers;         /* number of buffers we use */
-  guint num_allocated;       /* number of buffers allocated by the driver */
+  gboolean add_videometa;    /* set if video meta should be added */
+
+  guint min_latency;         /* number of buffers we will hold */
+  guint max_latency;         /* number of buffers we can hold */
   guint num_queued;          /* number of buffers queued in the driver */
   guint copy_threshold;      /* when our pool runs lower, start handing out copies */
 
   gboolean streaming;
+  gboolean flushing;
 
-  GstBuffer **buffers;
+  GstBuffer *buffers[VIDEO_MAX_FRAME];
+
+  /* signal handlers */
+  gulong group_released_handler;
 };
 
 struct _GstV4l2BufferPoolClass
@@ -71,23 +85,14 @@ struct _GstV4l2BufferPoolClass
   GstBufferPoolClass parent_class;
 };
 
-struct _GstV4l2Meta {
-  GstMeta meta;
-
-  gpointer mem;
-  struct v4l2_buffer vbuffer;
-};
-
-GType gst_v4l2_meta_api_get_type (void);
-const GstMetaInfo * gst_v4l2_meta_get_info (void);
-#define GST_V4L2_META_GET(buf) ((GstV4l2Meta *)gst_buffer_get_meta(buf,gst_v4l2_meta_api_get_type()))
-#define GST_V4L2_META_ADD(buf) ((GstV4l2Meta *)gst_buffer_add_meta(buf,gst_v4l2_meta_get_info(),NULL))
-
 GType gst_v4l2_buffer_pool_get_type (void);
 
 GstBufferPool *     gst_v4l2_buffer_pool_new     (GstV4l2Object *obj, GstCaps *caps);
 
-GstFlowReturn       gst_v4l2_buffer_pool_process (GstV4l2BufferPool * bpool, GstBuffer * buf);
+GstFlowReturn       gst_v4l2_buffer_pool_process (GstV4l2BufferPool * bpool, GstBuffer ** buf);
+
+void                gst_v4l2_buffer_pool_set_other_pool (GstV4l2BufferPool * pool,
+                                                         GstBufferPool * other_pool);
 
 G_END_DECLS
 

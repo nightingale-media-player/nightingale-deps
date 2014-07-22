@@ -2,34 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>audiokaraoke</title>
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: audiokaraoke</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-audiopanorama.html" title="audiopanorama">
 <link rel="next" href="gst-plugins-good-plugins-auparse.html" title="auparse">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-audiopanorama.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-auparse.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-audiokaraoke.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-audiokaraoke.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-audiokaraoke.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-audiokaraoke.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-audiokaraoke.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-audiokaraoke.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-audiokaraoke.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-audiopanorama.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-auparse.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-good-plugins-audiokaraoke"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -37,44 +31,70 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-audiokaraoke.top_of_page"></a>audiokaraoke</span></h2>
 <p>audiokaraoke — Removes voice from sound</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-good-plugins-audiokaraoke.synopsis"></a><h2>Synopsis</h2>
-<a name="GstAudioKaraoke"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-audiokaraoke.html#GstAudioKaraoke-struct" title="struct GstAudioKaraoke">GstAudioKaraoke</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-audiokaraoke.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-audiokaraoke.html#GstAudioKaraoke--filter-band" title="The “filter-band” property">filter-band</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-audiokaraoke.html#GstAudioKaraoke--filter-width" title="The “filter-width” property">filter-width</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-audiokaraoke.html#GstAudioKaraoke--level" title="The “level” property">level</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-audiokaraoke.html#GstAudioKaraoke--mono-level" title="The “mono-level” property">mono-level</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstAudioKaraoke"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-audiokaraoke.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-audiokaraoke.html#GstAudioKaraoke-struct" title="struct GstAudioKaraoke">GstAudioKaraoke</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-audiokaraoke.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
-                           +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter">GstAudioFilter</a>
-                                 +----GstAudioKaraoke
-</pre>
-</div>
-<div class="refsect1">
-<a name="gst-plugins-good-plugins-audiokaraoke.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-audiokaraoke.html#GstAudioKaraoke--filter-band" title='The "filter-band" property'>filter-band</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-audiokaraoke.html#GstAudioKaraoke--filter-width" title='The "filter-width" property'>filter-width</a>"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-audiokaraoke.html#GstAudioKaraoke--level" title='The "level" property'>level</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-audiokaraoke.html#GstAudioKaraoke--mono-level" title='The "mono-level" property'>mono-level</a>"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudiofilter.html#GstAudioFilter">GstAudioFilter</a>
+                        <span class="lineart">╰──</span> GstAudioKaraoke
 </pre>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-audiokaraoke.description"></a><h2>Description</h2>
-<p>
-Remove the voice from audio by filtering the center channel.
-This plugin is useful for karaoke applications.
-</p>
-<p>
-</p>
+<p>Remove the voice from audio by filtering the center channel.
+This plugin is useful for karaoke applications.</p>
 <div class="refsect2">
-<a name="id-1.2.26.6.3.1"></a><h3>Example launch line</h3>
+<a name="id-1.2.26.7.3"></a><h3>Example launch line</h3>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -87,12 +107,10 @@ This plugin is useful for karaoke applications.
 </div>
 
 </div>
-<p>
-</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.26.6.4.1"></a><h3>Element Information</h3>
+<a name="id-1.2.26.7.4.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -118,7 +136,7 @@ This plugin is useful for karaoke applications.
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.26.6.4.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.26.7.4.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -173,7 +191,10 @@ This plugin is useful for karaoke applications.
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-audiokaraoke.details"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-audiokaraoke.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-audiokaraoke.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstAudioKaraoke-struct"></a><h3>struct GstAudioKaraoke</h3>
 <pre class="programlisting">struct GstAudioKaraoke;</pre>
@@ -184,33 +205,37 @@ This plugin is useful for karaoke applications.
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-audiokaraoke.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstAudioKaraoke--filter-band"></a><h3>The <code class="literal">"filter-band"</code> property</h3>
-<pre class="programlisting">  "filter-band"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write</pre>
+<a name="GstAudioKaraoke--filter-band"></a><h3>The <code class="literal">“filter-band”</code> property</h3>
+<pre class="programlisting">  “filter-band”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></pre>
 <p>The Frequency band of the filter.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,441]</p>
 <p>Default value: 220</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAudioKaraoke--filter-width"></a><h3>The <code class="literal">"filter-width"</code> property</h3>
-<pre class="programlisting">  "filter-width"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write</pre>
+<a name="GstAudioKaraoke--filter-width"></a><h3>The <code class="literal">“filter-width”</code> property</h3>
+<pre class="programlisting">  “filter-width”             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></pre>
 <p>The Frequency width of the filter.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,100]</p>
 <p>Default value: 100</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAudioKaraoke--level"></a><h3>The <code class="literal">"level"</code> property</h3>
-<pre class="programlisting">  "level"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write</pre>
+<a name="GstAudioKaraoke--level"></a><h3>The <code class="literal">“level”</code> property</h3>
+<pre class="programlisting">  “level”                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></pre>
 <p>Level of the effect (1.0 = full).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,1]</p>
 <p>Default value: 1</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAudioKaraoke--mono-level"></a><h3>The <code class="literal">"mono-level"</code> property</h3>
-<pre class="programlisting">  "mono-level"               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write</pre>
+<a name="GstAudioKaraoke--mono-level"></a><h3>The <code class="literal">“mono-level”</code> property</h3>
+<pre class="programlisting">  “mono-level”               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></pre>
 <p>Level of the mono channel (1.0 = full).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,1]</p>
 <p>Default value: 1</p>
 </div>
@@ -218,6 +243,6 @@ This plugin is useful for karaoke applications.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

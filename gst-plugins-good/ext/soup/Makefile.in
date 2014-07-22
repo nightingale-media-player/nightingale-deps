@@ -89,7 +89,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-gcc-inline-assembly.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -159,6 +158,7 @@ libgstsouphttpsrc_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 am_libgstsouphttpsrc_la_OBJECTS =  \
 	libgstsouphttpsrc_la-gstsouphttpsrc.lo \
 	libgstsouphttpsrc_la-gstsouphttpclientsink.lo \
+	libgstsouphttpsrc_la-gstsouputils.lo \
 	libgstsouphttpsrc_la-gstsoup.lo
 libgstsouphttpsrc_la_OBJECTS = $(am_libgstsouphttpsrc_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -489,7 +489,6 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
-XVIDEO_LIBS = @XVIDEO_LIBS@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -559,7 +558,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 plugin_LTLIBRARIES = libgstsouphttpsrc.la
-libgstsouphttpsrc_la_SOURCES = gstsouphttpsrc.c gstsouphttpclientsink.c gstsoup.c
+libgstsouphttpsrc_la_SOURCES = gstsouphttpsrc.c gstsouphttpclientsink.c gstsouputils.c gstsoup.c
 libgstsouphttpsrc_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) \
 	$(GST_CFLAGS) $(SOUP_CFLAGS) \
 	-DSOUP_VERSION_MIN_REQUIRED=SOUP_VERSION_2_26 \
@@ -568,7 +567,7 @@ libgstsouphttpsrc_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) \
 libgstsouphttpsrc_la_LIBADD = $(GST_PLUGINS_BASE_LIBS) -lgsttag-@GST_API_VERSION@ $(GST_BASE_LIBS) $(SOUP_LIBS)
 libgstsouphttpsrc_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 libgstsouphttpsrc_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
-noinst_HEADERS = gstsouphttpsrc.h gstsouphttpclientsink.h
+noinst_HEADERS = gstsouphttpsrc.h gstsouphttpclientsink.h gstsouputils.h
 all: all-am
 
 .SUFFIXES:
@@ -651,6 +650,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstsouphttpsrc_la-gstsoup.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstsouphttpsrc_la-gstsouphttpclientsink.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstsouphttpsrc_la-gstsouphttpsrc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstsouphttpsrc_la-gstsouputils.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -689,6 +689,13 @@ libgstsouphttpsrc_la-gstsouphttpclientsink.lo: gstsouphttpclientsink.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstsouphttpclientsink.c' object='libgstsouphttpsrc_la-gstsouphttpclientsink.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstsouphttpsrc_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstsouphttpsrc_la_CFLAGS) $(CFLAGS) -c -o libgstsouphttpsrc_la-gstsouphttpclientsink.lo `test -f 'gstsouphttpclientsink.c' || echo '$(srcdir)/'`gstsouphttpclientsink.c
+
+libgstsouphttpsrc_la-gstsouputils.lo: gstsouputils.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstsouphttpsrc_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstsouphttpsrc_la_CFLAGS) $(CFLAGS) -MT libgstsouphttpsrc_la-gstsouputils.lo -MD -MP -MF $(DEPDIR)/libgstsouphttpsrc_la-gstsouputils.Tpo -c -o libgstsouphttpsrc_la-gstsouputils.lo `test -f 'gstsouputils.c' || echo '$(srcdir)/'`gstsouputils.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstsouphttpsrc_la-gstsouputils.Tpo $(DEPDIR)/libgstsouphttpsrc_la-gstsouputils.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstsouputils.c' object='libgstsouphttpsrc_la-gstsouputils.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstsouphttpsrc_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstsouphttpsrc_la_CFLAGS) $(CFLAGS) -c -o libgstsouphttpsrc_la-gstsouputils.lo `test -f 'gstsouputils.c' || echo '$(srcdir)/'`gstsouputils.c
 
 libgstsouphttpsrc_la-gstsoup.lo: gstsoup.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libgstsouphttpsrc_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstsouphttpsrc_la_CFLAGS) $(CFLAGS) -MT libgstsouphttpsrc_la-gstsoup.lo -MD -MP -MF $(DEPDIR)/libgstsouphttpsrc_la-gstsoup.Tpo -c -o libgstsouphttpsrc_la-gstsoup.lo `test -f 'gstsoup.c' || echo '$(srcdir)/'`gstsoup.c

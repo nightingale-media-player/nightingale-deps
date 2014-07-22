@@ -460,13 +460,15 @@ gst_ximage_src_ximage_get (GstXImageSrc * ximagesrc)
 
     meta = GST_META_XIMAGE_GET (ximage);
 
-    if ((meta->width != ximagesrc->width) ||
-        (meta->height != ximagesrc->height)) {
-      gst_ximage_buffer_free (ximage);
-    }
-
     ximagesrc->buffer_pool = g_slist_delete_link (ximagesrc->buffer_pool,
         ximagesrc->buffer_pool);
+
+    if ((meta->width == ximagesrc->width) ||
+        (meta->height == ximagesrc->height))
+      break;
+
+    gst_ximage_buffer_free (ximage);
+    ximage = NULL;
   }
   g_mutex_unlock (&ximagesrc->pool_lock);
 
@@ -1021,6 +1023,7 @@ gst_ximage_src_get_caps (GstBaseSrc * bs, GstCaps * filter)
   GstXContext *xcontext;
   gint width, height;
   GstVideoFormat format;
+  guint32 alpha_mask;
 
   if ((!s->xcontext) && (!gst_ximage_src_open_display (s, s->display_name)))
     return gst_pad_get_pad_template_caps (GST_BASE_SRC (s)->srcpad);
@@ -1071,10 +1074,18 @@ gst_ximage_src_get_caps (GstBaseSrc * bs, GstCaps * filter)
   }
   GST_DEBUG ("width = %d, height=%d", width, height);
 
+  /* extrapolate alpha mask */
+  if (xcontext->depth == 32) {
+    alpha_mask = ~(xcontext->r_mask_output
+        | xcontext->g_mask_output | xcontext->b_mask_output);
+  } else {
+    alpha_mask = 0;
+  }
+
   format =
       gst_video_format_from_masks (xcontext->depth, xcontext->bpp,
       xcontext->endianness, xcontext->r_mask_output, xcontext->g_mask_output,
-      xcontext->b_mask_output, 0);
+      xcontext->b_mask_output, alpha_mask);
 
   return gst_caps_new_simple ("video/x-raw",
       "format", G_TYPE_STRING, gst_video_format_to_string (format),
@@ -1153,95 +1164,79 @@ gst_ximage_src_class_init (GstXImageSrcClass * klass)
           "Show mouse pointer (if XFixes extension enabled)", TRUE,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
-   * GstXImageSrc:use-damage
+   * GstXImageSrc:use-damage:
    *
    * Use XDamage (if the XDamage extension is enabled)
-   *
-   * Since: 0.10.4
-   **/
+   */
   g_object_class_install_property (gc, PROP_USE_DAMAGE,
       g_param_spec_boolean ("use-damage", "Use XDamage",
           "Use XDamage (if XDamage extension enabled)", TRUE,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
-   * GstXImageSrc:startx
+   * GstXImageSrc:startx:
    *
    * X coordinate of top left corner of area to be recorded
    * (0 for top left of screen)
-   *
-   * Since: 0.10.4
-   **/
+   */
   g_object_class_install_property (gc, PROP_STARTX,
       g_param_spec_uint ("startx", "Start X co-ordinate",
           "X coordinate of top left corner of area to be recorded (0 for top left of screen)",
           0, G_MAXINT, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
-   * GstXImageSrc:starty
+   * GstXImageSrc:starty:
    *
    * Y coordinate of top left corner of area to be recorded
    * (0 for top left of screen)
-   *
-   * Since: 0.10.4
-   **/
+   */
   g_object_class_install_property (gc, PROP_STARTY,
       g_param_spec_uint ("starty", "Start Y co-ordinate",
           "Y coordinate of top left corner of area to be recorded (0 for top left of screen)",
           0, G_MAXINT, 0, G_PARAM_READWRITE));
   /**
-   * GstXImageSrc:endx
+   * GstXImageSrc:endx:
    *
    * X coordinate of bottom right corner of area to be recorded
    * (0 for bottom right of screen)
-   *
-   * Since: 0.10.4
-   **/
+   */
   g_object_class_install_property (gc, PROP_ENDX,
       g_param_spec_uint ("endx", "End X",
           "X coordinate of bottom right corner of area to be recorded (0 for bottom right of screen)",
           0, G_MAXINT, 0, G_PARAM_READWRITE));
   /**
-   * GstXImageSrc:endy
+   * GstXImageSrc:endy:
    *
    * Y coordinate of bottom right corner of area to be recorded
    * (0 for bottom right of screen)
-   *
-   * Since: 0.10.4
-   **/
+   */
   g_object_class_install_property (gc, PROP_ENDY,
       g_param_spec_uint ("endy", "End Y",
           "Y coordinate of bottom right corner of area to be recorded (0 for bottom right of screen)",
           0, G_MAXINT, 0, G_PARAM_READWRITE));
 
   /**
-   * GstXImageSrc:remote
+   * GstXImageSrc:remote:
    *
    * Whether the X display is remote. The element will try to use alternate calls
    * known to work better with remote displays.
-   *
-   * Since: 0.10.26
-   **/
+   */
   g_object_class_install_property (gc, PROP_REMOTE,
       g_param_spec_boolean ("remote", "Remote dispay",
           "Whether the display is remote", FALSE,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
-   * GstXImageSrc:xid
+   * GstXImageSrc:xid:
    *
    * The XID of the window to capture. 0 for the root window (default).
-   *
-   * Since: 0.10.31
-   **/
+   */
   g_object_class_install_property (gc, PROP_XID,
       g_param_spec_uint64 ("xid", "Window XID",
           "Window XID to capture from", 0, G_MAXUINT64, 0,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
-   * GstXImageSrc:xname
+   * GstXImageSrc:xname:
    *
    * The name of the window to capture, if any.
-   *
-   * Since: 0.10.31
-   **/
+   */
   g_object_class_install_property (gc, PROP_XNAME,
       g_param_spec_string ("xname", "Window name",
           "Window name to capture from", NULL,

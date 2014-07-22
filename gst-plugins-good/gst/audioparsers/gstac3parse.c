@@ -46,8 +46,8 @@
 #include <string.h>
 
 #include "gstac3parse.h"
-#include <gst/base/gstbytereader.h>
-#include <gst/base/gstbitreader.h>
+#include <gst/base/base.h>
+#include <gst/pbutils/pbutils.h>
 
 GST_DEBUG_CATEGORY_STATIC (ac3_parse_debug);
 #define GST_CAT_DEFAULT ac3_parse_debug
@@ -162,6 +162,8 @@ static gboolean gst_ac3_parse_start (GstBaseParse * parse);
 static gboolean gst_ac3_parse_stop (GstBaseParse * parse);
 static GstFlowReturn gst_ac3_parse_handle_frame (GstBaseParse * parse,
     GstBaseParseFrame * frame, gint * skipsize);
+static GstFlowReturn gst_ac3_parse_pre_push_frame (GstBaseParse * parse,
+    GstBaseParseFrame * frame);
 static gboolean gst_ac3_parse_src_event (GstBaseParse * parse,
     GstEvent * event);
 static GstCaps *gst_ac3_parse_get_sink_caps (GstBaseParse * parse,
@@ -196,6 +198,8 @@ gst_ac3_parse_class_init (GstAc3ParseClass * klass)
   parse_class->start = GST_DEBUG_FUNCPTR (gst_ac3_parse_start);
   parse_class->stop = GST_DEBUG_FUNCPTR (gst_ac3_parse_stop);
   parse_class->handle_frame = GST_DEBUG_FUNCPTR (gst_ac3_parse_handle_frame);
+  parse_class->pre_push_frame =
+      GST_DEBUG_FUNCPTR (gst_ac3_parse_pre_push_frame);
   parse_class->src_event = GST_DEBUG_FUNCPTR (gst_ac3_parse_src_event);
   parse_class->get_sink_caps = GST_DEBUG_FUNCPTR (gst_ac3_parse_get_sink_caps);
   parse_class->set_sink_caps = GST_DEBUG_FUNCPTR (gst_ac3_parse_set_sink_caps);
@@ -208,6 +212,7 @@ gst_ac3_parse_reset (GstAc3Parse * ac3parse)
   ac3parse->sample_rate = -1;
   ac3parse->blocks = -1;
   ac3parse->eac = FALSE;
+  ac3parse->sent_codec_tag = FALSE;
   g_atomic_int_set (&ac3parse->align, GST_AC3_PARSE_ALIGN_NONE);
 }
 
@@ -218,6 +223,7 @@ gst_ac3_parse_init (GstAc3Parse * ac3parse)
   gst_ac3_parse_reset (ac3parse);
   ac3parse->baseparse_chainfunc =
       GST_BASE_PARSE_SINK_PAD (GST_BASE_PARSE (ac3parse))->chainfunc;
+  GST_PAD_SET_ACCEPT_INTERSECT (GST_BASE_PARSE_SINK_PAD (ac3parse));
 }
 
 static void
@@ -769,6 +775,33 @@ bad_first_access_parameter:
   }
 }
 
+static GstFlowReturn
+gst_ac3_parse_pre_push_frame (GstBaseParse * parse, GstBaseParseFrame * frame)
+{
+  GstAc3Parse *ac3parse = GST_AC3_PARSE (parse);
+
+  if (!ac3parse->sent_codec_tag) {
+    GstTagList *taglist;
+    GstCaps *caps;
+
+    taglist = gst_tag_list_new_empty ();
+
+    /* codec tag */
+    caps = gst_pad_get_current_caps (GST_BASE_PARSE_SRC_PAD (parse));
+    gst_pb_utils_add_codec_description_to_tag_list (taglist,
+        GST_TAG_AUDIO_CODEC, caps);
+    gst_caps_unref (caps);
+
+    gst_pad_push_event (GST_BASE_PARSE_SRC_PAD (ac3parse),
+        gst_event_new_tag (taglist));
+
+    /* also signals the end of first-frame processing */
+    ac3parse->sent_codec_tag = TRUE;
+  }
+
+  return GST_FLOW_OK;
+}
+
 static gboolean
 gst_ac3_parse_src_event (GstBaseParse * parse, GstEvent * event)
 {
@@ -799,6 +832,57 @@ gst_ac3_parse_src_event (GstBaseParse * parse, GstEvent * event)
   return GST_BASE_PARSE_CLASS (parent_class)->src_event (parse, event);
 }
 
+static void
+remove_fields (GstCaps * caps)
+{
+  guint i, n;
+
+  n = gst_caps_get_size (caps);
+  for (i = 0; i < n; i++) {
+    GstStructure *s = gst_caps_get_structure (caps, i);
+
+    gst_structure_remove_field (s, "framed");
+    gst_structure_remove_field (s, "alignment");
+  }
+}
+
+static GstCaps *
+extend_caps (GstCaps * caps, gboolean add_private)
+{
+  guint i, n;
+  GstCaps *ncaps = gst_caps_new_empty ();
+
+  n = gst_caps_get_size (caps);
+  for (i = 0; i < n; i++) {
+    GstStructure *s = gst_caps_get_structure (caps, i);
+
+    if (add_private && !gst_structure_has_name (s, "audio/x-private1-ac3")) {
+      GstStructure *ns = gst_structure_copy (s);
+      gst_structure_set_name (ns, "audio/x-private1-ac3");
+      gst_caps_append_structure (ncaps, ns);
+    } else if (!add_private &&
+        gst_structure_has_name (s, "audio/x-private1-ac3")) {
+      GstStructure *ns = gst_structure_copy (s);
+      gst_structure_set_name (ns, "audio/x-ac3");
+      gst_caps_append_structure (ncaps, ns);
+      ns = gst_structure_copy (s);
+      gst_structure_set_name (ns, "audio/x-eac3");
+      gst_caps_append_structure (ncaps, ns);
+    } else if (!add_private) {
+      gst_caps_append_structure (ncaps, gst_structure_copy (s));
+    }
+  }
+
+  if (add_private) {
+    gst_caps_append (caps, ncaps);
+  } else {
+    gst_caps_unref (caps);
+    caps = ncaps;
+  }
+
+  return caps;
+}
+
 static GstCaps *
 gst_ac3_parse_get_sink_caps (GstBaseParse * parse, GstCaps * filter)
 {
@@ -806,31 +890,28 @@ gst_ac3_parse_get_sink_caps (GstBaseParse * parse, GstCaps * filter)
   GstCaps *res;
 
   templ = gst_pad_get_pad_template_caps (GST_BASE_PARSE_SINK_PAD (parse));
-  peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), filter);
+  if (filter) {
+    GstCaps *fcopy = gst_caps_copy (filter);
+    /* Remove the fields we convert */
+    remove_fields (fcopy);
+    /* we do not ask downstream to handle x-private1-ac3 */
+    fcopy = extend_caps (fcopy, FALSE);
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), fcopy);
+    gst_caps_unref (fcopy);
+  } else
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), NULL);
 
   if (peercaps) {
-    guint i, n;
-
     /* Remove the framed and alignment field. We can convert
      * between different alignments. */
     peercaps = gst_caps_make_writable (peercaps);
-    n = gst_caps_get_size (peercaps);
-    for (i = 0; i < n; i++) {
-      GstStructure *s = gst_caps_get_structure (peercaps, i);
-
-      gst_structure_remove_field (s, "framed");
-      gst_structure_remove_field (s, "alignment");
-    }
+    remove_fields (peercaps);
+    /* also allow for x-private1-ac3 input */
+    peercaps = extend_caps (peercaps, TRUE);
 
     res = gst_caps_intersect_full (peercaps, templ, GST_CAPS_INTERSECT_FIRST);
     gst_caps_unref (peercaps);
-    res = gst_caps_make_writable (res);
-
-    /* Append the template caps because we still want to accept
-     * caps without any fields in the case upstream does not
-     * know anything.
-     */
-    gst_caps_append (res, templ);
+    gst_caps_unref (templ);
   } else {
     res = templ;
   }

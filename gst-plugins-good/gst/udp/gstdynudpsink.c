@@ -21,10 +21,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-/* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
- * with newer GLib versions (>= 2.31.0) */
-#define GLIB_DISABLE_DEPRECATION_WARNINGS
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -139,7 +135,8 @@ gst_dynudpsink_class_init (GstDynUDPSinkClass * klass)
 
   gst_element_class_set_static_metadata (gstelement_class, "UDP packet sender",
       "Sink/Network",
-      "Send data over the network via UDP",
+      "Send data over the network via UDP with packet destinations picked up "
+      "dynamically from meta on the buffers passed",
       "Philippe Khalaf <burger@speedy.org>");
 
   gstbasesink_class->render = gst_dynudpsink_render;
@@ -267,9 +264,18 @@ gst_dynudpsink_render (GstBaseSink * bsink, GstBuffer * buffer)
 
 send_error:
   {
-    GST_DEBUG ("got send error %s", err->message);
+    GstFlowReturn flow_ret;
+
+    if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+      GST_DEBUG_OBJECT (sink, "send cancelled");
+      flow_ret = GST_FLOW_FLUSHING;
+    } else {
+      GST_ELEMENT_ERROR (sink, RESOURCE, WRITE, (NULL),
+          ("send error: %s", err->message));
+      flow_ret = GST_FLOW_ERROR;
+    }
     g_clear_error (&err);
-    return GST_FLOW_ERROR;
+    return flow_ret;
   }
 invalid_family:
   {

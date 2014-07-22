@@ -34,8 +34,6 @@
  * ]| Decode an Ogg/Speex file. To create an Ogg/Speex file refer to the
  * documentation of speexenc.
  * </refsect2>
- *
- * Last reviewed on 2006-04-05 (0.10.2)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -156,6 +154,8 @@ gst_speex_dec_reset (GstSpeexDec * dec)
 static void
 gst_speex_dec_init (GstSpeexDec * dec)
 {
+  gst_audio_decoder_set_needs_format (GST_AUDIO_DECODER (dec), TRUE);
+
   dec->enh = DEFAULT_ENH;
 
   gst_speex_dec_reset (dec);
@@ -419,13 +419,7 @@ gst_speex_dec_parse_data (GstSpeexDec * dec, GstBuffer * buf)
 
     if (ret == -1) {
       /* uh? end of stream */
-      if (fpp == 0 && speex_bits_remaining (bits) < 8) {
-        /* if we did not know how many frames to expect, then we get this
-           at the end if there are leftover bits to pad to the next byte */
-        GST_DEBUG_OBJECT (dec, "Discarding leftover bits");
-      } else {
-        GST_WARNING_OBJECT (dec, "Unexpected end of stream found");
-      }
+      GST_WARNING_OBJECT (dec, "Unexpected end of stream found");
       corrupted = TRUE;
     } else if (ret == -2) {
       GST_WARNING_OBJECT (dec, "Decoding error: corrupted stream?");

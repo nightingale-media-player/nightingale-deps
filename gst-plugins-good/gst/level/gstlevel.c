@@ -76,12 +76,10 @@
  *   #GValueArray of #gdouble
  *   <classname>&quot;decay&quot;</classname>:
  *   the decaying peak power level in dB for each channel
- *   the decaying peak level follows the peak level, but starts dropping
- *   if no new peak is reached after the time given by
- *   the <link linkend="GstLevel--peak-ttl">the time to live</link>.
- *   When the decaying peak level drops, it does so at the decay rate
- *   as specified by the
- *   <link linkend="GstLevel--peak-falloff">the peak falloff rate</link>.
+ *   The decaying peak level follows the peak level, but starts dropping if no
+ *   new peak is reached after the time given by the #GstLevel:peak-ttl.
+ *   When the decaying peak level drops, it does so at the decay rate as
+ *   specified by the #GstLevel:peak-falloff.
  *   </para>
  * </listitem>
  * <listitem>
@@ -95,9 +93,9 @@
  *
  * <refsect2>
  * <title>Example application</title>
- * |[
+ * <informalexample><programlisting language="C">
  * <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" parse="text" href="../../../../tests/examples/level/level-example.c" />
- * ]|
+ * </programlisting></informalexample>
  * </refsect2>
  */
 
@@ -679,7 +677,7 @@ gst_level_transform_ip (GstBaseTransform * trans, GstBuffer * in)
         filter->decay_peak_age[i] = G_GINT64_CONSTANT (0);
       }
     }
-    in_data += ((block_int_size * bps) - bps);
+    in_data += block_size * bps;
 
     filter->num_frames += block_size;
     num_frames -= block_size;

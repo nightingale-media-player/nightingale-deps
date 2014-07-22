@@ -27,14 +27,12 @@
 
 #include <glib.h>
 #include <glib/gprintf.h>
-#include <libsoup/soup-address.h>
-#include <libsoup/soup-message.h>
-#include <libsoup/soup-misc.h>
-#include <libsoup/soup-server.h>
-#include <libsoup/soup-auth-domain.h>
-#include <libsoup/soup-auth-domain-basic.h>
-#include <libsoup/soup-auth-domain-digest.h>
+#include <libsoup/soup.h>
 #include <gst/check/gstcheck.h>
+
+#if !defined(SOUP_MINOR_VERSION) || SOUP_MINOR_VERSION < 44
+#define SoupStatus SoupKnownStatusCode
+#endif
 
 static guint http_port = 0, https_port = 0;
 
@@ -503,7 +501,7 @@ do_get (SoupMessage * msg, const char *path)
 
   int buflen = 4096;
 
-  SoupKnownStatusCode status = SOUP_STATUS_OK;
+  SoupStatus status = SOUP_STATUS_OK;
 
   uri = soup_uri_to_string (soup_message_get_uri (msg), FALSE);
   GST_DEBUG ("request: \"%s\"", uri);
@@ -530,7 +528,7 @@ do_get (SoupMessage * msg, const char *path)
     soup_message_headers_append (msg->response_headers, "Location", redir_uri);
     g_free (redir_uri);
   }
-  if (status != SOUP_STATUS_OK && !send_error_doc)
+  if (status != (SoupStatus) SOUP_STATUS_OK && !send_error_doc)
     goto leave;
 
   if (msg->method == SOUP_METHOD_GET) {

@@ -144,17 +144,17 @@ gst_jpeg_dec_class_init (GstJpegDecClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstJpegDec:max-errors
+   * GstJpegDec:max-errors:
    *
    * Error out after receiving N consecutive decoding errors
    * (-1 = never error out, 0 = automatic, 1 = fail on first error, etc.)
    *
-   * Since: 0.10.27
-   **/
+   * Deprecated: 1.3.1: Property wasn't used internally
+   */
   g_object_class_install_property (gobject_class, PROP_MAX_ERRORS,
       g_param_spec_int ("max-errors", "Maximum Consecutive Decoding Errors",
-          "Error out after receiving N consecutive decoding errors "
-          "(-1 = never fail, 0 = automatic, 1 = fail on first error)",
+          "(Deprecated) Error out after receiving N consecutive decoding errors"
+          " (-1 = never fail, 0 = automatic, 1 = fail on first error)",
           -1, G_MAXINT, JPEG_DEFAULT_MAX_ERRORS,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
@@ -296,6 +296,8 @@ gst_jpeg_dec_parse (GstVideoDecoder * bdec, GstVideoCodecFrame * frame,
   gint offset = 0, noffset;
   GstJpegDec *dec = (GstJpegDec *) bdec;
 
+  GST_VIDEO_CODEC_FRAME_SET_SYNC_POINT (frame);
+
   /* FIXME : The overhead of using scan_uint32 is massive */
 
   size = gst_adapter_available (adapter);
@@ -376,9 +378,8 @@ gst_jpeg_dec_parse (GstVideoDecoder * bdec, GstVideoCodecFrame * frame,
       /* Skip this frame if we found another SOI marker */
       GST_DEBUG ("0x%08x: SOI marker before EOI, skipping", offset + 2);
       dec->parse_resync = FALSE;
-      /* FIXME : Need to skip data */
-      toadd -= offset + 2;
-      goto have_full_frame;
+      size = offset + 2;
+      goto drop_frame;
     }
 
 
@@ -457,6 +458,7 @@ need_more_data:
 have_full_frame:
   if (toadd)
     gst_video_decoder_add_to_frame (bdec, toadd);
+  GST_VIDEO_CODEC_FRAME_SET_SYNC_POINT (frame);
   return gst_video_decoder_have_frame (bdec);
 
 drop_frame:
@@ -1186,7 +1188,6 @@ decode_error:
     need_unmap = FALSE;
     jpeg_abort_decompress (&dec->cinfo);
 
-    ret = GST_FLOW_ERROR;
     goto done;
   }
 decode_direct_failed:

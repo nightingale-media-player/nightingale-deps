@@ -73,8 +73,6 @@
  * ]| Establish a connection to an RTSP server and send the raw RTP packets to a
  * fakesink.
  * </refsect2>
- *
- * Last reviewed on 2006-08-18 (0.10.5)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -91,6 +89,7 @@
 
 #include <gst/net/gstnet.h>
 #include <gst/sdp/gstsdpmessage.h>
+#include <gst/sdp/gstmikey.h>
 #include <gst/rtp/gstrtppayloads.h>
 
 #include "gst/gst-i18n-plugin.h"
@@ -123,6 +122,8 @@ enum
   SIGNAL_HANDLE_REQUEST,
   SIGNAL_ON_SDP,
   SIGNAL_SELECT_STREAM,
+  SIGNAL_NEW_MANAGER,
+  SIGNAL_REQUEST_RTCP_KEY,
   LAST_SIGNAL
 };
 
@@ -138,7 +139,8 @@ enum _GstRtspSrcBufferMode
   BUFFER_MODE_NONE,
   BUFFER_MODE_SLAVE,
   BUFFER_MODE_BUFFER,
-  BUFFER_MODE_AUTO
+  BUFFER_MODE_AUTO,
+  BUFFER_MODE_SYNCED
 };
 
 #define GST_TYPE_RTSP_SRC_BUFFER_MODE (gst_rtsp_src_buffer_mode_get_type())
@@ -151,6 +153,7 @@ gst_rtsp_src_buffer_mode_get_type (void)
     {BUFFER_MODE_SLAVE, "Slave receiver to sender clock", "slave"},
     {BUFFER_MODE_BUFFER, "Do low/high watermark buffering", "buffer"},
     {BUFFER_MODE_AUTO, "Choose mode depending on stream live", "auto"},
+    {BUFFER_MODE_SYNCED, "Synchronized sender and receiver clocks", "synced"},
     {0, NULL, NULL},
   };
 
@@ -160,6 +163,12 @@ gst_rtsp_src_buffer_mode_get_type (void)
   }
   return buffer_mode_type;
 }
+
+#define AES_128_KEY_LEN 16
+#define AES_256_KEY_LEN 32
+
+#define HMAC_32_KEY_LEN 4
+#define HMAC_80_KEY_LEN 10
 
 #define DEFAULT_LOCATION         NULL
 #define DEFAULT_PROTOCOLS        GST_RTSP_LOWER_TRANS_UDP | GST_RTSP_LOWER_TRANS_UDP_MCAST | GST_RTSP_LOWER_TRANS_TCP
@@ -185,8 +194,9 @@ gst_rtsp_src_buffer_mode_get_type (void)
 #define DEFAULT_UDP_RECONNECT    TRUE
 #define DEFAULT_MULTICAST_IFACE  NULL
 #define DEFAULT_NTP_SYNC         FALSE
-#define DEFAULT_USE_PIPELINE_CLOCK      FALSE
-#define DEFAULT_TLS_VALIDATION_FLAGS G_TLS_CERTIFICATE_VALIDATE_ALL
+#define DEFAULT_USE_PIPELINE_CLOCK       FALSE
+#define DEFAULT_TLS_VALIDATION_FLAGS     G_TLS_CERTIFICATE_VALIDATE_ALL
+#define DEFAULT_TLS_DATABASE     NULL
 
 enum
 {
@@ -220,6 +230,7 @@ enum
   PROP_USE_PIPELINE_CLOCK,
   PROP_SDES,
   PROP_TLS_VALIDATION_FLAGS,
+  PROP_TLS_DATABASE,
   PROP_LAST
 };
 
@@ -290,6 +301,13 @@ static gboolean gst_rtspsrc_loop (GstRTSPSrc * src);
 static gboolean gst_rtspsrc_stream_push_event (GstRTSPSrc * src,
     GstRTSPStream * stream, GstEvent * event);
 static gboolean gst_rtspsrc_push_event (GstRTSPSrc * src, GstEvent * event);
+static void gst_rtspsrc_connection_flush (GstRTSPSrc * src, gboolean flush);
+
+typedef struct
+{
+  guint8 pt;
+  GstCaps *caps;
+} PtMapItem;
 
 /* commands we send to out loop to notify it of events */
 #define CMD_OPEN	(1 << 0)
@@ -414,12 +432,10 @@ gst_rtspsrc_class_init (GstRTSPSrcClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstRTSPSrc::do-rtcp
+   * GstRTSPSrc:do-rtcp:
    *
    * Enable RTCP support. Some old server don't like RTCP and then this property
    * needs to be set to FALSE.
-   *
-   * Since: 0.10.15
    */
   g_object_class_install_property (gobject_class, PROP_DO_RTCP,
       g_param_spec_boolean ("do-rtcp", "Do RTCP",
@@ -427,12 +443,10 @@ gst_rtspsrc_class_init (GstRTSPSrcClass * klass)
           DEFAULT_DO_RTCP, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstRTSPSrc::do-rtsp-keep-alive
+   * GstRTSPSrc:do-rtsp-keep-alive:
    *
-   * Enable RTSP keep laive support. Some old server don't like RTSP
+   * Enable RTSP keep alive support. Some old server don't like RTSP
    * keep alive and then this property needs to be set to FALSE.
-   *
-   * Since: 0.10.32
    */
   g_object_class_install_property (gobject_class, PROP_DO_RTSP_KEEP_ALIVE,
       g_param_spec_boolean ("do-rtsp-keep-alive", "Do RTSP Keep Alive",
@@ -441,19 +455,17 @@ gst_rtspsrc_class_init (GstRTSPSrcClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstRTSPSrc::proxy
+   * GstRTSPSrc:proxy:
    *
    * Set the proxy parameters. This has to be a string of the format
    * [http://][user:passwd@]host[:port].
-   *
-   * Since: 0.10.15
    */
   g_object_class_install_property (gobject_class, PROP_PROXY,
       g_param_spec_string ("proxy", "Proxy",
           "Proxy settings for HTTP tunneling. Format: [http://][user:passwd@]host[:port]",
           DEFAULT_PROXY, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
-   * GstRTSPSrc::proxy-id
+   * GstRTSPSrc:proxy-id:
    *
    * Sets the proxy URI user id for authentication. If the URI set via the
    * "proxy" property contains a user-id already, that will take precedence.
@@ -465,7 +477,7 @@ gst_rtspsrc_class_init (GstRTSPSrcClass * klass)
           "HTTP proxy URI user id for authentication", "",
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   /**
-   * GstRTSPSrc::proxy-pw
+   * GstRTSPSrc:proxy-pw:
    *
    * Sets the proxy URI password for authentication. If the URI set via the
    * "proxy" property contains a password already, that will take precedence.
@@ -478,11 +490,9 @@ gst_rtspsrc_class_init (GstRTSPSrcClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstRTSPSrc::rtp_blocksize
+   * GstRTSPSrc:rtp-blocksize:
    *
    * RTP package size to suggest to server.
-   *
-   * Since: 0.10.16
    */
   g_object_class_install_property (gobject_class, PROP_RTP_BLOCKSIZE,
       g_param_spec_uint ("rtp-blocksize", "RTP Blocksize",
@@ -501,11 +511,9 @@ gst_rtspsrc_class_init (GstRTSPSrcClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstRTSPSrc::buffer-mode:
+   * GstRTSPSrc:buffer-mode:
    *
    * Control the buffering and timestamping mode used by the jitterbuffer.
-   *
-   * Since: 0.10.22
    */
   g_object_class_install_property (gobject_class, PROP_BUFFER_MODE,
       g_param_spec_enum ("buffer-mode", "Buffer Mode",
@@ -514,12 +522,10 @@ gst_rtspsrc_class_init (GstRTSPSrcClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstRTSPSrc::port-range:
+   * GstRTSPSrc:port-range:
    *
    * Configure the client port numbers that can be used to recieve RTP and
    * RTCP.
-   *
-   * Since: 0.10.25
    */
   g_object_class_install_property (gobject_class, PROP_PORT_RANGE,
       g_param_spec_string ("port-range", "Port range",
@@ -528,11 +534,9 @@ gst_rtspsrc_class_init (GstRTSPSrcClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstRTSPSrc::udp-buffer-size:
+   * GstRTSPSrc:udp-buffer-size:
    *
    * Size of the kernel UDP receive buffer in bytes.
-   *
-   * Since: 0.10.26
    */
   g_object_class_install_property (gobject_class, PROP_UDP_BUFFER_SIZE,
       g_param_spec_int ("udp-buffer-size", "UDP Buffer Size",
@@ -541,11 +545,9 @@ gst_rtspsrc_class_init (GstRTSPSrcClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
-   * GstRTSPSrc::short-header:
+   * GstRTSPSrc:short-header:
    *
    * Only send the basic RTSP headers for broken encoders.
-   *
-   * Since: 0.10.31
    */
   g_object_class_install_property (gobject_class, PROP_SHORT_HEADER,
       g_param_spec_boolean ("short-header", "Short Header",
@@ -597,6 +599,19 @@ gst_rtspsrc_class_init (GstRTSPSrcClass * klass)
           "TLS certificate validation flags used to validate the server certificate",
           G_TYPE_TLS_CERTIFICATE_FLAGS, DEFAULT_TLS_VALIDATION_FLAGS,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  /**
+   * GstRTSPSrc::tls-database:
+   *
+   * TLS database with anchor certificate authorities used to validate
+   * the server certificate.
+   *
+   * Since: 1.4
+   */
+  g_object_class_install_property (gobject_class, PROP_TLS_DATABASE,
+      g_param_spec_object ("tls-database", "TLS database",
+          "TLS database with anchor certificate authorities used to validate the server certificate",
+          G_TYPE_TLS_DATABASE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
    * GstRTSPSrc::handle-request:
@@ -660,6 +675,35 @@ gst_rtspsrc_class_init (GstRTSPSrcClass * klass)
       (GCallback) default_select_stream, select_stream_accum, NULL,
       g_cclosure_marshal_generic, G_TYPE_BOOLEAN, 2, G_TYPE_UINT,
       GST_TYPE_CAPS);
+  /**
+   * GstRTSPSrc::new-manager:
+   * @rtspsrc: a #GstRTSPSrc
+   * @manager: a #GstElement
+   *
+   * Emited after a new manager (like rtpbin) was created and the default
+   * properties were configured.
+   *
+   * Since: 1.4
+   */
+  gst_rtspsrc_signals[SIGNAL_NEW_MANAGER] =
+      g_signal_new_class_handler ("new-manager", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_FIRST | G_SIGNAL_RUN_CLEANUP, 0, NULL, NULL,
+      g_cclosure_marshal_generic, G_TYPE_NONE, 1, GST_TYPE_ELEMENT);
+
+  /**
+   * GstRTSPSrc::request-rtcp-key:
+   * @rtspsrc: a #GstRTSPSrc
+   * @num: the stream number
+   *
+   * Signal emited to get the crypto parameters relevant to the RTCP
+   * stream. User should provide the key and the RTCP encryption ciphers
+   * and authentication, and return them wrapped in a GstCaps.
+   *
+   * Since: 1.4
+   */
+  gst_rtspsrc_signals[SIGNAL_REQUEST_RTCP_KEY] =
+      g_signal_new ("request-rtcp-key", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST, 0, NULL, NULL, NULL, GST_TYPE_CAPS, 1, G_TYPE_UINT);
 
   gstelement_class->send_event = gst_rtspsrc_send_event;
   gstelement_class->provide_clock = gst_rtspsrc_provide_clock;
@@ -711,6 +755,7 @@ gst_rtspsrc_init (GstRTSPSrc * src)
   src->use_pipeline_clock = DEFAULT_USE_PIPELINE_CLOCK;
   src->sdes = NULL;
   src->tls_validation_flags = DEFAULT_TLS_VALIDATION_FLAGS;
+  src->tls_database = DEFAULT_TLS_DATABASE;
 
   /* get a list of all extensions */
   src->extensions = gst_rtsp_ext_list_get ();
@@ -755,6 +800,9 @@ gst_rtspsrc_finalize (GObject * object)
 
   if (rtspsrc->sdes)
     gst_structure_free (rtspsrc->sdes);
+
+  if (rtspsrc->tls_database)
+    g_object_unref (rtspsrc->tls_database);
 
   /* free locks */
   g_rec_mutex_clear (&rtspsrc->stream_rec_lock);
@@ -968,6 +1016,10 @@ gst_rtspsrc_set_property (GObject * object, guint prop_id, const GValue * value,
     case PROP_TLS_VALIDATION_FLAGS:
       rtspsrc->tls_validation_flags = g_value_get_flags (value);
       break;
+    case PROP_TLS_DATABASE:
+      g_clear_object (&rtspsrc->tls_database);
+      rtspsrc->tls_database = g_value_dup_object (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -1096,6 +1148,9 @@ gst_rtspsrc_get_property (GObject * object, guint prop_id, GValue * value,
     case PROP_TLS_VALIDATION_FLAGS:
       g_value_set_flags (value, rtspsrc->tls_validation_flags);
       break;
+    case PROP_TLS_DATABASE:
+      g_value_set_object (value, rtspsrc->tls_database);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -1121,15 +1176,6 @@ find_stream_by_channel (GstRTSPStream * stream, gint * channel)
 }
 
 static gint
-find_stream_by_pt (GstRTSPStream * stream, gint * pt)
-{
-  if (stream->pt == *pt)
-    return 0;
-
-  return -1;
-}
-
-static gint
 find_stream_by_udpsrc (GstRTSPStream * stream, gconstpointer a)
 {
   GstElement *src = (GstElement *) a;
@@ -1145,16 +1191,20 @@ find_stream_by_udpsrc (GstRTSPStream * stream, gconstpointer a)
 static gint
 find_stream_by_setup (GstRTSPStream * stream, gconstpointer a)
 {
-  /* check qualified setup_url */
-  if (!strcmp (stream->conninfo.location, (gchar *) a))
-    return 0;
-  /* check original control_url */
-  if (!strcmp (stream->control_url, (gchar *) a))
-    return 0;
+  if (stream->conninfo.location) {
+    /* check qualified setup_url */
+    if (!strcmp (stream->conninfo.location, (gchar *) a))
+      return 0;
+  }
+  if (stream->control_url) {
+    /* check original control_url */
+    if (!strcmp (stream->control_url, (gchar *) a))
+      return 0;
 
-  /* check if qualified setup_url ends with string */
-  if (g_str_has_suffix (stream->control_url, (gchar *) a))
-    return 0;
+    /* check if qualified setup_url ends with string */
+    if (g_str_has_suffix (stream->control_url, (gchar *) a))
+      return 0;
+  }
 
   return -1;
 }
@@ -1272,6 +1322,84 @@ gst_rtspsrc_collect_connections (GstRTSPSrc * src, const GstSDPMessage * sdp,
   }
 }
 
+/*   m=<media> <UDP port> RTP/AVP <payload>
+ */
+static void
+gst_rtspsrc_collect_payloads (GstRTSPSrc * src, const GstSDPMessage * sdp,
+    const GstSDPMedia * media, GstRTSPStream * stream)
+{
+  guint i, len;
+  const gchar *proto;
+
+  /* get proto */
+  proto = gst_sdp_media_get_proto (media);
+  if (proto == NULL)
+    goto no_proto;
+
+  if (g_str_equal (proto, "RTP/AVP"))
+    stream->profile = GST_RTSP_PROFILE_AVP;
+  else if (g_str_equal (proto, "RTP/SAVP"))
+    stream->profile = GST_RTSP_PROFILE_SAVP;
+  else if (g_str_equal (proto, "RTP/AVPF"))
+    stream->profile = GST_RTSP_PROFILE_AVPF;
+  else if (g_str_equal (proto, "RTP/SAVPF"))
+    stream->profile = GST_RTSP_PROFILE_SAVPF;
+  else
+    goto unknown_proto;
+
+  len = gst_sdp_media_formats_len (media);
+  for (i = 0; i < len; i++) {
+    gint pt;
+    GstCaps *caps;
+    GstStructure *s;
+    const gchar *enc;
+    PtMapItem item;
+
+    pt = atoi (gst_sdp_media_get_format (media, i));
+
+    GST_DEBUG_OBJECT (src, " looking at %d pt: %d", i, pt);
+
+    /* convert caps */
+    caps = gst_rtspsrc_media_to_caps (pt, media);
+    if (caps == NULL) {
+      GST_WARNING_OBJECT (src, " skipping pt %d without caps", pt);
+      continue;
+    }
+
+    /* do some tweaks */
+    s = gst_caps_get_structure (caps, 0);
+    if ((enc = gst_structure_get_string (s, "encoding-name"))) {
+      stream->is_real = (strstr (enc, "-REAL") != NULL);
+      if (strcmp (enc, "X-ASF-PF") == 0)
+        stream->container = TRUE;
+    }
+    GST_DEBUG ("mapping sdp session level attributes to caps");
+    gst_rtspsrc_sdp_attributes_to_caps (sdp->attributes, caps);
+    GST_DEBUG ("mapping sdp media level attributes to caps");
+    gst_rtspsrc_sdp_attributes_to_caps (media->attributes, caps);
+
+    /* the first pt will be the default */
+    if (stream->ptmap->len == 0)
+      stream->default_pt = pt;
+
+    item.pt = pt;
+    item.caps = caps;
+    g_array_append_val (stream->ptmap, item);
+  }
+  return;
+
+no_proto:
+  {
+    GST_ERROR_OBJECT (src, "can't find proto in media");
+    return;
+  }
+unknown_proto:
+  {
+    GST_ERROR_OBJECT (src, "unknown proto in media %s", proto);
+    return;
+  }
+}
+
 static const gchar *
 get_aggregate_control (GstRTSPSrc * src)
 {
@@ -1289,12 +1417,18 @@ get_aggregate_control (GstRTSPSrc * src)
   return base;
 }
 
+static void
+clear_ptmap_item (PtMapItem * item)
+{
+  if (item->caps)
+    gst_caps_unref (item->caps);
+}
+
 static GstRTSPStream *
 gst_rtspsrc_create_stream (GstRTSPSrc * src, GstSDPMessage * sdp, gint idx)
 {
   GstRTSPStream *stream;
   const gchar *control_url;
-  const gchar *payload;
   const GstSDPMedia *media;
 
   /* get media, should not return NULL */
@@ -1308,12 +1442,17 @@ gst_rtspsrc_create_stream (GstRTSPSrc * src, GstSDPMessage * sdp, gint idx)
    * the element. */
   stream->last_ret = GST_FLOW_NOT_LINKED;
   stream->added = FALSE;
-  stream->disabled = FALSE;
-  stream->id = src->numstreams++;
+  stream->setup = FALSE;
+  stream->skipped = FALSE;
+  stream->id = idx;
   stream->eos = FALSE;
   stream->discont = TRUE;
   stream->seqbase = -1;
   stream->timebase = -1;
+  stream->send_ssrc = g_random_int ();
+  stream->profile = GST_RTSP_PROFILE_AVP;
+  stream->ptmap = g_array_new (FALSE, FALSE, sizeof (PtMapItem));
+  g_array_set_clear_func (stream->ptmap, (GDestroyNotify) clear_ptmap_item);
 
   /* collect bandwidth information for this steam. FIXME, configure in the RTP
    * session manager to scale RTCP. */
@@ -1322,33 +1461,9 @@ gst_rtspsrc_create_stream (GstRTSPSrc * src, GstSDPMessage * sdp, gint idx)
   /* collect connection info */
   gst_rtspsrc_collect_connections (src, sdp, media, stream);
 
-  /* we must have a payload. No payload means we cannot create caps */
-  /* FIXME, handle multiple formats. The problem here is that we just want to
-   * take the first available format that we can handle but in order to do that
-   * we need to scan for depayloader plugins. Scanning for payloader plugins is
-   * also suboptimal because the user maybe just wants to save the raw stream
-   * and then we don't care. */
-  if ((payload = gst_sdp_media_get_format (media, 0))) {
-    stream->pt = atoi (payload);
-    /* convert caps */
-    stream->caps = gst_rtspsrc_media_to_caps (stream->pt, media);
+  /* make the payload type map */
+  gst_rtspsrc_collect_payloads (src, sdp, media, stream);
 
-    GST_DEBUG ("mapping sdp session level attributes to caps");
-    gst_rtspsrc_sdp_attributes_to_caps (sdp->attributes, stream->caps);
-    GST_DEBUG ("mapping sdp media level attributes to caps");
-    gst_rtspsrc_sdp_attributes_to_caps (media->attributes, stream->caps);
-
-    if (stream->pt >= 96) {
-      /* If we have a dynamic payload type, see if we have a stream with the
-       * same payload number. If there is one, they are part of the same
-       * container and we only need to add one pad. */
-      if (find_stream (src, &stream->pt, (gpointer) find_stream_by_pt)) {
-        stream->container = TRUE;
-        GST_DEBUG ("found another stream with pt %d, marking as container",
-            stream->pt);
-      }
-    }
-  }
   /* collect port number */
   stream->port = gst_sdp_media_get_port (media);
 
@@ -1360,10 +1475,8 @@ gst_rtspsrc_create_stream (GstRTSPSrc * src, GstSDPMessage * sdp, gint idx)
     control_url = gst_sdp_message_get_attribute_val_n (sdp, "control", 0);
 
   GST_DEBUG_OBJECT (src, "stream %d, (%p)", stream->id, stream);
-  GST_DEBUG_OBJECT (src, " pt: %d", stream->pt);
   GST_DEBUG_OBJECT (src, " port: %d", stream->port);
   GST_DEBUG_OBJECT (src, " container: %d", stream->container);
-  GST_DEBUG_OBJECT (src, " caps: %" GST_PTR_FORMAT, stream->caps);
   GST_DEBUG_OBJECT (src, " control: %s", GST_STR_NULL (control_url));
 
   if (control_url != NULL) {
@@ -1411,8 +1524,7 @@ gst_rtspsrc_stream_free (GstRTSPSrc * src, GstRTSPStream * stream)
 
   GST_DEBUG_OBJECT (src, "free stream %p", stream);
 
-  if (stream->caps)
-    gst_caps_unref (stream->caps);
+  g_array_free (stream->ptmap, TRUE);
 
   g_free (stream->destination);
   g_free (stream->control_url);
@@ -1423,41 +1535,36 @@ gst_rtspsrc_stream_free (GstRTSPSrc * src, GstRTSPStream * stream)
       gst_element_set_state (stream->udpsrc[i], GST_STATE_NULL);
       gst_bin_remove (GST_BIN_CAST (src), stream->udpsrc[i]);
       gst_object_unref (stream->udpsrc[i]);
-      stream->udpsrc[i] = NULL;
     }
-    if (stream->channelpad[i]) {
+    if (stream->channelpad[i])
       gst_object_unref (stream->channelpad[i]);
-      stream->channelpad[i] = NULL;
-    }
+
     if (stream->udpsink[i]) {
       gst_element_set_state (stream->udpsink[i], GST_STATE_NULL);
       gst_bin_remove (GST_BIN_CAST (src), stream->udpsink[i]);
       gst_object_unref (stream->udpsink[i]);
-      stream->udpsink[i] = NULL;
     }
   }
   if (stream->fakesrc) {
     gst_element_set_state (stream->fakesrc, GST_STATE_NULL);
     gst_bin_remove (GST_BIN_CAST (src), stream->fakesrc);
     gst_object_unref (stream->fakesrc);
-    stream->fakesrc = NULL;
   }
   if (stream->srcpad) {
     gst_pad_set_active (stream->srcpad, FALSE);
-    if (stream->added) {
+    if (stream->added)
       gst_element_remove_pad (GST_ELEMENT_CAST (src), stream->srcpad);
-      stream->added = FALSE;
-    }
-    stream->srcpad = NULL;
   }
-  if (stream->rtcppad) {
+  if (stream->srtpenc)
+    gst_object_unref (stream->srtpenc);
+  if (stream->srtpdec)
+    gst_object_unref (stream->srtpdec);
+  if (stream->srtcpparams)
+    gst_caps_unref (stream->srtcpparams);
+  if (stream->rtcppad)
     gst_object_unref (stream->rtcppad);
-    stream->rtcppad = NULL;
-  }
-  if (stream->session) {
+  if (stream->session)
     g_object_unref (stream->session);
-    stream->session = NULL;
-  }
   g_free (stream);
 }
 
@@ -1484,7 +1591,6 @@ gst_rtspsrc_cleanup (GstRTSPSrc * src)
     gst_bin_remove (GST_BIN_CAST (src), src->manager);
     src->manager = NULL;
   }
-  src->numstreams = 0;
   if (src->props)
     gst_structure_free (src->props);
   src->props = NULL;
@@ -1594,6 +1700,150 @@ gst_rtspsrc_parse_rtpmap (const gchar * rtpmap, gint * payload, gchar ** name,
   return TRUE;
 }
 
+static gboolean
+parse_keymgmt (const gchar * keymgmt, GstCaps * caps)
+{
+  gboolean res = FALSE;
+  gchar *p, *kmpid;
+  gsize size;
+  guchar *data;
+  GstMIKEYMessage *msg;
+  const GstMIKEYPayload *payload;
+  const gchar *srtp_cipher;
+  const gchar *srtp_auth;
+
+  p = (gchar *) keymgmt;
+
+  SKIP_SPACES (p);
+  if (*p == '\0')
+    return FALSE;
+
+  PARSE_STRING (p, " ", kmpid);
+  if (!g_str_equal (kmpid, "mikey"))
+    return FALSE;
+
+  data = g_base64_decode (p, &size);
+  if (data == NULL)
+    return FALSE;
+
+  msg = gst_mikey_message_new_from_data (data, size, NULL, NULL);
+  if (msg == NULL)
+    return FALSE;
+
+  srtp_cipher = "aes-128-icm";
+  srtp_auth = "hmac-sha1-80";
+
+  /* check the Security policy if any */
+  if ((payload = gst_mikey_message_find_payload (msg, GST_MIKEY_PT_SP, 0))) {
+    GstMIKEYPayloadSP *p = (GstMIKEYPayloadSP *) payload;
+    guint len, i;
+
+    if (p->proto != GST_MIKEY_SEC_PROTO_SRTP)
+      goto done;
+
+    len = gst_mikey_payload_sp_get_n_params (payload);
+    for (i = 0; i < len; i++) {
+      const GstMIKEYPayloadSPParam *param =
+          gst_mikey_payload_sp_get_param (payload, i);
+
+      switch (param->type) {
+        case GST_MIKEY_SP_SRTP_ENC_ALG:
+          switch (param->val[0]) {
+            case 0:
+              srtp_cipher = "null";
+              break;
+            case 2:
+            case 1:
+              srtp_cipher = "aes-128-icm";
+              break;
+            default:
+              break;
+          }
+          break;
+        case GST_MIKEY_SP_SRTP_ENC_KEY_LEN:
+          switch (param->val[0]) {
+            case AES_128_KEY_LEN:
+              srtp_cipher = "aes-128-icm";
+              break;
+            case AES_256_KEY_LEN:
+              srtp_cipher = "aes-256-icm";
+              break;
+            default:
+              break;
+          }
+          break;
+        case GST_MIKEY_SP_SRTP_AUTH_ALG:
+          switch (param->val[0]) {
+            case 0:
+              srtp_auth = "null";
+              break;
+            case 2:
+            case 1:
+              srtp_auth = "hmac-sha1-80";
+              break;
+            default:
+              break;
+          }
+          break;
+        case GST_MIKEY_SP_SRTP_AUTH_KEY_LEN:
+          switch (param->val[0]) {
+            case HMAC_32_KEY_LEN:
+              srtp_auth = "hmac-sha1-32";
+              break;
+            case HMAC_80_KEY_LEN:
+              srtp_auth = "hmac-sha1-80";
+              break;
+            default:
+              break;
+          }
+          break;
+        case GST_MIKEY_SP_SRTP_SRTP_ENC:
+          break;
+        case GST_MIKEY_SP_SRTP_SRTCP_ENC:
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  if (!(payload = gst_mikey_message_find_payload (msg, GST_MIKEY_PT_KEMAC, 0)))
+    goto done;
+  else {
+    GstMIKEYPayloadKEMAC *p = (GstMIKEYPayloadKEMAC *) payload;
+    const GstMIKEYPayload *sub;
+    GstMIKEYPayloadKeyData *pkd;
+    GstBuffer *buf;
+
+    if (p->enc_alg != GST_MIKEY_ENC_NULL || p->mac_alg != GST_MIKEY_MAC_NULL)
+      goto done;
+
+    if (!(sub = gst_mikey_payload_kemac_get_sub (payload, 0)))
+      goto done;
+
+    if (sub->type != GST_MIKEY_PT_KEY_DATA)
+      goto done;
+
+    pkd = (GstMIKEYPayloadKeyData *) sub;
+    buf =
+        gst_buffer_new_wrapped (g_memdup (pkd->key_data, pkd->key_len),
+        pkd->key_len);
+    gst_caps_set_simple (caps, "srtp-key", GST_TYPE_BUFFER, buf, NULL);
+  }
+
+  gst_caps_set_simple (caps,
+      "srtp-cipher", G_TYPE_STRING, srtp_cipher,
+      "srtp-auth", G_TYPE_STRING, srtp_auth,
+      "srtcp-cipher", G_TYPE_STRING, srtp_cipher,
+      "srtcp-auth", G_TYPE_STRING, srtp_auth, NULL);
+
+  res = TRUE;
+done:
+  gst_mikey_message_unref (msg);
+
+  return res;
+}
+
 /*
  * Mapping SDP attributes to caps
  *
@@ -1625,6 +1875,10 @@ gst_rtspsrc_sdp_attributes_to_caps (GArray * attributes, GstCaps * caps)
         continue;
       if (!strcmp (key, "range"))
         continue;
+      if (g_str_equal (key, "key-mgmt")) {
+        parse_keymgmt (attr->value, caps);
+        continue;
+      }
 
       /* string must be valid UTF8 */
       if (!g_utf8_validate (attr->value, -1, NULL))
@@ -1642,10 +1896,31 @@ gst_rtspsrc_sdp_attributes_to_caps (GArray * attributes, GstCaps * caps)
   }
 }
 
+static const gchar *
+rtsp_get_attribute_for_pt (const GstSDPMedia * media, const gchar * name,
+    gint pt)
+{
+  guint i;
+
+  for (i = 0;; i++) {
+    const gchar *attr;
+    gint val;
+
+    if ((attr = gst_sdp_media_get_attribute_val_n (media, name, i)) == NULL)
+      break;
+
+    if (sscanf (attr, "%d ", &val) != 1)
+      continue;
+
+    if (val == pt)
+      return attr;
+  }
+  return NULL;
+}
+
 /*
  *  Mapping of caps to and from SDP fields:
  *
- *   m=<media> <UDP port> RTP/AVP <payload>
  *   a=rtpmap:<payload> <encoding_name>/<clock_rate>[/<encoding_params>]
  *   a=fmtp:<payload> <param>[=<value>];...
  */
@@ -1664,29 +1939,19 @@ gst_rtspsrc_media_to_caps (gint pt, const GstSDPMedia * media)
   gboolean ret;
 
   /* get and parse rtpmap */
-  if ((rtpmap = gst_sdp_media_get_attribute_val (media, "rtpmap"))) {
+  rtpmap = rtsp_get_attribute_for_pt (media, "rtpmap", pt);
+
+  if (rtpmap) {
     ret = gst_rtspsrc_parse_rtpmap (rtpmap, &payload, &name, &rate, &params);
-    if (ret) {
-      if (payload != pt) {
-        /* we ignore the rtpmap if the payload type is different. */
-        g_warning ("rtpmap of wrong payload type, ignoring");
-        name = NULL;
-        rate = -1;
-        params = NULL;
-      }
-    } else {
-      /* if we failed to parse the rtpmap for a dynamic payload type, we have an
-       * error */
-      if (pt >= 96)
-        goto no_rtpmap;
-      /* else we can ignore */
+    if (!ret) {
       g_warning ("error parsing rtpmap, ignoring");
+      rtpmap = NULL;
     }
-  } else {
-    /* dynamic payloads need rtpmap or we fail */
-    if (pt >= 96)
-      goto no_rtpmap;
   }
+  /* dynamic payloads need rtpmap or we fail */
+  if (rtpmap == NULL && pt >= 96)
+    goto no_rtpmap;
+
   /* check if we have a rate, if not, we need to look up the rate from the
    * default rates based on the payload types. */
   if (rate == -1) {
@@ -1734,7 +1999,7 @@ gst_rtspsrc_media_to_caps (gint pt, const GstSDPMedia * media)
   }
 
   /* parse optional fmtp: field */
-  if ((fmtp = gst_sdp_media_get_attribute_val (media, "fmtp"))) {
+  if ((fmtp = rtsp_get_attribute_for_pt (media, "fmtp", pt))) {
     gchar *p;
     gint payload = 0;
 
@@ -1835,7 +2100,7 @@ again:
     g_object_set (G_OBJECT (udpsrc0), "buffer-size", src->udp_buffer_size,
         NULL);
 
-  ret = gst_element_set_state (udpsrc0, GST_STATE_PAUSED);
+  ret = gst_element_set_state (udpsrc0, GST_STATE_READY);
   if (ret == GST_STATE_CHANGE_FAILURE) {
     if (tmp_rtp != 0) {
       GST_DEBUG_OBJECT (src, "Unable to make udpsrc from RTP port %d", tmp_rtp);
@@ -1889,7 +2154,7 @@ again:
   g_object_set (G_OBJECT (udpsrc1), "port", tmp_rtcp, "reuse", FALSE, NULL);
 
   GST_DEBUG_OBJECT (src, "starting RTCP on port %d", tmp_rtcp);
-  ret = gst_element_set_state (udpsrc1, GST_STATE_PAUSED);
+  ret = gst_element_set_state (udpsrc1, GST_STATE_READY);
   /* tmp_rtcp port is busy already : retry to make rtp/rtcp pair */
   if (ret == GST_STATE_CHANGE_FAILURE) {
     GST_DEBUG_OBJECT (src, "Unable to make udpsrc from RTCP port %d", tmp_rtcp);
@@ -2063,12 +2328,16 @@ gst_rtspsrc_get_position (GstRTSPSrc * src)
         GST_DEBUG_OBJECT (src, "retaining position %" GST_TIME_FORMAT,
             GST_TIME_ARGS (pos));
         src->last_pos = pos;
-        return;
+        goto out;
       }
     }
   }
 
   src->last_pos = 0;
+
+out:
+
+  gst_query_unref (query);
 }
 
 static gboolean
@@ -2139,6 +2408,9 @@ gst_rtspsrc_perform_seek (GstRTSPSrc * src, GstEvent * event)
   GST_RTSP_STREAM_LOCK (src);
 
   GST_DEBUG_OBJECT (src, "stopped streaming");
+
+  /* stop flushing the rtsp connection so we can send PAUSE/PLAY below */
+  gst_rtspsrc_connection_flush (src, FALSE);
 
   /* copy segment, we need this because we still need the old
    * segment when we close the current segment. */
@@ -2484,6 +2756,17 @@ was_ok:
   }
 }
 
+static gboolean
+copy_sticky_events (GstPad * pad, GstEvent ** event, gpointer user_data)
+{
+  GstPad *gpad = GST_PAD_CAST (user_data);
+
+  GST_DEBUG_OBJECT (gpad, "store sticky event %" GST_PTR_FORMAT, *event);
+  gst_pad_store_sticky_event (gpad, *event);
+
+  return TRUE;
+}
+
 /* this callback is called when the session manager generated a new src pad with
  * payloaded RTP packets. We simply ghost the pad here. */
 static void
@@ -2521,12 +2804,12 @@ new_manager_pad (GstElement * manager, GstPad * pad, GstRTSPSrc * src)
   for (ostreams = src->streams; ostreams; ostreams = g_list_next (ostreams)) {
     GstRTSPStream *ostream = (GstRTSPStream *) ostreams->data;
 
-    GST_DEBUG_OBJECT (src, "stream %p, container %d, disabled %d, added %d",
-        ostream, ostream->container, ostream->disabled, ostream->added);
+    GST_DEBUG_OBJECT (src, "stream %p, container %d, added %d, setup %d",
+        ostream, ostream->container, ostream->added, ostream->setup);
 
-    /* a container stream only needs one pad added. Also disabled streams don't
-     * count */
-    if (!ostream->container && !ostream->disabled && !ostream->added) {
+    /* if we find a stream for which we did a setup that is not added, we
+     * need to wait some more */
+    if (ostream->setup && !ostream->added) {
       all_added = FALSE;
       break;
     }
@@ -2542,6 +2825,7 @@ new_manager_pad (GstElement * manager, GstPad * pad, GstRTSPSrc * src)
   gst_pad_set_event_function (stream->srcpad, gst_rtspsrc_handle_src_event);
   gst_pad_set_query_function (stream->srcpad, gst_rtspsrc_handle_src_query);
   gst_pad_set_active (stream->srcpad, TRUE);
+  gst_pad_sticky_events_foreach (pad, copy_sticky_events, stream->srcpad);
   gst_element_add_pad (GST_ELEMENT_CAST (src), stream->srcpad);
 
   if (all_added) {
@@ -2564,6 +2848,20 @@ unknown_stream:
 }
 
 static GstCaps *
+stream_get_caps_for_pt (GstRTSPStream * stream, guint pt)
+{
+  guint i, len;
+
+  len = stream->ptmap->len;
+  for (i = 0; i < len; i++) {
+    PtMapItem *item = &g_array_index (stream->ptmap, PtMapItem, i);
+    if (item->pt == pt)
+      return item->caps;
+  }
+  return NULL;
+}
+
+static GstCaps *
 request_pt_map (GstElement * manager, guint session, guint pt, GstRTSPSrc * src)
 {
   GstRTSPStream *stream;
@@ -2576,8 +2874,7 @@ request_pt_map (GstElement * manager, guint session, guint pt, GstRTSPSrc * src)
   if (!stream)
     goto unknown_stream;
 
-  caps = stream->caps;
-  if (caps)
+  if ((caps = stream_get_caps_for_pt (stream, pt)))
     gst_caps_ref (caps);
   GST_RTSP_STATE_UNLOCK (src);
 
@@ -2662,6 +2959,147 @@ on_ssrc_active (GObject * session, GObject * source, GstRTSPStream * stream)
       stream->id);
 }
 
+static void
+set_manager_buffer_mode (GstRTSPSrc * src)
+{
+  GObjectClass *klass;
+
+  if (src->manager == NULL)
+    return;
+
+  klass = G_OBJECT_GET_CLASS (G_OBJECT (src->manager));
+
+  if (!g_object_class_find_property (klass, "buffer-mode"))
+    return;
+
+  if (src->buffer_mode != BUFFER_MODE_AUTO) {
+    g_object_set (src->manager, "buffer-mode", src->buffer_mode, NULL);
+
+    return;
+  }
+
+  GST_DEBUG_OBJECT (src,
+      "auto buffering mode, have clock %" GST_PTR_FORMAT, src->provided_clock);
+
+  if (src->provided_clock) {
+    GstClock *clock = gst_element_get_clock (GST_ELEMENT_CAST (src));
+
+    if (clock == src->provided_clock) {
+      GST_DEBUG_OBJECT (src, "selected synced");
+      g_object_set (src->manager, "buffer-mode", BUFFER_MODE_SYNCED, NULL);
+
+      if (clock)
+        gst_object_unref (clock);
+
+      return;
+    }
+
+    /* Otherwise fall-through and use another buffer mode */
+    if (clock)
+      gst_object_unref (clock);
+  }
+
+  GST_DEBUG_OBJECT (src, "auto buffering mode");
+  if (src->use_buffering) {
+    GST_DEBUG_OBJECT (src, "selected buffer");
+    g_object_set (src->manager, "buffer-mode", BUFFER_MODE_BUFFER, NULL);
+  } else {
+    GST_DEBUG_OBJECT (src, "selected slave");
+    g_object_set (src->manager, "buffer-mode", BUFFER_MODE_SLAVE, NULL);
+  }
+}
+
+static GstCaps *
+request_key (GstElement * srtpdec, guint ssrc, GstRTSPStream * stream)
+{
+  GST_DEBUG ("request key %u", ssrc);
+  return gst_caps_ref (stream_get_caps_for_pt (stream, stream->default_pt));
+}
+
+static GstElement *
+request_rtp_decoder (GstElement * rtpbin, guint session, GstRTSPStream * stream)
+{
+  GST_DEBUG ("decoder session %u, stream %p, %d", session, stream, stream->id);
+  if (stream->id != session)
+    return NULL;
+
+  if (stream->profile != GST_RTSP_PROFILE_SAVP &&
+      stream->profile != GST_RTSP_PROFILE_SAVPF)
+    return NULL;
+
+  if (stream->srtpdec == NULL) {
+    gchar *name;
+
+    name = g_strdup_printf ("srtpdec_%u", session);
+    stream->srtpdec = gst_element_factory_make ("srtpdec", name);
+    g_free (name);
+
+    g_signal_connect (stream->srtpdec, "request-key",
+        (GCallback) request_key, stream);
+  }
+  return gst_object_ref (stream->srtpdec);
+}
+
+static GstElement *
+request_rtcp_encoder (GstElement * rtpbin, guint session,
+    GstRTSPStream * stream)
+{
+  gchar *name;
+  GstPad *pad;
+
+  GST_DEBUG ("decoder session %u, stream %p, %d", session, stream, stream->id);
+  if (stream->id != session)
+    return NULL;
+
+  if (stream->profile != GST_RTSP_PROFILE_SAVP &&
+      stream->profile != GST_RTSP_PROFILE_SAVPF)
+    return NULL;
+
+  if (stream->srtpenc == NULL) {
+    GstStructure *s;
+
+    name = g_strdup_printf ("srtpenc_%u", session);
+    stream->srtpenc = gst_element_factory_make ("srtpenc", name);
+    g_free (name);
+
+    /* get RTCP crypto parameters from caps */
+    s = gst_caps_get_structure (stream->srtcpparams, 0);
+    if (s) {
+      GstBuffer *buf;
+      const gchar *str;
+      GType ciphertype, authtype;
+      GValue rtcp_cipher = G_VALUE_INIT, rtcp_auth = G_VALUE_INIT;
+
+      ciphertype = g_type_from_name ("GstSrtpCipherType");
+      authtype = g_type_from_name ("GstSrtpAuthType");
+      g_value_init (&rtcp_cipher, ciphertype);
+      g_value_init (&rtcp_auth, authtype);
+
+      str = gst_structure_get_string (s, "srtcp-cipher");
+      gst_value_deserialize (&rtcp_cipher, str);
+      str = gst_structure_get_string (s, "srtcp-auth");
+      gst_value_deserialize (&rtcp_auth, str);
+      gst_structure_get (s, "srtp-key", GST_TYPE_BUFFER, &buf, NULL);
+
+      g_object_set_property (G_OBJECT (stream->srtpenc), "rtcp-cipher",
+          &rtcp_cipher);
+      g_object_set_property (G_OBJECT (stream->srtpenc), "rtcp-auth",
+          &rtcp_auth);
+      g_object_set (stream->srtpenc, "key", buf, NULL);
+
+      g_value_unset (&rtcp_cipher);
+      g_value_unset (&rtcp_auth);
+    }
+  }
+  name = g_strdup_printf ("rtcp_sink_%d", session);
+  pad = gst_element_get_request_pad (stream->srtpenc, name);
+  g_free (name);
+  gst_object_unref (pad);
+
+  return gst_object_ref (stream->srtpenc);
+}
+
+
 /* try to get and configure a manager */
 static gboolean
 gst_rtspsrc_stream_configure_manager (GstRTSPSrc * src, GstRTSPStream * stream,
@@ -2724,41 +3162,24 @@ gst_rtspsrc_stream_configure_manager (GstRTSPSrc * src, GstRTSPStream * stream,
             NULL);
       }
 
-      if (g_object_class_find_property (klass, "buffer-mode")) {
-        if (src->buffer_mode != BUFFER_MODE_AUTO) {
-          g_object_set (src->manager, "buffer-mode", src->buffer_mode, NULL);
-        } else {
-          gboolean need_slave;
-          GstStructure *s;
-          const gchar *encoding;
-
-          /* buffer mode pauses are handled by adding offsets to buffer times,
-           * but some depayloaders may have a hard time syncing output times
-           * with such input times, e.g. container ones, most notably ASF */
-          /* TODO alternatives are having an event that indicates these shifts,
-           * or having rtsp extensions provide suggestion on buffer mode */
-          need_slave = stream->container;
-          if (stream->caps && (s = gst_caps_get_structure (stream->caps, 0)) &&
-              (encoding = gst_structure_get_string (s, "encoding-name")))
-            need_slave = need_slave || (strcmp (encoding, "X-ASF-PF") == 0);
-          GST_DEBUG_OBJECT (src, "auto buffering mode, need_slave %d",
-              need_slave);
-          /* valid duration implies not likely live pipeline,
-           * so slaving in jitterbuffer does not make much sense
-           * (and might mess things up due to bursts) */
-          if (GST_CLOCK_TIME_IS_VALID (src->segment.duration) &&
-              src->segment.duration && !need_slave) {
-            GST_DEBUG_OBJECT (src, "selected buffer");
-            g_object_set (src->manager, "buffer-mode", BUFFER_MODE_BUFFER,
-                NULL);
-          } else {
-            GST_DEBUG_OBJECT (src, "selected slave");
-            g_object_set (src->manager, "buffer-mode", BUFFER_MODE_SLAVE, NULL);
-          }
-        }
+      /* buffer mode pauses are handled by adding offsets to buffer times,
+       * but some depayloaders may have a hard time syncing output times
+       * with such input times, e.g. container ones, most notably ASF */
+      /* TODO alternatives are having an event that indicates these shifts,
+       * or having rtsp extensions provide suggestion on buffer mode */
+      /* valid duration implies not likely live pipeline,
+       * so slaving in jitterbuffer does not make much sense
+       * (and might mess things up due to bursts) */
+      if (GST_CLOCK_TIME_IS_VALID (src->segment.duration) &&
+          src->segment.duration && !stream->container) {
+        src->use_buffering = TRUE;
+      } else {
+        src->use_buffering = FALSE;
       }
 
-      /* connect to signals if we did not already do so */
+      set_manager_buffer_mode (src);
+
+      /* connect to signals */
       GST_DEBUG_OBJECT (src, "connect to signals on session manager, stream %p",
           stream);
       src->manager_sig_id =
@@ -2770,7 +3191,16 @@ gst_rtspsrc_stream_configure_manager (GstRTSPSrc * src, GstRTSPStream * stream,
 
       g_signal_connect (src->manager, "on-npt-stop", (GCallback) on_npt_stop,
           src);
+
+      g_signal_emit (src, gst_rtspsrc_signals[SIGNAL_NEW_MANAGER], 0,
+          src->manager);
     }
+    g_signal_connect (src->manager, "request-rtp-decoder",
+        (GCallback) request_rtp_decoder, stream);
+    g_signal_connect (src->manager, "request-rtcp-decoder",
+        (GCallback) request_rtp_decoder, stream);
+    g_signal_connect (src->manager, "request-rtcp-encoder",
+        (GCallback) request_rtcp_encoder, stream);
 
     /* we stream directly to the manager, get some pads. Each RTSP stream goes
      * into a separate RTP session. */
@@ -2811,6 +3241,8 @@ gst_rtspsrc_stream_configure_manager (GstRTSPSrc * src, GstRTSPStream * stream,
         }
 
         g_object_set (rtpsession, "probation", src->probation, NULL);
+
+        g_object_set (rtpsession, "internal-ssrc", stream->send_ssrc, NULL);
 
         g_signal_connect (rtpsession, "on-bye-ssrc", (GCallback) on_bye_ssrc,
             stream);
@@ -3053,7 +3485,7 @@ gst_rtspsrc_stream_configure_mcast (GstRTSPSrc * src, GstRTSPStream * stream,
 
     /* change state */
     gst_element_set_locked_state (stream->udpsrc[0], TRUE);
-    gst_element_set_state (stream->udpsrc[0], GST_STATE_PAUSED);
+    gst_element_set_state (stream->udpsrc[0], GST_STATE_READY);
   }
 
   /* creating another UDP source for RTCP */
@@ -3067,7 +3499,11 @@ gst_rtspsrc_stream_configure_mcast (GstRTSPSrc * src, GstRTSPStream * stream,
     if (stream->udpsrc[1] == NULL)
       goto no_element;
 
-    caps = gst_caps_new_empty_simple ("application/x-rtcp");
+    if (stream->profile == GST_RTSP_PROFILE_SAVP ||
+        stream->profile == GST_RTSP_PROFILE_SAVPF)
+      caps = gst_caps_new_empty_simple ("application/x-srtcp");
+    else
+      caps = gst_caps_new_empty_simple ("application/x-rtcp");
     g_object_set (stream->udpsrc[1], "caps", caps, NULL);
     gst_caps_unref (caps);
 
@@ -3078,7 +3514,7 @@ gst_rtspsrc_stream_configure_mcast (GstRTSPSrc * src, GstRTSPStream * stream,
       g_object_set (G_OBJECT (stream->udpsrc[0]), "multicast-iface",
           src->multi_iface, NULL);
 
-    gst_element_set_state (stream->udpsrc[1], GST_STATE_PAUSED);
+    gst_element_set_state (stream->udpsrc[1], GST_STATE_READY);
   }
   return TRUE;
 
@@ -3108,6 +3544,8 @@ gst_rtspsrc_stream_configure_udp (GstRTSPSrc * src, GstRTSPStream * stream,
   /* we manage the UDP elements now. For unicast, the UDP sources where
    * allocated in the stream when we suggested a transport. */
   if (stream->udpsrc[0]) {
+    GstCaps *caps;
+
     gst_element_set_locked_state (stream->udpsrc[0], TRUE);
     gst_bin_add (GST_BIN_CAST (src), stream->udpsrc[0]);
 
@@ -3118,6 +3556,9 @@ gst_rtspsrc_stream_configure_udp (GstRTSPSrc * src, GstRTSPStream * stream,
      * if we can. */
     g_object_set (G_OBJECT (stream->udpsrc[0]), "timeout",
         src->udp_timeout * 1000, NULL);
+
+    if ((caps = stream_get_caps_for_pt (stream, stream->default_pt)))
+      g_object_set (stream->udpsrc[0], "caps", caps, NULL);
 
     /* get output pad of the UDP source. */
     *outpad = gst_element_get_static_pad (stream->udpsrc[0], "src");
@@ -3130,7 +3571,8 @@ gst_rtspsrc_stream_configure_udp (GstRTSPSrc * src, GstRTSPStream * stream,
      * configure all the streams to let the application autoplug decoders. */
     stream->blockid =
         gst_pad_add_probe (stream->blockedpad,
-        GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM, pad_blocked, src, NULL);
+        GST_PAD_PROBE_TYPE_BLOCK | GST_PAD_PROBE_TYPE_BUFFER |
+        GST_PAD_PROBE_TYPE_BUFFER_LIST, pad_blocked, src, NULL);
 
     if (stream->channelpad[0]) {
       GST_DEBUG_OBJECT (src, "connecting UDP source 0 to manager");
@@ -3153,7 +3595,11 @@ gst_rtspsrc_stream_configure_udp (GstRTSPSrc * src, GstRTSPStream * stream,
     gst_element_set_locked_state (stream->udpsrc[1], TRUE);
     gst_bin_add (GST_BIN_CAST (src), stream->udpsrc[1]);
 
-    caps = gst_caps_new_empty_simple ("application/x-rtcp");
+    if (stream->profile == GST_RTSP_PROFILE_SAVP ||
+        stream->profile == GST_RTSP_PROFILE_SAVPF)
+      caps = gst_caps_new_empty_simple ("application/x-srtcp");
+    else
+      caps = gst_caps_new_empty_simple ("application/x-rtcp");
     g_object_set (stream->udpsrc[1], "caps", caps, NULL);
     gst_caps_unref (caps);
 
@@ -3344,24 +3790,36 @@ gst_rtspsrc_stream_configure_transport (GstRTSPStream * stream,
   GstPad *outpad = NULL;
   GstPadTemplate *template;
   gchar *name;
-  GstStructure *s;
-  const gchar *mime;
+  const gchar *media_type;
+  guint i, len;
 
   src = stream->parent;
 
   GST_DEBUG_OBJECT (src, "configuring transport for stream %p", stream);
 
-  s = gst_caps_get_structure (stream->caps, 0);
-
-  /* get the proper mime type for this stream now */
-  if (gst_rtsp_transport_get_mime (transport->trans, &mime) < 0)
+  /* get the proper media type for this stream now */
+  if (gst_rtsp_transport_get_media_type (transport, &media_type) < 0)
     goto unknown_transport;
-  if (!mime)
+  if (!media_type)
     goto unknown_transport;
 
-  /* configure the final mime type */
-  GST_DEBUG_OBJECT (src, "setting mime to %s", mime);
-  gst_structure_set_name (s, mime);
+  /* configure the final media type */
+  GST_DEBUG_OBJECT (src, "setting media type to %s", media_type);
+
+  len = stream->ptmap->len;
+  for (i = 0; i < len; i++) {
+    GstStructure *s;
+    PtMapItem *item = &g_array_index (stream->ptmap, PtMapItem, i);
+
+    if (item->caps == NULL)
+      continue;
+
+    s = gst_caps_get_structure (item->caps, 0);
+    gst_structure_set_name (s, media_type);
+    /* set ssrc if known */
+    if (transport->ssrc)
+      gst_structure_set (s, "ssrc", G_TYPE_UINT, transport->ssrc, NULL);
+  }
 
   /* try to get and configure a manager, channelpad[0-1] will be configured with
    * the pads for the manager, or NULL when no manager is needed. */
@@ -3482,8 +3940,11 @@ gst_rtspsrc_activate_streams (GstRTSPSrc * src)
       /* if we don't have a session manager, set the caps now. If we have a
        * session, we will get a notification of the pad and the caps. */
       if (!src->manager) {
+        GstCaps *caps;
+
+        caps = stream_get_caps_for_pt (stream, stream->default_pt);
         GST_DEBUG_OBJECT (src, "setting pad caps for stream %p", stream);
-        gst_pad_set_caps (stream->srcpad, stream->caps);
+        gst_pad_set_caps (stream->srcpad, caps);
       }
       /* add the pad */
       if (!stream->added) {
@@ -3525,10 +3986,20 @@ gst_rtspsrc_configure_caps (GstRTSPSrc * src, GstSegment * segment,
 
   for (walk = src->streams; walk; walk = g_list_next (walk)) {
     GstRTSPStream *stream = (GstRTSPStream *) walk->data;
-    GstCaps *caps;
+    guint j, len;
 
-    if ((caps = stream->caps)) {
-      caps = gst_caps_make_writable (caps);
+    if (!stream->setup)
+      continue;
+
+    len = stream->ptmap->len;
+    for (j = 0; j < len; j++) {
+      GstCaps *caps;
+      PtMapItem *item = &g_array_index (stream->ptmap, PtMapItem, j);
+
+      if (item->caps == NULL)
+        continue;
+
+      caps = gst_caps_make_writable (item->caps);
       /* update caps */
       if (stream->timebase != -1)
         gst_caps_set_simple (caps, "clock-base", G_TYPE_UINT,
@@ -3542,9 +4013,14 @@ gst_rtspsrc_configure_caps (GstRTSPSrc * src, GstSegment * segment,
       gst_caps_set_simple (caps, "play-speed", G_TYPE_DOUBLE, play_speed, NULL);
       gst_caps_set_simple (caps, "play-scale", G_TYPE_DOUBLE, play_scale, NULL);
 
-      stream->caps = caps;
+      item->caps = caps;
+      GST_DEBUG_OBJECT (src, "stream %p, pt %d, caps %" GST_PTR_FORMAT, stream,
+          item->pt, caps);
+
+      if (item->pt == stream->default_pt && stream->udpsrc[0]) {
+        g_object_set (stream->udpsrc[0], "caps", caps, NULL);
+      }
     }
-    GST_DEBUG_OBJECT (src, "stream %p, caps %" GST_PTR_FORMAT, stream, caps);
   }
   if (reset_manager && src->manager) {
     GST_DEBUG_OBJECT (src, "clear session");
@@ -3593,7 +4069,7 @@ gst_rtspsrc_stream_push_event (GstRTSPSrc * src, GstRTSPStream * stream,
   gboolean res = TRUE;
 
   /* only streams that have a connection to the outside world */
-  if (stream->container || stream->disabled)
+  if (!stream->setup)
     goto done;
 
   if (stream->udpsrc[0]) {
@@ -3669,6 +4145,10 @@ gst_rtsp_conninfo_connect (GstRTSPSrc * src, GstRTSPConnInfo * info,
       if (!gst_rtsp_connection_set_tls_validation_flags (info->connection,
               src->tls_validation_flags))
         GST_WARNING_OBJECT (src, "Unable to set TLS validation flags");
+
+      if (src->tls_database)
+        gst_rtsp_connection_set_tls_database (info->connection,
+            src->tls_database);
     }
 
     if (info->url->transports & GST_RTSP_LOWER_TRANS_HTTP)
@@ -4731,8 +5211,7 @@ gst_rtspsrc_parse_digest_challenge (GstRTSPConnection * conn,
     } else
       value = NULL;
 
-    if (item && (strcmp (item, "stale") == 0) &&
-        value && (strcmp (value, "TRUE") == 0))
+    if (value && strcmp (item, "stale") == 0 && strcmp (value, "TRUE") == 0)
       *stale = TRUE;
     gst_rtsp_connection_set_auth_param (conn, item, value);
     g_free (item);
@@ -5247,7 +5726,7 @@ static guint protocol_masks[] = {
 
 static GstRTSPResult
 gst_rtspsrc_create_transports_string (GstRTSPSrc * src,
-    GstRTSPLowerTrans protocols, gchar ** transports)
+    GstRTSPLowerTrans protocols, GstRTSPProfile profile, gchar ** transports)
 {
   GstRTSPResult res;
   GString *result;
@@ -5271,23 +5750,35 @@ gst_rtspsrc_create_transports_string (GstRTSPSrc * src,
   add_udp_str = FALSE;
 
   /* the default RTSP transports */
-  result = g_string_new ("");
+  result = g_string_new ("RTP");
+
+  switch (profile) {
+    case GST_RTSP_PROFILE_AVP:
+      g_string_append (result, "/AVP");
+      break;
+    case GST_RTSP_PROFILE_SAVP:
+      g_string_append (result, "/SAVP");
+      break;
+    case GST_RTSP_PROFILE_AVPF:
+      g_string_append (result, "/AVPF");
+      break;
+    case GST_RTSP_PROFILE_SAVPF:
+      g_string_append (result, "/SAVPF");
+      break;
+    default:
+      break;
+  }
+
   if (protocols & GST_RTSP_LOWER_TRANS_UDP) {
     GST_DEBUG_OBJECT (src, "adding UDP unicast");
-
-    g_string_append (result, "RTP/AVP");
     if (add_udp_str)
       g_string_append (result, "/UDP");
     g_string_append (result, ";unicast;client_port=%%u1-%%u2");
   } else if (protocols & GST_RTSP_LOWER_TRANS_UDP_MCAST) {
     GST_DEBUG_OBJECT (src, "adding UDP multicast");
-
     /* we don't have to allocate any UDP ports yet, if the selected transport
      * turns out to be multicast we can create them and join the multicast
      * group indicated in the transport reply */
-    if (result->len > 0)
-      g_string_append (result, ",");
-    g_string_append (result, "RTP/AVP");
     if (add_udp_str)
       g_string_append (result, "/UDP");
     g_string_append (result, ";multicast");
@@ -5302,9 +5793,7 @@ gst_rtspsrc_create_transports_string (GstRTSPSrc * src,
   } else if (protocols & GST_RTSP_LOWER_TRANS_TCP) {
     GST_DEBUG_OBJECT (src, "adding TCP");
 
-    if (result->len > 0)
-      g_string_append (result, ",");
-    g_string_append (result, "RTP/AVP/TCP;unicast;interleaved=%%i1-%%i2");
+    g_string_append (result, "/TCP;unicast;interleaved=%%i1-%%i2");
   }
   *transports = g_string_free (result, FALSE);
 
@@ -5401,22 +5890,169 @@ failed:
   }
 }
 
-static gboolean
-gst_rtspsrc_stream_is_real_media (GstRTSPStream * stream)
+static guint8
+enc_key_length_from_cipher_name (const gchar * cipher)
 {
-  gboolean res = FALSE;
-
-  if (stream->caps) {
-    GstStructure *s;
-    const gchar *enc = NULL;
-
-    s = gst_caps_get_structure (stream->caps, 0);
-    if ((enc = gst_structure_get_string (s, "encoding-name"))) {
-      res = (strstr (enc, "-REAL") != NULL);
-    }
+  if (g_strcmp0 (cipher, "aes-128-icm") == 0)
+    return AES_128_KEY_LEN;
+  else if (g_strcmp0 (cipher, "aes-256-icm") == 0)
+    return AES_256_KEY_LEN;
+  else {
+    GST_ERROR ("encryption algorithm '%s' not supported", cipher);
+    return 0;
   }
-  return res;
 }
+
+static guint8
+auth_key_length_from_auth_name (const gchar * auth)
+{
+  if (g_strcmp0 (auth, "hmac-sha1-32") == 0)
+    return HMAC_32_KEY_LEN;
+  else if (g_strcmp0 (auth, "hmac-sha1-80") == 0)
+    return HMAC_80_KEY_LEN;
+  else {
+    GST_ERROR ("authentication algorithm '%s' not supported", auth);
+    return 0;
+  }
+}
+
+static GstCaps *
+signal_get_srtcp_params (GstRTSPSrc * src, GstRTSPStream * stream)
+{
+  GstCaps *caps = NULL;
+
+  g_signal_emit (src, gst_rtspsrc_signals[SIGNAL_REQUEST_RTCP_KEY], 0,
+      stream->id, &caps);
+
+  if (caps != NULL)
+    GST_DEBUG_OBJECT (src, "SRTP parameters received");
+
+  return caps;
+}
+
+static GstCaps *
+default_srtcp_params (void)
+{
+  guint i;
+  GstCaps *caps;
+  GstBuffer *buf;
+  guint8 *key_data;
+#define KEY_SIZE 30
+
+  /* create a random key */
+  key_data = g_malloc (KEY_SIZE);
+  for (i = 0; i < KEY_SIZE; i += 4)
+    GST_WRITE_UINT32_BE (key_data + i, g_random_int ());
+
+  buf = gst_buffer_new_wrapped (key_data, KEY_SIZE);
+
+  caps = gst_caps_new_simple ("application/x-srtp",
+      "srtp-key", GST_TYPE_BUFFER, buf,
+      "srtcp-cipher", G_TYPE_STRING, "aes-128-icm",
+      "srtcp-auth", G_TYPE_STRING, "hmac-sha1-80", NULL);
+
+  return caps;
+}
+
+static gchar *
+gst_rtspsrc_stream_make_keymgmt (GstRTSPSrc * src, GstRTSPStream * stream)
+{
+  GBytes *bytes;
+  gchar *result, *base64;
+  const guint8 *data;
+  gsize size;
+  GstMIKEYMessage *msg;
+  GstMIKEYPayload *payload, *pkd;
+  guint8 byte;
+  GstStructure *s;
+  GstMapInfo info;
+  GstBuffer *srtpkey;
+  const GValue *val;
+  const gchar *srtcpcipher, *srtcpauth;
+
+  stream->srtcpparams = signal_get_srtcp_params (src, stream);
+  if (stream->srtcpparams == NULL)
+    stream->srtcpparams = default_srtcp_params ();
+
+  s = gst_caps_get_structure (stream->srtcpparams, 0);
+
+  srtcpcipher = gst_structure_get_string (s, "srtcp-cipher");
+  srtcpauth = gst_structure_get_string (s, "srtcp-auth");
+  val = gst_structure_get_value (s, "srtp-key");
+
+  if (srtcpcipher == NULL || srtcpauth == NULL || val == NULL) {
+    GST_ERROR_OBJECT (src, "could not find the right SRTP parameters in caps");
+    return NULL;
+  }
+
+  srtpkey = gst_value_get_buffer (val);
+
+  msg = gst_mikey_message_new ();
+  /* unencrypted MIKEY message, we send this over TLS so this is allowed */
+  gst_mikey_message_set_info (msg, GST_MIKEY_VERSION, GST_MIKEY_TYPE_PSK_INIT,
+      FALSE, GST_MIKEY_PRF_MIKEY_1, g_random_int (), GST_MIKEY_MAP_TYPE_SRTP);
+  /* add policy '0' for our SSRC */
+  gst_mikey_message_add_cs_srtp (msg, 0, stream->send_ssrc, 0);
+  /* timestamp is now */
+  gst_mikey_message_add_t_now_ntp_utc (msg);
+  /* add some random data */
+  gst_mikey_message_add_rand_len (msg, 16);
+
+  /* the policy '0' is SRTP */
+  payload = gst_mikey_payload_new (GST_MIKEY_PT_SP);
+  gst_mikey_payload_sp_set (payload, 0, GST_MIKEY_SEC_PROTO_SRTP);
+
+  /* only AES-CM is supported */
+  byte = 1;
+  gst_mikey_payload_sp_add_param (payload, GST_MIKEY_SP_SRTP_ENC_ALG, 1, &byte);
+  /* encryption key length */
+  byte = enc_key_length_from_cipher_name (srtcpcipher);
+  gst_mikey_payload_sp_add_param (payload, GST_MIKEY_SP_SRTP_ENC_KEY_LEN, 1,
+      &byte);
+  /* only HMAC-SHA1 */
+  gst_mikey_payload_sp_add_param (payload, GST_MIKEY_SP_SRTP_AUTH_ALG, 1,
+      &byte);
+  /* authentication key length */
+  byte = auth_key_length_from_auth_name (srtcpauth);
+  gst_mikey_payload_sp_add_param (payload, GST_MIKEY_SP_SRTP_AUTH_KEY_LEN, 1,
+      &byte);
+  /* we enable encryption on RTP and RTCP */
+  gst_mikey_payload_sp_add_param (payload, GST_MIKEY_SP_SRTP_SRTP_ENC, 1,
+      &byte);
+  gst_mikey_payload_sp_add_param (payload, GST_MIKEY_SP_SRTP_SRTCP_ENC, 1,
+      &byte);
+  /* we enable authentication on RTP and RTCP */
+  gst_mikey_payload_sp_add_param (payload, GST_MIKEY_SP_SRTP_SRTP_AUTH, 1,
+      &byte);
+  gst_mikey_message_add_payload (msg, payload);
+
+  /* make unencrypted KEMAC */
+  payload = gst_mikey_payload_new (GST_MIKEY_PT_KEMAC);
+  gst_mikey_payload_kemac_set (payload, GST_MIKEY_ENC_NULL, GST_MIKEY_MAC_NULL);
+  /* add the key in KEMAC */
+  pkd = gst_mikey_payload_new (GST_MIKEY_PT_KEY_DATA);
+  gst_buffer_map (srtpkey, &info, GST_MAP_READ);
+  gst_mikey_payload_key_data_set_key (pkd, GST_MIKEY_KD_TEK, info.size,
+      info.data);
+  gst_buffer_unmap (srtpkey, &info);
+  gst_mikey_payload_kemac_add_sub (payload, pkd);
+  gst_mikey_message_add_payload (msg, payload);
+
+  /* now serialize this to bytes */
+  bytes = gst_mikey_message_to_bytes (msg, NULL, NULL);
+  gst_mikey_message_unref (msg);
+  /* and make it into base64 */
+  data = g_bytes_get_data (bytes, &size);
+  base64 = g_base64_encode (data, size);
+  g_bytes_unref (bytes);
+
+  result = g_strdup_printf ("prot=mikey;uri=\"%s\";data=\"%s\"",
+      stream->conninfo.location, base64);
+  g_free (base64);
+
+  return result;
+}
+
 
 /* Perform the SETUP request for all the streams.
  *
@@ -5475,32 +6111,41 @@ gst_rtspsrc_setup_streams (GstRTSPSrc * src, gboolean async)
     gint retry = 0;
     guint mask = 0;
     gboolean selected;
+    GstCaps *caps;
 
     stream = (GstRTSPStream *) walk->data;
 
+    caps = stream_get_caps_for_pt (stream, stream->default_pt);
+    if (caps == NULL) {
+      GST_DEBUG_OBJECT (src, "skipping stream %p, no caps", stream);
+      continue;
+    }
+
+    if (stream->skipped) {
+      GST_DEBUG_OBJECT (src, "skipping stream %p", stream);
+      continue;
+    }
+
     /* see if we need to configure this stream */
-    if (!gst_rtsp_ext_list_configure_stream (src->extensions, stream->caps)) {
+    if (!gst_rtsp_ext_list_configure_stream (src->extensions, caps)) {
       GST_DEBUG_OBJECT (src, "skipping stream %p, disabled by extension",
           stream);
-      stream->disabled = TRUE;
       continue;
     }
 
     g_signal_emit (src, gst_rtspsrc_signals[SIGNAL_SELECT_STREAM], 0,
-        stream->id, stream->caps, &selected);
+        stream->id, caps, &selected);
     if (!selected) {
       GST_DEBUG_OBJECT (src, "skipping stream %p, disabled by signal", stream);
-      stream->disabled = TRUE;
       continue;
     }
-    stream->disabled = FALSE;
 
     /* merge/overwrite global caps */
-    if (stream->caps) {
+    if (caps) {
       guint j, num;
       GstStructure *s;
 
-      s = gst_caps_get_structure (stream->caps, 0);
+      s = gst_caps_get_structure (caps, 0);
 
       num = gst_structure_n_fields (src->props);
       for (j = 0; j < num; j++) {
@@ -5550,7 +6195,7 @@ gst_rtspsrc_setup_streams (GstRTSPSrc * src, gboolean async)
     /* create a string with first transport in line */
     transports = NULL;
     res = gst_rtspsrc_create_transports_string (src,
-        protocols & protocol_masks[mask], &transports);
+        protocols & protocol_masks[mask], stream->profile, &transports);
     if (res < 0 || transports == NULL)
       goto setup_transport_failed;
 
@@ -5585,6 +6230,13 @@ gst_rtspsrc_setup_streams (GstRTSPSrc * src, gboolean async)
 
     /* select transport */
     gst_rtsp_message_take_header (&request, GST_RTSP_HDR_TRANSPORT, transports);
+
+    /* set up keys */
+    if (stream->profile == GST_RTSP_PROFILE_SAVP ||
+        stream->profile == GST_RTSP_PROFILE_SAVPF) {
+      hval = gst_rtspsrc_stream_make_keymgmt (src, stream);
+      gst_rtsp_message_take_header (&request, GST_RTSP_HDR_KEYMGMT, hval);
+    }
 
     /* if the user wants a non default RTP packet size we add the blocksize
      * parameter */
@@ -5622,7 +6274,7 @@ gst_rtspsrc_setup_streams (GstRTSPSrc * src, gboolean async)
          * but not without checking for lost cause/extension so we can
          * post a nicer/more useful error message later */
         if (!unsupported_real)
-          unsupported_real = gst_rtspsrc_stream_is_real_media (stream);
+          unsupported_real = stream->is_real;
         /* select next available protocol, give up on this stream if none */
         mask++;
         while (protocol_masks[mask] && !(protocols & protocol_masks[mask]))
@@ -5707,6 +6359,29 @@ gst_rtspsrc_setup_streams (GstRTSPSrc * src, gboolean async)
       }
       /* we need to activate at least one streams when we detect activity */
       src->need_activate = TRUE;
+
+      /* stream is setup now */
+      stream->setup = TRUE;
+      {
+        GList *skip = walk;
+
+        while (TRUE) {
+          GstRTSPStream *sskip;
+
+          skip = g_list_next (skip);
+          if (skip == NULL)
+            break;
+
+          sskip = (GstRTSPStream *) skip->data;
+
+          /* skip all streams with the same control url */
+          if (g_str_equal (stream->conninfo.location, sskip->conninfo.location)) {
+            GST_DEBUG_OBJECT (src, "found stream %p with same control %s",
+                sskip, sskip->conninfo.location);
+            sskip->skipped = TRUE;
+          }
+        }
+      }
     next:
       /* clean up our transport struct */
       gst_rtsp_transport_init (&transport);
@@ -6536,13 +7211,21 @@ gen_range_header (GstRTSPSrc * src, GstSegment * segment)
 static void
 clear_rtp_base (GstRTSPSrc * src, GstRTSPStream * stream)
 {
+  guint i, len;
+
   stream->timebase = -1;
   stream->seqbase = -1;
-  if (stream->caps) {
+
+  len = stream->ptmap->len;
+  for (i = 0; i < len; i++) {
+    PtMapItem *item = &g_array_index (stream->ptmap, PtMapItem, i);
     GstStructure *s;
 
-    stream->caps = gst_caps_make_writable (stream->caps);
-    s = gst_caps_get_structure (stream->caps, 0);
+    if (item->caps == NULL)
+      continue;
+
+    item->caps = gst_caps_make_writable (item->caps);
+    s = gst_caps_get_structure (item->caps, 0);
     gst_structure_remove_fields (s, "clock-base", "seqnum-base", NULL);
   }
 }
@@ -7066,6 +7749,7 @@ gst_rtspsrc_start (GstRTSPSrc * src)
   /* ERRORS */
 task_error:
   {
+    GST_OBJECT_UNLOCK (src);
     GST_ERROR_OBJECT (src, "failed to create task");
     return FALSE;
   }
@@ -7130,6 +7814,8 @@ gst_rtspsrc_change_state (GstElement * element, GstStateChange transition)
       gst_rtspsrc_loop_send_cmd (rtspsrc, CMD_OPEN, 0);
       break;
     case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
+      set_manager_buffer_mode (rtspsrc);
+      /* fall-through */
     case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
       /* unblock the tcp tasks and make the loop waiting */
       if (gst_rtspsrc_loop_send_cmd (rtspsrc, CMD_WAIT, CMD_LOOP)) {

@@ -93,7 +93,7 @@ static GstStaticPadTemplate video_sink_factory =
     GST_PAD_SINK,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS ("video/x-raw, "
-        "format = (string) { YUY2, I420, BGR, BGRx, BGRA, GRAY8 }, "
+        "format = (string) { YUY2, I420, BGR, BGRx, BGRA, GRAY8, UYVY }, "
         "width = (int) [ 16, 4096 ], "
         "height = (int) [ 16, 4096 ], "
         "framerate = (fraction) [ 0, MAX ]; "
@@ -434,6 +434,8 @@ gst_avi_mux_vidsink_set_caps (GstPad * pad, GstCaps * vscaps)
 
   avipad->parent.hdr.rate = gst_value_get_fraction_numerator (fps);
   avipad->parent.hdr.scale = gst_value_get_fraction_denominator (fps);
+  if (avipad->parent.hdr.rate <= 0 || avipad->parent.hdr.scale <= 0)
+    goto refuse_caps;
 
   /* (pixel) aspect ratio data, if any */
   par = gst_structure_get_value (structure, "pixel-aspect-ratio");
@@ -475,6 +477,10 @@ gst_avi_mux_vidsink_set_caps (GstPad * pad, GstCaps * vscaps)
     switch (fmt) {
       case GST_VIDEO_FORMAT_YUY2:
         avipad->vids.compression = GST_MAKE_FOURCC ('Y', 'U', 'Y', '2');
+        avipad->vids.bit_cnt = 16;
+        break;
+      case GST_VIDEO_FORMAT_UYVY:
+        avipad->vids.compression = GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y');
         avipad->vids.bit_cnt = 16;
         break;
       case GST_VIDEO_FORMAT_I420:
@@ -587,6 +593,7 @@ gst_avi_mux_vidsink_set_caps (GstPad * pad, GstCaps * vscaps)
             break;
           case 3:
             avipad->vids.compression = GST_MAKE_FOURCC ('W', 'M', 'V', '3');
+            break;
           default:
             valid_caps = FALSE;
             break;
@@ -2005,13 +2012,16 @@ gst_avi_mux_do_buffer (GstAviMux * avimux, GstAviPad * avipad)
   gulong total_size, pad_bytes = 0;
   guint flags;
   gsize datasize;
+  GstClockTime time;
 
   data = gst_collect_pads_pop (avimux->collect, avipad->collect);
   /* arrange downstream running time */
-  data = gst_buffer_make_writable (data);
-  GST_BUFFER_TIMESTAMP (data) =
-      gst_segment_to_running_time (&avipad->collect->segment,
+  time = gst_segment_to_running_time (&avipad->collect->segment,
       GST_FORMAT_TIME, GST_BUFFER_TIMESTAMP (data));
+  if (time != GST_BUFFER_TIMESTAMP (data)) {
+    data = gst_buffer_make_writable (data);
+    GST_BUFFER_TIMESTAMP (data) = time;
+  }
 
   /* Prepend a special buffer to the first one for some formats */
   if (avipad->is_video) {

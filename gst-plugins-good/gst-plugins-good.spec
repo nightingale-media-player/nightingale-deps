@@ -4,7 +4,7 @@
 %define gst_minver   0.11.0
 
 Name: 		%{gstreamer}-plugins-good
-Version: 	1.2.3
+Version: 	1.4.0
 Release: 	1.gst
 Summary: 	GStreamer plug-ins with good code and licensing
 
@@ -78,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gstreamer-%{majorminor}/presets/GstIirEqualizer3Bands.prs
 %{_datadir}/gstreamer-%{majorminor}/presets/GstVP8Enc.prs
 
+%{_datadir}/gtk-doc/html/gst-plugins-good-plugins-%{majorminor}/*
+
 # non-core plugins without external dependencies
 %{_libdir}/gstreamer-%{majorminor}/libgstalaw.so
 %{_libdir}/gstreamer-%{majorminor}/libgstalpha.so
@@ -130,8 +132,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/gstreamer-%{majorminor}/libgstvideofilter.so
 %{_libdir}/gstreamer-%{majorminor}/libgstaudioparsers.so
 %{_libdir}/gstreamer-%{majorminor}/libgstdtmf.so
-
-# sys plugins
 %{_libdir}/gstreamer-%{majorminor}/libgstvideo4linux2.so
 
 # gstreamer-plugins with external dependencies but in the main package

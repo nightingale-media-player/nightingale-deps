@@ -102,13 +102,13 @@ struct _GstRTSPStream {
   GstPad       *srcpad;
   GstFlowReturn last_ret;
   gboolean      added;
-  gboolean      disabled;
+  gboolean      setup;
+  gboolean      skipped;
   gboolean      eos;
   gboolean      discont;
 
   /* for interleaved mode */
   guint8        channel[2];
-  GstCaps      *caps;
   GstPad       *channelpad[2];
 
   /* our udp sources */
@@ -125,14 +125,21 @@ struct _GstRTSPStream {
   GstElement   *fakesrc;
 
   /* state */
-  gint          pt;
   guint         port;
   gboolean      container;
+  gboolean      is_real;
+  guint8        default_pt;
+  GstRTSPProfile profile;
+  GArray       *ptmap;
   /* original control url */
   gchar        *control_url;
   guint32       ssrc;
   guint32       seqbase;
   guint64       timebase;
+  GstElement   *srtpdec;
+  GstCaps      *srtcpparams;
+  GstElement   *srtpenc;
+  guint32       send_ssrc;
 
   /* per stream connection */
   GstRTSPConnInfo  conninfo;
@@ -149,6 +156,7 @@ struct _GstRTSPStream {
   gchar        *destination;
   gboolean      is_multicast;
   guint         ttl;
+
 };
 
 /**
@@ -190,7 +198,6 @@ struct _GstRTSPSrc {
 
   GstSDPMessage   *sdp;
   gboolean         from_sdp;
-  gint             numstreams;
   GList           *streams;
   GstStructure    *props;
   gboolean         need_activate;
@@ -228,6 +235,7 @@ struct _GstRTSPSrc {
   gboolean          use_pipeline_clock;
   GstStructure     *sdes;
   GTlsCertificateFlags tls_validation_flags;
+  GTlsDatabase     *tls_database;
 
   /* state */
   GstRTSPState       state;
@@ -251,6 +259,7 @@ struct _GstRTSPSrc {
   GstElement      *manager;
   gulong           manager_sig_id;
   gulong           manager_ptmap_id;
+  gboolean         use_buffering;
 
   GstRTSPConnInfo  conninfo;
 

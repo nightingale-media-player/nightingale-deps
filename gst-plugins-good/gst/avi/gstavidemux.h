@@ -27,6 +27,7 @@
 #include "gst/riff/riff-ids.h"
 #include "gst/riff/riff-read.h"
 #include <gst/base/gstadapter.h>
+#include <gst/base/gstflowcombiner.h>
 
 G_BEGIN_DECLS
 
@@ -90,7 +91,6 @@ typedef struct {
   guint64        current_offset;
   guint64        current_offset_end;
 
-  GstFlowReturn  last_flow;
   gboolean       discont;
 
   /* stream length */
@@ -119,6 +119,7 @@ typedef struct {
   GstTagList	*taglist;
 
   gint           index_id;
+  gboolean is_raw;
 } GstAviStream;
 
 typedef enum {
@@ -159,9 +160,12 @@ typedef struct _GstAviDemux {
   guint          num_streams;
   guint          num_v_streams;
   guint          num_a_streams;
-  guint          num_t_streams;  /* subtitle text streams */
+  guint          num_t_streams;   /* subtitle text streams */
+  guint          num_sp_streams;  /* subpicture streams */
 
   guint          main_stream; /* used for seeking */
+
+  GstFlowCombiner *flowcombiner;
 
   gboolean       have_group_id;
   guint          group_id;

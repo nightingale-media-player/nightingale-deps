@@ -19,7 +19,6 @@
 
 /**
  * SECTION:element-gdkpixbufoverlay
- * @see_also:
  *
  * The gdkpixbufoverlay element overlays an image loaded from file onto
  * a video stream.
@@ -41,8 +40,6 @@
  * Overlays the image in image.png onto the test video picture produced by
  * videotestsrc.
  * </refsect2>
- *
- * Since: 0.10.33
  */
 
 #ifdef HAVE_CONFIG_H

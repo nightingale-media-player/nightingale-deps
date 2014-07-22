@@ -2,34 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>alpha</title>
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: alpha</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-good Elements">
 <link rel="prev" href="gst-plugins-good-plugins-agingtv.html" title="agingtv">
 <link rel="next" href="gst-plugins-good-plugins-alphacolor.html" title="alphacolor">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-good-plugins-agingtv.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Good Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-good-plugins-alphacolor.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-good-plugins-alpha.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-alpha.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-alpha.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-good-plugins-alpha.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-alpha.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-alpha.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-alpha.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-agingtv.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-alphacolor.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-good-plugins-alpha"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -37,52 +31,107 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-alpha.top_of_page"></a>alpha</span></h2>
 <p>alpha — Adds an alpha channel to video - uniform or via chroma-keying</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-good-plugins-alpha.synopsis"></a><h2>Synopsis</h2>
-<a name="GstAlpha"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha-struct" title="struct GstAlpha">GstAlpha</a>;
-enum                <a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlphaMethod" title="enum GstAlphaMethod">GstAlphaMethod</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-alpha.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--alpha" title="The “alpha” property">alpha</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--angle" title="The “angle” property">angle</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlphaMethod" title="enum GstAlphaMethod"><span class="type">GstAlphaMethod</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--method" title="The “method” property">method</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--noise-level" title="The “noise-level” property">noise-level</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--target-b" title="The “target-b” property">target-b</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--target-g" title="The “target-g” property">target-g</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--target-r" title="The “target-r” property">target-r</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--black-sensitivity" title="The “black-sensitivity” property">black-sensitivity</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--white-sensitivity" title="The “white-sensitivity” property">white-sensitivity</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--prefer-passthrough" title="The “prefer-passthrough” property">prefer-passthrough</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstAlpha"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-alpha.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha-struct" title="struct GstAlpha">GstAlpha</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlphaMethod" title="enum GstAlphaMethod">GstAlphaMethod</a></td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-alpha.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
-                           +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter">GstVideoFilter</a>
-                                 +----GstAlpha
-</pre>
-</div>
-<div class="refsect1">
-<a name="gst-plugins-good-plugins-alpha.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--alpha" title='The "alpha" property'>alpha</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--angle" title='The "angle" property'>angle</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--method" title='The "method" property'>method</a>"                   <a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlphaMethod" title="enum GstAlphaMethod"><span class="type">GstAlphaMethod</span></a>        : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--noise-level" title='The "noise-level" property'>noise-level</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--target-b" title='The "target-b" property'>target-b</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--target-g" title='The "target-g" property'>target-g</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--target-r" title='The "target-r" property'>target-r</a>"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--black-sensitivity" title='The "black-sensitivity" property'>black-sensitivity</a>"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--white-sensitivity" title='The "white-sensitivity" property'>white-sensitivity</a>"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlpha--prefer-passthrough" title='The "prefer-passthrough" property'>prefer-passthrough</a>"       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstvideofilter.html#GstVideoFilter">GstVideoFilter</a>
+                        <span class="lineart">╰──</span> GstAlpha
 </pre>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-alpha.description"></a><h2>Description</h2>
-<p>
-The alpha element adds an alpha channel to a video stream. The values
+<p>The alpha element adds an alpha channel to a video stream. The values
 of the alpha channel can be either be set to a constant or can be
 dynamically calculated via chroma keying, e.g. blue can be set as
-the transparent color.
-</p>
-<p>
-Sample pipeline:
-</p>
+the transparent color.</p>
+<p>Sample pipeline:</p>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -98,14 +147,13 @@ Sample pipeline:
   </table>
 </div>
 
-<p> This pipeline adds a alpha channel to the SMPTE color bars
+<p>
 with green as the transparent color and mixes the output with
-a snow video stream.
-</p>
+a snow video stream.</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.7.6.4.1"></a><h3>Element Information</h3>
+<a name="id-1.2.7.7.5.1.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -133,7 +181,7 @@ Jan Schmidt &lt;thaytan@noraisin.net&gt;</td>
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.7.6.4.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.7.7.5.1.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -188,7 +236,10 @@ Jan Schmidt &lt;thaytan@noraisin.net&gt;</td>
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-good-plugins-alpha.details"></a><h2>Details</h2>
+<a name="gst-plugins-good-plugins-alpha.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-alpha.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstAlpha-struct"></a><h3>struct GstAlpha</h3>
 <pre class="programlisting">struct GstAlpha;</pre>
@@ -198,126 +249,141 @@ Jan Schmidt &lt;thaytan@noraisin.net&gt;</td>
 <hr>
 <div class="refsect2">
 <a name="GstAlphaMethod"></a><h3>enum GstAlphaMethod</h3>
-<pre class="programlisting">typedef enum {
-  ALPHA_METHOD_SET,
-  ALPHA_METHOD_GREEN,
-  ALPHA_METHOD_BLUE,
-  ALPHA_METHOD_CUSTOM,
-} GstAlphaMethod;
-</pre>
-<div class="variablelist"><table border="0" class="variablelist">
+<div class="refsect3">
+<a name="id-1.2.7.9.3.3"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><a name="ALPHA-METHOD-SET:CAPS"></a><span class="term"><code class="literal">ALPHA_METHOD_SET</code></span></p></td>
-<td>Set/adjust alpha channel
+<td class="enum_member_name"><p><a name="ALPHA-METHOD-SET:CAPS"></a>ALPHA_METHOD_SET</p></td>
+<td class="enum_member_description">
+<p>Set/adjust alpha channel</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="ALPHA-METHOD-GREEN:CAPS"></a><span class="term"><code class="literal">ALPHA_METHOD_GREEN</code></span></p></td>
-<td>Chroma Key green
+<td class="enum_member_name"><p><a name="ALPHA-METHOD-GREEN:CAPS"></a>ALPHA_METHOD_GREEN</p></td>
+<td class="enum_member_description">
+<p>Chroma Key green</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="ALPHA-METHOD-BLUE:CAPS"></a><span class="term"><code class="literal">ALPHA_METHOD_BLUE</code></span></p></td>
-<td>Chroma Key blue
+<td class="enum_member_name"><p><a name="ALPHA-METHOD-BLUE:CAPS"></a>ALPHA_METHOD_BLUE</p></td>
+<td class="enum_member_description">
+<p>Chroma Key blue</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="ALPHA-METHOD-CUSTOM:CAPS"></a><span class="term"><code class="literal">ALPHA_METHOD_CUSTOM</code></span></p></td>
-<td>Chroma Key on target_r/g/b
+<td class="enum_member_name"><p><a name="ALPHA-METHOD-CUSTOM:CAPS"></a>ALPHA_METHOD_CUSTOM</p></td>
+<td class="enum_member_description">
+<p>Chroma Key on target_r/g/b</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
 </div>
+</div>
 <div class="refsect1">
 <a name="gst-plugins-good-plugins-alpha.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstAlpha--alpha"></a><h3>The <code class="literal">"alpha"</code> property</h3>
-<pre class="programlisting">  "alpha"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write</pre>
+<a name="GstAlpha--alpha"></a><h3>The <code class="literal">“alpha”</code> property</h3>
+<pre class="programlisting">  “alpha”                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a></pre>
 <p>The value for the alpha channel.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,1]</p>
 <p>Default value: 1</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAlpha--angle"></a><h3>The <code class="literal">"angle"</code> property</h3>
-<pre class="programlisting">  "angle"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write</pre>
+<a name="GstAlpha--angle"></a><h3>The <code class="literal">“angle”</code> property</h3>
+<pre class="programlisting">  “angle”                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></pre>
 <p>Size of the colorcube to change.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,90]</p>
 <p>Default value: 20</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAlpha--method"></a><h3>The <code class="literal">"method"</code> property</h3>
-<pre class="programlisting">  "method"                   <a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlphaMethod" title="enum GstAlphaMethod"><span class="type">GstAlphaMethod</span></a>        : Read / Write</pre>
+<a name="GstAlpha--method"></a><h3>The <code class="literal">“method”</code> property</h3>
+<pre class="programlisting">  “method”                   <a class="link" href="gst-plugins-good-plugins-alpha.html#GstAlphaMethod" title="enum GstAlphaMethod"><span class="type">GstAlphaMethod</span></a></pre>
 <p>How the alpha channels should be created.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: Set/adjust alpha channel</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAlpha--noise-level"></a><h3>The <code class="literal">"noise-level"</code> property</h3>
-<pre class="programlisting">  "noise-level"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write</pre>
+<a name="GstAlpha--noise-level"></a><h3>The <code class="literal">“noise-level”</code> property</h3>
+<pre class="programlisting">  “noise-level”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></pre>
 <p>Size of noise radius.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,64]</p>
 <p>Default value: 2</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAlpha--target-b"></a><h3>The <code class="literal">"target-b"</code> property</h3>
-<pre class="programlisting">  "target-b"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstAlpha--target-b"></a><h3>The <code class="literal">“target-b”</code> property</h3>
+<pre class="programlisting">  “target-b”                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>The blue color value for custom RGB chroma keying.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 255</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAlpha--target-g"></a><h3>The <code class="literal">"target-g"</code> property</h3>
-<pre class="programlisting">  "target-g"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstAlpha--target-g"></a><h3>The <code class="literal">“target-g”</code> property</h3>
+<pre class="programlisting">  “target-g”                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>The green color value for custom RGB chroma keying.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 255</p>
 <p>Default value: 255</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAlpha--target-r"></a><h3>The <code class="literal">"target-r"</code> property</h3>
-<pre class="programlisting">  "target-r"                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstAlpha--target-r"></a><h3>The <code class="literal">“target-r”</code> property</h3>
+<pre class="programlisting">  “target-r”                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>The red color value for custom RGB chroma keying.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 255</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAlpha--black-sensitivity"></a><h3>The <code class="literal">"black-sensitivity"</code> property</h3>
-<pre class="programlisting">  "black-sensitivity"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstAlpha--black-sensitivity"></a><h3>The <code class="literal">“black-sensitivity”</code> property</h3>
+<pre class="programlisting">  “black-sensitivity”        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>Sensitivity to dark colors.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 128</p>
 <p>Default value: 100</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAlpha--white-sensitivity"></a><h3>The <code class="literal">"white-sensitivity"</code> property</h3>
-<pre class="programlisting">  "white-sensitivity"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstAlpha--white-sensitivity"></a><h3>The <code class="literal">“white-sensitivity”</code> property</h3>
+<pre class="programlisting">  “white-sensitivity”        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>Sensitivity to bright colors.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &lt;= 128</p>
 <p>Default value: 100</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAlpha--prefer-passthrough"></a><h3>The <code class="literal">"prefer-passthrough"</code> property</h3>
-<pre class="programlisting">  "prefer-passthrough"       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstAlpha--prefer-passthrough"></a><h3>The <code class="literal">“prefer-passthrough”</code> property</h3>
+<pre class="programlisting">  “prefer-passthrough”       <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Don't do any processing for alpha=1.0 if possible.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

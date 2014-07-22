@@ -154,7 +154,7 @@ chain_rtp_packet (GstPad * pad, CleanupData * data)
     data->seqnum = 0;
   }
 
-  gst_pad_send_event (pad, gst_event_new_stream_start (gst_pad_get_name (pad)));
+  gst_pad_send_event (pad, gst_event_new_stream_start (GST_OBJECT_NAME (pad)));
   gst_pad_send_event (pad, gst_event_new_caps (caps));
   gst_segment_init (&segment, GST_FORMAT_TIME);
   gst_pad_send_event (pad, gst_event_new_segment (&segment));
@@ -430,6 +430,262 @@ GST_START_TEST (test_request_pad_by_template_name)
 
 GST_END_TEST;
 
+static GstElement *
+encoder_cb (GstElement * rtpbin, guint sessid, GstElement * bin)
+{
+  GstPad *srcpad, *sinkpad;
+
+  fail_unless (sessid == 2);
+
+  GST_DEBUG ("making encoder");
+  sinkpad = gst_ghost_pad_new_no_target ("rtp_sink_2", GST_PAD_SINK);
+  srcpad = gst_ghost_pad_new_no_target ("rtp_src_2", GST_PAD_SRC);
+
+  gst_element_add_pad (bin, sinkpad);
+  gst_element_add_pad (bin, srcpad);
+
+  return gst_object_ref (bin);
+}
+
+static GstElement *
+encoder_cb2 (GstElement * rtpbin, guint sessid, GstElement * bin)
+{
+  GstPad *srcpad, *sinkpad;
+
+  fail_unless (sessid == 3);
+
+  GST_DEBUG ("making encoder");
+  sinkpad = gst_ghost_pad_new_no_target ("rtp_sink_3", GST_PAD_SINK);
+  srcpad = gst_ghost_pad_new_no_target ("rtp_src_3", GST_PAD_SRC);
+
+  gst_element_add_pad (bin, sinkpad);
+  gst_element_add_pad (bin, srcpad);
+
+  return gst_object_ref (bin);
+}
+
+GST_START_TEST (test_encoder)
+{
+  GstElement *rtpbin, *bin;
+  GstPad *rtp_sink1, *rtp_sink2;
+  gulong id;
+
+  bin = gst_bin_new ("rtpenc");
+
+  rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
+
+  id = g_signal_connect (rtpbin, "request-rtp-encoder", (GCallback) encoder_cb,
+      bin);
+
+  rtp_sink1 = gst_element_get_request_pad (rtpbin, "send_rtp_sink_2");
+  fail_unless (rtp_sink1 != NULL);
+  fail_unless_equals_string (GST_PAD_NAME (rtp_sink1), "send_rtp_sink_2");
+  ASSERT_OBJECT_REFCOUNT (rtp_sink1, "rtp_sink1", 2);
+
+  g_signal_handler_disconnect (rtpbin, id);
+
+  id = g_signal_connect (rtpbin, "request-rtp-encoder", (GCallback) encoder_cb2,
+      bin);
+
+  rtp_sink2 = gst_element_get_request_pad (rtpbin, "send_rtp_sink_3");
+  fail_unless (rtp_sink2 != NULL);
+
+  /* remove the session */
+  gst_element_release_request_pad (rtpbin, rtp_sink1);
+  gst_object_unref (rtp_sink1);
+
+  gst_element_release_request_pad (rtpbin, rtp_sink2);
+  gst_object_unref (rtp_sink2);
+
+  /* nothing left anymore now */
+  fail_unless (rtpbin->numsinkpads == 0);
+  fail_unless (rtpbin->numsrcpads == 0);
+
+  gst_object_unref (rtpbin);
+  gst_object_unref (bin);
+}
+
+GST_END_TEST;
+
+static GstElement *
+decoder_cb (GstElement * rtpbin, guint sessid, gpointer user_data)
+{
+  GstElement *bin;
+  GstPad *srcpad, *sinkpad;
+
+  bin = gst_bin_new (NULL);
+
+  GST_DEBUG ("making decoder");
+  sinkpad = gst_ghost_pad_new_no_target ("rtp_sink", GST_PAD_SINK);
+  srcpad = gst_ghost_pad_new_no_target ("rtp_src", GST_PAD_SRC);
+
+  gst_element_add_pad (bin, sinkpad);
+  gst_element_add_pad (bin, srcpad);
+
+  return bin;
+}
+
+GST_START_TEST (test_decoder)
+{
+  GstElement *rtpbin;
+  GstPad *rtp_sink1, *rtp_sink2;
+  gulong id;
+
+
+  rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
+
+  id = g_signal_connect (rtpbin, "request-rtp-decoder", (GCallback) decoder_cb,
+      NULL);
+
+  rtp_sink1 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_2");
+  fail_unless (rtp_sink1 != NULL);
+  fail_unless_equals_string (GST_PAD_NAME (rtp_sink1), "recv_rtp_sink_2");
+  ASSERT_OBJECT_REFCOUNT (rtp_sink1, "rtp_sink1", 2);
+
+  rtp_sink2 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_3");
+  fail_unless (rtp_sink2 != NULL);
+
+  g_signal_handler_disconnect (rtpbin, id);
+
+  /* remove the session */
+  gst_element_release_request_pad (rtpbin, rtp_sink1);
+  gst_object_unref (rtp_sink1);
+
+  gst_element_release_request_pad (rtpbin, rtp_sink2);
+  gst_object_unref (rtp_sink2);
+
+  /* nothing left anymore now */
+  fail_unless (rtpbin->numsinkpads == 0);
+  fail_unless (rtpbin->numsrcpads == 0);
+
+  gst_object_unref (rtpbin);
+}
+
+GST_END_TEST;
+
+static GstElement *
+aux_sender_cb (GstElement * rtpbin, guint sessid, gpointer user_data)
+{
+  GstElement *bin;
+  GstPad *srcpad, *sinkpad;
+
+  bin = gst_bin_new (NULL);
+
+  GST_DEBUG ("making AUX sender");
+  sinkpad = gst_ghost_pad_new_no_target ("sink_2", GST_PAD_SINK);
+  gst_element_add_pad (bin, sinkpad);
+
+  srcpad = gst_ghost_pad_new_no_target ("src_2", GST_PAD_SRC);
+  gst_element_add_pad (bin, srcpad);
+  srcpad = gst_ghost_pad_new_no_target ("src_1", GST_PAD_SRC);
+  gst_element_add_pad (bin, srcpad);
+  srcpad = gst_ghost_pad_new_no_target ("src_3", GST_PAD_SRC);
+  gst_element_add_pad (bin, srcpad);
+
+  return bin;
+}
+
+GST_START_TEST (test_aux_sender)
+{
+  GstElement *rtpbin;
+  GstPad *rtp_sink1, *rtp_src, *rtcp_src;
+  gulong id;
+
+  rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
+
+  id = g_signal_connect (rtpbin, "request-aux-sender",
+      (GCallback) aux_sender_cb, NULL);
+
+  rtp_sink1 = gst_element_get_request_pad (rtpbin, "send_rtp_sink_2");
+  fail_unless (rtp_sink1 != NULL);
+  fail_unless_equals_string (GST_PAD_NAME (rtp_sink1), "send_rtp_sink_2");
+  ASSERT_OBJECT_REFCOUNT (rtp_sink1, "rtp_sink1", 2);
+
+  g_signal_handler_disconnect (rtpbin, id);
+
+  rtp_src = gst_element_get_static_pad (rtpbin, "send_rtp_src_2");
+  fail_unless (rtp_src != NULL);
+  gst_object_unref (rtp_src);
+
+  rtp_src = gst_element_get_static_pad (rtpbin, "send_rtp_src_1");
+  fail_unless (rtp_src != NULL);
+  gst_object_unref (rtp_src);
+
+  rtcp_src = gst_element_get_request_pad (rtpbin, "send_rtcp_src_1");
+  fail_unless (rtcp_src != NULL);
+  gst_element_release_request_pad (rtpbin, rtcp_src);
+  gst_object_unref (rtcp_src);
+
+  rtp_src = gst_element_get_static_pad (rtpbin, "send_rtp_src_3");
+  fail_unless (rtp_src != NULL);
+  gst_object_unref (rtp_src);
+
+  /* remove the session */
+  gst_element_release_request_pad (rtpbin, rtp_sink1);
+  gst_object_unref (rtp_sink1);
+
+  gst_object_unref (rtpbin);
+}
+
+GST_END_TEST;
+
+static GstElement *
+aux_receiver_cb (GstElement * rtpbin, guint sessid, gpointer user_data)
+{
+  GstElement *bin;
+  GstPad *srcpad, *sinkpad;
+
+  bin = gst_bin_new (NULL);
+
+  GST_DEBUG ("making AUX receiver");
+  srcpad = gst_ghost_pad_new_no_target ("src_2", GST_PAD_SRC);
+  gst_element_add_pad (bin, srcpad);
+
+  sinkpad = gst_ghost_pad_new_no_target ("sink_2", GST_PAD_SINK);
+  gst_element_add_pad (bin, sinkpad);
+  sinkpad = gst_ghost_pad_new_no_target ("sink_1", GST_PAD_SINK);
+  gst_element_add_pad (bin, sinkpad);
+  sinkpad = gst_ghost_pad_new_no_target ("sink_3", GST_PAD_SINK);
+  gst_element_add_pad (bin, sinkpad);
+
+  return bin;
+}
+
+GST_START_TEST (test_aux_receiver)
+{
+  GstElement *rtpbin;
+  GstPad *rtp_sink1, *rtp_sink2, *rtcp_sink;
+  gulong id;
+
+  rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
+
+  id = g_signal_connect (rtpbin, "request-aux-receiver",
+      (GCallback) aux_receiver_cb, NULL);
+
+  rtp_sink1 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_2");
+  fail_unless (rtp_sink1 != NULL);
+
+  rtp_sink2 = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_1");
+  fail_unless (rtp_sink2 != NULL);
+
+  g_signal_handler_disconnect (rtpbin, id);
+
+  rtcp_sink = gst_element_get_request_pad (rtpbin, "recv_rtcp_sink_1");
+  fail_unless (rtcp_sink != NULL);
+  gst_element_release_request_pad (rtpbin, rtcp_sink);
+  gst_object_unref (rtcp_sink);
+
+  /* remove the session */
+  gst_element_release_request_pad (rtpbin, rtp_sink1);
+  gst_object_unref (rtp_sink1);
+  gst_element_release_request_pad (rtpbin, rtp_sink2);
+  gst_object_unref (rtp_sink2);
+
+  gst_object_unref (rtpbin);
+}
+
+GST_END_TEST;
+
 static Suite *
 gstrtpbin_suite (void)
 {
@@ -442,6 +698,10 @@ gstrtpbin_suite (void)
   tcase_add_test (tc_chain, test_cleanup_recv);
   tcase_add_test (tc_chain, test_cleanup_recv2);
   tcase_add_test (tc_chain, test_request_pad_by_template_name);
+  tcase_add_test (tc_chain, test_encoder);
+  tcase_add_test (tc_chain, test_decoder);
+  tcase_add_test (tc_chain, test_aux_sender);
+  tcase_add_test (tc_chain, test_aux_receiver);
 
   return s;
 }

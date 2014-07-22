@@ -162,8 +162,7 @@ gst_rg_volume_class_init (GstRgVolumeClass * klass)
    *
    * If album mode is enabled but the album gain tag is absent in the stream,
    * the track gain is used instead.  If both gain tags are missing, the value
-   * of the <link linkend="GstRgVolume--fallback-gain">fallback-gain</link>
-   * property is used instead.
+   * of the #GstRgVolume:fallback-gain property is used instead.
    */
   g_object_class_install_property (gobject_class, PROP_ALBUM_MODE,
       g_param_spec_boolean ("album-mode", "Album mode",
@@ -223,24 +222,22 @@ gst_rg_volume_class_init (GstRgVolumeClass * klass)
    *
    * Applied gain [dB].  This gain is applied to processed buffer data.
    *
-   * This is set to the <link linkend="GstRgVolume--target-gain">target
-   * gain</link> if amplification by that amount can be applied safely.
-   * "Safely" means that the volume adjustment does not inflict clipping
-   * distortion.  Should this not be the case, the result gain is set to an
-   * appropriately reduced value (by applying peak normalization).  The proposed
-   * standard calls this "clipping prevention".
+   * This is set to the #GstRgVolume:target-gain if amplification by that amount
+   * can be applied safely. "Safely" means that the volume adjustment does not
+   * inflict clipping distortion.  Should this not be the case, the result gain
+   * is set to an appropriately reduced value (by applying peak normalization).
+   * The proposed standard calls this "clipping prevention".
    *
    * The difference between target and result gain reflects the necessary amount
    * of reduction.  Applications can make use of this information to temporarily
-   * reduce the <link linkend="GstRgVolume--pre-amp">pre-amp</link> for
-   * subsequent streams, as recommended by the ReplayGain standard.
+   * reduce the #GstRgVolume:pre-amp for subsequent streams, as recommended by
+   * the ReplayGain standard.
    *
    * Note that target and result gain differing for a great majority of streams
    * indicates a problem: What happens in this case is that most streams receive
    * peak normalization instead of amplification by the ideal replay gain.  To
-   * prevent this, the <link linkend="GstRgVolume--pre-amp">pre-amp</link> has
-   * to be lowered and/or a limiter has to be used which facilitates the use of
-   * <link linkend="GstRgVolume--headroom">headroom</link>.
+   * prevent this, the #GstRgVolume:pre-amp has to be lowered and/or a limiter
+   * has to be used which facilitates the use of #GstRgVolume:headroom.
    */
   g_object_class_install_property (gobject_class, PROP_RESULT_GAIN,
       g_param_spec_double ("result-gain", "Result-gain", "Applied gain [dB]",
@@ -250,18 +247,14 @@ gst_rg_volume_class_init (GstRgVolumeClass * klass)
    *
    * Applicable gain [dB].  This gain is supposed to be applied.
    *
-   * Depending on the value of the <link
-   * linkend="GstRgVolume--album-mode">album-mode</link> property and the
+   * Depending on the value of the #GstRgVolume:album-mode property and the
    * presence of ReplayGain tags in the stream, this is set according to one of
    * these simple formulas:
    *
    * <itemizedlist>
-   * <listitem><link linkend="GstRgVolume--pre-amp">pre-amp</link> + album gain
-   * of the stream</listitem>
-   * <listitem><link linkend="GstRgVolume--pre-amp">pre-amp</link> + track gain
-   * of the stream</listitem>
-   * <listitem><link linkend="GstRgVolume--pre-amp">pre-amp</link> + <link
-   * linkend="GstRgVolume--fallback-gain">fallback gain</link></listitem>
+   * <listitem>#GstRgVolume:pre-amp + album gain of the stream</listitem>
+   * <listitem>#GstRgVolume:pre-amp + track gain of the stream</listitem>
+   * <listitem>#GstRgVolume:pre-amp + #GstRgVolume:fallback-gain</listitem>
    * </itemizedlist>
    */
   g_object_class_install_property (gobject_class, PROP_TARGET_GAIN,
@@ -327,14 +320,14 @@ gst_rg_volume_init (GstRgVolume * self)
 
   volume_pad = gst_element_get_static_pad (self->volume_element, "sink");
   ghost_pad = gst_ghost_pad_new_from_template ("sink", volume_pad,
-      gst_pad_get_pad_template (volume_pad));
+      GST_PAD_PAD_TEMPLATE (volume_pad));
   gst_object_unref (volume_pad);
   gst_pad_set_event_function (ghost_pad, gst_rg_volume_sink_event);
   gst_element_add_pad (GST_ELEMENT_CAST (self), ghost_pad);
 
   volume_pad = gst_element_get_static_pad (self->volume_element, "src");
   ghost_pad = gst_ghost_pad_new_from_template ("src", volume_pad,
-      gst_pad_get_pad_template (volume_pad));
+      GST_PAD_PAD_TEMPLATE (volume_pad));
   gst_object_unref (volume_pad);
   gst_element_add_pad (GST_ELEMENT_CAST (self), ghost_pad);
 }

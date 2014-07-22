@@ -82,44 +82,23 @@ target_triplet = @target@
 DIST_COMMON = $(top_srcdir)/common/check.mak $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/depcomp \
 	$(top_srcdir)/test-driver
-check_PROGRAMS = generic/states$(EXEEXT) elements/aacparse$(EXEEXT) \
-	elements/ac3parse$(EXEEXT) elements/amrparse$(EXEEXT) \
-	elements/alphacolor$(EXEEXT) elements/aspectratiocrop$(EXEEXT) \
-	elements/audioamplify$(EXEEXT) elements/audiochebband$(EXEEXT) \
-	elements/audiocheblimit$(EXEEXT) \
-	elements/audiodynamic$(EXEEXT) elements/audioecho$(EXEEXT) \
-	elements/audiofirfilter$(EXEEXT) \
-	elements/audioiirfilter$(EXEEXT) elements/audioinvert$(EXEEXT) \
-	elements/audiopanorama$(EXEEXT) \
-	elements/audiowsincband$(EXEEXT) \
-	elements/audiowsinclimit$(EXEEXT) elements/autodetect$(EXEEXT) \
-	elements/avimux$(EXEEXT) elements/avisubtitle$(EXEEXT) \
-	elements/capssetter$(EXEEXT) elements/deinterlace$(EXEEXT) \
-	elements/deinterleave$(EXEEXT) elements/dtmf$(EXEEXT) \
-	elements/equalizer$(EXEEXT) elements/flacparse$(EXEEXT) \
-	elements/flvdemux$(EXEEXT) elements/flvmux$(EXEEXT) \
-	elements/icydemux$(EXEEXT) elements/id3demux$(EXEEXT) \
-	elements/imagefreeze$(EXEEXT) elements/interleave$(EXEEXT) \
-	elements/level$(EXEEXT) elements/matroskamux$(EXEEXT) \
-	elements/matroskaparse$(EXEEXT) \
-	elements/mpegaudioparse$(EXEEXT) elements/mulawdec$(EXEEXT) \
-	elements/mulawenc$(EXEEXT) elements/multifile$(EXEEXT) \
-	elements/qtmux$(EXEEXT) elements/rganalysis$(EXEEXT) \
-	elements/rglimiter$(EXEEXT) elements/rgvolume$(EXEEXT) \
-	elements/rtp-payloading$(EXEEXT) elements/rtpbin$(EXEEXT) \
-	elements/rtpbin_buffer_list$(EXEEXT) \
-	elements/rtpjitterbuffer$(EXEEXT) elements/rtpmux$(EXEEXT) \
-	elements/shapewipe$(EXEEXT) elements/spectrum$(EXEEXT) \
-	elements/udpsink$(EXEEXT) elements/udpsrc$(EXEEXT) \
-	elements/videocrop$(EXEEXT) elements/videofilter$(EXEEXT) \
-	elements/wavpackparse$(EXEEXT) elements/wavparse$(EXEEXT) \
-	elements/y4menc$(EXEEXT) elements/videomixer$(EXEEXT) \
+check_PROGRAMS = generic/states$(EXEEXT) \
 	pipelines/simple-launch-lines$(EXEEXT) \
-	pipelines/effectv$(EXEEXT) pipelines/tagschecking$(EXEEXT) \
-	pipelines/wavenc$(EXEEXT) $(am__EXEEXT_1) $(am__EXEEXT_2) \
-	$(am__EXEEXT_3) $(am__EXEEXT_4) $(am__EXEEXT_5) \
-	$(am__EXEEXT_6) $(am__EXEEXT_7) $(am__EXEEXT_8) \
-	$(am__EXEEXT_9)
+	pipelines/tagschecking$(EXEEXT) $(am__EXEEXT_1) \
+	$(am__EXEEXT_2) $(am__EXEEXT_3) $(am__EXEEXT_4) \
+	$(am__EXEEXT_5) $(am__EXEEXT_6) $(am__EXEEXT_7) \
+	$(am__EXEEXT_8) $(am__EXEEXT_9) $(am__EXEEXT_10) \
+	$(am__EXEEXT_11) $(am__EXEEXT_12) $(am__EXEEXT_13) \
+	$(am__EXEEXT_14) $(am__EXEEXT_15) $(am__EXEEXT_16) \
+	$(am__EXEEXT_17) $(am__EXEEXT_18) $(am__EXEEXT_19) \
+	$(am__EXEEXT_20) $(am__EXEEXT_21) $(am__EXEEXT_22) \
+	$(am__EXEEXT_23) $(am__EXEEXT_24) $(am__EXEEXT_25) \
+	$(am__EXEEXT_26) $(am__EXEEXT_27) $(am__EXEEXT_28) \
+	$(am__EXEEXT_29) $(am__EXEEXT_30) $(am__EXEEXT_31) \
+	$(am__EXEEXT_32) $(am__EXEEXT_33) $(am__EXEEXT_34) \
+	$(am__EXEEXT_35) $(am__EXEEXT_36) $(am__EXEEXT_37) \
+	$(am__EXEEXT_38) $(am__EXEEXT_39) $(am__EXEEXT_40) \
+	$(am__EXEEXT_41) $(am__EXEEXT_42)
 subdir = tests/check
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
@@ -127,7 +106,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-gcc-inline-assembly.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -174,20 +152,99 @@ am__v_lt_1 =
 libparser_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libparser_la_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-@USE_FLAC_TRUE@am__EXEEXT_1 = pipelines/flacdec$(EXEEXT)
-@USE_GDK_PIXBUF_TRUE@am__EXEEXT_2 = elements/gdkpixbufsink$(EXEEXT)
-@USE_JPEG_TRUE@am__EXEEXT_3 = elements/jpegdec$(EXEEXT) \
+@USE_PLUGIN_ALPHA_TRUE@am__EXEEXT_1 = elements/alphacolor$(EXEEXT)
+@USE_PLUGIN_AUDIOFX_TRUE@am__EXEEXT_2 =  \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audioamplify$(EXEEXT) \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiochebband$(EXEEXT) \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiocheblimit$(EXEEXT) \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiodynamic$(EXEEXT) \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audioecho$(EXEEXT) \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiofirfilter$(EXEEXT) \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audioiirfilter$(EXEEXT) \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audioinvert$(EXEEXT) \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiopanorama$(EXEEXT) \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiowsincband$(EXEEXT) \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiowsinclimit$(EXEEXT)
+@USE_PLUGIN_AUDIOPARSERS_TRUE@am__EXEEXT_3 =  \
+@USE_PLUGIN_AUDIOPARSERS_TRUE@	elements/aacparse$(EXEEXT) \
+@USE_PLUGIN_AUDIOPARSERS_TRUE@	elements/ac3parse$(EXEEXT) \
+@USE_PLUGIN_AUDIOPARSERS_TRUE@	elements/amrparse$(EXEEXT) \
+@USE_PLUGIN_AUDIOPARSERS_TRUE@	elements/flacparse$(EXEEXT) \
+@USE_PLUGIN_AUDIOPARSERS_TRUE@	elements/mpegaudioparse$(EXEEXT) \
+@USE_PLUGIN_AUDIOPARSERS_TRUE@	elements/wavpackparse$(EXEEXT)
+@USE_PLUGIN_AUTODETECT_TRUE@am__EXEEXT_4 =  \
+@USE_PLUGIN_AUTODETECT_TRUE@	elements/autodetect$(EXEEXT)
+@USE_PLUGIN_AVI_TRUE@am__EXEEXT_5 = elements/avimux$(EXEEXT) \
+@USE_PLUGIN_AVI_TRUE@	elements/avisubtitle$(EXEEXT)
+@USE_PLUGIN_DEBUGUTILS_TRUE@am__EXEEXT_6 =  \
+@USE_PLUGIN_DEBUGUTILS_TRUE@	elements/capssetter$(EXEEXT)
+@USE_PLUGIN_DEINTERLACE_TRUE@am__EXEEXT_7 =  \
+@USE_PLUGIN_DEINTERLACE_TRUE@	elements/deinterlace$(EXEEXT)
+@USE_PLUGIN_DTMF_TRUE@am__EXEEXT_8 = elements/dtmf$(EXEEXT)
+@USE_PLUGIN_EFFECTV_TRUE@am__EXEEXT_9 = pipelines/effectv$(EXEEXT)
+@USE_PLUGIN_EQUALIZER_TRUE@am__EXEEXT_10 =  \
+@USE_PLUGIN_EQUALIZER_TRUE@	elements/equalizer$(EXEEXT)
+@USE_FLAC_TRUE@am__EXEEXT_11 = pipelines/flacdec$(EXEEXT)
+@USE_PLUGIN_FLV_TRUE@am__EXEEXT_12 = elements/flvdemux$(EXEEXT) \
+@USE_PLUGIN_FLV_TRUE@	elements/flvmux$(EXEEXT)
+@USE_GDK_PIXBUF_TRUE@am__EXEEXT_13 = elements/gdkpixbufsink$(EXEEXT)
+@USE_PLUGIN_ISOMP4_TRUE@am__EXEEXT_14 = elements/qtmux$(EXEEXT)
+@USE_PLUGIN_ICYDEMUX_TRUE@am__EXEEXT_15 = elements/icydemux$(EXEEXT)
+@USE_PLUGIN_ID3DEMUX_TRUE@am__EXEEXT_16 = elements/id3demux$(EXEEXT)
+@USE_PLUGIN_IMAGEFREEZE_TRUE@am__EXEEXT_17 =  \
+@USE_PLUGIN_IMAGEFREEZE_TRUE@	elements/imagefreeze$(EXEEXT)
+@USE_PLUGIN_INTERLEAVE_TRUE@am__EXEEXT_18 =  \
+@USE_PLUGIN_INTERLEAVE_TRUE@	elements/deinterleave$(EXEEXT) \
+@USE_PLUGIN_INTERLEAVE_TRUE@	elements/interleave$(EXEEXT)
+@USE_JPEG_TRUE@am__EXEEXT_19 = elements/jpegdec$(EXEEXT) \
 @USE_JPEG_TRUE@	elements/jpegenc$(EXEEXT)
-@USE_SOUP_TRUE@am__EXEEXT_4 = elements/souphttpsrc$(EXEEXT)
-@USE_SUNAUDIO_TRUE@am__EXEEXT_5 = elements/sunaudio$(EXEEXT)
-@USE_TAGLIB_TRUE@am__EXEEXT_6 = elements/id3v2mux$(EXEEXT) \
+@USE_PLUGIN_LAW_TRUE@am__EXEEXT_20 = elements/mulawdec$(EXEEXT) \
+@USE_PLUGIN_LAW_TRUE@	elements/mulawenc$(EXEEXT)
+@USE_PLUGIN_LEVEL_TRUE@am__EXEEXT_21 = elements/level$(EXEEXT)
+@USE_PLUGIN_MATROSKA_TRUE@am__EXEEXT_22 =  \
+@USE_PLUGIN_MATROSKA_TRUE@	elements/matroskamux$(EXEEXT) \
+@USE_PLUGIN_MATROSKA_TRUE@	elements/matroskaparse$(EXEEXT)
+@USE_PLUGIN_MULTIFILE_TRUE@am__EXEEXT_23 =  \
+@USE_PLUGIN_MULTIFILE_TRUE@	elements/multifile$(EXEEXT)
+@USE_PLUGIN_REPLAYGAIN_TRUE@am__EXEEXT_24 =  \
+@USE_PLUGIN_REPLAYGAIN_TRUE@	elements/rganalysis$(EXEEXT) \
+@USE_PLUGIN_REPLAYGAIN_TRUE@	elements/rglimiter$(EXEEXT) \
+@USE_PLUGIN_REPLAYGAIN_TRUE@	elements/rgvolume$(EXEEXT)
+@USE_PLUGIN_RTP_TRUE@am__EXEEXT_25 = elements/rtp-payloading$(EXEEXT)
+@USE_PLUGIN_RTPMANAGER_TRUE@am__EXEEXT_26 = elements/rtpaux$(EXEEXT) \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpbin$(EXEEXT) \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpbin_buffer_list$(EXEEXT) \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpcollision$(EXEEXT) \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpjitterbuffer$(EXEEXT) \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpmux$(EXEEXT) \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtprtx$(EXEEXT) \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpsession$(EXEEXT)
+@USE_PLUGIN_SHAPEWIPE_TRUE@am__EXEEXT_27 =  \
+@USE_PLUGIN_SHAPEWIPE_TRUE@	elements/shapewipe$(EXEEXT)
+@USE_SOUP_TRUE@am__EXEEXT_28 = elements/souphttpsrc$(EXEEXT)
+@USE_PLUGIN_SPECTRUM_TRUE@am__EXEEXT_29 = elements/spectrum$(EXEEXT)
+@USE_SUNAUDIO_TRUE@am__EXEEXT_30 = elements/sunaudio$(EXEEXT)
+@USE_TAGLIB_TRUE@am__EXEEXT_31 = elements/id3v2mux$(EXEEXT) \
 @USE_TAGLIB_TRUE@	elements/apev2mux$(EXEEXT)
-@USE_VPX_TRUE@am__EXEEXT_7 = elements/vp8enc$(EXEEXT) \
+@USE_PLUGIN_UDP_TRUE@am__EXEEXT_32 = elements/udpsink$(EXEEXT) \
+@USE_PLUGIN_UDP_TRUE@	elements/udpsrc$(EXEEXT)
+@USE_PLUGIN_VIDEOBOX_TRUE@am__EXEEXT_33 = elements/videobox$(EXEEXT)
+@USE_PLUGIN_VIDEOCROP_TRUE@am__EXEEXT_34 =  \
+@USE_PLUGIN_VIDEOCROP_TRUE@	elements/aspectratiocrop$(EXEEXT) \
+@USE_PLUGIN_VIDEOCROP_TRUE@	elements/videocrop$(EXEEXT)
+@USE_PLUGIN_VIDEOFILTER_TRUE@am__EXEEXT_35 =  \
+@USE_PLUGIN_VIDEOFILTER_TRUE@	elements/videofilter$(EXEEXT)
+@USE_PLUGIN_VIDEOMIXER_TRUE@am__EXEEXT_36 =  \
+@USE_PLUGIN_VIDEOMIXER_TRUE@	elements/videomixer$(EXEEXT)
+@USE_VPX_TRUE@am__EXEEXT_37 = elements/vp8enc$(EXEEXT) \
 @USE_VPX_TRUE@	elements/vp8dec$(EXEEXT)
-@USE_WAVPACK_TRUE@am__EXEEXT_8 = elements/wavpackdec$(EXEEXT) \
+@USE_PLUGIN_WAVENC_TRUE@am__EXEEXT_38 = pipelines/wavenc$(EXEEXT)
+@USE_WAVPACK_TRUE@am__EXEEXT_39 = elements/wavpackdec$(EXEEXT) \
 @USE_WAVPACK_TRUE@	elements/wavpackenc$(EXEEXT) \
 @USE_WAVPACK_TRUE@	pipelines/wavpack$(EXEEXT)
-@HAVE_ORC_TRUE@am__EXEEXT_9 = orc/deinterlace$(EXEEXT) \
+@USE_PLUGIN_WAVPARSE_TRUE@am__EXEEXT_40 = elements/wavparse$(EXEEXT)
+@USE_PLUGIN_Y4M_TRUE@am__EXEEXT_41 = elements/y4menc$(EXEEXT)
+@HAVE_ORC_TRUE@am__EXEEXT_42 = orc/deinterlace$(EXEEXT) \
 @HAVE_ORC_TRUE@	orc/videomixer$(EXEEXT) orc/videobox$(EXEEXT)
 elements_aacparse_SOURCES = elements/aacparse.c
 elements_aacparse_OBJECTS = elements/aacparse.$(OBJEXT)
@@ -312,9 +369,14 @@ elements_audiowsinclimit_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(elements_audiowsinclimit_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 elements_autodetect_SOURCES = elements/autodetect.c
-elements_autodetect_OBJECTS = elements/autodetect.$(OBJEXT)
-elements_autodetect_LDADD = $(LDADD)
-elements_autodetect_DEPENDENCIES = $(am__DEPENDENCIES_1)
+elements_autodetect_OBJECTS =  \
+	elements/elements_autodetect-autodetect.$(OBJEXT)
+elements_autodetect_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_2)
+elements_autodetect_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(elements_autodetect_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 elements_avimux_SOURCES = elements/avimux.c
 elements_avimux_OBJECTS = elements/avimux.$(OBJEXT)
 elements_avimux_LDADD = $(LDADD)
@@ -509,6 +571,14 @@ elements_rtp_payloading_SOURCES = elements/rtp-payloading.c
 elements_rtp_payloading_OBJECTS = elements/rtp-payloading.$(OBJEXT)
 elements_rtp_payloading_LDADD = $(LDADD)
 elements_rtp_payloading_DEPENDENCIES = $(am__DEPENDENCIES_1)
+elements_rtpaux_SOURCES = elements/rtpaux.c
+elements_rtpaux_OBJECTS = elements/elements_rtpaux-rtpaux.$(OBJEXT)
+elements_rtpaux_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_2)
+elements_rtpaux_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(elements_rtpaux_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
 elements_rtpbin_SOURCES = elements/rtpbin.c
 elements_rtpbin_OBJECTS = elements/rtpbin.$(OBJEXT)
 elements_rtpbin_LDADD = $(LDADD)
@@ -518,10 +588,19 @@ elements_rtpbin_buffer_list_OBJECTS =  \
 	$(am_elements_rtpbin_buffer_list_OBJECTS)
 elements_rtpbin_buffer_list_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
 elements_rtpbin_buffer_list_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(elements_rtpbin_buffer_list_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+elements_rtpcollision_SOURCES = elements/rtpcollision.c
+elements_rtpcollision_OBJECTS =  \
+	elements/elements_rtpcollision-rtpcollision.$(OBJEXT)
+elements_rtpcollision_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
+elements_rtpcollision_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(elements_rtpcollision_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 elements_rtpjitterbuffer_SOURCES = elements/rtpjitterbuffer.c
 elements_rtpjitterbuffer_OBJECTS =  \
@@ -540,6 +619,23 @@ elements_rtpmux_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(elements_rtpmux_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
+elements_rtprtx_SOURCES = elements/rtprtx.c
+elements_rtprtx_OBJECTS = elements/elements_rtprtx-rtprtx.$(OBJEXT)
+elements_rtprtx_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_2)
+elements_rtprtx_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(elements_rtprtx_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
+elements_rtpsession_SOURCES = elements/rtpsession.c
+elements_rtpsession_OBJECTS =  \
+	elements/elements_rtpsession-rtpsession.$(OBJEXT)
+elements_rtpsession_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_2)
+elements_rtpsession_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(elements_rtpsession_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 elements_shapewipe_SOURCES = elements/shapewipe.c
 elements_shapewipe_OBJECTS = elements/shapewipe.$(OBJEXT)
 elements_shapewipe_LDADD = $(LDADD)
@@ -583,6 +679,10 @@ elements_udpsrc_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(elements_udpsrc_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
+elements_videobox_SOURCES = elements/videobox.c
+elements_videobox_OBJECTS = elements/videobox.$(OBJEXT)
+elements_videobox_LDADD = $(LDADD)
+elements_videobox_DEPENDENCIES = $(am__DEPENDENCIES_1)
 elements_videocrop_SOURCES = elements/videocrop.c
 elements_videocrop_OBJECTS =  \
 	elements/elements_videocrop-videocrop.$(OBJEXT)
@@ -759,11 +859,13 @@ SOURCES = $(libparser_la_SOURCES) elements/aacparse.c \
 	elements/mulawdec.c elements/mulawenc.c elements/multifile.c \
 	elements/qtmux.c elements/rganalysis.c elements/rglimiter.c \
 	elements/rgvolume.c elements/rtp-payloading.c \
-	elements/rtpbin.c $(elements_rtpbin_buffer_list_SOURCES) \
-	elements/rtpjitterbuffer.c elements/rtpmux.c \
-	elements/shapewipe.c elements/souphttpsrc.c \
-	elements/spectrum.c elements/sunaudio.c elements/udpsink.c \
-	elements/udpsrc.c elements/videocrop.c elements/videofilter.c \
+	elements/rtpaux.c elements/rtpbin.c \
+	$(elements_rtpbin_buffer_list_SOURCES) elements/rtpcollision.c \
+	elements/rtpjitterbuffer.c elements/rtpmux.c elements/rtprtx.c \
+	elements/rtpsession.c elements/shapewipe.c \
+	elements/souphttpsrc.c elements/spectrum.c elements/sunaudio.c \
+	elements/udpsink.c elements/udpsrc.c elements/videobox.c \
+	elements/videocrop.c elements/videofilter.c \
 	elements/videomixer.c elements/vp8dec.c elements/vp8enc.c \
 	elements/wavpackdec.c elements/wavpackenc.c \
 	elements/wavpackparse.c elements/wavparse.c elements/y4menc.c \
@@ -793,11 +895,13 @@ DIST_SOURCES = $(libparser_la_SOURCES) elements/aacparse.c \
 	elements/mulawdec.c elements/mulawenc.c elements/multifile.c \
 	elements/qtmux.c elements/rganalysis.c elements/rglimiter.c \
 	elements/rgvolume.c elements/rtp-payloading.c \
-	elements/rtpbin.c $(elements_rtpbin_buffer_list_SOURCES) \
-	elements/rtpjitterbuffer.c elements/rtpmux.c \
-	elements/shapewipe.c elements/souphttpsrc.c \
-	elements/spectrum.c elements/sunaudio.c elements/udpsink.c \
-	elements/udpsrc.c elements/videocrop.c elements/videofilter.c \
+	elements/rtpaux.c elements/rtpbin.c \
+	$(elements_rtpbin_buffer_list_SOURCES) elements/rtpcollision.c \
+	elements/rtpjitterbuffer.c elements/rtpmux.c elements/rtprtx.c \
+	elements/rtpsession.c elements/shapewipe.c \
+	elements/souphttpsrc.c elements/spectrum.c elements/sunaudio.c \
+	elements/udpsink.c elements/udpsrc.c elements/videobox.c \
+	elements/videocrop.c elements/videofilter.c \
 	elements/videomixer.c elements/vp8dec.c elements/vp8enc.c \
 	elements/wavpackdec.c elements/wavpackenc.c \
 	elements/wavpackparse.c elements/wavparse.c elements/y4menc.c \
@@ -1291,7 +1395,6 @@ XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
 XMKMF = @XMKMF@
 XSHM_LIBS = @XSHM_LIBS@
-XVIDEO_LIBS = @XVIDEO_LIBS@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_LIBS = @X_LIBS@
@@ -1395,32 +1498,151 @@ TESTS_ENVIRONMENT = \
 
 # the core dumps of some machines have PIDs appended
 CLEANFILES = core.* test-registry.*
+@USE_PLUGIN_ALPHA_FALSE@check_alpha = 
+@USE_PLUGIN_ALPHA_TRUE@check_alpha = elements/alphacolor
+@USE_PLUGIN_AUDIOFX_FALSE@check_audiofx = 
+@USE_PLUGIN_AUDIOFX_TRUE@check_audiofx = \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audioamplify \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiochebband \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiocheblimit \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiodynamic \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audioecho \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiofirfilter \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audioiirfilter \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audioinvert \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiopanorama \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiowsincband \
+@USE_PLUGIN_AUDIOFX_TRUE@	elements/audiowsinclimit
+
+@USE_PLUGIN_AUDIOPARSERS_FALSE@check_audioparsers = 
+@USE_PLUGIN_AUDIOPARSERS_TRUE@check_audioparsers = \
+@USE_PLUGIN_AUDIOPARSERS_TRUE@	elements/aacparse \
+@USE_PLUGIN_AUDIOPARSERS_TRUE@	elements/ac3parse \
+@USE_PLUGIN_AUDIOPARSERS_TRUE@	elements/amrparse \
+@USE_PLUGIN_AUDIOPARSERS_TRUE@	elements/flacparse \
+@USE_PLUGIN_AUDIOPARSERS_TRUE@	elements/mpegaudioparse \
+@USE_PLUGIN_AUDIOPARSERS_TRUE@	elements/wavpackparse
+
+@USE_PLUGIN_AUTODETECT_FALSE@check_autodetect = 
+@USE_PLUGIN_AUTODETECT_TRUE@check_autodetect = elements/autodetect
+@USE_PLUGIN_AVI_FALSE@check_avi = 
+@USE_PLUGIN_AVI_TRUE@check_avi = \
+@USE_PLUGIN_AVI_TRUE@  elements/avimux \
+@USE_PLUGIN_AVI_TRUE@  elements/avisubtitle
+
+@USE_PLUGIN_DEBUGUTILS_FALSE@check_debugutils = 
+@USE_PLUGIN_DEBUGUTILS_TRUE@check_debugutils = elements/capssetter
+@USE_PLUGIN_DEINTERLACE_FALSE@check_deinterlace = 
+@USE_PLUGIN_DEINTERLACE_TRUE@check_deinterlace = elements/deinterlace
+@USE_PLUGIN_DTMF_FALSE@check_dtmf = 
+@USE_PLUGIN_DTMF_TRUE@check_dtmf = elements/dtmf
+@USE_PLUGIN_EFFECTV_FALSE@check_effectv = 
+@USE_PLUGIN_EFFECTV_TRUE@check_effectv = pipelines/effectv
+@USE_PLUGIN_EQUALIZER_FALSE@check_equalizer = 
+@USE_PLUGIN_EQUALIZER_TRUE@check_equalizer = elements/equalizer
 @USE_FLAC_FALSE@check_flac = 
 @USE_FLAC_TRUE@check_flac = pipelines/flacdec
+@USE_PLUGIN_FLV_FALSE@check_flv = 
+@USE_PLUGIN_FLV_TRUE@check_flv = \
+@USE_PLUGIN_FLV_TRUE@        elements/flvdemux \
+@USE_PLUGIN_FLV_TRUE@        elements/flvmux
+
+@USE_PLUGIN_ISOMP4_FALSE@check_isomp4 = 
+@USE_PLUGIN_ISOMP4_TRUE@check_isomp4 = elements/qtmux
+@USE_PLUGIN_LAW_FALSE@check_law = 
+@USE_PLUGIN_LAW_TRUE@check_law = \
+@USE_PLUGIN_LAW_TRUE@	elements/mulawdec \
+@USE_PLUGIN_LAW_TRUE@	elements/mulawenc
+
 @USE_GDK_PIXBUF_FALSE@check_gdkpixbuf = 
 @USE_GDK_PIXBUF_TRUE@check_gdkpixbuf = elements/gdkpixbufsink
+@USE_PLUGIN_ICYDEMUX_FALSE@check_icydemux = 
+@USE_PLUGIN_ICYDEMUX_TRUE@check_icydemux = elements/icydemux
+@USE_PLUGIN_ID3DEMUX_FALSE@check_id3demux = 
+@USE_PLUGIN_ID3DEMUX_TRUE@check_id3demux = elements/id3demux
+@USE_PLUGIN_IMAGEFREEZE_FALSE@check_imagefreeze = 
+@USE_PLUGIN_IMAGEFREEZE_TRUE@check_imagefreeze = elements/imagefreeze
+@USE_PLUGIN_INTERLEAVE_FALSE@check_interleave = 
+@USE_PLUGIN_INTERLEAVE_TRUE@check_interleave = \
+@USE_PLUGIN_INTERLEAVE_TRUE@        elements/deinterleave \
+@USE_PLUGIN_INTERLEAVE_TRUE@        elements/interleave
+
 @USE_JPEG_FALSE@check_jpeg = 
 @USE_JPEG_TRUE@check_jpeg = \
 @USE_JPEG_TRUE@        elements/jpegdec \
 @USE_JPEG_TRUE@        elements/jpegenc
 
+@USE_PLUGIN_LEVEL_FALSE@check_level = 
+@USE_PLUGIN_LEVEL_TRUE@check_level = elements/level
+@USE_PLUGIN_MATROSKA_FALSE@check_matroska = 
+@USE_PLUGIN_MATROSKA_TRUE@check_matroska = \
+@USE_PLUGIN_MATROSKA_TRUE@	elements/matroskamux \
+@USE_PLUGIN_MATROSKA_TRUE@	elements/matroskaparse
+
+@USE_PLUGIN_MULTIFILE_FALSE@check_multifile = 
+@USE_PLUGIN_MULTIFILE_TRUE@check_multifile = elements/multifile
+@USE_PLUGIN_REPLAYGAIN_FALSE@check_replaygain = 
+@USE_PLUGIN_REPLAYGAIN_TRUE@check_replaygain = \
+@USE_PLUGIN_REPLAYGAIN_TRUE@	elements/rganalysis \
+@USE_PLUGIN_REPLAYGAIN_TRUE@	elements/rglimiter \
+@USE_PLUGIN_REPLAYGAIN_TRUE@	elements/rgvolume
+
+@USE_PLUGIN_RTP_FALSE@check_rtp = 
+@USE_PLUGIN_RTP_TRUE@check_rtp = elements/rtp-payloading
+@USE_PLUGIN_RTPMANAGER_FALSE@check_rtpmanager = 
+@USE_PLUGIN_RTPMANAGER_TRUE@check_rtpmanager = \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpaux \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpbin \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpbin_buffer_list \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpcollision \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpjitterbuffer \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpmux \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtprtx \
+@USE_PLUGIN_RTPMANAGER_TRUE@	elements/rtpsession
+
 @USE_SOUP_FALSE@check_soup = 
 @USE_SOUP_TRUE@check_soup = elements/souphttpsrc
+@USE_PLUGIN_SPECTRUM_FALSE@check_spectrum = 
+@USE_PLUGIN_SPECTRUM_TRUE@check_spectrum = elements/spectrum
 @USE_SUNAUDIO_FALSE@check_sunaudio = 
 @USE_SUNAUDIO_TRUE@check_sunaudio = elements/sunaudio
+@USE_PLUGIN_SHAPEWIPE_FALSE@check_shapewipe = 
+@USE_PLUGIN_SHAPEWIPE_TRUE@check_shapewipe = elements/shapewipe
 @USE_TAGLIB_FALSE@check_taglib = 
 @USE_TAGLIB_TRUE@check_taglib = \
 @USE_TAGLIB_TRUE@	elements/id3v2mux \
 @USE_TAGLIB_TRUE@	elements/apev2mux
 
+@USE_PLUGIN_UDP_FALSE@check_udp = 
+@USE_PLUGIN_UDP_TRUE@check_udp = \
+@USE_PLUGIN_UDP_TRUE@        elements/udpsink \
+@USE_PLUGIN_UDP_TRUE@        elements/udpsrc
+
+@USE_PLUGIN_VIDEOBOX_FALSE@check_videobox = 
+@USE_PLUGIN_VIDEOBOX_TRUE@check_videobox = elements/videobox
+@USE_PLUGIN_VIDEOCROP_FALSE@check_videocrop = 
+@USE_PLUGIN_VIDEOCROP_TRUE@check_videocrop = \
+@USE_PLUGIN_VIDEOCROP_TRUE@	elements/aspectratiocrop \
+@USE_PLUGIN_VIDEOCROP_TRUE@	elements/videocrop
+
+@USE_PLUGIN_VIDEOFILTER_FALSE@check_videofilter = 
+@USE_PLUGIN_VIDEOFILTER_TRUE@check_videofilter = elements/videofilter
+@USE_PLUGIN_VIDEOMIXER_FALSE@check_videomixer = 
+@USE_PLUGIN_VIDEOMIXER_TRUE@check_videomixer = elements/videomixer
 @USE_VPX_FALSE@check_vpx = 
 @USE_VPX_TRUE@check_vpx = elements/vp8enc elements/vp8dec
+@USE_PLUGIN_WAVENC_FALSE@check_wavenc = 
+@USE_PLUGIN_WAVENC_TRUE@check_wavenc = pipelines/wavenc
 @USE_WAVPACK_FALSE@check_wavpack = 
 @USE_WAVPACK_TRUE@check_wavpack = \
 @USE_WAVPACK_TRUE@       elements/wavpackdec \
 @USE_WAVPACK_TRUE@       elements/wavpackenc \
 @USE_WAVPACK_TRUE@       pipelines/wavpack
 
+@USE_PLUGIN_WAVPARSE_FALSE@check_wavparse = 
+@USE_PLUGIN_WAVPARSE_TRUE@check_wavparse = elements/wavparse
+@USE_PLUGIN_Y4M_FALSE@check_y4m = 
+@USE_PLUGIN_Y4M_TRUE@check_y4m = elements/y4menc
 @HAVE_ORC_FALSE@check_orc = 
 @HAVE_ORC_TRUE@check_orc = orc/deinterlace orc/videomixer orc/videobox
 VALGRIND_TO_FIX = \
@@ -1479,6 +1701,8 @@ elements_audiowsincband_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAG
 elements_audiowsincband_LDADD = $(GST_PLUGINS_BASE_LIBS) -lgstaudio-$(GST_API_VERSION) $(LDADD)
 elements_audiowsinclimit_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
 elements_audiowsinclimit_LDADD = $(GST_PLUGINS_BASE_LIBS) -lgstaudio-$(GST_API_VERSION) $(LDADD)
+elements_autodetect_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
+elements_autodetect_LDADD = $(GST_BASE_LIBS) $(LDADD)
 elements_equalizer_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
 elements_equalizer_LDADD = $(GST_PLUGINS_BASE_LIBS) -lgstaudio-$(GST_API_VERSION) $(LDADD)
 elements_rganalysis_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
@@ -1521,8 +1745,8 @@ elements_rtpbin_buffer_list_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_CFLAGS) \
 	$(WARNING_CFLAGS) $(ERROR_CFLAGS) $(GST_CHECK_CFLAGS) $(AM_CFLAGS)
 
 elements_rtpbin_buffer_list_LDADD = $(GST_PLUGINS_BASE_LIBS) \
-             -lgstrtp-@GST_API_VERSION@ \
-             $(GST_BASE_LIBS) $(GST_LIBS) $(GST_CHECK_LIBS)
+             -lgstrtp-$(GST_API_VERSION) \
+             $(GST_BASE_LIBS) $(GST_LIBS) $(GST_CHECK_LIBS) $(LDADD)
 
 elements_rtpbin_buffer_list_SOURCES = elements/rtpbin_buffer_list.c
 elements_rtpmux_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(AM_CFLAGS)
@@ -1545,6 +1769,14 @@ elements_videofilter_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
 elements_videofilter_LDADD = $(GST_PLUGINS_BASE_LIBS) -lgstvideo-$(GST_API_VERSION) $(LDADD)
 elements_rtpjitterbuffer_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
 elements_rtpjitterbuffer_LDADD = $(GST_PLUGINS_BASE_LIBS) -lgstrtp-$(GST_API_VERSION) $(LDADD)
+elements_rtprtx_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
+elements_rtprtx_LDADD = $(GST_PLUGINS_BASE_LIBS) -lgstrtp-$(GST_API_VERSION) $(LDADD)
+elements_rtpsession_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
+elements_rtpsession_LDADD = $(GST_PLUGINS_BASE_LIBS) -lgstrtp-$(GST_API_VERSION) $(LDADD)
+elements_rtpcollision_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
+elements_rtpcollision_LDADD = $(GST_PLUGINS_BASE_LIBS) -lgstnet-$(GST_API_VERSION) -lgstrtp-$(GST_API_VERSION) $(GIO_LIBS) $(LDADD)
+elements_rtpaux_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
+elements_rtpaux_LDADD = $(GST_PLUGINS_BASE_LIBS) -lgstrtp-$(GST_API_VERSION) $(LDADD)
 
 # FIXME: configure should check for gdk-pixbuf not gtk
 # only need video.h header, not the lib
@@ -1740,12 +1972,12 @@ elements/elements_audiowsinclimit-audiowsinclimit.$(OBJEXT):  \
 elements/audiowsinclimit$(EXEEXT): $(elements_audiowsinclimit_OBJECTS) $(elements_audiowsinclimit_DEPENDENCIES) $(EXTRA_elements_audiowsinclimit_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/audiowsinclimit$(EXEEXT)
 	$(AM_V_CCLD)$(elements_audiowsinclimit_LINK) $(elements_audiowsinclimit_OBJECTS) $(elements_audiowsinclimit_LDADD) $(LIBS)
-elements/autodetect.$(OBJEXT): elements/$(am__dirstamp) \
-	elements/$(DEPDIR)/$(am__dirstamp)
+elements/elements_autodetect-autodetect.$(OBJEXT):  \
+	elements/$(am__dirstamp) elements/$(DEPDIR)/$(am__dirstamp)
 
 elements/autodetect$(EXEEXT): $(elements_autodetect_OBJECTS) $(elements_autodetect_DEPENDENCIES) $(EXTRA_elements_autodetect_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/autodetect$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(elements_autodetect_OBJECTS) $(elements_autodetect_LDADD) $(LIBS)
+	$(AM_V_CCLD)$(elements_autodetect_LINK) $(elements_autodetect_OBJECTS) $(elements_autodetect_LDADD) $(LIBS)
 elements/avimux.$(OBJEXT): elements/$(am__dirstamp) \
 	elements/$(DEPDIR)/$(am__dirstamp)
 
@@ -1926,6 +2158,12 @@ elements/rtp-payloading.$(OBJEXT): elements/$(am__dirstamp) \
 elements/rtp-payloading$(EXEEXT): $(elements_rtp_payloading_OBJECTS) $(elements_rtp_payloading_DEPENDENCIES) $(EXTRA_elements_rtp_payloading_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/rtp-payloading$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(elements_rtp_payloading_OBJECTS) $(elements_rtp_payloading_LDADD) $(LIBS)
+elements/elements_rtpaux-rtpaux.$(OBJEXT): elements/$(am__dirstamp) \
+	elements/$(DEPDIR)/$(am__dirstamp)
+
+elements/rtpaux$(EXEEXT): $(elements_rtpaux_OBJECTS) $(elements_rtpaux_DEPENDENCIES) $(EXTRA_elements_rtpaux_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/rtpaux$(EXEEXT)
+	$(AM_V_CCLD)$(elements_rtpaux_LINK) $(elements_rtpaux_OBJECTS) $(elements_rtpaux_LDADD) $(LIBS)
 elements/rtpbin.$(OBJEXT): elements/$(am__dirstamp) \
 	elements/$(DEPDIR)/$(am__dirstamp)
 
@@ -1938,6 +2176,12 @@ elements/elements_rtpbin_buffer_list-rtpbin_buffer_list.$(OBJEXT):  \
 elements/rtpbin_buffer_list$(EXEEXT): $(elements_rtpbin_buffer_list_OBJECTS) $(elements_rtpbin_buffer_list_DEPENDENCIES) $(EXTRA_elements_rtpbin_buffer_list_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/rtpbin_buffer_list$(EXEEXT)
 	$(AM_V_CCLD)$(elements_rtpbin_buffer_list_LINK) $(elements_rtpbin_buffer_list_OBJECTS) $(elements_rtpbin_buffer_list_LDADD) $(LIBS)
+elements/elements_rtpcollision-rtpcollision.$(OBJEXT):  \
+	elements/$(am__dirstamp) elements/$(DEPDIR)/$(am__dirstamp)
+
+elements/rtpcollision$(EXEEXT): $(elements_rtpcollision_OBJECTS) $(elements_rtpcollision_DEPENDENCIES) $(EXTRA_elements_rtpcollision_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/rtpcollision$(EXEEXT)
+	$(AM_V_CCLD)$(elements_rtpcollision_LINK) $(elements_rtpcollision_OBJECTS) $(elements_rtpcollision_LDADD) $(LIBS)
 elements/elements_rtpjitterbuffer-rtpjitterbuffer.$(OBJEXT):  \
 	elements/$(am__dirstamp) elements/$(DEPDIR)/$(am__dirstamp)
 
@@ -1950,6 +2194,18 @@ elements/elements_rtpmux-rtpmux.$(OBJEXT): elements/$(am__dirstamp) \
 elements/rtpmux$(EXEEXT): $(elements_rtpmux_OBJECTS) $(elements_rtpmux_DEPENDENCIES) $(EXTRA_elements_rtpmux_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/rtpmux$(EXEEXT)
 	$(AM_V_CCLD)$(elements_rtpmux_LINK) $(elements_rtpmux_OBJECTS) $(elements_rtpmux_LDADD) $(LIBS)
+elements/elements_rtprtx-rtprtx.$(OBJEXT): elements/$(am__dirstamp) \
+	elements/$(DEPDIR)/$(am__dirstamp)
+
+elements/rtprtx$(EXEEXT): $(elements_rtprtx_OBJECTS) $(elements_rtprtx_DEPENDENCIES) $(EXTRA_elements_rtprtx_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/rtprtx$(EXEEXT)
+	$(AM_V_CCLD)$(elements_rtprtx_LINK) $(elements_rtprtx_OBJECTS) $(elements_rtprtx_LDADD) $(LIBS)
+elements/elements_rtpsession-rtpsession.$(OBJEXT):  \
+	elements/$(am__dirstamp) elements/$(DEPDIR)/$(am__dirstamp)
+
+elements/rtpsession$(EXEEXT): $(elements_rtpsession_OBJECTS) $(elements_rtpsession_DEPENDENCIES) $(EXTRA_elements_rtpsession_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/rtpsession$(EXEEXT)
+	$(AM_V_CCLD)$(elements_rtpsession_LINK) $(elements_rtpsession_OBJECTS) $(elements_rtpsession_LDADD) $(LIBS)
 elements/shapewipe.$(OBJEXT): elements/$(am__dirstamp) \
 	elements/$(DEPDIR)/$(am__dirstamp)
 
@@ -1986,6 +2242,12 @@ elements/elements_udpsrc-udpsrc.$(OBJEXT): elements/$(am__dirstamp) \
 elements/udpsrc$(EXEEXT): $(elements_udpsrc_OBJECTS) $(elements_udpsrc_DEPENDENCIES) $(EXTRA_elements_udpsrc_DEPENDENCIES) elements/$(am__dirstamp)
 	@rm -f elements/udpsrc$(EXEEXT)
 	$(AM_V_CCLD)$(elements_udpsrc_LINK) $(elements_udpsrc_OBJECTS) $(elements_udpsrc_LDADD) $(LIBS)
+elements/videobox.$(OBJEXT): elements/$(am__dirstamp) \
+	elements/$(DEPDIR)/$(am__dirstamp)
+
+elements/videobox$(EXEEXT): $(elements_videobox_OBJECTS) $(elements_videobox_DEPENDENCIES) $(EXTRA_elements_videobox_DEPENDENCIES) elements/$(am__dirstamp)
+	@rm -f elements/videobox$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(elements_videobox_OBJECTS) $(elements_videobox_LDADD) $(LIBS)
 elements/elements_videocrop-videocrop.$(OBJEXT):  \
 	elements/$(am__dirstamp) elements/$(DEPDIR)/$(am__dirstamp)
 
@@ -2142,7 +2404,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/apev2mux.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/audiofirfilter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/audioiirfilter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/autodetect.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/avimux.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/avisubtitle.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/capssetter.Po@am__quote@
@@ -2157,6 +2418,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_audiopanorama-audiopanorama.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_audiowsincband-audiowsincband.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_audiowsinclimit-audiowsinclimit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_autodetect-autodetect.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_deinterlace-deinterlace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_deinterleave-deinterleave.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_dtmf-dtmf.Po@am__quote@
@@ -2172,9 +2434,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_rganalysis-rganalysis.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_rglimiter-rglimiter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_rgvolume-rgvolume.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_rtpaux-rtpaux.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_rtpbin_buffer_list-rtpbin_buffer_list.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_rtpcollision-rtpcollision.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_rtpjitterbuffer-rtpjitterbuffer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_rtpmux-rtpmux.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_rtprtx-rtprtx.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_rtpsession-rtpsession.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_souphttpsrc-souphttpsrc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_spectrum-spectrum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/elements_sunaudio-sunaudio.Po@am__quote@
@@ -2198,6 +2464,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/rtpbin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/shapewipe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/udpsink.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/videobox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/vp8dec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/vp8enc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@elements/$(DEPDIR)/wavpackdec.Po@am__quote@
@@ -2400,6 +2667,20 @@ elements/elements_audiowsinclimit-audiowsinclimit.obj: elements/audiowsinclimit.
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/audiowsinclimit.c' object='elements/elements_audiowsinclimit-audiowsinclimit.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_audiowsinclimit_CFLAGS) $(CFLAGS) -c -o elements/elements_audiowsinclimit-audiowsinclimit.obj `if test -f 'elements/audiowsinclimit.c'; then $(CYGPATH_W) 'elements/audiowsinclimit.c'; else $(CYGPATH_W) '$(srcdir)/elements/audiowsinclimit.c'; fi`
+
+elements/elements_autodetect-autodetect.o: elements/autodetect.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_autodetect_CFLAGS) $(CFLAGS) -MT elements/elements_autodetect-autodetect.o -MD -MP -MF elements/$(DEPDIR)/elements_autodetect-autodetect.Tpo -c -o elements/elements_autodetect-autodetect.o `test -f 'elements/autodetect.c' || echo '$(srcdir)/'`elements/autodetect.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) elements/$(DEPDIR)/elements_autodetect-autodetect.Tpo elements/$(DEPDIR)/elements_autodetect-autodetect.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/autodetect.c' object='elements/elements_autodetect-autodetect.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_autodetect_CFLAGS) $(CFLAGS) -c -o elements/elements_autodetect-autodetect.o `test -f 'elements/autodetect.c' || echo '$(srcdir)/'`elements/autodetect.c
+
+elements/elements_autodetect-autodetect.obj: elements/autodetect.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_autodetect_CFLAGS) $(CFLAGS) -MT elements/elements_autodetect-autodetect.obj -MD -MP -MF elements/$(DEPDIR)/elements_autodetect-autodetect.Tpo -c -o elements/elements_autodetect-autodetect.obj `if test -f 'elements/autodetect.c'; then $(CYGPATH_W) 'elements/autodetect.c'; else $(CYGPATH_W) '$(srcdir)/elements/autodetect.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) elements/$(DEPDIR)/elements_autodetect-autodetect.Tpo elements/$(DEPDIR)/elements_autodetect-autodetect.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/autodetect.c' object='elements/elements_autodetect-autodetect.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_autodetect_CFLAGS) $(CFLAGS) -c -o elements/elements_autodetect-autodetect.obj `if test -f 'elements/autodetect.c'; then $(CYGPATH_W) 'elements/autodetect.c'; else $(CYGPATH_W) '$(srcdir)/elements/autodetect.c'; fi`
 
 elements/elements_deinterlace-deinterlace.o: elements/deinterlace.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_deinterlace_CFLAGS) $(CFLAGS) -MT elements/elements_deinterlace-deinterlace.o -MD -MP -MF elements/$(DEPDIR)/elements_deinterlace-deinterlace.Tpo -c -o elements/elements_deinterlace-deinterlace.o `test -f 'elements/deinterlace.c' || echo '$(srcdir)/'`elements/deinterlace.c
@@ -2611,6 +2892,20 @@ elements/elements_rgvolume-rgvolume.obj: elements/rgvolume.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rgvolume_CFLAGS) $(CFLAGS) -c -o elements/elements_rgvolume-rgvolume.obj `if test -f 'elements/rgvolume.c'; then $(CYGPATH_W) 'elements/rgvolume.c'; else $(CYGPATH_W) '$(srcdir)/elements/rgvolume.c'; fi`
 
+elements/elements_rtpaux-rtpaux.o: elements/rtpaux.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpaux_CFLAGS) $(CFLAGS) -MT elements/elements_rtpaux-rtpaux.o -MD -MP -MF elements/$(DEPDIR)/elements_rtpaux-rtpaux.Tpo -c -o elements/elements_rtpaux-rtpaux.o `test -f 'elements/rtpaux.c' || echo '$(srcdir)/'`elements/rtpaux.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) elements/$(DEPDIR)/elements_rtpaux-rtpaux.Tpo elements/$(DEPDIR)/elements_rtpaux-rtpaux.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/rtpaux.c' object='elements/elements_rtpaux-rtpaux.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpaux_CFLAGS) $(CFLAGS) -c -o elements/elements_rtpaux-rtpaux.o `test -f 'elements/rtpaux.c' || echo '$(srcdir)/'`elements/rtpaux.c
+
+elements/elements_rtpaux-rtpaux.obj: elements/rtpaux.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpaux_CFLAGS) $(CFLAGS) -MT elements/elements_rtpaux-rtpaux.obj -MD -MP -MF elements/$(DEPDIR)/elements_rtpaux-rtpaux.Tpo -c -o elements/elements_rtpaux-rtpaux.obj `if test -f 'elements/rtpaux.c'; then $(CYGPATH_W) 'elements/rtpaux.c'; else $(CYGPATH_W) '$(srcdir)/elements/rtpaux.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) elements/$(DEPDIR)/elements_rtpaux-rtpaux.Tpo elements/$(DEPDIR)/elements_rtpaux-rtpaux.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/rtpaux.c' object='elements/elements_rtpaux-rtpaux.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpaux_CFLAGS) $(CFLAGS) -c -o elements/elements_rtpaux-rtpaux.obj `if test -f 'elements/rtpaux.c'; then $(CYGPATH_W) 'elements/rtpaux.c'; else $(CYGPATH_W) '$(srcdir)/elements/rtpaux.c'; fi`
+
 elements/elements_rtpbin_buffer_list-rtpbin_buffer_list.o: elements/rtpbin_buffer_list.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpbin_buffer_list_CFLAGS) $(CFLAGS) -MT elements/elements_rtpbin_buffer_list-rtpbin_buffer_list.o -MD -MP -MF elements/$(DEPDIR)/elements_rtpbin_buffer_list-rtpbin_buffer_list.Tpo -c -o elements/elements_rtpbin_buffer_list-rtpbin_buffer_list.o `test -f 'elements/rtpbin_buffer_list.c' || echo '$(srcdir)/'`elements/rtpbin_buffer_list.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) elements/$(DEPDIR)/elements_rtpbin_buffer_list-rtpbin_buffer_list.Tpo elements/$(DEPDIR)/elements_rtpbin_buffer_list-rtpbin_buffer_list.Po
@@ -2624,6 +2919,20 @@ elements/elements_rtpbin_buffer_list-rtpbin_buffer_list.obj: elements/rtpbin_buf
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/rtpbin_buffer_list.c' object='elements/elements_rtpbin_buffer_list-rtpbin_buffer_list.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpbin_buffer_list_CFLAGS) $(CFLAGS) -c -o elements/elements_rtpbin_buffer_list-rtpbin_buffer_list.obj `if test -f 'elements/rtpbin_buffer_list.c'; then $(CYGPATH_W) 'elements/rtpbin_buffer_list.c'; else $(CYGPATH_W) '$(srcdir)/elements/rtpbin_buffer_list.c'; fi`
+
+elements/elements_rtpcollision-rtpcollision.o: elements/rtpcollision.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpcollision_CFLAGS) $(CFLAGS) -MT elements/elements_rtpcollision-rtpcollision.o -MD -MP -MF elements/$(DEPDIR)/elements_rtpcollision-rtpcollision.Tpo -c -o elements/elements_rtpcollision-rtpcollision.o `test -f 'elements/rtpcollision.c' || echo '$(srcdir)/'`elements/rtpcollision.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) elements/$(DEPDIR)/elements_rtpcollision-rtpcollision.Tpo elements/$(DEPDIR)/elements_rtpcollision-rtpcollision.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/rtpcollision.c' object='elements/elements_rtpcollision-rtpcollision.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpcollision_CFLAGS) $(CFLAGS) -c -o elements/elements_rtpcollision-rtpcollision.o `test -f 'elements/rtpcollision.c' || echo '$(srcdir)/'`elements/rtpcollision.c
+
+elements/elements_rtpcollision-rtpcollision.obj: elements/rtpcollision.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpcollision_CFLAGS) $(CFLAGS) -MT elements/elements_rtpcollision-rtpcollision.obj -MD -MP -MF elements/$(DEPDIR)/elements_rtpcollision-rtpcollision.Tpo -c -o elements/elements_rtpcollision-rtpcollision.obj `if test -f 'elements/rtpcollision.c'; then $(CYGPATH_W) 'elements/rtpcollision.c'; else $(CYGPATH_W) '$(srcdir)/elements/rtpcollision.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) elements/$(DEPDIR)/elements_rtpcollision-rtpcollision.Tpo elements/$(DEPDIR)/elements_rtpcollision-rtpcollision.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/rtpcollision.c' object='elements/elements_rtpcollision-rtpcollision.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpcollision_CFLAGS) $(CFLAGS) -c -o elements/elements_rtpcollision-rtpcollision.obj `if test -f 'elements/rtpcollision.c'; then $(CYGPATH_W) 'elements/rtpcollision.c'; else $(CYGPATH_W) '$(srcdir)/elements/rtpcollision.c'; fi`
 
 elements/elements_rtpjitterbuffer-rtpjitterbuffer.o: elements/rtpjitterbuffer.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpjitterbuffer_CFLAGS) $(CFLAGS) -MT elements/elements_rtpjitterbuffer-rtpjitterbuffer.o -MD -MP -MF elements/$(DEPDIR)/elements_rtpjitterbuffer-rtpjitterbuffer.Tpo -c -o elements/elements_rtpjitterbuffer-rtpjitterbuffer.o `test -f 'elements/rtpjitterbuffer.c' || echo '$(srcdir)/'`elements/rtpjitterbuffer.c
@@ -2652,6 +2961,34 @@ elements/elements_rtpmux-rtpmux.obj: elements/rtpmux.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/rtpmux.c' object='elements/elements_rtpmux-rtpmux.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpmux_CFLAGS) $(CFLAGS) -c -o elements/elements_rtpmux-rtpmux.obj `if test -f 'elements/rtpmux.c'; then $(CYGPATH_W) 'elements/rtpmux.c'; else $(CYGPATH_W) '$(srcdir)/elements/rtpmux.c'; fi`
+
+elements/elements_rtprtx-rtprtx.o: elements/rtprtx.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtprtx_CFLAGS) $(CFLAGS) -MT elements/elements_rtprtx-rtprtx.o -MD -MP -MF elements/$(DEPDIR)/elements_rtprtx-rtprtx.Tpo -c -o elements/elements_rtprtx-rtprtx.o `test -f 'elements/rtprtx.c' || echo '$(srcdir)/'`elements/rtprtx.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) elements/$(DEPDIR)/elements_rtprtx-rtprtx.Tpo elements/$(DEPDIR)/elements_rtprtx-rtprtx.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/rtprtx.c' object='elements/elements_rtprtx-rtprtx.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtprtx_CFLAGS) $(CFLAGS) -c -o elements/elements_rtprtx-rtprtx.o `test -f 'elements/rtprtx.c' || echo '$(srcdir)/'`elements/rtprtx.c
+
+elements/elements_rtprtx-rtprtx.obj: elements/rtprtx.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtprtx_CFLAGS) $(CFLAGS) -MT elements/elements_rtprtx-rtprtx.obj -MD -MP -MF elements/$(DEPDIR)/elements_rtprtx-rtprtx.Tpo -c -o elements/elements_rtprtx-rtprtx.obj `if test -f 'elements/rtprtx.c'; then $(CYGPATH_W) 'elements/rtprtx.c'; else $(CYGPATH_W) '$(srcdir)/elements/rtprtx.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) elements/$(DEPDIR)/elements_rtprtx-rtprtx.Tpo elements/$(DEPDIR)/elements_rtprtx-rtprtx.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/rtprtx.c' object='elements/elements_rtprtx-rtprtx.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtprtx_CFLAGS) $(CFLAGS) -c -o elements/elements_rtprtx-rtprtx.obj `if test -f 'elements/rtprtx.c'; then $(CYGPATH_W) 'elements/rtprtx.c'; else $(CYGPATH_W) '$(srcdir)/elements/rtprtx.c'; fi`
+
+elements/elements_rtpsession-rtpsession.o: elements/rtpsession.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpsession_CFLAGS) $(CFLAGS) -MT elements/elements_rtpsession-rtpsession.o -MD -MP -MF elements/$(DEPDIR)/elements_rtpsession-rtpsession.Tpo -c -o elements/elements_rtpsession-rtpsession.o `test -f 'elements/rtpsession.c' || echo '$(srcdir)/'`elements/rtpsession.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) elements/$(DEPDIR)/elements_rtpsession-rtpsession.Tpo elements/$(DEPDIR)/elements_rtpsession-rtpsession.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/rtpsession.c' object='elements/elements_rtpsession-rtpsession.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpsession_CFLAGS) $(CFLAGS) -c -o elements/elements_rtpsession-rtpsession.o `test -f 'elements/rtpsession.c' || echo '$(srcdir)/'`elements/rtpsession.c
+
+elements/elements_rtpsession-rtpsession.obj: elements/rtpsession.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpsession_CFLAGS) $(CFLAGS) -MT elements/elements_rtpsession-rtpsession.obj -MD -MP -MF elements/$(DEPDIR)/elements_rtpsession-rtpsession.Tpo -c -o elements/elements_rtpsession-rtpsession.obj `if test -f 'elements/rtpsession.c'; then $(CYGPATH_W) 'elements/rtpsession.c'; else $(CYGPATH_W) '$(srcdir)/elements/rtpsession.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) elements/$(DEPDIR)/elements_rtpsession-rtpsession.Tpo elements/$(DEPDIR)/elements_rtpsession-rtpsession.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='elements/rtpsession.c' object='elements/elements_rtpsession-rtpsession.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_rtpsession_CFLAGS) $(CFLAGS) -c -o elements/elements_rtpsession-rtpsession.obj `if test -f 'elements/rtpsession.c'; then $(CYGPATH_W) 'elements/rtpsession.c'; else $(CYGPATH_W) '$(srcdir)/elements/rtpsession.c'; fi`
 
 elements/elements_souphttpsrc-souphttpsrc.o: elements/souphttpsrc.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(elements_souphttpsrc_CFLAGS) $(CFLAGS) -MT elements/elements_souphttpsrc-souphttpsrc.o -MD -MP -MF elements/$(DEPDIR)/elements_souphttpsrc-souphttpsrc.Tpo -c -o elements/elements_souphttpsrc-souphttpsrc.o `test -f 'elements/souphttpsrc.c' || echo '$(srcdir)/'`elements/souphttpsrc.c
@@ -3045,23 +3382,16 @@ generic/states.log: generic/states$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/aacparse.log: elements/aacparse$(EXEEXT)
-	@p='elements/aacparse$(EXEEXT)'; \
-	b='elements/aacparse'; \
+pipelines/simple-launch-lines.log: pipelines/simple-launch-lines$(EXEEXT)
+	@p='pipelines/simple-launch-lines$(EXEEXT)'; \
+	b='pipelines/simple-launch-lines'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/ac3parse.log: elements/ac3parse$(EXEEXT)
-	@p='elements/ac3parse$(EXEEXT)'; \
-	b='elements/ac3parse'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/amrparse.log: elements/amrparse$(EXEEXT)
-	@p='elements/amrparse$(EXEEXT)'; \
-	b='elements/amrparse'; \
+pipelines/tagschecking.log: pipelines/tagschecking$(EXEEXT)
+	@p='pipelines/tagschecking$(EXEEXT)'; \
+	b='pipelines/tagschecking'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -3069,13 +3399,6 @@ elements/amrparse.log: elements/amrparse$(EXEEXT)
 elements/alphacolor.log: elements/alphacolor$(EXEEXT)
 	@p='elements/alphacolor$(EXEEXT)'; \
 	b='elements/alphacolor'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/aspectratiocrop.log: elements/aspectratiocrop$(EXEEXT)
-	@p='elements/aspectratiocrop$(EXEEXT)'; \
-	b='elements/aspectratiocrop'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -3157,6 +3480,48 @@ elements/audiowsinclimit.log: elements/audiowsinclimit$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/aacparse.log: elements/aacparse$(EXEEXT)
+	@p='elements/aacparse$(EXEEXT)'; \
+	b='elements/aacparse'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/ac3parse.log: elements/ac3parse$(EXEEXT)
+	@p='elements/ac3parse$(EXEEXT)'; \
+	b='elements/ac3parse'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/amrparse.log: elements/amrparse$(EXEEXT)
+	@p='elements/amrparse$(EXEEXT)'; \
+	b='elements/amrparse'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/flacparse.log: elements/flacparse$(EXEEXT)
+	@p='elements/flacparse$(EXEEXT)'; \
+	b='elements/flacparse'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/mpegaudioparse.log: elements/mpegaudioparse$(EXEEXT)
+	@p='elements/mpegaudioparse$(EXEEXT)'; \
+	b='elements/mpegaudioparse'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/wavpackparse.log: elements/wavpackparse$(EXEEXT)
+	@p='elements/wavpackparse$(EXEEXT)'; \
+	b='elements/wavpackparse'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 elements/autodetect.log: elements/autodetect$(EXEEXT)
 	@p='elements/autodetect$(EXEEXT)'; \
 	b='elements/autodetect'; \
@@ -3192,16 +3557,16 @@ elements/deinterlace.log: elements/deinterlace$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/deinterleave.log: elements/deinterleave$(EXEEXT)
-	@p='elements/deinterleave$(EXEEXT)'; \
-	b='elements/deinterleave'; \
+elements/dtmf.log: elements/dtmf$(EXEEXT)
+	@p='elements/dtmf$(EXEEXT)'; \
+	b='elements/dtmf'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/dtmf.log: elements/dtmf$(EXEEXT)
-	@p='elements/dtmf$(EXEEXT)'; \
-	b='elements/dtmf'; \
+pipelines/effectv.log: pipelines/effectv$(EXEEXT)
+	@p='pipelines/effectv$(EXEEXT)'; \
+	b='pipelines/effectv'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -3213,9 +3578,9 @@ elements/equalizer.log: elements/equalizer$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/flacparse.log: elements/flacparse$(EXEEXT)
-	@p='elements/flacparse$(EXEEXT)'; \
-	b='elements/flacparse'; \
+pipelines/flacdec.log: pipelines/flacdec$(EXEEXT)
+	@p='pipelines/flacdec$(EXEEXT)'; \
+	b='pipelines/flacdec'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -3230,6 +3595,20 @@ elements/flvdemux.log: elements/flvdemux$(EXEEXT)
 elements/flvmux.log: elements/flvmux$(EXEEXT)
 	@p='elements/flvmux$(EXEEXT)'; \
 	b='elements/flvmux'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/gdkpixbufsink.log: elements/gdkpixbufsink$(EXEEXT)
+	@p='elements/gdkpixbufsink$(EXEEXT)'; \
+	b='elements/gdkpixbufsink'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/qtmux.log: elements/qtmux$(EXEEXT)
+	@p='elements/qtmux$(EXEEXT)'; \
+	b='elements/qtmux'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -3255,9 +3634,44 @@ elements/imagefreeze.log: elements/imagefreeze$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/deinterleave.log: elements/deinterleave$(EXEEXT)
+	@p='elements/deinterleave$(EXEEXT)'; \
+	b='elements/deinterleave'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 elements/interleave.log: elements/interleave$(EXEEXT)
 	@p='elements/interleave$(EXEEXT)'; \
 	b='elements/interleave'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/jpegdec.log: elements/jpegdec$(EXEEXT)
+	@p='elements/jpegdec$(EXEEXT)'; \
+	b='elements/jpegdec'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/jpegenc.log: elements/jpegenc$(EXEEXT)
+	@p='elements/jpegenc$(EXEEXT)'; \
+	b='elements/jpegenc'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/mulawdec.log: elements/mulawdec$(EXEEXT)
+	@p='elements/mulawdec$(EXEEXT)'; \
+	b='elements/mulawdec'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/mulawenc.log: elements/mulawenc$(EXEEXT)
+	@p='elements/mulawenc$(EXEEXT)'; \
+	b='elements/mulawenc'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -3283,37 +3697,9 @@ elements/matroskaparse.log: elements/matroskaparse$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/mpegaudioparse.log: elements/mpegaudioparse$(EXEEXT)
-	@p='elements/mpegaudioparse$(EXEEXT)'; \
-	b='elements/mpegaudioparse'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/mulawdec.log: elements/mulawdec$(EXEEXT)
-	@p='elements/mulawdec$(EXEEXT)'; \
-	b='elements/mulawdec'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/mulawenc.log: elements/mulawenc$(EXEEXT)
-	@p='elements/mulawenc$(EXEEXT)'; \
-	b='elements/mulawenc'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
 elements/multifile.log: elements/multifile$(EXEEXT)
 	@p='elements/multifile$(EXEEXT)'; \
 	b='elements/multifile'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/qtmux.log: elements/qtmux$(EXEEXT)
-	@p='elements/qtmux$(EXEEXT)'; \
-	b='elements/qtmux'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -3346,6 +3732,13 @@ elements/rtp-payloading.log: elements/rtp-payloading$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/rtpaux.log: elements/rtpaux$(EXEEXT)
+	@p='elements/rtpaux$(EXEEXT)'; \
+	b='elements/rtpaux'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 elements/rtpbin.log: elements/rtpbin$(EXEEXT)
 	@p='elements/rtpbin$(EXEEXT)'; \
 	b='elements/rtpbin'; \
@@ -3356,6 +3749,13 @@ elements/rtpbin.log: elements/rtpbin$(EXEEXT)
 elements/rtpbin_buffer_list.log: elements/rtpbin_buffer_list$(EXEEXT)
 	@p='elements/rtpbin_buffer_list$(EXEEXT)'; \
 	b='elements/rtpbin_buffer_list'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/rtpcollision.log: elements/rtpcollision$(EXEEXT)
+	@p='elements/rtpcollision$(EXEEXT)'; \
+	b='elements/rtpcollision'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -3374,6 +3774,20 @@ elements/rtpmux.log: elements/rtpmux$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/rtprtx.log: elements/rtprtx$(EXEEXT)
+	@p='elements/rtprtx$(EXEEXT)'; \
+	b='elements/rtprtx'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/rtpsession.log: elements/rtpsession$(EXEEXT)
+	@p='elements/rtpsession$(EXEEXT)'; \
+	b='elements/rtpsession'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 elements/shapewipe.log: elements/shapewipe$(EXEEXT)
 	@p='elements/shapewipe$(EXEEXT)'; \
 	b='elements/shapewipe'; \
@@ -3381,128 +3795,16 @@ elements/shapewipe.log: elements/shapewipe$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/spectrum.log: elements/spectrum$(EXEEXT)
-	@p='elements/spectrum$(EXEEXT)'; \
-	b='elements/spectrum'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/udpsink.log: elements/udpsink$(EXEEXT)
-	@p='elements/udpsink$(EXEEXT)'; \
-	b='elements/udpsink'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/udpsrc.log: elements/udpsrc$(EXEEXT)
-	@p='elements/udpsrc$(EXEEXT)'; \
-	b='elements/udpsrc'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/videocrop.log: elements/videocrop$(EXEEXT)
-	@p='elements/videocrop$(EXEEXT)'; \
-	b='elements/videocrop'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/videofilter.log: elements/videofilter$(EXEEXT)
-	@p='elements/videofilter$(EXEEXT)'; \
-	b='elements/videofilter'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/wavpackparse.log: elements/wavpackparse$(EXEEXT)
-	@p='elements/wavpackparse$(EXEEXT)'; \
-	b='elements/wavpackparse'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/wavparse.log: elements/wavparse$(EXEEXT)
-	@p='elements/wavparse$(EXEEXT)'; \
-	b='elements/wavparse'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/y4menc.log: elements/y4menc$(EXEEXT)
-	@p='elements/y4menc$(EXEEXT)'; \
-	b='elements/y4menc'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/videomixer.log: elements/videomixer$(EXEEXT)
-	@p='elements/videomixer$(EXEEXT)'; \
-	b='elements/videomixer'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-pipelines/simple-launch-lines.log: pipelines/simple-launch-lines$(EXEEXT)
-	@p='pipelines/simple-launch-lines$(EXEEXT)'; \
-	b='pipelines/simple-launch-lines'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-pipelines/effectv.log: pipelines/effectv$(EXEEXT)
-	@p='pipelines/effectv$(EXEEXT)'; \
-	b='pipelines/effectv'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-pipelines/tagschecking.log: pipelines/tagschecking$(EXEEXT)
-	@p='pipelines/tagschecking$(EXEEXT)'; \
-	b='pipelines/tagschecking'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-pipelines/wavenc.log: pipelines/wavenc$(EXEEXT)
-	@p='pipelines/wavenc$(EXEEXT)'; \
-	b='pipelines/wavenc'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-pipelines/flacdec.log: pipelines/flacdec$(EXEEXT)
-	@p='pipelines/flacdec$(EXEEXT)'; \
-	b='pipelines/flacdec'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/gdkpixbufsink.log: elements/gdkpixbufsink$(EXEEXT)
-	@p='elements/gdkpixbufsink$(EXEEXT)'; \
-	b='elements/gdkpixbufsink'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/jpegdec.log: elements/jpegdec$(EXEEXT)
-	@p='elements/jpegdec$(EXEEXT)'; \
-	b='elements/jpegdec'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
-elements/jpegenc.log: elements/jpegenc$(EXEEXT)
-	@p='elements/jpegenc$(EXEEXT)'; \
-	b='elements/jpegenc'; \
-	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
-	--log-file $$b.log --trs-file $$b.trs \
-	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
-	"$$tst" $(AM_TESTS_FD_REDIRECT)
 elements/souphttpsrc.log: elements/souphttpsrc$(EXEEXT)
 	@p='elements/souphttpsrc$(EXEEXT)'; \
 	b='elements/souphttpsrc'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/spectrum.log: elements/spectrum$(EXEEXT)
+	@p='elements/spectrum$(EXEEXT)'; \
+	b='elements/spectrum'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -3528,6 +3830,55 @@ elements/apev2mux.log: elements/apev2mux$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/udpsink.log: elements/udpsink$(EXEEXT)
+	@p='elements/udpsink$(EXEEXT)'; \
+	b='elements/udpsink'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/udpsrc.log: elements/udpsrc$(EXEEXT)
+	@p='elements/udpsrc$(EXEEXT)'; \
+	b='elements/udpsrc'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/videobox.log: elements/videobox$(EXEEXT)
+	@p='elements/videobox$(EXEEXT)'; \
+	b='elements/videobox'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/aspectratiocrop.log: elements/aspectratiocrop$(EXEEXT)
+	@p='elements/aspectratiocrop$(EXEEXT)'; \
+	b='elements/aspectratiocrop'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/videocrop.log: elements/videocrop$(EXEEXT)
+	@p='elements/videocrop$(EXEEXT)'; \
+	b='elements/videocrop'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/videofilter.log: elements/videofilter$(EXEEXT)
+	@p='elements/videofilter$(EXEEXT)'; \
+	b='elements/videofilter'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/videomixer.log: elements/videomixer$(EXEEXT)
+	@p='elements/videomixer$(EXEEXT)'; \
+	b='elements/videomixer'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 elements/vp8enc.log: elements/vp8enc$(EXEEXT)
 	@p='elements/vp8enc$(EXEEXT)'; \
 	b='elements/vp8enc'; \
@@ -3538,6 +3889,13 @@ elements/vp8enc.log: elements/vp8enc$(EXEEXT)
 elements/vp8dec.log: elements/vp8dec$(EXEEXT)
 	@p='elements/vp8dec$(EXEEXT)'; \
 	b='elements/vp8dec'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+pipelines/wavenc.log: pipelines/wavenc$(EXEEXT)
+	@p='pipelines/wavenc$(EXEEXT)'; \
+	b='pipelines/wavenc'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -3559,6 +3917,20 @@ elements/wavpackenc.log: elements/wavpackenc$(EXEEXT)
 pipelines/wavpack.log: pipelines/wavpack$(EXEEXT)
 	@p='pipelines/wavpack$(EXEEXT)'; \
 	b='pipelines/wavpack'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/wavparse.log: elements/wavparse$(EXEEXT)
+	@p='elements/wavparse$(EXEEXT)'; \
+	b='elements/wavparse'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+elements/y4menc.log: elements/y4menc$(EXEEXT)
+	@p='elements/y4menc$(EXEEXT)'; \
+	b='elements/y4menc'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \

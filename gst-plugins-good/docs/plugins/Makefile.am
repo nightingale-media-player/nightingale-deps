@@ -69,6 +69,7 @@ EXTRA_HFILES = \
 	$(top_srcdir)/ext/libpng/gstpngenc.h \
 	$(top_srcdir)/ext/raw1394/gstdv1394src.h \
 	$(top_srcdir)/ext/raw1394/gsthdv1394src.h \
+	$(top_srcdir)/ext/shout2/gstshout2.h \
 	$(top_srcdir)/ext/soup/gstsouphttpsrc.h \
 	$(top_srcdir)/ext/taglib/gstapev2mux.h \
 	$(top_srcdir)/ext/taglib/gstid3v2mux.h \
@@ -173,6 +174,8 @@ EXTRA_HFILES = \
 	$(top_srcdir)/gst/rtpmanager/gstrtpssrcdemux.h \
 	$(top_srcdir)/gst/rtpmanager/gstrtpmux.h \
 	$(top_srcdir)/gst/rtpmanager/gstrtpdtmfmux.h \
+	$(top_srcdir)/gst/rtpmanager/gstrtprtxsend.h \
+	$(top_srcdir)/gst/rtpmanager/gstrtprtxreceive.h \
 	$(top_srcdir)/gst/rtsp/gstrtpdec.h \
 	$(top_srcdir)/gst/rtsp/gstrtspsrc.h \
 	$(top_srcdir)/gst/shapewipe/gstshapewipe.h \

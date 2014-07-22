@@ -1,29 +1,25 @@
 plugin_LTLIBRARIES = libgstvideo4linux2.la
 
-if USE_XVIDEO
-xv_source = gstv4l2videooverlay.c
-xv_libs = $(X_LIBS) $(XVIDEO_LIBS)
-else
-xv_source =
-xv_libs =
-endif
-
 include $(top_srcdir)/common/gst-glib-gen.mak
 
 libgstvideo4linux2_la_SOURCES = gstv4l2.c \
+				gstv4l2allocator.c \
 				gstv4l2colorbalance.c \
+				gstv4l2deviceprovider.c \
 				gstv4l2object.c \
 				gstv4l2bufferpool.c \
 				gstv4l2sink.c \
 				gstv4l2src.c \
 				gstv4l2radio.c \
 				gstv4l2tuner.c \
+				gstv4l2transform.c \
+				gstv4l2videodec.c \
 				gstv4l2vidorient.c \
 				v4l2_calls.c \
+				v4l2-utils.c \
 				tuner.c \
 				tunerchannel.c \
-				tunernorm.c \
-				$(xv_source)
+				tunernorm.c
 
 libgstvideo4linux2_la_CFLAGS =   $(GST_PLUGINS_BASE_CFLAGS) \
 				 $(GST_BASE_CFLAGS) \
@@ -39,22 +35,29 @@ libgstvideo4linux2_la_LIBADD =   $(GST_PLUGINS_BASE_LIBS) \
 				 -lgstvideo-$(GST_API_VERSION) \
 				 $(GST_BASE_LIBS) \
 				 $(GST_LIBS) \
-				 $(xv_libs) \
 				 $(LIBV4L2_LIBS) \
 				 $(GUDEV_LIBS) \
 				 $(LIBRT)
 
 noinst_HEADERS = \
+	ext/types-compat.h \
+	ext/v4l2-common.h \
+	ext/v4l2-controls.h \
+	ext/videodev2.h \
+	gstv4l2allocator.h \
 	gstv4l2bufferpool.h \
 	gstv4l2colorbalance.h \
+	gstv4l2deviceprovider.h \
 	gstv4l2object.h \
 	gstv4l2sink.h \
 	gstv4l2src.h \
 	gstv4l2radio.h \
 	gstv4l2tuner.h \
+	gstv4l2transform.h \
+	gstv4l2videodec.h \
 	gstv4l2vidorient.h \
-	gstv4l2videooverlay.h \
 	v4l2_calls.h \
+	v4l2-utils.h \
 	tuner.h \
 	tunerchannel.h \
 	tunernorm.h

@@ -47,16 +47,9 @@
 
 #include "gstv4l2src.h"
 #include "gstv4l2sink.h"
+#include "gstv4l2videodec.h"
 
 #include "gst/gst-i18n-plugin.h"
-
-/* Those are ioctl calls */
-#ifndef V4L2_CID_HCENTER
-#define V4L2_CID_HCENTER V4L2_CID_HCENTER_DEPRECATED
-#endif
-#ifndef V4L2_CID_VCENTER
-#define V4L2_CID_VCENTER V4L2_CID_VCENTER_DEPRECATED
-#endif
 
 GST_DEBUG_CATEGORY_EXTERN (v4l2_debug);
 #define GST_CAT_DEFAULT v4l2_debug
@@ -100,6 +93,29 @@ cap_failed:
   }
 }
 
+/******************************************************
+ * The video4linux command line tool v4l2-ctrl
+ * normalises the names of the controls received from
+ * the kernel like:
+ *
+ *     "Exposure (absolute)" -> "exposure_absolute"
+ *
+ * We follow their lead here.  @name is modified
+ * in-place.
+ ******************************************************/
+static void
+gst_v4l2_normalise_control_name (gchar * name)
+{
+  int i, j;
+  for (i = 0, j = 0; name[j]; ++j) {
+    if (g_ascii_isalnum (name[j])) {
+      if (i > 0 && !g_ascii_isalnum (name[j - 1]))
+        name[i++] = '_';
+      name[i++] = g_ascii_tolower (name[j]);
+    }
+  }
+  name[i++] = '\0';
+}
 
 /******************************************************
  * gst_v4l2_empty_lists() and gst_v4l2_fill_lists():
@@ -242,14 +258,10 @@ gst_v4l2_fill_lists (GstV4l2Object * v4l2object)
   GST_DEBUG_OBJECT (e, "  controls+menus");
 
   /* and lastly, controls+menus (if appropriate) */
-#ifdef V4L2_CTRL_FLAG_NEXT_CTRL
   next = V4L2_CTRL_FLAG_NEXT_CTRL;
   n = 0;
-#else
-  next = 0;
-  n = V4L2_CID_BASE;
-#endif
   control.id = next;
+
   while (TRUE) {
     GstV4l2ColorBalanceChannel *v4l2channel;
     GstColorBalanceChannel *channel;
@@ -257,6 +269,7 @@ gst_v4l2_fill_lists (GstV4l2Object * v4l2object)
     if (!next)
       n++;
 
+  retry:
     /* when we reached the last official CID, continue with private CIDs */
     if (n == V4L2_CID_LASTP1) {
       GST_DEBUG_OBJECT (e, "checking private CIDs");
@@ -274,13 +287,14 @@ gst_v4l2_fill_lists (GstV4l2Object * v4l2object)
           GST_DEBUG_OBJECT (e, "V4L2_CTRL_FLAG_NEXT_CTRL not supported.");
           next = 0;
           n = V4L2_CID_BASE;
-          continue;
+          goto retry;
         }
       }
       if (errno == EINVAL || errno == ENOTTY || errno == EIO || errno == ENOENT) {
         if (n < V4L2_CID_PRIVATE_BASE) {
           GST_DEBUG_OBJECT (e, "skipping control %08x", n);
           /* continue so that we also check private controls */
+          n = V4L2_CID_PRIVATE_BASE - 1;
           continue;
         } else {
           GST_DEBUG_OBJECT (e, "controls finished");
@@ -292,36 +306,29 @@ gst_v4l2_fill_lists (GstV4l2Object * v4l2object)
         continue;
       }
     }
-    n = control.id;
+    /* bogus driver might mess with id in unexpected ways (e.g. set to 0), so
+     * make sure to simply try all if V4L2_CTRL_FLAG_NEXT_CTRL not supported */
+    if (next)
+      n = control.id;
     if (control.flags & V4L2_CTRL_FLAG_DISABLED) {
       GST_DEBUG_OBJECT (e, "skipping disabled control");
       continue;
     }
-#ifdef V4L2_CTRL_TYPE_CTRL_CLASS
+
     if (control.type == V4L2_CTRL_TYPE_CTRL_CLASS) {
       GST_DEBUG_OBJECT (e, "starting control class '%s'", control.name);
       continue;
     }
-#endif
+
     switch (control.type) {
       case V4L2_CTRL_TYPE_INTEGER:
       case V4L2_CTRL_TYPE_BOOLEAN:
       case V4L2_CTRL_TYPE_MENU:
-#ifdef V4L2_CTRL_TYPE_INTEGER_MENU
       case V4L2_CTRL_TYPE_INTEGER_MENU:
-#endif
-#ifdef V4L2_CTRL_TYPE_BITMASK
       case V4L2_CTRL_TYPE_BITMASK:
-#endif
       case V4L2_CTRL_TYPE_BUTTON:{
-        int i;
         control.name[31] = '\0';
-        for (i = 0; control.name[i]; ++i) {
-          control.name[i] = g_ascii_tolower (control.name[i]);
-          if (!g_ascii_isalnum (control.name[i]))
-            control.name[i] = '_';
-        }
-        GST_INFO_OBJECT (e, "adding generic controls '%s'", control.name);
+        gst_v4l2_normalise_control_name ((gchar *) control.name);
         g_datalist_id_set_data (&v4l2object->controls,
             g_quark_from_string ((const gchar *) control.name),
             GINT_TO_POINTER (n));
@@ -348,25 +355,13 @@ gst_v4l2_fill_lists (GstV4l2Object * v4l2object)
       case V4L2_CID_EXPOSURE:
       case V4L2_CID_AUTOGAIN:
       case V4L2_CID_GAIN:
-#ifdef V4L2_CID_SHARPNESS
       case V4L2_CID_SHARPNESS:
-#endif
         /* we only handle these for now (why?) */
         break;
       case V4L2_CID_HFLIP:
       case V4L2_CID_VFLIP:
-#ifndef V4L2_CID_PAN_RESET
-      case V4L2_CID_HCENTER:
-#endif
-#ifndef V4L2_CID_TILT_RESET
-      case V4L2_CID_VCENTER:
-#endif
-#ifdef V4L2_CID_PAN_RESET
       case V4L2_CID_PAN_RESET:
-#endif
-#ifdef V4L2_CID_TILT_RESET
       case V4L2_CID_TILT_RESET:
-#endif
         /* not handled here, handled by VideoOrientation interface */
         control.id++;
         break;
@@ -376,8 +371,12 @@ gst_v4l2_fill_lists (GstV4l2Object * v4l2object)
       case V4L2_CID_AUDIO_TREBLE:
       case V4L2_CID_AUDIO_MUTE:
       case V4L2_CID_AUDIO_LOUDNESS:
-        /* FIXME: We should implement GstMixer interface */
-        /* fall through */
+        /* FIXME: We should implement GstMixer interface instead */
+        /* but let's not be pedantic and make element more useful for now */
+        break;
+      case V4L2_CID_ALPHA_COMPONENT:
+        v4l2object->has_alpha_component = TRUE;
+        break;
       default:
         GST_DEBUG_OBJECT (e,
             "ControlID %s (%x) unhandled, FIXME", control.name, n);
@@ -474,6 +473,37 @@ gst_v4l2_empty_lists (GstV4l2Object * v4l2object)
   g_datalist_clear (&v4l2object->controls);
 }
 
+static void
+gst_v4l2_adjust_buf_type (GstV4l2Object * v4l2object)
+{
+  /* when calling gst_v4l2_object_new the user decides the initial type
+   * so adjust it if multi-planar is supported
+   * the driver should make it exclusive. So the driver should
+   * not support both MPLANE and non-PLANE.
+   * Because even when using MPLANE it still possibles to use it
+   * in a contiguous manner. In this case the first v4l2 plane
+   * contains all the gst planes.
+   */
+#define CHECK_CAPS (V4L2_CAP_VIDEO_OUTPUT_MPLANE | V4L2_CAP_VIDEO_M2M_MPLANE)
+  switch (v4l2object->type) {
+    case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+      if (v4l2object->vcap.capabilities & CHECK_CAPS) {
+        GST_DEBUG ("adjust type to multi-planar output");
+        v4l2object->type = V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
+      }
+      break;
+    case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+      if (v4l2object->vcap.capabilities & CHECK_CAPS) {
+        GST_DEBUG ("adjust type to multi-planar capture");
+        v4l2object->type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+      }
+      break;
+    default:
+      break;
+  }
+#undef CHECK_CAPS
+}
+
 /******************************************************
  * gst_v4l2_open():
  *   open the video device (v4l2object->videodev)
@@ -484,7 +514,6 @@ gst_v4l2_open (GstV4l2Object * v4l2object)
 {
   struct stat st;
   int libv4l2_fd;
-  GstPollFD pollfd = GST_POLL_FD_INIT;
 
   GST_DEBUG_OBJECT (v4l2object->element, "Trying to open device %s",
       v4l2object->videodev);
@@ -521,20 +550,33 @@ gst_v4l2_open (GstV4l2Object * v4l2object)
   if (libv4l2_fd != -1)
     v4l2object->video_fd = libv4l2_fd;
 
-  v4l2object->can_poll_device = TRUE;
-
   /* get capabilities, error will be posted */
   if (!gst_v4l2_get_capabilities (v4l2object))
     goto error;
 
   /* do we need to be a capture device? */
   if (GST_IS_V4L2SRC (v4l2object->element) &&
-      !(v4l2object->vcap.capabilities & V4L2_CAP_VIDEO_CAPTURE))
+      !(v4l2object->vcap.capabilities & (V4L2_CAP_VIDEO_CAPTURE |
+              V4L2_CAP_VIDEO_CAPTURE_MPLANE)))
     goto not_capture;
 
   if (GST_IS_V4L2SINK (v4l2object->element) &&
-      !(v4l2object->vcap.capabilities & V4L2_CAP_VIDEO_OUTPUT))
+      !(v4l2object->vcap.capabilities & (V4L2_CAP_VIDEO_OUTPUT |
+              V4L2_CAP_VIDEO_OUTPUT_MPLANE)))
     goto not_output;
+
+  if (GST_IS_V4L2_VIDEO_DEC (v4l2object->element) &&
+      /* Today's M2M device only expose M2M */
+      !((v4l2object->vcap.capabilities & (V4L2_CAP_VIDEO_M2M |
+                  V4L2_CAP_VIDEO_M2M_MPLANE)) ||
+          /* But legacy driver may expose both CAPTURE and OUTPUT */
+          ((v4l2object->vcap.capabilities &
+                  (V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_VIDEO_CAPTURE_MPLANE)) &&
+              (v4l2object->vcap.capabilities &
+                  (V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_VIDEO_OUTPUT_MPLANE)))))
+    goto not_m2m;
+
+  gst_v4l2_adjust_buf_type (v4l2object);
 
   /* create enumerations, posts errors. */
   if (!gst_v4l2_fill_lists (v4l2object))
@@ -544,15 +586,15 @@ gst_v4l2_open (GstV4l2Object * v4l2object)
       "Opened device '%s' (%s) successfully",
       v4l2object->vcap.card, v4l2object->videodev);
 
-  pollfd.fd = v4l2object->video_fd;
-  gst_poll_add_fd (v4l2object->poll, &pollfd);
-  if (v4l2object->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
-    gst_poll_fd_ctl_read (v4l2object->poll, &pollfd, TRUE);
-  else
-    gst_poll_fd_ctl_write (v4l2object->poll, &pollfd, TRUE);
-
   if (v4l2object->extra_controls)
     gst_v4l2_set_controls (v4l2object, v4l2object->extra_controls);
+
+  /* UVC devices are never interlaced, and doing VIDIOC_TRY_FMT on them
+   * causes expensive and slow USB IO, so don't probe them for interlaced
+   */
+  if (!strcmp ((char *) v4l2object->vcap.driver, "uvcusb")) {
+    v4l2object->never_interlaced = TRUE;
+  }
 
   return TRUE;
 
@@ -594,6 +636,14 @@ not_output:
         ("Capabilities: 0x%x", v4l2object->vcap.capabilities));
     goto error;
   }
+not_m2m:
+  {
+    GST_ELEMENT_ERROR (v4l2object->element, RESOURCE, NOT_FOUND,
+        (_("Device '%s' is not a M2M device."),
+            v4l2object->videodev),
+        ("Capabilities: 0x%x", v4l2object->vcap.capabilities));
+    goto error;
+  }
 error:
   {
     if (GST_V4L2_IS_OPEN (v4l2object)) {
@@ -608,6 +658,45 @@ error:
   }
 }
 
+gboolean
+gst_v4l2_dup (GstV4l2Object * v4l2object, GstV4l2Object * other)
+{
+  GST_DEBUG_OBJECT (v4l2object->element, "Trying to dup device %s",
+      other->videodev);
+
+  GST_V4L2_CHECK_OPEN (other);
+  GST_V4L2_CHECK_NOT_OPEN (v4l2object);
+  GST_V4L2_CHECK_NOT_ACTIVE (other);
+  GST_V4L2_CHECK_NOT_ACTIVE (v4l2object);
+
+  v4l2object->vcap = other->vcap;
+  gst_v4l2_adjust_buf_type (v4l2object);
+
+  v4l2object->video_fd = v4l2_dup (other->video_fd);
+  if (!GST_V4L2_IS_OPEN (v4l2object))
+    goto not_open;
+
+  g_free (v4l2object->videodev);
+  v4l2object->videodev = g_strdup (other->videodev);
+
+  GST_INFO_OBJECT (v4l2object->element,
+      "Cloned device '%s' (%s) successfully",
+      v4l2object->vcap.card, v4l2object->videodev);
+
+  v4l2object->never_interlaced = other->never_interlaced;
+
+  return TRUE;
+
+not_open:
+  {
+    GST_ELEMENT_ERROR (v4l2object->element, RESOURCE, OPEN_READ_WRITE,
+        (_("Could not dup device '%s' for reading and writing."),
+            v4l2object->videodev), GST_ERROR_SYSTEM);
+
+    return FALSE;
+  }
+}
+
 
 /******************************************************
  * gst_v4l2_close():
@@ -617,7 +706,6 @@ error:
 gboolean
 gst_v4l2_close (GstV4l2Object * v4l2object)
 {
-  GstPollFD pollfd = GST_POLL_FD_INIT;
   GST_DEBUG_OBJECT (v4l2object->element, "Trying to close %s",
       v4l2object->videodev);
 
@@ -626,8 +714,6 @@ gst_v4l2_close (GstV4l2Object * v4l2object)
 
   /* close device */
   v4l2_close (v4l2object->video_fd);
-  pollfd.fd = v4l2object->video_fd;
-  gst_poll_remove_fd (v4l2object->poll, &pollfd);
   v4l2object->video_fd = -1;
 
   /* empty lists */
@@ -880,10 +966,31 @@ ctrl_failed:
 }
 
 static gboolean
-set_contol (GQuark field_id, const GValue * value, gpointer user_data)
+set_control (GQuark field_id, const GValue * value, gpointer user_data)
 {
   GstV4l2Object *v4l2object = user_data;
-  gpointer *d = g_datalist_id_get_data (&v4l2object->controls, field_id);
+  GQuark normalised_field_id;
+  gpointer *d;
+
+  /* 32 bytes is the maximum size for a control name according to v4l2 */
+  gchar name[32];
+
+  /* Backwards compatibility: in the past GStreamer would normalise strings in
+     a subtly different way to v4l2-ctl.  e.g. the kernel's "Focus (absolute)"
+     would become "focus__absolute_" whereas now it becomes "focus_absolute".
+     Please remove the following in GStreamer 1.5 for 1.6 */
+  strncpy (name, g_quark_to_string (field_id), sizeof (name));
+  name[31] = '\0';
+  gst_v4l2_normalise_control_name (name);
+  normalised_field_id = g_quark_from_string (name);
+  if (normalised_field_id != field_id)
+    g_warning ("In GStreamer 1.4 the way V4L2 control names were normalised "
+        "changed.  Instead of setting \"%s\" please use \"%s\".  The former is "
+        "deprecated and will be removed in a future version of GStreamer",
+        g_quark_to_string (field_id), name);
+  field_id = normalised_field_id;
+
+  d = g_datalist_id_get_data (&v4l2object->controls, field_id);
   if (!d) {
     GST_WARNING_OBJECT (v4l2object,
         "Control '%s' does not exist or has an unsupported type.",
@@ -903,7 +1010,7 @@ set_contol (GQuark field_id, const GValue * value, gpointer user_data)
 gboolean
 gst_v4l2_set_controls (GstV4l2Object * v4l2object, GstStructure * controls)
 {
-  return gst_structure_foreach (controls, set_contol, v4l2object);
+  return gst_structure_foreach (controls, set_control, v4l2object);
 }
 
 gboolean
