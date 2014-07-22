@@ -31,7 +31,7 @@
 ################################################################################
 
 SB_VENDOR_TARGET = gst-plugins-bad
-SB_VENDOR_TARGET_VERSION = 0.10.20
+SB_VENDOR_TARGET_VERSION = 1.4.0
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
@@ -41,7 +41,6 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS := \
         --disable-tests \
         --disable-gtk-doc \
         --disable-liboil \
-        --with-mozilla=$(MOZSDK_DIR) \
         --disable-app --disable-bayer --disable-cdxaparse  \
         --disable-deinterlace --disable-dvdspu --disable-festival \
         --disable-filter --disable-flv --disable-freeze \
@@ -101,7 +100,7 @@ ifeq (Darwin,$(SB_VENDOR_ARCH))
 endif
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
-  $(addsuffix -0.10, $(sort $(GST_BASE_DYLIBS))))
+  $(addsuffix -1.0, $(sort $(GST_BASE_DYLIBS))))
 
 include $(CURDIR)/../songbird-vendor-rules.mk
 

@@ -31,7 +31,7 @@
 ################################################################################
 
 SB_VENDOR_TARGET = gst-plugins-base
-SB_VENDOR_TARGET_VERSION = 0.10.20
+SB_VENDOR_TARGET_VERSION = 1.4.0
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
@@ -57,6 +57,6 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 endif
 
 SB_VENDOR_TARGET_DYLIB_FIXUPS = $(addprefix libgst, \
-  $(addsuffix -0.10, $(sort $(GST_BASE_DYLIBS))))
+  $(addsuffix -1.0, $(sort $(GST_BASE_DYLIBS))))
 
 include $(CURDIR)/../songbird-vendor-rules.mk
