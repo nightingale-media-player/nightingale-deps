@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: flvmux</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-flvdemux.html" title="flvdemux">
+<link rel="next" href="gst-plugins-good-plugins-flxdec.html" title="flxdec">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-flvmux.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-flvmux.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-flvmux.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-flvmux.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-flvdemux.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-flxdec.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-good-plugins-flvmux"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-flvmux.top_of_page"></a>flvmux</span></h2>
+<p>flvmux — Muxes video/audio streams into a FLV stream</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-flvmux.html#GstFlvMux--is-live" title="The “is-live” property">is-live</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-flvmux.html#GstFlvMux--streamable" title="The “streamable” property">streamable</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstFlvMux"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-flvmux.html#GstFlvMux-struct" title="GstFlvMux">GstFlvMux</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstFlvMux
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
+<p>
+GstFlvMux implements
+ <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagSetter.html">GstTagSetter</a>.</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.description"></a><h2>Description</h2>
+<p>flvmux muxes different streams into an FLV file.</p>
+<div class="refsect2">
+<a name="id-1.2.57.8.3"></a><h3>Example launch line</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> <span class="gtkdoc opt">-</span>v flvmux name<span class="gtkdoc opt">=</span>mux <span class="gtkdoc opt">!</span> filesink location<span class="gtkdoc opt">=</span>test<span class="gtkdoc opt">.</span>flv  audiotestsrc samplesperbuffer<span class="gtkdoc opt">=</span><span class="number">44100</span> num<span class="gtkdoc opt">-</span>buffers<span class="gtkdoc opt">=</span><span class="number">10</span> <span class="gtkdoc opt">!</span> faac <span class="gtkdoc opt">!</span> mux<span class="gtkdoc opt">.</span>  videotestsrc num<span class="gtkdoc opt">-</span>buffers<span class="gtkdoc opt">=</span><span class="number">250</span> <span class="gtkdoc opt">!</span> video<span class="gtkdoc opt">/</span>x<span class="gtkdoc opt">-</span>raw<span class="gtkdoc opt">,</span>framerate<span class="gtkdoc opt">=</span><span class="number">25</span><span class="gtkdoc opt">/</span><span class="number">1</span> <span class="gtkdoc opt">!</span> x264enc <span class="gtkdoc opt">!</span> mux<span class="gtkdoc opt">.</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ This pipeline encodes a test audio and video stream and muxes both into an FLV file.
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.57.8.4.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-flv.html#plugin-flv">flv</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Sebastian Dröge &lt;sebastian.droege@collabora.co.uk&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Codec/Muxer</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.57.8.4.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>audio</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>audio/x-adpcm, layout=(string)swf, channels=(int){ 1, 2 }, rate=(int){ 5512, 11025, 22050, 44100 }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/mpeg, mpegversion=(int)1, layer=(int)3, channels=(int){ 1, 2 }, rate=(int){ 5512, 8000, 11025, 22050, 44100 }, parsed=(boolean)true</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/mpeg, mpegversion=(int){ 4, 2 }, stream-format=(string)raw</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-nellymoser, channels=(int){ 1, 2 }, rate=(int){ 5512, 8000, 11025, 16000, 22050, 44100 }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-raw, format=(string){ U8, S16LE }, layout=(string)interleaved, channels=(int){ 1, 2 }, rate=(int){ 5512, 11025, 22050, 44100 }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-alaw, channels=(int){ 1, 2 }, rate=(int){ 5512, 11025, 22050, 44100 }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-mulaw, channels=(int){ 1, 2 }, rate=(int){ 5512, 11025, 22050, 44100 }</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> audio/x-speex, channels=(int)1, rate=(int)16000</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>video</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-flash-video</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-flash-screen</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-vp6-flash</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-vp6-alpha</td>
+</tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-h264, stream-format=(string)avc</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>video/x-flv</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstFlvMux-struct"></a><h3>GstFlvMux</h3>
+<pre class="programlisting">typedef struct _GstFlvMux GstFlvMux;</pre>
+<p>
+</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-flvmux.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstFlvMux--is-live"></a><h3>The <code class="literal">“is-live”</code> property</h3>
+<pre class="programlisting">  “is-live”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>The stream is live and does not need an index.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstFlvMux--streamable"></a><h3>The <code class="literal">“streamable”</code> property</h3>
+<pre class="programlisting">  “streamable”               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>If True, the output will be streaming friendly. (ie without indexes and
+duration)</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.20</div>
+</body>
+</html>

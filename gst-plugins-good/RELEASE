@@ -1,0 +1,111 @@
+
+Release notes for GStreamer Good Plugins 1.4.0
+
+
+The GStreamer team is pleased to announce the first release of
+the stable 1.4 release series. The 1.4 release series is adding new
+features on top of the 1.0 and 1.2 series and is part of the API and
+ABI-stable 1.x release series of the GStreamer multimedia framework.
+
+
+
+Binaries for Android, iOS, Mac OS X and Windows are provided together
+with this release.
+
+
+
+The stable 1.4 release series is API and ABI compatible with 1.0.x,
+1.2.x and any other 1.x release series in the future. Compared to 1.2.x
+it contains some new features and more intrusive changes that were
+considered too risky as a bugfix.
+
+
+
+"Such ingratitude.  After all the times I've saved your life."
+
+
+A collection of plugins you'd want to have right next to you on the
+battlefield.  Shooting sharp and making no mistakes, these plugins have it
+all: good looks, good code, and good licensing.  Documented and dressed up
+in tests.  If you're looking for a role model to base your own plugin on,
+here it is.
+
+
+If you find a plot hole or a badly lip-synced line of code in them,
+let us know - it is a matter of honour for us to ensure Blondie doesn't look
+like he's been walking 100 miles through the desert without water.
+
+
+This module contains a set of plugins that we consider to have good quality
+  code, correct functionality, our preferred license (LGPL for the plugin
+  code, LGPL or LGPL-compatible for the supporting library).
+We believe distributors can safely ship these plugins.
+People writing elements should base their code on these elements.
+
+
+Other modules containing plugins are:
+
+
+gst-plugins-base
+contains a basic set of well-supported plugins
+gst-plugins-ugly
+contains a set of well-supported plugins, but might pose problems for
+    distributors
+gst-plugins-bad
+contains a set of less supported plugins that haven't passed the
+    rigorous quality testing we expect, or are still missing documentation
+    and/or unit tests
+gst-libav
+contains a set of codecs plugins based on libav (formerly gst-ffmpeg)
+
+
+
+  
+
+Bugs fixed in this release
+     
+      * 733122 : rgvolume/rtpdtmfmux: Avoid taking unnecessary ref to pad templates.
+      * 733190 : [regression] aacparse: raw to ADTS conversion no longer works
+      * 733208 : POTFILES.in is out of date
+      * 733380 : videobox: adds borders of the wrong color
+
+==== Download ====
+
+You can find source releases of gst-plugins-good in the download
+directory: http://gstreamer.freedesktop.org/src/gst-plugins-good/
+
+The git repository and details how to clone it can be found at
+http://cgit.freedesktop.org/gstreamer/gst-plugins-good/
+
+==== Homepage ====
+
+The project's website is http://gstreamer.freedesktop.org/
+
+==== Support and Bugs ====
+
+We use GNOME's bugzilla for bug reports and feature requests:
+http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer
+
+Please submit patches via bugzilla as well.
+
+For help and support, please subscribe to and send questions to the
+gstreamer-devel mailing list (see below for details).
+
+There is also a #gstreamer IRC channel on the Freenode IRC network.
+
+==== Developers ====
+
+GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned
+from there (see link above).
+
+Interested developers of the core library, plugins, and applications should
+subscribe to the gstreamer-devel list.
+
+        
+Contributors to this release
+    
+      * Nicolas Dufresne
+      * Piotr Drąg
+      * Sebastian Dröge
+      * Sebastian Rasmussen
+ 

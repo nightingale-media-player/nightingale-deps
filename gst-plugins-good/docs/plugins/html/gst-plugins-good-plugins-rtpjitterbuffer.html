@@ -1,0 +1,662 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GStreamer Good Plugins 1.0 Plugins Reference Manual: rtpjitterbuffer</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Good Plugins 1.0 Plugins Reference Manual">
+<link rel="up" href="ch01.html" title="gst-plugins-good Elements">
+<link rel="prev" href="gst-plugins-good-plugins-rtpdtmfsrc.html" title="rtpdtmfsrc">
+<link rel="next" href="gst-plugins-good-plugins-rtpmux.html" title="rtpmux">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtpjitterbuffer.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtpjitterbuffer.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtpjitterbuffer.properties" class="shortcut">Properties</a></span><span id="nav_signals"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-good-plugins-rtpjitterbuffer.signals" class="shortcut">Signals</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-good-plugins-rtpdtmfsrc.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-good-plugins-rtpmux.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-good-plugins-rtpjitterbuffer"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-good-plugins-rtpjitterbuffer.top_of_page"></a>rtpjitterbuffer</span></h2>
+<p>rtpjitterbuffer — A buffer that deals with network jitter and other transmission faults</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpjitterbuffer.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--do-lost" title="The “do-lost” property">do-lost</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--drop-on-latency" title="The “drop-on-latency” property">drop-on-latency</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--latency" title="The “latency” property">latency</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">gint64</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--ts-offset" title="The “ts-offset” property">ts-offset</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">RTPJitterBufferMode</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--mode" title="The “mode” property">mode</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--percent" title="The “percent” property">percent</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--do-retransmission" title="The “do-retransmission” property">do-retransmission</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--rtx-delay" title="The “rtx-delay” property">rtx-delay</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--rtx-delay-reorder" title="The “rtx-delay-reorder” property">rtx-delay-reorder</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--rtx-retry-period" title="The “rtx-retry-period” property">rtx-retry-period</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--rtx-retry-timeout" title="The “rtx-retry-timeout” property">rtx-retry-timeout</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--stats" title="The “stats” property">stats</a></td>
+<td class="property_flags">Read</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpjitterbuffer.signals"></a><h2>Signals</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="signals_return">
+<col width="300px" class="signals_name">
+<col width="200px" class="signals_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer-clear-pt-map" title="The “clear-pt-map” signal">clear-pt-map</a></td>
+<td class="signal_flags">Action</td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer-handle-sync" title="The “handle-sync” signal">handle-sync</a></td>
+<td class="signal_flags">Run Last</td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">void</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer-on-npt-stop" title="The “on-npt-stop” signal">on-npt-stop</a></td>
+<td class="signal_flags">Run Last</td>
+</tr>
+<tr>
+<td class="signal_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a>*</td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer-request-pt-map" title="The “request-pt-map” signal">request-pt-map</a></td>
+<td class="signal_flags">Run Last</td>
+</tr>
+<tr>
+<td class="signal_type"><span class="returnvalue">guint64</span></td>
+<td class="signal_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer-set-active" title="The “set-active” signal">set-active</a></td>
+<td class="signal_flags">Action</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstRtpJitterBuffer"></a><div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpjitterbuffer.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer-struct" title="struct GstRtpJitterBuffer">GstRtpJitterBuffer</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpjitterbuffer.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstRtpJitterBuffer
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpjitterbuffer.description"></a><h2>Description</h2>
+<p>This element reorders and removes duplicate RTP packets as they are received
+from a network source.</p>
+<p>The element needs the clock-rate of the RTP payload in order to estimate the
+delay. This information is obtained either from the caps on the sink pad or,
+when no caps are present, from the <a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer-request-pt-map" title="The “request-pt-map” signal"><span class="type">“request-pt-map”</span></a> signal.
+To clear the previous pt-map use the <a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer-clear-pt-map" title="The “clear-pt-map” signal"><span class="type">“clear-pt-map”</span></a> signal.</p>
+<p>The rtpjitterbuffer will wait for missing packets up to a configurable time
+limit using the <a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--latency" title="The “latency” property"><span class="type">“latency”</span></a> property. Packets arriving too
+late are considered to be lost packets. If the <a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--do-lost" title="The “do-lost” property"><span class="type">“do-lost”</span></a>
+property is set, lost packets will result in a custom serialized downstream
+event of name GstRTPPacketLost. The lost packet events are usually used by a
+depayloader or other element to create concealment data or some other logic
+to gracefully handle the missing packets.</p>
+<p>The jitterbuffer will use the DTS (or PTS if no DTS is set) of the incomming
+buffer and the rtptime inside the RTP packet to create a PTS on the outgoing
+buffer.</p>
+<p>The jitterbuffer can also be configured to send early retransmission events
+upstream by setting the <a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--do-retransmission" title="The “do-retransmission” property"><span class="type">“do-retransmission”</span></a> property. In
+this mode, the jitterbuffer tries to estimate when a packet should arrive and
+sends a custom upstream event named GstRTPRetransmissionRequest when the
+packet is considered late. The initial expected packet arrival time is
+calculated as follows:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p>If seqnum N arrived at time T, seqnum N+1 is expected to arrive at
+T + packet-spacing + <a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--rtx-delay" title="The “rtx-delay” property"><span class="type">“rtx-delay”</span></a>. The packet spacing is
+calculated from the DTS (or PTS is no DTS) of two consecutive RTP
+packets with different rtptime.</p></li>
+<li class="listitem"><p>If seqnum N0 arrived at time T0 and seqnum Nm arrived at time Tm,
+seqnum Ni is expected at time Ti = T0 + i*(Tm - T0)/(Nm - N0). Any
+previously scheduled timeout is overwritten.</p></li>
+<li class="listitem"><p>If seqnum N arrived, all seqnum older than
+N - <a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--rtx-delay-reorder" title="The “rtx-delay-reorder” property"><span class="type">“rtx-delay-reorder”</span></a> are considered late
+immediately. This is to request fast feedback for abonormally reorder
+packets before any of the previous timeouts is triggered.</p></li>
+</ul></div>
+<p>A late packet triggers the GstRTPRetransmissionRequest custom upstream
+event. After the initial timeout expires and the retransmission event is
+sent, the timeout is scheduled for
+T + <a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--rtx-retry-timeout" title="The “rtx-retry-timeout” property"><span class="type">“rtx-retry-timeout”</span></a>. If the missing packet did not
+arrive after <a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--rtx-retry-timeout" title="The “rtx-retry-timeout” property"><span class="type">“rtx-retry-timeout”</span></a>, a new
+GstRTPRetransmissionRequest is sent upstream and the timeout is rescheduled
+again for T + <a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--rtx-retry-timeout" title="The “rtx-retry-timeout” property"><span class="type">“rtx-retry-timeout”</span></a>. This repeats until
+<a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--rtx-retry-period" title="The “rtx-retry-period” property"><span class="type">“rtx-retry-period”</span></a> elapsed, at which point no further
+retransmission requests are sent and the regular logic is performed to
+schedule a lost packet as discussed above.</p>
+<p>This element acts as a live element and so adds <a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer--latency" title="The “latency” property"><span class="type">“latency”</span></a>
+to the pipeline.</p>
+<p>This element will automatically be used inside rtpbin.</p>
+<div class="refsect2">
+<a name="id-1.2.127.8.11"></a><h3>Example pipelines</h3>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1</pre></td>
+        <td class="listing_code"><pre class="programlisting">gst<span class="gtkdoc opt">-</span>launch<span class="gtkdoc opt">-</span><span class="number">1.0</span> rtspsrc location<span class="gtkdoc opt">=</span>rtsp<span class="gtkdoc opt">:</span><span class="gtkdoc slc">//192.168.1.133:8554/mpeg1or2AudioVideoTest ! rtpjitterbuffer ! rtpmpvdepay ! mpeg2dec ! xvimagesink</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ Connect to a streaming server and decode the MPEG video. The jitterbuffer is
+inserted into the pipeline to smooth out network jitter and to reorder the
+out-of-order RTP packets.
+</div>
+<div class="refsynopsisdiv">
+<h2>Synopsis</h2>
+<div class="refsect2">
+<a name="id-1.2.127.8.12.1"></a><h3>Element Information</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">plugin</span></p></td>
+<td>
+            <a class="link" href="gst-plugins-good-plugins-plugin-rtpmanager.html#plugin-rtpmanager">rtpmanager</a>
+          </td>
+</tr>
+<tr>
+<td><p><span class="term">author</span></p></td>
+<td>Philippe Kalaf &lt;philippe.kalaf@collabora.co.uk&gt;, Wim Taymans &lt;wim.taymans@gmail.com&gt;</td>
+</tr>
+<tr>
+<td><p><span class="term">class</span></p></td>
+<td>Filter/Network/RTP</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="id-1.2.127.8.12.2"></a><h3>Element Pads</h3>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtp, clock-rate=(int)[ 1, 2147483647 ]</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>sink_rtcp</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>sink</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>request</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtcp</td>
+</tr>
+</tbody>
+</table></div>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term">name</span></p></td>
+<td>src</td>
+</tr>
+<tr>
+<td><p><span class="term">direction</span></p></td>
+<td>source</td>
+</tr>
+<tr>
+<td><p><span class="term">presence</span></p></td>
+<td>always</td>
+</tr>
+<tr>
+<td><p><span class="term">details</span></p></td>
+<td>application/x-rtp</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>
+</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpjitterbuffer.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpjitterbuffer.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer-struct"></a><h3>struct GstRtpJitterBuffer</h3>
+<pre class="programlisting">struct GstRtpJitterBuffer;</pre>
+<p>Opaque jitterbuffer structure.</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpjitterbuffer.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer--do-lost"></a><h3>The <code class="literal">“do-lost”</code> property</h3>
+<pre class="programlisting">  “do-lost”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Send out a GstRTPPacketLost event downstream when a packet is considered
+lost.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer--drop-on-latency"></a><h3>The <code class="literal">“drop-on-latency”</code> property</h3>
+<pre class="programlisting">  “drop-on-latency”          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Drop oldest buffers when the queue is completely filled.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer--latency"></a><h3>The <code class="literal">“latency”</code> property</h3>
+<pre class="programlisting">  “latency”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
+<p>The maximum latency of the jitterbuffer. Packets will be kept in the buffer
+for at most this time.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 200</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer--ts-offset"></a><h3>The <code class="literal">“ts-offset”</code> property</h3>
+<pre class="programlisting">  “ts-offset”                <span class="type">gint64</span></pre>
+<p>Adjust GStreamer output buffer timestamps in the jitterbuffer with offset.
+This is mainly used to ensure interstream synchronisation.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer--mode"></a><h3>The <code class="literal">“mode”</code> property</h3>
+<pre class="programlisting">  “mode”                     <span class="type">RTPJitterBufferMode</span></pre>
+<p>Control the buffering and timestamping mode used by the jitterbuffer.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: Slave receiver to sender clock</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer--percent"></a><h3>The <code class="literal">“percent”</code> property</h3>
+<pre class="programlisting">  “percent”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>The percent of the jitterbuffer that is filled.</p>
+<p>Flags: Read</p>
+<p>Allowed values: [0,100]</p>
+<p>Default value: 0</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer--do-retransmission"></a><h3>The <code class="literal">“do-retransmission”</code> property</h3>
+<pre class="programlisting">  “do-retransmission”        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>Send out a GstRTPRetransmission event upstream when a packet is considered
+late and should be retransmitted.</p>
+<p>Flags: Read / Write</p>
+<p>Default value: FALSE</p>
+<p class="since">Since 1.2</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer--rtx-delay"></a><h3>The <code class="literal">“rtx-delay”</code> property</h3>
+<pre class="programlisting">  “rtx-delay”                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>When a packet did not arrive at the expected time, wait this extra amount
+of time before sending a retransmission event.</p>
+<p>When -1 is used, the max jitter will be used as extra delay.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: -1</p>
+<p class="since">Since 1.2</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer--rtx-delay-reorder"></a><h3>The <code class="literal">“rtx-delay-reorder”</code> property</h3>
+<pre class="programlisting">  “rtx-delay-reorder”        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Assume that a retransmission event should be sent when we see
+this much packet reordering.</p>
+<p>When -1 is used, the value will be estimated based on observed packet
+reordering.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: 3</p>
+<p class="since">Since 1.2</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer--rtx-retry-period"></a><h3>The <code class="literal">“rtx-retry-period”</code> property</h3>
+<pre class="programlisting">  “rtx-retry-period”         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>The amount of time to try to get a retransmission.</p>
+<p>When -1 is used, the value will be estimated based on the jitterbuffer
+latency and the observed round trip time.</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: -1</p>
+<p class="since">Since 1.2</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer--rtx-retry-timeout"></a><h3>The <code class="literal">“rtx-retry-timeout”</code> property</h3>
+<pre class="programlisting">  “rtx-retry-timeout”        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<p>Retry sending a transmission event after this timeout in ms (-1 automatic).</p>
+<p>Flags: Read / Write</p>
+<p>Allowed values: &gt;= G_MAXULONG</p>
+<p>Default value: -1</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer--stats"></a><h3>The <code class="literal">“stats”</code> property</h3>
+<pre class="programlisting">  “stats”                    <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a> *</pre>
+<p>Various jitterbuffer statistics. This property returns a GstStructure
+with name application/x-rtp-jitterbuffer-stats with the following fields:</p>
+<p> "rtx-count"         G_TYPE_UINT64 The number of retransmissions requested
+ "rtx-success-count" G_TYPE_UINT64 The number of successful retransmissions
+ "rtx-per-packet"    G_TYPE_DOUBLE Average number of RTX per packet
+ "rtx-rtt"           G_TYPE_UINT64 Average round trip time per RTX</p>
+<p>Flags: Read</p>
+<p class="since">Since 1.4</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-good-plugins-rtpjitterbuffer.signal-details"></a><h2>Signal Details</h2>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer-clear-pt-map"></a><h3>The <code class="literal">“clear-pt-map”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer"><span class="type">GstRtpJitterBuffer</span></a> *buffer,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+<p>Invalidate the clock-rate as obtained with the
+<a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer-request-pt-map" title="The “request-pt-map” signal"><span class="type">“request-pt-map”</span></a> signal.</p>
+<div class="refsect3">
+<a name="id-1.2.127.12.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buffer</p></td>
+<td class="parameter_description"><p>the object which received the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: Action</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer-handle-sync"></a><h3>The <code class="literal">“handle-sync”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer"><span class="type">GstRtpJitterBuffer</span></a> *buffer,
+               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstStructure.html#GstStructure"><span class="type">GstStructure</span></a>       *struct,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+<p>Be notified of new sync values.</p>
+<div class="refsect3">
+<a name="id-1.2.127.12.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buffer</p></td>
+<td class="parameter_description"><p>the object which received the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>struct</p></td>
+<td class="parameter_description"><p>a GstStructure containing sync values.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: Run Last</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer-on-npt-stop"></a><h3>The <code class="literal">“on-npt-stop”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer"><span class="type">GstRtpJitterBuffer</span></a> *buffer,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+<p>Signal that the jitterbufer has pushed the RTP packet that corresponds to
+the npt-stop position.</p>
+<div class="refsect3">
+<a name="id-1.2.127.12.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buffer</p></td>
+<td class="parameter_description"><p>the object which received the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: Run Last</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer-request-pt-map"></a><h3>The <code class="literal">“request-pt-map”</code> signal</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="returnvalue">GstCaps</span></a>*
+user_function (<a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer"><span class="type">GstRtpJitterBuffer</span></a> *buffer,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>               pt,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+<p>Request the payload type as <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> for <em class="parameter"><code>pt</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.127.12.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buffer</p></td>
+<td class="parameter_description"><p>the object which received the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>pt</p></td>
+<td class="parameter_description"><p>the pt</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>Flags: Run Last</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstRtpJitterBuffer-set-active"></a><h3>The <code class="literal">“set-active”</code> signal</h3>
+<pre class="programlisting"><span class="returnvalue">guint64</span>
+user_function (<a class="link" href="gst-plugins-good-plugins-rtpjitterbuffer.html#GstRtpJitterBuffer"><span class="type">GstRtpJitterBuffer</span></a> *buffer,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>            Returns,
+               <span class="type">guint64</span>             arg2,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+<p>Start pushing out packets with the given base time. This signal is only
+useful in buffering mode.</p>
+<div class="refsect3">
+<a name="id-1.2.127.12.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buffer</p></td>
+<td class="parameter_description"><p>the object which received the signal</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data set when the signal handler was connected.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.127.12.6.6"></a><h4>Returns</h4>
+<p> the time of the last pushed packet.</p>
+<p></p>
+</div>
+<p>Flags: Action</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.20</div>
+</body>
+</html>
