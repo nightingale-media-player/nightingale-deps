@@ -43,7 +43,7 @@ libgstapplemedia_la_LIBADD =			\
 	-lgstaudio-$(GST_API_VERSION)		\
 	$(GMODULE_NO_EXPORT_LIBS)
 
-libgstapplemedia_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
+libgstapplemedia_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS) --tag=CC
 
 libgstapplemedia_la_LDFLAGS =			\
 	$(GST_PLUGIN_LDFLAGS)			\
@@ -69,25 +69,22 @@ noinst_HEADERS =				\
 	atdec.h 				\
 	dynapi.h				\
 	dynapi-internal.h                       \
-	iosassetsrc.h
+	iosassetsrc.h				\
+	avfassetsrc.h
 
 if HAVE_IOS
 
 libgstapplemedia_la_SOURCES +=			\
 	iosassetsrc.m
-#	avfvideosrc.m
 
 libgstapplemedia_la_LDFLAGS +=			\
 	-Wl,-framework -Wl,Foundation		\
 	-Wl,-framework -Wl,AssetsLibrary
-#	-Wl,-framework -Wl,AVFoundation
 
 else
 
 libgstapplemedia_la_SOURCES +=			\
-	qtkitvideosrc.m				\
-	vtenc.c 				\
-	vtdec.c
+	qtkitvideosrc.m
 
 libgstapplemedia_la_LDFLAGS +=			\
 	-Wl,-framework -Wl,Cocoa		\
@@ -95,3 +92,21 @@ libgstapplemedia_la_LDFLAGS +=			\
 
 endif
 
+if HAVE_AVFOUNDATION
+
+libgstapplemedia_la_SOURCES +=			\
+	avfvideosrc.m				\
+	avfassetsrc.m
+
+libgstapplemedia_la_LDFLAGS +=			\
+	-Wl,-framework -Wl,AVFoundation
+
+endif
+
+if HAVE_VIDEOTOOLBOX
+libgstapplemedia_la_SOURCES +=			\
+	vtenc.c 				\
+	vtdec.c
+
+libgstapplemedia_la_LDFLAGS += -Wl,-framework -Wl,VideoToolbox
+endif

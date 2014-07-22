@@ -185,16 +185,14 @@ gst_square_class_init (GstSquareClass * klass)
   gstelement_class = (GstElementClass *) klass;
   gstgt_class = (GstGeometricTransformClass *) klass;
 
-  parent_class = g_type_class_peek_parent (klass);
-
   gst_element_class_set_static_metadata (gstelement_class,
       "square",
       "Transform/Effect/Video",
       "Distort center part of the image into a square",
       "Filippo Argiolas <filippo.argiolas@gmail.com>");
 
-  gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_square_set_property);
-  gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_square_get_property);
+  gobject_class->set_property = gst_square_set_property;
+  gobject_class->get_property = gst_square_get_property;
 
   g_object_class_install_property (gobject_class, PROP_WIDTH,
       g_param_spec_double ("width", "Width",

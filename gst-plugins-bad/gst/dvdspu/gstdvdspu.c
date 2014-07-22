@@ -79,13 +79,6 @@ static GstStaticPadTemplate subpic_sink_factory =
     GST_STATIC_CAPS ("subpicture/x-dvd; subpicture/x-pgs")
     );
 
-static const guint32 default_clut[16] = {
-  0xb48080, 0x248080, 0x628080, 0xd78080,
-  0x808080, 0x808080, 0x808080, 0x808080,
-  0x808080, 0x808080, 0x808080, 0x808080,
-  0x808080, 0x808080, 0x808080, 0x808080
-};
-
 #define gst_dvd_spu_parent_class parent_class
 G_DEFINE_TYPE (GstDVDSpu, gst_dvd_spu, GST_TYPE_ELEMENT);
 
@@ -171,6 +164,8 @@ gst_dvd_spu_init (GstDVDSpu * dvdspu)
       gst_pad_new_from_static_template (&subpic_sink_factory, "subpicture");
   gst_pad_set_chain_function (dvdspu->subpic_sinkpad, gst_dvd_spu_subpic_chain);
   gst_pad_set_event_function (dvdspu->subpic_sinkpad, gst_dvd_spu_subpic_event);
+
+  GST_PAD_SET_PROXY_ALLOCATION (dvdspu->videosinkpad);
 
   gst_element_add_pad (GST_ELEMENT (dvdspu), dvdspu->videosinkpad);
   gst_element_add_pad (GST_ELEMENT (dvdspu), dvdspu->subpic_sinkpad);
@@ -1064,6 +1059,7 @@ gst_dvd_spu_subpic_event (GstPad * pad, GstObject * parent, GstEvent * event)
       break;
     }
     case GST_EVENT_CUSTOM_DOWNSTREAM:
+    case GST_EVENT_CUSTOM_DOWNSTREAM_STICKY:
     case GST_EVENT_CUSTOM_DOWNSTREAM_OOB:
     {
       const GstStructure *structure = gst_event_get_structure (event);

@@ -101,6 +101,11 @@ typedef enum {
  * @GST_H264_NAL_SEQ_END: End of sequence nal unit
  * @GST_H264_NAL_STREAM_END: End of stream nal unit
  * @GST_H264_NAL_FILLER_DATA: Filler data nal lunit
+ * @GST_H264_NAL_SPS_EXT: Sequence parameter set (SPS) extension NAL unit
+ * @GST_H264_NAL_PREFIX_UNIT: Prefix NAL unit
+ * @GST_H264_NAL_SUBSET_SPS: Subset sequence parameter set (SPS) NAL unit
+ * @GST_H264_NAL_SLICE_AUX: Auxiliary coded picture without partitioning NAL unit
+ * @GST_H264_NAL_SLICE_EXT: Coded slice extension NAL unit
  *
  * Indicates the type of H264 Nal Units
  */
@@ -118,7 +123,12 @@ typedef enum
   GST_H264_NAL_AU_DELIMITER = 9,
   GST_H264_NAL_SEQ_END      = 10,
   GST_H264_NAL_STREAM_END   = 11,
-  GST_H264_NAL_FILLER_DATA  = 12
+  GST_H264_NAL_FILLER_DATA  = 12,
+  GST_H264_NAL_SPS_EXT      = 13,
+  GST_H264_NAL_PREFIX_UNIT  = 14,
+  GST_H264_NAL_SUBSET_SPS   = 15,
+  GST_H264_NAL_SLICE_AUX    = 19,
+  GST_H264_NAL_SLICE_EXT    = 20
 } GstH264NalUnitType;
 
 /**
@@ -146,6 +156,7 @@ typedef enum
  * GstH264SEIPayloadType:
  * @GST_H264_SEI_BUF_PERIOD: Buffering Period SEI Message
  * @GST_H264_SEI_PIC_TIMING: Picture Timing SEI Message
+ * @GST_H264_SEI_RECOVERY_POINT: Recovery Point SEI Message (D.2.7)
  * ...
  *
  * The type of SEI message.
@@ -153,7 +164,8 @@ typedef enum
 typedef enum
 {
   GST_H264_SEI_BUF_PERIOD = 0,
-  GST_H264_SEI_PIC_TIMING = 1
+  GST_H264_SEI_PIC_TIMING = 1,
+  GST_H264_SEI_RECOVERY_POINT = 6,
       /* and more...  */
 } GstH264SEIPayloadType;
 
@@ -224,20 +236,25 @@ typedef struct _GstH264SliceHdr               GstH264SliceHdr;
 typedef struct _GstH264ClockTimestamp         GstH264ClockTimestamp;
 typedef struct _GstH264PicTiming              GstH264PicTiming;
 typedef struct _GstH264BufferingPeriod        GstH264BufferingPeriod;
+typedef struct _GstH264RecoveryPoint          GstH264RecoveryPoint;
 typedef struct _GstH264SEIMessage             GstH264SEIMessage;
 
 /**
  * GstH264NalUnit:
- * @ref_idc: not equal to 0 specifies that the content of the NAL unit contains a sequence
- *  parameter set, a sequence * parameter set extension, a subset sequence parameter set, a
- *  picture parameter set, a slice of a reference picture, a slice data partition of a
- *  reference picture, or a prefix NAL unit preceding a slice of a reference picture.
+ * @ref_idc: not equal to 0 specifies that the content of the NAL unit
+ *  contains a sequence parameter set, a sequence parameter set
+ *  extension, a subset sequence parameter set, a picture parameter
+ *  set, a slice of a reference picture, a slice data partition of a
+ *  reference picture, or a prefix NAL unit preceding a slice of a
+ *  reference picture.
  * @type: A #GstH264NalUnitType
  * @idr_pic_flag: calculated idr_pic_flag
- * @size: The size of the nal unit starting from @offset
- * @offset: The offset of the actual start of the nal unit
- * @sc_offset:The offset of the start code of the nal unit
- * @valid: If the nal unit is valid, which mean it has
+ * @size: The size of the nal unit starting from @offset, thus
+ *  including the header bytes. e.g. @type (nal_unit_type)
+ * @offset: The offset of the actual start of the nal unit, thus
+ *  including the header bytes
+ * @sc_offset: The offset of the start code of the nal unit
+ * @valid: If the nal unit is valid, which means it has
  * already been parsed
  * @data: The data from which the Nalu has been parsed
  *
@@ -385,7 +402,7 @@ struct _GstH264VUIParams
   GstH264HRDParams nal_hrd_parameters;
 
   guint8 vcl_hrd_parameters_present_flag;
-  /* if nal_hrd_parameters_present_flag */
+  /* if vcl_hrd_parameters_present_flag */
   GstH264HRDParams vcl_hrd_parameters;
 
   guint8 low_delay_hrd_flag;
@@ -696,6 +713,14 @@ struct _GstH264BufferingPeriod
   guint8 vcl_initial_cpb_removal_delay_offset[32];
 };
 
+struct _GstH264RecoveryPoint
+{
+  guint32 recovery_frame_cnt;
+  guint8 exact_match_flag;
+  guint8 broken_link_flag;
+  guint8 changing_slice_group_idc;
+};
+
 struct _GstH264SEIMessage
 {
   GstH264SEIPayloadType payloadType;
@@ -703,6 +728,7 @@ struct _GstH264SEIMessage
   union {
     GstH264BufferingPeriod buffering_period;
     GstH264PicTiming pic_timing;
+    GstH264RecoveryPoint recovery_point;
     /* ... could implement more */
   } payload;
 };
@@ -759,5 +785,23 @@ GstH264ParserResult gst_h264_parse_sps                (GstH264NalUnit *nalu,
 GstH264ParserResult gst_h264_parse_pps                (GstH264NalParser *nalparser,
                                                        GstH264NalUnit *nalu, GstH264PPS *pps);
 
+void                gst_h264_pps_clear                (GstH264PPS *pps);
+
+void    gst_h264_quant_matrix_8x8_get_zigzag_from_raster (guint8 out_quant[64],
+                                                          const guint8 quant[64]);
+
+void    gst_h264_quant_matrix_8x8_get_raster_from_zigzag (guint8 out_quant[64],
+                                                          const guint8 quant[64]);
+
+void    gst_h264_quant_matrix_4x4_get_zigzag_from_raster (guint8 out_quant[16],
+                                                          const guint8 quant[16]);
+
+void    gst_h264_quant_matrix_4x4_get_raster_from_zigzag (guint8 out_quant[16],
+                                                          const guint8 quant[16]);
+
+void gst_h264_video_calculate_framerate (const GstH264SPS * sps, guint field_pic_flag,
+    guint pic_struct, gint * fps_num, gint * fps_den);
+
 G_END_DECLS
+
 #endif

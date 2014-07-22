@@ -498,8 +498,7 @@ gst_schro_dec_process (GstSchroDec * schro_dec, gboolean eos)
 
           schro_frame_unref (schro_frame);
         }
-        if (tag)
-          schro_tag_free (tag);
+        schro_tag_free (tag);
         if (!eos) {
           go = FALSE;
         }
@@ -574,7 +573,7 @@ gst_schro_dec_decide_allocation (GstVideoDecoder * decoder, GstQuery * query)
     gst_buffer_pool_config_add_option (config,
         GST_BUFFER_POOL_OPTION_VIDEO_META);
   }
-
+  gst_buffer_pool_set_config (pool, config);
   gst_object_unref (pool);
 
   return TRUE;

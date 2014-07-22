@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gst-plugins-bad-0.10.21.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 12:44+0100\n"
+"POT-Creation-Date: 2014-07-19 16:40+0200\n"
 "PO-Revision-Date: 2011-04-26 19:21+0200\n"
 "Last-Translator: Server Acim <serveracim@gmail.com>\n"
 "Language-Team: Turkish <gnu-tr-u12a@lists.sourceforge.net>\n"
@@ -15,6 +15,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
+
+msgid "Internal data stream error."
+msgstr "İç veri akım hatası."
+
+msgid "format wasn't negotiated before get function"
+msgstr ""
 
 msgid "Could not read title information for DVD."
 msgstr "DVD'deki başlık bilgisi okunamıyor."
@@ -48,15 +54,16 @@ msgstr ""
 msgid "Couldn't download fragments"
 msgstr ""
 
+#, fuzzy
+msgid "Could not open sndfile stream for reading."
+msgstr "Dosyayı \"%s\" okumak için açamıyor."
+
 msgid "No file name specified for writing."
 msgstr "Yazmak için dosya adı belirtilmedi."
 
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr "Dosyayı \"%s\" yazmak için açamıyor."
-
-msgid "Internal data stream error."
-msgstr "İç veri akım hatası."
 
 #, c-format
 msgid "Could not write to file \"%s\"."
@@ -106,6 +113,10 @@ msgstr "Aygıt açılamaz durumda \"%s\"."
 
 #, c-format
 msgid "Could not get settings from frontend device \"%s\"."
+msgstr "Aygıt ayarları bulunamadı \"%s\"."
+
+#, fuzzy, c-format
+msgid "Cannot enumerate delivery systems from frontend device \"%s\"."
 msgstr "Aygıt ayarları bulunamadı \"%s\"."
 
 #, c-format

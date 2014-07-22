@@ -389,8 +389,14 @@ read_failed:
 eos:
   {
     gst_buffer_unref (buf);
-    GST_DEBUG_OBJECT (src, "Reading data gave EOS");
-    return GST_FLOW_EOS;
+    if (src->cur_offset == 0) {
+      GST_ELEMENT_ERROR (src, RESOURCE, READ, (NULL),
+          ("Failed to read any data from stream, check your URL"));
+      return GST_FLOW_ERROR;
+    } else {
+      GST_DEBUG_OBJECT (src, "Reading data gave EOS");
+      return GST_FLOW_EOS;
+    }
   }
 }
 
@@ -410,7 +416,7 @@ gst_rtmp_src_query (GstBaseSrc * basesrc, GstQuery * query)
 
       gst_query_parse_position (query, &format, NULL);
       if (format == GST_FORMAT_TIME) {
-        gst_query_set_duration (query, format, src->last_timestamp);
+        gst_query_set_position (query, format, src->last_timestamp);
         ret = TRUE;
       }
       break;
@@ -427,6 +433,15 @@ gst_rtmp_src_query (GstBaseSrc * basesrc, GstQuery * query)
           ret = TRUE;
         }
       }
+      break;
+    }
+    case GST_QUERY_SCHEDULING:{
+      gst_query_set_scheduling (query,
+          GST_SCHEDULING_FLAG_SEQUENTIAL | GST_SCHEDULING_FLAG_BANDWIDTH_LIMITED,
+          1, -1, 0);
+      gst_query_add_scheduling_mode (query, GST_PAD_MODE_PUSH);
+
+      ret = TRUE;
       break;
     }
     default:

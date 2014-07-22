@@ -1298,6 +1298,15 @@
    fun:snd_config_update
 }
 {
+   <alsa leak snd_config_searcha_hooks>
+   Memcheck:Leak
+   fun:*alloc
+   fun:_dl_close_worker
+   ...
+   fun:snd_config_searcha_hooks
+}
+
+{
    <nss lookup within ALSA>
    Memcheck:Leak
    fun:malloc
@@ -2528,41 +2537,13 @@
 }
 
 
-## Leak of property_list in gstffmpegcfg.c
-## This list is created in gst_ffmpegcsp_init(), called from
-## gst_ffmpegenc_register.
-{
-   <insert a suppression name here>
-   Memcheck:Leak
-   fun:malloc
-   fun:g_malloc
-   fun:g_slice_alloc
-   fun:g_datalist_id_set_data_full
-   fun:gst_ffmpeg_cfg_init
-   fun:gst_ffmpegenc_register
-   fun:plugin_init
-}
-{
-   <insert a suppression name here>
-   Memcheck:Leak
-   fun:malloc
-   fun:g_malloc
-   fun:g_slice_alloc
-   fun:g_datalist_id_set_data_full
-   fun:g_param_spec_set_qdata_full
-   fun:gst_ffmpeg_cfg_init
-   fun:gst_ffmpegenc_register
-   fun:plugin_init
-}
-
-
+## Leak of everything allocated by gst-libav plugin init
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
    fun:*alloc
-   fun:*
+   ...
    fun:gst_ffmpeg_cfg_init
-   fun:gst_ffmpegenc_register
 }
 
 ## Leak of GIO module through gnomevfs

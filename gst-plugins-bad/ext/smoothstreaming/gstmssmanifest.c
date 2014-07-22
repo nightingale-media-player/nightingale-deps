@@ -32,6 +32,9 @@
 
 #include "gstmssmanifest.h"
 
+GST_DEBUG_CATEGORY_EXTERN (mssdemux_debug);
+#define GST_CAT_DEFAULT mssdemux_debug
+
 #define DEFAULT_TIMESCALE             10000000
 
 #define MSS_NODE_STREAM_FRAGMENT      "c"
@@ -39,6 +42,7 @@
 
 #define MSS_PROP_BITRATE              "Bitrate"
 #define MSS_PROP_DURATION             "d"
+#define MSS_PROP_LANGUAGE             "Language"
 #define MSS_PROP_NUMBER               "n"
 #define MSS_PROP_STREAM_DURATION      "Duration"
 #define MSS_PROP_TIME                 "t"
@@ -71,6 +75,7 @@ struct _GstMssStream
   GList *qualities;
 
   gchar *url;
+  gchar *lang;
 
   GList *current_fragment;
   GList *current_quality;
@@ -146,6 +151,7 @@ _gst_mss_stream_init (GstMssStream * stream, xmlNodePtr node)
 
   /* get the base url path generator */
   stream->url = (gchar *) xmlGetProp (node, (xmlChar *) MSS_PROP_URL);
+  stream->lang = (gchar *) xmlGetProp (node, (xmlChar *) MSS_PROP_LANGUAGE);
 
   for (iter = node->children; iter; iter = iter->next) {
     if (node_has_type (iter, MSS_NODE_STREAM_FRAGMENT)) {
@@ -262,6 +268,7 @@ gst_mss_stream_free (GstMssStream * stream)
   g_list_free_full (stream->qualities,
       (GDestroyNotify) gst_mss_stream_quality_free);
   xmlFree (stream->url);
+  xmlFree (stream->lang);
   g_regex_unref (stream->regex_position);
   g_regex_unref (stream->regex_bitrate);
   g_free (stream);
@@ -330,6 +337,22 @@ _gst_mss_stream_audio_caps_from_fourcc (gchar * fourcc)
   } else if (strcmp (fourcc, "WmaPro") == 0 || strcmp (fourcc, "WMAP") == 0) {
     return gst_caps_new_simple ("audio/x-wma", "wmaversion", G_TYPE_INT, 3,
         NULL);
+  }
+  return NULL;
+}
+
+static GstCaps *
+_gst_mss_stream_audio_caps_from_audio_tag (gint audiotag)
+{
+  switch (audiotag) {
+    case 83:                   /* MP3 */
+      return gst_caps_new_simple ("audio/mpeg", "mpegversion", G_TYPE_INT, 1,
+          "layer", G_TYPE_INT, 3, NULL);
+    case 255:                  /* AAC */
+      return gst_caps_new_simple ("audio/mpeg", "mpegversion", G_TYPE_INT, 4,
+          NULL);
+    default:
+      break;
   }
   return NULL;
 }
@@ -560,23 +583,32 @@ static GstCaps *
 _gst_mss_stream_audio_caps_from_qualitylevel_xml (GstMssStreamQuality * q)
 {
   xmlNodePtr node = q->xmlnode;
-  GstCaps *caps;
+  GstCaps *caps = NULL;
   GstStructure *structure;
   gchar *fourcc = (gchar *) xmlGetProp (node, (xmlChar *) "FourCC");
+  gchar *audiotag = (gchar *) xmlGetProp (node, (xmlChar *) "AudioTag");
   gchar *channels_str = (gchar *) xmlGetProp (node, (xmlChar *) "Channels");
   gchar *rate_str = (gchar *) xmlGetProp (node, (xmlChar *) "SamplingRate");
-  gchar *block_align_str = (gchar *) xmlGetProp(node, (xmlChar *) "PacketSize");
+  gchar *block_align_str =
+      (gchar *) xmlGetProp (node, (xmlChar *) "PacketSize");
   gchar *codec_data_str =
       (gchar *) xmlGetProp (node, (xmlChar *) "CodecPrivateData");
   GstBuffer *codec_data = NULL;
   gint block_align = 0;
   gint rate = 0;
   gint channels = 0;
+  gint atag = 0;
 
   if (!fourcc)                  /* sometimes the fourcc is omitted, we fallback to the Subtype in the StreamIndex node */
     fourcc = (gchar *) xmlGetProp (node->parent, (xmlChar *) "Subtype");
 
-  caps = _gst_mss_stream_audio_caps_from_fourcc (fourcc);
+  if (fourcc) {
+    caps = _gst_mss_stream_audio_caps_from_fourcc (fourcc);
+  } else if (audiotag) {
+    atag = g_ascii_strtoull (audiotag, NULL, 10);
+    caps = _gst_mss_stream_audio_caps_from_audio_tag (atag);
+  }
+
   if (!caps)
     goto end;
 
@@ -593,27 +625,42 @@ _gst_mss_stream_audio_caps_from_qualitylevel_xml (GstMssStreamQuality * q)
     block_align = (int) g_ascii_strtoull (block_align_str, NULL, 10);
 
   if (!codec_data) {
-    GstMapInfo mapinfo;
+    gint codec_data_len;
     codec_data_str = (gchar *) xmlGetProp (node, (xmlChar *) "WaveFormatEx");
-    if (codec_data_str && strlen (codec_data_str)) {
-      codec_data = gst_buffer_from_hex_string ((gchar *) codec_data_str);
 
-      /* since this is a waveformatex, try to get the block_align and rate */
-      gst_buffer_map (codec_data, &mapinfo, GST_MAP_READ);
-      if (mapinfo.size >= 14) {
+    if (codec_data_str != NULL) {
+      codec_data_len = strlen (codec_data_str) / 2;
+
+      /* a WAVEFORMATEX structure is 18 bytes */
+      if (codec_data_str && codec_data_len >= 18) {
+        GstMapInfo mapinfo;
+        codec_data = gst_buffer_from_hex_string ((gchar *) codec_data_str);
+
+        /* since this is a WAVEFORMATEX, try to get the block_align and rate */
+        gst_buffer_map (codec_data, &mapinfo, GST_MAP_READ);
         if (!channels_str) {
           channels = GST_READ_UINT16_LE (mapinfo.data + 2);
         }
         if (!rate_str) {
           rate = GST_READ_UINT32_LE (mapinfo.data + 4);
         }
-        block_align = GST_READ_UINT16_LE (mapinfo.data + 12);
+        if (!block_align) {
+          block_align = GST_READ_UINT16_LE (mapinfo.data + 12);
+        }
+        gst_buffer_unmap (codec_data, &mapinfo);
+
+        /* Consume all the WAVEFORMATEX structure, and pass only the rest of
+         * the data as the codec private data */
+        gst_buffer_resize (codec_data, 18, -1);
+      } else {
+        GST_WARNING ("Dropping WaveFormatEx: data is %d bytes, "
+            "but at least 18 bytes are expected", codec_data_len);
       }
-      gst_buffer_unmap (codec_data, &mapinfo);
     }
   }
 
-  if (!codec_data && strcmp (fourcc, "AACL") == 0 && rate && channels) {
+  if (!codec_data && ((fourcc && strcmp (fourcc, "AACL") == 0) || atag == 255)
+      && rate && channels) {
     codec_data = _make_aacl_codec_data (rate, channels);
   }
 
@@ -637,6 +684,7 @@ end:
   if (codec_data)
     gst_buffer_unref (codec_data);
   xmlFree (fourcc);
+  xmlFree (audiotag);
   xmlFree (channels_str);
   xmlFree (rate_str);
   xmlFree (block_align_str);
@@ -1170,4 +1218,10 @@ gst_buffer_from_hex_string (const gchar * s)
 
   gst_buffer_unmap (buffer, &info);
   return buffer;
+}
+
+const gchar *
+gst_mss_stream_get_lang (GstMssStream * stream)
+{
+  return stream->lang;
 }

@@ -29,8 +29,8 @@
 #endif
 
 #include <string.h>
-#include <gst/base/gstbytereader.h>
-#include <gst/pbutils/codec-utils.h>
+#include <gst/base/base.h>
+#include <gst/pbutils/pbutils.h>
 #include <gst/video/video.h>
 
 #include "gstmpeg4videoparse.h"
@@ -187,6 +187,7 @@ gst_mpeg4vparse_init (GstMpeg4VParse * parse)
   parse->last_report = GST_CLOCK_TIME_NONE;
 
   gst_base_parse_set_pts_interpolation (GST_BASE_PARSE (parse), FALSE);
+  GST_PAD_SET_ACCEPT_INTERSECT (GST_BASE_PARSE_SINK_PAD (parse));
 }
 
 static void
@@ -210,6 +211,7 @@ gst_mpeg4vparse_reset (GstMpeg4VParse * mp4vparse)
   mp4vparse->level = NULL;
   mp4vparse->pending_key_unit_ts = GST_CLOCK_TIME_NONE;
   mp4vparse->force_key_unit_event = NULL;
+  mp4vparse->discont = FALSE;
 
   gst_buffer_replace (&mp4vparse->config, NULL);
   memset (&mp4vparse->vol, 0, sizeof (mp4vparse->vol));
@@ -413,6 +415,11 @@ gst_mpeg4vparse_handle_frame (GstBaseParse * parse,
   gboolean ret = FALSE;
   guint framesize = 0;
 
+  if (G_UNLIKELY (GST_BUFFER_FLAG_IS_SET (frame->buffer,
+              GST_BUFFER_FLAG_DISCONT))) {
+    mp4vparse->discont = TRUE;
+  }
+
   gst_buffer_map (frame->buffer, &map, GST_MAP_READ);
   data = map.data;
   size = map.size;
@@ -527,6 +534,10 @@ out:
     res = gst_mpeg4vparse_parse_frame (parse, frame);
     if (res == GST_BASE_PARSE_FLOW_DROPPED)
       frame->flags |= GST_BASE_PARSE_FRAME_FLAG_DROP;
+    if (G_UNLIKELY (mp4vparse->discont)) {
+      GST_BUFFER_FLAG_SET (frame->buffer, GST_BUFFER_FLAG_DISCONT);
+      mp4vparse->discont = FALSE;
+    }
     return gst_base_parse_finish_frame (parse, frame, framesize);
   }
 
@@ -708,6 +719,25 @@ gst_mpeg4vparse_pre_push_frame (GstBaseParse * parse, GstBaseParseFrame * frame)
   gboolean push_codec = FALSE;
   GstEvent *event = NULL;
 
+  if (!mp4vparse->sent_codec_tag) {
+    GstTagList *taglist;
+    GstCaps *caps;
+
+    taglist = gst_tag_list_new_empty ();
+
+    /* codec tag */
+    caps = gst_pad_get_current_caps (GST_BASE_PARSE_SRC_PAD (parse));
+    gst_pb_utils_add_codec_description_to_tag_list (taglist,
+        GST_TAG_VIDEO_CODEC, caps);
+    gst_caps_unref (caps);
+
+    gst_pad_push_event (GST_BASE_PARSE_SRC_PAD (mp4vparse),
+        gst_event_new_tag (taglist));
+
+    /* also signals the end of first-frame processing */
+    mp4vparse->sent_codec_tag = TRUE;
+  }
+
   if ((event = check_pending_key_unit_event (mp4vparse->force_key_unit_event,
               &parse->segment, GST_BUFFER_TIMESTAMP (buffer),
               GST_BUFFER_FLAGS (buffer), mp4vparse->pending_key_unit_ts))) {
@@ -830,6 +860,19 @@ gst_mpeg4vparse_set_caps (GstBaseParse * parse, GstCaps * caps)
   return TRUE;
 }
 
+static void
+remove_fields (GstCaps * caps)
+{
+  guint i, n;
+
+  n = gst_caps_get_size (caps);
+  for (i = 0; i < n; i++) {
+    GstStructure *s = gst_caps_get_structure (caps, i);
+
+    gst_structure_remove_field (s, "parsed");
+  }
+}
+
 
 static GstCaps *
 gst_mpeg4vparse_get_caps (GstBaseParse * parse, GstCaps * filter)
@@ -838,29 +881,23 @@ gst_mpeg4vparse_get_caps (GstBaseParse * parse, GstCaps * filter)
   GstCaps *res;
 
   templ = gst_pad_get_pad_template_caps (GST_BASE_PARSE_SINK_PAD (parse));
-  peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), filter);
+  if (filter) {
+    GstCaps *fcopy = gst_caps_copy (filter);
+    /* Remove the fields we convert */
+    remove_fields (fcopy);
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), fcopy);
+    gst_caps_unref (fcopy);
+  } else
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), NULL);
 
   if (peercaps) {
-    guint i, n;
-
     /* Remove the parsed field */
     peercaps = gst_caps_make_writable (peercaps);
-    n = gst_caps_get_size (peercaps);
-    for (i = 0; i < n; i++) {
-      GstStructure *s = gst_caps_get_structure (peercaps, i);
-
-      gst_structure_remove_field (s, "parsed");
-    }
+    remove_fields (peercaps);
 
     res = gst_caps_intersect_full (peercaps, templ, GST_CAPS_INTERSECT_FIRST);
     gst_caps_unref (peercaps);
-    res = gst_caps_make_writable (res);
-
-    /* Append the template caps because we still want to accept
-     * caps without any fields in the case upstream does not
-     * know anything.
-     */
-    gst_caps_append (res, templ);
+    gst_caps_unref (templ);
   } else {
     res = templ;
   }

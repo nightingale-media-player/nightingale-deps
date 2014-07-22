@@ -3,7 +3,7 @@
   <description>Microsoft&apos;s Smooth Streaming format support </description>
   <filename>../../ext/smoothstreaming/.libs/libgstsmoothstreaming.so</filename>
   <basename>libgstsmoothstreaming.so</basename>
-  <version>1.2.3</version>
+  <version>1.4.0</version>
   <license>LGPL</license>
   <source>gst-plugins-bad</source>
   <package>GStreamer Bad Plug-ins source release</package>
@@ -12,7 +12,7 @@
     <element>
       <name>mssdemux</name>
       <longname>Smooth Streaming demuxer</longname>
-      <class>Demuxer</class>
+      <class>Codec/Demuxer/Adaptive</class>
       <description>Parse and demultiplex a Smooth Streaming manifest into audio and video streams</description>
       <author>Thiago Santos &lt;thiago.sousa.santos@collabora.com&gt;</author>
       <pads>

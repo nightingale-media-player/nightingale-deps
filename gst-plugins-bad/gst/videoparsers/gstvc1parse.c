@@ -81,7 +81,8 @@
 
 #include "gstvc1parse.h"
 
-#include <gst/base/gstbytereader.h>
+#include <gst/base/base.h>
+#include <gst/pbutils/pbutils.h>
 #include <string.h>
 
 GST_DEBUG_CATEGORY (vc1_parse_debug);
@@ -234,6 +235,7 @@ gst_vc1_parse_init (GstVC1Parse * vc1parse)
   gst_base_parse_set_has_timing_info (GST_BASE_PARSE (vc1parse), FALSE);
 
   gst_vc1_parse_reset (vc1parse);
+  GST_PAD_SET_ACCEPT_INTERSECT (GST_BASE_PARSE_SINK_PAD (vc1parse));
 }
 
 static void
@@ -363,6 +365,20 @@ gst_vc1_parse_renegotiate (GstVC1Parse * vc1parse)
   return TRUE;
 }
 
+static void
+remove_fields (GstCaps * caps)
+{
+  guint i, n;
+
+  n = gst_caps_get_size (caps);
+  for (i = 0; i < n; i++) {
+    GstStructure *s = gst_caps_get_structure (caps, i);
+
+    gst_structure_remove_field (s, "stream-format");
+    gst_structure_remove_field (s, "header-format");
+  }
+}
+
 static GstCaps *
 gst_vc1_parse_get_sink_caps (GstBaseParse * parse, GstCaps * filter)
 {
@@ -371,22 +387,21 @@ gst_vc1_parse_get_sink_caps (GstBaseParse * parse, GstCaps * filter)
   GstCaps *ret;
 
   templ = gst_pad_get_pad_template_caps (GST_BASE_PARSE_SINK_PAD (parse));
-  peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), NULL);
-  if (peercaps) {
-    guint i, n;
-    GstStructure *s;
+  if (filter) {
+    GstCaps *fcopy = gst_caps_copy (filter);
+    /* Remove the fields we convert */
+    remove_fields (fcopy);
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), fcopy);
+    gst_caps_unref (fcopy);
+  } else
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), NULL);
 
+  if (peercaps) {
     /* Remove the stream-format and header-format fields
      * and add the generic ones again by intersecting
      * with our template */
     peercaps = gst_caps_make_writable (peercaps);
-    n = gst_caps_get_size (peercaps);
-    for (i = 0; i < n; i++) {
-      s = gst_caps_get_structure (peercaps, i);
-
-      gst_structure_remove_field (s, "stream-format");
-      gst_structure_remove_field (s, "header-format");
-    }
+    remove_fields (peercaps);
 
     ret = gst_caps_intersect_full (peercaps, templ, GST_CAPS_INTERSECT_FIRST);
     gst_caps_unref (peercaps);
@@ -502,11 +517,63 @@ detected:
   return GST_FLOW_OK;
 }
 
+static int
+gst_vc1_parse_get_max_framerate (GstVC1Parse * vc1parse)
+{
+  /* http://wiki.multimedia.cx/index.php?title=VC-1#Setup_Data_.2F_Sequence_Layer */
+  switch (vc1parse->profile) {
+    case GST_VC1_PROFILE_SIMPLE:
+      switch (vc1parse->level) {
+        case GST_VC1_LEVEL_LOW:
+          return 15;
+        case GST_VC1_LEVEL_MEDIUM:
+          return 30;
+        default:
+          g_assert_not_reached ();
+          return 0;
+      }
+      break;
+    case GST_VC1_PROFILE_MAIN:
+      switch (vc1parse->level) {
+        case GST_VC1_LEVEL_LOW:
+          return 24;
+        case GST_VC1_LEVEL_MEDIUM:
+          return 30;
+        case GST_VC1_LEVEL_HIGH:
+          return 30;
+        default:
+          g_assert_not_reached ();
+          return 0;
+      }
+      break;
+    case GST_VC1_PROFILE_ADVANCED:
+      switch (vc1parse->level) {
+        case GST_VC1_LEVEL_L0:
+          return 30;
+        case GST_VC1_LEVEL_L1:
+          return 30;
+        case GST_VC1_LEVEL_L2:
+          return 60;
+        case GST_VC1_LEVEL_L3:
+          return 60;
+        case GST_VC1_LEVEL_L4:
+          return 60;
+        default:
+          g_assert_not_reached ();
+          return 0;
+      }
+      break;
+    default:
+      g_assert_not_reached ();
+      return 0;
+  }
+}
+
 static gboolean
 gst_vc1_parse_update_caps (GstVC1Parse * vc1parse)
 {
   GstCaps *caps;
-  GstVC1Profile profile;
+  GstVC1Profile profile = -1;
   const gchar *stream_format, *header_format;
 
   if (gst_pad_has_current_caps (GST_BASE_PARSE_SRC_PAD (vc1parse))
@@ -544,7 +611,7 @@ gst_vc1_parse_update_caps (GstVC1Parse * vc1parse)
     g_assert_not_reached ();
 
   if (profile == GST_VC1_PROFILE_ADVANCED) {
-    const gchar *level;
+    const gchar *level = NULL;
     /* Caller must make sure this is valid here */
     g_assert (vc1parse->seq_hdr_buffer);
     switch ((GstVC1Level) vc1parse->seq_hdr.advanced.level) {
@@ -584,7 +651,7 @@ gst_vc1_parse_update_caps (GstVC1Parse * vc1parse)
         "profile", G_TYPE_STRING, profile_str, NULL);
 
     if (vc1parse->seq_layer_buffer) {
-      const gchar *level;
+      const gchar *level = NULL;
       switch (vc1parse->seq_layer.struct_b.level) {
         case GST_VC1_LEVEL_LOW:
           level = "low";
@@ -732,7 +799,7 @@ gst_vc1_parse_update_caps (GstVC1Parse * vc1parse)
         /* 0x0000000c */
         GST_WRITE_UINT32_BE (data + 20, 0x0000000c);
         /* structB */
-        if (vc1parse->level != -1)
+        if ((gint) vc1parse->level != -1)
           data[24] = (vc1parse->level << 5);
         else
           data[24] = 0x40;      /* Use HIGH level */
@@ -741,9 +808,18 @@ gst_vc1_parse_update_caps (GstVC1Parse * vc1parse)
         /* Unknown HRD_RATE */
         GST_WRITE_UINT32_BE (data + 28, 0);
         /* Framerate */
-        GST_WRITE_UINT32_BE (data + 32,
-            ((guint32) (((gdouble) vc1parse->fps_n) /
-                    ((gdouble) vc1parse->fps_d) + 0.5)));
+        if (vc1parse->fps_d == 0) {
+          /* If not known, it seems we need to put in the maximum framerate
+             possible for the profile/level used (this is for RTP
+             (https://tools.ietf.org/html/draft-ietf-avt-rtp-vc1-06#section-6.1),
+             so likely elsewhere too */
+          GST_WRITE_UINT32_BE (data + 32,
+              gst_vc1_parse_get_max_framerate (vc1parse));
+        } else {
+          GST_WRITE_UINT32_BE (data + 32,
+              ((guint32) (((gdouble) vc1parse->fps_n) /
+                      ((gdouble) vc1parse->fps_d) + 0.5)));
+        }
         gst_buffer_unmap (codec_data, &minfo);
 
         gst_caps_set_simple (caps, "codec_data", GST_TYPE_BUFFER, codec_data,
@@ -1203,6 +1279,25 @@ static GstFlowReturn
 gst_vc1_parse_pre_push_frame (GstBaseParse * parse, GstBaseParseFrame * frame)
 {
   GstVC1Parse *vc1parse = GST_VC1_PARSE (parse);
+
+  if (!vc1parse->sent_codec_tag) {
+    GstTagList *taglist;
+    GstCaps *caps;
+
+    taglist = gst_tag_list_new_empty ();
+
+    /* codec tag */
+    caps = gst_pad_get_current_caps (GST_BASE_PARSE_SRC_PAD (parse));
+    gst_pb_utils_add_codec_description_to_tag_list (taglist,
+        GST_TAG_VIDEO_CODEC, caps);
+    gst_caps_unref (caps);
+
+    gst_pad_push_event (GST_BASE_PARSE_SRC_PAD (vc1parse),
+        gst_event_new_tag (taglist));
+
+    /* also signals the end of first-frame processing */
+    vc1parse->sent_codec_tag = TRUE;
+  }
 
   if (vc1parse->input_header_format != vc1parse->output_header_format ||
       vc1parse->input_stream_format != vc1parse->output_stream_format) {

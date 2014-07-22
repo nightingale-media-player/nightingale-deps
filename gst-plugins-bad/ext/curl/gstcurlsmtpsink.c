@@ -122,7 +122,8 @@ static gboolean gst_curl_smtp_sink_prepare_transfer (GstCurlBaseSink * bcsink);
 static size_t gst_curl_smtp_sink_transfer_data_buffer (GstCurlBaseSink * sink,
     void *curl_ptr, size_t block_size, guint * last_chunk);
 static size_t gst_curl_smtp_sink_flush_data_unlocked (GstCurlBaseSink * bcsink,
-    void *curl_ptr, size_t block_size, gboolean new_file, gboolean close_transfer);
+    void *curl_ptr, size_t block_size, gboolean new_file,
+    gboolean close_transfer);
 
 /* private functions */
 
@@ -166,7 +167,8 @@ add_final_boundary_unlocked (GstCurlSmtpSink * sink)
   g_assert (array);
 
   /* it will need up to 5 bytes if line-breaking is enabled
-   * additional byte is needed for <CR> as it is not automatically added by glib */
+   * additional byte is needed for <CR> as it is not automatically added by
+   * glib */
   data_out = g_malloc (6);
   save = sink->base64_chunk->save;
   state = sink->base64_chunk->state;
@@ -563,12 +565,10 @@ gst_curl_smtp_sink_set_payload_headers_unlocked (GstCurlBaseSink * bcsink)
   sink->base64_chunk->save = 0;
 
   if (G_UNLIKELY (!append_headers)) {
-    if (sink->base64_chunk != NULL) {
-      g_byte_array_free (sink->base64_chunk->chunk_array, TRUE);
-      sink->base64_chunk->chunk_array = NULL;
-      g_free (sink->base64_chunk);
-      sink->base64_chunk = NULL;
-    }
+    g_byte_array_free (sink->base64_chunk->chunk_array, TRUE);
+    sink->base64_chunk->chunk_array = NULL;
+    g_free (sink->base64_chunk);
+    sink->base64_chunk = NULL;
     return FALSE;
   }
 
@@ -630,6 +630,7 @@ gst_curl_smtp_sink_set_transfer_options_unlocked (GstCurlBaseSink * bcsink)
   gchar *from_header = NULL;
   gchar *enc_from;
   gint i;
+  CURLcode res;
 
   g_assert (sink->payload_headers == NULL);
   g_assert (sink->mail_rcpt != NULL);
@@ -637,7 +638,7 @@ gst_curl_smtp_sink_set_transfer_options_unlocked (GstCurlBaseSink * bcsink)
 
   /* time */
   date = g_date_time_new_now_local ();
-  date_str = g_date_time_format (date, "%a %b %e %H:%M:%S %Y");
+  date_str = g_date_time_format (date, "%a %b %e %H:%M:%S %Y %z");
   g_date_time_unref (date);
 
   /* recipient, sender and subject are all UTF-8 strings, which are additionally
@@ -694,7 +695,13 @@ gst_curl_smtp_sink_set_transfer_options_unlocked (GstCurlBaseSink * bcsink)
   g_free (from_header);
   g_free (request_headers);
 
-  curl_easy_setopt (bcsink->curl, CURLOPT_MAIL_FROM, sink->mail_from);
+  res = curl_easy_setopt (bcsink->curl, CURLOPT_MAIL_FROM, sink->mail_from);
+  if (res != CURLE_OK) {
+    bcsink->error =
+        g_strdup_printf ("failed to set SMTP sender email address: %s",
+        curl_easy_strerror (res));
+    return FALSE;
+  }
 
   if (sink->curl_recipients != NULL) {
     curl_slist_free_all (sink->curl_recipients);
@@ -709,7 +716,14 @@ gst_curl_smtp_sink_set_transfer_options_unlocked (GstCurlBaseSink * bcsink)
   g_strfreev (tmp_list);
 
   /* note that the CURLOPT_MAIL_RCPT takes a list, not a char array */
-  curl_easy_setopt (bcsink->curl, CURLOPT_MAIL_RCPT, sink->curl_recipients);
+  res = curl_easy_setopt (bcsink->curl, CURLOPT_MAIL_RCPT,
+      sink->curl_recipients);
+  if (res != CURLE_OK) {
+    bcsink->error =
+        g_strdup_printf ("failed to set SMTP recipient email address: %s",
+        curl_easy_strerror (res));
+    return FALSE;
+  }
 
   parent_class = GST_CURL_TLS_SINK_GET_CLASS (sink);
 
@@ -720,7 +734,8 @@ gst_curl_smtp_sink_set_transfer_options_unlocked (GstCurlBaseSink * bcsink)
   return TRUE;
 }
 
-static void                     // FIXME: exactly the same function as in http sink
+/* FIXME: exactly the same function as in http sink */
+static void
 gst_curl_smtp_sink_set_mime_type (GstCurlBaseSink * bcsink, GstCaps * caps)
 {
   GstCurlSmtpSink *sink = GST_CURL_SMTP_SINK (bcsink);
@@ -750,14 +765,16 @@ gst_curl_smtp_sink_flush_data_unlocked (GstCurlBaseSink * bcsink,
   gint len;
   gchar *data_out;
 
-  GST_DEBUG ("live: %d, num attachments: %d, num attachments_left: %d, eos: %d, "
+  GST_DEBUG
+      ("live: %d, num attachments: %d, num attachments_left: %d, eos: %d, "
       "close_transfer: %d, final boundary: %d, array_len: %d", bcsink->is_live,
-      sink->nbr_attachments, sink->nbr_attachments_left, sink->eos, close_transfer,
-      sink->final_boundary_added, array->len);
+      sink->nbr_attachments, sink->nbr_attachments_left, sink->eos,
+      close_transfer, sink->final_boundary_added, array->len);
 
 
   if ((bcsink->is_live && (sink->nbr_attachments_left == sink->nbr_attachments))
-      || (sink->nbr_attachments == 1) || sink->eos || sink->final_boundary_added) {
+      || (sink->nbr_attachments == 1) || sink->eos
+      || sink->final_boundary_added) {
     bcsink->is_live = FALSE;
     sink->reset_transfer_options = TRUE;
     sink->final_boundary_added = FALSE;
@@ -768,7 +785,8 @@ gst_curl_smtp_sink_flush_data_unlocked (GstCurlBaseSink * bcsink,
   }
 
   /* it will need up to 5 bytes if line-breaking is enabled, however an
-   * additional byte is needed for <CR> as it is not automatically added by glib */
+   * additional byte is needed for <CR> as it is not automatically added by
+   * glib */
   data_out = g_malloc (6);
   len = g_base64_encode_close (TRUE, data_out, &state, &save);
   chunk->state = state;
@@ -833,8 +851,8 @@ transfer_chunk (void *curl_ptr, TransferBuffer * buffer, Base64Chunk * chunk,
     gint i;
 
     /* if line-breaking is enabled, at least: ((len / 3 + 1) * 4 + 4) / 72 + 1
-     * bytes of extra space is required. However, additional <CR>'s are required,
-     * thus we need ((len / 3 + 2) * 4 + 4) / 72 + 2 extra bytes.
+     * bytes of extra space is required. However, additional <CR>'s are
+     * required, thus we need ((len / 3 + 2) * 4 + 4) / 72 + 2 extra bytes.
      */
     size_out = (bytes_to_send / 3 + 1) * 4 + 4 + bytes_to_send +
         ((bytes_to_send / 3 + 2) * 4 + 4) / 72 + 2;
@@ -937,7 +955,6 @@ transfer_payload_headers (GstCurlSmtpSink * sink,
   return bytes_to_send;
 }
 
-
 static gboolean
 gst_curl_smtp_sink_prepare_transfer (GstCurlBaseSink * bcsink)
 {
@@ -947,39 +964,48 @@ gst_curl_smtp_sink_prepare_transfer (GstCurlBaseSink * bcsink)
 
   if (sink->pop_location && strlen (sink->pop_location)) {
     if ((sink->pop_curl = curl_easy_init ()) == NULL) {
-      GST_DEBUG_OBJECT (sink, "POP protocol: failed to create handler");
-      GST_ELEMENT_ERROR (sink, RESOURCE, WRITE,
-          ("POP protocol: failed to create handler"), (NULL));
-
+      bcsink->error = g_strdup ("POP protocol: failed to create handler");
       return FALSE;
     }
 
-    curl_easy_setopt (sink->pop_curl, CURLOPT_URL, sink->pop_location);
+    res = curl_easy_setopt (sink->pop_curl, CURLOPT_URL, sink->pop_location);
+    if (res != CURLE_OK) {
+      bcsink->error = g_strdup_printf ("failed to set URL: %s",
+          curl_easy_strerror (res));
+      return FALSE;
+    }
+
     if (sink->pop_user != NULL && strlen (sink->pop_user) &&
         sink->pop_passwd != NULL && strlen (sink->pop_passwd)) {
-      curl_easy_setopt (sink->pop_curl, CURLOPT_USERNAME, sink->pop_user);
-      curl_easy_setopt (sink->pop_curl, CURLOPT_PASSWORD, sink->pop_passwd);
+      res = curl_easy_setopt (sink->pop_curl, CURLOPT_USERNAME, sink->pop_user);
+      if (res != CURLE_OK) {
+        bcsink->error = g_strdup_printf ("failed to set user name: %s",
+            curl_easy_strerror (res));
+        return FALSE;
+      }
+
+      res = curl_easy_setopt (sink->pop_curl, CURLOPT_PASSWORD,
+          sink->pop_passwd);
+      if (res != CURLE_OK) {
+        bcsink->error = g_strdup_printf ("failed to set user name: %s",
+            curl_easy_strerror (res));
+        return FALSE;
+      }
     }
   }
 
-  if (sink->pop_curl == NULL) {
-    goto end;
+  if (sink->pop_curl != NULL) {
+    /* ready to initialize connection to POP server */
+    res = curl_easy_perform (sink->pop_curl);
+    if (res != CURLE_OK) {
+      bcsink->error = g_strdup_printf ("POP transfer failed: %s",
+          curl_easy_strerror (res));
+      ret = FALSE;
+    }
+
+    curl_easy_cleanup (sink->pop_curl);
+    sink->pop_curl = NULL;
   }
 
-  /* ready to initialize connection to POP server */
-  res = curl_easy_perform (sink->pop_curl);
-  if (res != CURLE_OK) {
-    GST_DEBUG_OBJECT (sink, "POP transfer failed: %s",
-        curl_easy_strerror (res));
-    GST_ELEMENT_ERROR (sink, RESOURCE, WRITE, ("POP transfer failed: %s",
-            curl_easy_strerror (res)), (NULL));
-
-    ret = FALSE;
-  }
-
-  curl_easy_cleanup (sink->pop_curl);
-  sink->pop_curl = NULL;
-
-end:
   return ret;
 }

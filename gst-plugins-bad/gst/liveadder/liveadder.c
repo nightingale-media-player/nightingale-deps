@@ -34,8 +34,6 @@
  *
  * Unlike the adder, the liveadder mixes the streams according the their
  * timestamps and waits for some milli-seconds before trying doing the mixing.
- *
- * Last reviewed on 2008-02-10 (0.10.11)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -827,6 +825,7 @@ gst_live_adder_sink_query (GstPad * pad, GstObject * parent, GstQuery * query)
       gst_query_parse_caps (query, &filter);
       result = gst_live_adder_sink_getcaps (adder, pad, filter);
       gst_query_set_caps_result (query, result);
+      gst_caps_unref (result);
       res = TRUE;
       break;
     }
@@ -918,7 +917,8 @@ gst_live_adder_length_from_duration (GstLiveAdder * adder,
     GstClockTime duration)
 {
   guint64 ret = GST_AUDIO_INFO_BPF (&adder->info) *
-      (duration * GST_AUDIO_INFO_RATE (&adder->info) / GST_SECOND);
+      gst_util_uint64_scale_int_round (duration,
+      GST_AUDIO_INFO_RATE (&adder->info), GST_SECOND);
 
   return (guint) ret;
 }
@@ -1114,15 +1114,18 @@ gst_live_live_adder_chain (GstPad * pad, GstObject * parent, GstBuffer * buffer)
 
     mix_duration = mix_end - mix_start;
 
-    gst_buffer_map (oldbuffer, &oldmap, GST_MAP_WRITE);
-    gst_buffer_map (buffer, &map, GST_MAP_READ);
-    adder->func (oldmap.data +
-        gst_live_adder_length_from_duration (adder, old_skip),
-        map.data +
-        gst_live_adder_length_from_duration (adder, skip),
-        gst_live_adder_length_from_duration (adder, mix_duration));
-    gst_buffer_unmap (oldbuffer, &oldmap);
-    gst_buffer_unmap (buffer, &map);
+    if (!GST_BUFFER_FLAG_IS_SET (buffer, GST_BUFFER_FLAG_GAP)) {
+      GST_BUFFER_FLAG_UNSET (oldbuffer, GST_BUFFER_FLAG_GAP);
+      gst_buffer_map (oldbuffer, &oldmap, GST_MAP_WRITE);
+      gst_buffer_map (buffer, &map, GST_MAP_READ);
+      adder->func (oldmap.data +
+          gst_live_adder_length_from_duration (adder, old_skip),
+          map.data +
+          gst_live_adder_length_from_duration (adder, skip),
+          gst_live_adder_length_from_duration (adder, mix_duration));
+      gst_buffer_unmap (oldbuffer, &oldmap);
+      gst_buffer_unmap (buffer, &map);
+    }
     skip += mix_duration;
   }
 
@@ -1203,7 +1206,6 @@ gst_live_adder_loop (gpointer data)
   GstClockReturn ret;
   GstBuffer *buffer = NULL;
   GstFlowReturn result;
-  GstEvent *newseg_event = NULL;
 
   GST_OBJECT_LOCK (adder);
 
@@ -1310,9 +1312,6 @@ push_buffer:
   else
     adder->next_timestamp = GST_CLOCK_TIME_NONE;
   GST_OBJECT_UNLOCK (adder);
-
-  if (newseg_event)
-    gst_pad_push_event (adder->srcpad, newseg_event);
 
   GST_LOG_OBJECT (adder, "About to push buffer time:%" GST_TIME_FORMAT
       " duration:%" GST_TIME_FORMAT,

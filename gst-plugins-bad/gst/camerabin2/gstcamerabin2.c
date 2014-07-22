@@ -1056,11 +1056,20 @@ gst_camera_bin_handle_message (GstBin * bin, GstMessage * message)
         g_mutex_unlock (&camerabin->preview_list_mutex);
 
         if (location) {
+          GstStructure *new_structure;
           GValue value = { 0 };
+
           g_value_init (&value, G_TYPE_STRING);
           g_value_take_string (&value, location);
-          gst_structure_take_value ((GstStructure *) structure, "location",
-              &value);
+
+          /* need to do a copy because the structure isn't mutable */
+          new_structure = gst_structure_copy (structure);
+          gst_structure_take_value (new_structure, "location", &value);
+
+          gst_message_unref (message);
+          message =
+              gst_message_new_element (GST_OBJECT_CAST (camerabin),
+              new_structure);
         }
 
         GST_LOG_OBJECT (bin, "received preview-image message");
@@ -1112,8 +1121,8 @@ gst_camera_bin_handle_message (GstBin * bin, GstMessage * message)
     default:
       break;
   }
-  if (message)
-    GST_BIN_CLASS (parent_class)->handle_message (bin, message);
+
+  GST_BIN_CLASS (parent_class)->handle_message (bin, message);
 
   if (dec_counter)
     GST_CAMERA_BIN2_PROCESSING_DEC (camerabin);
@@ -1749,8 +1758,13 @@ gst_camera_bin_create_elements (GstCameraBin2 * camera)
     camera->src_capture_notify_id = g_signal_connect (G_OBJECT (camera->src),
         "notify::ready-for-capture",
         G_CALLBACK (gst_camera_bin_src_notify_readyforcapture), camera);
-    gst_element_link_pads (camera->src, "vfsrc", camera->viewfinderbin_queue,
-        "sink");
+
+    if (!gst_element_link_pads (camera->src, "vfsrc",
+	    camera->viewfinderbin_queue, "sink")) {
+      GST_ERROR_OBJECT (camera,
+          "Failed to link camera source's vfsrc pad to viewfinder queue");
+      goto fail;
+    }
 
     if (!gst_element_link_pads (camera->src, "imgsrc",
             camera->imagebin_capsfilter, "sink")) {
@@ -2065,12 +2079,6 @@ gst_camera_bin_set_property (GObject * object, guint prop_id,
     }
       break;
     case PROP_IMAGE_CAPTURE_CAPS:{
-      GstPad *pad = NULL;
-
-      if (camera->src)
-        pad =
-            gst_element_get_static_pad (camera->src,
-            GST_BASE_CAMERA_SRC_IMAGE_PAD_NAME);
 
       GST_DEBUG_OBJECT (camera,
           "Setting image capture caps to %" GST_PTR_FORMAT,
@@ -2082,19 +2090,9 @@ gst_camera_bin_set_property (GObject * object, guint prop_id,
       } else {
         GST_WARNING_OBJECT (camera, "Image capsfilter missing");
       }
-
-      if (pad)
-        gst_object_unref (pad);
     }
       break;
     case PROP_VIDEO_CAPTURE_CAPS:{
-      GstPad *pad = NULL;
-
-      if (camera->src)
-        pad =
-            gst_element_get_static_pad (camera->src,
-            GST_BASE_CAMERA_SRC_VIDEO_PAD_NAME);
-
       GST_DEBUG_OBJECT (camera,
           "Setting video capture caps to %" GST_PTR_FORMAT,
           gst_value_get_caps (value));
@@ -2106,19 +2104,9 @@ gst_camera_bin_set_property (GObject * object, guint prop_id,
         GST_WARNING_OBJECT (camera, "Video capsfilter missing");
       }
 
-      if (pad) {
-        gst_object_unref (pad);
-      }
     }
       break;
     case PROP_VIEWFINDER_CAPS:{
-      GstPad *pad = NULL;
-
-      if (camera->src)
-        pad =
-            gst_element_get_static_pad (camera->src,
-            GST_BASE_CAMERA_SRC_VIEWFINDER_PAD_NAME);
-
       GST_DEBUG_OBJECT (camera,
           "Setting viewfinder capture caps to %" GST_PTR_FORMAT,
           gst_value_get_caps (value));
@@ -2128,10 +2116,6 @@ gst_camera_bin_set_property (GObject * object, guint prop_id,
             gst_value_get_caps (value), NULL);
       } else {
         GST_WARNING_OBJECT (camera, "Viewfinder capsfilter missing");
-      }
-
-      if (pad) {
-        gst_object_unref (pad);
       }
     }
       break;

@@ -35,7 +35,8 @@
 #endif
 
 #include <gst/gst.h>
-#include <gst/base/gstbytereader.h>
+#include <gst/base/base.h>
+#include <gst/pbutils/pbutils.h>
 #include <string.h>
 #include "gstdiracparse.h"
 #include "dirac_parse.h"
@@ -136,6 +137,7 @@ gst_dirac_parse_init (GstDiracParse * diracparse)
 {
   gst_base_parse_set_min_frame_size (GST_BASE_PARSE (diracparse), 13);
   gst_base_parse_set_pts_interpolation (GST_BASE_PARSE (diracparse), FALSE);
+  GST_PAD_SET_ACCEPT_INTERSECT (GST_BASE_PARSE_SINK_PAD (diracparse));
 }
 
 void
@@ -188,7 +190,11 @@ gst_dirac_parse_finalize (GObject * object)
 static gboolean
 gst_dirac_parse_start (GstBaseParse * parse)
 {
+  GstDiracParse *diracparse = GST_DIRAC_PARSE (parse);
+
   gst_base_parse_set_min_frame_size (parse, 13);
+
+  diracparse->sent_codec_tag = FALSE;
 
   return TRUE;
 }
@@ -383,8 +389,41 @@ gst_dirac_parse_convert (GstBaseParse * parse, GstFormat src_format,
 static GstFlowReturn
 gst_dirac_parse_pre_push_frame (GstBaseParse * parse, GstBaseParseFrame * frame)
 {
+  GstDiracParse *diracparse = GST_DIRAC_PARSE (parse);
+
+  if (!diracparse->sent_codec_tag) {
+    GstTagList *taglist;
+    GstCaps *caps;
+
+    taglist = gst_tag_list_new_empty ();
+
+    /* codec tag */
+    caps = gst_pad_get_current_caps (GST_BASE_PARSE_SRC_PAD (parse));
+    gst_pb_utils_add_codec_description_to_tag_list (taglist,
+        GST_TAG_VIDEO_CODEC, caps);
+    gst_caps_unref (caps);
+
+    gst_pad_push_event (GST_BASE_PARSE_SRC_PAD (diracparse),
+        gst_event_new_tag (taglist));
+
+    /* also signals the end of first-frame processing */
+    diracparse->sent_codec_tag = TRUE;
+  }
 
   return GST_FLOW_OK;
+}
+
+static void
+remove_fields (GstCaps * caps)
+{
+  guint i, n;
+
+  n = gst_caps_get_size (caps);
+  for (i = 0; i < n; i++) {
+    GstStructure *s = gst_caps_get_structure (caps, i);
+
+    gst_structure_remove_field (s, "parsed");
+  }
 }
 
 static GstCaps *
@@ -394,28 +433,23 @@ gst_dirac_parse_get_sink_caps (GstBaseParse * parse, GstCaps * filter)
   GstCaps *res;
 
   templ = gst_pad_get_pad_template_caps (GST_BASE_PARSE_SINK_PAD (parse));
-  peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), filter);
+  if (filter) {
+    GstCaps *fcopy = gst_caps_copy (filter);
+    /* Remove the fields we convert */
+    remove_fields (fcopy);
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), fcopy);
+    gst_caps_unref (fcopy);
+  } else
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), NULL);
 
   if (peercaps) {
-    guint i, n;
-
     /* Remove the parsed field */
     peercaps = gst_caps_make_writable (peercaps);
-    n = gst_caps_get_size (peercaps);
-    for (i = 0; i < n; i++) {
-      GstStructure *s = gst_caps_get_structure (peercaps, i);
-      gst_structure_remove_field (s, "parsed");
-    }
+    remove_fields (peercaps);
 
     res = gst_caps_intersect_full (peercaps, templ, GST_CAPS_INTERSECT_FIRST);
     gst_caps_unref (peercaps);
-    res = gst_caps_make_writable (res);
-
-    /* Append the template caps because we still want to accept
-     * caps without any fields in the case upstream does not
-     * know anything.
-     */
-    gst_caps_append (res, templ);
+    gst_caps_unref (templ);
   } else {
     res = templ;
   }

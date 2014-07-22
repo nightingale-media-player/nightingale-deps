@@ -111,13 +111,6 @@ gst_stretch_get_property (GObject * object, guint prop_id,
   }
 }
 
-/* Clean up */
-static void
-gst_stretch_finalize (GObject * obj)
-{
-  G_OBJECT_CLASS (parent_class)->finalize (obj);
-}
-
 static gboolean
 stretch_map (GstGeometricTransform * gt, gint x, gint y, gdouble * in_x,
     gdouble * in_y)
@@ -176,25 +169,20 @@ gst_stretch_class_init (GstStretchClass * klass)
   gstelement_class = (GstElementClass *) klass;
   gstgt_class = (GstGeometricTransformClass *) klass;
 
-  parent_class = g_type_class_peek_parent (klass);
-
   gst_element_class_set_static_metadata (gstelement_class,
       "stretch",
       "Transform/Effect/Video",
       "Stretch the image in a circle around the center point",
       "Filippo Argiolas <filippo.argiolas@gmail.com>");
 
-  gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_stretch_set_property);
-  gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_stretch_get_property);
-
+  gobject_class->set_property = gst_stretch_set_property;
+  gobject_class->get_property = gst_stretch_get_property;
 
   g_object_class_install_property (gobject_class, PROP_INTENSITY,
       g_param_spec_double ("intensity", "intensity",
           "Intensity of the stretch effect",
           0.0, 1.0, DEFAULT_INTENSITY,
           GST_PARAM_CONTROLLABLE | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-  gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_stretch_finalize);
 
   gstgt_class->map_func = stretch_map;
 }

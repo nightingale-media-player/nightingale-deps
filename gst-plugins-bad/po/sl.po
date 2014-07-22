@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gst-plugins-bad 0.10.21.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 12:44+0100\n"
+"POT-Creation-Date: 2014-07-19 16:40+0200\n"
 "PO-Revision-Date: 2011-04-26 15:21+0100\n"
 "Last-Translator: Klemen Košir <klemen.kosir@gmx.com>\n"
 "Language-Team: Slovenian <translation-team-sl@lists.sourceforge.net>\n"
@@ -21,6 +21,12 @@ msgstr ""
 "X-Poedit-Language: Slovenian\n"
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
+
+msgid "Internal data stream error."
+msgstr "Notranja napaka pretoka podatkov."
+
+msgid "format wasn't negotiated before get function"
+msgstr ""
 
 msgid "Could not read title information for DVD."
 msgstr "Podatkov naslova DVD-ja ni mogoče prebrati."
@@ -54,15 +60,16 @@ msgstr ""
 msgid "Couldn't download fragments"
 msgstr ""
 
+#, fuzzy
+msgid "Could not open sndfile stream for reading."
+msgstr "Datoteke \"%s\" ni mogoče odpreti za branje."
+
 msgid "No file name specified for writing."
 msgstr "Ni navedenega imena datoteke za pisanje."
 
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr "Datoteke \"%s\" ni mogoče odpreti za pisanje."
-
-msgid "Internal data stream error."
-msgstr "Notranja napaka pretoka podatkov."
 
 #, c-format
 msgid "Could not write to file \"%s\"."
@@ -112,6 +119,10 @@ msgstr "Čelne naprave \"%s\" ni mogoče odpreti."
 
 #, c-format
 msgid "Could not get settings from frontend device \"%s\"."
+msgstr "Nastavitev čelne naprave \"%s\" ni mogoče pridobiti."
+
+#, fuzzy, c-format
+msgid "Cannot enumerate delivery systems from frontend device \"%s\"."
 msgstr "Nastavitev čelne naprave \"%s\" ni mogoče pridobiti."
 
 #, c-format

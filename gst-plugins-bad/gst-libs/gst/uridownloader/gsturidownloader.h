@@ -22,6 +22,11 @@
 #ifndef __GSTURI_DOWNLOADER_H__
 #define __GSTURI_DOWNLOADER_H__
 
+#ifndef GST_USE_UNSTABLE_API
+#warning "The UriDownloaded library from gst-plugins-bad is unstable API and may change in future."
+#warning "You can define GST_USE_UNSTABLE_API to avoid this warning."
+#endif
+
 #include <glib-object.h>
 #include <gst/gst.h>
 #include "gstfragment.h"
@@ -56,8 +61,8 @@ struct _GstUriDownloaderClass
 GType gst_uri_downloader_get_type (void);
 
 GstUriDownloader * gst_uri_downloader_new (void);
-GstFragment * gst_uri_downloader_fetch_uri (GstUriDownloader * downloader, const gchar * uri);
-GstFragment * gst_uri_downloader_fetch_uri_with_range (GstUriDownloader * downloader, const gchar * uri, gint64 range_start, gint64 range_end);
+GstFragment * gst_uri_downloader_fetch_uri (GstUriDownloader * downloader, const gchar * uri, const gchar * referer, gboolean compress, gboolean refresh, gboolean allow_cache, GError ** err);
+GstFragment * gst_uri_downloader_fetch_uri_with_range (GstUriDownloader * downloader, const gchar * uri, const gchar * referer, gboolean compress, gboolean refresh, gboolean allow_cache, gint64 range_start, gint64 range_end, GError ** err);
 void gst_uri_downloader_reset (GstUriDownloader *downloader);
 void gst_uri_downloader_cancel (GstUriDownloader *downloader);
 void gst_uri_downloader_free (GstUriDownloader *downloader);

@@ -229,7 +229,7 @@ gst_geometric_transform_transform_frame (GstVideoFilter * vfilter,
 {
   GstGeometricTransform *gt;
   GstGeometricTransformClass *klass;
-  gint x, y;
+  gint x, y, i;
   GstFlowReturn ret = GST_FLOW_OK;
   gdouble *ptr;
   guint8 *in_data;
@@ -245,14 +245,8 @@ gst_geometric_transform_transform_frame (GstVideoFilter * vfilter,
     /* in AYUV black is not just all zeros:
      * 0x10 is black for Y,
      * 0x80 is black for Cr and Cb */
-#ifndef _MSC_VER
-    for (int i = 0; i < out_frame->map[0].size; i += 4)
-      GST_WRITE_UINT32_BE (out_data + i, 0xff108080);
-#else
-    gint i;
     for (i = 0; i < out_frame->map[0].size; i += 4)
       GST_WRITE_UINT32_BE (out_data + i, 0xff108080);
-#endif
   } else {
     memset (out_data, 0, out_frame->map[0].size);
   }
@@ -377,10 +371,8 @@ gst_geometric_transform_class_init (gpointer klass, gpointer class_data)
 
   parent_class = g_type_class_peek_parent (klass);
 
-  obj_class->set_property =
-      GST_DEBUG_FUNCPTR (gst_geometric_transform_set_property);
-  obj_class->get_property =
-      GST_DEBUG_FUNCPTR (gst_geometric_transform_get_property);
+  obj_class->set_property = gst_geometric_transform_set_property;
+  obj_class->get_property = gst_geometric_transform_get_property;
 
   trans_class->stop = GST_DEBUG_FUNCPTR (gst_geometric_transform_stop);
   trans_class->before_transform =

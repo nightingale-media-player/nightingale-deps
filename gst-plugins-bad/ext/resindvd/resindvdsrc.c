@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include <gmodule.h>
 #include <gst/gst.h>
@@ -1946,9 +1947,9 @@ rsn_dvdsrc_prepare_streamsinfo_event (resinDvdSrc * src)
     vts_attr = get_vts_attr (src, src->vts_n);
     v_attr = &vts_attr->vtsm_video_attr;
     a_attrs = &vts_attr->vtsm_audio_attr;
-    n_audio = vts_attr->nr_of_vtsm_audio_streams;
+    n_audio = MAX (1, vts_attr->nr_of_vtsm_audio_streams);
     s_attrs = &vts_attr->vtsm_subp_attr;
-    n_subp = vts_attr->nr_of_vtsm_subp_streams;
+    n_subp = MAX (1, vts_attr->nr_of_vtsm_subp_streams);
   } else {
     /* VTS domain */
     vts_attr = get_vts_attr (src, src->vts_n);
@@ -2491,6 +2492,7 @@ rsn_dvdsrc_post_title_info (GstElement * element)
     } else {
       g_value_set_uint64 (&item, gst_util_uint64_scale (duration, GST_SECOND,
               90000));
+      free (times);
     }
     gst_value_array_append_value (&array, &item);
     g_value_unset (&item);

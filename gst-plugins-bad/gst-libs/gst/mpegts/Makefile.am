@@ -4,7 +4,8 @@ libgstmpegts_@GST_API_VERSION@_la_SOURCES = \
 	gstmpegtssection.c \
 	gstmpegtsdescriptor.c \
 	gst-dvb-descriptor.c \
-	gst-dvb-section.c
+	gst-dvb-section.c \
+	gst-atsc-section.c
 
 libgstmpegts_@GST_API_VERSION@includedir = \
 	$(includedir)/gstreamer-@GST_API_VERSION@/gst/mpegts
@@ -15,6 +16,7 @@ libgstmpegts_@GST_API_VERSION@include_HEADERS = \
 	gstmpegtssection.h 			\
 	gst-atsc-section.h			\
 	gst-dvb-section.h			\
+	gst-scte-section.h			\
 	gstmpegtsdescriptor.h			\
 	gst-dvb-descriptor.h			\
 	mpegts.h
@@ -40,6 +42,7 @@ glib_enum_headers=gstmpegtssection.h	\
 	gstmpegtsdescriptor.h		\
 	gst-atsc-section.h		\
 	gst-dvb-section.h		\
+	gst-scte-section.h		\
 	gst-dvb-descriptor.h
 
 glib_enum_define=GST_MPEGTS
@@ -64,7 +67,7 @@ GstMpegts-@GST_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libgstmpegts-@GST_API_
 		GST_PLUGIN_SYSTEM_PATH_1_0="" GST_PLUGIN_PATH_1_0="" GST_REGISTRY_UPDATE=no \
 		$(INTROSPECTION_SCANNER) -v --namespace GstMpegts \
 		--nsversion=@GST_API_VERSION@ \
-		--identifier-prefix=GstMpegTs \
+		--identifier-prefix=GstMpegts \
 		--symbol-prefix=gst_mpegts \
 		--symbol-prefix=gst \
 		--warn-all -v \

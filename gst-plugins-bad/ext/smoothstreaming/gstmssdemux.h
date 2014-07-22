@@ -28,7 +28,6 @@
 #include <gst/base/gstdataqueue.h>
 #include "gstmssmanifest.h"
 #include <gst/uridownloader/gsturidownloader.h>
-#include "gstdownloadrate.h"
 
 G_BEGIN_DECLS
 
@@ -61,28 +60,40 @@ struct _GstMssDemuxStream {
 
   GstMssStream *manifest_stream;
 
+#if 0
   GstUriDownloader *downloader;
-  GstDataQueue *dataqueue;
+#endif
 
-  GstEvent *pending_newsegment;
+  GstEvent *pending_segment;
 
-  GstClockTime next_timestamp;
+  GstSegment segment;
 
   /* Downloading task */
   GstTask *download_task;
   GRecMutex download_lock;
 
+  GstFlowReturn last_ret;
   gboolean eos;
   gboolean have_data;
   gboolean cancelled;
-
-  GstDownloadRate download_rate;
+  gboolean restart_download;
 
   guint download_error_count;
+
+  /* download tooling */
+  GstElement *src;
+  GstPad *src_srcpad;
+  GMutex fragment_download_lock;
+  GCond fragment_download_cond;
+  gboolean starting_fragment;
+  gint64 download_start_time;
+  gint64 download_total_time;
+  gint64 download_total_bytes;
+  gint current_download_rate;
 };
 
 struct _GstMssDemux {
-  GstElement element;
+  GstBin bin;
 
   /* pads */
   GstPad *sinkpad;
@@ -96,17 +107,11 @@ struct _GstMssDemux {
   gchar *base_url;
   gchar *manifest_uri;
 
-  GstSegment segment;
-
   GSList *streams;
   guint n_videos;
   guint n_audios;
 
   gboolean update_bitrates;
-
-  /* Streaming task */
-  GstTask *stream_task;
-  GRecMutex stream_lock;
 
   /* properties */
   guint64 connection_speed; /* in bps */
@@ -115,7 +120,7 @@ struct _GstMssDemux {
 };
 
 struct _GstMssDemuxClass {
-  GstElementClass parent_class;
+  GstBinClass parent_class;
 };
 
 GType gst_mss_demux_get_type (void);

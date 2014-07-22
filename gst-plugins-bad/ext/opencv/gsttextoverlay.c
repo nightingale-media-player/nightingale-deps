@@ -137,6 +137,12 @@ gst_opencv_text_overlay_finalize (GObject * obj)
     cvReleaseImage (&filter->cvImage);
   }
 
+  if (filter->cvStorage) {
+    cvReleaseMemStorage (&filter->cvStorage);
+  }
+
+  g_free (filter->textbuf);
+
   G_OBJECT_CLASS (gst_opencv_text_overlay_parent_class)->finalize (obj);
 }
 
@@ -243,7 +249,6 @@ gst_opencv_text_overlay_init (GstOpencvTextOverlay * filter)
   filter->colorR = DEFAULT_PROP_COLOR;
   filter->colorG = DEFAULT_PROP_COLOR;
   filter->colorB = DEFAULT_PROP_COLOR;
-
 }
 
 static void
@@ -350,9 +355,12 @@ gst_opencv_text_overlay_handle_sink_event (GstPad * pad, GstObject * parent,
       gst_structure_get_int (structure, "width", &width);
       gst_structure_get_int (structure, "height", &height);
 
-      if (!filter->cvImage) {
-        filter->cvImage =
-            cvCreateImage (cvSize (width, height), IPL_DEPTH_8U, 3);
+      if (filter->cvImage) {
+        cvReleaseImage (&filter->cvImage);
+      }
+      filter->cvImage = cvCreateImage (cvSize (width, height), IPL_DEPTH_8U, 3);
+
+      if (!filter->cvStorage) {
         filter->cvStorage = cvCreateMemStorage (0);
       }
       break;

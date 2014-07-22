@@ -100,7 +100,7 @@ CRUFT_DIRS = \
 	$(top_srcdir)/gst/shapewipe \
 	$(top_srcdir)/gst/valve \
 	$(top_srcdir)/gst-libs/gst/baseparse \
-	$(top_srcdir)/gst-libs/gst/video \
+	$(top_srcdir)/gst-libs/gst/egl \
 	$(top_srcdir)/gst-libs/gst/signalprocessor \
 	$(top_srcdir)/tests/examples/scaletempo \
 	$(top_srcdir)/tests/examples/shapewipe \
@@ -109,13 +109,15 @@ CRUFT_DIRS = \
 	$(top_srcdir)/ext/alsaspdif \
 	$(top_srcdir)/ext/amrwbenc \
 	$(top_srcdir)/ext/cog \
+	$(top_srcdir)/ext/eglgles \
 	$(top_srcdir)/ext/ivorbis \
 	$(top_srcdir)/ext/jack \
 	$(top_srcdir)/ext/metadata \
 	$(top_srcdir)/ext/swfdec \
 	$(top_srcdir)/ext/tarkin \
 	$(top_srcdir)/ext/theora \
-	$(top_srcdir)/ext/vp8
+	$(top_srcdir)/ext/vp8 \
+	$(top_srcdir)/sys/mfc
 
 include $(top_srcdir)/common/cruft.mak
 

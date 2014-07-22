@@ -67,6 +67,7 @@ typedef struct _GstMultSegmentBaseType    GstMultSegmentBaseType;
 
 typedef enum
 {
+  GST_STREAM_UNKNOWN,
   GST_STREAM_VIDEO,           /* video stream (the main one) */
   GST_STREAM_AUDIO,           /* audio stream (optional) */
   GST_STREAM_APPLICATION      /* application stream (optional): for timed text/subtitles */
@@ -468,6 +469,8 @@ struct _GstMpdClient
 
   guint update_failed_count;
   gchar *mpd_uri;                             /* manifest file URI */
+  gchar *mpd_base_uri;                        /* base URI for resolving relative URIs.
+                                               * this will be different for redirects */
   GMutex lock;
 };
 
@@ -482,8 +485,9 @@ gboolean gst_mpd_parse (GstMpdClient *client, const gchar *data, gint size);
 
 /* Streaming management */
 gboolean gst_mpd_client_setup_media_presentation (GstMpdClient *client);
-gboolean gst_mpd_client_setup_streaming (GstMpdClient *client, GstStreamMimeType mimeType, const gchar* lang);
+gboolean gst_mpd_client_setup_streaming (GstMpdClient * client, GstAdaptationSetNode * adapt_set);
 gboolean gst_mpd_client_setup_representation (GstMpdClient *client, GstActiveStream *stream, GstRepresentationNode *representation);
+GList * gst_mpd_client_get_adaptation_sets (GstMpdClient * client);
 GstClockTime gst_mpd_client_get_next_fragment_duration (GstMpdClient * client, GstActiveStream * stream);
 GstClockTime gst_mpd_client_get_media_presentation_duration (GstMpdClient *client);
 gboolean gst_mpd_client_get_last_fragment_timestamp (GstMpdClient * client, guint stream_idx, GstClockTime * ts);
@@ -504,6 +508,7 @@ gboolean gst_mpd_client_set_period_id (GstMpdClient *client, const gchar * perio
 guint gst_mpd_client_get_period_index (GstMpdClient *client);
 const gchar *gst_mpd_client_get_period_id (GstMpdClient *client);
 gboolean gst_mpd_client_has_next_period (GstMpdClient *client);
+GstDateTime *gst_mpd_client_get_next_segment_availability_end_time (GstMpdClient * client, GstActiveStream * stream);
 
 /* Representation selection */
 gint gst_mpdparser_get_rep_idx_with_max_bandwidth (GList *Representations, gint max_bandwidth);
@@ -535,6 +540,9 @@ guint gst_mpd_client_get_audio_stream_num_channels (GstActiveStream * stream);
 
 /* Support multi language */
 guint gst_mpdparser_get_list_and_nb_of_audio_language (GstMpdClient *client, GList **lang);
+
+gint64 gst_mpd_client_calculate_time_difference (const GstDateTime * t1, const GstDateTime * t2);
+
 G_END_DECLS
 
 #endif /* __GST_MPDPARSER_H__ */

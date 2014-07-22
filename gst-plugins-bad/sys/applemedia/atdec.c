@@ -75,7 +75,7 @@ static GstStaticPadTemplate gst_atdec_sink_template =
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("audio/mpeg, mpegversion=4, framed=true, channels=[1,max];"
-        "audio/mpeg, mpegversion=1, layer=3")
+        "audio/mpeg, mpegversion=1, layer=[1, 3]")
     );
 
 G_DEFINE_TYPE_WITH_CODE (GstATDec, gst_atdec, GST_TYPE_AUDIO_DECODER,
@@ -84,7 +84,7 @@ G_DEFINE_TYPE_WITH_CODE (GstATDec, gst_atdec, GST_TYPE_AUDIO_DECODER,
 
 static GstStaticCaps aac_caps = GST_STATIC_CAPS ("audio/mpeg, mpegversion=4");
 static GstStaticCaps mp3_caps =
-GST_STATIC_CAPS ("audio/mpeg, mpegversion=1, layer=3");
+GST_STATIC_CAPS ("audio/mpeg, mpegversion=1, layer=[1, 3]");
 static GstStaticCaps raw_caps = GST_STATIC_CAPS ("audio/x-raw");
 
 static void
@@ -158,6 +158,8 @@ gst_atdec_destroy_queue (GstATDec * atdec, gboolean drain)
   AudioQueueStop (atdec->queue, drain);
   AudioQueueDispose (atdec->queue, true);
   atdec->queue = NULL;
+  atdec->output_position = 0;
+  atdec->input_position = 0;
 }
 
 void
@@ -179,6 +181,8 @@ gst_atdec_start (GstAudioDecoder * decoder)
   GstATDec *atdec = GST_ATDEC (decoder);
 
   GST_DEBUG_OBJECT (atdec, "start");
+  atdec->output_position = 0;
+  atdec->input_position = 0;
 
   return TRUE;
 }
@@ -213,17 +217,42 @@ gst_caps_to_at_format (GstCaps * caps, AudioStreamBasicDescription * format)
   int rate = 0;
   GstStructure *structure;
 
+  memset (format, 0, sizeof (AudioStreamBasicDescription));
+
   structure = gst_caps_get_structure (caps, 0);
   gst_structure_get_int (structure, "rate", &rate);
   gst_structure_get_int (structure, "channels", &channels);
   format->mSampleRate = rate;
   format->mChannelsPerFrame = channels;
 
-  if (can_intersect_static_caps (caps, &aac_caps))
+  if (can_intersect_static_caps (caps, &aac_caps)) {
     format->mFormatID = kAudioFormatMPEG4AAC;
-  else if (can_intersect_static_caps (caps, &mp3_caps))
-    format->mFormatID = kAudioFormatMPEGLayer3;
-  else if (can_intersect_static_caps (caps, &raw_caps)) {
+    format->mFramesPerPacket = 1024;
+  } else if (can_intersect_static_caps (caps, &mp3_caps)) {
+    gint layer, mpegaudioversion = 1;
+
+    gst_structure_get_int (structure, "layer", &layer);
+    gst_structure_get_int (structure, "mpegaudioversion", &mpegaudioversion);
+    switch (layer) {
+      case 1:
+        format->mFormatID = kAudioFormatMPEGLayer1;
+        format->mFramesPerPacket = 384;
+        break;
+      case 2:
+        format->mFormatID = kAudioFormatMPEGLayer2;
+        format->mFramesPerPacket = 1152;
+        break;
+      case 3:
+        format->mFormatID = kAudioFormatMPEGLayer3;
+        format->mFramesPerPacket = (mpegaudioversion == 1 ? 1152 : 576);
+        break;
+      default:
+        g_warn_if_reached ();
+        format->mFormatID = kAudioFormatMPEGLayer3;
+        format->mFramesPerPacket = 1152;
+        break;
+    }
+  } else if (can_intersect_static_caps (caps, &raw_caps)) {
     GstAudioFormat audio_format;
     const char *audio_format_str;
 
@@ -266,6 +295,8 @@ gst_atdec_set_format (GstAudioDecoder * decoder, GstCaps * caps)
   GstAudioInfo output_info = { 0 };
   AudioChannelLayout output_layout = { 0 };
   GstCaps *output_caps;
+  AudioTimeStamp timestamp = { 0 };
+  AudioQueueBufferRef output_buffer;
   GstATDec *atdec = GST_ATDEC (decoder);
 
   GST_DEBUG_OBJECT (atdec, "set_format");
@@ -275,6 +306,8 @@ gst_atdec_set_format (GstAudioDecoder * decoder, GstCaps * caps)
 
   /* configure input_format from caps */
   gst_caps_to_at_format (caps, &input_format);
+  /* Remember the number of samples per frame */
+  atdec->spf = input_format.mFramesPerPacket;
 
   /* negotiate output caps */
   output_caps = gst_pad_get_allowed_caps (GST_AUDIO_DECODER_SRC_PAD (atdec));
@@ -319,22 +352,50 @@ gst_atdec_set_format (GstAudioDecoder * decoder, GstCaps * caps)
   if (status)
     goto start_error;
 
+  timestamp.mFlags = kAudioTimeStampSampleTimeValid;
+  timestamp.mSampleTime = 0;
+
+  status =
+      AudioQueueAllocateBuffer (atdec->queue, atdec->spf * output_info.bpf,
+      &output_buffer);
+  if (status)
+    goto allocate_output_error;
+
+  status = AudioQueueOfflineRender (atdec->queue, &timestamp, output_buffer, 0);
+  if (status)
+    goto offline_render_error;
+
+  AudioQueueFreeBuffer (atdec->queue, output_buffer);
+
   return TRUE;
 
 create_queue_error:
   GST_ELEMENT_ERROR (atdec, STREAM, FORMAT, (NULL),
-      ("AudioQueueNewOutput returned error: %d", status));
+      ("AudioQueueNewOutput returned error: %d", (gint) status));
   return FALSE;
 
 set_format_error:
   GST_ELEMENT_ERROR (atdec, STREAM, FORMAT, (NULL),
-      ("AudioQueueSetOfflineRenderFormat returned error: %d", status));
+      ("AudioQueueSetOfflineRenderFormat returned error: %d", (gint) status));
   gst_atdec_destroy_queue (atdec, FALSE);
   return FALSE;
 
 start_error:
   GST_ELEMENT_ERROR (atdec, STREAM, FORMAT, (NULL),
-      ("AudioQueueStart returned error: %d", status));
+      ("AudioQueueStart returned error: %d", (gint) status));
+  gst_atdec_destroy_queue (atdec, FALSE);
+  return FALSE;
+
+allocate_output_error:
+  GST_ELEMENT_ERROR (atdec, STREAM, FORMAT, (NULL),
+      ("AudioQueueAllocateBuffer returned error: %d", (gint) status));
+  gst_atdec_destroy_queue (atdec, FALSE);
+  return FALSE;
+
+offline_render_error:
+  GST_ELEMENT_ERROR (atdec, STREAM, FORMAT, (NULL),
+      ("AudioQueueOfflineRender returned error: %d", (gint) status));
+  AudioQueueFreeBuffer (atdec->queue, output_buffer);
   gst_atdec_destroy_queue (atdec, FALSE);
   return FALSE;
 }
@@ -347,26 +408,129 @@ gst_atdec_buffer_emptied (void *user_data, AudioQueueRef queue,
 }
 
 static GstFlowReturn
+gst_atdec_offline_render (GstATDec * atdec, GstAudioInfo * audio_info)
+{
+  OSStatus status;
+  AudioTimeStamp timestamp = { 0 };
+  AudioQueueBufferRef output_buffer;
+  GstFlowReturn flow_ret = GST_FLOW_OK;
+  GstBuffer *out;
+  guint out_frames;
+
+  /* figure out how many frames we need to pull out of the queue */
+  out_frames = atdec->input_position - atdec->output_position;
+  if (out_frames > atdec->spf)
+    out_frames = atdec->spf;
+  status = AudioQueueAllocateBuffer (atdec->queue, out_frames * audio_info->bpf,
+      &output_buffer);
+  if (status)
+    goto allocate_output_failed;
+
+  /* pull the frames */
+  timestamp.mFlags = kAudioTimeStampSampleTimeValid;
+  timestamp.mSampleTime = atdec->output_position;
+  status =
+      AudioQueueOfflineRender (atdec->queue, &timestamp, output_buffer,
+      out_frames);
+  if (status)
+    goto offline_render_failed;
+
+  if (output_buffer->mAudioDataByteSize) {
+    if (output_buffer->mAudioDataByteSize % audio_info->bpf != 0)
+      goto invalid_buffer_size;
+
+    GST_DEBUG_OBJECT (atdec,
+        "Got output buffer of size %u at position %" G_GUINT64_FORMAT,
+        output_buffer->mAudioDataByteSize, atdec->output_position);
+    atdec->output_position +=
+        output_buffer->mAudioDataByteSize / audio_info->bpf;
+
+    out =
+        gst_audio_decoder_allocate_output_buffer (GST_AUDIO_DECODER (atdec),
+        output_buffer->mAudioDataByteSize);
+
+    gst_buffer_fill (out, 0, output_buffer->mAudioData,
+        output_buffer->mAudioDataByteSize);
+
+    flow_ret =
+        gst_audio_decoder_finish_frame (GST_AUDIO_DECODER (atdec), out, 1);
+    GST_DEBUG_OBJECT (atdec, "Finished buffer: %s",
+        gst_flow_get_name (flow_ret));
+  } else {
+    GST_DEBUG_OBJECT (atdec, "Got empty output buffer");
+    flow_ret = GST_FLOW_CUSTOM_SUCCESS;
+  }
+
+  AudioQueueFreeBuffer (atdec->queue, output_buffer);
+
+  return flow_ret;
+
+allocate_output_failed:
+  {
+    GST_ELEMENT_ERROR (atdec, STREAM, DECODE, (NULL),
+        ("AudioQueueAllocateBuffer returned error: %d", (gint) status));
+    return GST_FLOW_ERROR;
+  }
+
+offline_render_failed:
+  {
+    AudioQueueFreeBuffer (atdec->queue, output_buffer);
+
+    GST_AUDIO_DECODER_ERROR (atdec, 1, STREAM, DECODE, (NULL),
+        ("AudioQueueOfflineRender returned error: %d", (gint) status),
+        flow_ret);
+
+    return flow_ret;
+  }
+
+invalid_buffer_size:
+  {
+    GST_AUDIO_DECODER_ERROR (atdec, 1, STREAM, DECODE, (NULL),
+        ("AudioQueueOfflineRender returned invalid buffer size: %u (bpf %d)",
+            output_buffer->mAudioDataByteSize, audio_info->bpf), flow_ret);
+
+    AudioQueueFreeBuffer (atdec->queue, output_buffer);
+
+    return flow_ret;
+  }
+}
+
+static GstFlowReturn
 gst_atdec_handle_frame (GstAudioDecoder * decoder, GstBuffer * buffer)
 {
-  AudioTimeStamp timestamp = { 0 };
+  OSStatus status;
   AudioStreamPacketDescription packet;
-  AudioQueueBufferRef input_buffer, output_buffer;
-  GstBuffer *out;
-  GstMapInfo info;
+  AudioQueueBufferRef input_buffer;
   GstAudioInfo *audio_info;
-  int size, out_frames;
+  int size;
   GstFlowReturn flow_ret = GST_FLOW_OK;
   GstATDec *atdec = GST_ATDEC (decoder);
 
-  if (buffer == NULL)
-    return GST_FLOW_OK;
-
   audio_info = gst_audio_decoder_get_audio_info (decoder);
+
+  if (buffer == NULL) {
+    GST_DEBUG_OBJECT (atdec, "Draining");
+    AudioQueueFlush (atdec->queue);
+
+    while (atdec->input_position > atdec->output_position
+        && flow_ret == GST_FLOW_OK) {
+      flow_ret = gst_atdec_offline_render (atdec, audio_info);
+    }
+
+    if (flow_ret == GST_FLOW_CUSTOM_SUCCESS)
+      flow_ret = GST_FLOW_OK;
+
+    return flow_ret;
+  }
 
   /* copy the input buffer into an AudioQueueBuffer */
   size = gst_buffer_get_size (buffer);
-  AudioQueueAllocateBuffer (atdec->queue, size, &input_buffer);
+  GST_DEBUG_OBJECT (atdec,
+      "Handling buffer of size %u at timestamp %" GST_TIME_FORMAT, (guint) size,
+      GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buffer)));
+  status = AudioQueueAllocateBuffer (atdec->queue, size, &input_buffer);
+  if (status)
+    goto allocate_input_failed;
   gst_buffer_extract (buffer, 0, input_buffer->mAudioData, size);
   input_buffer->mAudioDataByteSize = size;
 
@@ -378,32 +542,32 @@ gst_atdec_handle_frame (GstAudioDecoder * decoder, GstBuffer * buffer)
   /* enqueue the buffer. It will get free'd once the gst_atdec_buffer_emptied
    * callback is called
    */
-  AudioQueueEnqueueBuffer (atdec->queue, input_buffer, 1, &packet);
+  status = AudioQueueEnqueueBuffer (atdec->queue, input_buffer, 1, &packet);
+  if (status)
+    goto enqueue_buffer_failed;
 
-  /* figure out how many frames we need to pull out of the queue */
-  out_frames = GST_CLOCK_TIME_TO_FRAMES (GST_BUFFER_DURATION (buffer),
-      audio_info->rate);
-  size = out_frames * audio_info->bpf;
-  AudioQueueAllocateBuffer (atdec->queue, size, &output_buffer);
+  atdec->input_position += atdec->spf;
 
-  /* pull the frames */
-  AudioQueueOfflineRender (atdec->queue, &timestamp, output_buffer, out_frames);
-  if (output_buffer->mAudioDataByteSize) {
-    out =
-        gst_audio_decoder_allocate_output_buffer (decoder,
-        output_buffer->mAudioDataByteSize);
-
-    gst_buffer_map (out, &info, GST_MAP_WRITE);
-    memcpy (info.data, output_buffer->mAudioData,
-        output_buffer->mAudioDataByteSize);
-    gst_buffer_unmap (out, &info);
-
-    flow_ret = gst_audio_decoder_finish_frame (decoder, out, 1);
-  }
-
-  AudioQueueFreeBuffer (atdec->queue, output_buffer);
+  flow_ret = gst_atdec_offline_render (atdec, audio_info);
+  if (flow_ret == GST_FLOW_CUSTOM_SUCCESS)
+    flow_ret = GST_FLOW_OK;
 
   return flow_ret;
+
+allocate_input_failed:
+  {
+    GST_ELEMENT_ERROR (atdec, STREAM, DECODE, (NULL),
+        ("AudioQueueAllocateBuffer returned error: %d", (gint) status));
+    return GST_FLOW_ERROR;
+  }
+
+enqueue_buffer_failed:
+  {
+    GST_AUDIO_DECODER_ERROR (atdec, 1, STREAM, DECODE, (NULL),
+        ("AudioQueueEnqueueBuffer returned error: %d", (gint) status),
+        flow_ret);
+    return flow_ret;
+  }
 }
 
 static void
@@ -411,5 +575,8 @@ gst_atdec_flush (GstAudioDecoder * decoder, gboolean hard)
 {
   GstATDec *atdec = GST_ATDEC (decoder);
 
-  AudioQueueFlush (atdec->queue);
+  GST_DEBUG_OBJECT (atdec, "Flushing");
+  AudioQueueReset (atdec->queue);
+  atdec->output_position = 0;
+  atdec->input_position = 0;
 }

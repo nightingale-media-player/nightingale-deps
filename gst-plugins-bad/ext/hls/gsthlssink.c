@@ -100,6 +100,8 @@ gst_hls_sink_finalize (GObject * object)
   g_free (sink->location);
   g_free (sink->playlist_location);
   g_free (sink->playlist_root);
+  if (sink->playlist)
+    gst_m3u8_playlist_free (sink->playlist);
 
   G_OBJECT_CLASS (parent_class)->finalize ((GObject *) sink);
 }
@@ -283,8 +285,14 @@ gst_hls_sink_handle_message (GstBin * bin, GstMessage * message)
           title, duration, sink->index, discont);
       g_free (entry_location);
       playlist_content = gst_m3u8_playlist_render (sink->playlist);
-      g_file_set_contents (sink->playlist_location,
-          playlist_content, -1, &error);
+      if (!g_file_set_contents (sink->playlist_location,
+              playlist_content, -1, &error)) {
+        GST_ERROR ("Failed to write playlist: %s", error->message);
+        GST_ELEMENT_ERROR (sink, RESOURCE, OPEN_WRITE,
+            (("Failed to write playlist '%s'."), error->message), (NULL));
+        g_error_free (error);
+        error = NULL;
+      }
       g_free (playlist_content);
 
       /* multifilesink is starting a new file. It means that upstream sent a key

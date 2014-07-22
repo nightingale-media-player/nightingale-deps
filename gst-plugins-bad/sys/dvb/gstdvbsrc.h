@@ -1,3 +1,24 @@
+/* GStreamer DVB source
+ * Copyright (C) 2006 Zaheer Abbas Merali <zaheerabbas at merali
+ *                                         dot org>
+ * Copyright (C) 2014 Samsung Electronics. All rights reserved.
+ *     @Author: Reynaldo H. Verdejo Pinochet <r.verdejo@sisa.samsung.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ */
 
 #ifndef __GST_DVBSRC_H__
 #define __GST_DVBSRC_H__
@@ -44,9 +65,10 @@ struct _GstDvbSrc
   GMutex tune_mutex;
   gboolean need_tune;
 
-  int adapter_type;
+  guchar delsys;
+  guchar best_guess_delsys;
 
-  int adapter_number;           /* the device directory with the sub-devices */
+  int adapter_number;
   int frontend_number;
 
   int fd_frontend;
@@ -62,7 +84,7 @@ struct _GstDvbSrc
   int diseqc_src;
   gboolean send_diseqc;
 
-  int bandwidth;
+  guint bandwidth;
   int code_rate_hp;
   int code_rate_lp;
   int modulation;
@@ -70,7 +92,11 @@ struct _GstDvbSrc
   int transmission_mode;
   int hierarchy_information;
   int inversion;
+  int pilot;
+  int rolloff;
+  int stream_id;
   guint64 timeout;
+  guint64 tuning_timeout;
 
   GstDvbSrcPol pol;
   guint stats_interval;

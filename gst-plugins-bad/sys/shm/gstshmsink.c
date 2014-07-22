@@ -65,7 +65,7 @@ struct GstShmClient
   GstPollFD pollfd;
 };
 
-#define DEFAULT_SIZE ( 256 * 1024 )
+#define DEFAULT_SIZE ( 64 * 1024 * 1024 )
 #define DEFAULT_WAIT_FOR_CONNECTION (TRUE)
 /* Default is user read/write, group read */
 #define DEFAULT_PERMS ( S_IRUSR | S_IWUSR | S_IRGRP )
@@ -258,7 +258,7 @@ gst_shm_sink_allocator_alloc_locked (GstShmSinkAllocator * self, gsize size,
   /* allocate more to compensate for alignment */
   maxsize += align;
 
-  block = sp_writer_alloc_block (self->sink->pipe, size);
+  block = sp_writer_alloc_block (self->sink->pipe, maxsize);
   if (block) {
     GstShmSinkMemory *mymem;
     gsize aoffset, padding;
@@ -380,8 +380,9 @@ gst_shm_sink_class_init (GstShmSinkClass * klass)
   g_object_class_install_property (gobject_class, PROP_SOCKET_PATH,
       g_param_spec_string ("socket-path",
           "Path to the control socket",
-          "The path to the control socket used to control the shared memory"
-          " transport", NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "The path to the control socket used to control the shared memory "
+          "transport. This may be modified during the NULL->READY transition",
+          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_PERMS,
       g_param_spec_uint ("perms",

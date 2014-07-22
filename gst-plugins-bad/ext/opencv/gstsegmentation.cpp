@@ -360,6 +360,8 @@ gst_segmentation_release_all_pointers (GstSegmentation * filter)
   cvReleaseImage (&filter->ch2);
   cvReleaseImage (&filter->ch3);
 
+  cvReleaseMemStorage (&filter->mem_storage);
+
   g_free (filter->TcodeBook);
   finalise_mog (filter);
 }
@@ -509,11 +511,13 @@ update_codebook (unsigned char *p, codeBook * c, unsigned *cbBounds,
   int matchChannel;
 
   for (n = 0; n < numChannels; n++) {
-    high[n] = *(p + n) + *(cbBounds + n);
+    high[n] = p[n] + cbBounds[n];
     if (high[n] > 255)
       high[n] = 255;
-    low[n] = *(p + n) - *(cbBounds + n);
-    if (low[n] < 0)
+
+    if (p[n] > cbBounds[n])
+      low[n] = p[n] - cbBounds[n];
+    else
       low[n] = 0;
   }
 

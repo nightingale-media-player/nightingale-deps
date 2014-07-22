@@ -125,7 +125,7 @@ gst_curl_tls_sink_class_init (GstCurlTlsSinkClass * klass)
   g_object_class_install_property (gobject_class, PROP_CRYPTO_ENGINE,
       g_param_spec_string ("crypto-engine",
           "OpenSSL crypto engine",
-          "OpenSSL crytpo engine to use for cipher operations",
+          "OpenSSL crypto engine to use for cipher operations",
           NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_INSECURE,
       g_param_spec_boolean ("insecure",
@@ -235,51 +235,98 @@ static gboolean
 gst_curl_tls_sink_set_options_unlocked (GstCurlBaseSink * bcsink)
 {
   GstCurlTlsSink *sink = GST_CURL_TLS_SINK (bcsink);
+  CURLcode res;
 
-  if (!g_str_has_prefix (bcsink->url, "http"))
-    curl_easy_setopt (bcsink->curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+  if (!g_str_has_prefix (bcsink->url, "http")) {
+    res = curl_easy_setopt (bcsink->curl, CURLOPT_USE_SSL, CURLUSESSL_ALL);
+    if (res != CURLE_OK) {
+      bcsink->error = g_strdup_printf ("failed to set SSL level: %s",
+          curl_easy_strerror (res));
+      return FALSE;
+    }
+  }
 
   /* crypto engine */
   if ((g_strcmp0 (sink->crypto_engine, "auto") == 0) ||
       (sink->crypto_engine == NULL)) {
-    if (curl_easy_setopt (bcsink->curl, CURLOPT_SSLENGINE_DEFAULT, 1L)
-        != CURLE_OK) {
-      GST_WARNING ("Error setting up default SSL engine.");
+    res = curl_easy_setopt (bcsink->curl, CURLOPT_SSLENGINE_DEFAULT, 1L);
+    if (res != CURLE_OK) {
+      bcsink->error =
+          g_strdup_printf ("failed to set default crypto engine: %s",
+          curl_easy_strerror (res));
+      return FALSE;
     }
   } else {
-    if (curl_easy_setopt (bcsink->curl, CURLOPT_SSLENGINE,
-            sink->crypto_engine) == CURLE_SSL_ENGINE_NOTFOUND) {
-      GST_WARNING ("Error setting up SSL engine: %s.", sink->crypto_engine);
+    res = curl_easy_setopt (bcsink->curl, CURLOPT_SSLENGINE,
+        sink->crypto_engine);
+    if (res != CURLE_OK) {
+      bcsink->error = g_strdup_printf ("failed to set crypto engine: %s",
+          curl_easy_strerror (res));
+      return FALSE;
     }
   }
 
-  /* note that, using ca-path can allow libcurl to make SSL-connections much more
-   * efficiently than using ca-cert if the ca-cert ile
-   * contains many CA certificates. */
+  /* note that, using ca-path can allow libcurl to make SSL-connections much
+   * more efficiently than using ca-cert if the ca-cert file contains many CA
+   * certificates. */
   if (sink->ca_cert != NULL && strlen (sink->ca_cert)) {
     GST_DEBUG ("setting ca cert");
-    curl_easy_setopt (bcsink->curl, CURLOPT_CAINFO, sink->ca_cert);
+    res = curl_easy_setopt (bcsink->curl, CURLOPT_CAINFO, sink->ca_cert);
+    if (res != CURLE_OK) {
+      bcsink->error = g_strdup_printf ("failed to set certificate: %s",
+          curl_easy_strerror (res));
+      return FALSE;
+    }
   }
 
   if (sink->ca_path != NULL && strlen (sink->ca_path)) {
     GST_DEBUG ("setting ca path");
-    curl_easy_setopt (bcsink->curl, CURLOPT_CAPATH, sink->ca_path);
+    res = curl_easy_setopt (bcsink->curl, CURLOPT_CAPATH, sink->ca_path);
+    if (res != CURLE_OK) {
+      bcsink->error = g_strdup_printf ("failed to set certificate path: %s",
+          curl_easy_strerror (res));
+      return FALSE;
+    }
   }
 
   if (!sink->insecure) {
     /* identify authenticity of the peer's certificate */
-    curl_easy_setopt (bcsink->curl, CURLOPT_SSL_VERIFYPEER, 1L);
+    res = curl_easy_setopt (bcsink->curl, CURLOPT_SSL_VERIFYPEER, 1L);
+    if (res != CURLE_OK) {
+      bcsink->error = g_strdup_printf ("failed to set verification of peer: %s",
+          curl_easy_strerror (res));
+      return FALSE;
+    }
     /* when CURLOPT_SSL_VERIFYHOST is 2, the commonName or subjectAltName
      * fields are verified */
-    curl_easy_setopt (bcsink->curl, CURLOPT_SSL_VERIFYHOST, 2L);
+    res = curl_easy_setopt (bcsink->curl, CURLOPT_SSL_VERIFYHOST, 2L);
+    if (res != CURLE_OK) {
+      bcsink->error =
+          g_strdup_printf
+          ("failed to set verification of server certificate: %s",
+          curl_easy_strerror (res));
+      return FALSE;
+    }
+  } else {
+    /* allow "insecure" SSL connections and transfers */
+    if (sink->insecure) {
+      res = curl_easy_setopt (bcsink->curl, CURLOPT_SSL_VERIFYPEER, 0L);
+      if (res != CURLE_OK) {
+        bcsink->error =
+            g_strdup_printf ("failed to set verification of peer: %s",
+            curl_easy_strerror (res));
+        return FALSE;
+      }
 
-    return TRUE;
-  }
-
-  /* allow "insecure" SSL connections and transfers */
-  if (sink->insecure) {
-    curl_easy_setopt (bcsink->curl, CURLOPT_SSL_VERIFYPEER, 0L);
-    curl_easy_setopt (bcsink->curl, CURLOPT_SSL_VERIFYHOST, 0L);
+      res = curl_easy_setopt (bcsink->curl, CURLOPT_SSL_VERIFYHOST, 0L);
+      if (res != CURLE_OK) {
+        bcsink->error =
+            g_strdup_printf
+            ("failed to set verification of server certificate: %s",
+            curl_easy_strerror (res));
+        return FALSE;
+      }
+    }
   }
 
   return TRUE;

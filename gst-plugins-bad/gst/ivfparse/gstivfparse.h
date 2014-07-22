@@ -23,7 +23,7 @@
 #define __GST_IVF_PARSE_H__
 
 #include <gst/gst.h>
-#include <gst/base/gstadapter.h>
+#include <gst/base/gstbaseparse.h>
 
 G_BEGIN_DECLS
 
@@ -48,22 +48,20 @@ typedef struct _GstIvfParseClass GstIvfParseClass;
 
 struct _GstIvfParse
 {
-  GstElement element;
-
-  GstPad *sinkpad, *srcpad;
-
-  GstAdapter *adapter;
+  GstBaseParse baseparse;
 
   GstIvfParseState state;
 
-  /* framerate */
-  guint rate_num;
-  guint rate_den;
+  guint width;
+  guint height;
+  guint fps_n;
+  guint fps_d;
+  gboolean update_caps;
 };
 
 struct _GstIvfParseClass
 {
-  GstElementClass parent_class;
+  GstBaseParseClass parent_class;
 };
 
 GType gst_ivf_parse_get_type (void);

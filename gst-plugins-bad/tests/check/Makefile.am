@@ -14,7 +14,7 @@ TESTS_ENVIRONMENT = \
 	GST_PLUGIN_SYSTEM_PATH_1_0=				\
 	GST_PLUGIN_PATH_1_0=$(top_builddir)/gst:$(top_builddir)/sys:$(top_builddir)/ext:$(GST_PLUGINS_LIBAV_DIR):$(GST_PLUGINS_UGLY_DIR):$(GST_PLUGINS_GOOD_DIR):$(GST_PLUGINS_BASE_DIR):$(GST_PLUGINS_DIR) \
 	GST_PLUGIN_LOADING_WHITELIST="gstreamer@$(GST_PLUGINS_DIR):gst-plugins-base@$(GSTPB_PLUGINS_DIR):gst-plugins-good:gst-plugins-ugly:gst-libav:gst-plugins-bad@$(top_builddir)" \
-	GST_STATE_IGNORE_ELEMENTS="apexsink avdtpsrc camerabin cdaudio dc1394src \
+	GST_STATE_IGNORE_ELEMENTS="apexsink avdtpsrc camerabin dc1394src \
 	    dccpclientsrc dccpclientsink dccpserversrc dccpserversink decklinksrc \
 	    decklinksink dvbsrc dvbbasebin dfbvideosink festival fluidsynth gsettingsvideosrc \
 	    gsettingsvideosink gsettingsaudiosrc gsettingsaudiosink linsyssdisrc linsyssdisink nassink \
@@ -125,7 +125,7 @@ check_mimic=
 endif
 
 if HAVE_ORC
-check_orc = orc/bayer
+check_orc = orc/bayer orc/audiomixer orc/compositor
 else
 check_orc =
 endif
@@ -142,10 +142,17 @@ else
 check_opus =
 endif
 
+if USE_SSH2
+check_curl_sftp = elements/curlsftpsink
+else
+check_curl_sftp =
+endif
+
 if USE_CURL
 check_curl = elements/curlhttpsink \
 	elements/curlfilesink \
 	elements/curlftpsink \
+	$(check_curl_sftp) \
 	elements/curlsmtpsink
 else
 check_curl =
@@ -167,6 +174,14 @@ if USE_SHM
 check_shm=elements/shm
 else
 check_shm=
+endif
+
+if USE_GL
+check_gl=libs/gstglcontext \
+    libs/gstglmemory \
+    libs/gstglupload
+else
+check_gl=
 endif
 
 VALGRIND_TO_FIX = \
@@ -205,12 +220,14 @@ check_PROGRAMS = \
 	elements/aiffparse \
 	elements/autoconvert \
 	elements/autovideoconvert \
+	elements/audiomixer \
 	elements/asfmux \
 	elements/baseaudiovisualizer \
 	elements/camerabin \
 	elements/dataurisrc \
 	elements/gdppay \
 	elements/gdpdepay \
+ 	elements/compositor \
 	$(check_jifmux) \
 	elements/jpegparse \
 	elements/h263parse \
@@ -225,7 +242,10 @@ check_PROGRAMS = \
 	pipelines/mxf \
 	$(check_mimic) \
 	libs/mpegvideoparser \
+	libs/mpegts \
 	libs/h264parser \
+	libs/vp8parser \
+	libs/aggregator \
 	$(check_uvch264) \
 	libs/vc1parser \
 	$(check_schro) \
@@ -233,6 +253,7 @@ check_PROGRAMS = \
 	$(check_zbar) \
 	$(check_orc) \
 	libs/insertbin \
+	$(check_gl) \
 	$(EXPERIMENTAL_CHECKS)
 
 noinst_HEADERS = elements/mxfdemux.h
@@ -243,6 +264,9 @@ AM_CFLAGS = $(GST_CFLAGS) $(GST_CHECK_CFLAGS) $(GST_OPTION_CFLAGS) \
 		-DGST_TEST_FILES_PATH="\"$(TEST_FILES_DIRECTORY)\"" \
 		-UG_DISABLE_ASSERT -UG_DISABLE_CAST_CHECKS
 LDADD = $(GST_CHECK_LIBS)
+
+elements_audiomixer_LDADD = $(GST_BASE_LIBS) -lgstbase-@GST_API_VERSION@ $(LDADD)
+elements_audiomixer_CFLAGS = $(GST_BASE_CFLAGS) $(AM_CFLAGS)
 
 # parser unit test convenience lib
 noinst_LTLIBRARIES = libparser.la
@@ -266,8 +290,17 @@ libs_mpegvideoparser_CFLAGS = \
 
 libs_mpegvideoparser_LDADD = \
 	$(top_builddir)/gst-libs/gst/codecparsers/libgstcodecparsers-@GST_API_VERSION@.la \
-	$(GST_PLUGINS_BAD_LIBS) -lgstcodecparsers-@GST_API_VERSION@ \
 	$(GST_BASE_LIBS) $(GST_LIBS) $(LDADD)
+
+libs_mpegts_CFLAGS = \
+	$(GST_PLUGINS_BAD_CFLAGS) \
+	-DGST_USE_UNSTABLE_API \
+	$(GST_CFLAGS)
+
+libs_mpegts_LDADD = \
+	$(top_builddir)/gst-libs/gst/mpegts/libgstmpegts-@GST_API_VERSION@.la \
+	$(GST_BASE_LIBS) \
+	$(GST_LIBS) $(LDADD)
 
 libs_h264parser_CFLAGS = \
 	$(GST_PLUGINS_BAD_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) \
@@ -276,7 +309,6 @@ libs_h264parser_CFLAGS = \
 
 libs_h264parser_LDADD = \
 	$(top_builddir)/gst-libs/gst/codecparsers/libgstcodecparsers-@GST_API_VERSION@.la \
-	$(GST_PLUGINS_BAD_LIBS) -lgstcodecparsers-@GST_API_VERSION@ \
 	$(GST_BASE_LIBS) $(GST_LIBS) $(LDADD)
 
 libs_vc1parser_CFLAGS = \
@@ -285,6 +317,15 @@ libs_vc1parser_CFLAGS = \
 	$(GST_BASE_CFLAGS) $(GST_CFLAGS) $(AM_CFLAGS)
 
 libs_vc1parser_LDADD = \
+	$(top_builddir)/gst-libs/gst/codecparsers/libgstcodecparsers-@GST_API_VERSION@.la \
+	$(GST_BASE_LIBS) $(GST_LIBS) $(LDADD)
+
+libs_vp8parser_CFLAGS = \
+	$(GST_PLUGINS_BAD_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) \
+	-DGST_USE_UNSTABLE_API \
+	$(GST_BASE_CFLAGS) $(GST_CFLAGS) $(AM_CFLAGS)
+
+libs_vp8parser_LDADD = \
 	$(top_builddir)/gst-libs/gst/codecparsers/libgstcodecparsers-@GST_API_VERSION@.la \
 	$(GST_PLUGINS_BAD_LIBS) -lgstcodecparsers-@GST_API_VERSION@ \
 	$(GST_BASE_LIBS) $(GST_LIBS) $(LDADD)
@@ -365,8 +406,8 @@ pipelines_streamheader_CFLAGS = $(GIO_CFLAGS) $(AM_CFLAGS)
 pipelines_streamheader_LDADD = $(GIO_LIBS) $(LDADD)
 
 libs_insertbin_LDADD = \
-	$(GST_PLUGINS_BAD_LIBS) $(GST_BASE_LIBS) $(GST_LIBS) $(LDADD) \
-	$(top_builddir)/gst-libs/gst/insertbin/libgstinsertbin-@GST_API_VERSION@.la
+	$(top_builddir)/gst-libs/gst/insertbin/libgstinsertbin-@GST_API_VERSION@.la \
+	$(GST_PLUGINS_BASE_LIBS) $(GST_BASE_LIBS) $(GST_LIBS) $(LDADD)
 libs_insertbin_CFLAGS = \
 	$(GST_PLUGINS_BAD_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS) $(AM_CFLAGS)
 
@@ -379,6 +420,65 @@ orc_bayer_LDADD = $(ORC_LIBS) -lorc-test-0.4
 orc/bayer.c: $(top_srcdir)/gst/bayer/gstbayerorc.orc
 	$(MKDIR_P) orc
 	$(ORCC) --test -o $@ $<
+
+orc_audiomixer_CFLAGS = $(ORC_CFLAGS)
+orc_audiomixer_LDADD = $(ORC_LIBS) -lorc-test-0.4
+
+orc/audiomixer.c: $(top_srcdir)/gst/audiomixer/gstaudiomixerorc.orc
+	$(MKDIR_P) orc
+	$(ORCC) --test -o $@ $<
+
+libs_gstglcontext_LDADD = \
+	$(top_builddir)/gst-libs/gst/gl/libgstgl-@GST_API_VERSION@.la \
+	$(GST_PLUGINS_BASE_LIBS) $(GST_BASE_LIBS) $(GST_LIBS) $(LDADD)
+
+libs_gstglcontext_CFLAGS = \
+	$(GST_PLUGINS_BAD_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) \
+	-DGST_USE_UNSTABLE_API \
+	$(GST_BASE_CFLAGS) $(GST_CFLAGS) $(AM_CFLAGS)
+
+libs_gstglmemory_LDADD = \
+	$(top_builddir)/gst-libs/gst/gl/libgstgl-@GST_API_VERSION@.la \
+	$(GST_PLUGINS_BASE_LIBS) -lgstvideo-$(GST_API_VERSION) \
+	$(GST_BASE_LIBS) $(GST_LIBS) $(LDADD)
+
+libs_gstglmemory_CFLAGS = \
+	$(GST_PLUGINS_BAD_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) \
+	-DGST_USE_UNSTABLE_API \
+	$(GST_BASE_CFLAGS) $(GST_CFLAGS) $(AM_CFLAGS)
+
+libs_gstglupload_CFLAGS = \
+	$(GST_PLUGINS_BAD_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) \
+	-DGST_USE_UNSTABLE_API \
+	$(GST_BASE_CFLAGS) $(GST_CFLAGS) $(AM_CFLAGS)
+
+libs_gstglupload_LDADD = \
+	$(top_builddir)/gst-libs/gst/gl/libgstgl-@GST_API_VERSION@.la \
+	$(GST_PLUGINS_BASE_LIBS) -lgstvideo-$(GST_API_VERSION) \
+	$(GST_BASE_LIBS) $(GST_LIBS) $(LDADD)
+
+libs_aggregator_LDADD = \
+	$(top_builddir)/gst-libs/gst/base/libgstbadbase-@GST_API_VERSION@.la \
+	$(GST_PLUGINS_BASE_LIBS) \
+	$(GST_BASE_LIBS) $(GST_LIBS) $(LDADD)
+
+libs_aggregator_CFLAGS = \
+	$(GST_PLUGINS_BAD_CFLAGS) $(GST_PLUGINS_BASE_CFLAGS) \
+	-DGST_USE_UNSTABLE_API \
+	$(GST_BASE_CFLAGS) $(GST_CFLAGS) $(AM_CFLAGS)
+
+elements_compositor_LDADD = $(LDADD)  $(GST_BASE_LIBS)
+elements_compositor_CFLAGS = $(GST_BASE_CFLAGS) $(CFLAGS) $(AM_CFLAGS)
+
+orc_compositor_CFLAGS = $(ORC_CFLAGS)
+orc_compositor_LDADD = $(ORC_LIBS) -lorc-test-0.4
+nodist_orc_compositor_SOURCES = orc/compositor.c
+orc_videobox_CFLAGS = $(ORC_CFLAGS)
+
+orc/compositor.c: $(top_srcdir)/gst/compositor/compositororc.orc
+	$(MKDIR_P) orc/
+	$(ORCC) --test -o $@ $<
+
 
 distclean-local-orc:
 	rm -rf orc

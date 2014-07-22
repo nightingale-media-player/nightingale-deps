@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the gst-plugins-bad package.
 #
 # Maxim V. Dziumanenko <dziumanenko@gmail.com>, 2004-2007.
-# Yuri Chornoivan <yurchor@ukr.net>, 2011, 2013.
+# Yuri Chornoivan <yurchor@ukr.net>, 2011, 2013, 2014.
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-bad 1.1.4\n"
+"Project-Id-Version: gst-plugins-bad 1.3.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 12:44+0100\n"
-"PO-Revision-Date: 2013-09-14 22:32+0300\n"
+"POT-Creation-Date: 2014-07-19 16:40+0200\n"
+"PO-Revision-Date: 2014-05-22 07:31+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <translation-team-uk@lists.sourceforge.net>\n"
 "Language: uk\n"
@@ -19,6 +19,12 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.5\n"
+
+msgid "Internal data stream error."
+msgstr "Помилка внутрішнього потоку даних."
+
+msgid "format wasn't negotiated before get function"
+msgstr ""
 
 msgid "Could not read title information for DVD."
 msgstr "Не вдалося прочитати дані щодо записів на DVD."
@@ -52,15 +58,15 @@ msgstr "Не вдалося отримати адреси фрагмента."
 msgid "Couldn't download fragments"
 msgstr "Не вдалося отримати фрагменти"
 
+msgid "Could not open sndfile stream for reading."
+msgstr "Не вдалося відкрити потік sndfile для читання."
+
 msgid "No file name specified for writing."
 msgstr "Не вказано назви файла для запису."
 
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr "Не вдалося відкрити файл «%s» для запису."
-
-msgid "Internal data stream error."
-msgstr "Помилка внутрішнього потоку даних."
 
 #, c-format
 msgid "Could not write to file \"%s\"."
@@ -116,6 +122,12 @@ msgstr "Не вдалося відкрити пристрій відтворен
 #, c-format
 msgid "Could not get settings from frontend device \"%s\"."
 msgstr "Не вдалося отримати параметри пристрою відтворення «%s»."
+
+#, c-format
+msgid "Cannot enumerate delivery systems from frontend device \"%s\"."
+msgstr ""
+"Не вдалося виконати нумерування систем надання даних для інтерфейсного "
+"пристрою «%s»."
 
 #, c-format
 msgid "Could not open file \"%s\" for reading."

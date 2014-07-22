@@ -34,7 +34,6 @@
 #include <gst/base/gstadapter.h>
 #include <gst/base/gstdataqueue.h>
 #include "gstmpdparser.h"
-#include "gstdownloadrate.h"
 #include <gst/uridownloader/gsturidownloader.h>
 
 G_BEGIN_DECLS
@@ -48,6 +47,8 @@ G_BEGIN_DECLS
         (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_DASH_DEMUX))
 #define GST_IS_DASH_DEMUX_CLASS(klass) \
         (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_DASH_DEMUX))
+#define GST_DASH_DEMUX_CAST(obj) \
+	((GstDashDemux *)obj)
 
 typedef struct _GstDashDemuxStream GstDashDemuxStream;
 typedef struct _GstDashDemux GstDashDemux;
@@ -57,43 +58,39 @@ struct _GstDashDemuxStream
 {
   GstPad *pad;
 
+  GstDashDemux *demux;
+
   gint index;
+  GstActiveStream *active_stream;
 
   GstCaps *input_caps;
 
-  /*
-   * Need to store the status for the download and
-   * stream tasks separately as they are working at
-   * different points of the stream timeline.
-   * The download task is ahead of the stream.
-   *
-   * The download_end_of_period is set when a stream
-   * has already downloaded all fragments for the current
-   * period.
-   *
-   * The stream_end_of_period is set when a stream
-   * has pushed all fragments for the current period
-   */
-  gboolean download_end_of_period;
-  gboolean stream_end_of_period;
+  GstFlowReturn last_ret;
+  GstClockTime position;
+  gboolean restart_download;
+
+  GstEvent *pending_segment;
 
   gboolean stream_eos;
   gboolean need_header;
 
-  /* tracks if a stream has enqueued data
-   * after a pad switch.
-   * This is required to prevent pads being
-   * added to the demuxer and having no data
-   * pushed to it before another pad switch
-   * as this might make downstream elements
-   * unhappy and error out if they get
-   * an EOS without receiving any input
-   */
-  gboolean has_data_queued;
+  /* Download task */
+  GMutex download_mutex;
+  GCond download_cond;
+  GstTask *download_task;
+  GRecMutex download_task_lock;
 
-  GstDataQueue *queue;
-
-  GstDownloadRate dnl_rate;
+  /* download tooling */
+  GstElement *src;
+  GstPad *src_srcpad;
+  GMutex fragment_download_lock;
+  GCond fragment_download_cond;
+  GstMediaFragmentInfo current_fragment;
+  gboolean starting_fragment;
+  gint64 download_start_time;
+  gint64 download_total_time;
+  gint64 download_total_bytes;
+  gint current_download_rate;
 };
 
 /**
@@ -103,7 +100,7 @@ struct _GstDashDemuxStream
  */
 struct _GstDashDemux
 {
-  GstElement parent;
+  GstBin parent;
   GstPad *sinkpad;
 
   gboolean have_group_id;
@@ -111,15 +108,15 @@ struct _GstDashDemux
 
   GSList *streams;
   GSList *next_periods;
-  GMutex streams_lock;
 
   GstSegment segment;
-  gboolean need_segment;
   GstClockTime timestamp_offset;
 
   GstBuffer *manifest;
   GstUriDownloader *downloader;
   GstMpdClient *client;         /* MPD client */
+  GMutex client_lock;
+
   gboolean end_of_period;
   gboolean end_of_manifest;
 
@@ -128,15 +125,6 @@ struct _GstDashDemux
   gfloat bandwidth_usage;       /* Percentage of the available bandwidth to use       */
   guint64 max_bitrate;          /* max of bitrate supported by target decoder         */
 
-  /* Streaming task */
-  GstTask *stream_task;
-  GRecMutex stream_task_lock;
-
-  /* Download task */
-  GstTask *download_task;
-  GRecMutex download_task_lock;
-  GMutex download_mutex;
-  GCond download_cond;
   gboolean cancelled;
 
   /* Manifest update */
@@ -145,7 +133,7 @@ struct _GstDashDemux
 
 struct _GstDashDemuxClass
 {
-  GstElementClass parent_class;
+  GstBinClass parent_class;
 };
 
 GType gst_dash_demux_get_type (void);

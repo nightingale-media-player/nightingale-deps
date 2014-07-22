@@ -30,7 +30,7 @@
 
 /* maximal PCR time */
 #define PCR_MAX_VALUE (((((guint64)1)<<33) * 300) + 298)
-#define PCR_GST_MAX_VALUE (PCR_MAX_VALUE * GST_MSECOND / (27000))
+#define PCR_GST_MAX_VALUE (PCR_MAX_VALUE * GST_MSECOND / (PCR_MSECOND))
 #define PTS_DTS_MAX_VALUE (((guint64)1) << 33)
 
 #include "mpegtspacketizer.h"
@@ -39,76 +39,20 @@
 GST_DEBUG_CATEGORY_STATIC (mpegts_packetizer_debug);
 #define GST_CAT_DEFAULT mpegts_packetizer_debug
 
-#define MPEGTS_PACKETIZER_GET_PRIVATE(obj)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_MPEGTS_PACKETIZER, MpegTSPacketizerPrivate))
-
 static void _init_local (void);
 G_DEFINE_TYPE_EXTENDED (MpegTSPacketizer2, mpegts_packetizer, G_TYPE_OBJECT, 0,
     _init_local ());
 
-/* Maximum number of MpegTSPcr
- * 256 should be sufficient for most multiplexes */
-#define MAX_PCR_OBS_CHANNELS 256
+#define ABSDIFF(a,b) ((a) < (b) ? (b) - (a) : (a) - (b))
 
-typedef struct _MpegTSPCR
-{
-  guint16 pid;
-
-  /* Following variables are only active/used when
-   * calculate_skew is TRUE */
-  GstClockTime base_time;
-  GstClockTime base_pcrtime;
-  GstClockTime prev_out_time;
-  GstClockTime prev_in_time;
-  GstClockTime last_pcrtime;
-  gint64 window[MAX_WINDOW];
-  guint window_pos;
-  guint window_size;
-  gboolean window_filling;
-  gint64 window_min;
-  gint64 skew;
-  gint64 prev_send_diff;
-
-  /* Offset to apply to PCR to handle wraparounds */
-  guint64 pcroffset;
-
-  /* Used for bitrate calculation */
-  /* FIXME : Replace this later on with a balanced tree or sequence */
-  guint64 first_offset;
-  guint64 first_pcr;
-  GstClockTime first_pcr_ts;
-  guint64 last_offset;
-  guint64 last_pcr;
-  GstClockTime last_pcr_ts;
-
-} MpegTSPCR;
-
-struct _MpegTSPacketizerPrivate
-{
-  /* Shortcuts for adapter usage */
-  guint8 *map_data;
-  gsize map_offset;
-  gsize map_size;
-  gboolean need_sync;
-
-  /* Reference offset */
-  guint64 refoffset;
-
-  guint nb_seen_offsets;
-
-  /* Last inputted timestamp */
-  GstClockTime last_in_time;
-
-  /* offset to observations table */
-  guint8 pcrtablelut[0x2000];
-  MpegTSPCR *observations[MAX_PCR_OBS_CHANNELS];
-  guint8 lastobsid;
-};
+#define PACKETIZER_GROUP_LOCK(p) g_mutex_lock(&((p)->group_lock))
+#define PACKETIZER_GROUP_UNLOCK(p) g_mutex_unlock(&((p)->group_lock))
 
 static void mpegts_packetizer_dispose (GObject * object);
 static void mpegts_packetizer_finalize (GObject * object);
 static GstClockTime calculate_skew (MpegTSPCR * pcr, guint64 pcrtime,
     GstClockTime time);
+static void _close_current_group (MpegTSPCR * pcrtable);
 static void record_pcr (MpegTSPacketizer2 * packetizer, MpegTSPCR * pcrtable,
     guint64 pcr, guint64 offset);
 
@@ -120,29 +64,22 @@ static void record_pcr (MpegTSPacketizer2 * packetizer, MpegTSPCR * pcrtable,
 static inline MpegTSPCR *
 get_pcr_table (MpegTSPacketizer2 * packetizer, guint16 pid)
 {
-  MpegTSPacketizerPrivate *priv = packetizer->priv;
   MpegTSPCR *res;
 
-  res = priv->observations[priv->pcrtablelut[pid]];
+  res = packetizer->observations[packetizer->pcrtablelut[pid]];
 
   if (G_UNLIKELY (res == NULL)) {
     /* If we don't have a PCR table for the requested PID, create one .. */
     res = g_new0 (MpegTSPCR, 1);
     /* Add it to the last table position */
-    priv->observations[priv->lastobsid] = res;
+    packetizer->observations[packetizer->lastobsid] = res;
     /* Update the pcrtablelut */
-    priv->pcrtablelut[pid] = priv->lastobsid;
+    packetizer->pcrtablelut[pid] = packetizer->lastobsid;
     /* And increment the last know slot */
-    priv->lastobsid++;
+    packetizer->lastobsid++;
 
     /* Finally set the default values */
     res->pid = pid;
-    res->first_offset = -1;
-    res->first_pcr = -1;
-    res->first_pcr_ts = GST_CLOCK_TIME_NONE;
-    res->last_offset = -1;
-    res->last_pcr = -1;
-    res->last_pcr_ts = GST_CLOCK_TIME_NONE;
     res->base_time = GST_CLOCK_TIME_NONE;
     res->base_pcrtime = GST_CLOCK_TIME_NONE;
     res->last_pcrtime = GST_CLOCK_TIME_NONE;
@@ -153,23 +90,35 @@ get_pcr_table (MpegTSPacketizer2 * packetizer, guint16 pid)
     res->prev_send_diff = GST_CLOCK_TIME_NONE;
     res->prev_out_time = GST_CLOCK_TIME_NONE;
     res->pcroffset = 0;
+
+    res->current = g_slice_new0 (PCROffsetCurrent);
   }
 
   return res;
 }
 
 static void
+pcr_offset_group_free (PCROffsetGroup * group)
+{
+  g_free (group->values);
+  g_slice_free (PCROffsetGroup, group);
+}
+
+static void
 flush_observations (MpegTSPacketizer2 * packetizer)
 {
-  MpegTSPacketizerPrivate *priv = packetizer->priv;
   gint i;
 
-  for (i = 0; i < priv->lastobsid; i++) {
-    g_free (priv->observations[i]);
-    priv->observations[i] = NULL;
+  for (i = 0; i < packetizer->lastobsid; i++) {
+    g_list_free_full (packetizer->observations[i]->groups,
+        (GDestroyNotify) pcr_offset_group_free);
+    if (packetizer->observations[i]->current)
+      g_slice_free (PCROffsetCurrent, packetizer->observations[i]->current);
+    g_free (packetizer->observations[i]);
+    packetizer->observations[i] = NULL;
   }
-  memset (priv->pcrtablelut, 0xff, 0x2000);
-  priv->lastobsid = 0;
+  memset (packetizer->pcrtablelut, 0xff, 0x2000);
+  packetizer->lastobsid = 0;
 }
 
 static inline MpegTSPacketizerStreamSubtable *
@@ -199,7 +148,7 @@ seen_section_before (MpegTSPacketizerStream * stream, guint8 table_id,
   /* Check if we've seen this table_id/subtable_extension first */
   subtable = find_subtable (stream->subtables, table_id, subtable_extension);
   if (!subtable) {
-    GST_DEBUG ("Haven't seen subtale");
+    GST_DEBUG ("Haven't seen subtable");
     return FALSE;
   }
   /* If we have, check it has the same version_number */
@@ -279,8 +228,6 @@ mpegts_packetizer_class_init (MpegTSPacketizer2Class * klass)
 {
   GObjectClass *gobject_class;
 
-  g_type_class_add_private (klass, sizeof (MpegTSPacketizerPrivate));
-
   gobject_class = G_OBJECT_CLASS (klass);
 
   gobject_class->dispose = mpegts_packetizer_dispose;
@@ -290,9 +237,8 @@ mpegts_packetizer_class_init (MpegTSPacketizer2Class * klass)
 static void
 mpegts_packetizer_init (MpegTSPacketizer2 * packetizer)
 {
-  MpegTSPacketizerPrivate *priv;
+  g_mutex_init (&packetizer->group_lock);
 
-  priv = packetizer->priv = MPEGTS_PACKETIZER_GET_PRIVATE (packetizer);
   packetizer->adapter = gst_adapter_new ();
   packetizer->offset = 0;
   packetizer->empty = TRUE;
@@ -301,18 +247,18 @@ mpegts_packetizer_init (MpegTSPacketizer2 * packetizer)
   packetizer->calculate_skew = FALSE;
   packetizer->calculate_offset = FALSE;
 
-  priv->map_data = NULL;
-  priv->map_size = 0;
-  priv->map_offset = 0;
-  priv->need_sync = FALSE;
+  packetizer->map_data = NULL;
+  packetizer->map_size = 0;
+  packetizer->map_offset = 0;
+  packetizer->need_sync = FALSE;
 
-  memset (priv->pcrtablelut, 0xff, 0x2000);
-  memset (priv->observations, 0x0, sizeof (priv->observations));
-  priv->lastobsid = 0;
+  memset (packetizer->pcrtablelut, 0xff, 0x2000);
+  memset (packetizer->observations, 0x0, sizeof (packetizer->observations));
+  packetizer->lastobsid = 0;
 
-  priv->nb_seen_offsets = 0;
-  priv->refoffset = -1;
-  priv->last_in_time = GST_CLOCK_TIME_NONE;
+  packetizer->nb_seen_offsets = 0;
+  packetizer->refoffset = -1;
+  packetizer->last_in_time = GST_CLOCK_TIME_NONE;
 }
 
 static void
@@ -383,7 +329,7 @@ mpegts_packetizer_parse_adaptation_field_control (MpegTSPacketizer2 *
     return TRUE;
   }
 
-  if (FLAGS_HAS_AFC (packet->scram_afc_cc)) {
+  if ((packet->scram_afc_cc & 0x30) == 0x20) {
     /* no payload, adaptation field of 183 bytes */
     if (length > 183) {
       GST_WARNING ("PID %d afc == 0x%02x and length %d > 183",
@@ -391,12 +337,15 @@ mpegts_packetizer_parse_adaptation_field_control (MpegTSPacketizer2 *
       return FALSE;
     }
     if (length != 183) {
-      GST_DEBUG ("PID %d afc == 0x%02x and length %d != 183",
+      GST_WARNING ("PID %d afc == 0x%02x and length %d != 183",
           packet->pid, packet->scram_afc_cc & 0x30, length);
+      GST_MEMDUMP ("Unknown payload", packet->data + length,
+          packet->data_end - packet->data - length);
     }
   } else if (length > 182) {
-    GST_DEBUG ("PID %d afc == 0x%02x and length %d > 182",
+    GST_WARNING ("PID %d afc == 0x%02x and length %d > 182",
         packet->pid, packet->scram_afc_cc & 0x30, length);
+    return FALSE;
   }
 
   if (packet->data + length > packet->data_end) {
@@ -430,16 +379,18 @@ mpegts_packetizer_parse_adaptation_field_control (MpegTSPacketizer2 *
         ") offset:%" G_GUINT64_FORMAT, packet->pid, packet->pcr,
         GST_TIME_ARGS (PCRTIME_TO_GSTTIME (packet->pcr)), packet->offset);
 
+    PACKETIZER_GROUP_LOCK (packetizer);
     if (packetizer->calculate_skew
-        && GST_CLOCK_TIME_IS_VALID (packetizer->priv->last_in_time)) {
+        && GST_CLOCK_TIME_IS_VALID (packetizer->last_in_time)) {
       pcrtable = get_pcr_table (packetizer, packet->pid);
-      calculate_skew (pcrtable, packet->pcr, packetizer->priv->last_in_time);
+      calculate_skew (pcrtable, packet->pcr, packetizer->last_in_time);
     }
     if (packetizer->calculate_offset) {
       if (!pcrtable)
         pcrtable = get_pcr_table (packetizer, packet->pid);
       record_pcr (packetizer, pcrtable, packet->pcr, packet->offset);
     }
+    PACKETIZER_GROUP_UNLOCK (packetizer);
   }
 #ifndef GST_DISABLE_GST_DEBUG
   /* OPCR */
@@ -509,9 +460,13 @@ mpegts_packetizer_parse_packet (MpegTSPacketizer2 * packetizer,
 
   packet->data = data;
 
-  if (FLAGS_HAS_AFC (tmp))
+  packet->afc_flags = 0;
+  packet->pcr = G_MAXUINT64;
+
+  if (FLAGS_HAS_AFC (tmp)) {
     if (!mpegts_packetizer_parse_adaptation_field_control (packetizer, packet))
       return FALSE;
+  }
 
   if (FLAGS_HAS_PAYLOAD (tmp))
     packet->payload = packet->data;
@@ -521,12 +476,12 @@ mpegts_packetizer_parse_packet (MpegTSPacketizer2 * packetizer,
   return PACKET_OK;
 }
 
-static GstMpegTsSection *
+static GstMpegtsSection *
 mpegts_packetizer_parse_section_header (MpegTSPacketizer2 * packetizer,
     MpegTSPacketizerStream * stream)
 {
   MpegTSPacketizerStreamSubtable *subtable;
-  GstMpegTsSection *res;
+  GstMpegtsSection *res;
 
   subtable =
       find_subtable (stream->subtables, stream->table_id,
@@ -587,6 +542,8 @@ mpegts_packetizer_parse_section_header (MpegTSPacketizer2 * packetizer,
 void
 mpegts_packetizer_clear (MpegTSPacketizer2 * packetizer)
 {
+  guint i;
+
   if (packetizer->packet_size)
     packetizer->packet_size = 0;
 
@@ -603,20 +560,31 @@ mpegts_packetizer_clear (MpegTSPacketizer2 * packetizer)
   gst_adapter_clear (packetizer->adapter);
   packetizer->offset = 0;
   packetizer->empty = TRUE;
-  packetizer->priv->need_sync = FALSE;
-  packetizer->priv->map_data = NULL;
-  packetizer->priv->map_size = 0;
-  packetizer->priv->map_offset = 0;
-  packetizer->priv->last_in_time = GST_CLOCK_TIME_NONE;
+  packetizer->need_sync = FALSE;
+  packetizer->map_data = NULL;
+  packetizer->map_size = 0;
+  packetizer->map_offset = 0;
+  packetizer->last_in_time = GST_CLOCK_TIME_NONE;
+
+  /* Close current PCR group */
+  PACKETIZER_GROUP_LOCK (packetizer);
+
+  for (i = 0; i < MAX_PCR_OBS_CHANNELS; i++) {
+    if (packetizer->observations[i])
+      _close_current_group (packetizer->observations[i]);
+    else
+      break;
+  }
+  PACKETIZER_GROUP_UNLOCK (packetizer);
 }
 
 void
 mpegts_packetizer_flush (MpegTSPacketizer2 * packetizer, gboolean hard)
 {
+  guint i;
   GST_DEBUG ("Flushing");
 
   if (packetizer->streams) {
-    int i;
     for (i = 0; i < 8192; i++) {
       if (packetizer->streams[i]) {
         mpegts_packetizer_clear_section (packetizer->streams[i]);
@@ -627,11 +595,22 @@ mpegts_packetizer_flush (MpegTSPacketizer2 * packetizer, gboolean hard)
 
   packetizer->offset = 0;
   packetizer->empty = TRUE;
-  packetizer->priv->need_sync = FALSE;
-  packetizer->priv->map_data = NULL;
-  packetizer->priv->map_size = 0;
-  packetizer->priv->map_offset = 0;
-  packetizer->priv->last_in_time = GST_CLOCK_TIME_NONE;
+  packetizer->need_sync = FALSE;
+  packetizer->map_data = NULL;
+  packetizer->map_size = 0;
+  packetizer->map_offset = 0;
+  packetizer->last_in_time = GST_CLOCK_TIME_NONE;
+
+  /* Close current PCR group */
+  PACKETIZER_GROUP_LOCK (packetizer);
+  for (i = 0; i < MAX_PCR_OBS_CHANNELS; i++) {
+    if (packetizer->observations[i])
+      _close_current_group (packetizer->observations[i]);
+    else
+      break;
+  }
+  PACKETIZER_GROUP_UNLOCK (packetizer);
+
   if (hard) {
     /* For pull mode seeks in tsdemux the observation must be preserved */
     flush_observations (packetizer);
@@ -674,45 +653,43 @@ mpegts_packetizer_push (MpegTSPacketizer2 * packetizer, GstBuffer * buffer)
   gst_adapter_push (packetizer->adapter, buffer);
   /* If buffer timestamp is valid, store it */
   if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_TIMESTAMP (buffer)))
-    packetizer->priv->last_in_time = GST_BUFFER_TIMESTAMP (buffer);
+    packetizer->last_in_time = GST_BUFFER_TIMESTAMP (buffer);
 }
 
 static void
 mpegts_packetizer_flush_bytes (MpegTSPacketizer2 * packetizer, gsize size)
 {
-  MpegTSPacketizerPrivate *priv = packetizer->priv;
-
   if (size > 0) {
     GST_LOG ("flushing %" G_GSIZE_FORMAT " bytes from adapter", size);
     gst_adapter_flush (packetizer->adapter, size);
   }
 
-  priv->map_data = NULL;
-  priv->map_size = 0;
-  priv->map_offset = 0;
+  packetizer->map_data = NULL;
+  packetizer->map_size = 0;
+  packetizer->map_offset = 0;
 }
 
 static gboolean
 mpegts_packetizer_map (MpegTSPacketizer2 * packetizer, gsize size)
 {
-  MpegTSPacketizerPrivate *priv = packetizer->priv;
   gsize available;
 
-  if (priv->map_size - priv->map_offset >= size)
+  if (packetizer->map_size - packetizer->map_offset >= size)
     return TRUE;
 
-  mpegts_packetizer_flush_bytes (packetizer, priv->map_offset);
+  mpegts_packetizer_flush_bytes (packetizer, packetizer->map_offset);
 
   available = gst_adapter_available (packetizer->adapter);
   if (available < size)
     return FALSE;
 
-  priv->map_data = (guint8 *) gst_adapter_map (packetizer->adapter, available);
-  if (!priv->map_data)
+  packetizer->map_data =
+      (guint8 *) gst_adapter_map (packetizer->adapter, available);
+  if (!packetizer->map_data)
     return FALSE;
 
-  priv->map_size = available;
-  priv->map_offset = 0;
+  packetizer->map_size = available;
+  packetizer->map_offset = 0;
 
   GST_LOG ("mapped %" G_GSIZE_FORMAT " bytes from adapter", available);
 
@@ -722,7 +699,6 @@ mpegts_packetizer_map (MpegTSPacketizer2 * packetizer, gsize size)
 static gboolean
 mpegts_try_discover_packet_size (MpegTSPacketizer2 * packetizer)
 {
-  MpegTSPacketizerPrivate *priv = packetizer->priv;
   guint8 *data;
   gsize size, i, j;
 
@@ -736,8 +712,8 @@ mpegts_try_discover_packet_size (MpegTSPacketizer2 * packetizer)
   if (!mpegts_packetizer_map (packetizer, 4 * MPEGTS_MAX_PACKETSIZE))
     return FALSE;
 
-  size = priv->map_size - priv->map_offset;
-  data = priv->map_data + priv->map_offset;
+  size = packetizer->map_size - packetizer->map_offset;
+  data = packetizer->map_data + packetizer->map_offset;
 
   for (i = 0; i + 3 * MPEGTS_MAX_PACKETSIZE < size; i++) {
     /* find a sync byte */
@@ -758,20 +734,20 @@ mpegts_try_discover_packet_size (MpegTSPacketizer2 * packetizer)
   }
 
 out:
-  priv->map_offset += i;
+  packetizer->map_offset += i;
 
   if (packetizer->packet_size == 0) {
     GST_DEBUG ("Could not determine packet size in %" G_GSIZE_FORMAT
         " bytes buffer, flush %" G_GSIZE_FORMAT " bytes", size, i);
-    mpegts_packetizer_flush_bytes (packetizer, priv->map_offset);
+    mpegts_packetizer_flush_bytes (packetizer, packetizer->map_offset);
     return FALSE;
   }
 
   GST_INFO ("have packetsize detected: %u bytes", packetizer->packet_size);
 
   if (packetizer->packet_size == MPEGTS_M2TS_PACKETSIZE &&
-      priv->map_offset >= 4)
-    priv->map_offset -= 4;
+      packetizer->map_offset >= 4)
+    packetizer->map_offset -= 4;
 
   return TRUE;
 }
@@ -779,8 +755,7 @@ out:
 static gboolean
 mpegts_packetizer_sync (MpegTSPacketizer2 * packetizer)
 {
-  MpegTSPacketizerPrivate *priv = packetizer->priv;
-  gboolean found;
+  gboolean found = FALSE;
   guint8 *data;
   guint packet_size;
   gsize size, sync_offset, i;
@@ -790,8 +765,8 @@ mpegts_packetizer_sync (MpegTSPacketizer2 * packetizer)
   if (!mpegts_packetizer_map (packetizer, 3 * packet_size))
     return FALSE;
 
-  size = priv->map_size - priv->map_offset;
-  data = priv->map_data + priv->map_offset;
+  size = packetizer->map_size - packetizer->map_offset;
+  data = packetizer->map_data + packetizer->map_offset;
 
   if (packet_size == MPEGTS_M2TS_PACKETSIZE)
     sync_offset = 4;
@@ -807,10 +782,10 @@ mpegts_packetizer_sync (MpegTSPacketizer2 * packetizer)
     }
   }
 
-  priv->map_offset += i - sync_offset;
+  packetizer->map_offset += i - sync_offset;
 
   if (!found)
-    mpegts_packetizer_flush_bytes (packetizer, priv->map_offset);
+    mpegts_packetizer_flush_bytes (packetizer, packetizer->map_offset);
 
   return found;
 }
@@ -819,7 +794,6 @@ MpegTSPacketizerPacketReturn
 mpegts_packetizer_next_packet (MpegTSPacketizer2 * packetizer,
     MpegTSPacketizerPacket * packet)
 {
-  MpegTSPacketizerPrivate *priv = packetizer->priv;
   guint8 *packet_data;
   guint packet_size;
   gsize sync_offset;
@@ -838,21 +812,21 @@ mpegts_packetizer_next_packet (MpegTSPacketizer2 * packetizer,
     sync_offset = 0;
 
   while (1) {
-    if (priv->need_sync) {
+    if (packetizer->need_sync) {
       if (!mpegts_packetizer_sync (packetizer))
         return PACKET_NEED_MORE;
-      priv->need_sync = FALSE;
+      packetizer->need_sync = FALSE;
     }
 
     if (!mpegts_packetizer_map (packetizer, packet_size))
       return PACKET_NEED_MORE;
 
-    packet_data = &priv->map_data[priv->map_offset + sync_offset];
+    packet_data = &packetizer->map_data[packetizer->map_offset + sync_offset];
 
     /* Check sync byte */
     if (G_UNLIKELY (*packet_data != PACKET_SYNC_BYTE)) {
       GST_DEBUG ("lost sync");
-      priv->need_sync = TRUE;
+      packetizer->need_sync = TRUE;
     } else {
       /* ALL mpeg-ts variants contain 188 bytes of data. Those with bigger
        * packet sizes contain either extra data (timesync, FEC, ..) either
@@ -887,12 +861,11 @@ mpegts_packetizer_clear_packet (MpegTSPacketizer2 * packetizer,
     MpegTSPacketizerPacket * packet)
 {
   guint8 packet_size = packetizer->packet_size;
-  MpegTSPacketizerPrivate *priv = packetizer->priv;
 
-  if (priv->map_data) {
-    priv->map_offset += packet_size;
-    if (priv->map_size - priv->map_offset < packet_size)
-      mpegts_packetizer_flush_bytes (packetizer, priv->map_offset);
+  if (packetizer->map_data) {
+    packetizer->map_offset += packet_size;
+    if (packetizer->map_size - packetizer->map_offset < packet_size)
+      mpegts_packetizer_flush_bytes (packetizer, packetizer->map_offset);
   }
 }
 
@@ -913,7 +886,7 @@ mpegts_packetizer_has_packets (MpegTSPacketizer2 * packetizer)
  * * The section applies now (current_next_indicator)
  * * The section is an update or was never seen
  *
- * The section should be a new GstMpegTsSection:
+ * The section should be a new GstMpegtsSection:
  * * properly initialized
  * * With pid, table_id AND section_type set (move logic from mpegtsbase)
  * * With data copied into it (yes, minor overhead)
@@ -923,12 +896,12 @@ mpegts_packetizer_has_packets (MpegTSPacketizer2 * packetizer)
  * If more than one section is available, the 'remaining' field will
  * be set to the beginning of a valid GList containing other sections.
  * */
-GstMpegTsSection *
+GstMpegtsSection *
 mpegts_packetizer_push_section (MpegTSPacketizer2 * packetizer,
     MpegTSPacketizerPacket * packet, GList ** remaining)
 {
-  GstMpegTsSection *section;
-  GstMpegTsSection *res = NULL;
+  GstMpegtsSection *section;
+  GstMpegtsSection *res = NULL;
   MpegTSPacketizerStream *stream;
   gboolean long_packet;
   guint8 pointer = 0, table_id;
@@ -1243,7 +1216,7 @@ mpegts_packetizer_resync (MpegTSPCR * pcr, GstClockTime time,
  *
  *  J = N + n
  *
- *   N   : a constant network delay.
+ *   D   : a constant network delay.
  *   n   : random added noise. The noise is concentrated around 0
  *
  * In the receiver we can track the elapsed time at the sender with:
@@ -1535,98 +1508,758 @@ no_skew:
 }
 
 static void
-record_pcr (MpegTSPacketizer2 * packetizer, MpegTSPCR * pcrtable,
-    guint64 pcr, guint64 offset)
+_reevaluate_group_pcr_offset (MpegTSPCR * pcrtable, PCROffsetGroup * group)
 {
-  MpegTSPacketizerPrivate *priv = packetizer->priv;
+  PCROffsetGroup *prev = NULL;
+#ifndef GST_DISABLE_GST_DEBUG
+  PCROffsetGroup *first = pcrtable->groups->data;
+#endif
+  PCROffsetCurrent *current = pcrtable->current;
+  GList *tmp;
 
-  /* Check against first PCR */
-  if (pcrtable->first_pcr == -1 || pcrtable->first_offset > offset) {
-    GST_DEBUG ("Recording first value. PCR:%" G_GUINT64_FORMAT " offset:%"
-        G_GUINT64_FORMAT " pcr_pid:0x%04x", pcr, offset, pcrtable->pid);
-    pcrtable->first_pcr = pcr;
-    pcrtable->first_pcr_ts = PCRTIME_TO_GSTTIME (pcr);
-    pcrtable->first_offset = offset;
-    priv->nb_seen_offsets++;
-  } else
-    /* If we didn't update the first PCR, let's check against last PCR */
-  if (pcrtable->last_pcr == -1 || pcrtable->last_offset < offset) {
-    GST_DEBUG ("Recording last value. PCR:%" G_GUINT64_FORMAT " offset:%"
-        G_GUINT64_FORMAT " pcr_pid:0x%04x", pcr, offset, pcrtable->pid);
-    if (G_UNLIKELY (pcrtable->first_pcr != -1 && pcr < pcrtable->first_pcr)) {
-      GST_DEBUG ("rollover detected");
-      pcr += PCR_MAX_VALUE;
+  /* Go over all ESTIMATED groups until the target group */
+  for (tmp = pcrtable->groups; tmp; tmp = tmp->next) {
+    PCROffsetGroup *cur = (PCROffsetGroup *) tmp->data;
+
+    /* Skip groups that don't need re-evaluation */
+    if (!(cur->flags & PCR_GROUP_FLAG_ESTIMATED)) {
+      GST_DEBUG ("Skipping group %p pcr_offset (currently %" GST_TIME_FORMAT
+          ")", cur, GST_TIME_ARGS (PCRTIME_TO_GSTTIME (cur->pcr_offset)));
+      prev = cur;
+      continue;
     }
-    pcrtable->last_pcr = pcr;
-    pcrtable->last_pcr_ts = PCRTIME_TO_GSTTIME (pcr);
-    pcrtable->last_offset = offset;
-    priv->nb_seen_offsets++;
+
+    /* This should not happen ! The first group is *always* correct (zero) */
+    if (G_UNLIKELY (prev == NULL)) {
+      GST_ERROR ("First PCR Group was not estimated (bug). Setting to zero");
+      cur->pcr_offset = 0;
+      cur->flags &= ~PCR_GROUP_FLAG_ESTIMATED;
+      return;
+    }
+
+    /* Finally do the estimation of this group's PCR offset based on the
+     * previous group information */
+
+    GST_DEBUG ("Re-evaluating group %p pcr_offset (currently %" GST_TIME_FORMAT
+        ")", group, GST_TIME_ARGS (PCRTIME_TO_GSTTIME (cur->pcr_offset)));
+
+    GST_DEBUG ("cur->first_pcr:%" GST_TIME_FORMAT " prev->first_pcr:%"
+        GST_TIME_FORMAT, GST_TIME_ARGS (PCRTIME_TO_GSTTIME (cur->first_pcr)),
+        GST_TIME_ARGS (PCRTIME_TO_GSTTIME (prev->first_pcr)));
+
+    if (G_UNLIKELY (cur->first_pcr < prev->first_pcr)) {
+      guint64 prevbr, lastbr;
+      guint64 prevpcr;
+      guint64 prevoffset, lastoffset;
+
+      /* Take the previous group pcr_offset and figure out how much to add
+       * to it for the current group */
+
+      /* Right now we do a dumb bitrate estimation
+       * estimate bitrate (prev - first) : bitrate from the start
+       * estimate bitrate (prev) : bitrate of previous group
+       * estimate bitrate (last - first) : bitrate from previous group
+       *
+       * We will use raw (non-corrected/non-absolute) PCR values in a first time
+       * to detect wraparound/resets/gaps...
+       *
+       * We will use the corrected/asolute PCR values to calculate
+       * bitrate and estimate the target group pcr_offset.
+       * */
+
+      /* If the current window estimator is over the previous group, used those
+       * values as the latest (since they are more recent) */
+      if (current->group == prev && current->pending[current->last].offset) {
+        prevoffset =
+            current->pending[current->last].offset + prev->first_offset;
+        prevpcr = current->pending[current->last].pcr + prev->first_pcr;
+        /* prevbr: bitrate(prev) */
+        prevbr =
+            gst_util_uint64_scale (PCR_SECOND,
+            current->pending[current->last].offset,
+            current->pending[current->last].pcr);
+        GST_DEBUG ("Previous group bitrate (%u / %" GST_TIME_FORMAT ") : %"
+            G_GUINT64_FORMAT, current->pending[current->last].offset,
+            GST_TIME_ARGS (PCRTIME_TO_GSTTIME (current->pending[current->
+                        last].pcr)), prevbr);
+      } else if (prev->values[prev->last_value].offset) {
+        prevoffset = prev->values[prev->last_value].offset + prev->first_offset;
+        prevpcr = prev->values[prev->last_value].pcr + prev->first_pcr;
+        /* prevbr: bitrate(prev) (FIXME : Cache) */
+        prevbr =
+            gst_util_uint64_scale (PCR_SECOND,
+            prev->values[prev->last_value].offset,
+            prev->values[prev->last_value].pcr);
+        GST_DEBUG ("Previous group bitrate (%u / %" GST_TIME_FORMAT ") : %"
+            G_GUINT64_FORMAT, prev->values[prev->last_value].offset,
+            GST_TIME_ARGS (PCRTIME_TO_GSTTIME (prev->values[prev->
+                        last_value].pcr)), prevbr);
+      } else {
+        GST_DEBUG ("Using overall bitrate");
+        prevoffset = prev->values[prev->last_value].offset + prev->first_offset;
+        prevpcr = prev->values[prev->last_value].pcr + prev->first_pcr;
+        prevbr = gst_util_uint64_scale (PCR_SECOND,
+            prev->first_offset, prev->pcr_offset);
+      }
+      lastoffset = cur->values[cur->last_value].offset + cur->first_offset;
+
+      GST_DEBUG ("Offset first:%" G_GUINT64_FORMAT " prev:%" G_GUINT64_FORMAT
+          " cur:%" G_GUINT64_FORMAT, first->first_offset, prevoffset,
+          lastoffset);
+      GST_DEBUG ("PCR first:%" GST_TIME_FORMAT " prev:%" GST_TIME_FORMAT
+          " cur:%" GST_TIME_FORMAT,
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (first->first_pcr)),
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (prevpcr)),
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (cur->values[cur->last_value].pcr +
+                  cur->first_pcr)));
+
+      if (prevpcr - cur->first_pcr > (PCR_MAX_VALUE * 9 / 10)) {
+        gfloat diffprev;
+        guint64 guess_offset;
+
+        /* Let's assume there is a PCR wraparound between the previous and current
+         * group.
+         * [ prev ]... PCR_MAX | 0 ...[ current ]
+         * The estimated pcr_offset would therefore be:
+         * current.first + (PCR_MAX_VALUE - prev.first)
+         *
+         * 1) Check if bitrate(prev) would be consistent with bitrate (cur - prev)
+         */
+        guess_offset = PCR_MAX_VALUE - prev->first_pcr + cur->first_pcr;
+        lastbr = gst_util_uint64_scale (PCR_SECOND, lastoffset - prevoffset,
+            guess_offset + cur->values[cur->last_value].pcr - (prevpcr -
+                prev->first_pcr));
+        GST_DEBUG ("Wraparound prev-cur (guess_offset:%" GST_TIME_FORMAT
+            ") bitrate:%" G_GUINT64_FORMAT,
+            GST_TIME_ARGS (PCRTIME_TO_GSTTIME (guess_offset)), lastbr);
+        diffprev = (float) 100.0 *(ABSDIFF (prevbr, lastbr)) / (float) prevbr;
+        GST_DEBUG ("Difference with previous bitrate:%f", diffprev);
+        if (diffprev < 10.0) {
+          GST_DEBUG ("Difference < 10.0, Setting pcr_offset to %"
+              G_GUINT64_FORMAT, guess_offset);
+          cur->pcr_offset = guess_offset;
+          if (diffprev < 1.0) {
+            GST_DEBUG ("Difference < 1.0, Removing ESTIMATED flags");
+            cur->flags &= ~PCR_GROUP_FLAG_ESTIMATED;
+          }
+        }
+        /* Indicate the the previous group is before a wrapover */
+        prev->flags |= PCR_GROUP_FLAG_WRAPOVER;
+      } else {
+        guint64 resetprev;
+        /* Let's assume there was a PCR reset between the previous and current
+         * group
+         * [ prev ] ... x | x - reset ... [ current ]
+         *
+         * The estimated pcr_offset would then be
+         * = current.first - (x - reset) + (x - prev.first) + 100ms (for safety)
+         * = current.first + reset - prev.first + 100ms (for safety)
+         */
+        /* In order to calculate the reset, we estimate what the PCR would have
+         * been by using prevbr */
+        /* FIXME : Which bitrate should we use ???  */
+        GST_DEBUG ("Using prevbr:%" G_GUINT64_FORMAT " and taking offsetdiff:%"
+            G_GUINT64_FORMAT, prevbr, cur->first_offset - prev->first_offset);
+        resetprev =
+            gst_util_uint64_scale (PCR_SECOND,
+            cur->first_offset - prev->first_offset, prevbr);
+        GST_DEBUG ("Estimated full PCR for offset %" G_GUINT64_FORMAT
+            ", using prevbr:%"
+            GST_TIME_FORMAT, cur->first_offset,
+            GST_TIME_ARGS (PCRTIME_TO_GSTTIME (resetprev)));
+        cur->pcr_offset = prev->pcr_offset + resetprev + 100 * PCR_MSECOND;
+        GST_DEBUG ("Adjusted group PCR_offset to %" GST_TIME_FORMAT,
+            GST_TIME_ARGS (PCRTIME_TO_GSTTIME (cur->pcr_offset)));
+        /* Indicate the the previous group is before a reset */
+        prev->flags |= PCR_GROUP_FLAG_RESET;
+      }
+    } else {
+      /* FIXME : Detect gaps if bitrate difference is really too big ? */
+      cur->pcr_offset = prev->pcr_offset + cur->first_pcr - prev->first_pcr;
+      GST_DEBUG ("Assuming there is no gap, setting pcr_offset to %"
+          GST_TIME_FORMAT,
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (cur->pcr_offset)));
+      /* Remove the reset and wrapover flag (if it was previously there) */
+      prev->flags &= ~PCR_GROUP_FLAG_RESET;
+      prev->flags &= ~PCR_GROUP_FLAG_WRAPOVER;
+    }
+
+
+    /* Remember prev for the next group evaluation */
+    prev = cur;
   }
 }
 
-guint
-mpegts_packetizer_get_seen_pcr (MpegTSPacketizer2 * packetizer)
+static PCROffsetGroup *
+_new_group (guint64 pcr, guint64 offset, guint64 pcr_offset, guint flags)
 {
-  return packetizer->priv->nb_seen_offsets;
+  PCROffsetGroup *group = g_slice_new0 (PCROffsetGroup);
+
+  GST_DEBUG ("Input PCR %" GST_TIME_FORMAT " offset:%" G_GUINT64_FORMAT
+      " pcr_offset:%" G_GUINT64_FORMAT " flags:%d",
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (pcr)), offset, pcr_offset, flags);
+
+  group->flags = flags;
+  group->values = g_new0 (PCROffset, DEFAULT_ALLOCATED_OFFSET);
+  /* The first pcr/offset diff is always 0/0 */
+  group->values[0].pcr = group->values[0].offset = 0;
+  group->nb_allocated = DEFAULT_ALLOCATED_OFFSET;
+
+  /* Store the full values */
+  group->first_pcr = pcr;
+  group->first_offset = offset;
+  group->pcr_offset = pcr_offset;
+
+  GST_DEBUG ("Created group starting with pcr:%" GST_TIME_FORMAT " offset:%"
+      G_GUINT64_FORMAT " pcr_offset:%" GST_TIME_FORMAT,
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (group->first_pcr)),
+      group->first_offset,
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (group->pcr_offset)));
+
+  return group;
 }
 
+static void
+_insert_group_after (MpegTSPCR * pcrtable, PCROffsetGroup * group,
+    PCROffsetGroup * prev)
+{
+  if (prev == NULL) {
+    /* First group */
+    pcrtable->groups = g_list_prepend (pcrtable->groups, group);
+  } else {
+    GList *tmp, *toinsert, *prevlist = NULL, *nextlist = NULL;
+    /* Insert before next and prev */
+    for (tmp = pcrtable->groups; tmp; tmp = tmp->next) {
+      if (tmp->data == prev) {
+        prevlist = tmp;
+        nextlist = tmp->next;
+        break;
+      }
+    }
+    if (!prevlist) {
+      /* The non NULL prev given isn't in the list */
+      GST_WARNING ("Request to insert before a group which isn't in the list");
+      pcrtable->groups = g_list_prepend (pcrtable->groups, group);
+    } else {
+      toinsert = g_list_append (NULL, group);
+      toinsert->next = nextlist;
+      toinsert->prev = prevlist;
+      prevlist->next = toinsert;
+      if (nextlist)
+        nextlist->prev = toinsert;
+    }
+  }
+}
+
+static void
+_use_group (MpegTSPCR * pcrtable, PCROffsetGroup * group)
+{
+  PCROffsetCurrent *current = pcrtable->current;
+
+  memset (current, 0, sizeof (PCROffsetCurrent));
+  current->group = group;
+  current->pending[0] = group->values[group->last_value];
+  current->last_value = current->pending[0];
+  current->write = 1;
+  current->prev = group->values[group->last_value];
+  current->first_pcr = group->first_pcr;
+  current->first_offset = group->first_offset;
+}
+
+/* Create a new group with the specified values after prev
+ * Set current to that new group */
+static void
+_set_current_group (MpegTSPCR * pcrtable,
+    PCROffsetGroup * prev, guint64 pcr, guint64 offset, gboolean contiguous)
+{
+  PCROffsetGroup *group;
+  guint flags = 0;
+  guint64 pcr_offset = 0;
+
+  /* Handle wraparound/gap (only if contiguous with previous group) */
+  if (contiguous) {
+    guint64 lastpcr = prev->first_pcr + prev->values[prev->last_value].pcr;
+
+    /* Set CLOSED flag on previous group and remember pcr_offset */
+    prev->flags |= PCR_GROUP_FLAG_CLOSED;
+    pcr_offset = prev->pcr_offset;
+
+    /* Wraparound ? */
+    if (lastpcr > pcr) {
+      /* In offset-mode, a PCR wraparound is only actually consistent if
+       * we have a very high confidence (99% right now, might need to change
+       * later) */
+      if (lastpcr - pcr > (PCR_MAX_VALUE * 99 / 100)) {
+        GST_WARNING ("WRAPAROUND detected. diff %" GST_TIME_FORMAT,
+            GST_TIME_ARGS (PCRTIME_TO_GSTTIME (lastpcr - pcr)));
+        /* The previous group closed at PCR_MAX_VALUE */
+        pcr_offset += PCR_MAX_VALUE - prev->first_pcr + pcr;
+      } else {
+        GST_WARNING ("RESET detected. diff %" GST_TIME_FORMAT,
+            GST_TIME_ARGS (PCRTIME_TO_GSTTIME (lastpcr - pcr)));
+        /* The previous group closed at the raw last_pcr diff (+100ms for safety) */
+        pcr_offset += prev->values[prev->last_value].pcr + 100 * PCR_MSECOND;
+      }
+    } else if (lastpcr < pcr - 500 * PCR_MSECOND) {
+      GST_WARNING ("GAP detected. diff %" GST_TIME_FORMAT,
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (pcr - lastpcr)));
+      /* The previous group closed at the raw last_pcr diff (+500ms for safety) */
+      pcr_offset += prev->values[prev->last_value].pcr + 500 * PCR_MSECOND;
+    } else
+      /* Normal continuation (contiguous in time) */
+      pcr_offset += pcr - prev->first_pcr;
+
+  } else if (prev != NULL)
+    /* If we are not contiguous and it's not the first group, the pcr_offset
+     * will be estimated */
+    flags = PCR_GROUP_FLAG_ESTIMATED;
+
+  group = _new_group (pcr, offset, pcr_offset, flags);
+  _use_group (pcrtable, group);
+  _insert_group_after (pcrtable, group, prev);
+  if (!contiguous)
+    _reevaluate_group_pcr_offset (pcrtable, group);
+}
+
+static inline void
+_append_group_values (PCROffsetGroup * group, PCROffset pcroffset)
+{
+  group->last_value++;
+  /* Resize values if needed */
+  if (G_UNLIKELY (group->nb_allocated == group->last_value)) {
+    group->nb_allocated += DEFAULT_ALLOCATED_OFFSET;
+    group->values =
+        g_realloc (group->values, group->nb_allocated * sizeof (PCROffset));
+  }
+  group->values[group->last_value] = pcroffset;
+
+  GST_DEBUG ("First PCR:%" GST_TIME_FORMAT " offset:%" G_GUINT64_FORMAT
+      " PCR_offset:%" GST_TIME_FORMAT,
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (group->first_pcr)),
+      group->first_offset,
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (group->pcr_offset)));
+  GST_DEBUG ("Last PCR: +%" GST_TIME_FORMAT " offset: +%u",
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (pcroffset.pcr)), pcroffset.offset);
+}
+
+/* Move last values from current (if any) to the current group
+ * and reset current.
+ * Note: This does not set the CLOSED flag (since we have no next
+ * contiguous group) */
+static void
+_close_current_group (MpegTSPCR * pcrtable)
+{
+  PCROffsetCurrent *current = pcrtable->current;
+  PCROffsetGroup *group = current->group;
+
+  if (group == NULL)
+    return;
+  GST_DEBUG ("Closing group and resetting current");
+
+  /* Store last values */
+  _append_group_values (group, current->pending[current->last]);
+  memset (current, 0, sizeof (PCROffsetCurrent));
+  /* And re-evaluate all groups */
+}
+
+static void
+record_pcr (MpegTSPacketizer2 * packetizer, MpegTSPCR * pcrtable,
+    guint64 pcr, guint64 offset)
+{
+  PCROffsetCurrent *current = pcrtable->current;
+  gint64 corpcr, coroffset;
+
+  packetizer->nb_seen_offsets += 1;
+
+  /* FIXME : Invert logic later (probability is higher that we have a
+   * current estimator) */
+
+  /* Check for current */
+  if (G_UNLIKELY (current->group == NULL)) {
+    PCROffsetGroup *prev = NULL;
+    GList *tmp;
+    /* No current estimator. This happens for the initial value, or after
+     * discont and flushes. Figure out where we need to record this position.
+     * 
+     * Possible choices:
+     * 1) No groups at all:
+     *    Create a new group with pcr/offset
+     *    Initialize current to that group
+     * 2) Entirely within an existing group
+     *    bail out (FIXME: Make this detection faster)
+     * 3) Not in any group
+     *    Create a new group with pcr/offset at the right position
+     *    Initialize current to that group
+     */
+    GST_DEBUG ("No current window estimator, Checking for group to use");
+    for (tmp = pcrtable->groups; tmp; tmp = tmp->next) {
+      PCROffsetGroup *group = (PCROffsetGroup *) tmp->data;
+
+      GST_DEBUG ("First PCR:%" GST_TIME_FORMAT " offset:%" G_GUINT64_FORMAT
+          " PCR_offset:%" GST_TIME_FORMAT,
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (group->first_pcr)),
+          group->first_offset,
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (group->pcr_offset)));
+      GST_DEBUG ("Last PCR: +%" GST_TIME_FORMAT " offset: +%u",
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (group->values[group->
+                      last_value].pcr)),
+          group->values[group->last_value].offset);
+      /* Check if before group */
+      if (offset < group->first_offset) {
+        GST_DEBUG ("offset is before that group");
+        break;
+      }
+      /* Check if within group */
+      if (offset <=
+          (group->values[group->last_value].offset + group->first_offset)) {
+        GST_DEBUG ("Already observed PCR offset %" G_GUINT64_FORMAT, offset);
+        return;
+      }
+      /* Check if just after group (i.e. continuation of it) */
+      if (!(group->flags & PCR_GROUP_FLAG_CLOSED) &&
+          pcr - group->first_pcr - group->values[group->last_value].pcr <=
+          100 * PCR_MSECOND) {
+        GST_DEBUG ("Continuation of existing group");
+        _use_group (pcrtable, group);
+        return;
+      }
+      /* Else after group */
+      prev = group;
+    }
+    _set_current_group (pcrtable, prev, pcr, offset, FALSE);
+    return;
+  }
+
+  corpcr = pcr - current->first_pcr;
+  coroffset = offset - current->first_offset;
+
+  /* FIXME : Detect if we've gone into the next group !
+   * FIXME : Close group when that happens */
+  GST_DEBUG ("first:%d, last:%d, write:%d", current->first, current->last,
+      current->write);
+  GST_DEBUG ("First PCR:%" GST_TIME_FORMAT " offset:%" G_GUINT64_FORMAT,
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (current->first_pcr)),
+      current->first_offset);
+  GST_DEBUG ("Last PCR: +%" GST_TIME_FORMAT " offset: +%u",
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (current->pending[current->last].pcr)),
+      current->pending[current->last].offset);
+  GST_DEBUG ("To add (corrected) PCR:%" GST_TIME_FORMAT " offset:%"
+      G_GINT64_FORMAT, GST_TIME_ARGS (PCRTIME_TO_GSTTIME (corpcr)), coroffset);
+
+  /* Do we need to close the current group ? */
+  /* Check for wrapover/discont */
+  if (G_UNLIKELY (corpcr < current->pending[current->last].pcr)) {
+    /* FIXME : ignore very small deltas (< 500ms ?) which are most likely
+     * stray values */
+    GST_DEBUG
+        ("PCR smaller than previously observed one, handling discont/wrapover");
+    /* Take values from current and put them in the current group (closing it) */
+    /* Create new group with new pcr/offset just after the current group
+     * and mark it as a wrapover */
+    /* Initialize current to that group with new values */
+    _append_group_values (current->group, current->pending[current->last]);
+    _set_current_group (pcrtable, current->group, pcr, offset, TRUE);
+    return;
+  }
+  /* If PCR diff is greater than 500ms, create new group */
+  if (G_UNLIKELY (corpcr - current->pending[current->last].pcr >
+          500 * PCR_MSECOND)) {
+    GST_DEBUG ("New PCR more than 500ms away, handling discont");
+    /* Take values from current and put them in the current group (closing it) */
+    /* Create new group with pcr/offset just after the current group
+     * and mark it as a discont */
+    /* Initialize current to that group with new values */
+    _append_group_values (current->group, current->pending[current->last]);
+    _set_current_group (pcrtable, current->group, pcr, offset, TRUE);
+    return;
+  }
+
+  if (G_UNLIKELY (corpcr == current->last_value.pcr)) {
+    GST_DEBUG ("Ignoring same PCR (stream is drunk)");
+    return;
+  }
+
+  /* update current window */
+  current->pending[current->write].pcr = corpcr;
+  current->pending[current->write].offset = coroffset;
+  current->last_value = current->pending[current->write];
+  current->last = (current->last + 1) % PCR_BITRATE_NEEDED;
+  current->write = (current->write + 1) % PCR_BITRATE_NEEDED;
+
+  GST_DEBUG ("first:%d, last:%d, write:%d", current->first, current->last,
+      current->write);
+  GST_DEBUG ("First PCR:%" GST_TIME_FORMAT " offset:%" G_GUINT64_FORMAT,
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (current->first_pcr)),
+      current->first_offset);
+  GST_DEBUG ("Last PCR: +%" GST_TIME_FORMAT " offset: +%u",
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (current->pending[current->last].pcr)),
+      current->pending[current->last].offset);
+
+  /* If we haven't stored enough values, bail out */
+  if (current->write != current->first) {
+    GST_DEBUG
+        ("Not enough observations to calculate bitrate (first:%d, last:%d)",
+        current->first, current->last);
+    return;
+  }
+
+  /* If we are at least 1s away from reference value AND we have filled our
+   * window, we can start comparing bitrates */
+  if (current->pending[current->first].pcr - current->prev.pcr > PCR_SECOND) {
+    /* Calculate window bitrate */
+    current->cur_bitrate = gst_util_uint64_scale (PCR_SECOND,
+        current->pending[current->last].offset -
+        current->pending[current->first].offset,
+        current->pending[current->last].pcr -
+        current->pending[current->first].pcr);
+    GST_DEBUG ("Current bitrate is now %" G_GUINT64_FORMAT,
+        current->cur_bitrate);
+
+    /* Calculate previous bitrate */
+    current->prev_bitrate =
+        gst_util_uint64_scale (PCR_SECOND,
+        current->pending[current->first].offset - current->prev.offset,
+        current->pending[current->first].pcr - current->prev.pcr);
+    GST_DEBUG ("Previous group bitrate now %" G_GUINT64_FORMAT,
+        current->prev_bitrate);
+
+    /* FIXME : Better bitrate changes ? Currently 10% changes */
+    if (ABSDIFF (current->cur_bitrate,
+            current->prev_bitrate) * 10 > current->prev_bitrate) {
+      GST_DEBUG ("Current bitrate changed by more than 10%% (old:%"
+          G_GUINT64_FORMAT " new:%" G_GUINT64_FORMAT ")", current->prev_bitrate,
+          current->cur_bitrate);
+      /* If we detected a change in bitrate, this means that
+       * d(first - prev) is a different bitrate than d(last - first).
+       *
+       * Two conclusions can be made:
+       * 1) d(first - prev) is a complete bitrate "chain" (values between the
+       *    reference value and first pending value have consistent bitrate).
+       * 2) next values (from second pending value onwards) will no longer have
+       *    the same bitrate.
+       *
+       * The question remains as to how long the new bitrate change is going to
+       * last for (it might be short or longer term). For this we need to restart
+       * bitrate estimation.
+       *
+       * * We move over first to the last value of group (a new chain ends and
+       *   starts from there)
+       * * We remember that last group value as our new window reference
+       * * We restart our window filing from the last observed value
+       *
+       * Once our new window is filled we will end up in two different scenarios:
+       * 1) Either the bitrate change was consistent, and therefore the bitrate
+       *    will have remained constant over at least 2 window length
+       * 2) The bitrate change was very short (1 window duration) and we will
+       *    close that chain and restart again.
+       * X) And of course if any discont/gaps/wrapover happen in the meantime they
+       *    will also close the group.
+       */
+      _append_group_values (current->group, current->pending[current->first]);
+      current->prev = current->pending[current->first];
+      current->first = current->last;
+      current->write = (current->first + 1) % PCR_BITRATE_NEEDED;
+      return;
+    }
+  }
+
+  /* Update read position */
+  current->first = (current->first + 1) % PCR_BITRATE_NEEDED;
+}
+
+
+/* convert specified offset into stream time */
 GstClockTime
 mpegts_packetizer_offset_to_ts (MpegTSPacketizer2 * packetizer,
     guint64 offset, guint16 pid)
 {
-  MpegTSPacketizerPrivate *priv = packetizer->priv;
+  PCROffsetGroup *last;
   MpegTSPCR *pcrtable;
+  GList *tmp;
   GstClockTime res;
+  guint64 lastpcr, lastoffset;
+
+  GST_DEBUG ("offset %" G_GUINT64_FORMAT, offset);
 
   if (G_UNLIKELY (!packetizer->calculate_offset))
     return GST_CLOCK_TIME_NONE;
 
-  if (G_UNLIKELY (priv->refoffset == -1))
+  if (G_UNLIKELY (packetizer->refoffset == -1))
     return GST_CLOCK_TIME_NONE;
 
-  if (G_UNLIKELY (offset < priv->refoffset))
+  if (G_UNLIKELY (offset < packetizer->refoffset))
     return GST_CLOCK_TIME_NONE;
+
+  PACKETIZER_GROUP_LOCK (packetizer);
 
   pcrtable = get_pcr_table (packetizer, pid);
 
-  if (G_UNLIKELY (pcrtable->last_offset <= pcrtable->first_offset))
+  if (g_list_length (pcrtable->groups) < 1) {
+    PACKETIZER_GROUP_UNLOCK (packetizer);
+    GST_WARNING ("Not enough observations to return a duration estimate");
     return GST_CLOCK_TIME_NONE;
+  }
 
-  /* Convert byte difference into time difference */
-  res = PCRTIME_TO_GSTTIME (gst_util_uint64_scale (offset - priv->refoffset,
-          pcrtable->last_pcr - pcrtable->first_pcr,
-          pcrtable->last_offset - pcrtable->first_offset));
+  if (g_list_length (pcrtable->groups) > 1) {
+    GST_LOG ("Using last group");
+
+    /* FIXME : Refine this later to use neighbouring groups */
+    tmp = g_list_last (pcrtable->groups);
+    last = tmp->data;
+
+    if (G_UNLIKELY (last->flags & PCR_GROUP_FLAG_ESTIMATED))
+      _reevaluate_group_pcr_offset (pcrtable, last);
+
+    /* lastpcr is the full value in PCR from the first first chunk of data */
+    lastpcr = last->values[last->last_value].pcr + last->pcr_offset;
+    /* lastoffset is the full offset from the first chunk of data */
+    lastoffset =
+        last->values[last->last_value].offset + last->first_offset -
+        packetizer->refoffset;
+  } else {
+    PCROffsetCurrent *current = pcrtable->current;
+
+    if (!current->group) {
+      PACKETIZER_GROUP_UNLOCK (packetizer);
+      GST_LOG ("No PCR yet");
+      return GST_CLOCK_TIME_NONE;
+    }
+    /* If doing progressive read, use current */
+    GST_LOG ("Using current group");
+    lastpcr = current->group->pcr_offset + current->pending[current->last].pcr;
+    lastoffset = current->first_offset + current->pending[current->last].offset;
+  }
+  GST_DEBUG ("lastpcr:%" GST_TIME_FORMAT " lastoffset:%" G_GUINT64_FORMAT
+      " refoffset:%" G_GUINT64_FORMAT,
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (lastpcr)), lastoffset,
+      packetizer->refoffset);
+
+  /* Convert byte difference into time difference (and transformed from 27MHz to 1GHz) */
+  res =
+      PCRTIME_TO_GSTTIME (gst_util_uint64_scale (offset - packetizer->refoffset,
+          lastpcr, lastoffset));
+
+  PACKETIZER_GROUP_UNLOCK (packetizer);
+
   GST_DEBUG ("Returning timestamp %" GST_TIME_FORMAT " for offset %"
       G_GUINT64_FORMAT, GST_TIME_ARGS (res), offset);
 
   return res;
 }
 
+/* Input  : local PTS (in GHz units)
+ * Return : Stream time (in GHz units) */
 GstClockTime
 mpegts_packetizer_pts_to_ts (MpegTSPacketizer2 * packetizer,
     GstClockTime pts, guint16 pcr_pid)
 {
   GstClockTime res = GST_CLOCK_TIME_NONE;
-  MpegTSPCR *pcrtable = get_pcr_table (packetizer, pcr_pid);
+  MpegTSPCR *pcrtable;
+
+  PACKETIZER_GROUP_LOCK (packetizer);
+  pcrtable = get_pcr_table (packetizer, pcr_pid);
 
   /* Use clock skew if present */
   if (packetizer->calculate_skew
       && GST_CLOCK_TIME_IS_VALID (pcrtable->base_time)) {
-    GST_DEBUG ("pts %" G_GUINT64_FORMAT " base_pcrtime:%" G_GUINT64_FORMAT
-        " base_time:%" GST_TIME_FORMAT, pts, pcrtable->base_pcrtime,
-        GST_TIME_ARGS (pcrtable->base_time));
-    res =
-        pts + pcrtable->pcroffset - pcrtable->base_pcrtime +
-        pcrtable->base_time + pcrtable->skew;
-  } else
-    /* If not, use pcr observations */
-  if (packetizer->calculate_offset && pcrtable->first_pcr != -1) {
-    /* Rollover */
-    if (G_UNLIKELY (pts < pcrtable->first_pcr_ts))
-      pts += MPEGTIME_TO_GSTTIME (PTS_DTS_MAX_VALUE);
-    res = pts - pcrtable->first_pcr_ts;
+    GST_DEBUG ("pts %" GST_TIME_FORMAT " base_pcrtime:%" GST_TIME_FORMAT
+        " base_time:%" GST_TIME_FORMAT " pcroffset:%" GST_TIME_FORMAT,
+        GST_TIME_ARGS (pts),
+        GST_TIME_ARGS (pcrtable->base_pcrtime),
+        GST_TIME_ARGS (pcrtable->base_time),
+        GST_TIME_ARGS (pcrtable->pcroffset));
+    res = pts + pcrtable->pcroffset;
+
+    /* Don't return anything if we differ too much against last seen PCR */
+    /* FIXME : Ideally we want to figure out whether we have a wraparound or
+     * a reset so we can provide actual values.
+     * That being said, this will only happen for the small interval of time
+     * where PTS/DTS are wrapping just before we see the first reset/wrap PCR
+     */
+    if (G_UNLIKELY (ABSDIFF (res, pcrtable->last_pcrtime) > 15 * GST_SECOND))
+      res = GST_CLOCK_TIME_NONE;
+    else
+      res += pcrtable->base_time + pcrtable->skew - pcrtable->base_pcrtime;
+  } else if (packetizer->calculate_offset && pcrtable->groups) {
+    gint64 refpcr = G_MAXINT64, refpcroffset;
+    PCROffsetGroup *group = pcrtable->current->group;
+
+    /* Generic calculation:
+     * Stream Time = PTS - first group PCR + group PCR_offset
+     *
+     * In case of wrapover:
+     * Stream Time = PTS + MAX_PCR - first group PCR + group PCR_offset
+     * (which we actually do by using first group PCR -= MAX_PCR in order
+     *  to end up with the same calculation as for non-wrapover) */
+
+    if (group) {
+      /* If we have a current group the value is pretty much guaranteed */
+      GST_DEBUG ("Using current First PCR:%" GST_TIME_FORMAT " offset:%"
+          G_GUINT64_FORMAT " PCR_offset:%" GST_TIME_FORMAT,
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (group->first_pcr)),
+          group->first_offset,
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (group->pcr_offset)));
+      refpcr = group->first_pcr;
+      refpcroffset = group->pcr_offset;
+      if (pts < PCRTIME_TO_GSTTIME (refpcr)) {
+        /* Only apply wrapover if we're certain it is, and avoid
+         * returning bogus values if it's a PTS/DTS which is *just*
+         * before the start of the current group
+         */
+        if (PCRTIME_TO_GSTTIME (refpcr) - pts > GST_SECOND) {
+          pts += PCR_GST_MAX_VALUE;
+        } else
+          refpcr = G_MAXINT64;
+      }
+    } else {
+      GList *tmp;
+      /* Otherwise, find a suitable group */
+
+      GST_DEBUG ("Find group for current offset %" G_GUINT64_FORMAT,
+          packetizer->offset);
+
+      for (tmp = pcrtable->groups; tmp; tmp = tmp->next) {
+        PCROffsetGroup *tgroup = tmp->data;
+        GST_DEBUG ("Trying First PCR:%" GST_TIME_FORMAT " offset:%"
+            G_GUINT64_FORMAT " PCR_offset:%" GST_TIME_FORMAT,
+            GST_TIME_ARGS (PCRTIME_TO_GSTTIME (tgroup->first_pcr)),
+            tgroup->first_offset,
+            GST_TIME_ARGS (PCRTIME_TO_GSTTIME (tgroup->pcr_offset)));
+        /* Gone too far ? */
+        if (tgroup->first_offset > packetizer->offset) {
+          /* If there isn't a pending reset, use that value */
+          if (group) {
+            GST_DEBUG ("PTS is %" GST_TIME_FORMAT " into group",
+                GST_TIME_ARGS (pts - PCRTIME_TO_GSTTIME (group->first_pcr)));
+          }
+          break;
+        }
+        group = tgroup;
+        /* In that group ? */
+        if (group->first_offset + group->values[group->last_value].offset >
+            packetizer->offset) {
+          GST_DEBUG ("PTS is %" GST_TIME_FORMAT " into group",
+              GST_TIME_ARGS (pts - PCRTIME_TO_GSTTIME (group->first_pcr)));
+          break;
+        }
+      }
+      if (group && !(group->flags & PCR_GROUP_FLAG_RESET)) {
+        GST_DEBUG ("Using group !");
+        refpcr = group->first_pcr;
+        refpcroffset = group->pcr_offset;
+        if (pts < refpcr)
+          refpcr -= PCR_MAX_VALUE;
+      }
+    }
+    if (refpcr != G_MAXINT64)
+      res =
+          pts - PCRTIME_TO_GSTTIME (refpcr) + PCRTIME_TO_GSTTIME (refpcroffset);
+    else
+      GST_WARNING ("No groups, can't calculate timestamp");
   } else
     GST_WARNING ("Not enough information to calculate proper timestamp");
+
+  PACKETIZER_GROUP_UNLOCK (packetizer);
 
   GST_DEBUG ("Returning timestamp %" GST_TIME_FORMAT " for pts %"
       GST_TIME_FORMAT " pcr_pid:0x%04x", GST_TIME_ARGS (res),
@@ -1634,29 +2267,115 @@ mpegts_packetizer_pts_to_ts (MpegTSPacketizer2 * packetizer,
   return res;
 }
 
+/* Stream time to offset */
 guint64
 mpegts_packetizer_ts_to_offset (MpegTSPacketizer2 * packetizer,
     GstClockTime ts, guint16 pcr_pid)
 {
-  MpegTSPacketizerPrivate *priv = packetizer->priv;
   MpegTSPCR *pcrtable;
   guint64 res;
+  PCROffsetGroup *nextgroup = NULL, *prevgroup = NULL;
+  guint64 querypcr, firstpcr, lastpcr, firstoffset, lastoffset;
+  PCROffsetCurrent *current;
+  GList *tmp;
 
   if (!packetizer->calculate_offset)
     return -1;
 
+  PACKETIZER_GROUP_LOCK (packetizer);
   pcrtable = get_pcr_table (packetizer, pcr_pid);
-  if (pcrtable->first_pcr == -1)
+
+  if (pcrtable->groups == NULL) {
+    PACKETIZER_GROUP_UNLOCK (packetizer);
     return -1;
+  }
 
-  GST_DEBUG ("ts(pcr) %" G_GUINT64_FORMAT " first_pcr:%" G_GUINT64_FORMAT,
-      GSTTIME_TO_MPEGTIME (ts), pcrtable->first_pcr);
+  querypcr = GSTTIME_TO_PCRTIME (ts);
 
-  /* Convert ts to PCRTIME */
-  res = gst_util_uint64_scale (GSTTIME_TO_PCRTIME (ts),
-      pcrtable->last_offset - pcrtable->first_offset,
-      pcrtable->last_pcr - pcrtable->first_pcr);
-  res += pcrtable->first_offset + priv->refoffset;
+  GST_DEBUG ("Searching offset for ts %" GST_TIME_FORMAT, GST_TIME_ARGS (ts));
+
+  /* First check if we're within the current pending group */
+  current = pcrtable->current;
+  if (current && current->group && (querypcr >= current->group->pcr_offset) &&
+      querypcr - current->group->pcr_offset <=
+      current->pending[current->last].pcr) {
+    GST_DEBUG ("pcr is in current group");
+    nextgroup = current->group;
+    goto calculate_points;
+  }
+
+  /* Find the neighbouring groups */
+  for (tmp = pcrtable->groups; tmp; tmp = tmp->next) {
+    nextgroup = (PCROffsetGroup *) tmp->data;
+
+    GST_DEBUG ("Trying group PCR %" GST_TIME_FORMAT " (offset %"
+        G_GUINT64_FORMAT " pcr_offset %" GST_TIME_FORMAT,
+        GST_TIME_ARGS (PCRTIME_TO_GSTTIME (nextgroup->first_pcr)),
+        nextgroup->first_offset,
+        GST_TIME_ARGS (PCRTIME_TO_GSTTIME (nextgroup->pcr_offset)));
+
+    /* Check if we've gone too far */
+    if (nextgroup->pcr_offset > querypcr) {
+      GST_DEBUG ("pcr is before that group");
+      break;
+    }
+
+    if (tmp->next == NULL) {
+      GST_DEBUG ("pcr is beyond last group");
+      break;
+    }
+
+    prevgroup = nextgroup;
+
+    /* Maybe it's in this group */
+    if (nextgroup->values[nextgroup->last_value].pcr +
+        nextgroup->pcr_offset >= querypcr) {
+      GST_DEBUG ("pcr is in that group");
+      break;
+    }
+  }
+
+calculate_points:
+
+  GST_DEBUG ("nextgroup:%p, prevgroup:%p", nextgroup, prevgroup);
+
+  if (nextgroup == prevgroup || prevgroup == NULL) {
+    /* We use the current group to calculate position:
+     * * if the PCR is within this group
+     * * if there is only one group to use for calculation
+     */
+    GST_DEBUG ("In group or after last one");
+    lastoffset = firstoffset = nextgroup->first_offset;
+    lastpcr = firstpcr = nextgroup->pcr_offset;
+    if (current && nextgroup == current->group) {
+      lastoffset += current->pending[current->last].offset;
+      lastpcr += current->pending[current->last].pcr;
+    } else {
+      lastoffset += nextgroup->values[nextgroup->last_value].offset;
+      lastpcr += nextgroup->values[nextgroup->last_value].pcr;
+    }
+  } else {
+    GST_DEBUG ("Between group");
+    lastoffset = nextgroup->first_offset;
+    lastpcr = nextgroup->pcr_offset;
+    firstoffset =
+        prevgroup->values[prevgroup->last_value].offset +
+        prevgroup->first_offset;
+    firstpcr =
+        prevgroup->values[prevgroup->last_value].pcr + prevgroup->pcr_offset;
+  }
+
+  PACKETIZER_GROUP_UNLOCK (packetizer);
+
+  GST_DEBUG ("Using prev PCR %" G_GUINT64_FORMAT " offset %" G_GUINT64_FORMAT,
+      firstpcr, firstoffset);
+  GST_DEBUG ("Using last PCR %" G_GUINT64_FORMAT " offset %" G_GUINT64_FORMAT,
+      lastpcr, lastoffset);
+
+  res = firstoffset;
+  if (lastpcr != firstpcr)
+    res += gst_util_uint64_scale (querypcr - firstpcr,
+        lastoffset - firstoffset, lastpcr - firstpcr);
 
   GST_DEBUG ("Returning offset %" G_GUINT64_FORMAT " for ts %"
       GST_TIME_FORMAT, res, GST_TIME_ARGS (ts));
@@ -1670,5 +2389,73 @@ mpegts_packetizer_set_reference_offset (MpegTSPacketizer2 * packetizer,
 {
   GST_DEBUG ("Setting reference offset to %" G_GUINT64_FORMAT, refoffset);
 
-  packetizer->priv->refoffset = refoffset;
+  PACKETIZER_GROUP_LOCK (packetizer);
+  packetizer->refoffset = refoffset;
+  PACKETIZER_GROUP_UNLOCK (packetizer);
+}
+
+void
+mpegts_packetizer_set_current_pcr_offset (MpegTSPacketizer2 * packetizer,
+    GstClockTime offset, guint16 pcr_pid)
+{
+  guint64 pcr_offset;
+  gint64 delta;
+  MpegTSPCR *pcrtable;
+  PCROffsetGroup *group;
+  GList *tmp;
+  gboolean apply = FALSE;
+
+  /* fast path */
+  PACKETIZER_GROUP_LOCK (packetizer);
+  pcrtable = get_pcr_table (packetizer, pcr_pid);
+
+  if (pcrtable == NULL || pcrtable->current->group == NULL) {
+    PACKETIZER_GROUP_UNLOCK (packetizer);
+    return;
+  }
+
+  pcr_offset = GSTTIME_TO_PCRTIME (offset);
+
+  /* Pick delta from *first* group */
+  if (pcrtable->groups)
+    group = pcrtable->groups->data;
+  else
+    group = pcrtable->current->group;
+  GST_DEBUG ("Current group PCR %" GST_TIME_FORMAT " (offset %"
+      G_GUINT64_FORMAT " pcr_offset %" GST_TIME_FORMAT,
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (group->first_pcr)),
+      group->first_offset,
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (group->pcr_offset)));
+
+  /* Remember the difference between previous initial pcr_offset and
+   * new initial pcr_offset */
+  delta = pcr_offset - group->pcr_offset;
+  if (delta == 0) {
+    GST_DEBUG ("No shift to apply");
+    PACKETIZER_GROUP_UNLOCK (packetizer);
+    return;
+  }
+  GST_DEBUG ("Shifting groups by %" GST_TIME_FORMAT
+      " for new initial pcr_offset %" GST_TIME_FORMAT,
+      GST_TIME_ARGS (PCRTIME_TO_GSTTIME (delta)), GST_TIME_ARGS (offset));
+
+  for (tmp = pcrtable->groups; tmp; tmp = tmp->next) {
+    PCROffsetGroup *tgroup = (tmp->data);
+    if (tgroup == group)
+      apply = TRUE;
+    if (apply) {
+      tgroup->pcr_offset += delta;
+      GST_DEBUG ("Update group PCR %" GST_TIME_FORMAT " (offset %"
+          G_GUINT64_FORMAT " pcr_offset %" GST_TIME_FORMAT,
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (tgroup->first_pcr)),
+          tgroup->first_offset,
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (tgroup->pcr_offset)));
+    } else
+      GST_DEBUG ("Not modifying group PCR %" GST_TIME_FORMAT " (offset %"
+          G_GUINT64_FORMAT " pcr_offset %" GST_TIME_FORMAT,
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (tgroup->first_pcr)),
+          tgroup->first_offset,
+          GST_TIME_ARGS (PCRTIME_TO_GSTTIME (tgroup->pcr_offset)));
+  }
+  PACKETIZER_GROUP_UNLOCK (packetizer);
 }

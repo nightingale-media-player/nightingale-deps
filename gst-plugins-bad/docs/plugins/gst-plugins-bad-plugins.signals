@@ -16,14 +16,6 @@ gint64  arg3
 </SIGNAL>
 
 <SIGNAL>
-<NAME>GstCDAudio::track-change</NAME>
-<RETURNS>void</RETURNS>
-<FLAGS>l</FLAGS>
-GstCDAudio *gstcdaudio
-gint  arg1
-</SIGNAL>
-
-<SIGNAL>
 <NAME>GstInputSelector::block</NAME>
 <RETURNS>gint64</RETURNS>
 <FLAGS>la</FLAGS>
@@ -556,6 +548,13 @@ gpointer  arg4
 <RETURNS>void</RETURNS>
 <FLAGS>l</FLAGS>
 GstSrtpEnc *gstsrtpenc
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstSrtpEnc::get-rollover-counter</NAME>
+<RETURNS>guint</RETURNS>
+<FLAGS>la</FLAGS>
+GstSrtpEnc *gstsrtpenc
 guint  arg1
 </SIGNAL>
 
@@ -588,5 +587,84 @@ guint  arg1
 <FLAGS>l</FLAGS>
 GstSrtpDec *gstsrtpdec
 guint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstSrtpDec::remove-key</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>la</FLAGS>
+GstSrtpDec *gstsrtpdec
+guint  arg1
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstDvbSrc::tuning-done</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+GstDvbSrc *gstdvbsrc
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstDvbSrc::tuning-fail</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+GstDvbSrc *gstdvbsrc
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstDvbSrc::tuning-start</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+GstDvbSrc *gstdvbsrc
+</SIGNAL>
+
+<SIGNAL>
+<NAME>DvbBaseBin::tuning-done</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+DvbBaseBin *dvbbasebin
+</SIGNAL>
+
+<SIGNAL>
+<NAME>DvbBaseBin::tuning-fail</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+DvbBaseBin *dvbbasebin
+</SIGNAL>
+
+<SIGNAL>
+<NAME>DvbBaseBin::tuning-start</NAME>
+<RETURNS>void</RETURNS>
+<FLAGS>l</FLAGS>
+DvbBaseBin *dvbbasebin
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstGLImageSink::client-draw</NAME>
+<RETURNS>gboolean</RETURNS>
+<FLAGS>l</FLAGS>
+GstGLImageSink *gstglimagesink
+guint  arg1
+guint  arg2
+guint  arg3
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstGLImageSink::client-reshape</NAME>
+<RETURNS>gboolean</RETURNS>
+<FLAGS>l</FLAGS>
+GstGLImageSink *gstglimagesink
+guint  arg1
+guint  arg2
+</SIGNAL>
+
+<SIGNAL>
+<NAME>GstGLFilterApp::client-draw</NAME>
+<RETURNS>gboolean</RETURNS>
+<FLAGS>l</FLAGS>
+GstGLFilterApp *gstglfilterapp
+guint  arg1
+guint  arg2
+guint  arg3
 </SIGNAL>
 

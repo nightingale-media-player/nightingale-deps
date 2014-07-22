@@ -140,6 +140,7 @@ struct MpegTsMux {
   guint pat_interval;
   guint pmt_interval;
   gint alignment;
+  guint si_interval;
 
   /* state */
   gboolean first;
@@ -185,8 +186,7 @@ struct MpegTsPadData {
   TsMuxStream *stream;
 
   /* most recent valid TS for this stream */
-  GstClockTime last_pts;
-  GstClockTime last_dts;
+  GstClockTime min_dts;
 
 #if 0
   /* (optional) index writing */
@@ -208,6 +208,8 @@ struct MpegTsPadData {
   gint prog_id;
   /* program this stream belongs to == mux->programs[prog_id] */
   TsMuxProgram *prog;
+
+  gchar *language;
 };
 
 GType mpegtsmux_get_type (void);

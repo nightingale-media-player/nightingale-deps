@@ -106,134 +106,6 @@ gst_amc_audio_dec_get_type (void)
   return type;
 }
 
-static GstCaps *
-create_sink_caps (const GstAmcCodecInfo * codec_info)
-{
-  GstCaps *ret;
-  gint i;
-
-  ret = gst_caps_new_empty ();
-
-  for (i = 0; i < codec_info->n_supported_types; i++) {
-    const GstAmcCodecType *type = &codec_info->supported_types[i];
-
-    if (strcmp (type->mime, "audio/mpeg") == 0) {
-      GstStructure *tmp;
-
-      tmp = gst_structure_new ("audio/mpeg",
-          "mpegversion", G_TYPE_INT, 1,
-          "rate", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "channels", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "parsed", G_TYPE_BOOLEAN, TRUE, NULL);
-      ret = gst_caps_merge_structure (ret, tmp);
-    } else if (strcmp (type->mime, "audio/3gpp") == 0) {
-      GstStructure *tmp;
-
-      tmp = gst_structure_new ("audio/AMR",
-          "rate", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "channels", GST_TYPE_INT_RANGE, 1, G_MAXINT, NULL);
-      ret = gst_caps_merge_structure (ret, tmp);
-    } else if (strcmp (type->mime, "audio/amr-wb") == 0) {
-      GstStructure *tmp;
-
-      tmp = gst_structure_new ("audio/AMR-WB",
-          "rate", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "channels", GST_TYPE_INT_RANGE, 1, G_MAXINT, NULL);
-      ret = gst_caps_merge_structure (ret, tmp);
-    } else if (strcmp (type->mime, "audio/mp4a-latm") == 0) {
-      gint j;
-      GstStructure *tmp, *tmp2;
-      gboolean have_profile = FALSE;
-      GValue va = { 0, };
-      GValue v = { 0, };
-
-      g_value_init (&va, GST_TYPE_LIST);
-      g_value_init (&v, G_TYPE_STRING);
-      g_value_set_string (&v, "raw");
-      gst_value_list_append_value (&va, &v);
-      g_value_set_string (&v, "adts");
-      gst_value_list_append_value (&va, &v);
-      g_value_unset (&v);
-
-      tmp = gst_structure_new ("audio/mpeg",
-          "mpegversion", G_TYPE_INT, 4,
-          "rate", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "channels", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "framed", G_TYPE_BOOLEAN, TRUE, NULL);
-      gst_structure_set_value (tmp, "stream-format", &va);
-      g_value_unset (&va);
-
-      for (j = 0; j < type->n_profile_levels; j++) {
-        const gchar *profile;
-
-        profile =
-            gst_amc_aac_profile_to_string (type->profile_levels[j].profile);
-
-        if (!profile) {
-          GST_ERROR ("Unable to map AAC profile 0x%08x",
-              type->profile_levels[j].profile);
-          continue;
-        }
-
-        tmp2 = gst_structure_copy (tmp);
-        gst_structure_set (tmp2, "profile", G_TYPE_STRING, profile, NULL);
-        ret = gst_caps_merge_structure (ret, tmp2);
-
-        have_profile = TRUE;
-      }
-
-      if (!have_profile) {
-        ret = gst_caps_merge_structure (ret, tmp);
-      } else {
-        gst_structure_free (tmp);
-      }
-    } else if (strcmp (type->mime, "audio/g711-alaw") == 0) {
-      GstStructure *tmp;
-
-      tmp = gst_structure_new ("audio/x-alaw",
-          "rate", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "channels", GST_TYPE_INT_RANGE, 1, G_MAXINT, NULL);
-      ret = gst_caps_merge_structure (ret, tmp);
-    } else if (strcmp (type->mime, "audio/g711-mlaw") == 0) {
-      GstStructure *tmp;
-
-      tmp = gst_structure_new ("audio/x-mulaw",
-          "rate", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "channels", GST_TYPE_INT_RANGE, 1, G_MAXINT, NULL);
-      ret = gst_caps_merge_structure (ret, tmp);
-    } else if (strcmp (type->mime, "audio/vorbis") == 0) {
-      GstStructure *tmp;
-
-      tmp = gst_structure_new ("audio/x-vorbis",
-          "rate", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "channels", GST_TYPE_INT_RANGE, 1, G_MAXINT, NULL);
-      ret = gst_caps_merge_structure (ret, tmp);
-    } else if (strcmp (type->mime, "audio/flac") == 0) {
-      GstStructure *tmp;
-
-      tmp = gst_structure_new ("audio/x-flac",
-          "rate", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "channels", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "framed", G_TYPE_BOOLEAN, TRUE, NULL);
-      ret = gst_caps_merge_structure (ret, tmp);
-    } else if (strcmp (type->mime, "audio/mpeg-L2") == 0) {
-      GstStructure *tmp;
-
-      tmp = gst_structure_new ("audio/mpeg",
-          "mpegversion", G_TYPE_INT, 1,
-          "layer", G_TYPE_INT, 2,
-          "rate", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "channels", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-          "parsed", G_TYPE_BOOLEAN, TRUE, NULL);
-      ret = gst_caps_merge_structure (ret, tmp);
-    } else {
-      GST_WARNING ("Unsupported mimetype '%s'", type->mime);
-    }
-  }
-
-  return ret;
-}
-
 static const gchar *
 caps_to_mime (GstCaps * caps)
 {
@@ -277,19 +149,6 @@ caps_to_mime (GstCaps * caps)
   return NULL;
 }
 
-static GstCaps *
-create_src_caps (const GstAmcCodecInfo * codec_info)
-{
-  GstCaps *ret;
-
-  ret = gst_caps_new_simple ("audio/x-raw",
-      "rate", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-      "channels", GST_TYPE_INT_RANGE, 1, G_MAXINT,
-      "format", G_TYPE_STRING, GST_AUDIO_NE (S16), NULL);
-
-  return ret;
-}
-
 static void
 gst_amc_audio_dec_base_init (gpointer g_class)
 {
@@ -297,7 +156,7 @@ gst_amc_audio_dec_base_init (gpointer g_class)
   GstAmcAudioDecClass *amcaudiodec_class = GST_AMC_AUDIO_DEC_CLASS (g_class);
   const GstAmcCodecInfo *codec_info;
   GstPadTemplate *templ;
-  GstCaps *caps;
+  GstCaps *sink_caps, *src_caps;
   gchar *longname;
 
   codec_info =
@@ -308,16 +167,16 @@ gst_amc_audio_dec_base_init (gpointer g_class)
 
   amcaudiodec_class->codec_info = codec_info;
 
+  gst_amc_codec_info_to_caps (codec_info, &sink_caps, &src_caps);
   /* Add pad templates */
-  caps = create_sink_caps (codec_info);
-  templ = gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS, caps);
+  templ =
+      gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS, sink_caps);
   gst_element_class_add_pad_template (element_class, templ);
-  gst_caps_unref (caps);
+  gst_caps_unref (sink_caps);
 
-  caps = create_src_caps (codec_info);
-  templ = gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS, caps);
+  templ = gst_pad_template_new ("src", GST_PAD_SRC, GST_PAD_ALWAYS, src_caps);
   gst_element_class_add_pad_template (element_class, templ);
-  gst_caps_unref (caps);
+  gst_caps_unref (src_caps);
 
   longname = g_strdup_printf ("Android MediaCodec %s", codec_info->name);
   gst_element_class_set_metadata (element_class,
@@ -366,12 +225,15 @@ gst_amc_audio_dec_open (GstAudioDecoder * decoder)
 {
   GstAmcAudioDec *self = GST_AMC_AUDIO_DEC (decoder);
   GstAmcAudioDecClass *klass = GST_AMC_AUDIO_DEC_GET_CLASS (self);
+  GError *err = NULL;
 
   GST_DEBUG_OBJECT (self, "Opening decoder");
 
-  self->codec = gst_amc_codec_new (klass->codec_info->name);
-  if (!self->codec)
+  self->codec = gst_amc_codec_new (klass->codec_info->name, &err);
+  if (!self->codec) {
+    GST_ELEMENT_ERROR_FROM_ERROR (self, err);
     return FALSE;
+  }
   self->started = FALSE;
   self->flushing = TRUE;
 
@@ -387,8 +249,15 @@ gst_amc_audio_dec_close (GstAudioDecoder * decoder)
 
   GST_DEBUG_OBJECT (self, "Closing decoder");
 
-  if (self->codec)
+  if (self->codec) {
+    GError *err = NULL;
+
+    gst_amc_codec_release (self->codec, &err);
+    if (err)
+      GST_ELEMENT_WARNING_FROM_ERROR (self, err);
+
     gst_amc_codec_free (self->codec);
+  }
   self->codec = NULL;
 
   self->started = FALSE;
@@ -415,6 +284,7 @@ gst_amc_audio_dec_change_state (GstElement * element, GstStateChange transition)
 {
   GstAmcAudioDec *self;
   GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
+  GError *err = NULL;
 
   g_return_val_if_fail (GST_IS_AMC_AUDIO_DEC (element),
       GST_STATE_CHANGE_FAILURE);
@@ -432,7 +302,9 @@ gst_amc_audio_dec_change_state (GstElement * element, GstStateChange transition)
       break;
     case GST_STATE_CHANGE_PAUSED_TO_READY:
       self->flushing = TRUE;
-      gst_amc_codec_flush (self->codec);
+      gst_amc_codec_flush (self->codec, &err);
+      if (err)
+        GST_ELEMENT_WARNING_FROM_ERROR (self, err);
       g_mutex_lock (&self->drain_lock);
       self->draining = FALSE;
       g_cond_broadcast (&self->drain_cond);
@@ -472,10 +344,13 @@ gst_amc_audio_dec_set_src_caps (GstAmcAudioDec * self, GstAmcFormat * format)
   gint rate, channels;
   guint32 channel_mask = 0;
   GstAudioChannelPosition to[64];
+  GError *err = NULL;
 
-  if (!gst_amc_format_get_int (format, "sample-rate", &rate) ||
-      !gst_amc_format_get_int (format, "channel-count", &channels)) {
-    GST_ERROR_OBJECT (self, "Failed to get output format metadata");
+  if (!gst_amc_format_get_int (format, "sample-rate", &rate, &err) ||
+      !gst_amc_format_get_int (format, "channel-count", &channels, &err)) {
+    GST_ERROR_OBJECT (self, "Failed to get output format metadata: %s",
+        err->message);
+    g_clear_error (&err);
     return FALSE;
   }
 
@@ -485,8 +360,9 @@ gst_amc_audio_dec_set_src_caps (GstAmcAudioDec * self, GstAmcFormat * format)
   }
 
   /* Not always present */
-  if (gst_amc_format_contains_key (format, "channel-mask"))
-    gst_amc_format_get_int (format, "channel-mask", (gint *) & channel_mask);
+  if (gst_amc_format_contains_key (format, "channel-mask", NULL))
+    gst_amc_format_get_int (format, "channel-mask", (gint *) & channel_mask,
+        NULL);
 
   gst_amc_audio_channel_mask_to_positions (channel_mask, channels,
       self->positions);
@@ -519,6 +395,7 @@ gst_amc_audio_dec_loop (GstAmcAudioDec * self)
   gboolean is_eos;
   GstAmcBufferInfo buffer_info;
   gint idx;
+  GError *err = NULL;
 
   GST_AUDIO_DECODER_STREAM_LOCK (self);
 
@@ -530,13 +407,17 @@ retry:
   GST_AUDIO_DECODER_STREAM_UNLOCK (self);
   /* Wait at most 100ms here, some codecs don't fail dequeueing if
    * the codec is flushing, causing deadlocks during shutdown */
-  idx = gst_amc_codec_dequeue_output_buffer (self->codec, &buffer_info, 100000);
+  idx =
+      gst_amc_codec_dequeue_output_buffer (self->codec, &buffer_info, 100000,
+      &err);
   GST_AUDIO_DECODER_STREAM_LOCK (self);
   /*} */
 
   if (idx < 0) {
-    if (self->flushing)
+    if (self->flushing) {
+      g_clear_error (&err);
       goto flushing;
+    }
 
     switch (idx) {
       case INFO_OUTPUT_BUFFERS_CHANGED:{
@@ -546,7 +427,7 @@ retry:
               self->n_output_buffers);
         self->output_buffers =
             gst_amc_codec_get_output_buffers (self->codec,
-            &self->n_output_buffers);
+            &self->n_output_buffers, &err);
         if (!self->output_buffers)
           goto get_output_buffers_error;
         break;
@@ -557,11 +438,15 @@ retry:
 
         GST_DEBUG_OBJECT (self, "Output format has changed");
 
-        format = gst_amc_codec_get_output_format (self->codec);
+        format = gst_amc_codec_get_output_format (self->codec, &err);
         if (!format)
           goto format_error;
 
-        format_string = gst_amc_format_to_string (format);
+        format_string = gst_amc_format_to_string (format, &err);
+        if (err) {
+          gst_amc_format_free (format);
+          goto format_error;
+        }
         GST_DEBUG_OBJECT (self, "Got new output format: %s", format_string);
         g_free (format_string);
 
@@ -576,7 +461,7 @@ retry:
               self->n_output_buffers);
         self->output_buffers =
             gst_amc_codec_get_output_buffers (self->codec,
-            &self->n_output_buffers);
+            &self->n_output_buffers, &err);
         if (!self->output_buffers)
           goto get_output_buffers_error;
 
@@ -612,6 +497,7 @@ retry:
     GstBuffer *outbuf;
     GstAmcBuffer *buf;
     GstMapInfo minfo;
+    gint nframes;
 
     /* This sometimes happens at EOS or if the input is not properly framed,
      * let's handle it gracefully by allocating a new buffer for the current
@@ -629,6 +515,9 @@ retry:
         goto done;
       }
     }
+
+    if (buffer_info.size % self->info.bpf != 0)
+      goto invalid_buffer_size;
 
     outbuf =
         gst_audio_decoder_allocate_output_buffer (GST_AUDIO_DECODER (self),
@@ -658,17 +547,28 @@ retry:
     }
     gst_buffer_unmap (outbuf, &minfo);
 
-    /* FIXME: We should get one decoded input frame here for
-     * every buffer. If this is not the case somewhere, we will
-     * error out at some point and will need to add workarounds
-     */
+    nframes = 1;
+    if (self->spf != -1) {
+      nframes = buffer_info.size / self->info.bpf;
+      if (nframes % self->spf != 0)
+        GST_WARNING_OBJECT (self, "Output buffer does not contain an integer "
+            "number of input frames (frames: %d, spf: %d)", nframes, self->spf);
+      nframes = (nframes + self->spf - 1) / self->spf;
+    }
+
     flow_ret =
-        gst_audio_decoder_finish_frame (GST_AUDIO_DECODER (self), outbuf, 1);
+        gst_audio_decoder_finish_frame (GST_AUDIO_DECODER (self), outbuf,
+        nframes);
   }
 
 done:
-  if (!gst_amc_codec_release_output_buffer (self->codec, idx))
+  if (!gst_amc_codec_release_output_buffer (self->codec, idx, &err)) {
+    if (self->flushing) {
+      g_clear_error (&err);
+      goto flushing;
+    }
     goto failed_release;
+  }
 
   if (is_eos || flow_ret == GST_FLOW_EOS) {
     GST_AUDIO_DECODER_STREAM_UNLOCK (self);
@@ -698,8 +598,7 @@ done:
 
 dequeue_error:
   {
-    GST_ELEMENT_ERROR (self, LIBRARY, FAILED, (NULL),
-        ("Failed to dequeue output buffer"));
+    GST_ELEMENT_ERROR_FROM_ERROR (self, err);
     gst_pad_push_event (GST_AUDIO_DECODER_SRC_PAD (self), gst_event_new_eos ());
     gst_pad_pause_task (GST_AUDIO_DECODER_SRC_PAD (self));
     self->downstream_flow_ret = GST_FLOW_ERROR;
@@ -709,8 +608,7 @@ dequeue_error:
 
 get_output_buffers_error:
   {
-    GST_ELEMENT_ERROR (self, LIBRARY, FAILED, (NULL),
-        ("Failed to get output buffers"));
+    GST_ELEMENT_ERROR_FROM_ERROR (self, err);
     gst_pad_push_event (GST_AUDIO_DECODER_SRC_PAD (self), gst_event_new_eos ());
     gst_pad_pause_task (GST_AUDIO_DECODER_SRC_PAD (self));
     self->downstream_flow_ret = GST_FLOW_ERROR;
@@ -720,8 +618,11 @@ get_output_buffers_error:
 
 format_error:
   {
-    GST_ELEMENT_ERROR (self, LIBRARY, FAILED, (NULL),
-        ("Failed to handle format"));
+    if (err)
+      GST_ELEMENT_ERROR_FROM_ERROR (self, err);
+    else
+      GST_ELEMENT_ERROR (self, LIBRARY, FAILED, (NULL),
+          ("Failed to handle format"));
     gst_pad_push_event (GST_AUDIO_DECODER_SRC_PAD (self), gst_event_new_eos ());
     gst_pad_pause_task (GST_AUDIO_DECODER_SRC_PAD (self));
     self->downstream_flow_ret = GST_FLOW_ERROR;
@@ -730,8 +631,7 @@ format_error:
   }
 failed_release:
   {
-    GST_ELEMENT_ERROR (self, LIBRARY, FAILED, (NULL),
-        ("Failed to release output buffer index %d", idx));
+    GST_ELEMENT_ERROR_FROM_ERROR (self, err);
     gst_pad_push_event (GST_AUDIO_DECODER_SRC_PAD (self), gst_event_new_eos ());
     gst_pad_pause_task (GST_AUDIO_DECODER_SRC_PAD (self));
     self->downstream_flow_ret = GST_FLOW_ERROR;
@@ -779,11 +679,29 @@ invalid_buffer_index:
     GST_AUDIO_DECODER_STREAM_UNLOCK (self);
     return;
   }
+invalid_buffer_size:
+  {
+    GST_ELEMENT_ERROR (self, LIBRARY, FAILED, (NULL),
+        ("Invalid buffer size %u (bfp %d)", buffer_info.size, self->info.bpf));
+    gst_amc_codec_release_output_buffer (self->codec, idx, &err);
+    if (err && !self->flushing)
+      GST_ELEMENT_WARNING_FROM_ERROR (self, err);
+    g_clear_error (&err);
+    gst_pad_push_event (GST_AUDIO_DECODER_SRC_PAD (self), gst_event_new_eos ());
+    gst_pad_pause_task (GST_AUDIO_DECODER_SRC_PAD (self));
+    self->downstream_flow_ret = GST_FLOW_ERROR;
+    GST_AUDIO_DECODER_STREAM_UNLOCK (self);
+    return;
+  }
 
 failed_allocate:
   {
     GST_ELEMENT_ERROR (self, LIBRARY, SETTINGS, (NULL),
         ("Failed to allocate output buffer"));
+    gst_amc_codec_release_output_buffer (self->codec, idx, &err);
+    if (err && !self->flushing)
+      GST_ELEMENT_WARNING_FROM_ERROR (self, err);
+    g_clear_error (&err);
     gst_pad_push_event (GST_AUDIO_DECODER_SRC_PAD (self), gst_event_new_eos ());
     gst_pad_pause_task (GST_AUDIO_DECODER_SRC_PAD (self));
     self->downstream_flow_ret = GST_FLOW_ERROR;
@@ -811,13 +729,18 @@ static gboolean
 gst_amc_audio_dec_stop (GstAudioDecoder * decoder)
 {
   GstAmcAudioDec *self;
+  GError *err = NULL;
 
   self = GST_AMC_AUDIO_DEC (decoder);
   GST_DEBUG_OBJECT (self, "Stopping decoder");
   self->flushing = TRUE;
   if (self->started) {
-    gst_amc_codec_flush (self->codec);
-    gst_amc_codec_stop (self->codec);
+    gst_amc_codec_flush (self->codec, &err);
+    if (err)
+      GST_ELEMENT_WARNING_FROM_ERROR (self, err);
+    gst_amc_codec_stop (self->codec, &err);
+    if (err)
+      GST_ELEMENT_WARNING_FROM_ERROR (self, err);
     self->started = FALSE;
     if (self->input_buffers)
       gst_amc_codec_free_buffers (self->input_buffers, self->n_input_buffers);
@@ -856,6 +779,7 @@ gst_amc_audio_dec_set_format (GstAudioDecoder * decoder, GstCaps * caps)
   gboolean needs_disable = FALSE;
   gchar *format_string;
   gint rate, channels;
+  GError *err = NULL;
 
   self = GST_AMC_AUDIO_DEC (decoder);
 
@@ -911,9 +835,9 @@ gst_amc_audio_dec_set_format (GstAudioDecoder * decoder, GstCaps * caps)
     return FALSE;
   }
 
-  format = gst_amc_format_new_audio (mime, rate, channels);
+  format = gst_amc_format_new_audio (mime, rate, channels, &err);
   if (!format) {
-    GST_ERROR_OBJECT (self, "Failed to create audio format");
+    GST_ELEMENT_ERROR_FROM_ERROR (self, err);
     return FALSE;
   }
 
@@ -930,7 +854,9 @@ gst_amc_audio_dec_set_format (GstAudioDecoder * decoder, GstCaps * caps)
     gst_buffer_map (codec_data, &minfo, GST_MAP_READ);
     data = g_memdup (minfo.data, minfo.size);
     self->codec_datas = g_list_prepend (self->codec_datas, data);
-    gst_amc_format_set_buffer (format, "csd-0", data, minfo.size);
+    gst_amc_format_set_buffer (format, "csd-0", data, minfo.size, &err);
+    if (err)
+      GST_ELEMENT_WARNING_FROM_ERROR (self, err);
     gst_buffer_unmap (codec_data, &minfo);
   } else if (gst_structure_has_field (s, "streamheader")) {
     const GValue *sh = gst_structure_get_value (s, "streamheader");
@@ -960,37 +886,66 @@ gst_amc_audio_dec_set_format (GstAudioDecoder * decoder, GstCaps * caps)
       gst_buffer_map (buf, &minfo, GST_MAP_READ);
       data = g_memdup (minfo.data, minfo.size);
       self->codec_datas = g_list_prepend (self->codec_datas, data);
-      gst_amc_format_set_buffer (format, fname, data, minfo.size);
+      gst_amc_format_set_buffer (format, fname, data, minfo.size, &err);
+      if (err)
+        GST_ELEMENT_WARNING_FROM_ERROR (self, err);
       gst_buffer_unmap (buf, &minfo);
       g_free (fname);
       j++;
     }
   }
 
-  format_string = gst_amc_format_to_string (format);
-  GST_DEBUG_OBJECT (self, "Configuring codec with format: %s", format_string);
+  format_string = gst_amc_format_to_string (format, &err);
+  if (err)
+    GST_ELEMENT_WARNING_FROM_ERROR (self, err);
+  GST_DEBUG_OBJECT (self, "Configuring codec with format: %s",
+      GST_STR_NULL (format_string));
   g_free (format_string);
 
   self->n_buffers = 0;
-  if (!gst_amc_codec_configure (self->codec, format, 0)) {
+  if (!gst_amc_codec_configure (self->codec, format, 0, &err)) {
     GST_ERROR_OBJECT (self, "Failed to configure codec");
+    GST_ELEMENT_ERROR_FROM_ERROR (self, err);
     return FALSE;
   }
 
   gst_amc_format_free (format);
 
-  if (!gst_amc_codec_start (self->codec)) {
+  if (!gst_amc_codec_start (self->codec, &err)) {
     GST_ERROR_OBJECT (self, "Failed to start codec");
+    GST_ELEMENT_ERROR_FROM_ERROR (self, err);
     return FALSE;
   }
 
   if (self->input_buffers)
     gst_amc_codec_free_buffers (self->input_buffers, self->n_input_buffers);
   self->input_buffers =
-      gst_amc_codec_get_input_buffers (self->codec, &self->n_input_buffers);
+      gst_amc_codec_get_input_buffers (self->codec, &self->n_input_buffers,
+      &err);
   if (!self->input_buffers) {
     GST_ERROR_OBJECT (self, "Failed to get input buffers");
+    GST_ELEMENT_ERROR_FROM_ERROR (self, err);
     return FALSE;
+  }
+
+  self->spf = -1;
+  /* TODO: Implement for other codecs too */
+  if (gst_structure_has_name (s, "audio/mpeg")) {
+    gint mpegversion = -1;
+
+    gst_structure_get_int (s, "mpegversion", &mpegversion);
+    if (mpegversion == 1) {
+      gint layer = -1, mpegaudioversion = -1;
+
+      gst_structure_get_int (s, "layer", &layer);
+      gst_structure_get_int (s, "mpegaudioversion", &mpegaudioversion);
+      if (layer == 1)
+        self->spf = 384;
+      else if (layer == 2)
+        self->spf = 1152;
+      else if (layer == 3 && mpegaudioversion != -1)
+        self->spf = (mpegaudioversion == 1 ? 1152 : 576);
+    }
   }
 
   self->started = TRUE;
@@ -1009,6 +964,7 @@ static void
 gst_amc_audio_dec_flush (GstAudioDecoder * decoder, gboolean hard)
 {
   GstAmcAudioDec *self;
+  GError *err = NULL;
 
   self = GST_AMC_AUDIO_DEC (decoder);
 
@@ -1027,7 +983,9 @@ gst_amc_audio_dec_flush (GstAudioDecoder * decoder, gboolean hard)
   GST_PAD_STREAM_LOCK (GST_AUDIO_DECODER_SRC_PAD (self));
   GST_PAD_STREAM_UNLOCK (GST_AUDIO_DECODER_SRC_PAD (self));
   GST_AUDIO_DECODER_STREAM_LOCK (self);
-  gst_amc_codec_flush (self->codec);
+  gst_amc_codec_flush (self->codec, &err);
+  if (err)
+    GST_ELEMENT_WARNING_FROM_ERROR (self, err);
   self->flushing = FALSE;
 
   /* Start the srcpad loop again */
@@ -1050,6 +1008,7 @@ gst_amc_audio_dec_handle_frame (GstAudioDecoder * decoder, GstBuffer * inbuf)
   guint offset = 0;
   GstClockTime timestamp, duration, timestamp_offset = 0;
   GstMapInfo minfo;
+  GError *err = NULL;
 
   memset (&minfo, 0, sizeof (minfo));
 
@@ -1098,12 +1057,15 @@ gst_amc_audio_dec_handle_frame (GstAudioDecoder * decoder, GstBuffer * inbuf)
     GST_AUDIO_DECODER_STREAM_UNLOCK (self);
     /* Wait at most 100ms here, some codecs don't fail dequeueing if
      * the codec is flushing, causing deadlocks during shutdown */
-    idx = gst_amc_codec_dequeue_input_buffer (self->codec, 100000);
+    idx = gst_amc_codec_dequeue_input_buffer (self->codec, 100000, &err);
     GST_AUDIO_DECODER_STREAM_LOCK (self);
 
     if (idx < 0) {
-      if (self->flushing)
+      if (self->flushing || self->downstream_flow_ret == GST_FLOW_FLUSHING) {
+        g_clear_error (&err);
         goto flushing;
+      }
+
       switch (idx) {
         case INFO_TRY_AGAIN_LATER:
           GST_DEBUG_OBJECT (self, "Dequeueing input buffer timed out");
@@ -1123,12 +1085,18 @@ gst_amc_audio_dec_handle_frame (GstAudioDecoder * decoder, GstBuffer * inbuf)
     if (idx >= self->n_input_buffers)
       goto invalid_buffer_index;
 
-    if (self->flushing)
+    if (self->flushing) {
+      memset (&buffer_info, 0, sizeof (buffer_info));
+      gst_amc_codec_queue_input_buffer (self->codec, idx, &buffer_info, NULL);
       goto flushing;
+    }
 
     if (self->downstream_flow_ret != GST_FLOW_OK) {
       memset (&buffer_info, 0, sizeof (buffer_info));
-      gst_amc_codec_queue_input_buffer (self->codec, idx, &buffer_info);
+      gst_amc_codec_queue_input_buffer (self->codec, idx, &buffer_info, &err);
+      if (err && !self->flushing)
+        GST_ELEMENT_WARNING_FROM_ERROR (self, err);
+      g_clear_error (&err);
       goto downstream_error;
     }
 
@@ -1168,8 +1136,14 @@ gst_amc_audio_dec_handle_frame (GstAudioDecoder * decoder, GstBuffer * inbuf)
         "Queueing buffer %d: size %d time %" G_GINT64_FORMAT " flags 0x%08x",
         idx, buffer_info.size, buffer_info.presentation_time_us,
         buffer_info.flags);
-    if (!gst_amc_codec_queue_input_buffer (self->codec, idx, &buffer_info))
+    if (!gst_amc_codec_queue_input_buffer (self->codec, idx, &buffer_info,
+            &err)) {
+      if (self->flushing) {
+        g_clear_error (&err);
+        goto flushing;
+      }
       goto queue_error;
+    }
   }
   gst_buffer_unmap (inbuf, &minfo);
   gst_buffer_unref (inbuf);
@@ -1198,8 +1172,7 @@ invalid_buffer_index:
   }
 dequeue_error:
   {
-    GST_ELEMENT_ERROR (self, LIBRARY, FAILED, (NULL),
-        ("Failed to dequeue input buffer"));
+    GST_ELEMENT_ERROR_FROM_ERROR (self, err);
     if (minfo.data)
       gst_buffer_unmap (inbuf, &minfo);
     if (inbuf)
@@ -1208,8 +1181,7 @@ dequeue_error:
   }
 queue_error:
   {
-    GST_ELEMENT_ERROR (self, LIBRARY, FAILED, (NULL),
-        ("Failed to queue input buffer"));
+    GST_ELEMENT_ERROR_FROM_ERROR (self, err);
     if (minfo.data)
       gst_buffer_unmap (inbuf, &minfo);
     if (inbuf)
@@ -1232,6 +1204,7 @@ gst_amc_audio_dec_drain (GstAmcAudioDec * self)
 {
   GstFlowReturn ret;
   gint idx;
+  GError *err = NULL;
 
   GST_DEBUG_OBJECT (self, "Draining codec");
   if (!self->started) {
@@ -1253,7 +1226,7 @@ gst_amc_audio_dec_drain (GstAmcAudioDec * self)
    * class drop the EOS event. We will send it later when
    * the EOS buffer arrives on the output port.
    * Wait at most 0.5s here. */
-  idx = gst_amc_codec_dequeue_input_buffer (self->codec, 500000);
+  idx = gst_amc_codec_dequeue_input_buffer (self->codec, 500000, &err);
   GST_AUDIO_DECODER_STREAM_LOCK (self);
 
   if (idx >= 0 && idx < self->n_input_buffers) {
@@ -1269,14 +1242,20 @@ gst_amc_audio_dec_drain (GstAmcAudioDec * self)
         gst_util_uint64_scale (self->last_upstream_ts, 1, GST_USECOND);
     buffer_info.flags |= BUFFER_FLAG_END_OF_STREAM;
 
-    if (gst_amc_codec_queue_input_buffer (self->codec, idx, &buffer_info)) {
+    if (gst_amc_codec_queue_input_buffer (self->codec, idx, &buffer_info, &err)) {
       GST_DEBUG_OBJECT (self, "Waiting until codec is drained");
       g_cond_wait (&self->drain_cond, &self->drain_lock);
       GST_DEBUG_OBJECT (self, "Drained codec");
       ret = GST_FLOW_OK;
     } else {
       GST_ERROR_OBJECT (self, "Failed to queue input buffer");
-      ret = GST_FLOW_ERROR;
+      if (self->flushing) {
+        g_clear_error (&err);
+        ret = GST_FLOW_FLUSHING;
+      } else {
+        GST_ELEMENT_WARNING_FROM_ERROR (self, err);
+        ret = GST_FLOW_ERROR;
+      }
     }
 
     g_mutex_unlock (&self->drain_lock);
@@ -1287,6 +1266,8 @@ gst_amc_audio_dec_drain (GstAmcAudioDec * self)
     ret = GST_FLOW_ERROR;
   } else {
     GST_ERROR_OBJECT (self, "Failed to acquire buffer for EOS: %d", idx);
+    if (err)
+      GST_ELEMENT_WARNING_FROM_ERROR (self, err);
     ret = GST_FLOW_ERROR;
   }
 

@@ -26,7 +26,8 @@
  * a local or network drive.
  *
  * <refsect2>
- * <title>Example launch line (upload a JPEG file to /home/test/images directory)</title>
+ * <title>Example launch line (upload a JPEG file to /home/test/images
+ * directory)</title>
  * |[
  * gst-launch filesrc location=image.jpg ! jpegparse ! curlfilesink  \
  *     file-name=image.jpg  \
@@ -184,10 +185,15 @@ static gboolean
 set_file_dynamic_options_unlocked (GstCurlBaseSink * basesink)
 {
   gchar *tmp = g_strdup_printf ("%s%s", basesink->url, basesink->file_name);
+  CURLcode res;
 
-  curl_easy_setopt (basesink->curl, CURLOPT_URL, tmp);
-
+  res = curl_easy_setopt (basesink->curl, CURLOPT_URL, tmp);
   g_free (tmp);
+  if (res != CURLE_OK) {
+    basesink->error = g_strdup_printf ("failed to set URL: %s",
+        curl_easy_strerror (res));
+    return FALSE;
+  }
 
   return TRUE;
 }
@@ -195,7 +201,14 @@ set_file_dynamic_options_unlocked (GstCurlBaseSink * basesink)
 static gboolean
 set_file_options_unlocked (GstCurlBaseSink * basesink)
 {
-  curl_easy_setopt (basesink->curl, CURLOPT_UPLOAD, 1L);
+  CURLcode res;
+
+  res = curl_easy_setopt (basesink->curl, CURLOPT_UPLOAD, 1L);
+  if (res != CURLE_OK) {
+    basesink->error = g_strdup_printf ("failed to prepare for upload: %s",
+        curl_easy_strerror (res));
+    return FALSE;
+  }
 
   return TRUE;
 }
@@ -212,9 +225,7 @@ gst_curl_file_sink_prepare_transfer (GstCurlBaseSink * basesink)
     gchar *url = g_strdup_printf ("%s%s", basesink->url, basesink->file_name);
     file_name = g_filename_from_uri (url, NULL, NULL);
     if (file_name == NULL) {
-      GST_DEBUG_OBJECT (sink, "failed to parse file name of '%s'", url);
-      GST_ELEMENT_ERROR (sink, RESOURCE, WRITE, ("failed to parse file name"),
-          (NULL));
+      basesink->error = g_strdup_printf ("failed to parse file name '%s'", url);
       g_free (url);
       return FALSE;
     }
@@ -225,9 +236,8 @@ gst_curl_file_sink_prepare_transfer (GstCurlBaseSink * basesink)
       /* create dir if file name contains dir component */
       gchar *dir_name = g_strndup (file_name, last_slash - file_name);
       if (g_mkdir_with_parents (dir_name, S_IRWXU) < 0) {
-        GST_DEBUG_OBJECT (sink, "failed to create directory '%s'", dir_name);
-        GST_ELEMENT_ERROR (sink, RESOURCE, WRITE,
-            ("failed to create directory"), (NULL));
+        basesink->error = g_strdup_printf ("failed to create directory '%s'",
+            dir_name);
         g_free (file_name);
         g_free (dir_name);
         return FALSE;

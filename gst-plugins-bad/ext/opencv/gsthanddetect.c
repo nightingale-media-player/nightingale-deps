@@ -156,10 +156,12 @@ gst_handdetect_finalize (GObject * obj)
 {
   GstHanddetect *filter = GST_HANDDETECT (obj);
 
-  if (filter->cvImage)
-    cvReleaseImage (&filter->cvImage);
   if (filter->cvGray)
     cvReleaseImage (&filter->cvGray);
+  if (filter->cvStorage)
+    cvReleaseMemStorage (&filter->cvStorage);
+  if (filter->cvStorage_palm)
+    cvReleaseMemStorage (&filter->cvStorage_palm);
   g_free (filter->profile_fist);
   g_free (filter->profile_palm);
 
@@ -355,14 +357,15 @@ gst_handdetect_set_caps (GstOpencvVideoFilter * transform,
   GstHanddetect *filter;
   filter = GST_HANDDETECT (transform);
 
+  /* 320 x 240 is with the best detect accuracy, if not, give info */
+  if (in_width != 320 || in_height != 240)
+    GST_WARNING_OBJECT (filter,
+        "resize to 320 x 240 to have best detect accuracy.\n");
+
   if (filter->cvGray)
     cvReleaseImage (&filter->cvGray);
   filter->cvGray =
       cvCreateImage (cvSize (in_width, in_height), IPL_DEPTH_8U, 1);
-  if (filter->cvImage)
-    cvReleaseImage (&filter->cvImage);
-  filter->cvImage =
-      cvCreateImage (cvSize (in_width, in_height), IPL_DEPTH_8U, 3);
 
   if (!filter->cvStorage)
     filter->cvStorage = cvCreateMemStorage (0);
@@ -383,28 +386,19 @@ gst_handdetect_transform_ip (GstOpencvVideoFilter * transform,
     GstBuffer * buffer, IplImage * img)
 {
   GstHanddetect *filter = GST_HANDDETECT (transform);
-  GstMapInfo info;
   CvSeq *hands;
   CvRect *r;
   GstStructure *s;
   GstMessage *m;
   int i;
 
-  buffer = gst_buffer_make_writable (buffer);
-  gst_buffer_map (buffer, &info, GST_MAP_READWRITE);
-
-  filter->cvImage->imageData = (char *) info.data;
-  /* 320 x 240 is with the best detect accuracy, if not, give info */
-  if (filter->cvImage->width != 320 || filter->cvImage->height != 240)
-    GST_INFO_OBJECT (filter,
-        "WARNING: resize to 320 x 240 to have best detect accuracy.\n");
-  /* cvt to gray colour space for hand detect */
-  cvCvtColor (filter->cvImage, filter->cvGray, CV_RGB2GRAY);
-  cvClearMemStorage (filter->cvStorage);
-
   /* check detection cascades */
   if (!filter->cvCascade_fist || !filter->cvCascade_palm)
     return GST_FLOW_OK;
+
+  /* cvt to gray colour space for hand detect */
+  cvCvtColor (img, filter->cvGray, CV_RGB2GRAY);
+  cvClearMemStorage (filter->cvStorage);
 
   /* detect FIST gesture fist */
   hands =
@@ -420,18 +414,16 @@ gst_handdetect_transform_ip (GstOpencvVideoFilter * transform,
     int min_distance, distance;
     CvRect temp_r;
     CvPoint c;
-    /* set frame buffer writable */
-    if (filter->display) {
-      buffer = gst_buffer_make_writable (buffer);
-      GST_DEBUG_OBJECT (filter, "%d FIST gestures detected\n",
-          (int) hands->total);
-    }
+
+    GST_DEBUG_OBJECT (filter, "%d FIST gestures detected\n",
+        (int) hands->total);
+
     /* Go through all detected FIST gestures to get the best one
      * prev_r => previous hand
      * best_r => best hand in this frame
      */
     /* set min_distance for init comparison */
-    min_distance = filter->cvImage->width + filter->cvImage->height;
+    min_distance = img->width + img->height;
     /* Init filter->prev_r */
     temp_r = cvRect (0, 0, 0, 0);
     if (filter->prev_r == NULL)
@@ -497,7 +489,7 @@ gst_handdetect_transform_ip (GstOpencvVideoFilter * transform,
       center.y = cvRound ((filter->best_r->y + filter->best_r->height * 0.5));
       radius =
           cvRound ((filter->best_r->width + filter->best_r->height) * 0.25);
-      cvCircle (filter->cvImage, center, radius, CV_RGB (0, 0, 200), 1, 8, 0);
+      cvCircle (img, center, radius, CV_RGB (0, 0, 200), 1, 8, 0);
     }
   } else {
     /* if NO FIST gesture, detecting PALM gesture */
@@ -524,7 +516,7 @@ gst_handdetect_transform_ip (GstOpencvVideoFilter * transform,
        * best_r => best hand in this frame
        */
       /* suppose a min_distance for init comparison */
-      min_distance = filter->cvImage->width + filter->cvImage->height;
+      min_distance = img->width + img->height;
       /* Init filter->prev_r */
       temp_r = cvRect (0, 0, 0, 0);
       if (filter->prev_r == NULL)
@@ -606,11 +598,11 @@ gst_handdetect_transform_ip (GstOpencvVideoFilter * transform,
         center.y = cvRound ((filter->best_r->y + filter->best_r->height * 0.5));
         radius =
             cvRound ((filter->best_r->width + filter->best_r->height) * 0.25);
-        cvCircle (filter->cvImage, center, radius, CV_RGB (0, 0, 200), 1, 8, 0);
+        cvCircle (img, center, radius, CV_RGB (0, 0, 200), 1, 8, 0);
       }
     }
   }
-  gst_buffer_unmap (buffer, &info);
+
   /* Push out the incoming buffer */
   return GST_FLOW_OK;
 }

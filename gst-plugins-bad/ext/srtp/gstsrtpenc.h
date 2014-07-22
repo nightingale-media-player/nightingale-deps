@@ -82,17 +82,16 @@ struct _GstSrtpEnc
   gboolean first_session;
   gboolean key_changed;
 
-  gboolean hard_limit_reached;
-  gboolean soft_limit_reached;
-
-  GHashTable *ssrcs_set;
-
-  GType key_type;
+  guint replay_window_size;
+  gboolean allow_repeat_tx;
 };
 
 struct _GstSrtpEncClass
 {
   GstElementClass parent_class;
+
+  /* action signals */
+  guint32 (*get_rollover_counter) (GstSrtpEnc *encoder, guint32 ssrc);
 };
 
 GType gst_srtp_enc_get_type (void);

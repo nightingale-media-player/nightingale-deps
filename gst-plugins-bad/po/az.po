@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gst-plugins-0.8.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 12:44+0100\n"
+"POT-Creation-Date: 2014-07-19 16:40+0200\n"
 "PO-Revision-Date: 2004-03-19 18:29+0200\n"
 "Last-Translator: Metin Amiroff <metin@karegen.com>\n"
 "Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
@@ -16,6 +16,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.2\n"
+
+msgid "Internal data stream error."
+msgstr ""
+
+msgid "format wasn't negotiated before get function"
+msgstr ""
 
 #, fuzzy
 msgid "Could not read title information for DVD."
@@ -50,15 +56,16 @@ msgid "Couldn't download fragments"
 msgstr ""
 
 #, fuzzy
+msgid "Could not open sndfile stream for reading."
+msgstr "\"%s\" faylı oxuma üçün açıla bilmədi."
+
+#, fuzzy
 msgid "No file name specified for writing."
 msgstr "Fayl adı verilməyib."
 
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr "\"%s\" faylı yazma üçün açıla bilmədi."
-
-msgid "Internal data stream error."
-msgstr ""
 
 #, c-format
 msgid "Could not write to file \"%s\"."
@@ -108,6 +115,10 @@ msgstr "\"%s\" idarə avadanlığı bağlana bilmədi."
 
 #, fuzzy, c-format
 msgid "Could not get settings from frontend device \"%s\"."
+msgstr "\"%s\" avadanlığından kifayət qədər bufferlər alına bilmədi."
+
+#, fuzzy, c-format
+msgid "Cannot enumerate delivery systems from frontend device \"%s\"."
 msgstr "\"%s\" avadanlığından kifayət qədər bufferlər alına bilmədi."
 
 #, c-format

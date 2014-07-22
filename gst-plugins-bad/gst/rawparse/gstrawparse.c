@@ -724,7 +724,7 @@ gst_raw_parse_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
       break;
     }
     default:
-      ret = gst_pad_event_default (rp->sinkpad, parent, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
   }
 
@@ -926,7 +926,7 @@ gst_raw_parse_src_event (GstPad * pad, GstObject * parent, GstEvent * event)
         ret = gst_raw_parse_handle_seek_pull (rp, event);
       break;
     default:
-      ret = gst_pad_event_default (rp->srcpad, parent, event);
+      ret = gst_pad_event_default (pad, parent, event);
       break;
   }
 
@@ -1030,7 +1030,7 @@ gst_raw_parse_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
     }
     default:
       /* else forward upstream */
-      ret = gst_pad_query_default (rp->sinkpad, parent, query);
+      ret = gst_pad_query_default (pad, parent, query);
       break;
   }
 

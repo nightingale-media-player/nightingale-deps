@@ -28,12 +28,6 @@ else
 BZ2_DIR=
 endif
 
-if USE_CDAUDIO
-CDAUDIO_DIR=cdaudio
-else
-CDAUDIO_DIR=
-endif
-
 if USE_CHROMAPRINT
 CHROMAPRINT_DIR=chromaprint
 else
@@ -82,10 +76,10 @@ else
 DTS_DIR=
 endif
 
-if USE_EGLGLES
-EGLGLES_DIR=eglgles
+if USE_GL
+GL_DIR=gl
 else
-EGLGLES_DIR=
+GL_DIR=
 endif
 
 if USE_RESINDVD
@@ -156,8 +150,14 @@ LIBFAME_DIR=
 
 if USE_LIBMMS
 LIBMMS_DIR=libmms
-else 
+else
 LIBMMS_DIR=
+endif
+
+if USE_LIBVISUAL
+LIBVISUAL_DIR=libvisual
+else
+LIBVISUAL_DIR=
 endif
 
 if USE_MODPLUG
@@ -230,6 +230,18 @@ if USE_OPENCV
 OPENCV_DIR=opencv
 else
 OPENCV_DIR=
+endif
+
+if USE_OPENEXR
+OPENEXR_DIR = openexr
+else
+OPENEXR_DIR =
+endif
+
+if USE_OPENNI2
+OPENNI2_DIR=openni2
+else
+OPENNI2_DIR=
 endif
 
 if USE_OPENJPEG
@@ -389,7 +401,6 @@ SUBDIRS=\
 	$(APEXSINK_DIR) \
 	$(AUDIOFILE_DIR) \
 	$(BZ2_DIR) \
-	$(CDAUDIO_DIR) \
 	$(CHROMAPRINT_DIR) \
 	$(CURL_DIR) \
 	$(DASH_DIR) \
@@ -399,7 +410,7 @@ SUBDIRS=\
 	$(DAALA_DIR) \
 	$(DTS_DIR) \
 	$(RESINDVD_DIR) \
-	$(EGLGLES_DIR) \
+	$(GL_DIR) \
 	$(FAAC_DIR) \
 	$(FAAD_DIR) \
 	$(FLITE_DIR) \
@@ -412,6 +423,7 @@ SUBDIRS=\
 	$(LV2_DIR) \
 	$(LIBFAME_DIR) \
 	$(LIBMMS_DIR) \
+	$(LIBVISUAL_DIR) \
 	$(MODPLUG_DIR) \
 	$(MPEG2ENC_DIR) \
 	$(MPG123_DIR) \
@@ -424,7 +436,9 @@ SUBDIRS=\
 	$(OFA_DIR) \
 	$(OPENAL_DIR) \
 	$(OPENCV_DIR) \
+	$(OPENEXR_DIR) \
 	$(OPENJPEG_DIR) \
+	$(OPENNI2_DIR) \
 	$(OPUS_DIR) \
 	$(RSVG_DIR) \
 	$(SBC_DIR) \
@@ -451,7 +465,6 @@ DIST_SUBDIRS = \
 	assrender \
 	apexsink \
 	bz2 \
-	cdaudio \
 	chromaprint \
 	curl \
 	dash \
@@ -468,10 +481,11 @@ DIST_SUBDIRS = \
 	ladspa \
 	kate \
 	libmms \
+	libvisual \
 	lv2 \
 	daala \
 	dts \
-	eglgles \
+	gl \
 	modplug \
 	mimic \
 	mpeg2enc \
@@ -484,6 +498,8 @@ DIST_SUBDIRS = \
 	ofa \
 	openal \
 	opencv \
+	openexr \
+	openni2 \
 	openjpeg \
 	opus \
 	rsvg \

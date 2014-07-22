@@ -34,8 +34,6 @@
  * gst-launch filesrc location=test.ogg ! decodebin ! audioconvert ! speed speed=1.5 ! audioconvert ! audioresample ! autoaudiosink
  * ]| Plays an .ogg file at 1.5x speed.
  * </refsect2>
- *
- * Last reviewed on 2007-02-26 (0.10.4.1)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -277,8 +275,12 @@ speed_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
       gst_query_set_position (query, GST_FORMAT_TIME, -1);
 
       if (!gst_pad_peer_query_position (filter->sinkpad, rformat, &cur)) {
-        GST_LOG_OBJECT (filter, "query on peer pad failed");
-        goto error;
+        GST_LOG_OBJECT (filter, "TIME query on peer pad failed, trying BYTES");
+        rformat = GST_FORMAT_BYTES;
+        if (!gst_pad_peer_query_position (filter->sinkpad, rformat, &cur)) {
+          GST_LOG_OBJECT (filter, "BYTES query on peer pad failed too");
+          goto error;
+        }
       }
 
       if (rformat == GST_FORMAT_BYTES)
@@ -324,8 +326,12 @@ speed_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
       gst_query_set_duration (query, GST_FORMAT_TIME, -1);
 
       if (!gst_pad_peer_query_duration (filter->sinkpad, rformat, &end)) {
-        GST_LOG_OBJECT (filter, "query on peer pad failed");
-        goto error;
+        GST_LOG_OBJECT (filter, "TIME query on peer pad failed, trying BYTES");
+        rformat = GST_FORMAT_BYTES;
+        if (!gst_pad_peer_query_duration (filter->sinkpad, rformat, &end)) {
+          GST_LOG_OBJECT (filter, "BYTES query on peer pad failed too");
+          goto error;
+        }
       }
 
       if (rformat == GST_FORMAT_BYTES)
@@ -564,7 +570,7 @@ speed_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
         return ret;
       }
     }
-
+      /* Fallthrough so that the caps event gets forwarded */
     default:
       ret = gst_pad_event_default (pad, parent, event);
       break;

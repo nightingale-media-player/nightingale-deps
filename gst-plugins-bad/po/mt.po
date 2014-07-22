@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gst-plugins-bad-0.10.8.3\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 12:44+0100\n"
+"POT-Creation-Date: 2014-07-19 16:40+0200\n"
 "PO-Revision-Date: 2008-10-26 20:27+0100\n"
 "Last-Translator: Michel Bugeja <michelbugeja@rabatmalta.com>\n"
 "Language-Team: Maltese <translation-team-mt@lists.sourceforge.net>\n"
@@ -17,6 +17,12 @@ msgstr ""
 "X-Poedit-Country: MALTA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Internal data stream error."
+msgstr "Internal data stream error."
+
+msgid "format wasn't negotiated before get function"
+msgstr ""
 
 msgid "Could not read title information for DVD."
 msgstr "Ma stajtx naqra informazzjoni fuq it-titlu tad-DVD."
@@ -49,15 +55,16 @@ msgstr ""
 msgid "Couldn't download fragments"
 msgstr ""
 
+#, fuzzy
+msgid "Could not open sndfile stream for reading."
+msgstr "Ma nistax naqra mill-fajl \"%s\"."
+
 msgid "No file name specified for writing."
 msgstr "L-ebda isem speċifikat biex nikteb."
 
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr "Ma nistax niftaħ fajl \"%s\" biex nikteb."
-
-msgid "Internal data stream error."
-msgstr "Internal data stream error."
 
 #, c-format
 msgid "Could not write to file \"%s\"."
@@ -107,6 +114,10 @@ msgstr "Ma nistax niftaħ apparat frontend \"%s\"."
 
 #, c-format
 msgid "Could not get settings from frontend device \"%s\"."
+msgstr "Ma nistax inġib is-settings mill-apparat frontend \"%s\"."
+
+#, fuzzy, c-format
+msgid "Cannot enumerate delivery systems from frontend device \"%s\"."
 msgstr "Ma nistax inġib is-settings mill-apparat frontend \"%s\"."
 
 #, c-format

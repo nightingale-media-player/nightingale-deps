@@ -110,11 +110,14 @@ guint16 gst_asf_put_subpayload (guint8 * buf, AsfPayload * payload,
 
 gboolean gst_asf_parse_packet (GstBuffer * buffer, GstAsfPacketInfo * packet,
     gboolean trust_delta_flag, guint packet_size);
+gboolean gst_asf_parse_packet_from_data (guint8 * data, gsize size, GstBuffer * buffer, GstAsfPacketInfo * packet,
+    gboolean trust_delta_flag, guint packet_size);
 guint64 gst_asf_match_and_peek_obj_size (const guint8 * data,
     const Guid * guid);
 guint64 gst_asf_match_and_peek_obj_size_buf (GstBuffer * buf,
     const Guid * guid);
 gboolean gst_asf_parse_headers (GstBuffer * buffer, GstAsfFileInfo * file_info);
+gboolean gst_asf_parse_headers_from_data (guint8 * data, guint size, GstAsfFileInfo * file_info);
 
 /* ASF tags
  * found at http://msdn.microsoft.com/en-us/library/dd562330(VS.85).aspx

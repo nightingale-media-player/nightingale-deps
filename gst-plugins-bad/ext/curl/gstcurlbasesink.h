@@ -68,6 +68,7 @@ struct _GstCurlBaseSink
   GstPollFD fd;
   GstPoll *fdset;
   GThread *transfer_thread;
+  gchar *error;
   GstFlowReturn flow_ret;
   TransferBuffer *transfer_buf;
   TransferCondition *transfer_cond;
@@ -102,7 +103,7 @@ struct _GstCurlBaseSinkClass
       size_t block_size, guint * last_chunk);
     size_t (*flush_data_unlocked) (GstCurlBaseSink * sink, void *curl_ptr,
       size_t block_size, gboolean new_file, gboolean close_transfer);
-  gboolean (*has_buffered_data_unlocked) (GstCurlBaseSink * sink);
+    gboolean (*has_buffered_data_unlocked) (GstCurlBaseSink * sink);
 };
 
 GType gst_curl_base_sink_get_type (void);

@@ -116,13 +116,6 @@ gst_pinch_get_property (GObject * object, guint prop_id,
   }
 }
 
-/* Clean up */
-static void
-gst_pinch_finalize (GObject * obj)
-{
-  G_OBJECT_CLASS (parent_class)->finalize (obj);
-}
-
 static gboolean
 pinch_map (GstGeometricTransform * gt, gint x, gint y, gdouble * in_x,
     gdouble * in_y)
@@ -175,18 +168,14 @@ gst_pinch_class_init (GstPinchClass * klass)
   gstelement_class = (GstElementClass *) klass;
   gstgt_class = (GstGeometricTransformClass *) klass;
 
-  parent_class = g_type_class_peek_parent (klass);
-
   gst_element_class_set_static_metadata (gstelement_class,
       "pinch",
       "Transform/Effect/Video",
       "Applies 'pinch' geometric transform to the image",
       "Thiago Santos<thiago.sousa.santos@collabora.co.uk>");
 
-  gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_pinch_finalize);
-  gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_pinch_set_property);
-  gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_pinch_get_property);
-
+  gobject_class->set_property = gst_pinch_set_property;
+  gobject_class->get_property = gst_pinch_get_property;
 
   g_object_class_install_property (gobject_class, PROP_INTENSITY,
       g_param_spec_double ("intensity", "intensity",

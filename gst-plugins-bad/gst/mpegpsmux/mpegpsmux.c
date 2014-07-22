@@ -421,6 +421,9 @@ mpegpsmux_queue_buffer_for_stream (MpegPsMux * mux, MpegPsPadData * ps_data)
     ps_data->queued.ts = GST_CLOCK_TIME_NONE;
   }
 
+  if (ps_data->queued.ts != GST_CLOCK_TIME_NONE)
+    ps_data->last_ts = ps_data->queued.ts;
+
   GST_DEBUG_OBJECT (mux, "Queued buffer with ts %" GST_TIME_FORMAT ": "
       "uncorrected pts %" GST_TIME_FORMAT " dts %" GST_TIME_FORMAT ", "
       "buffer pts %" GST_TIME_FORMAT " dts %" GST_TIME_FORMAT " for PID 0x%04x",
@@ -452,24 +455,18 @@ mpegpsmux_choose_best_stream (MpegPsMux * mux)
 
         buf = mpegpsmux_queue_buffer_for_stream (mux, ps_data);
         if (buf == NULL) {
+          GST_DEBUG_OBJECT (mux, "we have EOS");
           ps_data->eos = TRUE;
           continue;
-        }
-
-        /* Choose a stream we've never seen a timestamp for to ensure
-         * we push enough buffers from it to reach a timestamp */
-        if (ps_data->last_ts == GST_CLOCK_TIME_NONE) {
-          best = ps_data;
-          c_best = c_data;
         }
       }
 
       /* If we don't yet have a best pad, take this one, otherwise take
        * whichever has the oldest timestamp */
       if (best != NULL) {
-        if (ps_data->last_ts != GST_CLOCK_TIME_NONE &&
-            best->last_ts != GST_CLOCK_TIME_NONE &&
-            ps_data->last_ts < best->last_ts) {
+        if (ps_data->last_ts == GST_CLOCK_TIME_NONE ||
+            (best->last_ts != GST_CLOCK_TIME_NONE &&
+                ps_data->last_ts < best->last_ts)) {
           best = ps_data;
           c_best = c_data;
         }
@@ -578,10 +575,12 @@ mpegpsmux_collected (GstCollectPads * pads, MpegPsMux * mux)
     if (mux->gop_list != NULL)
       mpegpsmux_push_gop_list (mux);
 
-    if (psmux_write_end_code (mux->psmux)) {
+    if (!psmux_write_end_code (mux->psmux)) {
       GST_WARNING_OBJECT (mux, "Writing MPEG PS Program end code failed.");
     }
     gst_pad_push_event (mux->srcpad, gst_event_new_eos ());
+
+    ret = GST_FLOW_EOS;
   }
 
 done:

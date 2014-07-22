@@ -92,7 +92,9 @@
  * with newer GLib versions (>= 2.31.0) */
 #define GLIB_DISABLE_DEPRECATION_WARNINGS
 
+#include <gst/tag/tag.h>
 #include <gst/video/video.h>
+#include <gst/mpegts/mpegts.h>
 
 #include "mpegtsmux.h"
 
@@ -109,7 +111,8 @@ enum
   ARG_M2TS_MODE,
   ARG_PAT_INTERVAL,
   ARG_PMT_INTERVAL,
-  ARG_ALIGNMENT
+  ARG_ALIGNMENT,
+  ARG_SI_INTERVAL
 };
 
 #define MPEGTSMUX_DEFAULT_ALIGNMENT    -1
@@ -120,13 +123,17 @@ static GstStaticPadTemplate mpegtsmux_sink_factory =
     GST_PAD_SINK,
     GST_PAD_REQUEST,
     GST_STATIC_CAPS ("video/mpeg, "
+        "parsed = (boolean) TRUE, "
         "mpegversion = (int) { 1, 2, 4 }, "
         "systemstream = (boolean) false; "
         "video/x-dirac;"
-        "video/x-h264,stream-format=(string)byte-stream;"
+        "video/x-h264,stream-format=(string)byte-stream,"
+        "alignment=(string){au, nal}; "
         "audio/mpeg, "
+        "parsed = (boolean) TRUE, "
         "mpegversion = (int) { 1, 2 };"
         "audio/mpeg, "
+        "framed = (boolean) TRUE, "
         "mpegversion = (int) 4, stream-format = (string) { raw, adts };"
         "audio/x-lpcm, "
         "width = (int) { 16, 20, 24 }, "
@@ -134,7 +141,9 @@ static GstStaticPadTemplate mpegtsmux_sink_factory =
         "channels = (int) [ 1, 8 ], "
         "dynamic_range = (int) [ 0, 255 ], "
         "emphasis = (boolean) { FALSE, TRUE }, "
-        "mute = (boolean) { FALSE, TRUE }; " "audio/x-ac3;" "audio/x-dts;"
+        "mute = (boolean) { FALSE, TRUE }; "
+        "audio/x-ac3, framed = (boolean) TRUE;"
+        "audio/x-dts, framed = (boolean) TRUE;"
         "subpicture/x-dvb;" "application/x-teletext"));
 
 static GstStaticPadTemplate mpegtsmux_src_factory =
@@ -176,6 +185,7 @@ static GstPad *mpegtsmux_request_new_pad (GstElement * element,
 static void mpegtsmux_release_pad (GstElement * element, GstPad * pad);
 static GstStateChangeReturn mpegtsmux_change_state (GstElement * element,
     GstStateChange transition);
+static gboolean mpegtsmux_send_event (GstElement * element, GstEvent * event);
 static void mpegtsdemux_set_header_on_caps (MpegTsMux * mux);
 static gboolean mpegtsmux_src_event (GstPad * pad, GstObject * parent,
     GstEvent * event);
@@ -241,6 +251,7 @@ mpegtsmux_class_init (MpegTsMuxClass * klass)
   gstelement_class->request_new_pad = mpegtsmux_request_new_pad;
   gstelement_class->release_pad = mpegtsmux_release_pad;
   gstelement_class->change_state = mpegtsmux_change_state;
+  gstelement_class->send_event = mpegtsmux_send_event;
 
 #if 0
   gstelement_class->set_index = GST_DEBUG_FUNCPTR (mpegtsmux_set_index);
@@ -276,6 +287,12 @@ mpegtsmux_class_init (MpegTsMuxClass * klass)
           "(-1 = auto, 0 = all available packets)",
           -1, G_MAXINT, MPEGTSMUX_DEFAULT_ALIGNMENT,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_SI_INTERVAL,
+      g_param_spec_uint ("si-interval", "SI interval",
+          "Set the interval (in ticks of the 90kHz clock) for writing out the Service"
+          "Information tables", 1, G_MAXUINT, TSMUX_DEFAULT_SI_INTERVAL,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -309,6 +326,7 @@ mpegtsmux_init (MpegTsMux * mux)
   mux->m2ts_mode = MPEGTSMUX_DEFAULT_M2TS;
   mux->pat_interval = TSMUX_DEFAULT_PAT_INTERVAL;
   mux->pmt_interval = TSMUX_DEFAULT_PMT_INTERVAL;
+  mux->si_interval = TSMUX_DEFAULT_SI_INTERVAL;
   mux->prog_map = NULL;
   mux->alignment = MPEGTSMUX_DEFAULT_ALIGNMENT;
 
@@ -320,8 +338,7 @@ static void
 mpegtsmux_pad_reset (MpegTsPadData * pad_data)
 {
   pad_data->pid = 0;
-  pad_data->last_pts = GST_CLOCK_TIME_NONE;
-  pad_data->last_dts = GST_CLOCK_TIME_NONE;
+  pad_data->min_dts = GST_CLOCK_TIME_NONE;
   pad_data->prog_id = -1;
 #if 0
   pad_data->prog_id = -1;
@@ -340,6 +357,12 @@ mpegtsmux_pad_reset (MpegTsPadData * pad_data)
   /* reference owned elsewhere */
   pad_data->stream = NULL;
   pad_data->prog = NULL;
+
+  if (pad_data->language) {
+    g_free (pad_data->language);
+    pad_data->language = NULL;
+  }
+
 }
 
 static void
@@ -365,8 +388,10 @@ mpegtsmux_reset (MpegTsMux * mux, gboolean alloc)
     mux->element_index = NULL;
   }
 #endif
-  gst_adapter_clear (mux->adapter);
-  gst_adapter_clear (mux->out_adapter);
+  if (mux->adapter)
+    gst_adapter_clear (mux->adapter);
+  if (mux->out_adapter)
+    gst_adapter_clear (mux->out_adapter);
 
   if (mux->tsmux) {
     tsmux_free (mux->tsmux);
@@ -391,10 +416,12 @@ mpegtsmux_reset (MpegTsMux * mux, gboolean alloc)
   gst_event_replace (&mux->force_key_unit_event, NULL);
   gst_buffer_replace (&mux->out_buffer, NULL);
 
-  GST_COLLECT_PADS_STREAM_LOCK (mux->collect);
-  for (walk = mux->collect->data; walk != NULL; walk = g_slist_next (walk))
-    mpegtsmux_pad_reset ((MpegTsPadData *) walk->data);
-  GST_COLLECT_PADS_STREAM_UNLOCK (mux->collect);
+  if (mux->collect) {
+    GST_COLLECT_PADS_STREAM_LOCK (mux->collect);
+    for (walk = mux->collect->data; walk != NULL; walk = g_slist_next (walk))
+      mpegtsmux_pad_reset ((MpegTsPadData *) walk->data);
+    GST_COLLECT_PADS_STREAM_UNLOCK (mux->collect);
+  }
 
   if (alloc) {
     mux->tsmux = tsmux_new ();
@@ -472,6 +499,10 @@ gst_mpegtsmux_set_property (GObject * object, guint prop_id,
     case ARG_ALIGNMENT:
       mux->alignment = g_value_get_int (value);
       break;
+    case ARG_SI_INTERVAL:
+      mux->si_interval = g_value_get_uint (value);
+      tsmux_set_si_interval (mux->tsmux, mux->si_interval);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -499,6 +530,9 @@ gst_mpegtsmux_get_property (GObject * object, guint prop_id,
       break;
     case ARG_ALIGNMENT:
       g_value_set_int (value, mux->alignment);
+      break;
+    case ARG_SI_INTERVAL:
+      g_value_set_uint (value, mux->si_interval);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -646,7 +680,8 @@ mpegtsmux_create_stream (MpegTsMux * mux, MpegTsPadData * ts_data)
   }
 
   if (st != TSMUX_ST_RESERVED) {
-    ts_data->stream = tsmux_create_stream (mux->tsmux, st, ts_data->pid);
+    ts_data->stream = tsmux_create_stream (mux->tsmux, st, ts_data->pid,
+        ts_data->language);
   } else {
     GST_DEBUG_OBJECT (pad, "Failed to determine stream type");
   }
@@ -779,6 +814,8 @@ mpegtsmux_sink_event (GstCollectPads * pads, GstCollectData * data,
   MpegTsMux *mux = GST_MPEG_TSMUX (user_data);
   gboolean res = FALSE;
   gboolean forward = TRUE;
+  MpegTsPadData *pad_data = (MpegTsPadData *) data;
+
 #ifndef GST_DISABLE_GST_DEBUG
   GstPad *pad;
 
@@ -800,10 +837,9 @@ mpegtsmux_sink_event (GstCollectPads * pads, GstCollectData * data,
 
       gst_video_event_parse_downstream_force_key_unit (event,
           &timestamp, &stream_time, &running_time, &all_headers, &count);
-      GST_INFO_OBJECT (mux, "have downstream force-key-unit event on pad %s, "
+      GST_INFO_OBJECT (pad, "have downstream force-key-unit event, "
           "seqnum %d, running-time %" GST_TIME_FORMAT " count %d",
-          gst_pad_get_name (pad), gst_event_get_seqnum (event),
-          GST_TIME_ARGS (running_time), count);
+          gst_event_get_seqnum (event), GST_TIME_ARGS (running_time), count);
 
       if (mux->force_key_unit_event != NULL) {
         GST_INFO_OBJECT (mux, "skipping downstream force key unit event "
@@ -816,6 +852,32 @@ mpegtsmux_sink_event (GstCollectPads * pads, GstCollectData * data,
 
       mux->pending_key_unit_ts = running_time;
       gst_event_replace (&mux->force_key_unit_event, event);
+      break;
+    }
+    case GST_EVENT_TAG:{
+      GstTagList *list;
+      gchar *lang = NULL;
+
+      GST_DEBUG_OBJECT (mux, "received tag event");
+      gst_event_parse_tag (event, &list);
+
+      /* Matroska wants ISO 639-2B code, taglist most likely contains 639-1 */
+      if (gst_tag_list_get_string (list, GST_TAG_LANGUAGE_CODE, &lang)) {
+        const gchar *lang_code;
+
+        lang_code = gst_tag_get_language_code_iso_639_2B (lang);
+        if (lang_code) {
+          GST_DEBUG_OBJECT (pad, "Setting language to '%s'", lang_code);
+          pad_data->language = g_strdup (lang_code);
+        } else {
+          GST_WARNING_OBJECT (pad, "Did not get language code for '%s'", lang);
+        }
+        g_free (lang);
+      }
+
+      /* handled this, don't want collectpads to forward it downstream */
+      res = TRUE;
+      forward = gst_tag_list_get_scope (list) == GST_TAG_SCOPE_GLOBAL;
       break;
     }
     default:
@@ -879,8 +941,7 @@ mpegtsmux_src_event (GstPad * pad, GstObject * parent, GstEvent * event)
             done = TRUE;
             break;
           case GST_ITERATOR_OK:
-            GST_INFO_OBJECT (mux, "forwarding to %s",
-                gst_pad_get_name (sinkpad));
+            GST_INFO_OBJECT (pad, "forwarding");
             tmp = gst_pad_push_event (sinkpad, gst_event_ref (event));
             GST_INFO_OBJECT (mux, "result %d", tmp);
             /* succeed if at least one pad succeeds */
@@ -984,7 +1045,6 @@ mpegtsmux_clip_inc_running_time (GstCollectPads * pads,
       GST_LOG_OBJECT (cdata->pad, "buffer pts %" GST_TIME_FORMAT " -> %"
           GST_TIME_FORMAT " running time",
           GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)), GST_TIME_ARGS (time));
-      pad_data->last_pts = time;
       buf = *outbuf = gst_buffer_make_writable (buf);
       GST_BUFFER_TIMESTAMP (*outbuf) = time;
     }
@@ -1003,14 +1063,11 @@ mpegtsmux_clip_inc_running_time (GstCollectPads * pads,
       GST_LOG_OBJECT (cdata->pad, "buffer dts %" GST_TIME_FORMAT " -> %"
           GST_TIME_FORMAT " running time",
           GST_TIME_ARGS (GST_BUFFER_TIMESTAMP (buf)), GST_TIME_ARGS (time));
-      if (GST_CLOCK_TIME_IS_VALID (pad_data->last_dts) &&
-          time < pad_data->last_dts) {
-        /* FIXME DTS/PTS mess again;
-         * probably needs a whole lot more subtle handling (cf qtmux) */
+      if (GST_CLOCK_TIME_IS_VALID (pad_data->min_dts) &&
+          time < pad_data->min_dts) {
+        /* Ignore DTS going backward */
         GST_WARNING_OBJECT (cdata->pad, "ignoring DTS going backward");
-        time = pad_data->last_dts;
-      } else {
-        pad_data->last_dts = time;
+        time = pad_data->min_dts;
       }
       buf = *outbuf = gst_buffer_make_writable (buf);
       GST_BUFFER_DTS (*outbuf) = time;
@@ -1118,18 +1175,16 @@ mpegtsmux_collected_buffer (GstCollectPads * pads, GstCollectData * data,
   GST_DEBUG_OBJECT (COLLECT_DATA_PAD (best),
       "Chose stream for output (PID: 0x%04x)", best->pid);
 
-  if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_PTS (buf)) &&
-      GST_CLOCK_TIME_IS_VALID (best->last_pts)) {
-    pts = GSTTIME_TO_MPEGTIME (best->last_pts);
+  if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_PTS (buf))) {
+    pts = GSTTIME_TO_MPEGTIME (GST_BUFFER_PTS (buf));
     GST_DEBUG_OBJECT (mux, "Buffer has PTS %" GST_TIME_FORMAT " pts %"
-        G_GINT64_FORMAT, GST_TIME_ARGS (best->last_pts), pts);
+        G_GINT64_FORMAT, GST_TIME_ARGS (GST_BUFFER_PTS (buf)), pts);
   }
 
-  if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_DTS (buf)) &&
-      GST_CLOCK_TIME_IS_VALID (best->last_dts)) {
-    dts = GSTTIME_TO_MPEGTIME (best->last_dts);
+  if (GST_CLOCK_TIME_IS_VALID (GST_BUFFER_DTS (buf))) {
+    dts = GSTTIME_TO_MPEGTIME (GST_BUFFER_DTS (buf));
     GST_DEBUG_OBJECT (mux, "Buffer has DTS %" GST_TIME_FORMAT " dts %"
-        G_GINT64_FORMAT, GST_TIME_ARGS (best->last_dts), dts);
+        G_GINT64_FORMAT, GST_TIME_ARGS (GST_BUFFER_DTS (buf)), dts);
   }
 
   /* should not have a DTS without PTS */
@@ -1161,8 +1216,8 @@ mpegtsmux_collected_buffer (GstCollectPads * pads, GstCollectData * data,
   if (prog->pcr_stream == best->stream) {
     /* prefer DTS if present for PCR as it should be monotone */
     mux->last_ts =
-        GST_CLOCK_TIME_IS_VALID (best->last_dts) ? best->last_dts : best->
-        last_pts;
+        GST_CLOCK_TIME_IS_VALID (GST_BUFFER_DTS (buf)) ?
+        GST_BUFFER_DTS (buf) : GST_BUFFER_PTS (buf);
   }
 
   mux->is_delta = delta;
@@ -1680,8 +1735,32 @@ mpegtsmux_change_state (GstElement * element, GstStateChange transition)
 }
 
 static gboolean
+mpegtsmux_send_event (GstElement * element, GstEvent * event)
+{
+  GstMpegtsSection *section;
+  MpegTsMux *mux = GST_MPEG_TSMUX (element);
+
+  g_return_val_if_fail (event != NULL, FALSE);
+
+  section = gst_event_parse_mpegts_section (event);
+  gst_event_unref (event);
+
+  if (section) {
+    GST_DEBUG ("Received event with mpegts section");
+
+    /* TODO: Check that the section type is supported */
+    tsmux_add_mpegts_si_section (mux->tsmux, section);
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+static gboolean
 plugin_init (GstPlugin * plugin)
 {
+  gst_mpegts_initialize ();
   if (!gst_element_register (plugin, "mpegtsmux", GST_RANK_PRIMARY,
           mpegtsmux_get_type ()))
     return FALSE;

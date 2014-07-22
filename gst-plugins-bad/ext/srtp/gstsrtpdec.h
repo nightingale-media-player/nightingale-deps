@@ -78,6 +78,11 @@ struct _GstSrtpDec
   srtp_t session;
   gboolean first_session;
   GHashTable *streams;
+
+  gboolean rtp_has_segment;
+  gboolean rtcp_has_segment;
+
+  gboolean roc_changed;
 };
 
 struct _GstSrtpDecClass
@@ -85,6 +90,7 @@ struct _GstSrtpDecClass
   GstElementClass parent_class;
 
   void (*clear_streams) (GstSrtpDec * filter);
+  void (*remove_stream) (GstSrtpDec * filter, guint ssrc);
 };
 
 GType gst_srtp_dec_get_type (void);

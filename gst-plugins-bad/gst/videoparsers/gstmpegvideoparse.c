@@ -27,7 +27,8 @@
 #endif
 
 #include <string.h>
-#include <gst/base/gstbytereader.h>
+#include <gst/base/base.h>
+#include <gst/pbutils/pbutils.h>
 #include <gst/codecparsers/gstmpegvideometa.h>
 
 #include "gstmpegvideoparse.h"
@@ -176,6 +177,7 @@ gst_mpegv_parse_init (GstMpegvParse * parse)
   parse->config_flags = FLAG_NONE;
 
   gst_base_parse_set_pts_interpolation (GST_BASE_PARSE (parse), FALSE);
+  GST_PAD_SET_ACCEPT_INTERSECT (GST_BASE_PARSE_SINK_PAD (parse));
 }
 
 static void
@@ -503,6 +505,7 @@ gst_mpegv_parse_process_sc (GstMpegvParse * mpvparse,
         ret = TRUE;
       break;
     case GST_MPEG_VIDEO_PACKET_EXTENSION:
+      mpvparse->config_flags |= FLAG_MPEG2;
       GST_LOG_OBJECT (mpvparse, "startcode is VIDEO PACKET EXTENSION");
       if (mpvparse->pic_offset >= 0) {
         GST_LOG_OBJECT (mpvparse, "... considered PICTURE EXTENSION");
@@ -942,16 +945,16 @@ gst_mpegv_parse_pre_push_frame (GstBaseParse * parse, GstBaseParseFrame * frame)
    * have already been sent */
 
   if (G_UNLIKELY (mpvparse->send_codec_tag)) {
-    gchar *codec;
+    GstCaps *caps;
 
     /* codec tag */
-    codec =
-        g_strdup_printf ("MPEG %d Video",
-        (mpvparse->config_flags & FLAG_MPEG2) ? 2 : 1);
-    taglist = gst_tag_list_new (GST_TAG_VIDEO_CODEC, codec, NULL);
-    g_free (codec);
+    taglist = gst_tag_list_new_empty ();
+    caps = gst_pad_get_current_caps (GST_BASE_PARSE_SRC_PAD (parse));
+    gst_pb_utils_add_codec_description_to_tag_list (taglist,
+        GST_TAG_VIDEO_CODEC, caps);
+    gst_caps_unref (caps);
 
-    gst_pad_push_event (GST_BASE_PARSE_SRC_PAD (mpvparse),
+    gst_pad_push_event (GST_BASE_PARSE_SRC_PAD (parse),
         gst_event_new_tag (taglist));
 
     mpvparse->send_codec_tag = FALSE;
@@ -1023,6 +1026,19 @@ gst_mpegv_parse_set_caps (GstBaseParse * parse, GstCaps * caps)
   return TRUE;
 }
 
+static void
+remove_fields (GstCaps * caps)
+{
+  guint i, n;
+
+  n = gst_caps_get_size (caps);
+  for (i = 0; i < n; i++) {
+    GstStructure *s = gst_caps_get_structure (caps, i);
+
+    gst_structure_remove_field (s, "parsed");
+  }
+}
+
 static GstCaps *
 gst_mpegv_parse_get_caps (GstBaseParse * parse, GstCaps * filter)
 {
@@ -1030,27 +1046,23 @@ gst_mpegv_parse_get_caps (GstBaseParse * parse, GstCaps * filter)
   GstCaps *res;
 
   templ = gst_pad_get_pad_template_caps (GST_BASE_PARSE_SINK_PAD (parse));
-  peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), filter);
-  if (peercaps) {
-    guint i, n;
+  if (filter) {
+    GstCaps *fcopy = gst_caps_copy (filter);
+    /* Remove the fields we convert */
+    remove_fields (fcopy);
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), fcopy);
+    gst_caps_unref (fcopy);
+  } else
+    peercaps = gst_pad_peer_query_caps (GST_BASE_PARSE_SRC_PAD (parse), NULL);
 
+  if (peercaps) {
     /* Remove the parsed field */
     peercaps = gst_caps_make_writable (peercaps);
-    n = gst_caps_get_size (peercaps);
-    for (i = 0; i < n; i++) {
-      GstStructure *s = gst_caps_get_structure (peercaps, i);
-      gst_structure_remove_field (s, "parsed");
-    }
+    remove_fields (peercaps);
 
     res = gst_caps_intersect_full (peercaps, templ, GST_CAPS_INTERSECT_FIRST);
     gst_caps_unref (peercaps);
-    res = gst_caps_make_writable (res);
-
-    /* Append the template caps because we still want to accept
-     * caps without any fields in the case upstream does not
-     * know anything.
-     */
-    gst_caps_append (res, templ);
+    gst_caps_unref (templ);
   } else {
     res = templ;
   }

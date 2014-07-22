@@ -490,9 +490,10 @@ _dvb_sub_parse_region_segment (DvbSub * dvb_sub, guint16 page_id, guint8 * buf,
 
   region->clut = *buf++;
 
-  if (region->depth == 8)
+  if (region->depth == 8) {
     region->bgcolor = *buf++;
-  else {
+    buf += 1;                   /* Skip undefined 4-bit and 2-bit field */
+  } else {
     buf += 1;
 
     if (region->depth == 4)
@@ -643,17 +644,10 @@ _dvb_sub_read_2bit_string (guint8 * destbuf, gint dbuf_len,
   guint32 bits = 0;
   guint32 pixels_read = 0;
 
-  static gboolean warning_shown = FALSE;
-  if (!warning_shown) {
-    g_warning ("Parsing 2bit color DVB sub-picture. This is not tested at all. "
-        "If you see this message, please provide the developers with sample "
-        "media with these subtitles, if possible.");
-    warning_shown = TRUE;
-  }
-
   GST_TRACE ("dbuf_len = %d", dbuf_len);
 
-  while (!stop_parsing && (gst_bit_reader_get_remaining (&gb) > 0)) {
+  /* Need at least 2 bits remaining */
+  while (!stop_parsing && (gst_bit_reader_get_remaining (&gb) > 1)) {
     guint run_length = 0, clut_index = 0;
 
     bits = gst_bit_reader_get_bits_uint32_unchecked (&gb, 2);
@@ -746,7 +740,8 @@ _dvb_sub_read_4bit_string (guint8 * destbuf, gint dbuf_len,
   GST_TRACE ("RUNLEN: srcbuf position %p, buf_size = %d; destination buffer "
       "size is %d @ %p", *srcbuf, buf_size, dbuf_len, destbuf);
 
-  while (!stop_parsing && (gst_bit_reader_get_remaining (&gb) > 0)) {
+  /* Need at least 4 bits */
+  while (!stop_parsing && (gst_bit_reader_get_remaining (&gb) > 3)) {
     guint run_length = 0, clut_index = 0;
 
     bits = gst_bit_reader_get_bits_uint32_unchecked (&gb, 4);
@@ -841,14 +836,6 @@ _dvb_sub_read_8bit_string (guint8 * destbuf, gint dbuf_len,
   guint32 bits = 0;
   guint32 pixels_read = 0;
 
-  static gboolean warning_shown = FALSE;
-  if (!warning_shown) {
-    g_warning
-        ("Parsing 8bit color DVB sub-picture. This is not tested at all. If you see this message, "
-        "please provide the developers with sample media with these subtitles, if possible.");
-    warning_shown = TRUE;
-  }
-
   GST_LOG ("dbuf_len = %d", dbuf_len);
 
   /* FFMPEG-FIXME: ffmpeg uses a manual byte walking algorithm, which might be more performant,
@@ -858,7 +845,7 @@ _dvb_sub_read_8bit_string (guint8 * destbuf, gint dbuf_len,
    * FFMPEG-FIXME: lest have no chance of reading memory we don't own and visual corruption
    * FFMPEG-FIXME: is guaranteed anyway when not all bytes are present */
   /* Rephrased - it's better to work with bytes with default value '0' instead of reading from memory we don't own. */
-  while (!stop_parsing && (gst_bit_reader_get_remaining (&gb) > 0)) {
+  while (!stop_parsing && (gst_bit_reader_get_remaining (&gb) > 7)) {
     guint run_length = 0, clut_index = 0;
     bits = gst_bit_reader_get_bits_uint32_unchecked (&gb, 8);
 
@@ -914,6 +901,8 @@ _dvb_sub_read_8bit_string (guint8 * destbuf, gint dbuf_len,
 
   GST_LOG ("Returning with %u pixels read", pixels_read);
 
+  *srcbuf += (gst_bit_reader_get_pos (&gb) + 7) >> 3;
+
   // FIXME: Shouldn't need this variable if tracking things in the loop better
   return pixels_read;
 }
@@ -956,7 +945,7 @@ _dvb_sub_parse_pixel_data_block (DvbSub * dvb_sub,
     y_pos++;
 
   while (buf < buf_end) {
-    GST_LOG ("Iteration start, %u bytes missing from end; buf = %p, "
+    GST_LOG ("Iteration start, %u bytes remaining; buf = %p, "
         "buf_end = %p; Region is number %u, with a dimension of %dx%d; "
         "We are at position %dx%d", (guint) (buf_end - buf), buf, buf_end,
         region->id, region->width, region->height, x_pos, y_pos);
@@ -1172,10 +1161,10 @@ _dvb_sub_parse_display_definition_segment (DvbSub * dvb_sub, guint8 * buf,
   if (buf_size >= 13 && dvb_sub->display_def.window_flag) {
     dvb_sub->display_def.window_x = GST_READ_UINT16_BE (buf);
     buf += 2;
-    dvb_sub->display_def.window_y = GST_READ_UINT16_BE (buf);
-    buf += 2;
     dvb_sub->display_def.window_width =
         GST_READ_UINT16_BE (buf) - dvb_sub->display_def.window_x + 1;
+    buf += 2;
+    dvb_sub->display_def.window_y = GST_READ_UINT16_BE (buf);
     buf += 2;
     dvb_sub->display_def.window_height =
         GST_READ_UINT16_BE (buf) - dvb_sub->display_def.window_y + 1;

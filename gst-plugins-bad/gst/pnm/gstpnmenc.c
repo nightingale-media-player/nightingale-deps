@@ -111,6 +111,9 @@ gst_pnmenc_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
   gchar *header;
   GstBuffer *out;
 
+  if (s->info.width == 0 || s->info.height == 0 || s->info.fields == 0)
+    goto not_negotiated;
+
   /* Assumption: One buffer, one image. That is, always first write header. */
   header = g_strdup_printf ("P%i\n%i %i\n%i\n",
       s->info.type + 3 * (1 - s->info.encoding), s->info.width, s->info.height,
@@ -177,6 +180,12 @@ gst_pnmenc_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
 out:
 
   return r;
+
+not_negotiated:
+  {
+    gst_buffer_unref (buf);
+    return GST_FLOW_NOT_NEGOTIATED;
+  }
 }
 
 static gboolean

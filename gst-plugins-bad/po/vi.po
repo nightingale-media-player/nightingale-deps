@@ -1,27 +1,33 @@
 # Vietnamese translation for GST Plugins Bad.
-# Copyright © 2013 Free Software Foundation, Inc.
+# Copyright © 2014 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gst-plugins-bad package.
 # Clytie Siddall <clytie@riverland.net.au>, 2007-2010.
-# Trần Ngọc Quân <vnwildman@gmail.com>, 2012-2013.
+# Trần Ngọc Quân <vnwildman@gmail.com>, 2012-2014.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-bad-1.1.4\n"
+"Project-Id-Version: gst-plugins-bad-1.3.90\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 12:44+0100\n"
-"PO-Revision-Date: 2013-09-16 14:18+0700\n"
+"POT-Creation-Date: 2014-07-19 16:40+0200\n"
+"PO-Revision-Date: 2014-06-30 08:59+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <translation-team-vi@lists.sourceforge.net>\n"
 "Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Team-Website: <http://translationproject.org/team/vi.html>\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Language-Team-Website: <http://translationproject.org/team/vi.html>\n"
 "X-Generator: LocFactoryEditor 1.8\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Language: Vietnamese\n"
 "X-Poedit-Country: VIET NAM\n"
+
+msgid "Internal data stream error."
+msgstr "Lỗi luồng dữ liệu nội bộ."
+
+msgid "format wasn't negotiated before get function"
+msgstr ""
 
 msgid "Could not read title information for DVD."
 msgstr "Không thể đọc thông tin tựa đề của đĩa DVD."
@@ -55,15 +61,15 @@ msgstr "Gặp lỗi khi lấy URL phân mảnh."
 msgid "Couldn't download fragments"
 msgstr "Không thể tải về các phân mảnh"
 
+msgid "Could not open sndfile stream for reading."
+msgstr "Không thể mở luồng dữ liệu tập tin snd để đọc."
+
 msgid "No file name specified for writing."
 msgstr "Chưa chỉ định tên tập tin để ghi vào."
 
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr "Không thể mở tập tin “%s” để ghi."
-
-msgid "Internal data stream error."
-msgstr "Lỗi luồng dữ liệu nội bộ."
 
 #, c-format
 msgid "Could not write to file \"%s\"."
@@ -110,11 +116,17 @@ msgstr "Thiết bị “%s” không tồn tại."
 
 #, c-format
 msgid "Could not open frontend device \"%s\"."
-msgstr "Không thể mở thiết bị giao diện “%s”."
+msgstr "Không thể mở thiết bị giao diện (mặt tiền) “%s”."
 
 #, c-format
 msgid "Could not get settings from frontend device \"%s\"."
-msgstr "Không thể lấy các cài đặt từ thiết bị giao diện “%s”."
+msgstr "Không thể lấy các cài đặt từ thiết bị giao diện (mặt tiền) “%s”."
+
+#, c-format
+msgid "Cannot enumerate delivery systems from frontend device \"%s\"."
+msgstr ""
+"Không thể liệt kê các hệ thống phân phối từ thiết bị giao diện (mặt tiền) "
+"“%s”."
 
 #, c-format
 msgid "Could not open file \"%s\" for reading."

@@ -79,7 +79,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-noinst_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2)
+noinst_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3)
 subdir = tests/icles
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
@@ -88,7 +88,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -113,11 +112,12 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/m4/gst-fionread.m4 $(top_srcdir)/m4/gst-sdl.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intlmacosx.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libgcrypt.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -126,6 +126,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 @USE_SOUNDTOUCH_TRUE@am__EXEEXT_1 = pitch-test$(EXEEXT)
 am__EXEEXT_2 =
+am__EXEEXT_3 = vp8parser-test$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 am__pitch_test_SOURCES_DIST = pitch-test.c
 @USE_SOUNDTOUCH_TRUE@am_pitch_test_OBJECTS =  \
@@ -140,6 +141,14 @@ am__v_lt_1 =
 pitch_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(pitch_test_CFLAGS) \
 	$(CFLAGS) $(pitch_test_LDFLAGS) $(LDFLAGS) -o $@
+am_vp8parser_test_OBJECTS = vp8parser_test-vp8parser-test.$(OBJEXT)
+vp8parser_test_OBJECTS = $(am_vp8parser_test_OBJECTS)
+vp8parser_test_DEPENDENCIES = $(top_builddir)/gst-libs/gst/codecparsers/libgstcodecparsers-@GST_API_VERSION@.la \
+	$(am__DEPENDENCIES_1)
+vp8parser_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(vp8parser_test_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
+	$@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -174,8 +183,9 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(pitch_test_SOURCES)
-DIST_SOURCES = $(am__pitch_test_SOURCES_DIST)
+SOURCES = $(pitch_test_SOURCES) $(vp8parser_test_SOURCES)
+DIST_SOURCES = $(am__pitch_test_SOURCES_DIST) \
+	$(vp8parser_test_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -223,11 +233,15 @@ BZ2_LIBS = @BZ2_LIBS@
 CC = @CC@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
-CDAUDIO_CFLAGS = @CDAUDIO_CFLAGS@
-CDAUDIO_LIBS = @CDAUDIO_LIBS@
 CFLAGS = @CFLAGS@
 CHROMAPRINT_CFLAGS = @CHROMAPRINT_CFLAGS@
 CHROMAPRINT_LIBS = @CHROMAPRINT_LIBS@
+CLUTTER_CFLAGS = @CLUTTER_CFLAGS@
+CLUTTER_GLX_CFLAGS = @CLUTTER_GLX_CFLAGS@
+CLUTTER_GLX_LIBS = @CLUTTER_GLX_LIBS@
+CLUTTER_LIBS = @CLUTTER_LIBS@
+CLUTTER_X11_CFLAGS = @CLUTTER_X11_CFLAGS@
+CLUTTER_X11_LIBS = @CLUTTER_X11_LIBS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CURL_CFLAGS = @CURL_CFLAGS@
@@ -256,7 +270,6 @@ DIRECT3D_LIBS = @DIRECT3D_LIBS@
 DIRECTDRAW_LIBS = @DIRECTDRAW_LIBS@
 DIRECTFB_CFLAGS = @DIRECTFB_CFLAGS@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
-DIRECTSHOW_LIBS = @DIRECTSHOW_LIBS@
 DIRECTSOUND_LIBS = @DIRECTSOUND_LIBS@
 DIRECTX_CFLAGS = @DIRECTX_CFLAGS@
 DIRECTX_LDFLAGS = @DIRECTX_LDFLAGS@
@@ -269,10 +282,6 @@ DVDNAV_LIBS = @DVDNAV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
-EGLGLES_CFLAGS = @EGLGLES_CFLAGS@
-EGLGLES_LIBS = @EGLGLES_LIBS@
-EGL_CFLAGS = @EGL_CFLAGS@
-EGL_LIBS = @EGL_LIBS@
 EGREP = @EGREP@
 ERROR_CFLAGS = @ERROR_CFLAGS@
 ERROR_CXXFLAGS = @ERROR_CXXFLAGS@
@@ -305,6 +314,9 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_MKENUMS = @GLIB_MKENUMS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
+GL_CFLAGS = @GL_CFLAGS@
+GL_LIBS = @GL_LIBS@
+GL_OBJCFLAGS = @GL_OBJCFLAGS@
 GME_LIBS = @GME_LIBS@
 GMODULE_EXPORT_CFLAGS = @GMODULE_EXPORT_CFLAGS@
 GMODULE_EXPORT_LIBS = @GMODULE_EXPORT_LIBS@
@@ -314,8 +326,9 @@ GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GMYTH_CFLAGS = @GMYTH_CFLAGS@
 GMYTH_LIBS = @GMYTH_LIBS@
-GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
-GNUTLS_LIBS = @GNUTLS_LIBS@
+GNUSTEP_CONFIG = @GNUSTEP_CONFIG@
+GRAPHENE_CFLAGS = @GRAPHENE_CFLAGS@
+GRAPHENE_LIBS = @GRAPHENE_LIBS@
 GREP = @GREP@
 GSETTINGS_CFLAGS = @GSETTINGS_CFLAGS@
 GSETTINGS_DISABLE_SCHEMAS_COMPILE = @GSETTINGS_DISABLE_SCHEMAS_COMPILE@
@@ -374,30 +387,45 @@ GST_REVISION = @GST_REVISION@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
 GST_VIDEO_CFLAGS = @GST_VIDEO_CFLAGS@
 GST_VIDEO_LIBS = @GST_VIDEO_LIBS@
+GTK3_CFLAGS = @GTK3_CFLAGS@
+GTK3_LIBS = @GTK3_LIBS@
 GTKDOC_CHECK = @GTKDOC_CHECK@
 GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
 GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
+GTK_BASE_DIR = @GTK_BASE_DIR@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
+GTK_VERSION = @GTK_VERSION@
 G_UDEV_CFLAGS = @G_UDEV_CFLAGS@
 G_UDEV_LIBS = @G_UDEV_LIBS@
+HAVE_CLUTTER = @HAVE_CLUTTER@
+HAVE_CLUTTER_GLX = @HAVE_CLUTTER_GLX@
+HAVE_CLUTTER_X11 = @HAVE_CLUTTER_X11@
 HAVE_CXX = @HAVE_CXX@
 HAVE_DIRECT3D = @HAVE_DIRECT3D@
 HAVE_DIRECTDRAW = @HAVE_DIRECTDRAW@
-HAVE_DIRECTSHOW = @HAVE_DIRECTSHOW@
 HAVE_DIRECTSOUND = @HAVE_DIRECTSOUND@
 HAVE_DTS = @HAVE_DTS@
+HAVE_EGL = @HAVE_EGL@
 HAVE_FAAC = @HAVE_FAAC@
 HAVE_FAAD = @HAVE_FAAD@
 HAVE_FLITE = @HAVE_FLITE@
+HAVE_GL = @HAVE_GL@
+HAVE_GLES2 = @HAVE_GLES2@
+HAVE_GLU = @HAVE_GLU@
+HAVE_GRAPHENE = @HAVE_GRAPHENE@
 HAVE_GSM = @HAVE_GSM@
+HAVE_GTK3 = @HAVE_GTK3@
+HAVE_JPEG = @HAVE_JPEG@
 HAVE_NAS = @HAVE_NAS@
 HAVE_OPENJPEG = @HAVE_OPENJPEG@
+HAVE_PNG = @HAVE_PNG@
 HAVE_SRTP = @HAVE_SRTP@
 HAVE_WASAPI = @HAVE_WASAPI@
 HAVE_WILDMIDI = @HAVE_WILDMIDI@
+HAVE_WINKS = @HAVE_WINKS@
 HAVE_WINSCREENCAP = @HAVE_WINSCREENCAP@
 HAVE_X = @HAVE_X@
 HAVE_X11 = @HAVE_X11@
@@ -417,6 +445,7 @@ INTROSPECTION_LIBS = @INTROSPECTION_LIBS@
 INTROSPECTION_MAKEFILE = @INTROSPECTION_MAKEFILE@
 INTROSPECTION_SCANNER = @INTROSPECTION_SCANNER@
 INTROSPECTION_TYPELIBDIR = @INTROSPECTION_TYPELIBDIR@
+JPEG_LIBS = @JPEG_LIBS@
 KATE_CFLAGS = @KATE_CFLAGS@
 KATE_LIBS = @KATE_LIBS@
 LD = @LD@
@@ -424,18 +453,25 @@ LDFLAGS = @LDFLAGS@
 LIBDC1394_CFLAGS = @LIBDC1394_CFLAGS@
 LIBDC1394_LIBS = @LIBDC1394_LIBS@
 LIBDIR = @LIBDIR@
+LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
+LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
+LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBM = @LIBM@
 LIBMMS_CFLAGS = @LIBMMS_CFLAGS@
 LIBMMS_LIBS = @LIBMMS_LIBS@
 LIBOBJS = @LIBOBJS@
+LIBPNG_CFLAGS = @LIBPNG_CFLAGS@
+LIBPNG_LIBS = @LIBPNG_LIBS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBUDEV_CFLAGS = @LIBUDEV_CFLAGS@
 LIBUDEV_LIBS = @LIBUDEV_LIBS@
 LIBUSB_CFLAGS = @LIBUSB_CFLAGS@
 LIBUSB_LIBS = @LIBUSB_LIBS@
+LIBVISUAL_CFLAGS = @LIBVISUAL_CFLAGS@
+LIBVISUAL_LIBS = @LIBVISUAL_LIBS@
 LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
 LIBXML2_LIBS = @LIBXML2_LIBS@
 LIPO = @LIPO@
@@ -471,6 +507,8 @@ NAS_CFLAGS = @NAS_CFLAGS@
 NAS_LIBS = @NAS_LIBS@
 NEON_CFLAGS = @NEON_CFLAGS@
 NEON_LIBS = @NEON_LIBS@
+NETTLE_CFLAGS = @NETTLE_CFLAGS@
+NETTLE_LIBS = @NETTLE_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJC = @OBJC@
@@ -485,8 +523,12 @@ OPENAL_LIBS = @OPENAL_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
 OPENCV_PREFIX = @OPENCV_PREFIX@
+OPENEXR_CFLAGS = @OPENEXR_CFLAGS@
+OPENEXR_LIBS = @OPENEXR_LIBS@
 OPENJPEG_CFLAGS = @OPENJPEG_CFLAGS@
 OPENJPEG_LIBS = @OPENJPEG_LIBS@
+OPENNI2_CFLAGS = @OPENNI2_CFLAGS@
+OPENNI2_LIBS = @OPENNI2_LIBS@
 OPUS_CFLAGS = @OPUS_CFLAGS@
 OPUS_LIBS = @OPUS_LIBS@
 ORCC = @ORCC@
@@ -531,6 +573,7 @@ SBC_LIBS = @SBC_LIBS@
 SCHRO_CFLAGS = @SCHRO_CFLAGS@
 SCHRO_LIBS = @SCHRO_LIBS@
 SDL_CFLAGS = @SDL_CFLAGS@
+SDL_CLUTTER = @SDL_CLUTTER@
 SDL_CONFIG = @SDL_CONFIG@
 SDL_LIBS = @SDL_LIBS@
 SED = @SED@
@@ -548,6 +591,8 @@ SPANDSP_CFLAGS = @SPANDSP_CFLAGS@
 SPANDSP_LIBS = @SPANDSP_LIBS@
 SPC_LIBS = @SPC_LIBS@
 SRTP_LIBS = @SRTP_LIBS@
+SSH2_CFLAGS = @SSH2_CFLAGS@
+SSH2_LIBS = @SSH2_LIBS@
 STRIP = @STRIP@
 TELETEXTDEC_CFLAGS = @TELETEXTDEC_CFLAGS@
 TELETEXTDEC_LIBS = @TELETEXTDEC_LIBS@
@@ -555,7 +600,9 @@ TIGER_CFLAGS = @TIGER_CFLAGS@
 TIGER_LIBS = @TIGER_LIBS@
 TIMIDITY_CFLAGS = @TIMIDITY_CFLAGS@
 TIMIDITY_LIBS = @TIMIDITY_LIBS@
+USE_GLES2 = @USE_GLES2@
 USE_NLS = @USE_NLS@
+USE_OPENGL = @USE_OPENGL@
 VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VALGRIND_PATH = @VALGRIND_PATH@
@@ -571,15 +618,20 @@ WARNING_CXXFLAGS = @WARNING_CXXFLAGS@
 WARNING_OBJCFLAGS = @WARNING_OBJCFLAGS@
 WASAPI_LIBS = @WASAPI_LIBS@
 WAYLAND_CFLAGS = @WAYLAND_CFLAGS@
+WAYLAND_EGL_CFLAGS = @WAYLAND_EGL_CFLAGS@
+WAYLAND_EGL_LIBS = @WAYLAND_EGL_LIBS@
 WAYLAND_LIBS = @WAYLAND_LIBS@
 WEBP_CFLAGS = @WEBP_CFLAGS@
 WEBP_LIBS = @WEBP_LIBS@
 WILDMIDI_CFLAGS = @WILDMIDI_CFLAGS@
 WILDMIDI_LIBS = @WILDMIDI_LIBS@
+WINKS_LIBS = @WINKS_LIBS@
 WINSCREENCAP_LIBS = @WINSCREENCAP_LIBS@
 WINSOCK2_LIBS = @WINSOCK2_LIBS@
 X11_CFLAGS = @X11_CFLAGS@
 X11_LIBS = @X11_LIBS@
+XCOMPOSITE_CFLAGS = @XCOMPOSITE_CFLAGS@
+XCOMPOSITE_LIBS = @XCOMPOSITE_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
@@ -655,12 +707,17 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+wayland_scanner = @wayland_scanner@
 @USE_SOUNDTOUCH_FALSE@GST_SOUNDTOUCH_TESTS = 
 @USE_SOUNDTOUCH_TRUE@GST_SOUNDTOUCH_TESTS = pitch-test
 @USE_SOUNDTOUCH_TRUE@pitch_test_SOURCES = pitch-test.c
 @USE_SOUNDTOUCH_TRUE@pitch_test_CFLAGS = $(GST_CONTROLLER_CFLAGS)
 @USE_SOUNDTOUCH_TRUE@pitch_test_LDADD = $(GST_CONTROLLER_LIBS)
 @USE_SOUNDTOUCH_TRUE@pitch_test_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+GST_VP8PARSER_TESTS = vp8parser-test
+vp8parser_test_SOURCES = vp8parser-test.c
+vp8parser_test_CFLAGS = -I$(top_srcdir)/gst-libs $(GST_CFLAGS)
+vp8parser_test_LDADD = $(top_builddir)/gst-libs/gst/codecparsers/libgstcodecparsers-@GST_API_VERSION@.la $(GST_LIBS)
 
 # needs porting
 #if HAVE_GTK
@@ -722,6 +779,10 @@ pitch-test$(EXEEXT): $(pitch_test_OBJECTS) $(pitch_test_DEPENDENCIES) $(EXTRA_pi
 	@rm -f pitch-test$(EXEEXT)
 	$(AM_V_CCLD)$(pitch_test_LINK) $(pitch_test_OBJECTS) $(pitch_test_LDADD) $(LIBS)
 
+vp8parser-test$(EXEEXT): $(vp8parser_test_OBJECTS) $(vp8parser_test_DEPENDENCIES) $(EXTRA_vp8parser_test_DEPENDENCIES) 
+	@rm -f vp8parser-test$(EXEEXT)
+	$(AM_V_CCLD)$(vp8parser_test_LINK) $(vp8parser_test_OBJECTS) $(vp8parser_test_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -729,6 +790,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pitch_test-pitch-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vp8parser_test-vp8parser-test.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -767,6 +829,20 @@ pitch_test-pitch-test.obj: pitch-test.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='pitch-test.c' object='pitch_test-pitch-test.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pitch_test_CFLAGS) $(CFLAGS) -c -o pitch_test-pitch-test.obj `if test -f 'pitch-test.c'; then $(CYGPATH_W) 'pitch-test.c'; else $(CYGPATH_W) '$(srcdir)/pitch-test.c'; fi`
+
+vp8parser_test-vp8parser-test.o: vp8parser-test.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vp8parser_test_CFLAGS) $(CFLAGS) -MT vp8parser_test-vp8parser-test.o -MD -MP -MF $(DEPDIR)/vp8parser_test-vp8parser-test.Tpo -c -o vp8parser_test-vp8parser-test.o `test -f 'vp8parser-test.c' || echo '$(srcdir)/'`vp8parser-test.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vp8parser_test-vp8parser-test.Tpo $(DEPDIR)/vp8parser_test-vp8parser-test.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vp8parser-test.c' object='vp8parser_test-vp8parser-test.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vp8parser_test_CFLAGS) $(CFLAGS) -c -o vp8parser_test-vp8parser-test.o `test -f 'vp8parser-test.c' || echo '$(srcdir)/'`vp8parser-test.c
+
+vp8parser_test-vp8parser-test.obj: vp8parser-test.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vp8parser_test_CFLAGS) $(CFLAGS) -MT vp8parser_test-vp8parser-test.obj -MD -MP -MF $(DEPDIR)/vp8parser_test-vp8parser-test.Tpo -c -o vp8parser_test-vp8parser-test.obj `if test -f 'vp8parser-test.c'; then $(CYGPATH_W) 'vp8parser-test.c'; else $(CYGPATH_W) '$(srcdir)/vp8parser-test.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vp8parser_test-vp8parser-test.Tpo $(DEPDIR)/vp8parser_test-vp8parser-test.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vp8parser-test.c' object='vp8parser_test-vp8parser-test.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vp8parser_test_CFLAGS) $(CFLAGS) -c -o vp8parser_test-vp8parser-test.obj `if test -f 'vp8parser-test.c'; then $(CYGPATH_W) 'vp8parser-test.c'; else $(CYGPATH_W) '$(srcdir)/vp8parser-test.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

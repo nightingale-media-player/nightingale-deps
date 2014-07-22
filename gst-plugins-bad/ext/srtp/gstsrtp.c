@@ -149,8 +149,10 @@ rtcp_buffer_get_ssrc (GstBuffer * buf, guint32 * ssrc)
     return FALSE;
 
   if (gst_rtcp_buffer_get_first_packet (&rtcpbuf, &packet)) {
+    GstRTCPType type;
     do {
-      switch (gst_rtcp_packet_get_type (&packet)) {
+      type = gst_rtcp_packet_get_type (&packet);
+      switch (type) {
         case GST_RTCP_TYPE_RR:
           *ssrc = gst_rtcp_packet_rr_get_ssrc (&packet);
           ret = TRUE;
@@ -163,7 +165,8 @@ rtcp_buffer_get_ssrc (GstBuffer * buf, guint32 * ssrc)
         default:
           break;
       }
-    } while (gst_rtcp_packet_move_to_next (&packet) && ret == FALSE);
+    } while ((ret == FALSE) && (type != GST_RTCP_TYPE_INVALID) &&
+        gst_rtcp_packet_move_to_next (&packet));
   }
 
   gst_rtcp_buffer_unmap (&rtcpbuf);
@@ -177,8 +180,12 @@ set_crypto_policy_cipher_auth (GstSrtpCipherType cipher,
 {
   switch (cipher) {
     case GST_SRTP_CIPHER_AES_128_ICM:
-      policy->cipher_type = AES_128_ICM;
+      policy->cipher_type = AES_ICM;
       policy->cipher_key_len = 30;
+      break;
+    case GST_SRTP_CIPHER_AES_256_ICM:
+      policy->cipher_type = AES_ICM;
+      policy->cipher_key_len = 46;
       break;
     case GST_SRTP_CIPHER_NULL:
       policy->cipher_type = NULL_CIPHER;
@@ -214,6 +221,28 @@ set_crypto_policy_cipher_auth (GstSrtpCipherType cipher,
     policy->sec_serv = sec_serv_conf;
   else
     policy->sec_serv = sec_serv_conf_and_auth;
+}
+
+guint
+cipher_key_size (GstSrtpCipherType cipher)
+{
+  guint size = 0;
+
+  switch (cipher) {
+    case GST_SRTP_CIPHER_AES_128_ICM:
+      size = 30;
+      break;
+    case GST_SRTP_CIPHER_AES_256_ICM:
+      size = 46;
+      break;
+    case GST_SRTP_CIPHER_NULL:
+      size = 0;
+      break;
+    default:
+      g_assert_not_reached ();
+  }
+
+  return size;
 }
 
 static gboolean

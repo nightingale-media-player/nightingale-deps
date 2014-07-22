@@ -82,13 +82,14 @@
 
 #include <glib.h>
 
+#include <gst/mpegts/mpegts.h>
+
 #include "tsmuxcommon.h"
 #include "tsmuxstream.h"
 
 G_BEGIN_DECLS
 
 #define TSMUX_MAX_ES_INFO_LENGTH ((1 << 12) - 1)
-#define TSMUX_MAX_SECTION_LENGTH (4096)
 
 #define TSMUX_PID_AUTO ((guint16)-1)
 
@@ -104,9 +105,7 @@ typedef void (*TsMuxAllocFunc) (GstBuffer ** buf, void *user_data);
 
 struct TsMuxSection {
   TsMuxPacketInfo pi;
-
-  /* Private sections can be up to 4096 bytes */
-  guint8 data[TSMUX_MAX_SECTION_LENGTH];
+  GstMpegtsSection *section;
 };
 
 /* Information for the streams associated with one program */
@@ -148,6 +147,9 @@ struct TsMux {
   guint16 next_pmt_pid;
   guint16 next_stream_pid;
 
+  /* Table with TsMuxSection to write */
+  GHashTable *si_sections;
+
   TsMuxSection pat;
   /* PAT transport_stream_id */
   guint16 transport_id;
@@ -159,6 +161,13 @@ struct TsMux {
   guint    pat_interval;
   /* last time PAT written in MPEG PTS clock time */
   gint64   last_pat_ts;
+
+  /* trigger writing Service Information Tables */
+  gboolean si_changed;
+  /* interval between SIT in MPEG PTS clock time */
+  guint    si_interval;
+  /* last time SIT written in MPEG PTS clock time */
+  gint64   last_si_ts;
 
   /* callback to write finished packet */
   TsMuxWriteFunc write_func;
@@ -188,8 +197,13 @@ void 		tsmux_program_free 		(TsMuxProgram *program);
 void 		tsmux_set_pmt_interval          (TsMuxProgram *program, guint interval);
 guint 		tsmux_get_pmt_interval   	(TsMuxProgram *program);
 
+/* SI table management */
+void            tsmux_set_si_interval           (TsMux *mux, guint interval);
+guint           tsmux_get_si_interval           (TsMux *mux);
+gboolean        tsmux_add_mpegts_si_section     (TsMux * mux, GstMpegtsSection * section);
+
 /* stream management */
-TsMuxStream *	tsmux_create_stream 		(TsMux *mux, TsMuxStreamType stream_type, guint16 pid);
+TsMuxStream *	tsmux_create_stream 		(TsMux *mux, TsMuxStreamType stream_type, guint16 pid, gchar *language);
 TsMuxStream *	tsmux_find_stream 		(TsMux *mux, guint16 pid);
 
 void 		tsmux_program_add_stream 	(TsMuxProgram *program, TsMuxStream *stream);

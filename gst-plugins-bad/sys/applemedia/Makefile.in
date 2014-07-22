@@ -84,21 +84,29 @@ target_triplet = @target@
 @HAVE_IOS_TRUE@am__append_2 = \
 @HAVE_IOS_TRUE@	iosassetsrc.m
 
-#	avfvideosrc.m
 @HAVE_IOS_TRUE@am__append_3 = \
 @HAVE_IOS_TRUE@	-Wl,-framework -Wl,Foundation		\
 @HAVE_IOS_TRUE@	-Wl,-framework -Wl,AssetsLibrary
 
-#	-Wl,-framework -Wl,AVFoundation
 @HAVE_IOS_FALSE@am__append_4 = \
-@HAVE_IOS_FALSE@	qtkitvideosrc.m				\
-@HAVE_IOS_FALSE@	vtenc.c 				\
-@HAVE_IOS_FALSE@	vtdec.c
+@HAVE_IOS_FALSE@	qtkitvideosrc.m
 
 @HAVE_IOS_FALSE@am__append_5 = \
 @HAVE_IOS_FALSE@	-Wl,-framework -Wl,Cocoa		\
 @HAVE_IOS_FALSE@	-Wl,-framework -Wl,QTKit
 
+@HAVE_AVFOUNDATION_TRUE@am__append_6 = \
+@HAVE_AVFOUNDATION_TRUE@	avfvideosrc.m				\
+@HAVE_AVFOUNDATION_TRUE@	avfassetsrc.m
+
+@HAVE_AVFOUNDATION_TRUE@am__append_7 = \
+@HAVE_AVFOUNDATION_TRUE@	-Wl,-framework -Wl,AVFoundation
+
+@HAVE_VIDEOTOOLBOX_TRUE@am__append_8 = \
+@HAVE_VIDEOTOOLBOX_TRUE@	vtenc.c 				\
+@HAVE_VIDEOTOOLBOX_TRUE@	vtdec.c
+
+@HAVE_VIDEOTOOLBOX_TRUE@am__append_9 = -Wl,-framework -Wl,VideoToolbox
 subdir = sys/applemedia
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp $(noinst_HEADERS)
@@ -107,7 +115,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -132,11 +139,12 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/m4/gst-fionread.m4 $(top_srcdir)/m4/gst-sdl.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intlmacosx.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libtool.m4 \
-	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
-	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libgcrypt.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -177,11 +185,15 @@ libgstapplemedia_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__libgstapplemedia_la_SOURCES_DIST = plugin.m vtutil.c \
 	corevideobuffer.c coremediabuffer.c coremediactx.c vtapi.c \
-	atdec.c dynapi.c iosassetsrc.m qtkitvideosrc.m vtenc.c vtdec.c
+	atdec.c dynapi.c iosassetsrc.m qtkitvideosrc.m avfvideosrc.m \
+	avfassetsrc.m vtenc.c vtdec.c
 @HAVE_IOS_TRUE@am__objects_1 = libgstapplemedia_la-iosassetsrc.lo
-@HAVE_IOS_FALSE@am__objects_2 = libgstapplemedia_la-qtkitvideosrc.lo \
-@HAVE_IOS_FALSE@	libgstapplemedia_la-vtenc.lo \
-@HAVE_IOS_FALSE@	libgstapplemedia_la-vtdec.lo
+@HAVE_IOS_FALSE@am__objects_2 = libgstapplemedia_la-qtkitvideosrc.lo
+@HAVE_AVFOUNDATION_TRUE@am__objects_3 =  \
+@HAVE_AVFOUNDATION_TRUE@	libgstapplemedia_la-avfvideosrc.lo \
+@HAVE_AVFOUNDATION_TRUE@	libgstapplemedia_la-avfassetsrc.lo
+@HAVE_VIDEOTOOLBOX_TRUE@am__objects_4 = libgstapplemedia_la-vtenc.lo \
+@HAVE_VIDEOTOOLBOX_TRUE@	libgstapplemedia_la-vtdec.lo
 am_libgstapplemedia_la_OBJECTS = libgstapplemedia_la-plugin.lo \
 	libgstapplemedia_la-vtutil.lo \
 	libgstapplemedia_la-corevideobuffer.lo \
@@ -189,7 +201,7 @@ am_libgstapplemedia_la_OBJECTS = libgstapplemedia_la-plugin.lo \
 	libgstapplemedia_la-coremediactx.lo \
 	libgstapplemedia_la-vtapi.lo libgstapplemedia_la-atdec.lo \
 	libgstapplemedia_la-dynapi.lo $(am__objects_1) \
-	$(am__objects_2)
+	$(am__objects_2) $(am__objects_3) $(am__objects_4)
 libgstapplemedia_la_OBJECTS = $(am_libgstapplemedia_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -301,11 +313,15 @@ BZ2_LIBS = @BZ2_LIBS@
 CC = @CC@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
-CDAUDIO_CFLAGS = @CDAUDIO_CFLAGS@
-CDAUDIO_LIBS = @CDAUDIO_LIBS@
 CFLAGS = @CFLAGS@
 CHROMAPRINT_CFLAGS = @CHROMAPRINT_CFLAGS@
 CHROMAPRINT_LIBS = @CHROMAPRINT_LIBS@
+CLUTTER_CFLAGS = @CLUTTER_CFLAGS@
+CLUTTER_GLX_CFLAGS = @CLUTTER_GLX_CFLAGS@
+CLUTTER_GLX_LIBS = @CLUTTER_GLX_LIBS@
+CLUTTER_LIBS = @CLUTTER_LIBS@
+CLUTTER_X11_CFLAGS = @CLUTTER_X11_CFLAGS@
+CLUTTER_X11_LIBS = @CLUTTER_X11_LIBS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CURL_CFLAGS = @CURL_CFLAGS@
@@ -334,7 +350,6 @@ DIRECT3D_LIBS = @DIRECT3D_LIBS@
 DIRECTDRAW_LIBS = @DIRECTDRAW_LIBS@
 DIRECTFB_CFLAGS = @DIRECTFB_CFLAGS@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
-DIRECTSHOW_LIBS = @DIRECTSHOW_LIBS@
 DIRECTSOUND_LIBS = @DIRECTSOUND_LIBS@
 DIRECTX_CFLAGS = @DIRECTX_CFLAGS@
 DIRECTX_LDFLAGS = @DIRECTX_LDFLAGS@
@@ -347,10 +362,6 @@ DVDNAV_LIBS = @DVDNAV_LIBS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
-EGLGLES_CFLAGS = @EGLGLES_CFLAGS@
-EGLGLES_LIBS = @EGLGLES_LIBS@
-EGL_CFLAGS = @EGL_CFLAGS@
-EGL_LIBS = @EGL_LIBS@
 EGREP = @EGREP@
 ERROR_CFLAGS = @ERROR_CFLAGS@
 ERROR_CXXFLAGS = @ERROR_CXXFLAGS@
@@ -383,6 +394,9 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_MKENUMS = @GLIB_MKENUMS@
 GLIB_PREFIX = @GLIB_PREFIX@
 GLIB_REQ = @GLIB_REQ@
+GL_CFLAGS = @GL_CFLAGS@
+GL_LIBS = @GL_LIBS@
+GL_OBJCFLAGS = @GL_OBJCFLAGS@
 GME_LIBS = @GME_LIBS@
 GMODULE_EXPORT_CFLAGS = @GMODULE_EXPORT_CFLAGS@
 GMODULE_EXPORT_LIBS = @GMODULE_EXPORT_LIBS@
@@ -392,8 +406,9 @@ GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GMYTH_CFLAGS = @GMYTH_CFLAGS@
 GMYTH_LIBS = @GMYTH_LIBS@
-GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
-GNUTLS_LIBS = @GNUTLS_LIBS@
+GNUSTEP_CONFIG = @GNUSTEP_CONFIG@
+GRAPHENE_CFLAGS = @GRAPHENE_CFLAGS@
+GRAPHENE_LIBS = @GRAPHENE_LIBS@
 GREP = @GREP@
 GSETTINGS_CFLAGS = @GSETTINGS_CFLAGS@
 GSETTINGS_DISABLE_SCHEMAS_COMPILE = @GSETTINGS_DISABLE_SCHEMAS_COMPILE@
@@ -452,30 +467,45 @@ GST_REVISION = @GST_REVISION@
 GST_TOOLS_DIR = @GST_TOOLS_DIR@
 GST_VIDEO_CFLAGS = @GST_VIDEO_CFLAGS@
 GST_VIDEO_LIBS = @GST_VIDEO_LIBS@
+GTK3_CFLAGS = @GTK3_CFLAGS@
+GTK3_LIBS = @GTK3_LIBS@
 GTKDOC_CHECK = @GTKDOC_CHECK@
 GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
 GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
+GTK_BASE_DIR = @GTK_BASE_DIR@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
+GTK_VERSION = @GTK_VERSION@
 G_UDEV_CFLAGS = @G_UDEV_CFLAGS@
 G_UDEV_LIBS = @G_UDEV_LIBS@
+HAVE_CLUTTER = @HAVE_CLUTTER@
+HAVE_CLUTTER_GLX = @HAVE_CLUTTER_GLX@
+HAVE_CLUTTER_X11 = @HAVE_CLUTTER_X11@
 HAVE_CXX = @HAVE_CXX@
 HAVE_DIRECT3D = @HAVE_DIRECT3D@
 HAVE_DIRECTDRAW = @HAVE_DIRECTDRAW@
-HAVE_DIRECTSHOW = @HAVE_DIRECTSHOW@
 HAVE_DIRECTSOUND = @HAVE_DIRECTSOUND@
 HAVE_DTS = @HAVE_DTS@
+HAVE_EGL = @HAVE_EGL@
 HAVE_FAAC = @HAVE_FAAC@
 HAVE_FAAD = @HAVE_FAAD@
 HAVE_FLITE = @HAVE_FLITE@
+HAVE_GL = @HAVE_GL@
+HAVE_GLES2 = @HAVE_GLES2@
+HAVE_GLU = @HAVE_GLU@
+HAVE_GRAPHENE = @HAVE_GRAPHENE@
 HAVE_GSM = @HAVE_GSM@
+HAVE_GTK3 = @HAVE_GTK3@
+HAVE_JPEG = @HAVE_JPEG@
 HAVE_NAS = @HAVE_NAS@
 HAVE_OPENJPEG = @HAVE_OPENJPEG@
+HAVE_PNG = @HAVE_PNG@
 HAVE_SRTP = @HAVE_SRTP@
 HAVE_WASAPI = @HAVE_WASAPI@
 HAVE_WILDMIDI = @HAVE_WILDMIDI@
+HAVE_WINKS = @HAVE_WINKS@
 HAVE_WINSCREENCAP = @HAVE_WINSCREENCAP@
 HAVE_X = @HAVE_X@
 HAVE_X11 = @HAVE_X11@
@@ -495,6 +525,7 @@ INTROSPECTION_LIBS = @INTROSPECTION_LIBS@
 INTROSPECTION_MAKEFILE = @INTROSPECTION_MAKEFILE@
 INTROSPECTION_SCANNER = @INTROSPECTION_SCANNER@
 INTROSPECTION_TYPELIBDIR = @INTROSPECTION_TYPELIBDIR@
+JPEG_LIBS = @JPEG_LIBS@
 KATE_CFLAGS = @KATE_CFLAGS@
 KATE_LIBS = @KATE_LIBS@
 LD = @LD@
@@ -502,18 +533,25 @@ LDFLAGS = @LDFLAGS@
 LIBDC1394_CFLAGS = @LIBDC1394_CFLAGS@
 LIBDC1394_LIBS = @LIBDC1394_LIBS@
 LIBDIR = @LIBDIR@
+LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
+LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
+LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBM = @LIBM@
 LIBMMS_CFLAGS = @LIBMMS_CFLAGS@
 LIBMMS_LIBS = @LIBMMS_LIBS@
 LIBOBJS = @LIBOBJS@
+LIBPNG_CFLAGS = @LIBPNG_CFLAGS@
+LIBPNG_LIBS = @LIBPNG_LIBS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBUDEV_CFLAGS = @LIBUDEV_CFLAGS@
 LIBUDEV_LIBS = @LIBUDEV_LIBS@
 LIBUSB_CFLAGS = @LIBUSB_CFLAGS@
 LIBUSB_LIBS = @LIBUSB_LIBS@
+LIBVISUAL_CFLAGS = @LIBVISUAL_CFLAGS@
+LIBVISUAL_LIBS = @LIBVISUAL_LIBS@
 LIBXML2_CFLAGS = @LIBXML2_CFLAGS@
 LIBXML2_LIBS = @LIBXML2_LIBS@
 LIPO = @LIPO@
@@ -549,6 +587,8 @@ NAS_CFLAGS = @NAS_CFLAGS@
 NAS_LIBS = @NAS_LIBS@
 NEON_CFLAGS = @NEON_CFLAGS@
 NEON_LIBS = @NEON_LIBS@
+NETTLE_CFLAGS = @NETTLE_CFLAGS@
+NETTLE_LIBS = @NETTLE_LIBS@
 NM = @NM@
 NMEDIT = @NMEDIT@
 OBJC = @OBJC@
@@ -563,8 +603,12 @@ OPENAL_LIBS = @OPENAL_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
 OPENCV_PREFIX = @OPENCV_PREFIX@
+OPENEXR_CFLAGS = @OPENEXR_CFLAGS@
+OPENEXR_LIBS = @OPENEXR_LIBS@
 OPENJPEG_CFLAGS = @OPENJPEG_CFLAGS@
 OPENJPEG_LIBS = @OPENJPEG_LIBS@
+OPENNI2_CFLAGS = @OPENNI2_CFLAGS@
+OPENNI2_LIBS = @OPENNI2_LIBS@
 OPUS_CFLAGS = @OPUS_CFLAGS@
 OPUS_LIBS = @OPUS_LIBS@
 ORCC = @ORCC@
@@ -609,6 +653,7 @@ SBC_LIBS = @SBC_LIBS@
 SCHRO_CFLAGS = @SCHRO_CFLAGS@
 SCHRO_LIBS = @SCHRO_LIBS@
 SDL_CFLAGS = @SDL_CFLAGS@
+SDL_CLUTTER = @SDL_CLUTTER@
 SDL_CONFIG = @SDL_CONFIG@
 SDL_LIBS = @SDL_LIBS@
 SED = @SED@
@@ -626,6 +671,8 @@ SPANDSP_CFLAGS = @SPANDSP_CFLAGS@
 SPANDSP_LIBS = @SPANDSP_LIBS@
 SPC_LIBS = @SPC_LIBS@
 SRTP_LIBS = @SRTP_LIBS@
+SSH2_CFLAGS = @SSH2_CFLAGS@
+SSH2_LIBS = @SSH2_LIBS@
 STRIP = @STRIP@
 TELETEXTDEC_CFLAGS = @TELETEXTDEC_CFLAGS@
 TELETEXTDEC_LIBS = @TELETEXTDEC_LIBS@
@@ -633,7 +680,9 @@ TIGER_CFLAGS = @TIGER_CFLAGS@
 TIGER_LIBS = @TIGER_LIBS@
 TIMIDITY_CFLAGS = @TIMIDITY_CFLAGS@
 TIMIDITY_LIBS = @TIMIDITY_LIBS@
+USE_GLES2 = @USE_GLES2@
 USE_NLS = @USE_NLS@
+USE_OPENGL = @USE_OPENGL@
 VALGRIND_CFLAGS = @VALGRIND_CFLAGS@
 VALGRIND_LIBS = @VALGRIND_LIBS@
 VALGRIND_PATH = @VALGRIND_PATH@
@@ -649,15 +698,20 @@ WARNING_CXXFLAGS = @WARNING_CXXFLAGS@
 WARNING_OBJCFLAGS = @WARNING_OBJCFLAGS@
 WASAPI_LIBS = @WASAPI_LIBS@
 WAYLAND_CFLAGS = @WAYLAND_CFLAGS@
+WAYLAND_EGL_CFLAGS = @WAYLAND_EGL_CFLAGS@
+WAYLAND_EGL_LIBS = @WAYLAND_EGL_LIBS@
 WAYLAND_LIBS = @WAYLAND_LIBS@
 WEBP_CFLAGS = @WEBP_CFLAGS@
 WEBP_LIBS = @WEBP_LIBS@
 WILDMIDI_CFLAGS = @WILDMIDI_CFLAGS@
 WILDMIDI_LIBS = @WILDMIDI_LIBS@
+WINKS_LIBS = @WINKS_LIBS@
 WINSCREENCAP_LIBS = @WINSCREENCAP_LIBS@
 WINSOCK2_LIBS = @WINSOCK2_LIBS@
 X11_CFLAGS = @X11_CFLAGS@
 X11_LIBS = @X11_LIBS@
+XCOMPOSITE_CFLAGS = @XCOMPOSITE_CFLAGS@
+XCOMPOSITE_LIBS = @XCOMPOSITE_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
@@ -733,10 +787,12 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+wayland_scanner = @wayland_scanner@
 plugin_LTLIBRARIES = libgstapplemedia.la
 libgstapplemedia_la_SOURCES = plugin.m vtutil.c corevideobuffer.c \
 	coremediabuffer.c coremediactx.c vtapi.c atdec.c dynapi.c \
-	$(am__append_2) $(am__append_4)
+	$(am__append_2) $(am__append_4) $(am__append_6) \
+	$(am__append_8)
 libgstapplemedia_la_CPPFLAGS = \
 	-Dgst_dyn_api_get_type=gst_dyn_api_priv_get_type			\
 	-Dgst_dyn_api_debug=gst_dyn_api_priv_debug				\
@@ -763,12 +819,12 @@ libgstapplemedia_la_LIBADD = \
 	-lgstaudio-$(GST_API_VERSION)		\
 	$(GMODULE_NO_EXPORT_LIBS)
 
-libgstapplemedia_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS)
+libgstapplemedia_la_LIBTOOLFLAGS = $(GST_PLUGIN_LIBTOOLFLAGS) --tag=CC
 libgstapplemedia_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS) \
 	$(GST_BASE_LDFLAGS) $(GST_PLUGINS_BASE_LDFLAGS) -Wl,-framework \
 	-Wl,CoreFoundation -Wl,-framework -Wl,CoreMedia -Wl,-framework \
 	-Wl,CoreVideo -Wl,-framework -Wl,AudioToolbox $(am__append_3) \
-	$(am__append_5)
+	$(am__append_5) $(am__append_7) $(am__append_9)
 noinst_HEADERS = \
 	qtkitvideosrc.h				\
 	avfvideosrc.h				\
@@ -784,7 +840,8 @@ noinst_HEADERS = \
 	atdec.h 				\
 	dynapi.h				\
 	dynapi-internal.h                       \
-	iosassetsrc.h
+	iosassetsrc.h				\
+	avfassetsrc.h
 
 all: all-am
 
@@ -866,6 +923,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapplemedia_la-atdec.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapplemedia_la-avfassetsrc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapplemedia_la-avfvideosrc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapplemedia_la-coremediabuffer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapplemedia_la-coremediactx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstapplemedia_la-corevideobuffer.Plo@am__quote@
@@ -1009,6 +1068,20 @@ libgstapplemedia_la-qtkitvideosrc.lo: qtkitvideosrc.m
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='qtkitvideosrc.m' object='libgstapplemedia_la-qtkitvideosrc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(libgstapplemedia_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgstapplemedia_la_CPPFLAGS) $(CPPFLAGS) $(libgstapplemedia_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libgstapplemedia_la-qtkitvideosrc.lo `test -f 'qtkitvideosrc.m' || echo '$(srcdir)/'`qtkitvideosrc.m
+
+libgstapplemedia_la-avfvideosrc.lo: avfvideosrc.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(libgstapplemedia_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgstapplemedia_la_CPPFLAGS) $(CPPFLAGS) $(libgstapplemedia_la_OBJCFLAGS) $(OBJCFLAGS) -MT libgstapplemedia_la-avfvideosrc.lo -MD -MP -MF $(DEPDIR)/libgstapplemedia_la-avfvideosrc.Tpo -c -o libgstapplemedia_la-avfvideosrc.lo `test -f 'avfvideosrc.m' || echo '$(srcdir)/'`avfvideosrc.m
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstapplemedia_la-avfvideosrc.Tpo $(DEPDIR)/libgstapplemedia_la-avfvideosrc.Plo
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='avfvideosrc.m' object='libgstapplemedia_la-avfvideosrc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(libgstapplemedia_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgstapplemedia_la_CPPFLAGS) $(CPPFLAGS) $(libgstapplemedia_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libgstapplemedia_la-avfvideosrc.lo `test -f 'avfvideosrc.m' || echo '$(srcdir)/'`avfvideosrc.m
+
+libgstapplemedia_la-avfassetsrc.lo: avfassetsrc.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(libgstapplemedia_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgstapplemedia_la_CPPFLAGS) $(CPPFLAGS) $(libgstapplemedia_la_OBJCFLAGS) $(OBJCFLAGS) -MT libgstapplemedia_la-avfassetsrc.lo -MD -MP -MF $(DEPDIR)/libgstapplemedia_la-avfassetsrc.Tpo -c -o libgstapplemedia_la-avfassetsrc.lo `test -f 'avfassetsrc.m' || echo '$(srcdir)/'`avfassetsrc.m
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstapplemedia_la-avfassetsrc.Tpo $(DEPDIR)/libgstapplemedia_la-avfassetsrc.Plo
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='avfassetsrc.m' object='libgstapplemedia_la-avfassetsrc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(libgstapplemedia_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgstapplemedia_la_CPPFLAGS) $(CPPFLAGS) $(libgstapplemedia_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libgstapplemedia_la-avfassetsrc.lo `test -f 'avfassetsrc.m' || echo '$(srcdir)/'`avfassetsrc.m
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gst-plugins-bad 1.1.4\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 12:44+0100\n"
+"POT-Creation-Date: 2014-07-19 16:40+0200\n"
 "PO-Revision-Date: 2013-09-18 10:05+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
@@ -21,6 +21,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Gtranslator 2.91.6\n"
+
+msgid "Internal data stream error."
+msgstr "Chyba proudu vnitřních dat."
+
+msgid "format wasn't negotiated before get function"
+msgstr ""
 
 msgid "Could not read title information for DVD."
 msgstr "Nezdařilo se přečtení informací o titulu DVD."
@@ -54,15 +60,16 @@ msgstr "Selhalo získání adresy URL fragmentu."
 msgid "Couldn't download fragments"
 msgstr "Nelze stáhnout fragmenty"
 
+#, fuzzy
+msgid "Could not open sndfile stream for reading."
+msgstr "Nezdařilo se otevření souboru „%s“ ke čtení."
+
 msgid "No file name specified for writing."
 msgstr "K zápisu nebyl zadán žádný název souboru."
 
 #, c-format
 msgid "Could not open file \"%s\" for writing."
 msgstr "Nezdařilo se otevření souboru „%s“ k zápisu."
-
-msgid "Internal data stream error."
-msgstr "Chyba proudu vnitřních dat."
 
 #, c-format
 msgid "Could not write to file \"%s\"."
@@ -115,6 +122,10 @@ msgstr "Nezdařilo se otevření zařízení rozhraní „%s“."
 
 #, c-format
 msgid "Could not get settings from frontend device \"%s\"."
+msgstr "Ze zařízení rozhraní „%s“ se nezdařilo získat nastavení."
+
+#, fuzzy, c-format
+msgid "Cannot enumerate delivery systems from frontend device \"%s\"."
 msgstr "Ze zařízení rozhraní „%s“ se nezdařilo získat nastavení."
 
 #, c-format

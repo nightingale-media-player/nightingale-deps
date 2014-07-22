@@ -848,7 +848,8 @@ gst_kate_enc_chain_spu (GstKateEnc * ke, GstBuffer * buf)
       }
     }
 #endif
-    GST_DEBUG_OBJECT (ke, "Encoding %zux%zu SPU: (%zu bytes) from %f to %f",
+    GST_DEBUG_OBJECT (ke, "Encoding %" G_GSIZE_FORMAT "x%" G_GSIZE_FORMAT
+        " SPU: (%" G_GSIZE_FORMAT " bytes) from %f to %f",
         kbitmap->width, kbitmap->height, gst_buffer_get_size (buf), t0, t1);
 
     ret = kate_encode_set_region (&ke->k, kregion);
@@ -977,7 +978,8 @@ gst_kate_enc_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
   GstKateEnc *ke = GST_KATE_ENC (parent);
   GstFlowReturn rflow;
 
-  GST_DEBUG_OBJECT (ke, "got packet, %zu bytes", gst_buffer_get_size (buf));
+  GST_DEBUG_OBJECT (ke, "got packet, %" G_GSIZE_FORMAT " bytes",
+      gst_buffer_get_size (buf));
 
   /* first push headers if we haven't done that yet */
   rflow = gst_kate_enc_flush_headers (ke);
@@ -1227,7 +1229,7 @@ gst_kate_enc_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
       gst_event_unref (event);
       break;
     }
-    case GST_EVENT_SEGMENT: {
+    case GST_EVENT_SEGMENT:{
       GstSegment seg;
 
       GST_LOG_OBJECT (ke, "Got newsegment event");
@@ -1235,7 +1237,9 @@ gst_kate_enc_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
       gst_event_copy_segment (event, &seg);
 
       if (!ke->headers_sent) {
-        gst_event_replace (&ke->pending_segment, event);
+        if (ke->pending_segment)
+          gst_event_unref (ke->pending_segment);
+        ke->pending_segment = event;
         event = NULL;
       }
 

@@ -227,7 +227,7 @@ packet_iterator_next_rpcl (PacketIterator * it)
               || (it->cur_y == it->ty0
                   && ((it->try0 * it->two_nl_r) %
                       (it->two_ppy * it->two_nl_r) != 0)))
-          && ((it->cur_x % (it->xr * it->two_ppy * it->two_nl_r) == 0)
+          && ((it->cur_x % (it->xr * it->two_ppx * it->two_nl_r) == 0)
               || (it->cur_x == it->tx0
                   && ((it->trx0 * it->two_nl_r) %
                       (it->two_ppx * it->two_nl_r) != 0)))) {
@@ -297,7 +297,7 @@ packet_iterator_next_pcrl (PacketIterator * it)
               || (it->cur_y == it->ty0
                   && ((it->try0 * it->two_nl_r) %
                       (it->two_ppy * it->two_nl_r) != 0)))
-          && ((it->cur_x % (it->xr * it->two_ppy * it->two_nl_r) == 0)
+          && ((it->cur_x % (it->xr * it->two_ppx * it->two_nl_r) == 0)
               || (it->cur_x == it->tx0
                   && ((it->trx0 * it->two_nl_r) %
                       (it->two_ppx * it->two_nl_r) != 0)))) {
@@ -370,7 +370,7 @@ packet_iterator_next_cprl (PacketIterator * it)
               || (it->cur_y == it->ty0
                   && ((it->try0 * it->two_nl_r) %
                       (it->two_ppy * it->two_nl_r) != 0)))
-          && ((it->cur_x % (it->xr * it->two_ppy * it->two_nl_r) == 0)
+          && ((it->cur_x % (it->xr * it->two_ppx * it->two_nl_r) == 0)
               || (it->cur_x == it->tx0
                   && ((it->trx0 * it->two_nl_r) %
                       (it->two_ppx * it->two_nl_r) != 0)))) {
@@ -887,6 +887,7 @@ parse_packet (GstJP2kDecimator * self, GstByteReader * reader,
       if (!gst_byte_reader_peek_uint16_be (reader, &marker)) {
         GST_ERROR_OBJECT (self, "Truncated file");
         ret = GST_FLOW_ERROR;
+        g_slice_free (Packet, p);
         goto done;
       }
 
@@ -898,12 +899,14 @@ parse_packet (GstJP2kDecimator * self, GstByteReader * reader,
         if (!gst_byte_reader_get_uint16_be (reader, &dummy)) {
           GST_ERROR_OBJECT (self, "Truncated file");
           ret = GST_FLOW_ERROR;
+          g_slice_free (Packet, p);
           goto done;
         }
 
         if (!gst_byte_reader_get_uint16_be (reader, &seqno)) {
           GST_ERROR_OBJECT (self, "Truncated file");
           ret = GST_FLOW_ERROR;
+          g_slice_free (Packet, p);
           goto done;
         }
         p->data = gst_byte_reader_peek_data_unchecked (reader);
@@ -933,7 +936,7 @@ parse_packet (GstJP2kDecimator * self, GstByteReader * reader,
 
     if (marker != MARKER_SOP) {
       GST_ERROR_OBJECT (self, "No SOP marker");
-      ret = GST_FLOW_UNEXPECTED;
+      ret = GST_FLOW_EOS;
       goto done;
     }
 
@@ -1169,8 +1172,10 @@ parse_tile (GstJP2kDecimator * self, GstByteReader * reader,
         PacketLengthTilePart *plt = g_slice_new (PacketLengthTilePart);
 
         ret = parse_plt (self, reader, plt, length);
-        if (ret != GST_FLOW_OK)
+        if (ret != GST_FLOW_OK) {
+          g_slice_free (PacketLengthTilePart, plt);
           goto done;
+        }
 
         tile->plt = g_list_append (tile->plt, plt);
         break;
@@ -1452,7 +1457,7 @@ parse_main_header (GstJP2kDecimator * self, GstByteReader * reader,
       break;
     } else if (marker == MARKER_EOC) {
       GST_WARNING_OBJECT (self, "EOC marker before SOT");
-      ret = GST_FLOW_UNEXPECTED;
+      ret = GST_FLOW_EOS;
       goto done;
     }
 
@@ -1787,6 +1792,8 @@ decimate_main_header (GstJP2kDecimator * self, MainHeader * header)
       if (l == NULL) {
         GST_ERROR_OBJECT (self, "Not enough packets");
         ret = GST_FLOW_ERROR;
+        g_array_free (plt->packet_lengths, TRUE);
+        g_slice_free (PacketLengthTilePart, plt);
         goto done;
       }
 

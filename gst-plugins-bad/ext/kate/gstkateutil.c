@@ -114,6 +114,7 @@ gst_kate_util_decode_base_init (GstKateDecoderBase * decoder,
   decoder->original_canvas_width = 0;
   decoder->original_canvas_height = 0;
   decoder->tags = NULL;
+  decoder->tags_changed = FALSE;
   decoder->initialized = FALSE;
   decoder->delay_events = delay_events;
   decoder->event_queue = NULL;
@@ -130,6 +131,7 @@ gst_kate_util_decode_base_reset (GstKateDecoderBase * decoder)
     gst_tag_list_unref (decoder->tags);
     decoder->tags = NULL;
   }
+  decoder->tags_changed = FALSE;
   decoder->original_canvas_width = 0;
   decoder->original_canvas_height = 0;
   if (decoder->event_queue) {
@@ -184,6 +186,7 @@ gst_kate_util_decoder_base_free_event_queue (GstKateDecoderBase * decoder)
   while (decoder->event_queue->length) {
     GstKateDecoderBaseQueuedEvent *item = (GstKateDecoderBaseQueuedEvent *)
         g_queue_pop_head (decoder->event_queue);
+    gst_event_unref (item->event);
     g_slice_free (GstKateDecoderBaseQueuedEvent, item);
   }
   g_queue_free (decoder->event_queue);
@@ -205,6 +208,33 @@ gst_kate_util_decoder_base_drain_event_queue (GstKateDecoderBase * decoder)
     (*item->handler) (item->pad, item->parent, item->event);
     g_slice_free (GstKateDecoderBaseQueuedEvent, item);
   }
+}
+
+void
+gst_kate_util_decoder_base_add_tags (GstKateDecoderBase * decoder,
+    GstTagList * tags, gboolean take_ownership_of_tags)
+{
+  if (!decoder->tags) {
+    if (!take_ownership_of_tags)
+      tags = gst_tag_list_ref (tags);
+    decoder->tags = tags;
+  } else {
+    GstTagList *old = decoder->tags;
+    decoder->tags = gst_tag_list_merge (old, tags, GST_TAG_MERGE_REPLACE);
+    gst_tag_list_unref (old);
+    if (take_ownership_of_tags)
+      gst_tag_list_unref (tags);
+  }
+  decoder->tags_changed = TRUE;
+}
+
+GstEvent *
+gst_kate_util_decoder_base_get_tag_event (GstKateDecoderBase * decoder)
+{
+  if (!decoder->tags)
+    return NULL;
+  decoder->tags_changed = FALSE;
+  return gst_event_new_tag (gst_tag_list_ref (decoder->tags));
 }
 
 gboolean
@@ -259,17 +289,18 @@ gst_kate_util_decoder_base_chain_kate_packet (GstKateDecoderBase * decoder,
 
   header_size = gst_buffer_extract (buf, 0, header, 1);
 
-  GST_DEBUG_OBJECT (element, "got kate packet, %zu bytes, type %02x",
+  GST_DEBUG_OBJECT (element,
+      "got kate packet, %" G_GSIZE_FORMAT " bytes, type %02x",
       gst_buffer_get_size (buf), header_size == 0 ? -1 : header[0]);
 
   is_header = header_size > 0 && (header[0] & 0x80);
 
-  if (!is_header && decoder->tags) {
+  if (!is_header && decoder->tags_changed) {
     /* after we've processed headers, send any tags before processing the data packet */
     GST_DEBUG_OBJECT (element, "Not a header, sending tags for pad %s:%s",
         GST_DEBUG_PAD_NAME (tagpad));
-    gst_pad_push_event (tagpad, gst_event_new_tag (decoder->tags));
-    decoder->tags = NULL;
+    gst_pad_push_event (tagpad,
+        gst_kate_util_decoder_base_get_tag_event (decoder));
   }
 
   if (gst_buffer_map (buf, &info, GST_MAP_READ)) {
@@ -322,23 +353,17 @@ gst_kate_util_decoder_base_chain_kate_packet (GstKateDecoderBase * decoder,
           }
         }
         if (decoder->k.ki->language && *decoder->k.ki->language) {
-          GstTagList *old = decoder->tags, *tags = gst_tag_list_new_empty ();
-          if (tags) {
-            gchar *lang_code;
+          GstTagList *tags = gst_tag_list_new_empty ();
+          gchar *lang_code;
 
-            /* en_GB -> en */
-            lang_code = g_ascii_strdown (decoder->k.ki->language, -1);
-            g_strdelimit (lang_code, NULL, '\0');
-            gst_tag_list_add (tags, GST_TAG_MERGE_APPEND, GST_TAG_LANGUAGE_CODE,
-                lang_code, NULL);
-            g_free (lang_code);
-            /* TODO: category - where should it go ? */
-            decoder->tags =
-                gst_tag_list_merge (decoder->tags, tags, GST_TAG_MERGE_REPLACE);
-            gst_tag_list_unref (tags);
-            if (old)
-              gst_tag_list_unref (old);
-          }
+          /* en_GB -> en */
+          lang_code = g_ascii_strdown (decoder->k.ki->language, -1);
+          g_strdelimit (lang_code, NULL, '\0');
+          gst_tag_list_add (tags, GST_TAG_MERGE_APPEND, GST_TAG_LANGUAGE_CODE,
+              lang_code, NULL);
+          g_free (lang_code);
+          /* TODO: category - where should it go ? */
+          gst_kate_util_decoder_base_add_tags (decoder, tags, TRUE);
         }
 
         /* update properties */
@@ -360,36 +385,28 @@ gst_kate_util_decoder_base_chain_kate_packet (GstKateDecoderBase * decoder,
         GST_INFO_OBJECT (element, "Parsed comments header");
         {
           gchar *encoder = NULL;
-          GstTagList *old = decoder->tags, *list =
-              gst_tag_list_from_vorbiscomment_buffer (buf,
+          GstTagList *list = gst_tag_list_from_vorbiscomment_buffer (buf,
               (const guint8 *) "\201kate\0\0\0\0", 9, &encoder);
-          if (list) {
-            decoder->tags =
-                gst_tag_list_merge (decoder->tags, list, GST_TAG_MERGE_REPLACE);
-            gst_tag_list_unref (list);
-          }
-
-          if (!decoder->tags) {
+          if (!list) {
             GST_ERROR_OBJECT (element, "failed to decode comment header");
-            decoder->tags = gst_tag_list_new_empty ();
+            list = gst_tag_list_new_empty ();
           }
           if (encoder) {
-            gst_tag_list_add (decoder->tags, GST_TAG_MERGE_REPLACE,
+            gst_tag_list_add (list, GST_TAG_MERGE_REPLACE,
                 GST_TAG_ENCODER, encoder, NULL);
             g_free (encoder);
           }
-          gst_tag_list_add (decoder->tags, GST_TAG_MERGE_REPLACE,
+          gst_tag_list_add (list, GST_TAG_MERGE_REPLACE,
               GST_TAG_SUBTITLE_CODEC, "Kate", NULL);
-          gst_tag_list_add (decoder->tags, GST_TAG_MERGE_REPLACE,
+          gst_tag_list_add (list, GST_TAG_MERGE_REPLACE,
               GST_TAG_ENCODER_VERSION, decoder->k.ki->bitstream_version_major,
               NULL);
 
-          if (old)
-            gst_tag_list_unref (old);
+          gst_kate_util_decoder_base_add_tags (decoder, list, TRUE);
 
           if (decoder->initialized) {
-            gst_pad_push_event (tagpad, gst_event_new_tag (decoder->tags));
-            decoder->tags = NULL;
+            gst_pad_push_event (tagpad,
+                gst_event_new_tag (gst_tag_list_ref (decoder->tags)));
           }
         }
         break;
@@ -413,22 +430,22 @@ gst_kate_util_decoder_base_chain_kate_packet (GstKateDecoderBase * decoder,
         } else {
           if (gst_kate_util_is_utf8_string (value, len)) {
             gchar *compound = g_strdup_printf ("%s=%s", tag, value);
-            GST_DEBUG_OBJECT (decoder, "Metadata %d: %s=%s (%zu bytes)", idx,
-                tag, value, len);
+            GST_DEBUG_OBJECT (decoder,
+                "Metadata %d: %s=%s (%" G_GSIZE_FORMAT " bytes)", idx, tag,
+                value, len);
             gst_tag_list_add (evtags, GST_TAG_MERGE_APPEND,
                 GST_TAG_EXTENDED_COMMENT, compound, NULL);
             g_free (compound);
           } else {
             GST_INFO_OBJECT (decoder,
-                "Metadata %d, (%s, %zu bytes) is binary, ignored", idx, tag,
-                len);
+                "Metadata %d, (%s, %" G_GSIZE_FORMAT
+                " bytes) is binary, ignored", idx, tag, len);
           }
         }
       }
-      if (gst_tag_list_is_empty (evtags))
-        gst_tag_list_unref (evtags);
-      else
-        gst_pad_push_event (tagpad, gst_event_new_tag (evtags));
+      gst_kate_util_decoder_base_add_tags (decoder, evtags, TRUE);
+      gst_pad_push_event (tagpad,
+          gst_kate_util_decoder_base_get_tag_event (decoder));
     }
   }
 #endif

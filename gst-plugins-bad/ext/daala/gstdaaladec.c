@@ -37,8 +37,6 @@
  * ]| This example pipeline will decode an ogg stream and decodes the daala video. Refer to
  * the daalaenc example to create the ogg file.
  * </refsect2>
- *
- * Last reviewed on 2006-03-01 (0.10.4)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -89,7 +87,6 @@ static gboolean daala_dec_start (GstVideoDecoder * decoder);
 static gboolean daala_dec_stop (GstVideoDecoder * decoder);
 static gboolean daala_dec_set_format (GstVideoDecoder * decoder,
     GstVideoCodecState * state);
-static gboolean daala_dec_flush (GstVideoDecoder * decoder);
 static GstFlowReturn daala_dec_parse (GstVideoDecoder * decoder,
     GstVideoCodecFrame * frame, GstAdapter * adapter, gboolean at_eos);
 static GstFlowReturn daala_dec_handle_frame (GstVideoDecoder * decoder,
@@ -117,7 +114,6 @@ gst_daala_dec_class_init (GstDaalaDecClass * klass)
 
   video_decoder_class->start = GST_DEBUG_FUNCPTR (daala_dec_start);
   video_decoder_class->stop = GST_DEBUG_FUNCPTR (daala_dec_stop);
-  video_decoder_class->flush = GST_DEBUG_FUNCPTR (daala_dec_flush);
   video_decoder_class->set_format = GST_DEBUG_FUNCPTR (daala_dec_set_format);
   video_decoder_class->parse = GST_DEBUG_FUNCPTR (daala_dec_parse);
   video_decoder_class->handle_frame =
@@ -134,6 +130,7 @@ gst_daala_dec_init (GstDaalaDec * dec)
   /* input is packetized,
    * but is not marked that way so data gets parsed and keyframes marked */
   gst_video_decoder_set_packetized (GST_VIDEO_DECODER (dec), FALSE);
+  gst_video_decoder_set_needs_format (GST_VIDEO_DECODER (dec), TRUE);
 }
 
 static void

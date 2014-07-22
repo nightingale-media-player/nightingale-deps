@@ -573,7 +573,8 @@ to "yes", and re-run configure.
 END
     AC_MSG_ERROR([Your 'rm' program is bad, sorry.])
   fi
-fi])
+fi
+])
 
 dnl Hook into '_AC_COMPILER_EXEEXT' early to learn its expansion.  Do not
 dnl add the conditional right here, as _AC_COMPILER_EXEEXT may be further
@@ -1454,7 +1455,6 @@ m4_include([common/m4/as-ac-expand.m4])
 m4_include([common/m4/as-auto-alt.m4])
 m4_include([common/m4/as-compiler-flag.m4])
 m4_include([common/m4/as-libtool.m4])
-m4_include([common/m4/as-scrub-include.m4])
 m4_include([common/m4/as-version.m4])
 m4_include([common/m4/ax_create_stdint_h.m4])
 m4_include([common/m4/gst-arch.m4])
@@ -1485,6 +1485,7 @@ m4_include([m4/intlmacosx.m4])
 m4_include([m4/lib-ld.m4])
 m4_include([m4/lib-link.m4])
 m4_include([m4/lib-prefix.m4])
+m4_include([m4/libgcrypt.m4])
 m4_include([m4/libtool.m4])
 m4_include([m4/ltoptions.m4])
 m4_include([m4/ltsugar.m4])

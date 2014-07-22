@@ -41,14 +41,15 @@ struct _GstAutoConvert
   /*< private >*/
   GstBin bin;                   /* we extend GstBin */
 
-  /* Protected by the object lock too */
-  GList *factories;
+  volatile GList *factories;
 
   GstPad *sinkpad;
   GstPad *srcpad;
 
   /* Have to be set all at once
-   * Protected by the object lock */
+   * Protected by the object lock and the stream lock
+   * Both must be held to modify these
+   */
   GstElement *current_subelement;
   GstPad *current_internal_srcpad;
   GstPad *current_internal_sinkpad;

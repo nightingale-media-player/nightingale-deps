@@ -180,17 +180,18 @@ gst_rsvg_decode_image (GstRsvgDec * rsvg, GstBuffer * buffer,
       || GST_VIDEO_INFO_HEIGHT (&output_state->info) != dimension.height) {
 
     /* Create the output state */
-    gst_video_decoder_set_output_state (decoder, GST_RSVG_VIDEO_FORMAT,
-        dimension.width, dimension.height, rsvg->input_state);
     if (output_state)
       gst_video_codec_state_unref (output_state);
-    output_state = gst_video_decoder_get_output_state (decoder);
+    output_state =
+        gst_video_decoder_set_output_state (decoder, GST_RSVG_VIDEO_FORMAT,
+        dimension.width, dimension.height, rsvg->input_state);
   }
 
   ret = gst_video_decoder_allocate_output_frame (decoder, frame);
 
   if (ret != GST_FLOW_OK) {
     g_object_unref (handle);
+    gst_video_codec_state_unref (output_state);
     GST_ERROR_OBJECT (rsvg, "Buffer allocation failed %s",
         gst_flow_get_name (ret));
     return ret;
@@ -205,6 +206,8 @@ gst_rsvg_decode_image (GstRsvgDec * rsvg, GstBuffer * buffer,
           &gst_video_decoder_get_output_state (decoder)->info,
           frame->output_buffer, GST_MAP_READWRITE)) {
     GST_ERROR_OBJECT (rsvg, "Failed to get SVG image");
+    g_object_unref (handle);
+    gst_video_codec_state_unref (output_state);
     return GST_FLOW_ERROR;
   }
   surface =
@@ -261,9 +264,10 @@ gst_rsvg_dec_set_format (GstVideoDecoder * decoder, GstVideoCodecState * state)
   rsvg->input_state = gst_video_codec_state_ref (state);
 
   /* Create the output state */
-  gst_video_decoder_set_output_state (decoder, GST_RSVG_VIDEO_FORMAT,
+  state = gst_video_decoder_set_output_state (decoder, GST_RSVG_VIDEO_FORMAT,
       GST_VIDEO_INFO_WIDTH (info), GST_VIDEO_INFO_HEIGHT (info),
       rsvg->input_state);
+  gst_video_codec_state_unref (state);
 
   return TRUE;
 }

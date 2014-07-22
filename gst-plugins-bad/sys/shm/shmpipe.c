@@ -428,8 +428,10 @@ void
 sp_writer_close (ShmPipe * self, sp_buffer_free_callback callback,
     void *user_data)
 {
-  if (self->main_socket >= 0)
+  if (self->main_socket >= 0) {
+    shutdown (self->main_socket, SHUT_RDWR);
     close (self->main_socket);
+  }
 
   if (self->socket_path) {
     unlink (self->socket_path);
@@ -723,15 +725,11 @@ sp_writer_recv (ShmPipe * self, ShmClient * client, void **tag)
         if (buf->shm_area->id == cb.area_id &&
             buf->offset == cb.payload.ack_buffer.offset) {
           return sp_shmbuf_dec (self, buf, prev_buf, client, tag);
-          break;
         }
         prev_buf = buf;
       }
 
-      if (!buf)
-        return -2;
-
-      break;
+      return -2;
     default:
       return -99;
   }
@@ -840,6 +838,7 @@ sp_writer_accept_client (ShmPipe * self)
   return client;
 
 error:
+  shutdown (fd, SHUT_RDWR);
   close (fd);
   return NULL;
 }
@@ -892,6 +891,7 @@ sp_writer_close_client (ShmPipe * self, ShmClient * client,
   ShmBuffer *buffer = NULL, *prev_buf = NULL;
   ShmClient *item = NULL, *prev_item = NULL;
 
+  shutdown (client->fd, SHUT_RDWR);
   close (client->fd);
 
 again:

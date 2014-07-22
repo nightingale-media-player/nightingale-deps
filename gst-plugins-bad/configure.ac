@@ -3,7 +3,7 @@ AC_PREREQ([2.68])
 dnl initialize autoconf
 dnl when going to/from release please set the nano (fourth number) right !
 dnl releases only do Wall, cvs and prerelease does Werror too
-AC_INIT([GStreamer Bad Plug-ins],[1.2.3],[http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer],[gst-plugins-bad])
+AC_INIT([GStreamer Bad Plug-ins],[1.4.0],[http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer],[gst-plugins-bad])
 
 AG_GST_INIT
 
@@ -48,11 +48,11 @@ dnl - interfaces added/removed/changed -> increment CURRENT, REVISION = 0
 dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
 dnl sets GST_LT_LDFLAGS
-AS_LIBTOOL(GST, 203, 0, 203)
+AS_LIBTOOL(GST, 400, 0, 400)
 
 dnl *** required versions of GStreamer stuff ***
-GST_REQ=1.2.0
-GSTPB_REQ=1.2.0
+GST_REQ=1.4.0
+GSTPB_REQ=1.4.0
 
 dnl *** autotools stuff ****
 
@@ -235,6 +235,77 @@ fi
 AM_CONDITIONAL(HAVE_GTK, test "x$HAVE_GTK" = "xyes")
 
 
+dnl GTK is optional and used in examples
+HAVE_GTK3=NO
+if test "x$BUILD_EXAMPLES" = "xyes"; then
+  PKG_CHECK_MODULES(GTK3, gtk+-3.0 >= 3.4, HAVE_GTK3=yes, HAVE_GTK3=no)
+  if test "x$HAVE_GTK3" = "xyes"; then
+    HAVE_GTK=yes
+    GTK_VERSION=`$PKG_CONFIG --variable=gtk_binary_version gtk+-3.0`
+    AC_SUBST(GTK_VERSION)
+    GTK_PREFIX=`$PKG_CONFIG --variable=prefix gdk-pixbuf-2.0`
+    AC_SUBST(GTK_BASE_DIR)
+  fi
+fi
+AC_SUBST(GTK3_LIBS)
+AC_SUBST(GTK3_CFLAGS)
+AC_SUBST(HAVE_GTK3)
+AM_CONDITIONAL(HAVE_GTK3, test "x$HAVE_GTK3" = "xyes")
+
+dnl clutter is optional and used in examples
+HAVE_CLUTTER=no
+HAVE_CLUTTER_X11=no
+HAVE_CLUTTER_GLX=no
+if test "x$BUILD_EXAMPLES" = "xyes"; then
+  PKG_CHECK_MODULES(CLUTTER, clutter-1.0 >= 1.8, HAVE_CLUTTER=yes, HAVE_CLUTTER=no)
+  AC_SUBST(CLUTTER_LIBS)
+  AC_SUBST(CLUTTER_CFLAGS)
+  AC_SUBST(HAVE_CLUTTER)
+
+  PKG_CHECK_MODULES(CLUTTER_GLX, clutter-glx-1.0 >= 1.8, HAVE_CLUTTER_GLX=yes, HAVE_CLUTTER_GLX=no)
+  AC_SUBST(CLUTTER_GLX_LIBS)
+  AC_SUBST(CLUTTER_GLX_CFLAGS)
+  AC_SUBST(HAVE_CLUTTER_GLX)
+
+  PKG_CHECK_MODULES(CLUTTER_X11, clutter-x11-1.0 >= 1.8, HAVE_CLUTTER_X11=yes, HAVE_CLUTTER_X11=no)
+  AC_SUBST(CLUTTER_X11_LIBS)
+  AC_SUBST(CLUTTER_X11_CFLAGS)
+  AC_SUBST(HAVE_CLUTTER_X11)
+fi
+AM_CONDITIONAL(HAVE_CLUTTER, test "x$HAVE_CLUTTER" = "xyes")
+AM_CONDITIONAL(HAVE_CLUTTER_GLX, test "x$HAVE_CLUTTER_GLX" = "xyes")
+AM_CONDITIONAL(HAVE_CLUTTER_X11, test "x$HAVE_CLUTTER_X11" = "xyes")
+
+dnl used in the gl/clutteractor example
+if test "x$BUILD_EXAMPLES" = "xyes"; then
+  PKG_CHECK_MODULES(XCOMPOSITE, xcomposite, HAVE_XCOMPOSITE=yes, HAVE_XCOMPOSITE=no)
+  AC_SUBST(XCOMPOSITE_CFLAGS)
+  AC_SUBST(XCOMPOSITE_LIBS)
+fi
+AM_CONDITIONAL(HAVE_XCOMPOSITE, test "x$HAVE_XCOMPOSITE" = "xyes")
+
+dnl graphene-1.0 is optional and used in gltransformation
+HAVE_GRAPHENE=NO
+PKG_CHECK_MODULES(GRAPHENE, graphene-1.0, HAVE_GRAPHENE=yes, HAVE_GRAPHENE=no)
+if test "x$HAVE_GRAPHENE" = "xyes"; then
+  AC_DEFINE(HAVE_GRAPHENE, [1] , [Use graphene])
+fi
+AC_SUBST(HAVE_GRAPHENE)
+AC_SUBST(GRAPHENE_LIBS)
+AC_SUBST(GRAPHENE_CFLAGS)
+AM_CONDITIONAL(HAVE_GRAPHENE, test "x$HAVE_GRAPHENE" = "xyes")
+
+
+dnl sdl is optional and used in examples
+HAVE_SDL=NO
+if test "x$BUILD_EXAMPLES" = "xyes"; then
+  PKG_CHECK_MODULES(SDL, sdl >= 1.2.0, HAVE_SDL=yes, HAVE_SDL=no)
+  AC_SUBST(SDL_LIBS)
+  AC_SUBST(SDL_CFLAGS)
+  AC_SUBST(SDL_CLUTTER)
+fi
+AM_CONDITIONAL(HAVE_SDL, test "x$HAVE_SDL" = "xyes")
+
 
 dnl Needed for GtkBuilder to autoconnect signals
 PKG_CHECK_MODULES(GMODULE_EXPORT, gmodule-export-2.0, HAVE_GMODULE_EXPORT=yes, HAVE_GMODULE_EXPORT=no)
@@ -242,7 +313,7 @@ PKG_CHECK_MODULES(GMODULE_EXPORT, gmodule-export-2.0, HAVE_GMODULE_EXPORT=yes, H
 dnl Needed by plugins that use g_module_*() API
 PKG_CHECK_MODULES(GMODULE_NO_EXPORT, gmodule-no-export-2.0)
 
-dnl x11 is optional for librfb and eglglessink
+dnl x11 is optional for librfb
 HAVE_X11=NO
 PKG_CHECK_MODULES(X11, x11, HAVE_X11=yes, HAVE_X11=no)
 AC_SUBST(X11_LIBS)
@@ -338,17 +409,17 @@ dnl Non ported plugins (non-dependant, then dependant)
 dnl Make sure you have a space before and after all plugins
 GST_PLUGINS_NONPORTED=" cdxaparse \
  dccp faceoverlay \
- hdvparse ivfparse jp2kdecimator \
+ hdvparse \
  mve mythtv nuvdemux \
  patchdetect real \
- sdi stereo tta \
- videomeasure videosignal vmnc \
+ sdi tta \
+ videomeasure \
  linsys vcd \
- apexsink cdaudio dc1394 \
+ apexsink dc1394 \
  gsettings \
- musepack nas sdl sndfile timidity \
+ musepack nas sdl timidity \
  directdraw acm wininet \
- xvid lv2 teletextdec sndio osx_video quicktime"
+ xvid lv2 teletextdec sndio osx_video quicktime libvisual"
 AC_SUBST(GST_PLUGINS_NONPORTED)
 
 dnl these are all the gst plug-ins, compilable without additional libs
@@ -358,6 +429,8 @@ AG_GST_CHECK_PLUGIN(adpcmenc)
 AG_GST_CHECK_PLUGIN(aiff)
 AG_GST_CHECK_PLUGIN(asfmux)
 AG_GST_CHECK_PLUGIN(audiofxbad)
+AG_GST_CHECK_PLUGIN(audiomixer)
+AG_GST_CHECK_PLUGIN(compositor)
 AG_GST_CHECK_PLUGIN(audiovisualizers)
 AG_GST_CHECK_PLUGIN(autoconvert)
 AG_GST_CHECK_PLUGIN(bayer)
@@ -426,11 +499,23 @@ if test "x$HAVE_CPU_I386" != "xyes" && test "x$HAVE_CPU_X86_64" != "xyes"; then
   AG_GST_DISABLE_PLUGIN(real)
 fi
 
+AC_CHECK_HEADER(AVFoundation/AVFoundation.h, HAVE_AVFOUNDATION="yes", HAVE_AVFOUNDATION="no", [-])
 AC_CHECK_HEADER(MobileCoreServices/MobileCoreServices.h, HAVE_IOS="yes", HAVE_IOS="no", [-])
+AC_CHECK_HEADER(VideoToolbox/VideoToolbox.h, HAVE_VIDEOTOOLBOX="yes", HAVE_VIDEOTOOLBOX="no", [-])
+
+AM_CONDITIONAL(HAVE_AVFOUNDATION, test "x$HAVE_AVFOUNDATION" = "xyes")
+if test "x$HAVE_AVFOUNDATION" = "xyes"; then
+  AC_DEFINE(HAVE_AVFOUNDATION, 1, [Define if building with AVFoundation])
+fi
 
 AM_CONDITIONAL(HAVE_IOS, test "x$HAVE_IOS" = "xyes")
 if test "x$HAVE_IOS" = "xyes"; then
   AC_DEFINE(HAVE_IOS, 1, [Define if building for Apple iOS])
+fi
+
+AM_CONDITIONAL(HAVE_VIDEOTOOLBOX, test "x$HAVE_VIDEOTOOLBOX" = "xyes")
+if test "x$HAVE_VIDEOTOOLBOX" = "xyes"; then
+  AC_DEFINE(HAVE_VIDEOTOOLBOX, 1, [Define if building with VideoToolbox])
 fi
 
 dnl disable gst plugins we might not be able to build on this
@@ -451,87 +536,140 @@ else
   AG_GST_DISABLE_PLUGIN(dccp)
 fi
 
-dnl *** gst-libs/gst/egl ***
-AC_ARG_WITH([egl-window-system],
-              AS_HELP_STRING([--with-egl-window-system],[EGL window system to use (x11, mali-fb, rpi, none)]),
-              [EGL_WINDOW_SYSTEM="$withval"],
-              [EGL_WINDOW_SYSTEM="auto"])
+dnl *** opengl ***
+AC_ARG_ENABLE([opengl],
+     [  --enable-opengl         Enable Desktop OpenGL support @<:@default=auto@:>@],
+     [case "${enableval}" in
+       yes)  NEED_GL=yes ;;
+       no)   NEED_GL=no ;;
+       auto) NEED_GL=auto ;;
+       *) AC_MSG_ERROR([bad value ${enableval} for --enable-opengl]) ;;
+     esac],[NEED_GL=auto])
 
-if test x"$EGL_WINDOW_SYSTEM" = x"auto"; then
-  dnl Mali
-  old_LIBS=$LIBS
-  old_CFLAGS=$CFLAGS
-  LIBS="$LIBS -lUMP $EGL_LIBS"
-  CFLAGS="$CFLAGS $EGL_CFLAGS"
-  AC_CHECK_LIB([Mali], [mali_image_create], [EGL_WINDOW_SYSTEM="mali-fb"], [EGL_WINDOW_SYSTEM="auto"])
-  LIBS=$old_LIBS
-  CFLAGS=$old_CFLAGS
-
-  dnl RPi
-  if test x"$EGL_WINDOW_SYSTEM" = x"auto"; then
-      old_LIBS=$LIBS
-      old_CFLAGS=$CFLAGS
-      LIBS="$LIBS -lvcos -lvchiq_arm"
-      CFLAGS="$CFLAGS"
-      AC_CHECK_LIB([bcm_host], [bcm_host_init],
-        [
-          LIBS="$LIBS -lbcm_host"
-          AC_CHECK_HEADER([bcm_host.h], [EGL_WINDOW_SYSTEM="rpi"], [EGL_WINDOW_SYSTEM="auto"])
-      ])
-      LIBS=$old_LIBS
-      CFLAGS=$old_CFLAGS
-  fi
-
-  if test x"$EGL_WINDOW_SYSTEM" = x"auto"; then
-      if test x"$HAVE_X11" = x"yes"; then
-        EGL_WINDOW_SYSTEM="x11"
-      fi
-  fi
-
-  if test x"$EGL_WINDOW_SYSTEM" = x"auto"; then
-    EGL_WINDOW_SYSTEM="auto"
-  fi
+AC_ARG_WITH([opengl-module-name],
+  AS_HELP_STRING([--with-opengl-module-name],[library module name for OpenGL (default: libGL)]))
+if test x$with_opengl_module_name != x; then
+  AC_DEFINE_UNQUOTED(GST_GL_LIBGL_MODULE_NAME, "$with_opengl_module_name", [OpenGL module name])
 fi
 
-case "$EGL_WINDOW_SYSTEM" in
-  x11|auto)
-    PKG_CHECK_MODULES(EGL, egl, HAVE_EGL="yes", [
-      HAVE_EGL="no"
-      old_LIBS=$LIBS
-      old_CFLAGS=$CFLAGS
-      
-      AC_CHECK_LIB([EGL], [eglGetProcAddress],
-        [
-          AC_CHECK_HEADER([EGL/egl.h],
-            [
-              HAVE_EGL="yes"
-              EGL_LIBS="-lEGL"
-              EGL_CFLAGS=""
-            ]
-          )
-        ]
-      )
-      
-      LIBS=$old_LIBS
-      CFLAGS=$old_CFLAGS
-    ])
-      
-    dnl X11 specific part, above is auto and X11
-    if test x"$HAVE_EGL" = x"yes" -a x"$EGL_WINDOW_SYSTEM" = x"x11"; then
-      if test x"$HAVE_X11" != x"yes"; then
-        AC_MSG_ERROR([libX11 not found and is required for EGL X11 window system])
-      else
-        AC_DEFINE(USE_EGL_X11, [1], [Use X11 EGL window system])
-        EGL_CFLAGS="$EGL_CFLAGS $X11_CFLAGS"
-        EGL_LIBS="$EGL_LIBS $X11_LIBS"
-      fi
+AC_ARG_ENABLE([gles2],
+     [  --enable-gles2          Enable OpenGL|ES 2.0 support @<:@default=auto@:>@],
+     [case "${enableval}" in
+       yes)  NEED_GLES2=yes ;;
+       no)   NEED_GLES2=no ;;
+       auto) NEED_GLES2=auto ;;
+       *) AC_MSG_ERROR([bad value ${enableval} for --enable-gles2]) ;;
+     esac],[NEED_GLES2=auto])
+
+AC_ARG_WITH([gles2-module-name],
+  AS_HELP_STRING([--with-gles2-module-name],[library module name for GLES2 (default: libGLESv2)]))
+if test x$with_gles2_module_name != x; then
+  AC_DEFINE_UNQUOTED(GST_GL_LIBGLESV2_MODULE_NAME, "$with_gles2_module_name", [GLES2 module name])
+fi
+
+AC_ARG_ENABLE([egl],
+     [  --enable-egl            Enable EGL support @<:@default=auto@:>@],
+     [case "${enableval}" in
+       yes)  NEED_EGL=yes ;;
+       no)   NEED_EGL=no ;;
+       auto) NEED_EGL=auto ;;
+       *) AC_MSG_ERROR([bad value ${enableval} for --enable-egl]) ;;
+     esac],[NEED_EGL=auto])
+
+AC_ARG_WITH([egl-module-name],
+  AS_HELP_STRING([--with-egl-module-name],[library module name for EGL (default: libEGL)]))
+if test x$with_egl_module_name != x; then
+  AC_DEFINE_UNQUOTED(GST_GL_LIBEGL_MODULE_NAME, "$with_egl_module_name", [EGL module name])
+fi
+
+AC_ARG_ENABLE([wgl],
+     [  --enable-wgl            Enable WGL support @<:@default=auto@:>@],
+     [case "${enableval}" in
+       yes)  NEED_WGL=yes ;;
+       no)   NEED_WGL=no ;;
+       auto) NEED_WGL=auto ;;
+       *) AC_MSG_ERROR([bad value ${enableval} for --enable-wgl]) ;;
+     esac],[NEED_WGL=auto])
+
+AC_ARG_ENABLE([glx],
+     [  --enable-glx            Enable GLX support @<:@default=auto@:>@],
+     [case "${enableval}" in
+       yes)  NEED_GLX=yes ;;
+       no)   NEED_GLX=no ;;
+       auto) NEED_GLX=auto ;;
+       *) AC_MSG_ERROR([bad value ${enableval} for --enable-glx]) ;;
+     esac],[NEED_GLX=auto])
+
+AC_ARG_ENABLE([cocoa],
+     [  --enable-cocoa          Enable Cocoa support (using GNUstep on non OS X platforms) @<:@default=auto@:>@],
+     [case "${enableval}" in
+       yes)  NEED_COCOA=yes ;;
+       no)   NEED_COCOA=no ;;
+       auto) NEED_COCOA=auto ;;
+       *) AC_MSG_ERROR([bad value ${enableval} for --enable-cocoa]) ;;
+     esac],[NEED_COCOA=auto])
+
+AC_ARG_ENABLE([x11],
+     [  --enable-x11            Enable x11 support @<:@default=auto@:>@],
+     [case "${enableval}" in
+       yes)  NEED_X11=yes ;;
+       no)   NEED_X11=no ;;
+       auto) NEED_X11=auto ;;
+       *) AC_MSG_ERROR([bad value ${enableval} for --enable-x11]) ;;
+     esac],[NEED_X11=auto])
+
+AC_ARG_ENABLE([wayland],
+     [  --enable-wayland        Enable Wayland support (requires EGL) @<:@default=auto@:>@],
+     [case "${enableval}" in
+       yes)  NEED_WAYLAND_EGL=yes ;;
+       no)   NEED_WAYLAND_EGL=no ;;
+       auto) NEED_WAYLAND_EGL=auto ;;
+       *) AC_MSG_ERROR([bad value ${enableval} for --enable-wayland]) ;;
+     esac],[NEED_WAYLAND_EGL=auto])
+
+AC_ARG_ENABLE([dispmanx],
+     [  --enable-dispmanx        Enable Dispmanx support (requires EGL) @<:@default=auto@:>@],
+     [case "${enableval}" in
+       yes)  NEED_DISPMANX=yes ;;
+       no)   NEED_DISPMANX=no ;;
+       auto) NEED_DISPMANX=auto ;;
+       *) AC_MSG_ERROR([bad value ${enableval} for --enable-dispmanx]) ;;
+     esac],[NEED_DISPMANX=auto])
+
+AG_GST_CHECK_X
+save_CPPFLAGS="$CPPFLAGS"
+save_LIBS="$LIBS"
+
+HAVE_GL=no
+HAVE_GLES2=no
+HAVE_GLU=no
+HAVE_GNUSTEP_COCOA=no
+HAVE_WAYLAND_EGL=no
+
+HAVE_EGL_RPI=no
+
+case $host in
+  *-mingw32* )
+    LIBS="$LIBS -lgdi32"
+    AG_GST_CHECK_LIBHEADER(GL, opengl32, glTexImage2D,, GL/gl.h)
+    AG_GST_CHECK_LIBHEADER(GLU, glu32, gluSphere,, GL/glu.h)
+    AC_CHECK_HEADER(GL/wglext.h, HAVE_WGLEXT="yes", HAVE_WGLEXT="no", [#include <GL/gl.h>])
+    if test "x$HAVE_WGLEXT" = "xyes"; then
+      HAVE_WGL=yes
+      HAVE_GL=yes
+      HAVE_GLU=yes
     fi
-    ;;
-  mali-fb)
-    dnl FIXME: Mali EGL depends on GLESv1 or GLESv2
-    HAVE_EGL="no"
+  ;;
+  *)
+    AG_GST_CHECK_LIBHEADER(GL, GL, glTexImage2D,, GL/gl.h)
+    AG_GST_CHECK_LIBHEADER(GLU, GLU, gluSphere,, GL/glu.h)
+    AG_GST_CHECK_LIBHEADER(GLES2, GLESv2, glTexImage2D,, GLES2/gl2.h)
+    AG_GST_CHECK_LIBHEADER(EGL, EGL, eglGetError,, EGL/egl.h)
+
     old_LIBS=$LIBS
     old_CFLAGS=$CFLAGS
+
+    dnl FIXME: Mali EGL depends on GLESv1 or GLESv2
     AC_CHECK_HEADER([EGL/fbdev_window.h],
       [
         LIBS="$LIBS -lUMP"
@@ -546,22 +684,17 @@ case "$EGL_WINDOW_SYSTEM" in
                       [
                         AC_CHECK_HEADER([EGL/egl.h],
                           [
-                            HAVE_EGL="yes"
-                            EGL_LIBS="-lGLESv2 -lEGL -lMali -lUMP"
+                            HAVE_EGL=yes
+                            HAVE_GLES2=yes
+                            EGL_LIBS="-lMali -lUMP"
                             EGL_CFLAGS=""
-                            AC_DEFINE(USE_EGL_MALI_FB, [1], [Use Mali FB EGL window system])
+                            AC_DEFINE(USE_EGL_MALI_FB, [1], [Use Mali FB EGL platform])
                           ])
                       ])
                   ])
               ])
           ])
       ])
-    LIBS=$old_LIBS
-    CFLAGS=$old_CFLAGS
-    ;;
-  rpi)
-    old_LIBS=$LIBS
-    old_CFLAGS=$CFLAGS
 
     dnl FIXME: EGL of RPi depends on GLESv1 or GLESv2
     dnl FIXME: GLESv2 of RPi depends on EGL... WTF!
@@ -581,100 +714,726 @@ case "$EGL_WINDOW_SYSTEM" in
                       [
                         AC_CHECK_HEADER([GLES2/gl2.h],
                           [
-                            HAVE_EGL="yes"
-                            EGL_LIBS="-lGLESv2 -lEGL -lbcm_host -lvcos -lvchiq_arm"
+                            HAVE_EGL=yes
+                            HAVE_GLES2=yes
+                            HAVE_EGL_RPI=yes
+                            EGL_LIBS="-lbcm_host -lvcos -lvchiq_arm"
                             EGL_CFLAGS=""
-                            AC_DEFINE(USE_EGL_RPI, [1], [Use RPi EGL window system])
-                        ])
-                    ])
-                ])
-            ])
-        ])
-    ])
+                            AC_DEFINE(USE_EGL_RPI, [1], [Use RPi platform])
+                          ])
+                      ])
+                  ])
+              ])
+          ])
+      ])
 
     LIBS=$old_LIBS
     CFLAGS=$old_CFLAGS
+
+    PKG_CHECK_MODULES(WAYLAND_EGL, wayland-client >= 1.0 wayland-cursor >= 1.0 wayland-egl >= 9.0, HAVE_WAYLAND_EGL=yes, HAVE_WAYLAND_EGL=no)
+  ;;
+esac
+
+case $host in
+  *-darwin* ) ;;
+  *)
+    AC_PATH_PROG([GNUSTEP_CONFIG],[gnustep-config])
+    if test "x$GNUSTEP_CONFIG" != "x"; then
+      GNUSTEP_HOST="`$GNUSTEP_CONFIG --variable=GNUSTEP_HOST`"
+      case $host in
+        *-mingw* )
+          case $GNUSTEP_HOST in
+            *-mingw* )
+              HAVE_GNUSTEP_COCOA=yes
+            ;;
+          esac
+          ;;
+        * )
+          HAVE_GNUSTEP_COCOA=yes
+        ;;
+      esac
+    fi
+  ;;
+esac
+
+AC_MSG_CHECKING([for GNUstep])
+if test "x$HAVE_GNUSTEP_COCOA" = "xyes" ; then
+  AC_MSG_RESULT([yes])
+else
+  AC_MSG_RESULT([no])
+fi
+
+CPPFLAGS="$save_CPPFLAGS"
+LIBS="$save_LIBS"
+
+AC_SUBST(HAVE_GL)
+AC_SUBST(HAVE_GLU)
+AC_SUBST(HAVE_GLES2)
+
+USE_OPENGL=no
+USE_GLES2=no
+USE_GLX=no
+USE_COCOA=no
+USE_WGL=no
+USE_X11=no
+USE_EAGL=no
+GL_LIBS=
+GL_CFLAGS=
+GL_OBJCFLAGS=
+
+dnl Check for what the user asked for and what we could find
+if test "x$HAVE_EGL" = "xno"; then
+  if test "x$NEED_EGL" = "xyes"; then
+    AC_MSG_ERROR([Could not find the required EGL libraries])
+  fi
+fi
+
+if test "x$HAVE_GL" = "xno"; then
+  if test "x$NEED_GL" = "xyes"; then
+    AC_MSG_ERROR([Could not find the required OpenGL libraries])
+  fi
+fi
+
+if test "x$HAVE_GLES2" = "xno"; then
+  if test "x$NEED_GLES2" = "xyes"; then
+    AC_MSG_ERROR([Could not find the required OpenGL|ES 2.0 libraries])
+  fi
+fi
+
+dnl X, GLX and OpenGL
+if test "x$HAVE_X" = "xno"; then
+  if test "x$NEED_GLX" = "xyes"; then
+    AC_MSG_ERROR([Building the GLX backend without X11 is unsupported])
+  fi
+  if test "x$NEED_X11" = "xyes"; then
+    AC_MSG_ERROR([Could not find X11 development libraries])
+  fi
+else
+  if test "x$NEED_GL" != "xno"; then
+    if test "x$HAVE_GL" = "xno"; then
+      if test "x$NEED_GLX" = "xyes"; then
+        AC_MSG_ERROR([Building the GLX backend without the OpenGL backend is unsupported])
+      fi
+    else dnl HAVE_GL=yes
+      if test "x$HAVE_GLU" = "xno"; then
+        if test "x$NEED_GL" = "xyes"; then
+          AC_MSG_ERROR([GLU is required with OpenGL support])
+        else
+          AC_MSG_WARN([GLU is required with OpenGL support])
+        fi
+      else dnl HAVE_GLU=yes
+        USE_OPENGL=yes
+        if test "x$NEED_GLX" != "xno"; then
+          USE_GLX=yes
+        fi
+      fi
+    fi
+  fi
+fi
+
+dnl check if we can include both GL and GLES2 at the same time
+if test "x$HAVE_GL" = "xyes" -a "x$HAVE_GLES2" = "xyes"; then
+  GL_INCLUDES="
+#ifndef GL_GLEXT_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES 1
+#endif
+# ifdef __APPLE__
+#  include <OpenGLES/ES2/gl.h>
+#  include <OpenGLES/ES2/glext.h>
+# else
+#  include <GLES2/gl2.h>
+#  include <GLES2/gl2ext.h>
+# endif
+# if __APPLE__
+#  include <OpenGL/OpenGL.h>
+#  include <OpenGL/gl.h>
+#  include <OpenGL/glu.h>
+# else
+#  include <GL/gl.h>
+#  include <GL/glu.h>
+#  if __WIN32__ || _WIN32
+#   include <GL/glext.h>
+#  endif
+# endif
+"
+  AC_MSG_CHECKING([whether it is possible to include both GL and GLES2 headers])
+  save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $ERROR_CFLAGS"
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[$GL_INCLUDES]], [[
+    #if !defined(GL_FALSE)
+    #error Failed to include GL headers
+    #endif
+    ]])],[ AC_MSG_RESULT(yes)
+    ],[AC_MSG_RESULT(no)
+    if test "x$NEED_GLES2" = "xyes"; then
+      if test "x$NEED_OPENGL" = "xyes"; then
+        AC_MSG_ERROR([Cannot seem to include both GL and GLES2 headers. Try disabling one API])
+      fi
+      AC_MSG_WARN([Disabling Desktop GL support])
+      HAVE_OPENGL=no
+    else
+      AC_MSG_WARN([Disabling GL|ES 2.0 support])
+      HAVE_GLES2=no
+    fi
+  ])
+  CPPFLAGS="$save_CPPFLAGS"
+fi
+
+#dnl Check for OpenGL, GLU
+echo host is $host
+case $host in
+  *-android*)
+    if test "x$NEED_WGL" = "xyes"; then
+      AC_MSG_ERROR([WGL is not available on Android])
+    fi
+    if test "x$NEED_GLX" = "xyes"; then
+      AC_MSG_ERROR([GLX is not available on Android])
+    fi
+    if test "x$NEED_GL" = "xyes"; then
+      AC_MSG_ERROR([GL is not available on Android])
+    fi
+    if test "x$NEED_X11" = "xyes"; then
+      AC_MSG_ERROR([X11 is not available on Android])
+    fi
+    if test "x$NEED_COCOA" = "xyes"; then
+      AC_MSG_ERROR([Cocoa is not available on Android])
+    fi
+
+    dnl OpenGL|ES 2.0
+    if test "x$HAVE_GLES2" = "xyes"; then
+      if test "x$NEED_GLES2" != "xno"; then
+        GL_LIBS="$GL_LIBS -lGLESv2"
+        USE_GLES2=yes
+      fi
+    fi
+
+    dnl EGL
+    if test "x$HAVE_EGL" = "xyes"; then
+      if test "x$NEED_EGL" != "xno"; then
+        GL_LIBS="$GL_LIBS -lEGL"
+        USE_EGL=yes
+      fi
+    fi
+
+    if test "x$USE_EGL" != "xyes"; then
+      AC_MSG_ERROR([Need EGL on Android])
+    fi
+
+    if test "x$USE_GLES2" != "xyes"; then
+      AC_MSG_ERROR([Need OpenGL|ES 2.0 on Android])
+    fi
+
+    HAVE_WINDOW_ANDROID=yes
     ;;
-  none|no)
-    HAVE_EGL="no"
-    AC_MSG_WARN([No EGL window system specified, will not build gstreamer-egl])
+  *-linux* | *-cygwin* | *-solaris* | *-netbsd* | *-freebsd* | *-openbsd* | *-kfreebsd* | *-dragonflybsd* | *-gnu* )
+    if test "x$NEED_WGL" = "xyes"; then
+      AC_MSG_ERROR([WGL is not available on unix])
+    fi
+
+    if test "x$HAVE_X" = "xno"; then
+      if test "x$HAVE_WAYLAND_EGL" = "xno"; then
+        AC_MSG_WARN([X or Wayland is required for OpenGL support])
+      fi
+    fi
+
+    dnl check Desktop OpenGL
+    if test "x$HAVE_GL" = "xyes"; then
+      if test "x$NEED_GL" != "xno"; then
+        GL_LIBS="$GL_LIBS -lGL"
+      fi
+      if test "x$HAVE_GLU" = "xyes"; then
+        GL_LIBS="$GL_LIBS -lGLU"
+      fi
+    fi
+
+    dnl OpenGL|ES 2.0
+    if test "x$HAVE_GLES2" = "xyes"; then
+      if test "x$NEED_GLES2" != "xno"; then
+        GL_LIBS="$GL_LIBS -lGLESv2"
+        USE_GLES2=yes
+      fi
+    fi
+
+    if test "x$HAVE_X" = "xyes" -a "x$HAVE_EGL_RPI" = "xno"; then
+      if test "x$NEED_X11" != "xno"; then
+        GL_LIBS="$GL_LIBS $X_LIBS"
+        GL_CFLAGS="$GL_CFLAGS $X_CFLAGS"
+        HAVE_WINDOW_X11=yes
+      fi
+    fi
+
+    if test "x$HAVE_WAYLAND_EGL" = "xyes"; then
+      if test "x$NEED_EGL" = "xno" -o "x$HAVE_EGL" = "xno"; then
+        AC_MSG_WARN([EGL is required by the Wayland backend for OpenGL support])
+      else
+        if test "x$NEED_WAYLAND_EGL" != "xno"; then
+          HAVE_WINDOW_WAYLAND=yes
+          GL_LIBS="$GL_LIBS $WAYLAND_EGL_LIBS"
+          GL_CFLAGS="$GL_CFLAGS $WAYLAND_EGL_CFLAGS"
+        fi
+      fi
+    fi
+
+    if test "x$HAVE_EGL_RPI" = "xyes"; then
+      if test "x$NEED_DISPMANX" != "xno"; then
+        HAVE_WINDOW_DISPMANX=yes
+        USE_EGL=yes
+      fi
+    fi
+
+    dnl EGL
+    if test "x$HAVE_EGL" = "xno"; then
+      if test "x$HAVE_GL" = "xno"; then
+        AC_MSG_WARN([Building requires either EGL or GLX for OpenGL support])
+      fi
+    else
+      if test "x$NEED_EGL" != "xno"; then
+        if test "x$HAVE_WINDOW_WAYLAND" = "xyes" -o "x$HAVE_WINDOW_X11" = "xyes" -o "x$HAVE_WINDOW_DISPMANX" = "xyes"; then
+          GL_LIBS="$GL_LIBS -lEGL $EGL_LIBS"
+          GL_CFLAGS="$GL_CFLAGS $EGL_CFLAGS"
+          USE_EGL=yes
+        fi
+      fi
+    fi
+
+    dnl GNUstep provides the Cocoa API on unix
+    if test "x$NEED_COCOA" != "xno"; then
+      if test "x$HAVE_GNUSTEP_COCOA" = "xyes" ; then
+        GNUSTEP_OBJCFLAGS="`$GNUSTEP_CONFIG --objc-flags`"
+        GNUSTEP_LIBS="`$GNUSTEP_CONFIG --gui-libs`"
+        GL_LIBS="$GL_LIBS $GNUSTEP_LIBS -lgnustep-gui -lgnustep-base"
+        GL_OBJCFLAGS="$GL_OBJCFLAGS $GNUSTEP_OBJCFLAGS"
+
+        USE_COCOA=yes
+        HAVE_WINDOW_COCOA=yes
+      fi
+    fi
+    ;;
+  *-darwin*)
+    if test "x$HAVE_IOS" = "xyes"; then
+      if test "x$NEED_WGL" = "xyes"; then
+        AC_MSG_ERROR([WGL is not available on iOS])
+      fi
+      if test "x$NEED_GLX" = "xyes"; then
+        AC_MSG_ERROR([GLX is not available on iOS])
+      fi
+      if test "x$NEED_GL" = "xyes"; then
+        AC_MSG_ERROR([GL is not available on iOS])
+      fi
+      if test "x$NEED_X11" = "xyes"; then
+        AC_MSG_ERROR([X11 is not available on iOS])
+      fi
+      if test "x$NEED_COCOA" = "xyes"; then
+        AC_MSG_ERROR([Cocoa is not available on iOS])
+      fi
+      if test "x$NEED_EGL" = "xyes"; then
+        AC_MSG_ERROR([EGL is not available on iOS])
+      fi
+
+      GL_LIBS="$LIBS -framework OpenGLES -framework QuartzCore -framework UIKit -framework CoreGraphics -framework CoreFoundation -framework Foundation"
+      GL_CFLAGS="$GL_CFLAGS"
+      USE_GLES2=yes
+      USE_EAGL=yes
+      HAVE_WINDOW_EAGL=yes
+
+      ac_cv_type_GLsizeiptr=yes
+      ac_cv_type_GLintptr=yes
+      ac_cv_type_GLchar=yes
+    else
+      dnl Only osx supports cocoa.
+      if test "x$NEED_WGL" = "xyes"; then
+        AC_MSG_ERROR([WGL is not available on Mac OS X])
+      fi
+      if test "x$NEED_EGL" = "xyes"; then
+        AC_MSG_ERROR([EGL is not available on Mac OS X])
+      fi
+      if test "x$NEED_GLES2" = "xyes"; then
+        AC_MSG_ERROR([OpenGL|ES 2.0 is not supported on your platform yet])
+      fi
+
+      if test "x$NEED_COCOA" != "xno"; then
+        GL_LIBS="$LIBS -framework OpenGL -framework Cocoa"
+        GL_CFLAGS="$GL_CFLAGS"
+        USE_COCOA=yes
+        HAVE_WINDOW_COCOA=yes
+        USE_OPENGL=yes
+      fi
+
+      if test "x$USE_GLX" = "xyes"; then
+        if test "x$HAVE_X" = "xyes"; then
+          if test "x$NEED_X11" != "xno"; then
+            GL_LIBS="$GL_LIBS $X_LIBS"
+            GL_CFLAGS="$GL_CFLAGS $X_CFLAGS"
+            HAVE_WINDOW_X11=yes
+          fi
+        fi
+
+        if test "x$HAVE_GL" = "xyes"; then
+          if test "x$NEED_GL" != "xno"; then
+            GL_LIBS="$GL_LIBS -lGL"
+          fi
+          if test "x$HAVE_GLU" = "xyes"; then
+            GL_LIBS="$GL_LIBS -lGLU"
+          fi
+          USE_OPENGL=yes
+        fi
+      fi
+    fi
+    ;;
+  *-mingw32*)
+    if test "x$NEED_GLX" = "xyes"; then
+      AC_MSG_ERROR([GLX is not available on Windows])
+    fi
+    if test "x$NEED_GLES2" = "xyes"; then
+      AC_MSG_ERROR([OpenGL|ES 2.0 is not supported on your platform yet])
+    fi
+
+    if test "x$HAVE_GL" = "xyes"; then
+      if test "$NEED_GL" != "xno"; then
+        if test "x$HAVE_WGL" = "xyes"; then
+          if test "$NEED_WGL" != "xno"; then
+            GL_LIBS="$GL_LIBS -lgdi32 -lopengl32 -lglu32"
+            HAVE_WINDOW_WIN32=yes
+            USE_OPENGL=yes
+            USE_WGL=yes
+          fi
+        fi
+      fi
+    fi
+
+    dnl GNUstep provides the Cocoa API on win32
+    if test "x$HAVE_GNUSTEP_COCOA" = "xyes" ; then
+      GNUSTEP_CFLAGS="`$GNUSTEP_CONFIG --objc-flags`"
+      GNUSTEP_LIBS="`$GNUSTEP_CONFIG --gui-libs`"
+      GL_LIBS="$GL_LIBS $GNUSTEP_LIBS -lgnustep-gui -lgnustep-base"
+      GL_OBJCFLAGS="$OBJCFLAGS $GNUSTEP_CFLAGS"
+
+      USE_COCOA=yes
+      HAVE_WINDOW_COCOA=yes
+    fi
     ;;
   *)
-    AC_MSG_ERROR([invalid EGL window system specified])
+    AC_MSG_WARN([Don't know how to check for OpenGL on your platform.])
     ;;
 esac
 
-AC_SUBST(EGL_LIBS)
-AC_SUBST(EGL_CFLAGS)
-AM_CONDITIONAL(HAVE_EGL, test x"$HAVE_EGL" = x"yes")
+GL_PLATFORMS=
+GL_WINDOWS=
+GL_APIS=
+GL_CONFIG_DEFINES=
+
+dnl APIs
+
+GST_GL_HAVE_OPENGL=0
+GST_GL_HAVE_GLES2=0
+GST_GL_HAVE_GLES3=0
+
+if test "x$USE_OPENGL" = "xyes"; then
+  GL_APIS="gl $GL_APIS"
+  GST_GL_HAVE_OPENGL=1
+fi
+if test "x$USE_GLES2" = "xyes"; then
+  GL_APIS="gles2 $GL_APIS"
+  GST_GL_HAVE_GLES2=1
+fi
+
+GL_CONFIG_DEFINES="$GL_CONFIG_DEFINES
+#define GST_GL_HAVE_OPENGL $GST_GL_HAVE_OPENGL
+#define GST_GL_HAVE_GLES2 $GST_GL_HAVE_GLES2
+#define GST_GL_HAVE_GLES3 $GST_GL_HAVE_GLES3
+"
+
+dnl WINDOW's
+
+GST_GL_HAVE_WINDOW_X11=0
+GST_GL_HAVE_WINDOW_COCOA=0
+GST_GL_HAVE_WINDOW_WIN32=0
+GST_GL_HAVE_WINDOW_WAYLAND=0
+GST_GL_HAVE_WINDOW_ANDROID=0
+GST_GL_HAVE_WINDOW_DISPMANX=0
+GST_GL_HAVE_WINDOW_EAGL=0
+
+if test "x$HAVE_WINDOW_X11" = "xyes"; then
+  GL_WINDOWS="x11 $GL_WINDOWS"
+  GST_GL_HAVE_WINDOW_X11=1
+fi
+if test "x$HAVE_WINDOW_COCOA" = "xyes"; then
+  GL_WINDOWS="cocoa $GL_WINDOWS"
+  GST_GL_HAVE_WINDOW_COCOA=1
+fi
+if test "x$HAVE_WINDOW_WIN32" = "xyes"; then
+  GL_WINDOWS="win32 $GL_WINDOWS"
+  GST_GL_HAVE_WINDOW_WIN32=1
+fi
+if test "x$HAVE_WINDOW_WAYLAND" = "xyes"; then
+  GL_WINDOWS="wayland $GL_WINDOWS"
+  GST_GL_HAVE_WINDOW_WAYLAND=1
+fi
+if test "x$HAVE_WINDOW_ANDROID" = "xyes"; then
+  GL_WINDOWS="android $GL_WINDOWS"
+  GST_GL_HAVE_WINDOW_ANDROID=1
+fi
+if test "x$HAVE_WINDOW_DISPMANX" = "xyes"; then
+  GL_WINDOWS="dispmanx $GL_WINDOWS"
+  GST_GL_HAVE_WINDOW_DISPMANX=1
+fi
+if test "x$HAVE_WINDOW_EAGL" = "xyes"; then
+  GL_WINDOWS="eagl $GL_WINDOWS"
+  GST_GL_HAVE_WINDOW_EAGL=1
+fi
+
+GL_CONFIG_DEFINES="$GL_CONFIG_DEFINES
+#define GST_GL_HAVE_WINDOW_X11 $GST_GL_HAVE_WINDOW_X11
+#define GST_GL_HAVE_WINDOW_COCOA $GST_GL_HAVE_WINDOW_COCOA
+#define GST_GL_HAVE_WINDOW_WIN32 $GST_GL_HAVE_WINDOW_WIN32
+#define GST_GL_HAVE_WINDOW_WAYLAND $GST_GL_HAVE_WINDOW_WAYLAND
+#define GST_GL_HAVE_WINDOW_ANDROID $GST_GL_HAVE_WINDOW_ANDROID
+#define GST_GL_HAVE_WINDOW_DISPMANX $GST_GL_HAVE_WINDOW_DISPMANX
+#define GST_GL_HAVE_WINDOW_EAGL $GST_GL_HAVE_WINDOW_EAGL
+"
+
+dnl PLATFORM's
+
+GST_GL_HAVE_PLATFORM_EGL=0
+GST_GL_HAVE_PLATFORM_GLX=0
+GST_GL_HAVE_PLATFORM_WGL=0
+GST_GL_HAVE_PLATFORM_CGL=0
+GST_GL_HAVE_PLATFORM_EAGL=0
+
+if test "x$USE_EGL" = "xyes"; then
+  GL_PLATFORMS="egl $GL_PLATFORMS"
+  GST_GL_HAVE_PLATFORM_EGL=1
+fi
+if test "x$USE_GLX" = "xyes"; then
+  GL_PLATFORMS="glx $GL_PLATFORMS"
+  GST_GL_HAVE_PLATFORM_GLX=1
+fi
+if test "x$USE_WGL" = "xyes"; then
+  GL_PLATFORMS="wgl $GL_PLATFORMS"
+  GST_GL_HAVE_PLATFORM_WGL=1
+fi
+if test "x$USE_COCOA" = "xyes"; then
+  GL_PLATFORMS="cgl $GL_PLATFORMS"
+  GST_GL_HAVE_PLATFORM_CGL=1
+fi
+if test "x$USE_EAGL" = "xyes"; then
+  GL_PLATFORMS="eagl $GL_PLATFORMS"
+  GST_GL_HAVE_PLATFORM_EAGL=1
+fi
+
+GL_CONFIG_DEFINES="$GL_CONFIG_DEFINES
+#define GST_GL_HAVE_PLATFORM_EGL $GST_GL_HAVE_PLATFORM_EGL
+#define GST_GL_HAVE_PLATFORM_GLX $GST_GL_HAVE_PLATFORM_GLX
+#define GST_GL_HAVE_PLATFORM_WGL $GST_GL_HAVE_PLATFORM_WGL
+#define GST_GL_HAVE_PLATFORM_CGL $GST_GL_HAVE_PLATFORM_CGL
+#define GST_GL_HAVE_PLATFORM_EAGL $GST_GL_HAVE_PLATFORM_EAGL
+"
+
+dnl Check for no platforms/window systems
+if test "x$GL_APIS" = "x"; then
+  AC_MSG_WARN([Either OpenGL or OpenGL|ES is required for OpenGL support])
+fi
+if test "x$GL_PLATFORMS" = "x"; then
+  AC_MSG_WARN([Could not find any OpenGL platforms to use such as CGL, WGL or GLX])
+fi
+if test "x$GL_WINDOWS" = "x"; then
+  AC_MSG_WARN([Could not find any window systems to use such as Cocoa, Win32API or X11])
+fi
+
+if test "x$GL_APIS" = "x" -o "x$GL_PLATFORMS" = "x" -o "x$GL_WINDOWS" = "x"; then
+  GL_LIBS=
+  GL_CFLAGS=
+  GL_OBJCFLAGS=
+  USE_OPENGL=no
+  USE_GLES2=no
+  USE_GLX=no
+  USE_EGL=no
+  USE_WGL=no
+  USE_COCOA=no
+  USE_EGL_MALI=no
+  USE_EGL_RPI=no
+  USE_EAGL=no
+
+  HAVE_WINDOW_X11=no
+  HAVE_WINDOW_WIN32=no
+  HAVE_WINDOW_DISPMANX=no
+  HAVE_WINDOW_WAYLAND=no
+  HAVE_WINDOW_ANDROID=no
+  HAVE_WINDOW_COCOA=no
+  HAVE_WINDOW_EAGL=no
+fi
+
+AC_SUBST(GL_LIBS)
+AC_SUBST(GL_CFLAGS)
+AC_SUBST(GL_OBJCFLAGS)
+AC_SUBST(USE_OPENGL)
+AC_SUBST(USE_GLES2)
+
+AM_CONDITIONAL(HAVE_WINDOW_X11, test "x$HAVE_WINDOW_X11" = "xyes")
+AM_CONDITIONAL(HAVE_WINDOW_COCOA, test "x$HAVE_WINDOW_COCOA" = "xyes")
+AM_CONDITIONAL(HAVE_WINDOW_WIN32, test "x$HAVE_WINDOW_WIN32" = "xyes")
+AM_CONDITIONAL(HAVE_WINDOW_DISPMANX, test "x$HAVE_WINDOW_DISPMANX" = "xyes")
+AM_CONDITIONAL(HAVE_WINDOW_WAYLAND, test "x$HAVE_WINDOW_WAYLAND" = "xyes")
+AM_CONDITIONAL(HAVE_WINDOW_ANDROID, test "x$HAVE_WINDOW_ANDROID" = "xyes")
+AM_CONDITIONAL(HAVE_WINDOW_EAGL, test "x$HAVE_WINDOW_EAGL" = "xyes")
+
+AM_CONDITIONAL(USE_OPENGL, test "x$USE_OPENGL" = "xyes")
+AM_CONDITIONAL(USE_GLES2, test "x$USE_GLES2" = "xyes")
+AM_CONDITIONAL(USE_GLX, test "x$USE_GLX" = "xyes")
+AM_CONDITIONAL(USE_EGL, test "x$USE_EGL" = "xyes")
+AM_CONDITIONAL(USE_WGL, test "x$USE_WGL" = "xyes")
+AM_CONDITIONAL(USE_COCOA, test "x$USE_COCOA" = "xyes")
+AM_CONDITIONAL(USE_EGL_MALI, test "x$USE_EGL_MALI" = "xyes")
+AM_CONDITIONAL(USE_EGL_RPI, test "x$USE_EGL_RPI" = "xyes")
+AM_CONDITIONAL(USE_EAGL, test "x$USE_EAGL" = "xyes")
+
+AM_CONDITIONAL(HAVE_GST_GL, test "x$USE_OPENGL" = "xyes" -o "x$USE_GLES2" = "xyes")
+
+dnl Check for some types that are not always present
+GL_INCLUDES=""
+if test "x$USE_GLES2" = "xyes"; then
+  GL_INCLUDES="$GL_INCLUDES
+#ifndef GL_GLEXT_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES 1
+#endif
+# ifdef __APPLE__
+#  include <OpenGLES/ES2/gl.h>
+#  include <OpenGLES/ES2/glext.h>
+# else
+#  include <GLES2/gl2.h>
+#  include <GLES2/gl2ext.h>
+# endif
+"
+fi
+
+if test "x$USE_OPENGL" = "xyes"; then
+  GL_INCLUDES="$GL_INCLUDES
+# if __APPLE__
+#  include <OpenGL/OpenGL.h>
+#  include <OpenGL/gl.h>
+#  include <OpenGL/glu.h>
+# else
+#  include <GL/gl.h>
+#  include <GL/glu.h>
+#  if __WIN32__ || _WIN32
+#   include <GL/glext.h>
+#  endif
+# endif
+"
+fi
+
+GST_GL_HAVE_GLEGLIMAGEOES=0
+GST_GL_HAVE_GLCHAR=0
+GST_GL_HAVE_GLSIZEIPTR=0
+GST_GL_HAVE_GLINTPTR=0
+
+old_CFLAGS=$CFLAGS
+CFLAGS="$GL_CFLAGS $CFLAGS"
+
+AC_CHECK_TYPES(GLeglImageOES, [], [], [[$GL_INCLUDES]])
+if test "x$ac_cv_type_GLeglImageOES" = "xyes"; then
+  GST_GL_HAVE_GLEGLIMAGEOES=1
+fi
+
+AC_CHECK_TYPES(GLchar, [], [], [[$GL_INCLUDES]])
+if test "x$ac_cv_type_GLchar" = "xyes"; then
+  GST_GL_HAVE_GLCHAR=1
+fi
+
+AC_CHECK_TYPES(GLsizeiptr, [], [], [[$GL_INCLUDES]])
+if test "x$ac_cv_type_GLsizeiptr" = "xyes"; then
+  GST_GL_HAVE_GLSIZEIPTR=1
+fi
+
+AC_CHECK_TYPES(GLintptr, [], [], [[$GL_INCLUDES]])
+if test "x$ac_cv_type_GLintptr" = "xyes"; then
+  GST_GL_HAVE_GLINTPTR=1
+fi
+
+CFLAGS=$old_CFLAGS
+
+GL_CONFIG_DEFINES="$GL_CONFIG_DEFINES
+#define GST_GL_HAVE_GLEGLIMAGEOES $GST_GL_HAVE_GLEGLIMAGEOES
+#define GST_GL_HAVE_GLCHAR $GST_GL_HAVE_GLCHAR
+#define GST_GL_HAVE_GLSIZEIPTR $GST_GL_HAVE_GLSIZEIPTR
+#define GST_GL_HAVE_GLINTPTR $GST_GL_HAVE_GLINTPTR
+"
+
+AC_CONFIG_COMMANDS([gst-libs/gst/gl/gstglconfig.h], [
+	outfile=gstglconfig.h-tmp
+	cat > $outfile <<\_______EOF
+/* gstglconfig.h
+ *
+ * This is a generated file.  Please modify `configure.ac'
+ */
+
+#ifndef __GST_GL_CONFIG_H__
+#define __GST_GL_CONFIG_H__
+
+#include <gst/gst.h>
+
+G_BEGIN_DECLS
+
+_______EOF
+
+	cat >>$outfile <<_______EOF
+$gl_config_defines
+_______EOF
+
+	cat >>$outfile <<_______EOF
+
+G_END_DECLS
+
+#endif  /* __GST_GL_CONFIG_H__ */
+_______EOF
+
+
+	if cmp -s $outfile gst-libs/gst/gl/gstglconfig.h; then
+          AC_MSG_NOTICE([gst-libs/gst/gl/gstglconfig.h is unchanged])
+	  rm -f $outfile
+	else
+	  mv $outfile gst-libs/gst/gl/gstglconfig.h
+	fi
+],[
+gl_config_defines='$GL_CONFIG_DEFINES'
+])
+
+dnl libpng is optional
+PKG_CHECK_MODULES(LIBPNG, libpng >= 1.0, HAVE_PNG=yes, HAVE_PNG=no)
+if test "x$HAVE_PNG" = "xyes"; then
+  AC_DEFINE(HAVE_PNG, [1] , [Use libpng])
+fi
+AC_SUBST(HAVE_PNG)
+AC_SUBST(LIBPNG_LIBS)
+AC_SUBST(LIBPNG_CFLAGS)
+AM_CONDITIONAL(HAVE_PNG, test "x$HAVE_PNG" = "xyes")
+
+dnl libjpeg is optional
+AC_ARG_WITH(jpeg-mmx, [  --with-jpeg-mmx, path to MMX'ified JPEG library])
+OLD_LIBS="$LIBS"
+if test x$with_jpeg_mmx != x; then
+  LIBS="$LIBS -L$with_jpeg_mmx"
+fi
+AC_CHECK_LIB(jpeg-mmx, jpeg_set_defaults, HAVE_JPEG="yes", HAVE_JPEG="no")
+JPEG_LIBS="$LIBS -ljpeg-mmx"
+LIBS="$OLD_LIBS"
+if test x$HAVE_JPEG != xyes; then
+  JPEG_LIBS="-ljpeg"
+  AC_CHECK_LIB(jpeg, jpeg_set_defaults, HAVE_JPEG="yes", HAVE_JPEG="no")
+fi
+
+if test x$HAVE_JPEG = xyes; then
+  AC_DEFINE(HAVE_JPEG, [1], [Use libjpeg])
+else
+  AC_DEFINE(HAVE_JPEG, [0], [Use libjpeg])
+  JPEG_LIBS=
+fi
+AC_SUBST(JPEG_LIBS)
+AC_SUBST(HAVE_JPEG)
+AM_CONDITIONAL(HAVE_JPEG, test "x$HAVE_JPEG" = "xyes")
+
 
 dnl *** sys plug-ins ***
-
-dnl check for QuickTime
-
-AC_ARG_WITH(quicktime-sdk,
-        [ --with-quicktime-sdk=PATH   Specify path to Quicktime SDK installation ],
-        [ QUICKTIME_SDK_DIR=$withval ],
-        [ QUICKTIME_SDK_DIR="" ]
-)
-
-translit(dnm, m, l) AM_CONDITIONAL(USE_QUICKTIME, true)
-AG_GST_CHECK_FEATURE(QUICKTIME, [QuickTime wrapper], qtwrapper, [
-  QUICKTIME_CFLAGS=""
-  QUICKTIME_LDFLAGS=""
-  AC_CHECK_HEADER(QuickTime/Movies.h, 
-      [ HAVE_QUICKTIME="yes", 
-        QUICKTIME_LDFLAGS="-Wl,-framework,CoreAudio,-framework,AudioToolbox,-framework,Carbon,-framework,QuickTime,-framework,QuartzCore" 
-      ],
-      [ 
-        save_CFLAGS="$CFLAGS"
-        CFLAGS="$CFLAGS -I$QUICKTIME_SDK_DIR/CIncludes"
-        AC_CHECK_HEADER(Movies.h, 
-            [
-              HAVE_QUICKTIME="yes"
-              QUICKTIME_CFLAGS="-I$QUICKTIME_SDK_DIR/CIncludes"
-              QUICKTIME_LDFLAGS="-L$QUICKTIME_SDK_DIR/Libraries -lCVClient -lQTMLClient -luser32 -ladvapi32"
-            ], 
-            [
-              HAVE_QUICKTIME="no"
-            ])
-        CFLAGS=$save_CFLAGS
-      ])
-
-  AC_SUBST(QUICKTIME_CFLAGS)
-  AC_SUBST(QUICKTIME_LDFLAGS)
-])
-
-dnl check for DirectShow
-
-AC_ARG_WITH(windows-sdk,
-        [ --with-windows-sdk=PATH   Specify path to Windows SDK installation ],
-        [ WINDOWS_SDK_DIR=$withval ],
-        [ WINDOWS_SDK_DIR="" ]
-)
-AC_SUBST(WINDOWS_SDK_DIR)
-
-AC_ARG_WITH(directshow-libs,
-        [ --with-directshow-libs=PATH   Specify path to DirectShow base class libraries ],
-        [ DIRECTSHOW_LIB_DIR=$withval ],
-        [ DIRECTSHOW_LIB_DIR="" ]
-)
-AC_SUBST(DIRECTSHOW_LIB_DIR)
-
-translit(dnm, m, l) AM_CONDITIONAL(USE_DIRECTSHOW, true)
-AG_GST_CHECK_FEATURE(DIRECTSHOW, [DirectShow plug-in], dshowdecwrapper, [
-  HAVE_DIRECTSHOW="no"
-  save_CFLAGS="$CFLAGS"
-  # -TP to compile as C++
-  CFLAGS="$CFLAGS -I$WINDOWS_SDK_DIR/Samples/Multimedia/DirectShow/BaseClasses -TP"
-  AC_MSG_CHECKING(for DirectShow Base classes)
-  AC_CHECK_HEADER([streams.h],
-    [HAVE_DIRECTSHOW="yes"],
-    [HAVE_DIRECTSHOW="no"])
-  AC_MSG_RESULT($HAVE_DIRECTSHOW)
-  CFLAGS=$save_CFLAGS
-  AC_SUBST(HAVE_DIRECTSHOW)
-])
 
 dnl DirectSound
 translit(dnm, m, l) AM_CONDITIONAL(USE_DIRECTSOUND, true)
@@ -741,7 +1500,7 @@ int main ()
 
 	int result = 0;
     // result = do_everything(argc, argv);
-    
+
     CoUninitialize();
     return result;
 }
@@ -857,46 +1616,46 @@ AG_GST_CHECK_FEATURE(WINSCREENCAP, [winscreencap plug-in], winscreencap, [
   AC_SUBST(HAVE_WINSCREENCAP)
 ])
 
-dnl DirectShow
-translit(dnm, m, l) AM_CONDITIONAL(USE_DIRECTSHOW, true)
-AG_GST_CHECK_FEATURE(DIRECTSHOW, [DirectShow plug-in], winks, [
-  HAVE_DIRECTSHOW="no"
+dnl winks
+translit(dnm, m, l) AM_CONDITIONAL(USE_WINKS, true)
+AG_GST_CHECK_FEATURE(WINKS, [Winks plug-in], winks, [
+  HAVE_WINKS="no"
   save_CFLAGS="$CFLAGS"
   save_LDFLAGS="$LDFLAGS"
   save_LIBS="$LIBS"
   CFLAGS="$CFLAGS $DIRECTX_CFLAGS"
   LDFLAGS="$LDFLAGS $DIRECTX_LDFLAGS"
   LIBS="$LIBS -lole32 -luuid -lstrmiids"
-  AC_MSG_CHECKING(for DirectShow LDFLAGS)
+  AC_MSG_CHECKING(for Winks LDFLAGS)
   AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <windows.h>
 #include <strmif.h>
 #include <uuids.h>
-
+]], [[
 int main () {
   IGraphBuilder *pGraph = NULL;
   HRESULT hr = CoInitialize(NULL);
-  hr = CoCreateInstance(&CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, 
+  hr = CoCreateInstance(&CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER,
                         &IID_IGraphBuilder, (void **)&pGraph);
 
   return 0;
 }
 ]])],
-    [HAVE_DIRECTSHOW="yes"],
-    [HAVE_DIRECTSHOW="no"])
-  AC_MSG_RESULT($HAVE_DIRECTSHOW)
+    [HAVE_WINKS="yes"],
+    [HAVE_WINKS="no"])
+  AC_MSG_RESULT($HAVE_WINKS)
   CFLAGS=$save_CFLAGS
   LDFLAGS=$save_LDFLAGS
   LIBS=$save_LIBS
 
-  if test "x$HAVE_DIRECTSHOW" = "xyes";  then
+  if test "x$HAVE_WINKS" = "xyes";  then
     dnl this is much more than we want
-    DIRECTSHOW_LIBS="-ldxguid -lole32 -luuid -lstrmiids -lksuser -lsetupapi"
+    WINKS_LIBS="-ldxguid -lole32 -luuid -lstrmiids -lksuser -lsetupapi"
     AC_SUBST(DIRECTX_CFLAGS)
     AC_SUBST(DIRECTX_LDFLAGS)
-    AC_SUBST(DIRECTSHOW_LIBS)
+    AC_SUBST(WINKS_LIBS)
   fi
-  AC_SUBST(HAVE_DIRECTSHOW)
+  AC_SUBST(HAVE_WINKS)
 ])
 
 dnl *** Android Media ***
@@ -919,7 +1678,12 @@ HAVE_APPLE_MEDIA="no"
 dnl SystemConfiguration.h is common to OS X and iOS, so we check for that
 AG_GST_CHECK_FEATURE(APPLE_MEDIA, [Apple video], applemedia, [
   AC_CHECK_HEADER(SystemConfiguration/SystemConfiguration.h, HAVE_APPLE_MEDIA="yes", HAVE_APPLE_MEDIA="no")
+  dnl OSX 10.7 and earlier lack VideoToolbox/VideoToolbox.h
+  if test "x$HAVE_IOS" = "xno"; then
+    AC_CHECK_HEADER(VideoToolbox/VideoToolbox.h,, HAVE_APPLE_MEDIA="no")
+  fi
 ])
+
 dnl in case header SystemConfiguration/SystemConfiguration.h is found on other platforms
 case "$host" in
   *-*darwin*)
@@ -1007,55 +1771,6 @@ AG_GST_CHECK_FEATURE(SHM, [POSIX shared memory source and sink], shm, [
     else
         HAVE_SHM=no
     fi
-])
-
-dnl *** Video 4 Linux 2 ***
-dnl for information about the header/define, see sys/v4l2/gstv4l2element.h
-dnl renamed to GST_V4L2 because of some conflict with kernel headers
-translit(dnm, m, l) AM_CONDITIONAL(USE_MFC, true)
-AG_GST_CHECK_FEATURE(MFC, [Multi Format Codec], mfc, [
-  AC_MSG_CHECKING([Checking for up to date v4l2 installation])
-  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-#include <sys/types.h>
-#ifdef __sun /* Solaris */
-#include <sys/types.h>
-#include <sys/videodev2.h>
-#elif __FreeBSD__
-#include <linux/videodev2.h>
-#else /* Linux */
-#include <linux/types.h>
-#define _LINUX_TIME_H
-#define __user
-#include <linux/videodev2.h>
-#endif
-#if defined(V4L2_MAJOR_VERSION) || defined(V4L2_MINOR_VERSION)
-#error too early v4l2 version or no v4l2 at all
-#endif
-#if !defined(V4L2_PIX_FMT_H264)
-#error v4l2 version too old
-#endif
-    ]], [[
-return 0;
-    ]])],[
-      HAVE_MFC="yes"
-      AC_MSG_RESULT(yes)
-    ],[
-      HAVE_MFC="no"
-      AC_MSG_RESULT(no)
-
-      HAVE_VIDEODEV=no
-      AC_CHECK_HEADER(linux/videodev2.h, [ HAVE_VIDEODEV=yes ],
-      [
-        AC_CHECK_HEADER(sys/videodev2.h, [ HAVE_VIDEODEV=yes ])
-      ])
-
-      if test "x$HAVE_VIDEODEV" = "xyes"; then
-        AC_MSG_WARN([video4linux2 headers were found, but they're old.])
-        AC_MSG_WARN([Please update v4l2 to compile the MFC plugins])
-      else
-        AC_MSG_WARN([v4l2 was not found])
-      fi
-    ])
 ])
 
 dnl check for Video CD
@@ -1169,18 +1884,6 @@ AG_GST_CHECK_FEATURE(BZ2, [bz2 library], bz2, [
 #  AC_SUBST(CAIRO_LIBS)
 #])
 
-dnl *** cdaudio ***
-translit(dnm, m, l) AM_CONDITIONAL(USE_CDAUDIO, true)
-AG_GST_CHECK_FEATURE(CDAUDIO, [cdaudio], cdaudio, [
-  PKG_CHECK_MODULES(CDAUDIO, libcdaudio, [
-          HAVE_CDAUDIO="yes"
-  ], [
-          HAVE_CDAUDIO="no"
-  ])
-  AC_SUBST(CDAUDIO_CFLAGS)
-  AC_SUBST(CDAUDIO_LIBS)
-])
-
 dnl *** chromaprint ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_CHROMAPRINT, true)
 AG_GST_CHECK_FEATURE(CHROMAPRINT, [chromaprint], chromaprint, [
@@ -1206,7 +1909,16 @@ AG_GST_CHECK_FEATURE(CURL, [Curl plugin], curl, [
   ])
   AC_SUBST(CURL_CFLAGS)
   AC_SUBST(CURL_LIBS)
-])
+  PKG_CHECK_MODULES(SSH2, libssh2 >= 1.4.3, [
+    HAVE_SSH2="yes"
+    AC_DEFINE(HAVE_SSH2, 1, [Define if libssh2 is available])
+  ], [
+    HAVE_SSH2="no"
+  ])
+  AM_CONDITIONAL(USE_SSH2, test "x$HAVE_SSH2" = "xyes")
+  AC_SUBST(SSH2_CFLAGS)
+  AC_SUBST(SSH2_LIBS)
+],,,[AM_CONDITIONAL(USE_SSH2, false)])
 
 dnl **** DASH ****
 translit(dnm, m, l) AM_CONDITIONAL(USE_DASH, true)
@@ -1282,10 +1994,12 @@ AG_GST_CHECK_FEATURE(DIRECTFB, [directfb], dfbvideosink , [
 dnl **** Wayland ****
 translit(dnm, m, l) AM_CONDITIONAL(USE_WAYLAND, true)
 AG_GST_CHECK_FEATURE(WAYLAND, [wayland sink], wayland , [
-  PKG_CHECK_MODULES(WAYLAND, wayland-client >= 1.0.0, [
+  PKG_CHECK_MODULES(WAYLAND, wayland-client >= 1.4.0 wayland-scanner, [
     HAVE_WAYLAND="yes" ], [ HAVE_WAYLAND="no"
   ])
 ])
+
+AC_PATH_PROG([wayland_scanner], [wayland-scanner])
 
 dnl **** WebP ****
 translit(dnm, m, l) AM_CONDITIONAL(USE_WEBP, true)
@@ -1339,7 +2053,6 @@ translit(dnm, m, l) AM_CONDITIONAL(USE_FAAC, true)
 AG_GST_CHECK_FEATURE(FAAC, [AAC encoder plug-in], faac, [
   AG_GST_CHECK_LIBHEADER(FAAC, faac, faacEncOpen, $LIBM, faac.h,
     FAAC_LIBS="-lfaac $LIBM")
-  AS_SCRUB_INCLUDE(FAAC_CFLAGS)
   AC_SUBST(FAAC_LIBS)
 ])
 
@@ -1395,7 +2108,6 @@ AG_GST_CHECK_FEATURE(FAAD, [AAC decoder plug-in], faad, [
       HAVE_FAAD="no"
     ])
   fi
-  AS_SCRUB_INCLUDE(FAAD_CFLAGS)
   AC_SUBST(FAAD_LIBS)
   AC_SUBST(FAAD_IS_NEAAC)
 ])
@@ -1805,7 +2517,7 @@ AG_GST_CHECK_FEATURE(OPENCV, [opencv plugins], opencv, [
   dnl a new version and the no-backward-compatibility define. (There doesn't
   dnl seem to be a switch to suppress the warnings the cvcompat.h header
   dnl causes.)
-  PKG_CHECK_MODULES(OPENCV, opencv >= 2.0.0 opencv <= 2.4.8 , [
+  PKG_CHECK_MODULES(OPENCV, opencv >= 2.0.0 opencv < 2.5.0 , [
     AC_PROG_CXX
     AC_LANG([C++])
     OLD_CPPFLAGS=$CPPFLAGS
@@ -1830,16 +2542,37 @@ AG_GST_CHECK_FEATURE(OPENCV, [opencv plugins], opencv, [
   AC_SUBST(OPENCV_LIBS)
 ])
 
+dnl *** OpenEXR ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_OPENEXR, true)
+AG_GST_CHECK_FEATURE(OPENEXR, [openexr library], openexr, [
+  AG_GST_PKG_CHECK_MODULES(OPENEXR, OpenEXR)
+])
+
 dnl *** OpenJPEG ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_OPENJPEG, true)
 AG_GST_CHECK_FEATURE(OPENJPEG, [openjpeg library], openjpeg, [
   HAVE_OPENJPEG="no"
-  PKG_CHECK_MODULES(OPENJPEG, libopenjpeg1,
-    HAVE_OPENJPEG="yes",
-    AG_GST_CHECK_LIBHEADER(OPENJPEG, openjpeg, opj_version, , openjpeg.h, OPENJPEG_LIBS="-lopenjpeg")
-  )
+
+  AG_GST_CHECK_LIBHEADER(OPENJPEG, openjp2, opj_version, ,openjpeg-2.0/openjpeg.h, OPENJPEG_LIBS="-lopenjp2")
+  if test x"$HAVE_OPENJPEG" = x"no"; then
+    PKG_CHECK_MODULES(OPENJPEG, libopenjpeg1,
+      HAVE_OPENJPEG="yes",
+      AG_GST_CHECK_LIBHEADER(OPENJPEG, openjpeg, opj_version, , openjpeg.h, OPENJPEG_LIBS="-lopenjpeg")
+    )
+    if test x"$HAVE_OPENJPEG" = x"yes"; then
+      AC_DEFINE([HAVE_OPENJPEG_1], 1, [Define if OpenJPEG 1 is used])
+    fi
+  fi
   AC_SUBST(OPENJPEG_CFLAGS)
   AC_SUBST(OPENJPEG_LIBS)
+])
+
+dnl *** OpenNI2 ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_OPENNI2, true)
+AG_GST_CHECK_FEATURE(OPENNI2, [openni2 library], openni2, [
+  PKG_CHECK_MODULES(OPENNI2, libopenni2 >= 0.26, HAVE_OPENNI2="yes", [ HAVE_OPENNI2="no" ] )
+  AC_SUBST(OPENNI2_CFLAGS)
+  AC_SUBST(OPENNI2_LIBS)
 ])
 
 dnl *** Opus ***
@@ -1885,37 +2618,29 @@ AG_GST_CHECK_FEATURE(RSVG, [rsvg decoder], rsvg, [
   AC_SUBST(RSVG_LIBS)
 ])
 
-dnl *** eglgles ***
-translit(dnm, m, l) AM_CONDITIONAL(USE_EGLGLES, true)
-AG_GST_CHECK_FEATURE(EGLGLES, [eglgles sink], eglgles, [
-  HAVE_EGLGLES="no"
+dnl *** gl ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_GL, true)
+AG_GST_CHECK_FEATURE(GL, [gl elements], gl, [
+  HAVE_GL="no"
 
-  if test x"$HAVE_EGL" = x"yes"; then
-      PKG_CHECK_MODULES(EGLGLES, egl glesv2, HAVE_EGLGLES="yes", [
-        HAVE_EGLGLES="no"
-        old_LIBS=$LIBS
-        old_CFLAGS=$CFLAGS
-
-        LIBS="$LIBS $EGL_LIBS"
-        CFLAGS="$CFLAGS $EGL_CFLAGS"
-        AC_CHECK_LIB([GLESv2], [glEnable],
-          [
-            AC_CHECK_HEADER([GLES2/gl2.h],
-              [
-                 HAVE_EGLGLES="yes"
-                 EGLGLES_LIBS="-lGLESv2"
-                 EGLGLES_CFLAGS=""
-              ])
-          ])
-        LIBS=$old_LIBS
-        CFLAGS=$old_CFLAGS
-      ])
-  elif test x"$HAVE_IOS" = x"yes"; then
-      HAVE_EGLGLES="yes"
+  if test x"$USE_OPENGL" = x"yes" -o x"$USE_GLES2" = x"yes"; then
+    HAVE_GL="yes"
   fi
+])
 
-  AC_SUBST(EGLGLES_CFLAGS)
-  AC_SUBST(EGLGLES_LIBS)
+dnl *** libvisual ***
+translit(dnm, m, l) AM_CONDITIONAL(USE_LIBVISUAL, true)
+AG_GST_CHECK_FEATURE(LIBVISUAL, [libvisual visualization library], libvisual, [
+  AG_GST_PKG_CHECK_MODULES(LIBVISUAL, libvisual-0.4 >= 0.4.0)
+  if test x$HAVE_LIBVISUAL = xyes; then
+    LIBVIS_PLUGINSDIR="`$PKG_CONFIG --variable=pluginsbasedir libvisual-0.4`"
+  fi
+  AC_MSG_NOTICE([libvisual pluginsdir: $LIBVIS_PLUGINSDIR])
+  if test x$LIBVIS_PLUGINSDIR != x; then
+    AC_DEFINE_UNQUOTED(LIBVISUAL_PLUGINSBASEDIR,
+        "$LIBVIS_PLUGINSDIR",
+        [directory in which the detected libvisual's plugins are located])
+  fi
 ])
 
 dnl *** timidity ***
@@ -1995,7 +2720,7 @@ AG_GST_CHECK_FEATURE(SMOOTHSTREAMING, [Smooth Streaming plug-in], smoothstreamin
 
 dnl *** sndfile ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_SNDFILE, true)
-AG_GST_CHECK_FEATURE(SNDFILE, [sndfile plug-in], sfsrc sfsink, [
+AG_GST_CHECK_FEATURE(SNDFILE, [sndfile plug-in], sfdec sfenc, [
   PKG_CHECK_MODULES(SNDFILE, sndfile >= 1.0.16, HAVE_SNDFILE="yes", HAVE_SNDFILE="no")
   AC_SUBST(SNDFILE_CFLAGS)
   AC_SUBST(SNDFILE_LIBS)
@@ -2083,7 +2808,7 @@ AG_GST_CHECK_FEATURE(XVID, [xvid plugins], xvid, [
     AC_CHECK_LIB(xvidcore, xvid_encore, [
       AC_CHECK_LIB(xvidcore, xvid_decore, [
         AC_CHECK_LIB(xvidcore, xvid_global, [
-          AC_MSG_CHECKING([for uptodate XviD API version])
+          AC_MSG_CHECKING([for up-to-date XviD API version])
           AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <xvid.h>]], [[
               #if XVID_API_MAJOR(XVID_API) != 4
               #error "Incompatible XviD API version"
@@ -2107,7 +2832,18 @@ dnl *** dvb ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_DVB, true)
 AG_GST_CHECK_FEATURE(DVB, [DVB Source], dvb, [
   AC_MSG_CHECKING([Checking for up to date dvb installation])
-  AC_CHECK_HEADER(linux/dvb/frontend.h, [HAVE_DVB="yes"], [HAVE_DVB="no"])
+  AC_CHECK_HEADER(linux/dvb/version.h, [
+    AC_MSG_CHECKING([for up-to-date dvb API])
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <linux/dvb/version.h>]], [[
+        #if DVB_API_VERSION < 5 || (DVB_API_VERSION == 5 && DVB_API_VERSION_MINOR <= 4)
+        #error "Incompatible dvb API"
+        #endif
+    ]])], [ AC_MSG_RESULT(yes)
+      HAVE_DVB="yes"
+    ], [ AC_MSG_RESULT(no)
+      HAVE_DVB="no"
+    ])
+  ], [HAVE_DVB="no"])
 ])
 
 dnl *** wininet ***
@@ -2238,7 +2974,19 @@ AG_GST_CHECK_FEATURE(SNDIO, [sndio audio], sndio, [
 dnl *** hls ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_HLS, true)
 AG_GST_CHECK_FEATURE(HLS, [http live streaming plugin], hls, [
-  PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.11.3, [ HAVE_HLS="yes" ], [ HAVE_HLS="no" ])
+  PKG_CHECK_MODULES(NETTLE, nettle,
+  [
+    AC_DEFINE(HAVE_NETTLE, 1, [Define if nettle is available])
+    HAVE_HLS="yes"
+  ], [
+    AM_PATH_LIBGCRYPT([1.2.0],
+    [
+      AC_DEFINE(HAVE_LIBGCRYPT, 1, [Define if libgcrypt is available])
+      HAVE_HLS="yes"
+    ], [
+      HAVE_HLS="no"
+    ])
+  ])
 ])
 
 else
@@ -2251,9 +2999,9 @@ AM_CONDITIONAL(USE_VOAMRWBENC, false)
 AM_CONDITIONAL(USE_VOAACENC, false)
 AM_CONDITIONAL(USE_APEXSINK, false)
 AM_CONDITIONAL(USE_BZ2, false)
-AM_CONDITIONAL(USE_CDAUDIO, false)
 AM_CONDITIONAL(USE_CHROMAPRINT, false)
 AM_CONDITIONAL(USE_CURL, false)
+AM_CONDITIONAL(USE_SSH2, false)
 AM_CONDITIONAL(USE_DASH, false)
 AM_CONDITIONAL(USE_DC1394, false)
 AM_CONDITIONAL(USE_DECKLINK, false)
@@ -2269,6 +3017,7 @@ AM_CONDITIONAL(USE_FAAD, false)
 AM_CONDITIONAL(USE_FBDEV, false)
 AM_CONDITIONAL(USE_FLITE, false)
 AM_CONDITIONAL(USE_FLUIDSYNTH, false)
+AM_CONDITIONAL(USE_GL, false)
 AM_CONDITIONAL(USE_GSM, false)
 AM_CONDITIONAL(USE_HLS, false)
 AM_CONDITIONAL(USE_KATE, false)
@@ -2289,11 +3038,12 @@ AM_CONDITIONAL(USE_NEON, false)
 AM_CONDITIONAL(USE_OFA, false)
 AM_CONDITIONAL(USE_OPENAL, false)
 AM_CONDITIONAL(USE_OPENCV, false)
+AM_CONDITIONAL(USE_OPENEXR, false)
 AM_CONDITIONAL(USE_OPENJPEG, false)
+AM_CONDITIONAL(USE_OPENNI2, false)
 AM_CONDITIONAL(USE_OPUS, false)
 AM_CONDITIONAL(USE_PVR, false)
-AM_CONDITIONAL(USE_RSVG, false)
-AM_CONDITIONAL(USE_EGLGLES, false)
+AM_CONDITIONAL(USE_LIBVISUAL, false)
 AM_CONDITIONAL(USE_TIMIDITY, false)
 AM_CONDITIONAL(USE_WILDMIDI, false)
 AM_CONDITIONAL(USE_SDL, false)
@@ -2310,8 +3060,10 @@ AM_CONDITIONAL(USE_DVB, false)
 AM_CONDITIONAL(USE_WININET, false)
 AM_CONDITIONAL(USE_ACM, false)
 AM_CONDITIONAL(USE_VDPAU, false)
+AM_CONDITIONAL(USE_SBC, false)
 AM_CONDITIONAL(USE_SCHRO, false)
 AM_CONDITIONAL(USE_ZBAR, false)
+AM_CONDITIONAL(USE_RSVG, false)
 AM_CONDITIONAL(USE_RTMP, false)
 AM_CONDITIONAL(USE_TELETEXTDEC, false)
 AM_CONDITIONAL(USE_SNDIO, false)
@@ -2407,6 +3159,7 @@ gst/adpcmenc/Makefile
 gst/aiff/Makefile
 gst/asfmux/Makefile
 gst/audiofxbad/Makefile
+gst/audiomixer/Makefile
 gst/audiovisualizers/Makefile
 gst/autoconvert/Makefile
 gst/bayer/Makefile
@@ -2467,15 +3220,28 @@ gst/videosignal/Makefile
 gst/vmnc/Makefile
 gst/y4m/Makefile
 gst/yadif/Makefile
+gst/compositor/Makefile
 gst-libs/Makefile
 gst-libs/gst/Makefile
 gst-libs/gst/basecamerabinsrc/Makefile
-gst-libs/gst/egl/Makefile
+gst-libs/gst/gl/Makefile
+gst-libs/gst/gl/android/Makefile
+gst-libs/gst/gl/cocoa/Makefile
+gst-libs/gst/gl/dispmanx/Makefile
+gst-libs/gst/gl/glprototypes/Makefile
+gst-libs/gst/gl/eagl/Makefile
+gst-libs/gst/gl/egl/Makefile
+gst-libs/gst/gl/wayland/Makefile
+gst-libs/gst/gl/win32/Makefile
+gst-libs/gst/gl/x11/Makefile
 gst-libs/gst/insertbin/Makefile
 gst-libs/gst/interfaces/Makefile
 gst-libs/gst/codecparsers/Makefile
 gst-libs/gst/mpegts/Makefile
 gst-libs/gst/uridownloader/Makefile
+gst-libs/gst/wayland/Makefile
+gst-libs/gst/base/Makefile
+gst-libs/gst/video/Makefile
 sys/Makefile
 sys/dshowdecwrapper/Makefile
 sys/acmenc/Makefile
@@ -2497,7 +3263,6 @@ sys/linsys/Makefile
 sys/opensles/Makefile
 sys/osxvideo/Makefile
 sys/qtwrapper/Makefile
-sys/mfc/Makefile
 sys/shm/Makefile
 sys/uvch264/Makefile
 sys/vcd/Makefile
@@ -2513,6 +3278,22 @@ tests/files/Makefile
 tests/examples/Makefile
 tests/examples/camerabin2/Makefile
 tests/examples/directfb/Makefile
+tests/examples/gl/Makefile
+tests/examples/gl/cocoa/Makefile
+tests/examples/gl/clutter/Makefile
+tests/examples/gl/generic/Makefile
+tests/examples/gl/generic/cube/Makefile
+tests/examples/gl/generic/cubeyuv/Makefile
+tests/examples/gl/generic/doublecube/Makefile
+tests/examples/gl/generic/recordgraphic/Makefile
+tests/examples/gl/gtk/Makefile
+tests/examples/gl/gtk/gtkvideooverlay/Makefile
+tests/examples/gl/gtk/filternovideooverlay/Makefile
+tests/examples/gl/gtk/filtervideooverlay/Makefile
+tests/examples/gl/gtk/fxtest/Makefile
+tests/examples/gl/gtk/switchvideooverlay/Makefile
+tests/examples/gl/qt/Makefile
+tests/examples/gl/sdl/Makefile
 tests/examples/mpegts/Makefile
 tests/examples/mxf/Makefile
 tests/examples/opencv/Makefile
@@ -2523,7 +3304,6 @@ ext/voaacenc/Makefile
 ext/assrender/Makefile
 ext/apexsink/Makefile
 ext/bz2/Makefile
-ext/cdaudio/Makefile
 ext/chromaprint/Makefile
 ext/curl/Makefile
 ext/dash/Makefile
@@ -2532,7 +3312,7 @@ ext/directfb/Makefile
 ext/wayland/Makefile
 ext/daala/Makefile
 ext/dts/Makefile
-ext/eglgles/Makefile
+ext/gl/Makefile
 ext/faac/Makefile
 ext/faad/Makefile
 ext/flite/Makefile
@@ -2543,6 +3323,7 @@ ext/kate/Makefile
 ext/ladspa/Makefile
 ext/lv2/Makefile
 ext/libmms/Makefile
+ext/libvisual/Makefile
 ext/Makefile
 ext/modplug/Makefile
 ext/mpeg2enc/Makefile
@@ -2556,7 +3337,9 @@ ext/neon/Makefile
 ext/ofa/Makefile
 ext/openal/Makefile
 ext/opencv/Makefile
+ext/openexr/Makefile
 ext/openjpeg/Makefile
+ext/openni2/Makefile
 ext/opus/Makefile
 ext/rsvg/Makefile
 ext/resindvd/Makefile
@@ -2591,10 +3374,16 @@ pkgconfig/gstreamer-codecparsers.pc
 pkgconfig/gstreamer-codecparsers-uninstalled.pc
 pkgconfig/gstreamer-insertbin.pc
 pkgconfig/gstreamer-insertbin-uninstalled.pc
-pkgconfig/gstreamer-egl.pc
-pkgconfig/gstreamer-egl-uninstalled.pc
+pkgconfig/gstreamer-gl.pc
+pkgconfig/gstreamer-gl-uninstalled.pc
 pkgconfig/gstreamer-mpegts.pc
 pkgconfig/gstreamer-mpegts-uninstalled.pc
+pkgconfig/gstreamer-wayland.pc
+pkgconfig/gstreamer-wayland-uninstalled.pc
+pkgconfig/gstreamer-bad-base.pc
+pkgconfig/gstreamer-bad-base-uninstalled.pc
+pkgconfig/gstreamer-bad-video.pc
+pkgconfig/gstreamer-bad-video-uninstalled.pc
 tools/Makefile
 m4/Makefile
 )

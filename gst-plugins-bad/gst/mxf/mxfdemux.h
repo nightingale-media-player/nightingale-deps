@@ -22,6 +22,7 @@
 
 #include <gst/gst.h>
 #include <gst/base/gstadapter.h>
+#include <gst/base/gstflowcombiner.h>
 
 #include "mxfessence.h"
 
@@ -95,7 +96,6 @@ struct _GstMXFDemuxPad
 
   GstClockTime position;
   gdouble position_accumulated_error;
-  GstFlowReturn last_flow;
   gboolean eos, discont;
 
   GstTagList *tags;
@@ -130,6 +130,8 @@ struct _GstMXFDemux
   guint group_id;
 
   GstAdapter *adapter;
+
+  GstFlowCombiner *flowcombiner;
 
   GstSegment segment;
   guint32 seqnum;

@@ -26,7 +26,8 @@
  * an FTP server.
  *
  * <refsect2>
- * <title>Example launch line (upload a JPEG file to /home/test/images directory)</title>
+ * <title>Example launch line (upload a JPEG file to /home/test/images
+ * directory)</title>
  * |[
  * gst-launch filesrc location=image.jpg ! jpegparse ! curlftpsink  \
  *     file-name=image.jpg  \
@@ -65,7 +66,8 @@
 
 /* Default values */
 #define GST_CAT_DEFAULT                gst_curl_ftp_sink_debug
-
+#define RENAME_TO                          "RNTO "
+#define RENAME_FROM			   "RNFR "
 
 /* Plugin specific settings */
 
@@ -76,6 +78,8 @@ enum
   PROP_0,
   PROP_FTP_PORT_ARG,
   PROP_EPSV_MODE,
+  PROP_CREATE_TEMP_FILE,
+  PROP_CREATE_TEMP_FILE_NAME,
   PROP_CREATE_DIRS
 };
 
@@ -131,10 +135,20 @@ gst_curl_ftp_sink_class_init (GstCurlFtpSinkClass * klass)
       g_param_spec_boolean ("epsv-mode", "Extended passive mode",
           "Enable the use of the EPSV command when doing passive FTP transfers",
           TRUE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_CREATE_TEMP_FILE,
+      g_param_spec_boolean ("create-tmp-file", "Enable or disable temporary file transfer", "Use a temporary file name when uploading a a file. When the transfer is complete,  \
+          this temporary file is renamed to the final file name. This is useful for ensuring \
+          that remote systems do not read a partially uploaded file", FALSE, G_PARAM_READWRITE |
+          G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_class, PROP_CREATE_TEMP_FILE_NAME,
+      g_param_spec_string ("temp-file-name",
+          "Creates a temporary file name with date and time",
+          "Filename pattern to use when generating a temporary filename for uploads",
+          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_CREATE_DIRS,
       g_param_spec_boolean ("create-dirs", "Create missing directories",
-          "Attempt to create missing directory included in the path",
-          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+          "Attempt to create missing directory included in the path", FALSE,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -149,6 +163,12 @@ gst_curl_ftp_sink_finalize (GObject * gobject)
 
   GST_DEBUG ("finalizing curlftpsink");
   g_free (this->ftp_port_arg);
+  g_free (this->tmpfile_name);
+
+  if (this->headerlist) {
+    curl_slist_free_all (this->headerlist);
+    this->headerlist = NULL;
+  }
 
   G_OBJECT_CLASS (parent_class)->finalize (gobject);
 }
@@ -156,11 +176,80 @@ gst_curl_ftp_sink_finalize (GObject * gobject)
 static gboolean
 set_ftp_dynamic_options_unlocked (GstCurlBaseSink * basesink)
 {
-  gchar *tmp = g_strdup_printf ("%s%s", basesink->url, basesink->file_name);
+  gchar *tmp = NULL;
+  GstCurlFtpSink *sink = GST_CURL_FTP_SINK (basesink);
+  CURLcode res;
 
-  curl_easy_setopt (basesink->curl, CURLOPT_URL, tmp);
+  if (sink->tmpfile_create) {
+    gchar *rename_from = NULL;
+    gchar *rename_to = NULL;
+    gchar *uploadfile_as = NULL;
+    gchar *last_slash = NULL;
+    gchar *tmpfile_name = NULL;
 
-  g_free (tmp);
+    if (sink->headerlist != NULL) {
+      curl_slist_free_all (sink->headerlist);
+      sink->headerlist = NULL;
+    }
+
+    if (sink->tmpfile_name != NULL) {
+      tmpfile_name = g_strdup_printf ("%s", sink->tmpfile_name);
+    } else {
+      tmpfile_name =
+          g_strdup_printf (".tmp.%04X%04X", g_random_int (), g_random_int ());
+    }
+
+    rename_from = g_strdup_printf ("%s%s", RENAME_FROM, tmpfile_name);
+
+    last_slash = strrchr (basesink->file_name, '/');
+    if (last_slash != NULL) {
+      gchar *dir_name =
+          g_strndup (basesink->file_name, last_slash - basesink->file_name);
+      rename_to = g_strdup_printf ("%s%s", RENAME_TO, last_slash + 1);
+      uploadfile_as = g_strdup_printf ("%s/%s", dir_name, tmpfile_name);
+      g_free (dir_name);
+    } else {
+      rename_to = g_strdup_printf ("%s%s", RENAME_TO, basesink->file_name);
+      uploadfile_as = g_strdup_printf ("%s", tmpfile_name);
+    }
+    g_free (tmpfile_name);
+
+    tmp = g_strdup_printf ("%s%s", basesink->url, uploadfile_as);
+    g_free (uploadfile_as);
+
+    sink->headerlist = curl_slist_append (sink->headerlist, rename_from);
+    sink->headerlist = curl_slist_append (sink->headerlist, rename_to);
+    g_free (rename_from);
+    g_free (rename_to);
+
+    res = curl_easy_setopt (basesink->curl, CURLOPT_URL, tmp);
+    g_free (tmp);
+    if (res != CURLE_OK) {
+      basesink->error = g_strdup_printf ("failed to set URL: %s",
+          curl_easy_strerror (res));
+      return FALSE;
+    }
+
+    res = curl_easy_setopt (basesink->curl, CURLOPT_POSTQUOTE, sink->headerlist);
+    if (res != CURLE_OK) {
+      basesink->error = g_strdup_printf ("failed to set post quote: %s",
+          curl_easy_strerror (res));
+      return FALSE;
+    }
+
+    if (last_slash != NULL) {
+      *last_slash = '\0';
+    }
+  } else {
+    tmp = g_strdup_printf ("%s%s", basesink->url, basesink->file_name);
+    res = curl_easy_setopt (basesink->curl, CURLOPT_URL, tmp);
+    g_free (tmp);
+    if (res != CURLE_OK) {
+      basesink->error = g_strdup_printf ("failed to set URL: %s",
+          curl_easy_strerror (res));
+      return FALSE;
+    }
+  }
 
   return TRUE;
 }
@@ -169,38 +258,50 @@ static gboolean
 set_ftp_options_unlocked (GstCurlBaseSink * basesink)
 {
   GstCurlFtpSink *sink = GST_CURL_FTP_SINK (basesink);
+  CURLcode res;
 
-  curl_easy_setopt (basesink->curl, CURLOPT_UPLOAD, 1L);
+  res = curl_easy_setopt (basesink->curl, CURLOPT_UPLOAD, 1L);
+  if (res != CURLE_OK) {
+    basesink->error = g_strdup_printf ("failed to prepare for upload: %s",
+        curl_easy_strerror (res));
+    return FALSE;
+  }
 
   if (sink->ftp_port_arg != NULL && (strlen (sink->ftp_port_arg) > 0)) {
     /* Connect data stream actively. */
-    CURLcode res = curl_easy_setopt (basesink->curl, CURLOPT_FTPPORT,
+    res = curl_easy_setopt (basesink->curl, CURLOPT_FTPPORT,
         sink->ftp_port_arg);
 
     if (res != CURLE_OK) {
-      GST_DEBUG_OBJECT (sink, "Failed to set up active mode: %s",
+      basesink->error = g_strdup_printf ("failed to set up active mode: %s",
           curl_easy_strerror (res));
-      GST_ELEMENT_ERROR (sink, RESOURCE, WRITE,
-          ("Failed to set up active mode: %s", curl_easy_strerror (res)),
-          (NULL));
-
       return FALSE;
     }
-
-    goto end;
+  } else {
+    /* Connect data stream passively.
+     * libcurl will always attempt to use EPSV before PASV.
+     */
+    if (!sink->epsv_mode) {
+      /* send only plain PASV command */
+      res = curl_easy_setopt (basesink->curl, CURLOPT_FTP_USE_EPSV, 0);
+      if (res != CURLE_OK) {
+        basesink->error =
+            g_strdup_printf ("failed to set extended passive mode: %s",
+            curl_easy_strerror (res));
+        return FALSE;
+      }
+    }
   }
 
-  /* Connect data stream passively.
-   * libcurl will always attempt to use EPSV before PASV.
-   */
-  if (!sink->epsv_mode) {
-    /* send only plain PASV command */
-    curl_easy_setopt (basesink->curl, CURLOPT_FTP_USE_EPSV, 0);
-  }
-
-end:
   if (sink->create_dirs) {
-    curl_easy_setopt (basesink->curl, CURLOPT_FTP_CREATE_MISSING_DIRS, 1L);
+    res = curl_easy_setopt (basesink->curl, CURLOPT_FTP_CREATE_MISSING_DIRS,
+        1L);
+    if (res != CURLE_OK) {
+      basesink->error =
+          g_strdup_printf ("failed to set create missing dirs: %s",
+          curl_easy_strerror (res));
+      return FALSE;
+    }
   }
 
   return TRUE;
@@ -229,6 +330,16 @@ gst_curl_ftp_sink_set_property (GObject * object, guint prop_id,
       case PROP_EPSV_MODE:
         sink->epsv_mode = g_value_get_boolean (value);
         GST_DEBUG_OBJECT (sink, "epsv-mode set to %d", sink->epsv_mode);
+        break;
+      case PROP_CREATE_TEMP_FILE:
+        sink->tmpfile_create = g_value_get_boolean (value);
+        GST_DEBUG_OBJECT (sink, "create-tmp-file set to %d",
+            sink->tmpfile_create);
+        break;
+      case PROP_CREATE_TEMP_FILE_NAME:
+        g_free (sink->tmpfile_name);
+        sink->tmpfile_name = g_value_dup_string (value);
+        GST_DEBUG_OBJECT (sink, "tmp-file-name set to %s", sink->tmpfile_name);
         break;
       case PROP_CREATE_DIRS:
         sink->create_dirs = g_value_get_boolean (value);
@@ -259,6 +370,12 @@ gst_curl_ftp_sink_get_property (GObject * object, guint prop_id,
       break;
     case PROP_EPSV_MODE:
       g_value_set_boolean (value, sink->epsv_mode);
+      break;
+    case PROP_CREATE_TEMP_FILE:
+      g_value_set_boolean (value, sink->tmpfile_create);
+      break;
+    case PROP_CREATE_TEMP_FILE_NAME:
+      g_value_set_string (value, sink->tmpfile_name);
       break;
     case PROP_CREATE_DIRS:
       g_value_set_boolean (value, sink->create_dirs);

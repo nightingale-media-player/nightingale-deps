@@ -83,6 +83,8 @@
 
 #include <string.h>
 
+#include <gst/mpegts/mpegts.h>
+
 #include "tsmuxcommon.h"
 #include "tsmuxstream.h"
 
@@ -181,6 +183,7 @@ tsmux_stream_new (guint16 pid, TsMuxStreamType stream_type)
     case TSMUX_ST_PS_DVB_SUBPICTURE:
       /* private stream 1 */
       stream->id = 0xBD;
+      stream->is_dvb_sub = TRUE;
       stream->stream_type = TSMUX_ST_PRIVATE_DATA;
       stream->pi.flags |=
           TSMUX_PACKET_FLAG_PES_FULL_HEADER |
@@ -693,22 +696,16 @@ tsmux_stream_add_data (TsMuxStream * stream, guint8 * data, guint len,
  * @buf and @len must be at least #TSMUX_MIN_ES_DESC_LEN.
  */
 void
-tsmux_stream_get_es_descrs (TsMuxStream * stream, guint8 * buf, guint16 * len)
+tsmux_stream_get_es_descrs (TsMuxStream * stream,
+    GstMpegtsPMTStream * pmt_stream)
 {
-  guint8 *pos;
+  GstMpegtsDescriptor *descriptor;
 
   g_return_if_fail (stream != NULL);
-
-  if (buf == NULL) {
-    if (len != NULL)
-      *len = 0;
-    return;
-  }
+  g_return_if_fail (pmt_stream != NULL);
 
   /* Based on the stream type, write out any descriptors to go in the 
    * PMT ES_info field */
-  pos = buf;
-
   /* tag (registration_descriptor), length, format_identifier */
   switch (stream->stream_type) {
     case TSMUX_ST_AUDIO_AAC:
@@ -718,34 +715,26 @@ tsmux_stream_get_es_descrs (TsMuxStream * stream, guint8 * buf, guint16 * len)
       /* FIXME */
       break;
     case TSMUX_ST_VIDEO_H264:
-      *pos++ = 0x05;
-      *pos++ = 8;
-      *pos++ = 0x48;            /* 'H' */
-      *pos++ = 0x44;            /* 'D' */
-      *pos++ = 0x4D;            /* 'M' */
-      *pos++ = 0x56;            /* 'V' */
+    {
       /* FIXME : Not sure about this additional_identification_info */
-      *pos++ = 0xFF;
-      *pos++ = 0x1B;
-      *pos++ = 0x44;
-      *pos++ = 0x3F;
+      guint8 add_info[] = { 0xFF, 0x1B, 0x44, 0x3F };
+
+      descriptor = gst_mpegts_descriptor_from_registration ("HDMV",
+          add_info, 4);
+
+      g_ptr_array_add (pmt_stream->descriptors, descriptor);
       break;
+    }
     case TSMUX_ST_VIDEO_DIRAC:
-      *pos++ = 0x05;
-      *pos++ = 4;
-      *pos++ = 0x64;            /* 'd' */
-      *pos++ = 0x72;            /* 'r' */
-      *pos++ = 0x61;            /* 'a' */
-      *pos++ = 0x63;            /* 'c' */
+      descriptor = gst_mpegts_descriptor_from_registration ("drac", NULL, 0);
+      g_ptr_array_add (pmt_stream->descriptors, descriptor);
       break;
     case TSMUX_ST_PS_AUDIO_AC3:
     {
-      *pos++ = 0x05;
-      *pos++ = 4;
-      *pos++ = 0x41;            /* 'A' */
-      *pos++ = 0x43;            /* 'C' */
-      *pos++ = 0x2D;            /* '-' */
-      *pos++ = 0x33;            /* '3' */
+      guint8 add_info[6];
+      guint8 *pos;
+
+      pos = add_info;
 
       /* audio_stream_descriptor () | ATSC A/52-2001 Annex A
        *
@@ -869,6 +858,11 @@ tsmux_stream_get_es_descrs (TsMuxStream * stream, guint8 * buf, guint16 * len)
 
       *pos++ = 0x00;
 
+      descriptor = gst_mpegts_descriptor_from_registration ("AC-3",
+          add_info, 6);
+
+      g_ptr_array_add (pmt_stream->descriptors, descriptor);
+
       break;
     }
     case TSMUX_ST_PS_AUDIO_DTS:
@@ -877,26 +871,35 @@ tsmux_stream_get_es_descrs (TsMuxStream * stream, guint8 * buf, guint16 * len)
     case TSMUX_ST_PS_AUDIO_LPCM:
       /* FIXME */
       break;
-    case TSMUX_ST_PS_DVB_SUBPICTURE:
-      /* tag */
-      *pos++ = 0x59;
-      /* FIXME empty descriptor for now;
-       * should be provided by upstream in event or so ? */
-      *pos = 0;
-      break;
     case TSMUX_ST_PS_TELETEXT:
-      /* tag */
-      *pos++ = 0x56;
       /* FIXME empty descriptor for now;
        * should be provided by upstream in event or so ? */
-      *pos = 0;
+      descriptor =
+          gst_mpegts_descriptor_from_custom (GST_MTS_DESC_DVB_TELETEXT, 0, 1);
+
+      g_ptr_array_add (pmt_stream->descriptors, descriptor);
       break;
+    case TSMUX_ST_PS_DVB_SUBPICTURE:
+      /* falltrough ...
+       * that should never happen anyway as
+       * dvb subtitles are private data */
+    case TSMUX_ST_PRIVATE_DATA:
+      if (stream->is_dvb_sub) {
+        GST_DEBUG ("Stream language %s", stream->language);
+        /* Simple DVB subtitles with no monitor aspect ratio critical
+           FIXME, how do we make it settable? */
+        /* Default composition page ID */
+        /* Default ancillary_page_id */
+        descriptor =
+            gst_mpegts_descriptor_from_dvb_subtitling (stream->language, 0x10,
+            0x0001, 0x0152);
+
+        g_ptr_array_add (pmt_stream->descriptors, descriptor);
+        break;
+      }
     default:
       break;
   }
-
-  if (len)
-    *len = (pos - buf);
 }
 
 /**

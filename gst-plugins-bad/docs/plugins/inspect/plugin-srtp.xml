@@ -3,7 +3,7 @@
   <description>GStreamer SRTP</description>
   <filename>../../ext/srtp/.libs/libgstsrtp.so</filename>
   <basename>libgstsrtp.so</basename>
-  <version>1.2.3</version>
+  <version>1.4.0</version>
   <license>LGPL</license>
   <source>gst-plugins-bad</source>
   <package>GStreamer</package>
@@ -50,25 +50,25 @@
       <author>Gabriel Millaire &lt;millaire.gabriel@collabora.com&gt;</author>
       <pads>
         <caps>
-          <name>rtcp_sink_%d</name>
+          <name>rtcp_sink_%u</name>
           <direction>sink</direction>
           <presence>request</presence>
           <details>application/x-rtcp</details>
         </caps>
         <caps>
-          <name>rtp_sink_%d</name>
+          <name>rtp_sink_%u</name>
           <direction>sink</direction>
           <presence>request</presence>
           <details>application/x-rtp</details>
         </caps>
         <caps>
-          <name>rtcp_src_%d</name>
+          <name>rtcp_src_%u</name>
           <direction>source</direction>
           <presence>sometimes</presence>
           <details>application/x-srtcp</details>
         </caps>
         <caps>
-          <name>rtp_src_%d</name>
+          <name>rtp_src_%u</name>
           <direction>source</direction>
           <presence>sometimes</presence>
           <details>application/x-srtp</details>

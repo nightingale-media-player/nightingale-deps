@@ -731,7 +731,7 @@
 <ARG>
 <NAME>GstMpeg2enc::bitrate</NAME>
 <TYPE>gint</TYPE>
-<RANGE>[0,10000]</RANGE>
+<RANGE>[0,40000]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Bitrate</NICK>
 <BLURB>Compressed video bitrate (kbps).</BLURB>
@@ -1274,8 +1274,68 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Display</NICK>
-<BLURB>X Display name.</BLURB>
+<BLURB>Display name.</BLURB>
 <DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLImageSink::client-data</NAME>
+<TYPE>gpointer</TYPE>
+<RANGE></RANGE>
+<FLAGS>w</FLAGS>
+<NICK>Client data</NICK>
+<BLURB>Pass data to the draw and reshape callbacks.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLImageSink::client-draw-callback</NAME>
+<TYPE>gpointer</TYPE>
+<RANGE></RANGE>
+<FLAGS>w</FLAGS>
+<NICK>Client draw callback</NICK>
+<BLURB>Define a custom draw callback in a client code.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLImageSink::client-reshape-callback</NAME>
+<TYPE>gpointer</TYPE>
+<RANGE></RANGE>
+<FLAGS>w</FLAGS>
+<NICK>Client reshape callback</NICK>
+<BLURB>Define a custom reshape callback in a client code.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLImageSink::force-aspect-ratio</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Force aspect ratio</NICK>
+<BLURB>When enabled, scaling will respect original aspect ratio.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLImageSink::other-context</NAME>
+<TYPE>GstGLContext*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>External OpenGL context</NICK>
+<BLURB>Give an external OpenGL context with which to share textures.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLImageSink::pixel-aspect-ratio</NAME>
+<TYPE>GstFraction</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Pixel Aspect Ratio</NICK>
+<BLURB>The pixel aspect ratio of the device.</BLURB>
+<DEFAULT></DEFAULT>
 </ARG>
 
 <ARG>
@@ -1579,13 +1639,23 @@
 </ARG>
 
 <ARG>
+<NAME>GstDvbSrc::bandwidth-hz</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>bandwidth-hz</NICK>
+<BLURB>(DVB-T) Bandwidth in Hz.</BLURB>
+<DEFAULT>8000000</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstDvbSrc::bandwidth</NAME>
 <TYPE>GstDvbSrcBandwidth</TYPE>
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>bandwidth</NICK>
-<BLURB>Bandwidth (DVB-T).</BLURB>
-<DEFAULT>7</DEFAULT>
+<BLURB>(DVB-T) Bandwidth. Deprecated.</BLURB>
+<DEFAULT>8</DEFAULT>
 </ARG>
 
 <ARG>
@@ -1594,7 +1664,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>code-rate-hp</NICK>
-<BLURB>High Priority Code Rate (DVB-T, DVB-S and DVB-C).</BLURB>
+<BLURB>(DVB-T, DVB-S/S2 and DVB-C) High priority code rate.</BLURB>
 <DEFAULT>AUTO</DEFAULT>
 </ARG>
 
@@ -1604,7 +1674,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>code-rate-lp</NICK>
-<BLURB>Low Priority Code Rate (DVB-T).</BLURB>
+<BLURB>(DVB-T) Low priority code rate.</BLURB>
 <DEFAULT>1/2</DEFAULT>
 </ARG>
 
@@ -1644,7 +1714,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>guard</NICK>
-<BLURB>Guard Interval (DVB-T).</BLURB>
+<BLURB>(DVB-T) Guard Interval.</BLURB>
 <DEFAULT>16</DEFAULT>
 </ARG>
 
@@ -1654,7 +1724,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>hierarchy</NICK>
-<BLURB>Hierarchy Information (DVB-T).</BLURB>
+<BLURB>(DVB-T) Hierarchy information.</BLURB>
 <DEFAULT>1</DEFAULT>
 </ARG>
 
@@ -1664,7 +1734,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>inversion</NICK>
-<BLURB>Inversion Information (DVB-T and DVB-C).</BLURB>
+<BLURB>(DVB-T and DVB-C) Inversion information.</BLURB>
 <DEFAULT>ON</DEFAULT>
 </ARG>
 
@@ -1674,7 +1744,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>modulation</NICK>
-<BLURB>Modulation (DVB-T and DVB-C).</BLURB>
+<BLURB>(DVB-T and DVB-C) Modulation type.</BLURB>
 <DEFAULT>QAM 16</DEFAULT>
 </ARG>
 
@@ -1714,7 +1784,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>trans-mode</NICK>
-<BLURB>Transmission Mode (DVB-T).</BLURB>
+<BLURB>(DVB-T) Transmission mode.</BLURB>
 <DEFAULT>8K</DEFAULT>
 </ARG>
 
@@ -1734,7 +1804,7 @@
 <RANGE>[0,16]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>The adapter device number</NICK>
-<BLURB>The adapter device number (eg. 0 for adapter0).</BLURB>
+<BLURB>The DVB adapter device number (eg. 0 for adapter0).</BLURB>
 <DEFAULT>0</DEFAULT>
 </ARG>
 
@@ -1744,7 +1814,7 @@
 <RANGE>[G_MAXULONG,7]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>diseqc source</NICK>
-<BLURB>DISEqC selected source (-1 disabled) (DVB-S).</BLURB>
+<BLURB>(DVB-S/S2) Selected DiSEqC source. Only needed if you have a DiSEqC switch. Otherwise leave at -1 (disabled).</BLURB>
 <DEFAULT>-1</DEFAULT>
 </ARG>
 
@@ -1774,7 +1844,7 @@
 <RANGE></RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>polarity</NICK>
-<BLURB>Polarity [vhHV] (DVB-S).</BLURB>
+<BLURB>(DVB-S/S2) Polarity [vhHV] (eg. V for Vertical).</BLURB>
 <DEFAULT>"H"</DEFAULT>
 </ARG>
 
@@ -1784,7 +1854,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>symbol rate</NICK>
-<BLURB>Symbol Rate (DVB-S, DVB-C).</BLURB>
+<BLURB>(DVB-S/S2, DVB-C) Symbol rate in bauds.</BLURB>
 <DEFAULT>0</DEFAULT>
 </ARG>
 
@@ -1816,6 +1886,56 @@
 <NICK>dvb-buffer-size</NICK>
 <BLURB>The kernel buffer size used by the DVB api.</BLURB>
 <DEFAULT>1925120</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDvbSrc::delsys</NAME>
+<TYPE>GstDvbSrcDelsys</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>delsys</NICK>
+<BLURB>Delivery System.</BLURB>
+<DEFAULT>UNDEFINED</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDvbSrc::pilot</NAME>
+<TYPE>GstDvbSrcPilot</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>pilot</NICK>
+<BLURB>Pilot (DVB-S2).</BLURB>
+<DEFAULT>AUTO</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDvbSrc::rolloff</NAME>
+<TYPE>GstDvbSrcRolloff</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>rolloff</NICK>
+<BLURB>Rolloff (DVB-S2).</BLURB>
+<DEFAULT>auto</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDvbSrc::stream-id</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[G_MAXULONG,65535]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>stream-id</NICK>
+<BLURB>(DVB-T2 and DVB-S2 max 255, ISDB max 65535) Stream ID (-1 = disabled).</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstDvbSrc::tuning-timeout</NAME>
+<TYPE>guint64</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Tuning Timeout</NICK>
+<BLURB>Milliseconds to wait before giving up tuning/locking on a signal.</BLURB>
+<DEFAULT>10000000000</DEFAULT>
 </ARG>
 
 <ARG>
@@ -16879,56 +16999,6 @@
 </ARG>
 
 <ARG>
-<NAME>GstCDAudio::device</NAME>
-<TYPE>gchar*</TYPE>
-<RANGE></RANGE>
-<FLAGS>rw</FLAGS>
-<NICK>Device</NICK>
-<BLURB>CDROM device.</BLURB>
-<DEFAULT>NULL</DEFAULT>
-</ARG>
-
-<ARG>
-<NAME>GstCDAudio::volume-bl</NAME>
-<TYPE>gint</TYPE>
-<RANGE>[0,255]</RANGE>
-<FLAGS>rw</FLAGS>
-<NICK>Volume bl</NICK>
-<BLURB>Back left volume.</BLURB>
-<DEFAULT>255</DEFAULT>
-</ARG>
-
-<ARG>
-<NAME>GstCDAudio::volume-br</NAME>
-<TYPE>gint</TYPE>
-<RANGE>[0,255]</RANGE>
-<FLAGS>rw</FLAGS>
-<NICK>Volume br</NICK>
-<BLURB>Back right volume.</BLURB>
-<DEFAULT>255</DEFAULT>
-</ARG>
-
-<ARG>
-<NAME>GstCDAudio::volume-fl</NAME>
-<TYPE>gint</TYPE>
-<RANGE>[0,255]</RANGE>
-<FLAGS>rw</FLAGS>
-<NICK>Volume fl</NICK>
-<BLURB>Front left volume.</BLURB>
-<DEFAULT>255</DEFAULT>
-</ARG>
-
-<ARG>
-<NAME>GstCDAudio::volume-fr</NAME>
-<TYPE>gint</TYPE>
-<RANGE>[0,255]</RANGE>
-<FLAGS>rw</FLAGS>
-<NICK>Volume fr</NICK>
-<BLURB>Front right volume.</BLURB>
-<DEFAULT>255</DEFAULT>
-</ARG>
-
-<ARG>
 <NAME>GstNasSink::host</NAME>
 <TYPE>gchar*</TYPE>
 <RANGE></RANGE>
@@ -17864,7 +17934,7 @@
 <RANGE>[0,16]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>The adapter device number</NICK>
-<BLURB>The adapter device number (eg. 0 for adapter0).</BLURB>
+<BLURB>The DVB adapter device number (eg. 0 for adapter0).</BLURB>
 <DEFAULT>0</DEFAULT>
 </ARG>
 
@@ -17874,8 +17944,8 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>bandwidth</NICK>
-<BLURB>Bandwidth (DVB-T).</BLURB>
-<DEFAULT>7</DEFAULT>
+<BLURB>(DVB-T) Bandwidth. Deprecated.</BLURB>
+<DEFAULT>8</DEFAULT>
 </ARG>
 
 <ARG>
@@ -17884,7 +17954,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>code-rate-hp</NICK>
-<BLURB>High Priority Code Rate (DVB-T, DVB-S and DVB-C).</BLURB>
+<BLURB>(DVB-T, DVB-S/S2 and DVB-C) High priority code rate.</BLURB>
 <DEFAULT>AUTO</DEFAULT>
 </ARG>
 
@@ -17894,7 +17964,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>code-rate-lp</NICK>
-<BLURB>Low Priority Code Rate (DVB-T).</BLURB>
+<BLURB>(DVB-T) Low priority code rate.</BLURB>
 <DEFAULT>1/2</DEFAULT>
 </ARG>
 
@@ -17904,7 +17974,7 @@
 <RANGE>[G_MAXULONG,7]</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>diseqc source</NICK>
-<BLURB>DISEqC selected source (-1 disabled) (DVB-S).</BLURB>
+<BLURB>(DVB-S/S2) Selected DiSEqC source. Only needed if you have a DiSEqC switch. Otherwise leave at -1 (disabled).</BLURB>
 <DEFAULT>-1</DEFAULT>
 </ARG>
 
@@ -17934,7 +18004,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>guard</NICK>
-<BLURB>Guard Interval (DVB-T).</BLURB>
+<BLURB>(DVB-T) Guard Interval.</BLURB>
 <DEFAULT>16</DEFAULT>
 </ARG>
 
@@ -17944,7 +18014,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>hierarchy</NICK>
-<BLURB>Hierarchy Information (DVB-T).</BLURB>
+<BLURB>(DVB-T) Hierarchy information.</BLURB>
 <DEFAULT>1</DEFAULT>
 </ARG>
 
@@ -17954,7 +18024,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>inversion</NICK>
-<BLURB>Inversion Information (DVB-T and DVB-C).</BLURB>
+<BLURB>(DVB-T and DVB-C) Inversion information.</BLURB>
 <DEFAULT>ON</DEFAULT>
 </ARG>
 
@@ -17964,7 +18034,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>modulation</NICK>
-<BLURB>Modulation (DVB-T and DVB-C).</BLURB>
+<BLURB>(DVB-T and DVB-C) Modulation type.</BLURB>
 <DEFAULT>QAM 16</DEFAULT>
 </ARG>
 
@@ -17974,7 +18044,7 @@
 <RANGE></RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>polarity</NICK>
-<BLURB>Polarity [vhHV] (DVB-S).</BLURB>
+<BLURB>(DVB-S/S2) Polarity [vhHV] (eg. V for Vertical).</BLURB>
 <DEFAULT>"H"</DEFAULT>
 </ARG>
 
@@ -18004,7 +18074,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>symbol rate</NICK>
-<BLURB>Symbol Rate (DVB-S, DVB-C).</BLURB>
+<BLURB>(DVB-S/S2, DVB-C) Symbol rate in bauds.</BLURB>
 <DEFAULT>0</DEFAULT>
 </ARG>
 
@@ -18014,8 +18084,68 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>trans-mode</NICK>
-<BLURB>Transmission Mode (DVB-T).</BLURB>
+<BLURB>(DVB-T) Transmission mode.</BLURB>
 <DEFAULT>8K</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>DvbBaseBin::bandwidth-hz</NAME>
+<TYPE>guint</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>bandwidth-hz</NICK>
+<BLURB>(DVB-T) Bandwidth in Hz.</BLURB>
+<DEFAULT>8000000</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>DvbBaseBin::delsys</NAME>
+<TYPE>GstDvbSrcDelsys</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>delsys</NICK>
+<BLURB>Delivery System.</BLURB>
+<DEFAULT>UNDEFINED</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>DvbBaseBin::pilot</NAME>
+<TYPE>GstDvbSrcPilot</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>pilot</NICK>
+<BLURB>Pilot (DVB-S2).</BLURB>
+<DEFAULT>AUTO</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>DvbBaseBin::rolloff</NAME>
+<TYPE>GstDvbSrcRolloff</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>rolloff</NICK>
+<BLURB>Rolloff (DVB-S2).</BLURB>
+<DEFAULT>auto</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>DvbBaseBin::stream-id</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[G_MAXULONG,65535]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>stream-id</NICK>
+<BLURB>(DVB-T2 and DVB-S2 max 255, ISDB max 65535) Stream ID (-1 = disabled).</BLURB>
+<DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>DvbBaseBin::tuning-timeout</NAME>
+<TYPE>guint64</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Tuning Timeout</NICK>
+<BLURB>Milliseconds to wait before giving up tuning/locking on a signal.</BLURB>
+<DEFAULT>10000000000</DEFAULT>
 </ARG>
 
 <ARG>
@@ -22371,6 +22501,16 @@
 <NICK>packet alignment</NICK>
 <BLURB>Number of packets per buffer (padded with dummy packets on EOS) (-1 = auto, 0 = all available packets).</BLURB>
 <DEFAULT>-1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>MpegTsMux::si-interval</NAME>
+<TYPE>guint</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>SI interval</NICK>
+<BLURB>Set the interval (in ticks of the 90kHz clock) for writing out the ServiceInformation tables.</BLURB>
+<DEFAULT>9000</DEFAULT>
 </ARG>
 
 <ARG>
@@ -26800,7 +26940,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>splash (Y)</NICK>
 <BLURB>make a big splash in the center.</BLURB>
-<DEFAULT>7.75037e-304</DEFAULT>
+<DEFAULT>0</DEFAULT>
 </ARG>
 
 <ARG>
@@ -26810,7 +26950,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>splash (X)</NICK>
 <BLURB>make a big splash in the center.</BLURB>
-<DEFAULT>0</DEFAULT>
+<DEFAULT>7.7486e-304</DEFAULT>
 </ARG>
 
 <ARG>
@@ -26840,7 +26980,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>ratiox</NICK>
 <BLURB>x-ratio.</BLURB>
-<DEFAULT>1.24823e-315</DEFAULT>
+<DEFAULT>0</DEFAULT>
 </ARG>
 
 <ARG>
@@ -26860,7 +27000,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>DelayTime</NICK>
 <BLURB>the delay time.</BLURB>
-<DEFAULT>1.96009e-316</DEFAULT>
+<DEFAULT>0</DEFAULT>
 </ARG>
 
 <ARG>
@@ -26910,7 +27050,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>Color (R)</NICK>
 <BLURB>the color of the image.</BLURB>
-<DEFAULT>7.05334e-30</DEFAULT>
+<DEFAULT>0</DEFAULT>
 </ARG>
 
 <ARG>
@@ -27240,7 +27380,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>lredscale</NICK>
 <BLURB>multiplier for downscaling non-edge brightness.</BLURB>
-<DEFAULT>6.27686e-311</DEFAULT>
+<DEFAULT>5.48413e-322</DEFAULT>
 </ARG>
 
 <ARG>
@@ -27250,7 +27390,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>lthresh</NICK>
 <BLURB>threshold for edge lightening.</BLURB>
-<DEFAULT>0</DEFAULT>
+<DEFAULT>8.00386e-321</DEFAULT>
 </ARG>
 
 <ARG>
@@ -27260,7 +27400,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>lupscale</NICK>
 <BLURB>multiplier for upscaling edge brightness.</BLURB>
-<DEFAULT>0</DEFAULT>
+<DEFAULT>7.93469e-321</DEFAULT>
 </ARG>
 
 <ARG>
@@ -27430,7 +27570,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>blend</NICK>
 <BLURB>blend factor.</BLURB>
-<DEFAULT>4.63015e-299</DEFAULT>
+<DEFAULT>0</DEFAULT>
 </ARG>
 
 <ARG>
@@ -27440,7 +27580,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>fader</NICK>
 <BLURB>the fader position.</BLURB>
-<DEFAULT>7.75038e-304</DEFAULT>
+<DEFAULT>0</DEFAULT>
 </ARG>
 
 <ARG>
@@ -27620,7 +27760,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>HSync</NICK>
 <BLURB>the hsync offset.</BLURB>
-<DEFAULT>1.95806e-316</DEFAULT>
+<DEFAULT>2.11543e-316</DEFAULT>
 </ARG>
 
 <ARG>
@@ -46790,7 +46930,7 @@
 <FLAGS>rw</FLAGS>
 <NICK>Size of the shm area</NICK>
 <BLURB>Size of the shared memory area.</BLURB>
-<DEFAULT>262144</DEFAULT>
+<DEFAULT>67108864</DEFAULT>
 </ARG>
 
 <ARG>
@@ -46799,7 +46939,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Path to the control socket</NICK>
-<BLURB>The path to the control socket used to control the shared memory transport.</BLURB>
+<BLURB>The path to the control socket used to control the shared memory transport. This may be modified during the NULL->READY transition.</BLURB>
 <DEFAULT>NULL</DEFAULT>
 </ARG>
 
@@ -47599,7 +47739,7 @@
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>angle</NICK>
-<BLURB>Angle at which the arc starts in radians.</BLURB>
+<BLURB>Angle by which the picture is rotated, in radians.</BLURB>
 <DEFAULT>0</DEFAULT>
 </ARG>
 
@@ -48266,11 +48406,11 @@
 <ARG>
 <NAME>GstHLSDemux::fragments-cache</NAME>
 <TYPE>guint</TYPE>
-<RANGE>>= 2</RANGE>
+<RANGE>>= 1</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Fragments cache</NICK>
-<BLURB>Number of fragments needed to be cached to start playing.</BLURB>
-<DEFAULT>3</DEFAULT>
+<BLURB>Number of fragments needed to be cached to start playing (DEPRECATED: Has no effect since 1.3.1).</BLURB>
+<DEFAULT>1</DEFAULT>
 </ARG>
 
 <ARG>
@@ -58744,6 +58884,26 @@
 </ARG>
 
 <ARG>
+<NAME>GstCurlFtpSink::create-tmp-file</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Enable or disable temporary file transfer</NICK>
+<BLURB>Use a temporary file name when uploading a a file. When the transfer is complete,            this temporary file is renamed to the final file name. This is useful for ensuring           that remote systems do not read a partially uploaded file.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstCurlFtpSink::temp-file-name</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Creates a temporary file name with date and time</NICK>
+<BLURB>Filename pattern to use when generating a temporary filename for uploads.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
 <NAME>GstCurlFileSink::create-dirs</NAME>
 <TYPE>gboolean</TYPE>
 <RANGE></RANGE>
@@ -58951,6 +59111,16 @@
 <NICK>Wayland Display</NICK>
 <BLURB>Wayland  Display handle created by the application .</BLURB>
 <DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstWaylandSink::display</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Wayland Display name</NICK>
+<BLURB>Wayland display name to connect to, if not supplied via the GstContext.</BLURB>
+<DEFAULT>NULL</DEFAULT>
 </ARG>
 
 <ARG>
@@ -59456,10 +59626,10 @@
 <ARG>
 <NAME>GstWatchdog::timeout</NAME>
 <TYPE>gint</TYPE>
-<RANGE>>= 1</RANGE>
+<RANGE>>= 0</RANGE>
 <FLAGS>rwx</FLAGS>
 <NICK>Timeout</NICK>
-<BLURB>Timeout (in ms) after which an element error is sent to the bus if no buffers are received.</BLURB>
+<BLURB>Timeout (in ms) after which an element error is sent to the bus if no buffers are received. 0 means disabled.</BLURB>
 <DEFAULT>1000</DEFAULT>
 </ARG>
 
@@ -60219,7 +60389,7 @@
 <RANGE>>= 2</RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Maximum buffering time</NICK>
-<BLURB>Maximum number of seconds of buffer accumulated during playback.</BLURB>
+<BLURB>Maximum number of seconds of buffer accumulated during playback(deprecated).</BLURB>
 <DEFAULT>30</DEFAULT>
 </ARG>
 
@@ -60473,7 +60643,7 @@ Gestures in the defined region of interest will emit messages.</BLURB>
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Max queue size in buffers</NICK>
-<BLURB>Maximum buffers that can be stored in each internal stream queue (0 = infinite).</BLURB>
+<BLURB>Maximum buffers that can be stored in each internal stream queue (0 = infinite) (deprecated).</BLURB>
 <DEFAULT>0</DEFAULT>
 </ARG>
 
@@ -66873,7 +67043,7 @@ Gestures in the defined region of interest will emit messages.</BLURB>
 <RANGE></RANGE>
 <FLAGS>rw</FLAGS>
 <NICK>Key</NICK>
-<BLURB>Master key (of 30 bytes).</BLURB>
+<BLURB>Master key (minimum of 30 and maximum of 46 bytes).</BLURB>
 <DEFAULT></DEFAULT>
 </ARG>
 
@@ -66925,6 +67095,26 @@ Gestures in the defined region of interest will emit messages.</BLURB>
 <NICK>RTP Cipher</NICK>
 <BLURB>RTP Cipher.</BLURB>
 <DEFAULT>GST_SRTP_CIPHER_AES_128_ICM</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSrtpEnc::replay-window-size</NAME>
+<TYPE>guint</TYPE>
+<RANGE>[64,32768]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Replay window size</NICK>
+<BLURB>Size of the replay protection window.</BLURB>
+<DEFAULT>128</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSrtpEnc::allow-repeat-tx</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Allow repeat packets transmission</NICK>
+<BLURB>Whether retransmissions of packets with the same sequence number are allowed(Note that such repeated transmissions must have the same RTP payload, or a severe security weakness is introduced!).</BLURB>
+<DEFAULT>FALSE</DEFAULT>
 </ARG>
 
 <ARG>
@@ -67085,5 +67275,603 @@ Gestures in the defined region of interest will emit messages.</BLURB>
 <NICK>Stereo matching method to use</NICK>
 <BLURB>Stereo matching method to use.</BLURB>
 <DEFAULT>Semi-global block matching algorithm</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstPerspective::matrix</NAME>
+<TYPE>GValueArray*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Matrix</NICK>
+<BLURB>Matrix of dimension 3x3 to use in the 2D transform, passed as an array of 9 elements in row-major order.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMarkDetect::bottom-offset</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Bottom Offset</NICK>
+<BLURB>The offset from the bottom border where the pattern starts.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMarkDetect::left-offset</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Left Offset</NICK>
+<BLURB>The offset from the left border where the pattern starts.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMarkDetect::message</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Message</NICK>
+<BLURB>Post detected data as bus messages.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMarkDetect::pattern-center</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Pattern center</NICK>
+<BLURB>The center of the black/white separation (0.0 = lowest, 1.0 highest).</BLURB>
+<DEFAULT>0.5</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMarkDetect::pattern-count</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Pattern count</NICK>
+<BLURB>The number of pattern markers.</BLURB>
+<DEFAULT>4</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMarkDetect::pattern-data-count</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Pattern data count</NICK>
+<BLURB>The number of extra data pattern markers.</BLURB>
+<DEFAULT>5</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMarkDetect::pattern-height</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Pattern height</NICK>
+<BLURB>The height of the pattern markers.</BLURB>
+<DEFAULT>16</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMarkDetect::pattern-sensitivity</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Pattern sensitivity</NICK>
+<BLURB>The sensitivity around the center for detecting the markers (0.0 = lowest, 1.0 highest).</BLURB>
+<DEFAULT>0.3</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMarkDetect::pattern-width</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Pattern width</NICK>
+<BLURB>The width of the pattern markers.</BLURB>
+<DEFAULT>4</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMark::bottom-offset</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Bottom Offset</NICK>
+<BLURB>The offset from the bottom border where the pattern starts.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMark::enabled</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Enabled</NICK>
+<BLURB>Enable or disable the filter.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMark::left-offset</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Left Offset</NICK>
+<BLURB>The offset from the left border where the pattern starts.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMark::pattern-count</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 0</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Pattern count</NICK>
+<BLURB>The number of pattern markers.</BLURB>
+<DEFAULT>4</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMark::pattern-data</NAME>
+<TYPE>guint64</TYPE>
+<RANGE></RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Pattern data</NICK>
+<BLURB>The extra data pattern markers.</BLURB>
+<DEFAULT>10</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMark::pattern-data-count</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,64]</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Pattern data count</NICK>
+<BLURB>The number of extra data pattern markers.</BLURB>
+<DEFAULT>5</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMark::pattern-height</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Pattern height</NICK>
+<BLURB>The height of the pattern markers.</BLURB>
+<DEFAULT>16</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstSimpleVideoMark::pattern-width</NAME>
+<TYPE>gint</TYPE>
+<RANGE>>= 1</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>Pattern width</NICK>
+<BLURB>The width of the pattern markers.</BLURB>
+<DEFAULT>4</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstH265Parse::config-interval</NAME>
+<TYPE>guint</TYPE>
+<RANGE><= 3600</RANGE>
+<FLAGS>rwx</FLAGS>
+<NICK>VPS SPS PPS Send Interval</NICK>
+<BLURB>Send VPS, SPS and PPS Insertion Interval in seconds (sprop parameter sets will be multiplexed in the data stream when detected.) (0 = disabled).</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstCurlSftpSink::create-dirs</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Create missing directories</NICK>
+<BLURB>Attempt to create missing directories.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterShader::location</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>File Location</NICK>
+<BLURB>Location of the GLSL file to load.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterShader::preset</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Preset File Location</NICK>
+<BLURB>Location of the shader uniform variables preset file.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterShader::vars</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>w</FLAGS>
+<NICK>Uniform variables</NICK>
+<BLURB>Set the shader uniform variables.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::angle-png</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[-90,90]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>choose angle in axis to choosen between -90 and 90</NICK>
+<BLURB>choose angle in axis to choosen between -90 and 90.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::angle-video</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[-90,90]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>choose angle in axis to choosen between -90 and 90</NICK>
+<BLURB>choose angle in axis to choosen between -90 and 90.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::location</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Location of the image</NICK>
+<BLURB>Location of the image.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::proportion-png</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,100]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Relative size of overlay image, in percents</NICK>
+<BLURB>Relative size of iverlay image, in percents.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::proportion-video</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,100]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Relative size of overlay video, in percents</NICK>
+<BLURB>Relative size of iverlay video, in percents.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::ratio-video</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,3]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>choose ratio video between 0 and 3
+ 			0 : Default ratio
+			1 : 4 / 3
+			2 : 16 / 9
+			3 : 16 / 10</NICK>
+<BLURB>choose ratio video between 0 and 3
+ 			0 : Default ratio
+			1 : 4 / 3
+			2 : 16 / 9
+			3 : 16 / 10.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::rotate-png</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,3]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>choose rotation axis for the moment only Y axis is implemented</NICK>
+<BLURB>choose rotation axis for the moment only Y axis is implemented.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::rotate-video</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,3]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>choose rotation axis for the moment only Y axis is implemented</NICK>
+<BLURB>choose rotation axis for the moment only Y axis is implemented.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::video-top</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Video-top</NICK>
+<BLURB>Video is over png image.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::xpos-png</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,100]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>X position of overlay image in percents</NICK>
+<BLURB>X position of overlay image in percents.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::xpos-video</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,100]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>X position of overlay video in percents</NICK>
+<BLURB>X position of overlay video in percents.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::ypos-png</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,100]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Y position of overlay image in percents</NICK>
+<BLURB>Y position of overlay image in percents.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLOverlay::ypos-video</NAME>
+<TYPE>gint</TYPE>
+<RANGE>[0,100]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Y position of overlay video in percents</NICK>
+<BLURB>Y position of overlay video in percents.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterSobel::invert</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Invert the colors</NICK>
+<BLURB>Invert colors to get dark edges on bright background.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterReflectedScreen::active-graphic-mode</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Activate graphic mode</NICK>
+<BLURB>Allow user to activate stencil buffer and blending.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterReflectedScreen::aspect</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[1,100]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Aspect</NICK>
+<BLURB>Field of view in the x direction.</BLURB>
+<DEFAULT>1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterReflectedScreen::fovy</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[0,180]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Fovy</NICK>
+<BLURB>Field of view angle in degrees.</BLURB>
+<DEFAULT>60</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterReflectedScreen::separated-screen</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Create a separation space</NICK>
+<BLURB>Allow to insert a space between the two screen. Will cancel 'show floor' if active. Value are TRUE or FALSE(default).</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterReflectedScreen::show-floor</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Show the support</NICK>
+<BLURB>Allow the user to show the supportive floor. Will cancel 'separated screen' if active. Value are TRUE(default) or FALSE.</BLURB>
+<DEFAULT>TRUE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterReflectedScreen::zfar</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[0,1000]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zfar</NICK>
+<BLURB>Specifies the distance from the viewer to the far clipping plane.</BLURB>
+<DEFAULT>100</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterReflectedScreen::znear</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[1e-10,100]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Znear</NICK>
+<BLURB>Specifies the distance from the viewer to the near clipping plane.</BLURB>
+<DEFAULT>0.1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterCube::aspect</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[0,100]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Aspect</NICK>
+<BLURB>Field of view in the x direction.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterCube::blue</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Blue</NICK>
+<BLURB>Background blue color.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterCube::fovy</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[0,180]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Fovy</NICK>
+<BLURB>Field of view angle in degrees.</BLURB>
+<DEFAULT>45</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterCube::green</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Green</NICK>
+<BLURB>Background reen color.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterCube::red</NAME>
+<TYPE>gfloat</TYPE>
+<RANGE>[0,1]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Red</NICK>
+<BLURB>Background red color.</BLURB>
+<DEFAULT>0</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterCube::zfar</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[0,1000]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Zfar</NICK>
+<BLURB>Specifies the distance from the viewer to the far clipping plane.</BLURB>
+<DEFAULT>100</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterCube::znear</NAME>
+<TYPE>gdouble</TYPE>
+<RANGE>[0,100]</RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Znear</NICK>
+<BLURB>Specifies the distance from the viewer to the near clipping plane.</BLURB>
+<DEFAULT>0.1</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterApp::client-data</NAME>
+<TYPE>gpointer</TYPE>
+<RANGE></RANGE>
+<FLAGS>w</FLAGS>
+<NICK>Client data</NICK>
+<BLURB>Pass data to the draw and reshape callbacks.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterApp::client-draw-callback</NAME>
+<TYPE>gpointer</TYPE>
+<RANGE></RANGE>
+<FLAGS>w</FLAGS>
+<NICK>Client draw callback</NICK>
+<BLURB>Define a custom draw callback in a client code.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLFilterApp::client-reshape-callback</NAME>
+<TYPE>gpointer</TYPE>
+<RANGE></RANGE>
+<FLAGS>w</FLAGS>
+<NICK>Client reshape callback</NICK>
+<BLURB>Define a custom reshape callback in a client code.</BLURB>
+<DEFAULT></DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLEffects::effect</NAME>
+<TYPE>GstGLEffectsEffect</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Effect</NICK>
+<BLURB>Select which effect apply to GL video texture.</BLURB>
+<DEFAULT>Do nothing Effect</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLEffects::hswap</NAME>
+<TYPE>gboolean</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Horizontal Swap</NICK>
+<BLURB>Switch video texture left to right, useful with webcams.</BLURB>
+<DEFAULT>FALSE</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLDifferenceMatte::location</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Background image location</NICK>
+<BLURB>Background image location.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstGLBumper::location</NAME>
+<TYPE>gchar*</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Normal map location</NICK>
+<BLURB>Normal map location.</BLURB>
+<DEFAULT>NULL</DEFAULT>
+</ARG>
+
+<ARG>
+<NAME>GstCompositor::background</NAME>
+<TYPE>GstCompositorBackground</TYPE>
+<RANGE></RANGE>
+<FLAGS>rw</FLAGS>
+<NICK>Background</NICK>
+<BLURB>Background type.</BLURB>
+<DEFAULT>Checker pattern</DEFAULT>
 </ARG>
 

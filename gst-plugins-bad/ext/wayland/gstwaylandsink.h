@@ -22,25 +22,15 @@
 #ifndef __GST_WAYLAND_VIDEO_SINK_H__
 #define __GST_WAYLAND_VIDEO_SINK_H__
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <sys/ioctl.h>
-#include <sys/mman.h>
-#include <fcntl.h>
-#include <assert.h>
-#include <unistd.h>
-
 #include <gst/gst.h>
 #include <gst/video/video.h>
-#include <gst/video/gstvideosink.h>
-#include <gst/video/gstvideometa.h>
 
 #include <wayland-client.h>
+
+#include "wldisplay.h"
+#include "wlwindow.h"
+
+G_BEGIN_DECLS
 
 #define GST_TYPE_WAYLAND_SINK \
 	    (gst_wayland_sink_get_type())
@@ -55,55 +45,26 @@
 #define GST_WAYLAND_SINK_GET_CLASS(inst) \
         (G_TYPE_INSTANCE_GET_CLASS ((inst), GST_TYPE_WAYLAND_SINK, GstWaylandSinkClass))
 
-struct  display
-{
-  struct wl_display *display;
-  struct wl_registry *registry;
-  struct wl_compositor *compositor;
-  struct wl_shell *shell;
-  struct wl_shm *shm;
-  uint32_t formats;
-};
-
-struct window
-{
-  struct display *display;
-  int width, height;
-  struct wl_surface *surface;
-  struct wl_shell_surface *shell_surface;
-  struct wl_buffer *buffer;
-  struct wl_callback *callback;
-  guint redraw_pending :1;
-
-};
-
-struct shm_pool {
-  struct wl_shm_pool *pool;
-  size_t size;
-  size_t used;
-  void *data;
-};
-
 typedef struct _GstWaylandSink GstWaylandSink;
 typedef struct _GstWaylandSinkClass GstWaylandSinkClass;
-
-#include "waylandpool.h"
 
 struct _GstWaylandSink
 {
   GstVideoSink parent;
 
-  struct display *display;
-  struct window *window;
-  struct shm_pool *shm_pool;
-
+  GMutex display_lock;
+  GstWlDisplay *display;
+  GstWlWindow *window;
   GstBufferPool *pool;
 
-  GMutex wayland_lock;
+  gboolean video_info_changed;
+  GstVideoInfo video_info;
 
-  gint video_width;
-  gint video_height;
-  uint32_t format;
+  gchar *display_name;
+
+  gboolean redraw_pending;
+  GMutex render_lock;
+  GstBuffer *last_buffer;
 };
 
 struct _GstWaylandSinkClass

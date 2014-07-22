@@ -58,6 +58,15 @@
 /* Defined if gcov is enabled to force a rebuild due to config.h changing */
 #undef GST_GCOV_ENABLED
 
+/* EGL module name */
+#undef GST_GL_LIBEGL_MODULE_NAME
+
+/* GLES2 module name */
+#undef GST_GL_LIBGLESV2_MODULE_NAME
+
+/* OpenGL module name */
+#undef GST_GL_LIBGL_MODULE_NAME
+
 /* Defined when registry scanning through fork is unsafe */
 #undef GST_HAVE_UNSAFE_FORK
 
@@ -77,7 +86,7 @@
 #define GST_PACKAGE_ORIGIN "Unknown package origin"
 
 /* GStreamer package release date/time for plugins as YYYY-MM-DD */
-#define GST_PACKAGE_RELEASE_DATETIME "2014-02-08"
+#define GST_PACKAGE_RELEASE_DATETIME "2014-07-19"
 
 /* Define if static plugins should be built */
 #undef GST_PLUGIN_BUILD_STATIC
@@ -100,14 +109,14 @@
 /* Define to enable AVC Video Services (used by avcsrc). */
 #undef HAVE_AVC
 
+/* Define if building with AVFoundation */
+#undef HAVE_AVFOUNDATION
+
 /* Define to enable Bluez (used by bluez). */
 #undef HAVE_BLUEZ
 
 /* Define to enable bz2 library (used by bz2). */
 #undef HAVE_BZ2
-
-/* Define to enable cdaudio (used by cdaudio). */
-#undef HAVE_CDAUDIO
 
 /* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
    CoreFoundation framework. */
@@ -190,9 +199,6 @@
 /* Define to enable directfb (used by dfbvideosink ). */
 #undef HAVE_DIRECTFB
 
-/* Define to enable DirectShow plug-in (used by winks). */
-#undef HAVE_DIRECTSHOW
-
 /* Define to enable DirectSound (used by directsoundsrc). */
 #undef HAVE_DIRECTSOUND
 
@@ -207,9 +213,6 @@
 
 /* Define to enable DVB Source (used by dvb). */
 #undef HAVE_DVB
-
-/* Define to enable eglgles sink (used by eglgles). */
-#undef HAVE_EGLGLES
 
 /* Define to enable building of experimental plug-ins. */
 #undef HAVE_EXPERIMENTAL
@@ -247,11 +250,29 @@
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
 
+/* Define to enable gl elements (used by gl). */
+#undef HAVE_GL
+
+/* Define to 1 if the system has the type `GLchar'. */
+#undef HAVE_GLCHAR
+
+/* Define to 1 if the system has the type `GLeglImageOES'. */
+#undef HAVE_GLEGLIMAGEOES
+
+/* Define to 1 if the system has the type `GLintptr'. */
+#undef HAVE_GLINTPTR
+
+/* Define to 1 if the system has the type `GLsizeiptr'. */
+#undef HAVE_GLSIZEIPTR
+
 /* Define to enable gme decoder (used by gme). */
 #undef HAVE_GME
 
 /* Define to 1 if you have the `gmtime_r' function. */
 #undef HAVE_GMTIME_R
+
+/* Use graphene */
+#undef HAVE_GRAPHENE
 
 /* Define to enable GSettings plugin (used by gsettings). */
 #undef HAVE_GSETTINGS
@@ -277,11 +298,17 @@
 /* Define if building for Apple iOS */
 #undef HAVE_IOS
 
+/* Use libjpeg */
+#undef HAVE_JPEG
+
 /* Define to enable Kate (used by kate). */
 #undef HAVE_KATE
 
 /* Define to enable ladspa (used by ladspa). */
 #undef HAVE_LADSPA
+
+/* Define if libgcrypt is available */
+#undef HAVE_LIBGCRYPT
 
 /* Define if gme 0.5.6 or newer is available */
 #undef HAVE_LIBGME_ACCURACY
@@ -298,6 +325,9 @@
 /* Define if libusb 1.x is installed */
 #undef HAVE_LIBUSB
 
+/* Define to enable libvisual visualization library (used by libvisual). */
+#undef HAVE_LIBVISUAL
+
 /* Define to enable Linear Systems SDI plugin (used by linsys). */
 #undef HAVE_LINSYS
 
@@ -309,9 +339,6 @@
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
-
-/* Define to enable Multi Format Codec (used by mfc). */
-#undef HAVE_MFC
 
 /* Define to enable libmimic library (used by mimic). */
 #undef HAVE_MIMIC
@@ -355,6 +382,9 @@
 /* Define to 1 if you have the <netinet/tcp.h> header file. */
 #undef HAVE_NETINET_TCP_H
 
+/* Define if nettle is available */
+#undef HAVE_NETTLE
+
 /* Define to enable ofa plugins (used by ofa). */
 #undef HAVE_OFA
 
@@ -367,8 +397,17 @@
 /* Define to 1 if you have the <opencv2/highgui/highgui_c.h> header file. */
 #undef HAVE_OPENCV2_HIGHGUI_HIGHGUI_C_H
 
+/* Define to enable openexr library (used by openexr). */
+#undef HAVE_OPENEXR
+
 /* Define to enable openjpeg library (used by openjpeg). */
 #undef HAVE_OPENJPEG
+
+/* Define if OpenJPEG 1 is used */
+#undef HAVE_OPENJPEG_1
+
+/* Define to enable openni2 library (used by openni2). */
+#undef HAVE_OPENNI2
 
 /* Define to enable OpenSL ES (used by opensl). */
 #undef HAVE_OPENSLES
@@ -384,6 +423,9 @@
 
 /* Define to enable OSX video (used by osxvideosrc). */
 #undef HAVE_OSX_VIDEO
+
+/* Use libpng */
+#undef HAVE_PNG
 
 /* Define to 1 if you have the <pthread.h> header file. */
 #undef HAVE_PTHREAD_H
@@ -424,7 +466,7 @@
 /* Define to enable Smooth Streaming plug-in (used by smoothstreaming). */
 #undef HAVE_SMOOTHSTREAMING
 
-/* Define to enable sndfile plug-in (used by sfsrc sfsink). */
+/* Define to enable sndfile plug-in (used by sfdec sfenc). */
 #undef HAVE_SNDFILE
 
 /* Define to enable sndio audio (used by sndio). */
@@ -444,6 +486,9 @@
 
 /* Define to enable srtp library (used by srtp). */
 #undef HAVE_SRTP
+
+/* Define if libssh2 is available */
+#undef HAVE_SSH2
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -499,6 +544,9 @@
 /* Define to enable VDPAU (used by vdpau). */
 #undef HAVE_VDPAU
 
+/* Define if building with VideoToolbox */
+#undef HAVE_VIDEOTOOLBOX
+
 /* Define to enable vo-aacenc library (used by vo-aacenc). */
 #undef HAVE_VOAACENC
 
@@ -532,6 +580,9 @@
 /* Define to 1 if you have the <wininet.h> header file. */
 #define HAVE_WININET_H 1
 
+/* Define to enable Winks plug-in (used by winks). */
+#undef HAVE_WINKS
+
 /* Define to enable winscreencap plug-in (used by winscreencap). */
 #undef HAVE_WINSCREENCAP
 
@@ -560,6 +611,9 @@
 #  define LIBDIR PREFIX "\\lib"
 #endif
 
+/* directory in which the detected libvisual's plugins are located */
+#undef LIBVISUAL_PLUGINSBASEDIR
+
 /* gettext locale dir */
 #define LOCALEDIR PREFIX "\\share\\locale"
 
@@ -583,7 +637,7 @@
 #define PACKAGE_NAME "GStreamer Bad Plug-ins"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "GStreamer Bad Plug-ins 1.2.3"
+#define PACKAGE_STRING "GStreamer Bad Plug-ins 1.4.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "gst-plugins-bad"
@@ -592,7 +646,7 @@
 #undef PACKAGE_URL
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.2.3"
+#define PACKAGE_VERSION "1.4.0"
 
 /* directory where plugins are located */
 #ifdef _DEBUG
@@ -625,17 +679,14 @@
 /* Define location of timidity.cfg */
 #undef TIMIDITY_CFG
 
-/* Use Mali FB EGL window system */
+/* Use Mali FB EGL platform */
 #undef USE_EGL_MALI_FB
 
-/* Use RPi EGL window system */
+/* Use RPi platform */
 #undef USE_EGL_RPI
 
-/* Use X11 EGL window system */
-#undef USE_EGL_X11
-
 /* Version number of package */
-#define VERSION "1.2.3"
+#define VERSION "1.4.0"
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */

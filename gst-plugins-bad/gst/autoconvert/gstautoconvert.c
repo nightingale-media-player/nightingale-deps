@@ -91,7 +91,7 @@ static void gst_auto_convert_get_property (GObject * object,
 static void gst_auto_convert_dispose (GObject * object);
 
 static GstElement *gst_auto_convert_get_subelement (GstAutoConvert *
-    autoconvert, gboolean query_only);
+    autoconvert);
 static GstPad *gst_auto_convert_get_internal_sinkpad (GstAutoConvert *
     autoconvert);
 static GstPad *gst_auto_convert_get_internal_srcpad (GstAutoConvert *
@@ -211,19 +211,19 @@ gst_auto_convert_dispose (GObject * object)
 {
   GstAutoConvert *autoconvert = GST_AUTO_CONVERT (object);
 
-  GST_AUTOCONVERT_LOCK (autoconvert);
-  if (autoconvert->current_subelement) {
-    gst_object_unref (autoconvert->current_subelement);
-    autoconvert->current_subelement = NULL;
-    autoconvert->current_internal_sinkpad = NULL;
-    autoconvert->current_internal_srcpad = NULL;
-  }
+  g_clear_object (&autoconvert->current_subelement);
+  g_clear_object (&autoconvert->current_internal_sinkpad);
+  g_clear_object (&autoconvert->current_internal_srcpad);
 
-  if (autoconvert->factories) {
-    gst_plugin_feature_list_free (autoconvert->factories);
-    autoconvert->factories = NULL;
+  for (;;) {
+    GList *factories = g_atomic_pointer_get (&autoconvert->factories);
+
+    if (g_atomic_pointer_compare_and_exchange (&autoconvert->factories,
+            factories, NULL)) {
+      gst_plugin_feature_list_free (factories);
+      break;
+    }
   }
-  GST_AUTOCONVERT_UNLOCK (autoconvert);
 
   G_OBJECT_CLASS (gst_auto_convert_parent_class)->dispose (object);
 }
@@ -239,15 +239,18 @@ gst_auto_convert_set_property (GObject * object,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
     case PROP_FACTORIES:
-      GST_AUTOCONVERT_LOCK (autoconvert);
-      if (autoconvert->factories == NULL) {
+      if (g_atomic_pointer_get (&autoconvert->factories) == NULL) {
         GList *factories = g_value_get_pointer (value);
-        autoconvert->factories = g_list_copy (factories);
-        g_list_foreach (autoconvert->factories, (GFunc) g_object_ref, NULL);
-      } else
+        factories = g_list_copy (factories);
+        if (g_atomic_pointer_compare_and_exchange (&autoconvert->factories,
+                NULL, factories))
+          g_list_foreach (factories, (GFunc) g_object_ref, NULL);
+        else
+          g_list_free (factories);
+      } else {
         GST_WARNING_OBJECT (object, "Can not reset factories after they"
             " have been set or auto-discovered");
-      GST_AUTOCONVERT_UNLOCK (autoconvert);
+      }
       break;
   }
 }
@@ -263,9 +266,8 @@ gst_auto_convert_get_property (GObject * object,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
     case PROP_FACTORIES:
-      GST_AUTOCONVERT_LOCK (autoconvert);
-      g_value_set_pointer (value, &autoconvert->factories);
-      GST_AUTOCONVERT_UNLOCK (autoconvert);
+      g_value_set_pointer (value,
+          g_atomic_pointer_get (&autoconvert->factories));
       break;
   }
 }
@@ -274,48 +276,24 @@ gst_auto_convert_get_property (GObject * object,
 static GstElement *
 gst_auto_convert_get_element_by_type (GstAutoConvert * autoconvert, GType type)
 {
-  GstIterator *iter = NULL;
-  gboolean done;
-  GValue item = { 0, };
+  GList *item;
+  GstBin *bin = GST_BIN (autoconvert);
+  GstElement *element = NULL;
 
   g_return_val_if_fail (type != 0, NULL);
 
-  iter = gst_bin_iterate_elements (GST_BIN (autoconvert));
+  GST_OBJECT_LOCK (autoconvert);
 
-  if (!iter)
-    return NULL;
-
-  done = FALSE;
-  while (!done) {
-    switch (gst_iterator_next (iter, &item)) {
-      case GST_ITERATOR_OK:
-        if (G_TYPE_CHECK_VALUE_TYPE (&item, type))
-          done = TRUE;
-        else
-          g_value_unset (&item);
-        break;
-      case GST_ITERATOR_RESYNC:
-        gst_iterator_resync (iter);
-        g_value_unset (&item);
-        break;
-      case GST_ITERATOR_ERROR:
-        GST_ERROR ("Error iterating elements in bin");
-        g_value_unset (&item);
-        done = TRUE;
-        break;
-      case GST_ITERATOR_DONE:
-        g_value_unset (&item);
-        done = TRUE;
-        break;
+  for (item = bin->children; item; item = item->next) {
+    if (G_TYPE_CHECK_INSTANCE_TYPE (item->data, type)) {
+      element = gst_object_ref (item->data);
+      break;
     }
   }
-  gst_iterator_free (iter);
 
-  /* Don't need to dup, the value on the stack has a ref, we steal it */
-  if (G_VALUE_HOLDS_OBJECT (&item))
-    return g_value_get_object (&item);
-  else
-    return NULL;
+  GST_OBJECT_UNLOCK (autoconvert);
+
+  return element;
 }
 
 /**
@@ -390,8 +368,7 @@ get_pad_by_direction (GstElement * element, GstPadDirection direction)
 }
 
 static GstElement *
-gst_auto_convert_get_subelement (GstAutoConvert * autoconvert,
-    gboolean query_only)
+gst_auto_convert_get_subelement (GstAutoConvert * autoconvert)
 {
   GstElement *element = NULL;
 
@@ -512,7 +489,8 @@ gst_auto_convert_add_element (GstAutoConvert * autoconvert,
   gst_pad_set_query_function (internal_srcpad,
       GST_DEBUG_FUNCPTR (gst_auto_convert_internal_src_query));
 
-  padlinkret = gst_pad_link (internal_srcpad, sinkpad);
+  padlinkret = gst_pad_link_full (internal_srcpad, sinkpad,
+      GST_PAD_LINK_CHECK_NOTHING);
   if (GST_PAD_LINK_FAILED (padlinkret)) {
     GST_WARNING_OBJECT (autoconvert, "Could not links pad %s:%s to %s:%s"
         " for reason %d",
@@ -521,7 +499,8 @@ gst_auto_convert_add_element (GstAutoConvert * autoconvert,
     goto error;
   }
 
-  padlinkret = gst_pad_link (srcpad, internal_sinkpad);
+  padlinkret = gst_pad_link_full (srcpad, internal_sinkpad,
+      GST_PAD_LINK_CHECK_NOTHING);
   if (GST_PAD_LINK_FAILED (padlinkret)) {
     GST_WARNING_OBJECT (autoconvert, "Could not links pad %s:%s to %s:%s"
         " for reason %d",
@@ -667,9 +646,12 @@ gst_auto_convert_activate_element (GstAutoConvert * autoconvert,
   }
 
   GST_AUTOCONVERT_LOCK (autoconvert);
-  autoconvert->current_subelement = element;
-  autoconvert->current_internal_srcpad = internal_srcpad;
-  autoconvert->current_internal_sinkpad = internal_sinkpad;
+  gst_object_replace ((GstObject **) & autoconvert->current_subelement,
+      GST_OBJECT (element));
+  gst_object_replace ((GstObject **) & autoconvert->current_internal_srcpad,
+      GST_OBJECT (internal_srcpad));
+  gst_object_replace ((GstObject **) & autoconvert->current_internal_sinkpad,
+      GST_OBJECT (internal_sinkpad));
   GST_AUTOCONVERT_UNLOCK (autoconvert);
 
   gst_pad_sticky_events_foreach (autoconvert->sinkpad, sticky_event_push,
@@ -677,9 +659,10 @@ gst_auto_convert_activate_element (GstAutoConvert * autoconvert,
 
   gst_pad_push_event (autoconvert->sinkpad, gst_event_new_reconfigure ());
 
-  GST_INFO_OBJECT (autoconvert,
-      "Selected element %s",
-      GST_OBJECT_NAME (GST_OBJECT (autoconvert->current_subelement)));
+  GST_INFO_OBJECT (autoconvert, "Selected element %s",
+      GST_OBJECT_NAME (GST_OBJECT (element)));
+
+  gst_object_unref (element);
 
   return TRUE;
 }
@@ -721,7 +704,6 @@ static gboolean
 gst_auto_convert_sink_setcaps (GstAutoConvert * autoconvert, GstCaps * caps)
 {
   GList *elem;
-  GstElement *subelement;
   GstCaps *other_caps = NULL;
   GList *factories;
   GstCaps *current_caps;
@@ -737,9 +719,7 @@ gst_auto_convert_sink_setcaps (GstAutoConvert * autoconvert, GstCaps * caps)
     gst_caps_unref (current_caps);
   }
 
-  subelement = gst_auto_convert_get_subelement (autoconvert, TRUE);
-
-  if (subelement) {
+  if (autoconvert->current_subelement) {
     if (gst_pad_peer_query_accept_caps (autoconvert->current_internal_srcpad,
             caps)) {
       /* If we can set the new caps on the current element,
@@ -747,29 +727,22 @@ gst_auto_convert_sink_setcaps (GstAutoConvert * autoconvert, GstCaps * caps)
        */
       GST_DEBUG_OBJECT (autoconvert, "Could set %s:%s to %" GST_PTR_FORMAT,
           GST_DEBUG_PAD_NAME (autoconvert->current_internal_srcpad), caps);
-      gst_object_unref (subelement);
       goto get_out;
     } else {
       /* If the current element doesn't work,
        * then we remove the current element before finding a new one.
        */
       GST_AUTOCONVERT_LOCK (autoconvert);
-      if (autoconvert->current_subelement == subelement) {
-        gst_object_unref (autoconvert->current_subelement);
-        autoconvert->current_subelement = NULL;
-        autoconvert->current_internal_srcpad = NULL;
-        autoconvert->current_internal_sinkpad = NULL;
-      }
+      g_clear_object (&autoconvert->current_subelement);
+      g_clear_object (&autoconvert->current_internal_sinkpad);
+      g_clear_object (&autoconvert->current_internal_srcpad);
       GST_AUTOCONVERT_UNLOCK (autoconvert);
-      gst_object_unref (subelement);
     }
   }
 
   other_caps = gst_pad_peer_query_caps (autoconvert->srcpad, NULL);
 
-  GST_AUTOCONVERT_LOCK (autoconvert);
-  factories = autoconvert->factories;
-  GST_AUTOCONVERT_UNLOCK (autoconvert);
+  factories = g_atomic_pointer_get (&autoconvert->factories);
 
   if (!factories)
     factories = gst_auto_convert_load_factories (autoconvert);
@@ -906,7 +879,6 @@ static GList *
 gst_auto_convert_load_factories (GstAutoConvert * autoconvert)
 {
   GList *all_factories;
-  GList *out_factories;
 
   all_factories =
       gst_registry_feature_filter (gst_registry_get (),
@@ -916,20 +888,12 @@ gst_auto_convert_load_factories (GstAutoConvert * autoconvert)
 
   g_assert (all_factories);
 
-  GST_AUTOCONVERT_LOCK (autoconvert);
-  if (autoconvert->factories == NULL) {
-    autoconvert->factories = all_factories;
-    all_factories = NULL;
-  }
-  out_factories = autoconvert->factories;
-  GST_AUTOCONVERT_UNLOCK (autoconvert);
-
-  if (all_factories) {
-    /* In this case, someone set the property while we were looking! */
+  if (g_atomic_pointer_compare_and_exchange (&autoconvert->factories, NULL,
+          all_factories)) {
     gst_plugin_feature_list_free (all_factories);
   }
 
-  return out_factories;
+  return g_atomic_pointer_get (&autoconvert->factories);
 }
 
 /* In this case, we should almost always have an internal element, because
@@ -942,30 +906,13 @@ gst_auto_convert_sink_chain (GstPad * pad, GstObject * parent,
 {
   GstFlowReturn ret = GST_FLOW_NOT_NEGOTIATED;
   GstAutoConvert *autoconvert = GST_AUTO_CONVERT (parent);
-  GstPad *internal_srcpad;
 
-  internal_srcpad = gst_auto_convert_get_internal_srcpad (autoconvert);
-  if (internal_srcpad) {
-    GList *events = NULL;
-    GList *l;
-
-    if (events) {
-      GST_DEBUG_OBJECT (autoconvert, "Sending cached events downstream");
-      for (l = events; l; l = l->next)
-        gst_pad_push_event (internal_srcpad, l->data);
-      g_list_free (events);
-    }
-
-    ret = gst_pad_push (internal_srcpad, buffer);
-    gst_object_unref (internal_srcpad);
-    if (ret != GST_FLOW_OK) {
-      GstElement *child = gst_auto_convert_get_subelement (autoconvert, TRUE);
+  if (autoconvert->current_internal_srcpad) {
+    ret = gst_pad_push (autoconvert->current_internal_srcpad, buffer);
+    if (ret != GST_FLOW_OK)
       GST_DEBUG_OBJECT (autoconvert,
-          "Child element %" GST_PTR_FORMAT "returned flow %s", child,
-          gst_flow_get_name (ret));
-      if (child)
-        gst_object_unref (child);
-    }
+          "Child element %" GST_PTR_FORMAT "returned flow %s",
+          autoconvert->current_subelement, gst_flow_get_name (ret));
   } else {
     GST_ERROR_OBJECT (autoconvert, "Got buffer without an negotiated element,"
         " returning not-negotiated");
@@ -1031,7 +978,7 @@ gst_auto_convert_sink_query (GstPad * pad, GstObject * parent, GstQuery * query)
     return TRUE;
   }
 
-  subelement = gst_auto_convert_get_subelement (autoconvert, TRUE);
+  subelement = gst_auto_convert_get_subelement (autoconvert);
   if (subelement) {
     GstPad *sub_sinkpad = get_pad_by_direction (subelement, GST_PAD_SINK);
 
@@ -1106,9 +1053,7 @@ gst_auto_convert_getcaps (GstAutoConvert * autoconvert, GstCaps * filter,
     goto out;
   }
 
-  GST_AUTOCONVERT_LOCK (autoconvert);
-  factories = autoconvert->factories;
-  GST_AUTOCONVERT_UNLOCK (autoconvert);
+  factories = g_atomic_pointer_get (&autoconvert->factories);
 
   if (!factories)
     factories = gst_auto_convert_load_factories (autoconvert);
@@ -1153,16 +1098,14 @@ gst_auto_convert_getcaps (GstAutoConvert * autoconvert, GstCaps * filter,
 
       element_caps = gst_pad_peer_query_caps (internal_pad, filter);
 
-      if (element_caps) {
-        if (!gst_caps_is_any (element_caps) &&
-            !gst_caps_is_empty (element_caps)) {
-          caps = gst_caps_merge (caps, element_caps);
-        } else {
-          gst_caps_unref (element_caps);
-        }
-      }
+      if (element_caps)
+        caps = gst_caps_merge (caps, element_caps);
 
       gst_object_unref (element);
+
+      /* Early out, any is absorbing */
+      if (gst_caps_is_any (caps))
+        goto out;
     } else {
       const GList *tmp;
 
@@ -1173,10 +1116,13 @@ gst_auto_convert_getcaps (GstAutoConvert * autoconvert, GstCaps * filter,
         if (GST_PAD_TEMPLATE_DIRECTION (template) == dir) {
           GstCaps *static_caps = gst_static_pad_template_get_caps (template);
 
-          if (static_caps && !gst_caps_is_any (static_caps) &&
-              !gst_caps_is_empty (static_caps)) {
+          if (static_caps) {
             caps = gst_caps_merge (caps, static_caps);
           }
+
+          /* Early out, any is absorbing */
+          if (gst_caps_is_any (caps))
+            goto out;
         }
       }
     }
@@ -1202,11 +1148,14 @@ gst_auto_convert_src_event (GstPad * pad, GstObject * parent, GstEvent * event)
   GstAutoConvert *autoconvert = GST_AUTO_CONVERT (parent);
   GstPad *internal_sinkpad;
 
+  if (GST_EVENT_TYPE (event) == GST_EVENT_RECONFIGURE)
+    gst_pad_push_event (autoconvert->sinkpad, gst_event_ref (event));
+
   internal_sinkpad = gst_auto_convert_get_internal_sinkpad (autoconvert);
   if (internal_sinkpad) {
     ret = gst_pad_push_event (internal_sinkpad, event);
     gst_object_unref (internal_sinkpad);
-  } else {
+  } else if (GST_EVENT_TYPE (event) != GST_EVENT_RECONFIGURE) {
     GST_WARNING_OBJECT (autoconvert,
         "Got upstream event while no element was selected," "forwarding.");
     ret = gst_pad_push_event (autoconvert->sinkpad, event);
@@ -1224,16 +1173,17 @@ gst_auto_convert_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
   GstElement *subelement;
 
   if (GST_QUERY_TYPE (query) == GST_QUERY_CAPS) {
-    GstCaps *caps;
+    GstCaps *filter, *caps;
 
-    caps = gst_caps_new_any ();
+    gst_query_parse_caps (query, &filter);
+    caps = gst_auto_convert_getcaps (autoconvert, filter, GST_PAD_SRC);
     gst_query_set_caps_result (query, caps);
     gst_caps_unref (caps);
 
     return TRUE;
   }
 
-  subelement = gst_auto_convert_get_subelement (autoconvert, TRUE);
+  subelement = gst_auto_convert_get_subelement (autoconvert);
   if (subelement) {
     GstPad *sub_srcpad = get_pad_by_direction (subelement, GST_PAD_SRC);
 
@@ -1327,16 +1277,6 @@ gst_auto_convert_internal_src_query (GstPad * pad, GstObject * parent,
   GstAutoConvert *autoconvert =
       GST_AUTO_CONVERT (g_object_get_qdata (G_OBJECT (pad),
           parent_quark));
-
-  if (GST_QUERY_TYPE (query) == GST_QUERY_CAPS) {
-    GstCaps *caps;
-
-    caps = gst_caps_new_any ();
-    gst_query_set_caps_result (query, caps);
-    gst_caps_unref (caps);
-
-    return TRUE;
-  }
 
   return gst_pad_peer_query (autoconvert->sinkpad, query);
 }

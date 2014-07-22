@@ -2,32 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>mplex</title>
+<title>GStreamer Bad Plugins 1.0 Plugins Reference Manual: mplex</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Bad Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-bad Elements">
 <link rel="prev" href="gst-plugins-bad-plugins-mpeg2enc.html" title="mpeg2enc">
 <link rel="next" href="gst-plugins-bad-plugins-mpg123audiodec.html" title="mpg123audiodec">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-bad-plugins-mpeg2enc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Bad Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-bad-plugins-mpg123audiodec.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-bad-plugins-mplex.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-mplex.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-bad-plugins-mplex.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-mplex.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-mplex.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-bad-plugins-mplex.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-bad-plugins-mpeg2enc.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-bad-plugins-mpg123audiodec.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-bad-plugins-mplex"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -35,23 +31,75 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-bad-plugins-mplex.top_of_page"></a>mplex</span></h2>
 <p>mplex — High-quality MPEG/DVD/SVCD/VCD video/audio multiplexer</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-bad-plugins-mplex.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">                    <a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex" title="GstMplex">GstMplex</a>;
-</pre>
-</div>
 <div class="refsect1">
 <a name="gst-plugins-bad-plugins-mplex.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--bufsize" title='The "bufsize" property'>bufsize</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--format" title='The "format" property'>format</a>"                   <span class="type">GstMplexFormat</span>        : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--mux-bitrate" title='The "mux-bitrate" property'>mux-bitrate</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--packets-per-pack" title='The "packets-per-pack" property'>packets-per-pack</a>"         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--sector-size" title='The "sector-size" property'>sector-size</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--system-headers" title='The "system-headers" property'>system-headers</a>"           <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--vbr" title='The "vbr" property'>vbr</a>"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--bufsize" title="The “bufsize” property">bufsize</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">GstMplexFormat</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--format" title="The “format” property">format</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--mux-bitrate" title="The “mux-bitrate” property">mux-bitrate</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--packets-per-pack" title="The “packets-per-pack” property">packets-per-pack</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--sector-size" title="The “sector-size” property">sector-size</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--system-headers" title="The “system-headers” property">system-headers</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex--vbr" title="The “vbr” property">vbr</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstMplex"></a><div class="refsect1">
+<a name="gst-plugins-bad-plugins-mplex.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-bad-plugins-mplex.html#GstMplex-struct" title="GstMplex">GstMplex</a></td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-mplex.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstMplex
 </pre>
 </div>
 <div class="refsect1">
@@ -59,7 +107,7 @@
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.45.5.2.1"></a><h3>Element Information</h3>
+<a name="id-1.2.46.7.2.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -87,7 +135,7 @@ Mark Nauwelaerts &lt;mnauw@users.sourceforge.net&gt;</td>
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.45.5.2.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.46.7.2.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -178,29 +226,13 @@ Mark Nauwelaerts &lt;mnauw@users.sourceforge.net&gt;</td>
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-bad-plugins-mplex.details"></a><h2>Details</h2>
+<a name="gst-plugins-bad-plugins-mplex.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-bad-plugins-mplex.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
-<a name="GstMplex"></a><h3>GstMplex</h3>
-<pre class="programlisting">typedef struct {
-  GstElement parent;
-
-  /* pads */
-  GSList *pads;
-  GstPad *srcpad;
-  guint num_apads, num_vpads;
-
-  /* options wrapper */
-  GstMplexJob *job;
-
-  /* lock for syncing */
-  GMutex tlock;
-  /* with TLOCK */
-  /* muxer writer generated eos */
-  gboolean eos;
-  /* flowreturn obtained by muxer task */
-  GstFlowReturn srcresult;
-} GstMplex;
-</pre>
+<a name="GstMplex-struct"></a><h3>GstMplex</h3>
+<pre class="programlisting">typedef struct _GstMplex GstMplex;</pre>
 <p>
 </p>
 </div>
@@ -208,61 +240,68 @@ Mark Nauwelaerts &lt;mnauw@users.sourceforge.net&gt;</td>
 <div class="refsect1">
 <a name="gst-plugins-bad-plugins-mplex.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstMplex--bufsize"></a><h3>The <code class="literal">"bufsize"</code> property</h3>
-<pre class="programlisting">  "bufsize"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<a name="GstMplex--bufsize"></a><h3>The <code class="literal">“bufsize”</code> property</h3>
+<pre class="programlisting">  “bufsize”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Target decoders video buffer size (kB) [default determined by format if not explicitly set].</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [20,4000]</p>
 <p>Default value: 46</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstMplex--format"></a><h3>The <code class="literal">"format"</code> property</h3>
-<pre class="programlisting">  "format"                   <span class="type">GstMplexFormat</span>        : Read / Write</pre>
+<a name="GstMplex--format"></a><h3>The <code class="literal">“format”</code> property</h3>
+<pre class="programlisting">  “format”                   <span class="type">GstMplexFormat</span></pre>
 <p>Encoding profile format.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: DVD MPEG-2</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstMplex--mux-bitrate"></a><h3>The <code class="literal">"mux-bitrate"</code> property</h3>
-<pre class="programlisting">  "mux-bitrate"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<a name="GstMplex--mux-bitrate"></a><h3>The <code class="literal">“mux-bitrate”</code> property</h3>
+<pre class="programlisting">  “mux-bitrate”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Bitrate of output stream in kbps (0 = autodetect).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,15360]</p>
 <p>Default value: 0</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstMplex--packets-per-pack"></a><h3>The <code class="literal">"packets-per-pack"</code> property</h3>
-<pre class="programlisting">  "packets-per-pack"         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<a name="GstMplex--packets-per-pack"></a><h3>The <code class="literal">“packets-per-pack”</code> property</h3>
+<pre class="programlisting">  “packets-per-pack”         <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Number of packets per pack for generic formats.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [1,100]</p>
 <p>Default value: 1</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstMplex--sector-size"></a><h3>The <code class="literal">"sector-size"</code> property</h3>
-<pre class="programlisting">  "sector-size"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<a name="GstMplex--sector-size"></a><h3>The <code class="literal">“sector-size”</code> property</h3>
+<pre class="programlisting">  “sector-size”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Specify sector size in bytes for generic formats.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [256,16384]</p>
 <p>Default value: 2048</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstMplex--system-headers"></a><h3>The <code class="literal">"system-headers"</code> property</h3>
-<pre class="programlisting">  "system-headers"           <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstMplex--system-headers"></a><h3>The <code class="literal">“system-headers”</code> property</h3>
+<pre class="programlisting">  “system-headers”           <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Create system header in every pack for generic formats.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstMplex--vbr"></a><h3>The <code class="literal">"vbr"</code> property</h3>
-<pre class="programlisting">  "vbr"                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstMplex--vbr"></a><h3>The <code class="literal">“vbr”</code> property</h3>
+<pre class="programlisting">  “vbr”                      <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Whether the input video stream is variable bitrate.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

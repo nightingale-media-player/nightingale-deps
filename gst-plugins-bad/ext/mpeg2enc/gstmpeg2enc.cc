@@ -71,8 +71,7 @@ GST_DEBUG_CATEGORY (mpeg2enc_debug);
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("video/x-raw, "
-        "format = (string) { I420 }, " COMMON_VIDEO_CAPS)
+    GST_STATIC_CAPS ("video/x-raw, format = (string) I420, " COMMON_VIDEO_CAPS)
     );
 
 static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
@@ -363,6 +362,7 @@ gst_mpeg2enc_sink_query (GstPad * pad, GstObject * parent,
       gst_caps_unref (caps);
       res = TRUE;
     }
+      break;
     default:
       res = gst_pad_query_default (pad, parent, query);
       break;
@@ -380,8 +380,6 @@ gst_mpeg2enc_setcaps (GstMpeg2enc * enc, GstPad * pad, GstCaps * caps)
   /* does not go well to restart stream mid-way */
   if (enc->encoder)
     goto refuse_renegotiation;
-
-  pad = enc->sinkpad;
 
   /* since mpeg encoder does not really check, let's check caps */
   if (!gst_video_info_from_caps (&enc->vinfo, caps))

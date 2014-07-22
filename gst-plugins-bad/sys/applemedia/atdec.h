@@ -38,6 +38,8 @@ struct _GstATDec
 {
   GstAudioDecoder decoder;
   AudioQueueRef queue;
+  gint spf;
+  guint64 input_position, output_position;
 };
 
 struct _GstATDecClass

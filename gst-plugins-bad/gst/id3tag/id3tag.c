@@ -268,19 +268,6 @@ id3v2_frame_write_uint32 (GstId3v2Frame * frame, guint32 val)
   frame->dirty = TRUE;
 }
 
-static inline void
-id3v2_frame_write_uint32_syncsafe (GstId3v2Frame * frame, guint32 val)
-{
-  guint8 data[4];
-
-  data[0] = (guint8) ((val >> 21) & 0x7f);
-  data[1] = (guint8) ((val >> 14) & 0x7f);
-  data[2] = (guint8) ((val >> 7) & 0x7f);
-  data[3] = (guint8) ((val >> 0) & 0x7f);
-  gst_byte_writer_write_bytes (frame->writer, data, 4);
-  frame->dirty = TRUE;
-}
-
 static void
 id3v2_frame_init (GstId3v2Frame * frame, const gchar * frame_id, guint16 flags)
 {
@@ -759,7 +746,7 @@ add_image_tag (GstId3v2Tag * id3v2tag, const GstTagList * list,
         if (strcmp (tag, GST_TAG_PREVIEW_IMAGE) == 0) {
           id3v2_frame_write_uint8 (&frame, ID3V2_APIC_PICTURE_FILE_ICON);
         } else {
-          int image_type;
+          int image_type = ID3V2_APIC_PICTURE_OTHER;
 
           if (info_struct) {
             if (gst_structure_get (info_struct, "image-type",
