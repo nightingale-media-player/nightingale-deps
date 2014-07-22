@@ -73,7 +73,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Byte-Arrays.html#GBytes"><span class="returnvalue">GBytes</span></a> *
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="returnvalue">GBytes</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="gio-GResource.html#g-resource-lookup-data" title="g_resource_lookup_data ()">g_resource_lookup_data</a> <span class="c_punctuation">()</span>
@@ -97,7 +97,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="gio-GResource.html#g-resource-get-info" title="g_resource_get_info ()">g_resource_get_info</a> <span class="c_punctuation">()</span>
@@ -145,7 +145,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Byte-Arrays.html#GBytes"><span class="returnvalue">GBytes</span></a> *
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="returnvalue">GBytes</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="gio-GResource.html#g-resources-lookup-data" title="g_resources_lookup_data ()">g_resources_lookup_data</a> <span class="c_punctuation">()</span>
@@ -169,7 +169,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="gio-GResource.html#g-resources-get-info" title="g_resources_get_info ()">g_resources_get_info</a> <span class="c_punctuation">()</span>
@@ -218,7 +218,7 @@
 <a name="gio-GResource.description"></a><h2>Description</h2>
 <p>Applications and libraries often contain binary or textual data that is
 really part of the application, rather than user data. For instance
-<span class="type">GtkBuilder</span> .ui files, splashscreen images, GMenu markup xml, CSS files,
+<a href="http://developer.gnome.org/gtk2/GtkBuilder.html"><span class="type">GtkBuilder</span></a> .ui files, splashscreen images, GMenu markup xml, CSS files,
 icons, etc. These are often shipped as files in <code class="literal">$datadir/appname</code>, or
 manually included as literal strings in the code.</p>
 <p>The <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a> API and the <a href="glib-compile-resources.html">glib-compile-resources</a> program
@@ -261,14 +261,14 @@ are combined into a binary resource bundle.</p>
 6
 7
 8</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">&lt;</span>?xml version<span class="gtkdoc opt">=</span><span class="string">&quot;1.0&quot;</span> encoding<span class="gtkdoc opt">=</span><span class="string">&quot;UTF-8&quot;</span>?<span class="gtkdoc opt">&gt;</span>
-<span class="gtkdoc opt">&lt;</span>gresources<span class="gtkdoc opt">&gt;</span>
-  <span class="gtkdoc opt">&lt;</span>gresource prefix<span class="gtkdoc opt">=</span><span class="string">&quot;/org/gtk/Example&quot;</span><span class="gtkdoc opt">&gt;</span>
-    <span class="gtkdoc opt">&lt;</span>file<span class="gtkdoc opt">&gt;</span>data<span class="gtkdoc opt">/</span>splashscreen<span class="gtkdoc opt">.</span>png<span class="gtkdoc opt">&lt;/</span>file<span class="gtkdoc opt">&gt;</span>
-    <span class="gtkdoc opt">&lt;</span>file compressed<span class="gtkdoc opt">=</span><span class="string">&quot;true&quot;</span><span class="gtkdoc opt">&gt;</span>dialog<span class="gtkdoc opt">.</span>ui<span class="gtkdoc opt">&lt;/</span>file<span class="gtkdoc opt">&gt;</span>
-    <span class="gtkdoc opt">&lt;</span>file preprocess<span class="gtkdoc opt">=</span><span class="string">&quot;xml-stripblanks&quot;</span><span class="gtkdoc opt">&gt;</span>menumarkup<span class="gtkdoc opt">.</span>xml<span class="gtkdoc opt">&lt;/</span>file<span class="gtkdoc opt">&gt;</span>
-  <span class="gtkdoc opt">&lt;/</span>gresource<span class="gtkdoc opt">&gt;</span>
-<span class="gtkdoc opt">&lt;/</span>gresources<span class="gtkdoc opt">&gt;</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="symbol">&lt;?</span><span class="usertype">xml</span><span class="normal"> version</span><span class="symbol">=</span><span class="string">"1.0"</span><span class="normal"> encoding</span><span class="symbol">=</span><span class="string">"UTF-8"</span><span class="symbol">?&gt;</span>
+<span class="symbol">&lt;</span><span class="normal">gresources</span><span class="symbol">&gt;</span>
+<span class="normal">  </span><span class="symbol">&lt;</span><span class="usertype">gresource</span><span class="normal"> prefix</span><span class="symbol">=</span><span class="string">"/org/gtk/Example"</span><span class="symbol">&gt;</span>
+<span class="normal">    </span><span class="symbol">&lt;</span><span class="normal">file</span><span class="symbol">&gt;</span><span class="normal">data</span><span class="symbol">/</span><span class="normal">splashscreen</span><span class="symbol">.</span><span class="normal">png</span><span class="symbol">&lt;/</span><span class="normal">file</span><span class="symbol">&gt;</span>
+<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">file</span><span class="normal"> compressed</span><span class="symbol">=</span><span class="string">"true"</span><span class="symbol">&gt;</span><span class="normal">dialog</span><span class="symbol">.</span><span class="normal">ui</span><span class="symbol">&lt;/</span><span class="normal">file</span><span class="symbol">&gt;</span>
+<span class="normal">    </span><span class="symbol">&lt;</span><span class="usertype">file</span><span class="normal"> preprocess</span><span class="symbol">=</span><span class="string">"xml-stripblanks"</span><span class="symbol">&gt;</span><span class="normal">menumarkup</span><span class="symbol">.</span><span class="normal">xml</span><span class="symbol">&lt;/</span><span class="normal">file</span><span class="symbol">&gt;</span>
+<span class="normal">  </span><span class="symbol">&lt;/</span><span class="normal">gresource</span><span class="symbol">&gt;</span>
+<span class="symbol">&lt;/</span><span class="normal">gresources</span><span class="symbol">&gt;</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -283,9 +283,9 @@ are combined into a binary resource bundle.</p>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">/</span>org<span class="gtkdoc opt">/</span>gtk<span class="gtkdoc opt">/</span>Example<span class="gtkdoc opt">/</span>data<span class="gtkdoc opt">/</span>splashscreen<span class="gtkdoc opt">.</span>png
-<span class="gtkdoc opt">/</span>org<span class="gtkdoc opt">/</span>gtk<span class="gtkdoc opt">/</span>Example<span class="gtkdoc opt">/</span>dialog<span class="gtkdoc opt">.</span>ui
-<span class="gtkdoc opt">/</span>org<span class="gtkdoc opt">/</span>gtk<span class="gtkdoc opt">/</span>Example<span class="gtkdoc opt">/</span>menumarkup<span class="gtkdoc opt">.</span>xml</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="symbol">/</span><span class="normal">org</span><span class="symbol">/</span><span class="normal">gtk</span><span class="symbol">/</span><span class="normal">Example</span><span class="symbol">/</span><span class="normal">data</span><span class="symbol">/</span><span class="normal">splashscreen</span><span class="symbol">.</span><span class="normal">png</span>
+<span class="symbol">/</span><span class="normal">org</span><span class="symbol">/</span><span class="normal">gtk</span><span class="symbol">/</span><span class="normal">Example</span><span class="symbol">/</span><span class="normal">dialog</span><span class="symbol">.</span><span class="normal">ui</span>
+<span class="symbol">/</span><span class="normal">org</span><span class="symbol">/</span><span class="normal">gtk</span><span class="symbol">/</span><span class="normal">Example</span><span class="symbol">/</span><span class="normal">menumarkup</span><span class="symbol">.</span><span class="normal">xml</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -316,8 +316,8 @@ is for your own resources, and resource data is often used once, during parsing,
 <div class="refsect2">
 <a name="g-resource-load"></a><h3>g_resource_load ()</h3>
 <pre class="programlisting"><a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="returnvalue">GResource</span></a> *
-g_resource_load (<em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *filename</code></em>,
-                 <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+g_resource_load (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *filename</code></em>,
+                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Loads a binary resource bundle and creates a <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a> representation of it, allowing
 you to query it for data.</p>
 <p>If you want to use this resource in the global resource namespace you need
@@ -338,7 +338,7 @@ to register it with <a class="link" href="gio-GResource.html#g-resources-registe
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>return location for a <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -346,7 +346,7 @@ to register it with <a class="link" href="gio-GResource.html#g-resources-registe
 </div>
 <div class="refsect3">
 <a name="id-1.4.20.2.7.2.7"></a><h4>Returns</h4>
-<p> a new <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error. </p>
+<p> a new <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 <p class="since">Since 2.32</p>
@@ -355,8 +355,8 @@ to register it with <a class="link" href="gio-GResource.html#g-resources-registe
 <div class="refsect2">
 <a name="g-resource-new-from-data"></a><h3>g_resource_new_from_data ()</h3>
 <pre class="programlisting"><a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="returnvalue">GResource</span></a> *
-g_resource_new_from_data (<em class="parameter"><code><a href="../glib/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> *data</code></em>,
-                          <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+g_resource_new_from_data (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> *data</code></em>,
+                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Creates a GResource from a reference to the binary resource bundle.
 This will keep a reference to <em class="parameter"><code>data</code></em>
  while the resource lives, so
@@ -374,12 +374,12 @@ to register it with <a class="link" href="gio-GResource.html#g-resources-registe
 <tbody>
 <tr>
 <td class="parameter_name"><p>data</p></td>
-<td class="parameter_description"><p>A <a href="../glib/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a></p></td>
+<td class="parameter_description"><p>A <a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>return location for a <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -387,7 +387,7 @@ to register it with <a class="link" href="gio-GResource.html#g-resources-registe
 </div>
 <div class="refsect3">
 <a name="id-1.4.20.2.7.3.7"></a><h4>Returns</h4>
-<p> a new <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error. </p>
+<p> a new <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 <p class="since">Since 2.32</p>
@@ -452,14 +452,14 @@ thread.</p>
 <hr>
 <div class="refsect2">
 <a name="g-resource-lookup-data"></a><h3>g_resource_lookup_data ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Byte-Arrays.html#GBytes"><span class="returnvalue">GBytes</span></a> *
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="returnvalue">GBytes</span></a> *
 g_resource_lookup_data (<em class="parameter"><code><a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a> *resource</code></em>,
                         <em class="parameter"><code>const <span class="type">char</span> *path</code></em>,
                         <em class="parameter"><code><a class="link" href="gio-GResource.html#GResourceLookupFlags" title="enum GResourceLookupFlags"><span class="type">GResourceLookupFlags</span></a> lookup_flags</code></em>,
-                        <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                        <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Looks for a file at the specified <em class="parameter"><code>path</code></em>
  in the resource and
-returns a <a href="../glib/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> that lets you directly access the data in
+returns a <a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> that lets you directly access the data in
 memory.</p>
 <p>The data is always followed by a zero byte, so you
 can safely use the data as a C string. However, that byte
@@ -496,7 +496,7 @@ the heap and automatically uncompress the data.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>return location for a <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -504,8 +504,8 @@ the heap and automatically uncompress the data.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.20.2.7.6.9"></a><h4>Returns</h4>
-<p> <a href="../glib/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.
-Free the returned object with <a href="../glib/glib-Byte-Arrays.html#g-bytes-unref"><code class="function">g_bytes_unref()</code></a>. </p>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.
+Free the returned object with <a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#g-bytes-unref"><code class="function">g_bytes_unref()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 <p class="since">Since 2.32</p>
@@ -517,7 +517,7 @@ Free the returned object with <a href="../glib/glib-Byte-Arrays.html#g-bytes-unr
 g_resource_open_stream (<em class="parameter"><code><a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a> *resource</code></em>,
                         <em class="parameter"><code>const <span class="type">char</span> *path</code></em>,
                         <em class="parameter"><code><a class="link" href="gio-GResource.html#GResourceLookupFlags" title="enum GResourceLookupFlags"><span class="type">GResourceLookupFlags</span></a> lookup_flags</code></em>,
-                        <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                        <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Looks for a file at the specified <em class="parameter"><code>path</code></em>
  in the resource and
 returns a <a class="link" href="GInputStream.html" title="GInputStream"><span class="type">GInputStream</span></a> that lets you read the data.</p>
@@ -549,7 +549,7 @@ returns a <a class="link" href="GInputStream.html" title="GInputStream"><span cl
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>return location for a <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -557,8 +557,8 @@ returns a <a class="link" href="GInputStream.html" title="GInputStream"><span cl
 </div>
 <div class="refsect3">
 <a name="id-1.4.20.2.7.7.7"></a><h4>Returns</h4>
-<p> <a class="link" href="GInputStream.html" title="GInputStream"><span class="type">GInputStream</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.
-Free the returned object with <a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a>. </p>
+<p> <a class="link" href="GInputStream.html" title="GInputStream"><span class="type">GInputStream</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.
+Free the returned object with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 <p class="since">Since 2.32</p>
@@ -570,11 +570,11 @@ Free the returned object with <a href="../gobject/gobject-The-Base-Object-Type.h
 g_resource_enumerate_children (<em class="parameter"><code><a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a> *resource</code></em>,
                                <em class="parameter"><code>const <span class="type">char</span> *path</code></em>,
                                <em class="parameter"><code><a class="link" href="gio-GResource.html#GResourceLookupFlags" title="enum GResourceLookupFlags"><span class="type">GResourceLookupFlags</span></a> lookup_flags</code></em>,
-                               <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                               <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Returns all the names of children at the specified <em class="parameter"><code>path</code></em>
  in the resource.
-The return result is a <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> terminated list of strings which should
-be released with <a href="../glib/glib-String-Utility-Functions.html#g-strfreev"><code class="function">g_strfreev()</code></a>.</p>
+The return result is a <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> terminated list of strings which should
+be released with <a href="http://library.gnome.org/devel/glib/unstable/glib-String-Utility-Functions.html#g-strfreev"><code class="function">g_strfreev()</code></a>.</p>
 <p><em class="parameter"><code>lookup_flags</code></em>
  controls the behaviour of the lookup.</p>
 <div class="refsect3">
@@ -603,7 +603,7 @@ be released with <a href="../glib/glib-String-Utility-Functions.html#g-strfreev"
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>return location for a <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -619,13 +619,13 @@ be released with <a href="../glib/glib-String-Utility-Functions.html#g-strfreev"
 <hr>
 <div class="refsect2">
 <a name="g-resource-get-info"></a><h3>g_resource_get_info ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_resource_get_info (<em class="parameter"><code><a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a> *resource</code></em>,
                      <em class="parameter"><code>const <span class="type">char</span> *path</code></em>,
                      <em class="parameter"><code><a class="link" href="gio-GResource.html#GResourceLookupFlags" title="enum GResourceLookupFlags"><span class="type">GResourceLookupFlags</span></a> lookup_flags</code></em>,
-                     <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> *size</code></em>,
-                     <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#guint32"><span class="type">guint32</span></a> *flags</code></em>,
-                     <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                     <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> *size</code></em>,
+                     <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint32"><span class="type">guint32</span></a> *flags</code></em>,
+                     <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Looks for a file at the specified <em class="parameter"><code>path</code></em>
  in the resource and
 if found returns information about it.</p>
@@ -658,18 +658,18 @@ if found returns information about it.</p>
 <tr>
 <td class="parameter_name"><p>size</p></td>
 <td class="parameter_description"><p> a location to place the length of the contents of the file,
-or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the length is not needed. </p></td>
+or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the length is not needed. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>flags</p></td>
 <td class="parameter_description"><p> a location to place the flags about the file,
-or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the length is not needed. </p></td>
+or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the length is not needed. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>return location for a <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -677,7 +677,7 @@ or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">N
 </div>
 <div class="refsect3">
 <a name="id-1.4.20.2.7.9.7"></a><h4>Returns</h4>
-<p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the file was found. <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if there were errors</p>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the file was found. <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if there were errors</p>
 <p></p>
 </div>
 <p class="since">Since 2.32</p>
@@ -817,13 +817,13 @@ g_resources_unregister (<em class="parameter"><code><a class="link" href="gio-GR
 <hr>
 <div class="refsect2">
 <a name="g-resources-lookup-data"></a><h3>g_resources_lookup_data ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Byte-Arrays.html#GBytes"><span class="returnvalue">GBytes</span></a> *
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="returnvalue">GBytes</span></a> *
 g_resources_lookup_data (<em class="parameter"><code>const <span class="type">char</span> *path</code></em>,
                          <em class="parameter"><code><a class="link" href="gio-GResource.html#GResourceLookupFlags" title="enum GResourceLookupFlags"><span class="type">GResourceLookupFlags</span></a> lookup_flags</code></em>,
-                         <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Looks for a file at the specified <em class="parameter"><code>path</code></em>
  in the set of
-globally registered resources and returns a <a href="../glib/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> that
+globally registered resources and returns a <a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> that
 lets you directly access the data in memory.</p>
 <p>The data is always followed by a zero byte, so you
 can safely use the data as a C string. However, that byte
@@ -855,7 +855,7 @@ the heap and automatically uncompress the data.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>return location for a <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -863,8 +863,8 @@ the heap and automatically uncompress the data.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.20.2.7.15.9"></a><h4>Returns</h4>
-<p> <a href="../glib/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.
-Free the returned object with <a href="../glib/glib-Byte-Arrays.html#g-bytes-unref"><code class="function">g_bytes_unref()</code></a>. </p>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.
+Free the returned object with <a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#g-bytes-unref"><code class="function">g_bytes_unref()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 <p class="since">Since 2.32</p>
@@ -875,7 +875,7 @@ Free the returned object with <a href="../glib/glib-Byte-Arrays.html#g-bytes-unr
 <pre class="programlisting"><a class="link" href="GInputStream.html" title="GInputStream"><span class="returnvalue">GInputStream</span></a> *
 g_resources_open_stream (<em class="parameter"><code>const <span class="type">char</span> *path</code></em>,
                          <em class="parameter"><code><a class="link" href="gio-GResource.html#GResourceLookupFlags" title="enum GResourceLookupFlags"><span class="type">GResourceLookupFlags</span></a> lookup_flags</code></em>,
-                         <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Looks for a file at the specified <em class="parameter"><code>path</code></em>
  in the set of
 globally registered resources and returns a <a class="link" href="GInputStream.html" title="GInputStream"><span class="type">GInputStream</span></a>
@@ -903,7 +903,7 @@ that lets you read the data.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>return location for a <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -911,8 +911,8 @@ that lets you read the data.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.20.2.7.16.7"></a><h4>Returns</h4>
-<p> <a class="link" href="GInputStream.html" title="GInputStream"><span class="type">GInputStream</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.
-Free the returned object with <a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a>. </p>
+<p> <a class="link" href="GInputStream.html" title="GInputStream"><span class="type">GInputStream</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.
+Free the returned object with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 <p class="since">Since 2.32</p>
@@ -923,12 +923,12 @@ Free the returned object with <a href="../gobject/gobject-The-Base-Object-Type.h
 <pre class="programlisting"><span class="returnvalue">char</span> **
 g_resources_enumerate_children (<em class="parameter"><code>const <span class="type">char</span> *path</code></em>,
                                 <em class="parameter"><code><a class="link" href="gio-GResource.html#GResourceLookupFlags" title="enum GResourceLookupFlags"><span class="type">GResourceLookupFlags</span></a> lookup_flags</code></em>,
-                                <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Returns all the names of children at the specified <em class="parameter"><code>path</code></em>
  in the set of
 globally registered resources.
-The return result is a <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> terminated list of strings which should
-be released with <a href="../glib/glib-String-Utility-Functions.html#g-strfreev"><code class="function">g_strfreev()</code></a>.</p>
+The return result is a <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> terminated list of strings which should
+be released with <a href="http://library.gnome.org/devel/glib/unstable/glib-String-Utility-Functions.html#g-strfreev"><code class="function">g_strfreev()</code></a>.</p>
 <p><em class="parameter"><code>lookup_flags</code></em>
  controls the behaviour of the lookup.</p>
 <div class="refsect3">
@@ -952,7 +952,7 @@ be released with <a href="../glib/glib-String-Utility-Functions.html#g-strfreev"
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>return location for a <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -968,12 +968,12 @@ be released with <a href="../glib/glib-String-Utility-Functions.html#g-strfreev"
 <hr>
 <div class="refsect2">
 <a name="g-resources-get-info"></a><h3>g_resources_get_info ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_resources_get_info (<em class="parameter"><code>const <span class="type">char</span> *path</code></em>,
                       <em class="parameter"><code><a class="link" href="gio-GResource.html#GResourceLookupFlags" title="enum GResourceLookupFlags"><span class="type">GResourceLookupFlags</span></a> lookup_flags</code></em>,
-                      <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> *size</code></em>,
-                      <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#guint32"><span class="type">guint32</span></a> *flags</code></em>,
-                      <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                      <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> *size</code></em>,
+                      <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint32"><span class="type">guint32</span></a> *flags</code></em>,
+                      <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Looks for a file at the specified <em class="parameter"><code>path</code></em>
  in the set of
 globally registered resources and if found returns information about it.</p>
@@ -1001,18 +1001,18 @@ globally registered resources and if found returns information about it.</p>
 <tr>
 <td class="parameter_name"><p>size</p></td>
 <td class="parameter_description"><p> a location to place the length of the contents of the file,
-or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the length is not needed. </p></td>
+or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the length is not needed. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>flags</p></td>
 <td class="parameter_description"><p> a location to place the flags about the file,
-or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the length is not needed. </p></td>
+or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the length is not needed. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>return location for a <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_description"><p>return location for a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -1020,7 +1020,7 @@ or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">N
 </div>
 <div class="refsect3">
 <a name="id-1.4.20.2.7.18.7"></a><h4>Returns</h4>
-<p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the file was found. <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if there were errors</p>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the file was found. <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if there were errors</p>
 <p></p>
 </div>
 <p class="since">Since 2.32</p>
@@ -1031,7 +1031,7 @@ or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">N
 <pre class="programlisting">#define G_RESOURCE_ERROR (g_resource_error_quark ())
 </pre>
 <p>Error domain for <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a>. Errors in this domain will be from the
-<a class="link" href="gio-GResource.html#GResourceError" title="enum GResourceError"><span class="type">GResourceError</span></a> enumeration. See <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for more information on
+<a class="link" href="gio-GResource.html#GResourceError" title="enum GResourceError"><span class="type">GResourceError</span></a> enumeration. See <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for more information on
 error domains.</p>
 </div>
 </div>
@@ -1102,7 +1102,7 @@ bundle.</p>
 <hr>
 <div class="refsect2">
 <a name="GResourceError"></a><h3>enum GResourceError</h3>
-<p>An error code used with <a class="link" href="gio-GResource.html#G-RESOURCE-ERROR:CAPS" title="G_RESOURCE_ERROR"><code class="literal">G_RESOURCE_ERROR</code></a> in a <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> returned
+<p>An error code used with <a class="link" href="gio-GResource.html#G-RESOURCE-ERROR:CAPS" title="G_RESOURCE_ERROR"><code class="literal">G_RESOURCE_ERROR</code></a> in a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> returned
 from a <a class="link" href="gio-GResource.html#GResource" title="GResource"><span class="type">GResource</span></a> routine.</p>
 <div class="refsect3">
 <a name="id-1.4.20.2.8.5.4"></a><h4>Members</h4>

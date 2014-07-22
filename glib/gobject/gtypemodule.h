@@ -40,7 +40,7 @@ typedef struct _GTypeModuleClass GTypeModuleClass;
  * GTypeModule:
  * @name: the name of the module
  * 
- * The members of the <structname>GTypeModule</structname> structure should not 
+ * The members of the GTypeModule structure should not 
  * be accessed directly, except for the @name field.
  */
 struct _GTypeModule 
@@ -92,9 +92,9 @@ struct _GTypeModuleClass
  * class initialization function, an instance initialization function (see 
  * #GTypeInfo for information about these) and a static variable named 
  * @t_n<!-- -->_parent_class pointing to the parent class. Furthermore, 
- * it defines a <function>*_get_type()</function> and a static 
- * <function>*_register_type()</function> function for use in your
- * <function>module_init()</function>.
+ * it defines a `*_get_type()` and a static `*_register_type()` functions
+ * for use in your `module_init()`.
+ *
  * See G_DEFINE_DYNAMIC_TYPE_EXTENDED() for an example.
  * 
  * Since: 2.14

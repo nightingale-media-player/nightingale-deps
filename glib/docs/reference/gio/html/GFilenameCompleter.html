@@ -106,7 +106,7 @@
 </div>
 <div class="refsect1">
 <a name="GFilenameCompleter.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
     <span class="lineart">╰──</span> GFilenameCompleter
 </pre>
 </div>
@@ -168,8 +168,8 @@ g_filename_completer_get_completion_suffix
 </div>
 <div class="refsect3">
 <a name="id-1.4.4.2.9.3.6"></a><h4>Returns</h4>
-<p> a completed string, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if no completion exists.
-This string is not owned by GIO, so remember to <a href="../glib/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a> it
+<p> a completed string, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if no completion exists.
+This string is not owned by GIO, so remember to <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a> it
 when finished.</p>
 <p></p>
 </div>
@@ -207,7 +207,7 @@ g_filename_completer_get_completions (<em class="parameter"><code><a class="link
 <a name="id-1.4.4.2.9.4.6"></a><h4>Returns</h4>
 <p> array of strings with possible completions for <em class="parameter"><code>initial_text</code></em>
 .
-This array must be freed by <a href="../glib/glib-String-Utility-Functions.html#g-strfreev"><code class="function">g_strfreev()</code></a> when finished. </p>
+This array must be freed by <a href="http://library.gnome.org/devel/glib/unstable/glib-String-Utility-Functions.html#g-strfreev"><code class="function">g_strfreev()</code></a> when finished. </p>
 <p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 </div>
@@ -216,9 +216,9 @@ This array must be freed by <a href="../glib/glib-String-Utility-Functions.html#
 <a name="g-filename-completer-set-dirs-only"></a><h3>g_filename_completer_set_dirs_only ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_filename_completer_set_dirs_only (<em class="parameter"><code><a class="link" href="GFilenameCompleter.html" title="GFilenameCompleter"><span class="type">GFilenameCompleter</span></a> *completer</code></em>,
-                                    <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> dirs_only</code></em>);</pre>
+                                    <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> dirs_only</code></em>);</pre>
 <p>If <em class="parameter"><code>dirs_only</code></em>
- is <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, <em class="parameter"><code>completer</code></em>
+ is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, <em class="parameter"><code>completer</code></em>
  will only 
 complete directory names, and not file names.</p>
 <div class="refsect3">
@@ -237,7 +237,7 @@ complete directory names, and not file names.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>dirs_only</p></td>
-<td class="parameter_description"><p>a <a href="../glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>.</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -259,7 +259,7 @@ complete directory names, and not file names.</p>
 <a name="GFilenameCompleter-got-completion-data"></a><h3>The <code class="literal">“got-completion-data”</code> signal</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 user_function (<a class="link" href="GFilenameCompleter.html" title="GFilenameCompleter"><span class="type">GFilenameCompleter</span></a> *arg0,
-               <a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>            user_data)</pre>
 <p>Emitted when the file name completion information comes available.</p>
 <div class="refsect3">
 <a name="id-1.4.4.2.11.2.5"></a><h4>Parameters</h4>

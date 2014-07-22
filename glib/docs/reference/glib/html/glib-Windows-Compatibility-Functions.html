@@ -167,7 +167,7 @@ This will get the "full Unicode" commandline arguments using
 <code class="function">GetCommandLineW()</code> and convert it to the GLib filename encoding (which
 is UTF-8 on Windows).</p>
 <p>The strings returned by this function are suitable for use with
-functions such as <a class="link" href="glib-File-Utilities.html#g-open" title="g_open ()"><code class="function">g_open()</code></a> and <code class="function">g_file_new_for_commandline_arg()</code> but
+functions such as <a class="link" href="glib-File-Utilities.html#g-open" title="g_open ()"><code class="function">g_open()</code></a> and <a href="http://library.gnome.org/devel/gio/unstable/GFile.html#g-file-new-for-commandline-arg"><code class="function">g_file_new_for_commandline_arg()</code></a> but
 are not suitable for use with <a class="link" href="glib-Commandline-option-parser.html#g-option-context-parse" title="g_option_context_parse ()"><code class="function">g_option_context_parse()</code></a>, which assumes
 that its input will be in the system codepage.  The return value is
 suitable for use with <a class="link" href="glib-Commandline-option-parser.html#g-option-context-parse-strv" title="g_option_context_parse_strv ()"><code class="function">g_option_context_parse_strv()</code></a>, however, which
@@ -187,12 +187,12 @@ filename encoding (ie: UTF-8). </p>
 <a name="g-win32-error-message"></a><h3>g_win32_error_message ()</h3>
 <pre class="programlisting"><a class="link" href="glib-Basic-Types.html#gchar" title="gchar"><span class="returnvalue">gchar</span></a> *
 g_win32_error_message (<em class="parameter"><code><a class="link" href="glib-Basic-Types.html#gint" title="gint"><span class="type">gint</span></a> error</code></em>);</pre>
-<p>Translate a Win32 error code (as returned by <code class="function">GetLastError()</code>) into
-the corresponding message. The message is either language neutral,
-or in the thread's language, or the user's language, the system's
-language, or US English (see docs for <code class="function">FormatMessage()</code>). The
-returned string is in UTF-8. It should be deallocated with
-<a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>.</p>
+<p>Translate a Win32 error code (as returned by <code class="function">GetLastError()</code> or
+<code class="function">WSAGetLastError()</code>) into the corresponding message. The message is
+either language neutral, or in the thread's language, or the user's
+language, the system's language, or US English (see docs for
+<code class="function">FormatMessage()</code>). The returned string is in UTF-8. It should be
+deallocated with <a class="link" href="glib-Memory-Allocation.html#g-free" title="g_free ()"><code class="function">g_free()</code></a>.</p>
 <div class="refsect3">
 <a name="id-1.5.31.7.3.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">

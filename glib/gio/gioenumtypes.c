@@ -1012,6 +1012,10 @@ g_dbus_error_get_type (void)
         { G_DBUS_ERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN, "G_DBUS_ERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN", "selinux-security-context-unknown" },
         { G_DBUS_ERROR_ADT_AUDIT_DATA_UNKNOWN, "G_DBUS_ERROR_ADT_AUDIT_DATA_UNKNOWN", "adt-audit-data-unknown" },
         { G_DBUS_ERROR_OBJECT_PATH_IN_USE, "G_DBUS_ERROR_OBJECT_PATH_IN_USE", "object-path-in-use" },
+        { G_DBUS_ERROR_UNKNOWN_OBJECT, "G_DBUS_ERROR_UNKNOWN_OBJECT", "unknown-object" },
+        { G_DBUS_ERROR_UNKNOWN_INTERFACE, "G_DBUS_ERROR_UNKNOWN_INTERFACE", "unknown-interface" },
+        { G_DBUS_ERROR_UNKNOWN_PROPERTY, "G_DBUS_ERROR_UNKNOWN_PROPERTY", "unknown-property" },
+        { G_DBUS_ERROR_PROPERTY_READ_ONLY, "G_DBUS_ERROR_PROPERTY_READ_ONLY", "property-read-only" },
         { 0, NULL, NULL }
       };
       GType g_define_type_id =
@@ -1273,6 +1277,7 @@ g_credentials_type_get_type (void)
         { G_CREDENTIALS_TYPE_INVALID, "G_CREDENTIALS_TYPE_INVALID", "invalid" },
         { G_CREDENTIALS_TYPE_LINUX_UCRED, "G_CREDENTIALS_TYPE_LINUX_UCRED", "linux-ucred" },
         { G_CREDENTIALS_TYPE_FREEBSD_CMSGCRED, "G_CREDENTIALS_TYPE_FREEBSD_CMSGCRED", "freebsd-cmsgcred" },
+        { G_CREDENTIALS_TYPE_NETBSD_UNPCBID, "G_CREDENTIALS_TYPE_NETBSD_UNPCBID", "netbsd-unpcbid" },
         { G_CREDENTIALS_TYPE_OPENBSD_SOCKPEERCRED, "G_CREDENTIALS_TYPE_OPENBSD_SOCKPEERCRED", "openbsd-sockpeercred" },
         { G_CREDENTIALS_TYPE_SOLARIS_UCRED, "G_CREDENTIALS_TYPE_SOLARIS_UCRED", "solaris-ucred" },
         { 0, NULL, NULL }
@@ -1651,6 +1656,28 @@ g_subprocess_flags_get_type (void)
       };
       GType g_define_type_id =
         g_flags_register_static (g_intern_static_string ("GSubprocessFlags"), values);
+      g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
+    }
+
+  return g_define_type_id__volatile;
+}
+
+GType
+g_notification_priority_get_type (void)
+{
+  static volatile gsize g_define_type_id__volatile = 0;
+
+  if (g_once_init_enter (&g_define_type_id__volatile))
+    {
+      static const GEnumValue values[] = {
+        { G_NOTIFICATION_PRIORITY_NORMAL, "G_NOTIFICATION_PRIORITY_NORMAL", "normal" },
+        { G_NOTIFICATION_PRIORITY_LOW, "G_NOTIFICATION_PRIORITY_LOW", "low" },
+        { G_NOTIFICATION_PRIORITY_HIGH, "G_NOTIFICATION_PRIORITY_HIGH", "high" },
+        { G_NOTIFICATION_PRIORITY_URGENT, "G_NOTIFICATION_PRIORITY_URGENT", "urgent" },
+        { 0, NULL, NULL }
+      };
+      GType g_define_type_id =
+        g_enum_register_static (g_intern_static_string ("GNotificationPriority"), values);
       g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
     }
 

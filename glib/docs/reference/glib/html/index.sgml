@@ -26,6 +26,9 @@
 <ANCHOR id="GLIB-VERSION-2-32:CAPS" href="glib/glib-Version-Information.html#GLIB-VERSION-2-32:CAPS">
 <ANCHOR id="GLIB-VERSION-2-34:CAPS" href="glib/glib-Version-Information.html#GLIB-VERSION-2-34:CAPS">
 <ANCHOR id="GLIB-VERSION-2-36:CAPS" href="glib/glib-Version-Information.html#GLIB-VERSION-2-36:CAPS">
+<ANCHOR id="GLIB-VERSION-2-38:CAPS" href="glib/glib-Version-Information.html#GLIB-VERSION-2-38:CAPS">
+<ANCHOR id="GLIB-VERSION-2-40:CAPS" href="glib/glib-Version-Information.html#GLIB-VERSION-2-40:CAPS">
+<ANCHOR id="GLIB-VERSION-2-42:CAPS" href="glib/glib-Version-Information.html#GLIB-VERSION-2-42:CAPS">
 <ANCHOR id="GLIB-VERSION-MIN-REQUIRED:CAPS" href="glib/glib-Version-Information.html#GLIB-VERSION-MIN-REQUIRED:CAPS">
 <ANCHOR id="GLIB-VERSION-MAX-ALLOWED:CAPS" href="glib/glib-Version-Information.html#GLIB-VERSION-MAX-ALLOWED:CAPS">
 <ANCHOR id="glib-Version-Information.other_details" href="glib/glib-Version-Information.html#glib-Version-Information.other_details">
@@ -1615,14 +1618,14 @@
 <ANCHOR id="g-markup-escape-text" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-escape-text">
 <ANCHOR id="g-markup-printf-escaped" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-printf-escaped">
 <ANCHOR id="g-markup-vprintf-escaped" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-vprintf-escaped">
+<ANCHOR id="g-markup-parse-context-new" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-new">
+<ANCHOR id="g-markup-parse-context-parse" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-parse">
 <ANCHOR id="g-markup-parse-context-end-parse" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-end-parse">
 <ANCHOR id="g-markup-parse-context-free" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-free">
 <ANCHOR id="g-markup-parse-context-get-position" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-get-position">
 <ANCHOR id="g-markup-parse-context-get-element" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-get-element">
 <ANCHOR id="g-markup-parse-context-get-element-stack" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-get-element-stack">
 <ANCHOR id="g-markup-parse-context-get-user-data" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-get-user-data">
-<ANCHOR id="g-markup-parse-context-new" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-new">
-<ANCHOR id="g-markup-parse-context-parse" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-parse">
 <ANCHOR id="g-markup-parse-context-push" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-push">
 <ANCHOR id="g-markup-parse-context-pop" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-pop">
 <ANCHOR id="g-markup-parse-context-ref" href="glib/glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-ref">

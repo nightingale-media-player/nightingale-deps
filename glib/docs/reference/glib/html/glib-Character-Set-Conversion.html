@@ -202,7 +202,7 @@ a file name is valid as long as it does not have path separators
 in it ("/"). However, displaying file names may require conversion:
 from the character set in which they were created, to the character
 set in which the application operates. Consider the Spanish file name
-"Presentaci&amp;oacute;n.sxi". If the application which created it uses
+"Presentación.sxi". If the application which created it uses
 ISO-8859-1 for its encoding,</p>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
@@ -210,8 +210,8 @@ ISO-8859-1 for its encoding,</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting">Character<span class="gtkdoc opt">:</span>  P  r  e  s  e  n  t  a  c  i  <span class="gtkdoc opt">&amp;</span>oacute<span class="gtkdoc opt">;</span>  n  <span class="gtkdoc opt">.</span>  s  x  i
-Hex code<span class="gtkdoc opt">:</span>   <span class="number">50 72 65 73 65 6</span>e <span class="number">74 61 63 69</span> f3 <span class="number">6</span>e <span class="number">2</span>e <span class="number">73 78 69</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="normal">Character</span><span class="symbol">:</span><span class="normal">  P  r  e  s  e  n  t  a  </span><span class="usertype">c</span><span class="normal">  </span><span class="usertype">i</span><span class="normal">  </span><span class="symbol">&amp;</span><span class="normal">oacute</span><span class="symbol">;</span><span class="normal">  n  </span><span class="symbol">.</span><span class="normal">  s  x  i</span>
+<span class="usertype">Hex</span><span class="normal"> code</span><span class="symbol">:</span><span class="normal">   </span><span class="number">50</span><span class="normal"> </span><span class="number">72</span><span class="normal"> </span><span class="number">65</span><span class="normal"> </span><span class="number">73</span><span class="normal"> </span><span class="number">65</span><span class="normal"> 6e </span><span class="number">74</span><span class="normal"> </span><span class="number">61</span><span class="normal"> </span><span class="number">63</span><span class="normal"> </span><span class="number">69</span><span class="normal"> f3 6e 2e </span><span class="number">73</span><span class="normal"> </span><span class="number">78</span><span class="normal"> </span><span class="number">69</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -226,8 +226,8 @@ disk would look like this:</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting">Character<span class="gtkdoc opt">:</span>  P  r  e  s  e  n  t  a  c  i  <span class="gtkdoc opt">&amp;</span>oacute<span class="gtkdoc opt">;</span>     n  <span class="gtkdoc opt">.</span>  s  x  i
-Hex code<span class="gtkdoc opt">:</span>   <span class="number">50 72 65 73 65 6</span>e <span class="number">74 61 63 69</span> c3 b3 <span class="number">6</span>e <span class="number">2</span>e <span class="number">73 78 69</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="normal">Character</span><span class="symbol">:</span><span class="normal">  P  r  e  s  e  n  t  a  </span><span class="usertype">c</span><span class="normal">  </span><span class="usertype">i</span><span class="normal">  </span><span class="symbol">&amp;</span><span class="normal">oacute</span><span class="symbol">;</span><span class="normal">     n  </span><span class="symbol">.</span><span class="normal">  s  x  i</span>
+<span class="usertype">Hex</span><span class="normal"> code</span><span class="symbol">:</span><span class="normal">   </span><span class="number">50</span><span class="normal"> </span><span class="number">72</span><span class="normal"> </span><span class="number">65</span><span class="normal"> </span><span class="number">73</span><span class="normal"> </span><span class="number">65</span><span class="normal"> 6e </span><span class="number">74</span><span class="normal"> </span><span class="number">61</span><span class="normal"> </span><span class="number">63</span><span class="normal"> </span><span class="number">69</span><span class="normal"> c3 b3 6e 2e </span><span class="number">73</span><span class="normal"> </span><span class="number">78</span><span class="normal"> </span><span class="number">69</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -260,7 +260,7 @@ ISO-8859-1 for file names, you can put this in your <code class="literal">~/.pro
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting">export G_FILENAME_ENCODING<span class="gtkdoc opt">=</span>ISO<span class="gtkdoc opt">-</span><span class="number">8859</span><span class="gtkdoc opt">-</span><span class="number">1</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="usertype">export</span><span class="normal"> G_FILENAME_ENCODING</span><span class="symbol">=</span><span class="normal">ISO</span><span class="symbol">-</span><span class="number">8859</span><span class="symbol">-</span><span class="number">1</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -286,7 +286,7 @@ encoding for file names in the file system.</p>
 name encodings correctly.</p>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem"><p>If you get a file name from the file system from a function
-such as <code class="function">readdir()</code> or <code class="function">gtk_file_chooser_get_filename()</code>, you do
+such as <code class="function">readdir()</code> or <a href="http://developer.gnome.org/gtk2/GtkFileChooser.html#gtk-file-chooser-get-filename"><code class="function">gtk_file_chooser_get_filename()</code></a>, you do
 not need to do any conversion to pass that file name to
 functions like <code class="function">open()</code>, <code class="function">rename()</code>, or <code class="function">fopen()</code> -- those are "raw"
 file names which the file system understands.</p></li>
@@ -354,7 +354,7 @@ well) on many platforms.  Consider using <a class="link" href="glib-String-Utili
 </tr>
 <tr>
 <td class="parameter_name"><p>len</p></td>
-<td class="parameter_description"><p>the length of the string, or -1 if the string is
+<td class="parameter_description"><p>the length of the string in bytes, or -1 if the string is
 nul-terminated (Note that some encodings may allow nul
 bytes to occur inside strings. In that case, using -1
 for the <em class="parameter"><code>len</code></em>
@@ -458,7 +458,7 @@ could combine with the base character.)</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>len</p></td>
-<td class="parameter_description"><p>the length of the string, or -1 if the string is
+<td class="parameter_description"><p>the length of the string in bytes, or -1 if the string is
 nul-terminated (Note that some encodings may allow nul
 bytes to occur inside strings. In that case, using -1
 for the <em class="parameter"><code>len</code></em>
@@ -557,7 +557,7 @@ could combine with the base character.)</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>len</p></td>
-<td class="parameter_description"><p>the length of the string, or -1 if the string is
+<td class="parameter_description"><p>the length of the string in bytes, or -1 if the string is
 nul-terminated (Note that some encodings may allow nul
 bytes to occur inside strings. In that case, using -1
 for the <em class="parameter"><code>len</code></em>
@@ -961,7 +961,7 @@ environment variables <code class="literal">G_FILENAME_ENCODING</code> and <code
 On Windows, the character set used in the GLib API is always UTF-8
 and said environment variables have no effect.</p>
 <p><code class="literal">G_FILENAME_ENCODING</code> may be set to a comma-separated list of
-character set names. The special token "&amp;commat;locale" is taken
+character set names. The special token "@locale" is taken
 to  mean the character set for the <a class="link" href="glib-running.html#setlocale" title="Locale">current locale</a>.
 If <code class="literal">G_FILENAME_ENCODING</code> is not set, but <code class="literal">G_BROKEN_FILENAMES</code> is,
 the character set of the current locale is taken as the filename
@@ -1211,6 +1211,8 @@ of the character set. This string must be freed with <a class="link" href="glib-
 <div class="refsect2">
 <a name="GIConv"></a><h3>GIConv</h3>
 <pre class="programlisting">typedef struct _GIConv GIConv;</pre>
+<p>The GIConv struct wraps an <code class="function">iconv()</code> conversion descriptor. It contains
+private data and should only be accessed using the following functions.</p>
 </div>
 <hr>
 <div class="refsect2">

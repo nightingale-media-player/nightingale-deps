@@ -44,7 +44,7 @@
 <tbody>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="GPollableInputStream.html#g-pollable-input-stream-can-poll" title="g_pollable_input_stream_can_poll ()">g_pollable_input_stream_can_poll</a> <span class="c_punctuation">()</span>
@@ -52,7 +52,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="GPollableInputStream.html#g-pollable-input-stream-is-readable" title="g_pollable_input_stream_is_readable ()">g_pollable_input_stream_is_readable</a> <span class="c_punctuation">()</span>
@@ -60,7 +60,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-The-Main-Event-Loop.html#GSource"><span class="returnvalue">GSource</span></a> *
+<a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#GSource"><span class="returnvalue">GSource</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="GPollableInputStream.html#g-pollable-input-stream-create-source" title="g_pollable_input_stream_create_source ()">g_pollable_input_stream_create_source</a> <span class="c_punctuation">()</span>
@@ -68,7 +68,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#gssize"><span class="returnvalue">gssize</span></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gssize"><span class="returnvalue">gssize</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="GPollableInputStream.html#g-pollable-input-stream-read-nonblocking" title="g_pollable_input_stream_read_nonblocking ()">g_pollable_input_stream_read_nonblocking</a> <span class="c_punctuation">()</span>
@@ -98,7 +98,7 @@
 </div>
 <div class="refsect1">
 <a name="GPollableInputStream.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
+<pre class="screen">    GInterface
     <span class="lineart">╰──</span> GPollableInputStream
 </pre>
 </div>
@@ -130,12 +130,12 @@ UNIX-file-descriptor-style asynchronous I/O rather than GIO-style.</p>
 <a name="GPollableInputStream.functions_details"></a><h2>Functions</h2>
 <div class="refsect2">
 <a name="g-pollable-input-stream-can-poll"></a><h3>g_pollable_input_stream_can_poll ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_pollable_input_stream_can_poll (<em class="parameter"><code><a class="link" href="GPollableInputStream.html" title="GPollableInputStream"><span class="type">GPollableInputStream</span></a> *stream</code></em>);</pre>
 <p>Checks if <em class="parameter"><code>stream</code></em>
  is actually pollable. Some classes may implement
 <a class="link" href="GPollableInputStream.html" title="GPollableInputStream"><span class="type">GPollableInputStream</span></a> but have only certain instances of that class
-be pollable. If this method returns <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>, then the behavior of
+be pollable. If this method returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>, then the behavior of
 other <a class="link" href="GPollableInputStream.html" title="GPollableInputStream"><span class="type">GPollableInputStream</span></a> methods is undefined.</p>
 <p>For any given stream, the value returned by this method is constant;
 a stream cannot switch from pollable to non-pollable or vice versa.</p>
@@ -156,8 +156,8 @@ a stream cannot switch from pollable to non-pollable or vice versa.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.7.24.10.2.7"></a><h4>Returns</h4>
-<p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>stream</code></em>
-is pollable, <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not.</p>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>stream</code></em>
+is pollable, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not.</p>
 <p></p>
 </div>
 <p class="since">Since 2.28</p>
@@ -165,13 +165,13 @@ is pollable, <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class=
 <hr>
 <div class="refsect2">
 <a name="g-pollable-input-stream-is-readable"></a><h3>g_pollable_input_stream_is_readable ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_pollable_input_stream_is_readable (<em class="parameter"><code><a class="link" href="GPollableInputStream.html" title="GPollableInputStream"><span class="type">GPollableInputStream</span></a> *stream</code></em>);</pre>
 <p>Checks if <em class="parameter"><code>stream</code></em>
  can be read.</p>
 <p>Note that some stream types may not be able to implement this 100%
 reliably, and it is possible that a call to <a class="link" href="GInputStream.html#g-input-stream-read" title="g_input_stream_read ()"><code class="function">g_input_stream_read()</code></a>
-after this returns <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> would still block. To guarantee
+after this returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> would still block. To guarantee
 non-blocking behavior, you should always use
 <a class="link" href="GPollableInputStream.html#g-pollable-input-stream-read-nonblocking" title="g_pollable_input_stream_read_nonblocking ()"><code class="function">g_pollable_input_stream_read_nonblocking()</code></a>, which will return a
 <a class="link" href="gio-GIOError.html#G-IO-ERROR-WOULD-BLOCK:CAPS"><code class="literal">G_IO_ERROR_WOULD_BLOCK</code></a> error rather than blocking.</p>
@@ -192,11 +192,11 @@ non-blocking behavior, you should always use
 </div>
 <div class="refsect3">
 <a name="id-1.4.7.24.10.3.7"></a><h4>Returns</h4>
-<p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>stream</code></em>
-is readable, <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not. If an error
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>stream</code></em>
+is readable, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not. If an error
 has occurred on <em class="parameter"><code>stream</code></em>
 , this will result in
-<a class="link" href="GPollableInputStream.html#g-pollable-input-stream-is-readable" title="g_pollable_input_stream_is_readable ()"><code class="function">g_pollable_input_stream_is_readable()</code></a> returning <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, and the
+<a class="link" href="GPollableInputStream.html#g-pollable-input-stream-is-readable" title="g_pollable_input_stream_is_readable ()"><code class="function">g_pollable_input_stream_is_readable()</code></a> returning <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, and the
 next attempt to read will return the error.</p>
 <p></p>
 </div>
@@ -205,10 +205,10 @@ next attempt to read will return the error.</p>
 <hr>
 <div class="refsect2">
 <a name="g-pollable-input-stream-create-source"></a><h3>g_pollable_input_stream_create_source ()</h3>
-<pre class="programlisting"><a href="../glib/glib-The-Main-Event-Loop.html#GSource"><span class="returnvalue">GSource</span></a> *
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#GSource"><span class="returnvalue">GSource</span></a> *
 g_pollable_input_stream_create_source (<em class="parameter"><code><a class="link" href="GPollableInputStream.html" title="GPollableInputStream"><span class="type">GPollableInputStream</span></a> *stream</code></em>,
                                        <em class="parameter"><code><a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> *cancellable</code></em>);</pre>
-<p>Creates a <a href="../glib/glib-The-Main-Event-Loop.html#GSource"><span class="type">GSource</span></a> that triggers when <em class="parameter"><code>stream</code></em>
+<p>Creates a <a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#GSource"><span class="type">GSource</span></a> that triggers when <em class="parameter"><code>stream</code></em>
  can be read, or
 <em class="parameter"><code>cancellable</code></em>
  is triggered or an error occurs. The callback on the
@@ -233,7 +233,7 @@ rather than <a class="link" href="GInputStream.html#g-input-stream-read" title="
 </tr>
 <tr>
 <td class="parameter_name"><p>cancellable</p></td>
-<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 </tbody>
@@ -241,7 +241,7 @@ rather than <a class="link" href="GInputStream.html#g-input-stream-read" title="
 </div>
 <div class="refsect3">
 <a name="id-1.4.7.24.10.4.7"></a><h4>Returns</h4>
-<p> a new <a href="../glib/glib-The-Main-Event-Loop.html#GSource"><span class="type">GSource</span></a>. </p>
+<p> a new <a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#GSource"><span class="type">GSource</span></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 <p class="since">Since 2.28</p>
@@ -249,13 +249,13 @@ rather than <a class="link" href="GInputStream.html#g-input-stream-read" title="
 <hr>
 <div class="refsect2">
 <a name="g-pollable-input-stream-read-nonblocking"></a><h3>g_pollable_input_stream_read_nonblocking ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gssize"><span class="returnvalue">gssize</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gssize"><span class="returnvalue">gssize</span></a>
 g_pollable_input_stream_read_nonblocking
                                (<em class="parameter"><code><a class="link" href="GPollableInputStream.html" title="GPollableInputStream"><span class="type">GPollableInputStream</span></a> *stream</code></em>,
                                 <em class="parameter"><code><span class="type">void</span> *buffer</code></em>,
-                                <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> count</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gsize"><span class="type">gsize</span></a> count</code></em>,
                                 <em class="parameter"><code><a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a> *cancellable</code></em>,
-                                <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Attempts to read up to <em class="parameter"><code>count</code></em>
  bytes from <em class="parameter"><code>stream</code></em>
  into <em class="parameter"><code>buffer</code></em>
@@ -263,7 +263,7 @@ g_pollable_input_stream_read_nonblocking
 with <a class="link" href="GInputStream.html#g-input-stream-read" title="g_input_stream_read ()"><code class="function">g_input_stream_read()</code></a>. If <em class="parameter"><code>stream</code></em>
  is not currently readable,
 this will immediately return <a class="link" href="gio-GIOError.html#G-IO-ERROR-WOULD-BLOCK:CAPS"><code class="literal">G_IO_ERROR_WOULD_BLOCK</code></a>, and you can
-use <a class="link" href="GPollableInputStream.html#g-pollable-input-stream-create-source" title="g_pollable_input_stream_create_source ()"><code class="function">g_pollable_input_stream_create_source()</code></a> to create a <a href="../glib/glib-The-Main-Event-Loop.html#GSource"><span class="type">GSource</span></a>
+use <a class="link" href="GPollableInputStream.html#g-pollable-input-stream-create-source" title="g_pollable_input_stream_create_source ()"><code class="function">g_pollable_input_stream_create_source()</code></a> to create a <a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#GSource"><span class="type">GSource</span></a>
 that will be triggered when <em class="parameter"><code>stream</code></em>
  is readable.</p>
 <p>Note that since this method never blocks, you cannot actually
@@ -290,9 +290,10 @@ to having been cancelled.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>buffer</p></td>
-<td class="parameter_description"><p>a buffer to read data into (which should be at least <em class="parameter"><code>count</code></em>
-bytes long).</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p> a buffer to
+read data into (which should be at least <em class="parameter"><code>count</code></em>
+bytes long). </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=count][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> guint8]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>count</p></td>
@@ -301,12 +302,12 @@ bytes long).</p></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>cancellable</p></td>
-<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> a <a class="link" href="GCancellable.html" title="GCancellable"><span class="type">GCancellable</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for error reporting, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore.</p></td>
+<td class="parameter_description"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for error reporting, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -348,14 +349,14 @@ bytes long).</p></td>
 </pre>
 <p>The interface for pollable input streams.</p>
 <p>The default implementation of <em class="parameter"><code>can_poll</code></em>
- always returns <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>.</p>
+ always returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>.</p>
 <p>The default implementation of <em class="parameter"><code>read_nonblocking</code></em>
  calls
 <a class="link" href="GPollableInputStream.html#g-pollable-input-stream-is-readable" title="g_pollable_input_stream_is_readable ()"><code class="function">g_pollable_input_stream_is_readable()</code></a>, and then calls
-<a class="link" href="GInputStream.html#g-input-stream-read" title="g_input_stream_read ()"><code class="function">g_input_stream_read()</code></a> if it returns <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>. This means you only need
+<a class="link" href="GInputStream.html#g-input-stream-read" title="g_input_stream_read ()"><code class="function">g_input_stream_read()</code></a> if it returns <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>. This means you only need
 to override it if it is possible that your <em class="parameter"><code>is_readable</code></em>
 
-implementation may return <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> when the stream is not actually
+implementation may return <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> when the stream is not actually
 readable.</p>
 <div class="refsect3">
 <a name="id-1.4.7.24.11.3.7"></a><h4>Members</h4>
@@ -367,7 +368,7 @@ readable.</p>
 </colgroup>
 <tbody>
 <tr>
-<td class="struct_member_name"><p><a href="../gobject/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GPollableInputStreamInterface.g-iface"></a>g_iface</code></em>;</p></td>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GPollableInputStreamInterface.g-iface"></a>g_iface</code></em>;</p></td>
 <td class="struct_member_description"><p>The parent interface.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr>
@@ -383,7 +384,7 @@ readable.</p>
 </tr>
 <tr>
 <td class="struct_member_name"><p><em class="structfield"><code><a name="GPollableInputStreamInterface.create-source"></a>create_source</code></em> ()</p></td>
-<td class="struct_member_description"><p>Creates a <a href="../glib/glib-The-Main-Event-Loop.html#GSource"><span class="type">GSource</span></a> to poll the stream</p></td>
+<td class="struct_member_description"><p>Creates a <a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#GSource"><span class="type">GSource</span></a> to poll the stream</p></td>
 <td class="struct_member_annotations"> </td>
 </tr>
 <tr>

@@ -895,8 +895,8 @@ This is often used in GTK+ applications when showing modal dialog
 boxes. Note that event sources are associated with a particular
 <a class="link" href="glib-The-Main-Event-Loop.html#GMainContext" title="GMainContext"><span class="type">GMainContext</span></a>, and will be checked and dispatched for all main
 loops associated with that GMainContext.</p>
-<p>GTK+ contains wrappers of some of these functions, e.g. <code class="function">gtk_main()</code>,
-<code class="function">gtk_main_quit()</code> and <code class="function">gtk_events_pending()</code>.</p>
+<p>GTK+ contains wrappers of some of these functions, e.g. <a href="http://developer.gnome.org/gtk2/gtk3-General.html#gtk-main"><code class="function">gtk_main()</code></a>,
+<a href="http://developer.gnome.org/gtk2/gtk3-General.html#gtk-main-quit"><code class="function">gtk_main_quit()</code></a> and <a href="http://developer.gnome.org/gtk2/gtk3-General.html#gtk-events-pending"><code class="function">gtk_events_pending()</code></a>.</p>
 <div class="refsect3">
 <a name="id-1.4.2.6.9"></a><h4>Creating new source types</h4>
 <p>One of the unusual features of the <a class="link" href="glib-The-Main-Event-Loop.html#GMainLoop" title="GMainLoop"><span class="type">GMainLoop</span></a> functionality
@@ -1614,12 +1614,12 @@ loop with a termination condition, computed from multiple threads:</p>
 4
 5
 6</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc ppc">#define NUM_TASKS 10</span>
-<span class="gtkdoc kwb">static</span> <span class="gtkdoc kwc">volatile</span> gint tasks_remaining <span class="gtkdoc opt">=</span> NUM_TASKS<span class="gtkdoc opt">;</span>
-<span class="gtkdoc opt">...</span>
- 
-<span class="keyword">while</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-Atomic-Operations.html#g-atomic-int-get">g_atomic_int_get</a></span> <span class="gtkdoc opt">(&amp;</span>tasks_remaining<span class="gtkdoc opt">) !=</span> <span class="number">0</span><span class="gtkdoc opt">)</span>
-  <span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-context-iteration">g_main_context_iteration</a></span> <span class="gtkdoc opt">(</span>NULL<span class="gtkdoc opt">,</span> TRUE<span class="gtkdoc opt">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="preproc">#define</span><span class="normal"> NUM_TASKS </span><span class="number">10</span>
+<span class="keyword">static</span><span class="normal"> </span><span class="keyword">volatile</span><span class="normal"> </span><span class="usertype">gint</span><span class="normal"> tasks_remaining </span><span class="symbol">=</span><span class="normal"> NUM_TASKS</span><span class="symbol">;</span>
+<span class="symbol">...</span>
+<span class="normal"> </span>
+<span class="keyword">while</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-Atomic-Operations.html#g-atomic-int-get">g_atomic_int_get</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">tasks_remaining</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">!=</span><span class="normal"> </span><span class="number">0</span><span class="symbol">)</span>
+<span class="normal">  </span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-context-iteration">g_main_context_iteration</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#TRUE:CAPS">TRUE</a></span><span class="symbol">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1635,10 +1635,10 @@ loop with a termination condition, computed from multiple threads:</p>
 2
 3
 4</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function">perform_work</span><span class="gtkdoc opt">();</span>
+        <td class="listing_code"><pre class="programlisting"><span class="function">perform_work</span><span class="symbol">();</span>
 
-<span class="keyword">if</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-Atomic-Operations.html#g-atomic-int-dec-and-test">g_atomic_int_dec_and_test</a></span> <span class="gtkdoc opt">(&amp;</span>tasks_remaining<span class="gtkdoc opt">))</span>
-  <span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-context-wakeup">g_main_context_wakeup</a></span> <span class="gtkdoc opt">(</span>NULL<span class="gtkdoc opt">);</span></pre></td>
+<span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-Atomic-Operations.html#g-atomic-int-dec-and-test">g_atomic_int_dec_and_test</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">tasks_remaining</span><span class="symbol">))</span>
+<span class="normal">  </span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-context-wakeup">g_main_context_wakeup</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -2205,33 +2205,33 @@ Imagine an extremely simple "garbage collected" system.</p>
 25
 26
 27</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">static</span> GList <span class="gtkdoc opt">*</span>free_list<span class="gtkdoc opt">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="keyword">static</span><span class="normal"> </span><span class="usertype">GList</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">free_list</span><span class="symbol">;</span>
 
-gpointer
-<span class="function">allocate_memory</span> <span class="gtkdoc opt">(</span>gsize size<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span> 
-  gpointer result <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Memory-Allocation.html#g-malloc">g_malloc</a></span> <span class="gtkdoc opt">(</span>size<span class="gtkdoc opt">);</span>
-  free_list <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Doubly-Linked-Lists.html#g-list-prepend">g_list_prepend</a></span> <span class="gtkdoc opt">(</span>free_list<span class="gtkdoc opt">,</span> result<span class="gtkdoc opt">);</span>
-  <span class="keyword">return</span> result<span class="gtkdoc opt">;</span>
-<span class="gtkdoc opt">}</span>
+<span class="normal"><a href="glib-Basic-Types.html#gpointer">gpointer</a></span>
+<span class="function">allocate_memory</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">gsize</span><span class="normal"> size</span><span class="symbol">)</span>
+<span class="cbracket">{</span><span class="normal"> </span>
+<span class="normal">  </span><span class="usertype">gpointer</span><span class="normal"> result </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Memory-Allocation.html#g-malloc">g_malloc</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">size</span><span class="symbol">);</span>
+<span class="normal">  free_list </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Doubly-Linked-Lists.html#g-list-prepend">g_list_prepend</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">free_list</span><span class="symbol">,</span><span class="normal"> result</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">return</span><span class="normal"> result</span><span class="symbol">;</span>
+<span class="cbracket">}</span>
 
-<span class="gtkdoc kwb">void</span>
-<span class="function">free_allocated_memory</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">void</span><span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  GList <span class="gtkdoc opt">*</span>l<span class="gtkdoc opt">;</span>
-  <span class="keyword">for</span> <span class="gtkdoc opt">(</span>l <span class="gtkdoc opt">=</span> free_list<span class="gtkdoc opt">;</span> l<span class="gtkdoc opt">;</span> l <span class="gtkdoc opt">=</span> l<span class="gtkdoc opt">-&gt;</span>next<span class="gtkdoc opt">);</span>
-    <span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span> <span class="gtkdoc opt">(</span>l<span class="gtkdoc opt">-&gt;</span>data<span class="gtkdoc opt">);</span>
-  <span class="function"><a href="glib-Doubly-Linked-Lists.html#g-list-free">g_list_free</a></span> <span class="gtkdoc opt">(</span>free_list<span class="gtkdoc opt">);</span>
-  free_list <span class="gtkdoc opt">=</span> NULL<span class="gtkdoc opt">;</span>
- <span class="gtkdoc opt">}</span>
+<span class="type">void</span>
+<span class="function">free_allocated_memory</span><span class="normal"> </span><span class="symbol">(</span><span class="type">void</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">GList</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">l</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="keyword">for</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">l </span><span class="symbol">=</span><span class="normal"> free_list</span><span class="symbol">;</span><span class="normal"> l</span><span class="symbol">;</span><span class="normal"> l </span><span class="symbol">=</span><span class="normal"> l</span><span class="symbol">-&gt;</span><span class="normal">next</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">l</span><span class="symbol">-&gt;</span><span class="normal">data</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-Doubly-Linked-Lists.html#g-list-free">g_list_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">free_list</span><span class="symbol">);</span>
+<span class="normal">  free_list </span><span class="symbol">=</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
+<span class="normal"> </span><span class="cbracket">}</span>
 
-<span class="gtkdoc opt">[...]</span>
+<span class="symbol">[...]</span>
 
-<span class="keyword">while</span> <span class="gtkdoc opt">(</span>TRUE<span class="gtkdoc opt">);</span> 
- <span class="gtkdoc opt">{</span>
-   <span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-context-iteration">g_main_context_iteration</a></span> <span class="gtkdoc opt">(</span>NULL<span class="gtkdoc opt">,</span> TRUE<span class="gtkdoc opt">);</span>
-   <span class="function">free_allocated_memory</span><span class="gtkdoc opt">();</span>
-  <span class="gtkdoc opt">}</span></pre></td>
+<span class="keyword">while</span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="glib-Standard-Macros.html#TRUE:CAPS">TRUE</a></span><span class="symbol">);</span><span class="normal"> </span>
+<span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">   </span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-context-iteration">g_main_context_iteration</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#TRUE:CAPS">TRUE</a></span><span class="symbol">);</span>
+<span class="normal">   </span><span class="function">free_allocated_memory</span><span class="symbol">();</span>
+<span class="normal">  </span><span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -2278,36 +2278,36 @@ recursive callback. This can be fixed by using <a class="link" href="glib-The-Ma
 28
 29
 30</pre></td>
-        <td class="listing_code"><pre class="programlisting">gpointer
-<span class="function">allocate_memory</span> <span class="gtkdoc opt">(</span>gsize size<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span> 
-  FreeListBlock <span class="gtkdoc opt">*</span>block <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Memory-Allocation.html#g-new">g_new</a></span> <span class="gtkdoc opt">(</span>FreeListBlock<span class="gtkdoc opt">,</span> <span class="number">1</span><span class="gtkdoc opt">);</span>
-  block<span class="gtkdoc opt">-&gt;</span>mem <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Memory-Allocation.html#g-malloc">g_malloc</a></span> <span class="gtkdoc opt">(</span>size<span class="gtkdoc opt">);</span>
-  block<span class="gtkdoc opt">-&gt;</span>depth <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-depth">g_main_depth</a></span> <span class="gtkdoc opt">();</span>   
-  free_list <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Doubly-Linked-Lists.html#g-list-prepend">g_list_prepend</a></span> <span class="gtkdoc opt">(</span>free_list<span class="gtkdoc opt">,</span> block<span class="gtkdoc opt">);</span>
-  <span class="keyword">return</span> block<span class="gtkdoc opt">-&gt;</span>mem<span class="gtkdoc opt">;</span>
-<span class="gtkdoc opt">}</span>
+        <td class="listing_code"><pre class="programlisting"><span class="normal"><a href="glib-Basic-Types.html#gpointer">gpointer</a></span>
+<span class="function">allocate_memory</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">gsize</span><span class="normal"> size</span><span class="symbol">)</span>
+<span class="cbracket">{</span><span class="normal"> </span>
+<span class="normal">  </span><span class="usertype">FreeListBlock</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">block </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Memory-Allocation.html#g-new">g_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">FreeListBlock</span><span class="symbol">,</span><span class="normal"> </span><span class="number">1</span><span class="symbol">);</span>
+<span class="normal">  block</span><span class="symbol">-&gt;</span><span class="normal">mem </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Memory-Allocation.html#g-malloc">g_malloc</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">size</span><span class="symbol">);</span>
+<span class="normal">  block</span><span class="symbol">-&gt;</span><span class="normal">depth </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-depth">g_main_depth</a></span><span class="normal"> </span><span class="symbol">();</span><span class="normal">   </span>
+<span class="normal">  free_list </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Doubly-Linked-Lists.html#g-list-prepend">g_list_prepend</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">free_list</span><span class="symbol">,</span><span class="normal"> block</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">return</span><span class="normal"> block</span><span class="symbol">-&gt;</span><span class="normal">mem</span><span class="symbol">;</span>
+<span class="cbracket">}</span>
 
-<span class="gtkdoc kwb">void</span>
-<span class="function">free_allocated_memory</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">void</span><span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  GList <span class="gtkdoc opt">*</span>l<span class="gtkdoc opt">;</span>
-  
-  <span class="gtkdoc kwb">int</span> depth <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-depth">g_main_depth</a></span> <span class="gtkdoc opt">();</span>
-  <span class="keyword">for</span> <span class="gtkdoc opt">(</span>l <span class="gtkdoc opt">=</span> free_list<span class="gtkdoc opt">;</span> l<span class="gtkdoc opt">; );</span>
-    <span class="gtkdoc opt">{</span>
-      GList <span class="gtkdoc opt">*</span>next <span class="gtkdoc opt">=</span> l<span class="gtkdoc opt">-&gt;</span>next<span class="gtkdoc opt">;</span>
-      FreeListBlock <span class="gtkdoc opt">*</span>block <span class="gtkdoc opt">=</span> l<span class="gtkdoc opt">-&gt;</span>data<span class="gtkdoc opt">;</span>
-      <span class="keyword">if</span> <span class="gtkdoc opt">(</span>block<span class="gtkdoc opt">-&gt;</span>depth <span class="gtkdoc opt">&gt;</span> depth<span class="gtkdoc opt">)</span>
-        <span class="gtkdoc opt">{</span>
-          <span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span> <span class="gtkdoc opt">(</span>block<span class="gtkdoc opt">-&gt;</span>mem<span class="gtkdoc opt">);</span>
-          <span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span> <span class="gtkdoc opt">(</span>block<span class="gtkdoc opt">);</span>
-          free_list <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Doubly-Linked-Lists.html#g-list-delete-link">g_list_delete_link</a></span> <span class="gtkdoc opt">(</span>free_list<span class="gtkdoc opt">,</span> l<span class="gtkdoc opt">);</span>
-        <span class="gtkdoc opt">}</span>
-              
-      l <span class="gtkdoc opt">=</span> next<span class="gtkdoc opt">;</span>
-    <span class="gtkdoc opt">}</span>
-  <span class="gtkdoc opt">}</span></pre></td>
+<span class="type">void</span>
+<span class="function">free_allocated_memory</span><span class="normal"> </span><span class="symbol">(</span><span class="type">void</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">GList</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">l</span><span class="symbol">;</span>
+<span class="normal">  </span>
+<span class="normal">  </span><span class="type">int</span><span class="normal"> depth </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-depth">g_main_depth</a></span><span class="normal"> </span><span class="symbol">();</span>
+<span class="normal">  </span><span class="keyword">for</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">l </span><span class="symbol">=</span><span class="normal"> free_list</span><span class="symbol">;</span><span class="normal"> l</span><span class="symbol">;</span><span class="normal"> </span><span class="symbol">);</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">      </span><span class="usertype">GList</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">next </span><span class="symbol">=</span><span class="normal"> l</span><span class="symbol">-&gt;</span><span class="normal">next</span><span class="symbol">;</span>
+<span class="normal">      </span><span class="usertype">FreeListBlock</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">block </span><span class="symbol">=</span><span class="normal"> l</span><span class="symbol">-&gt;</span><span class="normal">data</span><span class="symbol">;</span>
+<span class="normal">      </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">block</span><span class="symbol">-&gt;</span><span class="normal">depth </span><span class="symbol">&gt;</span><span class="normal"> depth</span><span class="symbol">)</span>
+<span class="normal">        </span><span class="cbracket">{</span>
+<span class="normal">          </span><span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">block</span><span class="symbol">-&gt;</span><span class="normal">mem</span><span class="symbol">);</span>
+<span class="normal">          </span><span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">block</span><span class="symbol">);</span>
+<span class="normal">          free_list </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Doubly-Linked-Lists.html#g-list-delete-link">g_list_delete_link</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">free_list</span><span class="symbol">,</span><span class="normal"> l</span><span class="symbol">);</span>
+<span class="normal">        </span><span class="cbracket">}</span>
+<span class="normal">              </span>
+<span class="normal">      l </span><span class="symbol">=</span><span class="normal"> next</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+<span class="normal">  </span><span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -2326,7 +2326,7 @@ these checks all over your code, since there are doubtless many,
 many things that the user could do. Instead, you can use the
 following techniques:</p>
 <div class="orderedlist"><ol class="orderedlist" type="1">
-<li class="listitem"><p>Use <code class="function">gtk_widget_set_sensitive()</code> or modal dialogs to prevent
+<li class="listitem"><p>Use <a href="http://developer.gnome.org/gtk2/GtkWidget.html#gtk-widget-set-sensitive"><code class="function">gtk_widget_set_sensitive()</code></a> or modal dialogs to prevent
 the user from interacting with elements while the main
 loop is recursing.</p></li>
 <li class="listitem"><p>Avoid main loop recursion in situations where you can't handle
@@ -2579,7 +2579,7 @@ ensure that no other asynchronous operations accidentally get
 started while the non-default context is active.</p>
 <p>Beware that libraries that predate this function may not correctly
 handle being used from a thread with a thread-default context. Eg,
-see <code class="function">g_file_supports_thread_contexts()</code>.</p>
+see <a href="http://library.gnome.org/devel/gio/unstable/GFile.html#g-file-supports-thread-contexts"><code class="function">g_file_supports_thread_contexts()</code></a>.</p>
 <div class="refsect3">
 <a name="id-1.4.2.7.46.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
@@ -3402,7 +3402,7 @@ if the call was interrupted.</p>
 <a name="GSourceDummyMarshal"></a><h3>GSourceDummyMarshal ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 <span class="c_punctuation">(</span>*GSourceDummyMarshal<span class="c_punctuation">)</span> (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
-<p>This is just a placeholder for <span class="type">GClosureMarshal</span>,
+<p>This is just a placeholder for <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Closures.html#GClosureMarshal"><span class="type">GClosureMarshal</span></a>,
 which cannot be used here for dependency reasons.</p>
 </div>
 <hr>
@@ -3637,35 +3637,35 @@ before the dispatch of your idle handler.</p>
 27
 28
 29</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">static</span> gboolean 
-<span class="function">idle_callback</span> <span class="gtkdoc opt">(</span>gpointer data<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  SomeWidget <span class="gtkdoc opt">*</span>self <span class="gtkdoc opt">=</span> data<span class="gtkdoc opt">;</span>
-   
-  <span class="function">GDK_THREADS_ENTER</span> <span class="gtkdoc opt">();</span>
-  <span class="gtkdoc slc">// do stuff with self</span>
-  self<span class="gtkdoc opt">-&gt;</span>idle_id <span class="gtkdoc opt">=</span> <span class="number">0</span><span class="gtkdoc opt">;</span>
-  <span class="function">GDK_THREADS_LEAVE</span> <span class="gtkdoc opt">();</span>
-   
-  <span class="keyword">return</span> G_SOURCE_REMOVE<span class="gtkdoc opt">;</span>
-<span class="gtkdoc opt">}</span>
- 
-<span class="gtkdoc kwb">static void</span> 
-<span class="function">some_widget_do_stuff_later</span> <span class="gtkdoc opt">(</span>SomeWidget <span class="gtkdoc opt">*</span>self<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  self<span class="gtkdoc opt">-&gt;</span>idle_id <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-The-Main-Event-Loop.html#g-idle-add">g_idle_add</a></span> <span class="gtkdoc opt">(</span>idle_callback<span class="gtkdoc opt">,</span> self<span class="gtkdoc opt">);</span>
-<span class="gtkdoc opt">}</span>
- 
-<span class="gtkdoc kwb">static void</span> 
-<span class="function">some_widget_finalize</span> <span class="gtkdoc opt">(</span>GObject <span class="gtkdoc opt">*</span>object<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  SomeWidget <span class="gtkdoc opt">*</span>self <span class="gtkdoc opt">=</span> <span class="function">SOME_WIDGET</span> <span class="gtkdoc opt">(</span>object<span class="gtkdoc opt">);</span>
-   
-  <span class="keyword">if</span> <span class="gtkdoc opt">(</span>self<span class="gtkdoc opt">-&gt;</span>idle_id<span class="gtkdoc opt">)</span>
-    <span class="function"><a href="glib-The-Main-Event-Loop.html#g-source-remove">g_source_remove</a></span> <span class="gtkdoc opt">(</span>self<span class="gtkdoc opt">-&gt;</span>idle_id<span class="gtkdoc opt">);</span>
-   
-  <span class="function">G_OBJECT_CLASS</span> <span class="gtkdoc opt">(</span>parent_class<span class="gtkdoc opt">)-&gt;</span><span class="function">finalize</span> <span class="gtkdoc opt">(</span>object<span class="gtkdoc opt">);</span>
-<span class="gtkdoc opt">}</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="keyword">static</span><span class="normal"> <a href="glib-Basic-Types.html#gboolean">gboolean</a> </span>
+<span class="function">idle_callback</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">gpointer</span><span class="normal"> data</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">SomeWidget</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">self </span><span class="symbol">=</span><span class="normal"> data</span><span class="symbol">;</span>
+<span class="normal">   </span>
+<span class="normal">  </span><span class="function"><a href="http://developer.gnome.org/gdk2/gdk3-Threads.html#GDK-THREADS-ENTER:CAPS">GDK_THREADS_ENTER</a></span><span class="normal"> </span><span class="symbol">();</span>
+<span class="normal">  </span><span class="comment">// do stuff with self</span>
+<span class="normal">  self</span><span class="symbol">-&gt;</span><span class="normal">idle_id </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="function"><a href="http://developer.gnome.org/gdk2/gdk3-Threads.html#GDK-THREADS-LEAVE:CAPS">GDK_THREADS_LEAVE</a></span><span class="normal"> </span><span class="symbol">();</span>
+<span class="normal">   </span>
+<span class="normal">  </span><span class="keyword">return</span><span class="normal"> <a href="glib-The-Main-Event-Loop.html#G-SOURCE-REMOVE:CAPS">G_SOURCE_REMOVE</a></span><span class="symbol">;</span>
+<span class="cbracket">}</span>
+<span class="normal"> </span>
+<span class="keyword">static</span><span class="normal"> </span><span class="type">void</span><span class="normal"> </span>
+<span class="function">some_widget_do_stuff_later</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">SomeWidget</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">self</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  self</span><span class="symbol">-&gt;</span><span class="normal">idle_id </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-idle-add">g_idle_add</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">idle_callback</span><span class="symbol">,</span><span class="normal"> self</span><span class="symbol">);</span>
+<span class="cbracket">}</span>
+<span class="normal"> </span>
+<span class="keyword">static</span><span class="normal"> </span><span class="type">void</span><span class="normal"> </span>
+<span class="function">some_widget_finalize</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">GObject</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">object</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">SomeWidget</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">self </span><span class="symbol">=</span><span class="normal"> </span><span class="function">SOME_WIDGET</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">object</span><span class="symbol">);</span>
+<span class="normal">   </span>
+<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">self</span><span class="symbol">-&gt;</span><span class="normal">idle_id</span><span class="symbol">)</span>
+<span class="normal">    </span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-source-remove">g_source_remove</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">self</span><span class="symbol">-&gt;</span><span class="normal">idle_id</span><span class="symbol">);</span>
+<span class="normal">   </span>
+<span class="normal">  </span><span class="function"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#G-OBJECT-CLASS:CAPS">G_OBJECT_CLASS</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">parent_class</span><span class="symbol">)-&gt;</span><span class="function">finalize</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">object</span><span class="symbol">);</span>
+<span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -3695,20 +3695,20 @@ has already been destroy within the callback.</p>
 12
 13
 14</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">static</span> gboolean 
-<span class="function">idle_callback</span> <span class="gtkdoc opt">(</span>gpointer data<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  SomeWidget <span class="gtkdoc opt">*</span>self <span class="gtkdoc opt">=</span> data<span class="gtkdoc opt">;</span>
-  
-  <span class="function">GDK_THREADS_ENTER</span> <span class="gtkdoc opt">();</span>
-  <span class="keyword">if</span> <span class="gtkdoc opt">(!</span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-source-is-destroyed">g_source_is_destroyed</a></span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-current-source">g_main_current_source</a></span> <span class="gtkdoc opt">()))</span>
-    <span class="gtkdoc opt">{</span>
-      <span class="gtkdoc slc">// do stuff with self</span>
-    <span class="gtkdoc opt">}</span>
-  <span class="function">GDK_THREADS_LEAVE</span> <span class="gtkdoc opt">();</span>
-  
-  <span class="keyword">return</span> FALSE<span class="gtkdoc opt">;</span>
-<span class="gtkdoc opt">}</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="keyword">static</span><span class="normal"> <a href="glib-Basic-Types.html#gboolean">gboolean</a> </span>
+<span class="function">idle_callback</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">gpointer</span><span class="normal"> data</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">SomeWidget</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">self </span><span class="symbol">=</span><span class="normal"> data</span><span class="symbol">;</span>
+<span class="normal">  </span>
+<span class="normal">  </span><span class="function"><a href="http://developer.gnome.org/gdk2/gdk3-Threads.html#GDK-THREADS-ENTER:CAPS">GDK_THREADS_ENTER</a></span><span class="normal"> </span><span class="symbol">();</span>
+<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(!</span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-source-is-destroyed">g_source_is_destroyed</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-The-Main-Event-Loop.html#g-main-current-source">g_main_current_source</a></span><span class="normal"> </span><span class="symbol">()))</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">      </span><span class="comment">// do stuff with self</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+<span class="normal">  </span><span class="function"><a href="http://developer.gnome.org/gdk2/gdk3-Threads.html#GDK-THREADS-LEAVE:CAPS">GDK_THREADS_LEAVE</a></span><span class="normal"> </span><span class="symbol">();</span>
+<span class="normal">  </span>
+<span class="normal">  </span><span class="keyword">return</span><span class="normal"> <a href="glib-Standard-Macros.html#FALSE:CAPS">FALSE</a></span><span class="symbol">;</span>
+<span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -4123,10 +4123,10 @@ g_source_set_callback_indirect (<em class="parameter"><code><a class="link" href
 <a class="link" href="glib-The-Main-Event-Loop.html#g-source-set-callback-indirect" title="g_source_set_callback_indirect ()"><code class="function">g_source_set_callback_indirect()</code></a> assumes
 an initial reference count on <em class="parameter"><code>callback_data</code></em>
 , and thus
-<em class="parameter"><code>callback_funcs</code></em>
--&gt;unref will eventually be called once more
-than <em class="parameter"><code>callback_funcs</code></em>
--&gt;ref.</p>
+<em class="parameter"><code>callback_funcs-&gt;unref</code></em>
+ will eventually be called once more
+than <em class="parameter"><code>callback_funcs-&gt;ref</code></em>
+.</p>
 <div class="refsect3">
 <a name="id-1.4.2.7.82.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
@@ -4512,7 +4512,7 @@ callback), and when <em class="parameter"><code>source</code></em>
 its own prepare/check functions indicate that it is ready.)</p>
 <p>If you don't need <em class="parameter"><code>child_source</code></em>
  to do anything on its own when it
-triggers, you can call <code class="function">g_source_set_dummy_callback()</code> on it to set a
+triggers, you can call <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Closures.html#g-source-set-dummy-callback"><code class="function">g_source_set_dummy_callback()</code></a> on it to set a
 callback that does nothing (except return <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if appropriate).</p>
 <p><em class="parameter"><code>source</code></em>
  will hold a reference on <em class="parameter"><code>child_source</code></em>
@@ -4759,7 +4759,7 @@ data, only one will be destroyed.</p>
 <div class="refsect2">
 <a name="GMainLoop"></a><h3>GMainLoop</h3>
 <pre class="programlisting">typedef struct _GMainLoop GMainLoop;</pre>
-<p>The &lt;structname&gt;GMainLoop&lt;/structname&gt; struct is an opaque data type
+<p>The <code class="literal">GMainLoop</code> struct is an opaque data type
 representing the main event loop of a GLib or GTK+ application.</p>
 </div>
 <hr>
@@ -4830,7 +4830,7 @@ the <a class="link" href="glib-The-Main-Event-Loop.html#GSource" title="struct G
 <div class="refsect2">
 <a name="GMainContext"></a><h3>GMainContext</h3>
 <pre class="programlisting">typedef struct _GMainContext GMainContext;</pre>
-<p>The &lt;structname&gt;GMainContext&lt;/structname&gt; struct is an opaque data
+<p>The <code class="literal">GMainContext</code> struct is an opaque data
 type representing a set of sources to be handled in a main loop.</p>
 </div>
 <hr>
@@ -4849,7 +4849,7 @@ the g_spawn functions.</p>
 <a name="GPollFD"></a><h3>struct GPollFD</h3>
 <pre class="programlisting">struct GPollFD {
 #if defined (G_OS_WIN32) &amp;&amp; GLIB_SIZEOF_VOID_P == 8
-  gint64 fd;
+#endif
 #else
   gint		fd;
 #endif
@@ -4869,14 +4869,9 @@ occurred.</p>
 </colgroup>
 <tbody>
 <tr>
-<td class="struct_member_name"><p><a class="link" href="glib-Basic-Types.html#gint64" title="gint64"><span class="type">gint64</span></a> <em class="structfield"><code><a name="GPollFD.fd"></a>fd</code></em>;</p></td>
+<td class="struct_member_name"><p><a class="link" href="glib-Basic-Types.html#gint" title="gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GPollFD.fd"></a>fd</code></em>;</p></td>
 <td class="struct_member_description"><p>the file descriptor to poll (or a HANDLE on Win32)</p></td>
 <td class="struct_member_annotations"> </td>
-</tr>
-<tr>
-<td class="struct_member_name"><p><a class="link" href="glib-Basic-Types.html#gint" title="gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GPollFD.fd"></a>fd</code></em>;</p></td>
-<td> </td>
-<td> </td>
 </tr>
 <tr>
 <td class="struct_member_name"><p><a class="link" href="glib-Basic-Types.html#gushort" title="gushort"><span class="type">gushort</span></a> <em class="structfield"><code><a name="GPollFD.events"></a>events</code></em>;</p></td>
@@ -4901,6 +4896,9 @@ from the <code class="function">poll()</code> function to indicate which events 
 <a name="G-POLLFD-FORMAT:CAPS"></a><h3>G_POLLFD_FORMAT</h3>
 <pre class="programlisting">#define G_POLLFD_FORMAT "%#I64x"
 </pre>
+<p>A format specifier that can be used in <code class="function">printf()</code>-style format strings
+when printing the <em class="parameter"><code>fd</code></em>
+ member of a <a class="link" href="glib-The-Main-Event-Loop.html#GPollFD" title="struct GPollFD"><span class="type">GPollFD</span></a>.</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -4908,7 +4906,7 @@ from the <code class="function">poll()</code> function to indicate which events 
 <pre class="programlisting">struct GSource {
 };
 </pre>
-<p>The &lt;structname&gt;GSource&lt;/structname&gt; struct is an opaque data type
+<p>The <code class="literal">GSource</code> struct is an opaque data type
 representing an event source.</p>
 </div>
 <hr>
@@ -4924,7 +4922,7 @@ representing an event source.</p>
   void     (*finalize) (GSource    *source); /* Can be NULL */
 };
 </pre>
-<p>The &lt;structname&gt;GSourceFuncs&lt;/structname&gt; struct contains a table of
+<p>The <code class="literal">GSourceFuncs</code> struct contains a table of
 functions used to handle event sources in a generic manner.</p>
 <p>For idle sources, the prepare and check functions always return <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a>
 to indicate that the source is always ready to be processed. The prepare
@@ -5014,7 +5012,7 @@ are needed for this type of event source.</p></td>
                  gpointer    *data);
 };
 </pre>
-<p>The &lt;structname&gt;GSourceCallbackFuncs&lt;/structname&gt; struct contains
+<p>The <code class="literal">GSourceCallbackFuncs</code> struct contains
 functions for managing callback objects.</p>
 <div class="refsect3">
 <a name="id-1.4.2.8.16.5"></a><h4>Members</h4>

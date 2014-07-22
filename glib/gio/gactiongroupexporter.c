@@ -85,7 +85,7 @@ g_action_group_describe_action (GActionGroup *action_group,
  * It's also a lot easier to read. :)
  *
  * For documentation of this interface, see
- * http://live.gnome.org/GTK+/GApplication-dbus-apis
+ * https://wiki.gnome.org/Projects/GLib/GApplication/DBusAPI
  */
 const char org_gtk_Actions_xml[] =
   "<node>"
@@ -238,6 +238,7 @@ g_action_group_exporter_set_events (GActionGroupExporter *exporter,
       source = g_idle_source_new ();
       exporter->pending_source = source;
       g_source_set_callback (source, g_action_group_exporter_dispatch_events, exporter, NULL);
+      g_source_set_name (source, "[gio] g_action_group_exporter_dispatch_events");
       g_source_attach (source, exporter->context);
       g_source_unref (source);
     }

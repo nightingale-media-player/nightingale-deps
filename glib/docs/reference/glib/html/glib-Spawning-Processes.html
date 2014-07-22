@@ -140,6 +140,14 @@
 </div>
 <div class="refsect1">
 <a name="glib-Spawning-Processes.description"></a><h2>Description</h2>
+<p>GLib supports spawning of processes with an API that is more
+convenient than the bare UNIX <code class="function">fork()</code> and <code class="function">exec()</code>.</p>
+<p>The g_spawn family of functions has synchronous (<a class="link" href="glib-Spawning-Processes.html#g-spawn-sync" title="g_spawn_sync ()"><code class="function">g_spawn_sync()</code></a>)
+and asynchronous variants (<a class="link" href="glib-Spawning-Processes.html#g-spawn-async" title="g_spawn_async ()"><code class="function">g_spawn_async()</code></a>, <a class="link" href="glib-Spawning-Processes.html#g-spawn-async-with-pipes" title="g_spawn_async_with_pipes ()"><code class="function">g_spawn_async_with_pipes()</code></a>),
+as well as convenience variants that take a complete shell-like
+commandline (<a class="link" href="glib-Spawning-Processes.html#g-spawn-command-line-sync" title="g_spawn_command_line_sync ()"><code class="function">g_spawn_command_line_sync()</code></a>, <a class="link" href="glib-Spawning-Processes.html#g-spawn-command-line-async" title="g_spawn_command_line_async ()"><code class="function">g_spawn_command_line_async()</code></a>).</p>
+<p>See <a href="http://library.gnome.org/devel/gio/unstable/GSubprocess.html"><span class="type">GSubprocess</span></a> in GIO for a higher-level API that provides
+stream interfaces for communication with child processes.</p>
 </div>
 <div class="refsect1">
 <a name="glib-Spawning-Processes.functions_details"></a><h2>Functions</h2>
@@ -379,7 +387,7 @@ and <em class="parameter"><code>standard_error</code></em>
 process reference must be closed using <a class="link" href="glib-Spawning-Processes.html#g-spawn-close-pid" title="g_spawn_close_pid ()"><code class="function">g_spawn_close_pid()</code></a>.</p>
 <p>If you are writing a GTK+ application, and the program you 
 are spawning is a graphical application, too, then you may
-want to use <code class="function">gdk_spawn_on_screen_with_pipes()</code> instead to ensure that
+want to use <a href="http://library.gnome.org/devel/gdk3/GdkScreen.html#gdk-spawn-on-screen-with-pipes"><code class="function">gdk_spawn_on_screen_with_pipes()</code></a> instead to ensure that
 the spawned program opens its windows on the right screen.</p>
 <div class="refsect3">
 <a name="id-1.5.17.7.3.24"></a><h4>Parameters</h4>
@@ -473,7 +481,7 @@ simply calls the <a class="link" href="glib-Spawning-Processes.html#g-spawn-asyn
 reference when you don't need it any more.</p>
 <p>If you are writing a GTK+ application, and the program you are
 spawning is a graphical application, too, then you may want to
-use <code class="function">gdk_spawn_on_screen()</code> instead to ensure that the spawned program
+use <a href="http://library.gnome.org/devel/gdk3/GdkScreen.html#gdk-spawn-on-screen"><code class="function">gdk_spawn_on_screen()</code></a> instead to ensure that the spawned program
 opens its windows on the right screen.</p>
 <p>Note that the returned <em class="parameter"><code>child_pid</code></em>
  on Windows is a handle to the child

@@ -153,6 +153,8 @@ GLIB_AVAILABLE_IN_ALL GType g_test_dbus_flags_get_type (void) G_GNUC_CONST;
 #define G_TYPE_TEST_DBUS_FLAGS (g_test_dbus_flags_get_type ())
 GLIB_AVAILABLE_IN_ALL GType g_subprocess_flags_get_type (void) G_GNUC_CONST;
 #define G_TYPE_SUBPROCESS_FLAGS (g_subprocess_flags_get_type ())
+GLIB_AVAILABLE_IN_ALL GType g_notification_priority_get_type (void) G_GNUC_CONST;
+#define G_TYPE_NOTIFICATION_PRIORITY (g_notification_priority_get_type ())
 
 /* enumerations from "gsettings.h" */
 GLIB_AVAILABLE_IN_ALL GType g_settings_bind_flags_get_type (void) G_GNUC_CONST;

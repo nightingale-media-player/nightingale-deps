@@ -60,7 +60,7 @@
 <col width="200px" class="properties_flags">
 </colgroup>
 <tbody><tr>
-<td class="property_type"><a href="../glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
 <td class="property_name"><a class="link" href="GThreadedSocketService.html#GThreadedSocketService--max-threads" title="The “max-threads” property">max-threads</a></td>
 <td class="property_flags">Read / Write / Construct Only</td>
 </tr></tbody>
@@ -75,7 +75,7 @@
 <col width="200px" class="signals_flags">
 </colgroup>
 <tbody><tr>
-<td class="signal_type"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a></td>
+<td class="signal_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a></td>
 <td class="signal_name"><a class="link" href="GThreadedSocketService.html#GThreadedSocketService-run" title="The “run” signal">run</a></td>
 <td class="signal_flags">Run Last</td>
 </tr></tbody>
@@ -96,7 +96,7 @@
 </div>
 <div class="refsect1">
 <a name="GThreadedSocketService.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
     <span class="lineart">╰──</span> <a class="link" href="GSocketListener.html" title="GSocketListener">GSocketListener</a>
         <span class="lineart">╰──</span> <a class="link" href="GSocketService.html" title="GSocketService">GSocketService</a>
             <span class="lineart">╰──</span> GThreadedSocketService
@@ -168,7 +168,7 @@ glib mainloop and handling them in a thread.</p>
 <a name="GThreadedSocketService.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
 <a name="GThreadedSocketService--max-threads"></a><h3>The <code class="literal">“max-threads”</code> property</h3>
-<pre class="programlisting">  “max-threads”              <a href="../glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<pre class="programlisting">  “max-threads”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>The max number of threads handling clients for this service.</p>
 <p>Flags: Read / Write / Construct Only</p>
 <p>Allowed values: &gt;= -1</p>
@@ -179,11 +179,11 @@ glib mainloop and handling them in a thread.</p>
 <a name="GThreadedSocketService.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2">
 <a name="GThreadedSocketService-run"></a><h3>The <code class="literal">“run”</code> signal</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 user_function (<a class="link" href="GThreadedSocketService.html" title="GThreadedSocketService"><span class="type">GThreadedSocketService</span></a> *service,
                <a class="link" href="GSocketConnection.html" title="GSocketConnection"><span class="type">GSocketConnection</span></a>      *connection,
-               <a href="../gobject/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>                *source_object,
-               <a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>                user_data)</pre>
+               <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>                *source_object,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>                user_data)</pre>
 <p>The ::run signal is emitted in a worker thread in response to an
 incoming connection. This thread is dedicated to handling
 <em class="parameter"><code>connection</code></em>
@@ -223,7 +223,7 @@ not return until the connection is closed.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.14.9.13.2.6"></a><h4>Returns</h4>
-<p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to stop further signal handlers from being called</p>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to stop further signal handlers from being called</p>
 <p></p>
 </div>
 <p>Flags: Run Last</p>

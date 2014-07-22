@@ -67,7 +67,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="GSocketService.html#g-socket-service-is-active" title="g_socket_service_is_active ()">g_socket_service_is_active</a> <span class="c_punctuation">()</span>
@@ -85,7 +85,7 @@
 <col width="200px" class="signals_flags">
 </colgroup>
 <tbody><tr>
-<td class="signal_type"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a></td>
+<td class="signal_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a></td>
 <td class="signal_name"><a class="link" href="GSocketService.html#GSocketService-incoming" title="The “incoming” signal">incoming</a></td>
 <td class="signal_flags">Run Last</td>
 </tr></tbody>
@@ -106,7 +106,7 @@
 </div>
 <div class="refsect1">
 <a name="GSocketService.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
     <span class="lineart">╰──</span> <a class="link" href="GSocketListener.html" title="GSocketListener">GSocketListener</a>
         <span class="lineart">╰──</span> GSocketService
             <span class="lineart">╰──</span> <a class="link" href="GThreadedSocketService.html" title="GThreadedSocketService">GThreadedSocketService</a>
@@ -218,7 +218,7 @@ will happen automatically when the <a class="link" href="GSocketService.html" ti
 <hr>
 <div class="refsect2">
 <a name="g-socket-service-is-active"></a><h3>g_socket_service_is_active ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_socket_service_is_active (<em class="parameter"><code><a class="link" href="GSocketService.html" title="GSocketService"><span class="type">GSocketService</span></a> *service</code></em>);</pre>
 <p>Check whether the service is active or not. An active
 service will accept new clients that connect, while
@@ -241,7 +241,7 @@ up until the service is started.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.14.8.9.5.6"></a><h4>Returns</h4>
-<p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the service is active, <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise</p>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the service is active, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise</p>
 <p></p>
 </div>
 <p class="since">Since 2.22</p>
@@ -261,11 +261,11 @@ glib mainloop.</p>
 <a name="GSocketService.signal-details"></a><h2>Signal Details</h2>
 <div class="refsect2">
 <a name="GSocketService-incoming"></a><h3>The <code class="literal">“incoming”</code> signal</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 user_function (<a class="link" href="GSocketService.html" title="GSocketService"><span class="type">GSocketService</span></a>    *service,
                <a class="link" href="GSocketConnection.html" title="GSocketConnection"><span class="type">GSocketConnection</span></a> *connection,
-               <a href="../gobject/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>           *source_object,
-               <a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>           user_data)</pre>
+               <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>           *source_object,
+               <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a>           user_data)</pre>
 <p>The ::incoming signal is emitted when a new incoming connection
 to <em class="parameter"><code>service</code></em>
  needs to be handled. The handler must initiate the
@@ -310,7 +310,7 @@ so you need to ref it yourself if you are planning to use it.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.14.8.11.2.7"></a><h4>Returns</h4>
-<p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to stop other handlers from being called</p>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> to stop other handlers from being called</p>
 <p></p>
 </div>
 <p>Flags: Run Last</p>

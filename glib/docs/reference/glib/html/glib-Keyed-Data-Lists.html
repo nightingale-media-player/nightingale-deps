@@ -214,8 +214,8 @@ be accessed either with a string or with a <a class="link" href="glib-Quarks.htm
 the string.</p>
 <p>The <a class="link" href="glib-Quarks.html#GQuark" title="GQuark"><span class="type">GQuark</span></a> methods are quicker, since the strings have to be
 converted to <a href="glib-Quarks.html#GQuark"><span class="type">GQuarks</span></a> anyway.</p>
-<p>Data lists are used for associating arbitrary data with <span class="type">GObjects</span>,
-using <code class="function">g_object_set_data()</code> and related functions.</p>
+<p>Data lists are used for associating arbitrary data with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObjects</span></a>,
+using <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-set-data"><code class="function">g_object_set_data()</code></a> and related functions.</p>
 <p>To create a datalist, use <a class="link" href="glib-Keyed-Data-Lists.html#g-datalist-init" title="g_datalist_init ()"><code class="function">g_datalist_init()</code></a>.</p>
 <p>To add data elements to a datalist use <a class="link" href="glib-Keyed-Data-Lists.html#g-datalist-id-set-data" title="g_datalist_id_set_data()"><code class="function">g_datalist_id_set_data()</code></a>,
 <a class="link" href="glib-Keyed-Data-Lists.html#g-datalist-id-set-data-full" title="g_datalist_id_set_data_full ()"><code class="function">g_datalist_id_set_data_full()</code></a>, <a class="link" href="glib-Keyed-Data-Lists.html#g-datalist-set-data" title="g_datalist_set_data()"><code class="function">g_datalist_set_data()</code></a> and
@@ -580,12 +580,8 @@ Its up to the caller to free this as he wishes, which may
 or may not include using <em class="parameter"><code>old_destroy</code></em>
  as sometimes replacement
 should not destroy the object in the normal way.</p>
-<p>Return: <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the existing value for <em class="parameter"><code>key_id</code></em>
- was replaced
- by <em class="parameter"><code>newval</code></em>
-, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise.</p>
 <div class="refsect3">
-<a name="id-1.6.16.7.10.8"></a><h4>Parameters</h4>
+<a name="id-1.6.16.7.10.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -625,6 +621,14 @@ should not destroy the object in the normal way.</p>
 </tr>
 </tbody>
 </table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.6.16.7.10.8"></a><h4>Returns</h4>
+<p> <a class="link" href="glib-Standard-Macros.html#TRUE:CAPS" title="TRUE"><code class="literal">TRUE</code></a> if the existing value for <em class="parameter"><code>key_id</code></em>
+was replaced
+by <em class="parameter"><code>newval</code></em>
+, <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> otherwise.</p>
+<p></p>
 </div>
 <p class="since">Since 2.34</p>
 </div>
@@ -879,7 +883,7 @@ g_datalist_set_flags (<em class="parameter"><code><a class="link" href="glib-Key
 to keep a small number of boolean flags in an object with
 a data list without using any additional space. It is
 not generally useful except in circumstances where space
-is very tight. (It is used in the base <span class="type">GObject</span> type, for
+is very tight. (It is used in the base <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> type, for
 example.)</p>
 <div class="refsect3">
 <a name="id-1.6.16.7.18.5"></a><h4>Parameters</h4>

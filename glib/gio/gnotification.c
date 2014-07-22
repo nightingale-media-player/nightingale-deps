@@ -23,6 +23,7 @@
 #include "gdbusutils.h"
 #include "gicon.h"
 #include "gaction.h"
+#include "gioenumtypes.h"
 
 /**
  * SECTION:gnotification
@@ -72,7 +73,7 @@ struct _GNotification
   gchar *title;
   gchar *body;
   GIcon *icon;
-  gboolean urgent;
+  GNotificationPriority priority;
   GPtrArray *buttons;
   gchar *default_action;
   GVariant *default_action_target;
@@ -286,19 +287,19 @@ g_notification_set_icon (GNotification *notification,
 }
 
 /*< private >
- * g_notification_get_urgent:
+ * g_notification_get_priority:
  * @notification: a #GNotification
  *
- * Returns %TRUE if @notification is marked as urgent.
+ * Returns the priority of @notification
  *
- * Since: 2.40
+ * Since: 2.42
  */
-gboolean
-g_notification_get_urgent (GNotification *notification)
+GNotificationPriority
+g_notification_get_priority (GNotification *notification)
 {
-  g_return_val_if_fail (G_IS_NOTIFICATION (notification), FALSE);
+  g_return_val_if_fail (G_IS_NOTIFICATION (notification), G_NOTIFICATION_PRIORITY_NORMAL);
 
-  return notification->urgent;
+  return notification->priority;
 }
 
 /**
@@ -306,7 +307,7 @@ g_notification_get_urgent (GNotification *notification)
  * @notification: a #GNotification
  * @urgent: %TRUE if @notification is urgent
  *
- * Sets or unsets whether @notification is marked as urgent.
+ * Deprecated in favor of g_notification_set_priority().
  *
  * Since: 2.40
  */
@@ -316,7 +317,24 @@ g_notification_set_urgent (GNotification *notification,
 {
   g_return_if_fail (G_IS_NOTIFICATION (notification));
 
-  notification->urgent = urgent;
+  g_notification_set_priority (notification, G_NOTIFICATION_PRIORITY_URGENT);
+}
+
+/**
+ * g_notification_set_priority:
+ * @notification: a #GNotification
+ * @priority: a #GNotificationPriority
+ *
+ * Sets the priority of @notification to @priority. See
+ * #GNotificationPriority for possible values.
+ */
+void
+g_notification_set_priority (GNotification         *notification,
+                             GNotificationPriority  priority)
+{
+  g_return_if_fail (G_IS_NOTIFICATION (notification));
+
+  notification->priority = priority;
 }
 
 /**
@@ -366,15 +384,15 @@ g_notification_add_button (GNotification *notification,
  * @notification: a #GNotification
  * @label: label of the button
  * @action: an action name
- * @target_format: (allow-none): a GVariant format string, or %NULL
- * @...: positional parameters, as determined by @format_string
+ * @target_format: (allow-none): a #GVariant format string, or %NULL
+ * @...: positional parameters, as determined by @target_format
  *
  * Adds a button to @notification that activates @action when clicked.
  * @action must be an application-wide action (it must start with "app.").
  *
  * If @target_format is given, it is used to collect remaining
- * positional parameters into a GVariant instance, similar to
- * g_variant_new(). @action will be activated with that GVariant as its
+ * positional parameters into a #GVariant instance, similar to
+ * g_variant_new(). @action will be activated with that #GVariant as its
  * parameter.
  *
  * Since: 2.40
@@ -404,7 +422,7 @@ g_notification_add_button_with_target (GNotification *notification,
  * @notification: a #GNotification
  * @label: label of the button
  * @action: an action name
- * @target: (allow-none): a GVariant to use as @action's parameter, or %NULL
+ * @target: (allow-none): a #GVariant to use as @action's parameter, or %NULL
  *
  * Adds a button to @notification that activates @action when clicked.
  * @action must be an application-wide action (it must start with "app.").
@@ -594,16 +612,16 @@ g_notification_set_default_action (GNotification *notification,
  * g_notification_set_default_action_and_target: (skip)
  * @notification: a #GNotification
  * @action: an action name
- * @target_format: (allow-none): a GVariant format string, or %NULL
- * @...: positional parameters, as determined by @format_string
+ * @target_format: (allow-none): a #GVariant format string, or %NULL
+ * @...: positional parameters, as determined by @target_format
  *
  * Sets the default action of @notification to @action. This action is
  * activated when the notification is clicked on. It must be an
  * application-wide action (it must start with "app.").
  *
  * If @target_format is given, it is used to collect remaining
- * positional parameters into a GVariant instance, similar to
- * g_variant_new(). @action will be activated with that GVariant as its
+ * positional parameters into a #GVariant instance, similar to
+ * g_variant_new(). @action will be activated with that #GVariant as its
  * parameter.
  *
  * When no default action is set, the application that the notification
@@ -634,15 +652,11 @@ g_notification_set_default_action_and_target (GNotification *notification,
  * g_notification_set_default_action_and_target_value: (rename-to g_notification_set_default_action_and_target)
  * @notification: a #GNotification
  * @action: an action name
- * @target: (allow-none): a GVariant to use as @action's parameter, or %NULL
+ * @target: (allow-none): a #GVariant to use as @action's parameter, or %NULL
  *
  * Sets the default action of @notification to @action. This action is
  * activated when the notification is clicked on. It must be an
  * application-wide action (start with "app.").
- *
- * If @target_format is given, it is used to collect remaining
- * positional parameters into a GVariant instance, similar to
- * g_variant_new().
  *
  * If @target is non-%NULL, @action will be activated with @target as
  * its parameter.
@@ -691,6 +705,21 @@ g_notification_serialize_button (Button *button)
   return g_variant_builder_end (&builder);
 }
 
+static GVariant *
+g_notification_get_priority_nick (GNotification *notification)
+{
+  GEnumClass *enum_class;
+  GEnumValue *value;
+  GVariant *nick;
+
+  enum_class = g_type_class_ref (G_TYPE_NOTIFICATION_PRIORITY);
+  value = g_enum_get_value (enum_class, g_notification_get_priority (notification));
+  nick = g_variant_new_string (value->value_nick);
+  g_type_class_unref (enum_class);
+
+  return nick;
+}
+
 /*< private >
  * g_notification_serialize:
  *
@@ -722,7 +751,7 @@ g_notification_serialize (GNotification *notification)
         }
     }
 
-  g_variant_builder_add (&builder, "{sv}", "urgent", g_variant_new_boolean (notification->urgent));
+  g_variant_builder_add (&builder, "{sv}", "priority", g_notification_get_priority_nick (notification));
 
   if (notification->default_action)
     {

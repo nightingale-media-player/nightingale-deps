@@ -27,6 +27,7 @@
 <ANCHOR id="G-TYPE-CHECK-INSTANCE:CAPS" href="gobject/gobject-Type-Information.html#G-TYPE-CHECK-INSTANCE:CAPS">
 <ANCHOR id="G-TYPE-CHECK-INSTANCE-CAST:CAPS" href="gobject/gobject-Type-Information.html#G-TYPE-CHECK-INSTANCE-CAST:CAPS">
 <ANCHOR id="G-TYPE-CHECK-INSTANCE-TYPE:CAPS" href="gobject/gobject-Type-Information.html#G-TYPE-CHECK-INSTANCE-TYPE:CAPS">
+<ANCHOR id="G-TYPE-CHECK-INSTANCE-FUNDAMENTAL-TYPE:CAPS" href="gobject/gobject-Type-Information.html#G-TYPE-CHECK-INSTANCE-FUNDAMENTAL-TYPE:CAPS">
 <ANCHOR id="G-TYPE-CHECK-CLASS-CAST:CAPS" href="gobject/gobject-Type-Information.html#G-TYPE-CHECK-CLASS-CAST:CAPS">
 <ANCHOR id="G-TYPE-CHECK-CLASS-TYPE:CAPS" href="gobject/gobject-Type-Information.html#G-TYPE-CHECK-CLASS-TYPE:CAPS">
 <ANCHOR id="G-TYPE-CHECK-VALUE:CAPS" href="gobject/gobject-Type-Information.html#G-TYPE-CHECK-VALUE:CAPS">
@@ -372,6 +373,7 @@
 <ANCHOR id="g-value-copy" href="gobject/gobject-Generic-values.html#g-value-copy">
 <ANCHOR id="g-value-reset" href="gobject/gobject-Generic-values.html#g-value-reset">
 <ANCHOR id="g-value-unset" href="gobject/gobject-Generic-values.html#g-value-unset">
+<ANCHOR id="g-value-init-from-instance" href="gobject/gobject-Generic-values.html#g-value-init-from-instance">
 <ANCHOR id="g-value-set-instance" href="gobject/gobject-Generic-values.html#g-value-set-instance">
 <ANCHOR id="g-value-fits-pointer" href="gobject/gobject-Generic-values.html#g-value-fits-pointer">
 <ANCHOR id="g-value-peek-pointer" href="gobject/gobject-Generic-values.html#g-value-peek-pointer">
@@ -633,7 +635,6 @@
 <ANCHOR id="GParamSpec" href="gobject/gobject-GParamSpec.html#GParamSpec">
 <ANCHOR id="GParamSpecClass" href="gobject/gobject-GParamSpec.html#GParamSpecClass">
 <ANCHOR id="GParamFlags" href="gobject/gobject-GParamSpec.html#GParamFlags">
-<ANCHOR id="G-PARAM-READWRITE:CAPS" href="gobject/gobject-GParamSpec.html#G-PARAM-READWRITE:CAPS">
 <ANCHOR id="G-PARAM-MASK:CAPS" href="gobject/gobject-GParamSpec.html#G-PARAM-MASK:CAPS">
 <ANCHOR id="G-PARAM-USER-SHIFT:CAPS" href="gobject/gobject-GParamSpec.html#G-PARAM-USER-SHIFT:CAPS">
 <ANCHOR id="GParamSpecTypeInfo" href="gobject/gobject-GParamSpec.html#GParamSpecTypeInfo">

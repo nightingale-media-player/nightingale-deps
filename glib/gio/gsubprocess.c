@@ -649,8 +649,8 @@ g_subprocess_class_init (GSubprocessClass *class)
  * g_subprocess_new: (skip)
  * @flags: flags that define the behaviour of the subprocess
  * @error: (allow-none): return location for an error, or %NULL
- * @argv0: first commandline argument to pass to the subprocess,
- *     followed by more arguments, followed by %NULL
+ * @argv0: first commandline argument to pass to the subprocess
+ * @...:   more commandline arguments, followed by %NULL
  *
  * Create a new process with the given flags and varargs argument
  * list.  By default, matching the g_spawn_async() defaults, the
@@ -686,6 +686,7 @@ g_subprocess_new (GSubprocessFlags   flags,
   while ((arg = va_arg (ap, const gchar *)))
     g_ptr_array_add (args, (gchar *) arg);
   g_ptr_array_add (args, NULL);
+  va_end (ap);
 
   result = g_subprocess_newv ((const gchar * const *) args->pdata, flags, error);
 
@@ -727,8 +728,8 @@ g_subprocess_newv (const gchar * const  *argv,
  * g_subprocess_get_identifier:
  * @subprocess: a #GSubprocess
  *
- * On UNIX, returns the process ID as a decimal string.  On Windows,
- * returns the result of GetProcessId() also as a string.
+ * On UNIX, returns the process ID as a decimal string.
+ * On Windows, returns the result of GetProcessId() also as a string.
  */
 const gchar *
 g_subprocess_get_identifier (GSubprocess *subprocess)
@@ -939,6 +940,9 @@ g_subprocess_sync_complete (GAsyncResult **result)
  *
  * This function does not fail in the case of the subprocess having
  * abnormal termination.  See g_subprocess_wait_check() for that.
+ *
+ * Cancelling @cancellable doesn't kill the subprocess.  Call
+ * g_subprocess_force_exit() if it is desirable.
  *
  * Returns: %TRUE on success, %FALSE if @cancellable was cancelled
  *
@@ -1420,7 +1424,7 @@ g_subprocess_communicate_made_progress (GObject      *source_object,
       source == state->stdout_buf ||
       source == state->stderr_buf)
     {
-      if (!g_output_stream_splice_finish ((GOutputStream*)source, result, &error))
+      if (g_output_stream_splice_finish ((GOutputStream*) source, result, &error) == -1)
         goto out;
 
       if (source == state->stdout_buf ||
@@ -1768,7 +1772,7 @@ g_subprocess_communicate_utf8 (GSubprocess   *subprocess,
  * @callback: Callback
  * @user_data: User data
  *
- * Asynchronous version of g_subprocess_communicate_utf().  Complete
+ * Asynchronous version of g_subprocess_communicate_utf8().  Complete
  * invocation with g_subprocess_communicate_utf8_finish().
  */
 void

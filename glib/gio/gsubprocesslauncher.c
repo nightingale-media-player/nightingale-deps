@@ -174,7 +174,7 @@ g_subprocess_launcher_finalize (GObject *object)
 static void
 g_subprocess_launcher_init (GSubprocessLauncher  *self)
 {
-  self->envp = g_listenv ();
+  self->envp = g_get_environ ();
 
 #ifdef G_OS_UNIX
   self->stdin_fd = -1;
@@ -675,8 +675,7 @@ g_subprocess_launcher_set_child_setup (GSubprocessLauncher  *self,
  * @argv0: Command line arguments
  * @...: Continued arguments, %NULL terminated
  *
- * A convenience helper for creating a #GSubprocess given a provided
- * varargs list of arguments.
+ * Creates a #GSubprocess given a provided varargs list of arguments.
  *
  * Since: 2.40
  * Returns: (transfer full): A new #GSubprocess, or %NULL on error (and @error will be set)
@@ -703,6 +702,7 @@ g_subprocess_launcher_spawn (GSubprocessLauncher  *launcher,
     g_ptr_array_add (args, (gchar *) arg);
 
   g_ptr_array_add (args, NULL);
+  va_end (ap);
 
   result = g_subprocess_launcher_spawnv (launcher, (const gchar * const *) args->pdata, error);
 
@@ -718,8 +718,7 @@ g_subprocess_launcher_spawn (GSubprocessLauncher  *launcher,
  * @argv: (array zero-terminated=1) (element-type utf8): Command line arguments
  * @error: Error
  *
- * A convenience helper for creating a #GSubprocess given a provided
- * array of arguments.
+ * Creates a #GSubprocess given a provided array of arguments.
  *
  * Since: 2.40
  * Returns: (transfer full): A new #GSubprocess, or %NULL on error (and @error will be set)

@@ -156,7 +156,7 @@
 </div>
 <div class="refsect1">
 <a name="GSettingsBackend.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
     <span class="lineart">╰──</span> GSettingsBackend
 </pre>
 </div>
@@ -178,8 +178,8 @@ method for determining if writing of certain values will fail
 <p>The semantics of the interface are very precisely defined and
 implementations must carefully adhere to the expectations of
 callers that are documented on each of the interface methods.</p>
-<p>Some of the GSettingsBackend functions accept or return a <a href="../glib/glib-Balanced-Binary-Trees.html#GTree"><span class="type">GTree</span></a>.
-These trees always have strings as keys and <a href="../glib/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> as values.
+<p>Some of the GSettingsBackend functions accept or return a <a href="http://library.gnome.org/devel/glib/unstable/glib-Balanced-Binary-Trees.html#GTree"><span class="type">GTree</span></a>.
+These trees always have strings as keys and <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> as values.
 <code class="function">g_settings_backend_create_tree()</code> is a convenience function to create
 suitable trees.</p>
 <p>The GSettingsBackend API is exported to allow third-party
@@ -210,8 +210,8 @@ to the name of a settings backend.</p>
 <a name="g-settings-backend-changed"></a><h3>g_settings_backend_changed ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_settings_backend_changed (<em class="parameter"><code><a class="link" href="GSettingsBackend.html" title="GSettingsBackend"><span class="type">GSettingsBackend</span></a> *backend</code></em>,
-                            <em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
-                            <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> origin_tag</code></em>);</pre>
+                            <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>,
+                            <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> origin_tag</code></em>);</pre>
 <p>Signals that a single key has possibly changed.  Backend
 implementations should call this if a key has possibly changed its
 value.</p>
@@ -266,8 +266,8 @@ value that was passed to that call.</p>
 <a name="g-settings-backend-path-changed"></a><h3>g_settings_backend_path_changed ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_settings_backend_path_changed (<em class="parameter"><code><a class="link" href="GSettingsBackend.html" title="GSettingsBackend"><span class="type">GSettingsBackend</span></a> *backend</code></em>,
-                                 <em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>,
-                                 <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> origin_tag</code></em>);</pre>
+                                 <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>,
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> origin_tag</code></em>);</pre>
 <p>Signals that all keys below a given path may have possibly changed.
 Backend implementations should call this if an entire path of keys
 have possibly changed their values.</p>
@@ -322,9 +322,9 @@ single key in the application will be notified of a possible change.</p>
 <a name="g-settings-backend-keys-changed"></a><h3>g_settings_backend_keys_changed ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_settings_backend_keys_changed (<em class="parameter"><code><a class="link" href="GSettingsBackend.html" title="GSettingsBackend"><span class="type">GSettingsBackend</span></a> *backend</code></em>,
-                                 <em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>,
-                                 <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> const * const *items</code></em>,
-                                 <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> origin_tag</code></em>);</pre>
+                                 <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>,
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> const * const *items</code></em>,
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> origin_tag</code></em>);</pre>
 <p>Signals that a list of keys have possibly changed.  Backend
 implementations should call this if keys have possibly changed their
 values.</p>
@@ -369,7 +369,7 @@ keys that were changed) but this is not strictly required.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>items</p></td>
-<td class="parameter_description"><p> the <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>-terminated list of changed keys. </p></td>
+<td class="parameter_description"><p> the <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>-terminated list of changed keys. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1]</span></td>
 </tr>
 <tr>
@@ -388,7 +388,7 @@ keys that were changed) but this is not strictly required.</p>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_settings_backend_path_writable_changed
                                (<em class="parameter"><code><a class="link" href="GSettingsBackend.html" title="GSettingsBackend"><span class="type">GSettingsBackend</span></a> *backend</code></em>,
-                                <em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>);</pre>
+                                <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *path</code></em>);</pre>
 <p>Signals that the writability of all keys below a given path may have
 changed.</p>
 <p>Since GSettings performs no locking operations for itself, this call
@@ -422,7 +422,7 @@ will always be made in response to external events.</p>
 <a name="g-settings-backend-writable-changed"></a><h3>g_settings_backend_writable_changed ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_settings_backend_writable_changed (<em class="parameter"><code><a class="link" href="GSettingsBackend.html" title="GSettingsBackend"><span class="type">GSettingsBackend</span></a> *backend</code></em>,
-                                     <em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>);</pre>
+                                     <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *key</code></em>);</pre>
 <p>Signals that the writability of a single key has possibly changed.</p>
 <p>Since GSettings performs no locking operations for itself, this call
 will always be made in response to external events.</p>
@@ -455,8 +455,8 @@ will always be made in response to external events.</p>
 <a name="g-settings-backend-changed-tree"></a><h3>g_settings_backend_changed_tree ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_settings_backend_changed_tree (<em class="parameter"><code><a class="link" href="GSettingsBackend.html" title="GSettingsBackend"><span class="type">GSettingsBackend</span></a> *backend</code></em>,
-                                 <em class="parameter"><code><a href="../glib/glib-Balanced-Binary-Trees.html#GTree"><span class="type">GTree</span></a> *tree</code></em>,
-                                 <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> origin_tag</code></em>);</pre>
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Balanced-Binary-Trees.html#GTree"><span class="type">GTree</span></a> *tree</code></em>,
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> origin_tag</code></em>);</pre>
 <p>This call is a convenience wrapper.  It gets the list of changes from
 <em class="parameter"><code>tree</code></em>
 , computes the longest common prefix and calls
@@ -477,7 +477,7 @@ g_settings_backend_changed_tree (<em class="parameter"><code><a class="link" hre
 </tr>
 <tr>
 <td class="parameter_name"><p>tree</p></td>
-<td class="parameter_description"><p>a <a href="../glib/glib-Balanced-Binary-Trees.html#GTree"><span class="type">GTree</span></a> containing the changes</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Balanced-Binary-Trees.html#GTree"><span class="type">GTree</span></a> containing the changes</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
@@ -494,10 +494,10 @@ g_settings_backend_changed_tree (<em class="parameter"><code><a class="link" hre
 <div class="refsect2">
 <a name="g-settings-backend-flatten-tree"></a><h3>g_settings_backend_flatten_tree ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
-g_settings_backend_flatten_tree (<em class="parameter"><code><a href="../glib/glib-Balanced-Binary-Trees.html#GTree"><span class="type">GTree</span></a> *tree</code></em>,
-                                 <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **path</code></em>,
-                                 <em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> ***keys</code></em>,
-                                 <em class="parameter"><code><a href="../glib/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> ***values</code></em>);</pre>
+g_settings_backend_flatten_tree (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Balanced-Binary-Trees.html#GTree"><span class="type">GTree</span></a> *tree</code></em>,
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **path</code></em>,
+                                 <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> ***keys</code></em>,
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> ***values</code></em>);</pre>
 <p>Calculate the longest common prefix of all keys in a tree and write
 out an array of the key names relative to that prefix and,
 optionally, the value to store at each of those keys.</p>
@@ -505,7 +505,7 @@ optionally, the value to store at each of those keys.</p>
 , <em class="parameter"><code>keys</code></em>
  and <em class="parameter"><code>values</code></em>
  using
-<a href="../glib/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>.  You should not attempt to free or unref the contents of
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>.  You should not attempt to free or unref the contents of
 <em class="parameter"><code>keys</code></em>
  or <em class="parameter"><code>values</code></em>
 .</p>
@@ -520,7 +520,7 @@ optionally, the value to store at each of those keys.</p>
 <tbody>
 <tr>
 <td class="parameter_name"><p>tree</p></td>
-<td class="parameter_description"><p>a <a href="../glib/glib-Balanced-Binary-Trees.html#GTree"><span class="type">GTree</span></a> containing the changes</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Balanced-Binary-Trees.html#GTree"><span class="type">GTree</span></a> containing the changes</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 <tr>
@@ -536,7 +536,7 @@ location to save the relative keys. </p></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>values</p></td>
-<td class="parameter_description"><p>         the location to save the values, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p>         the location to save the values, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Free data container after the code is done."><span class="acronym">transfer container</span></acronym>][<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1]</span></td>
 </tr>
 </tbody>
@@ -548,9 +548,9 @@ location to save the relative keys. </p></td>
 <div class="refsect2">
 <a name="g-keyfile-settings-backend-new"></a><h3>g_keyfile_settings_backend_new ()</h3>
 <pre class="programlisting"><a class="link" href="GSettingsBackend.html" title="GSettingsBackend"><span class="returnvalue">GSettingsBackend</span></a> *
-g_keyfile_settings_backend_new (<em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *filename</code></em>,
-                                <em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *root_path</code></em>,
-                                <em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *root_group</code></em>);</pre>
+g_keyfile_settings_backend_new (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *filename</code></em>,
+                                <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *root_path</code></em>,
+                                <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *root_group</code></em>);</pre>
 <p>Creates a keyfile-backed <a class="link" href="GSettingsBackend.html" title="GSettingsBackend"><span class="type">GSettingsBackend</span></a>.</p>
 <p>The filename of the keyfile to use is given by <em class="parameter"><code>filename</code></em>
 .</p>
@@ -560,22 +560,22 @@ path given in <em class="parameter"><code>root_path</code></em>
 not contain two consecutive slashes).  <em class="parameter"><code>root_path</code></em>
  may be "/".</p>
 <p>If <em class="parameter"><code>root_group</code></em>
- is non-<a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> then it specifies the name of the keyfile
+ is non-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> then it specifies the name of the keyfile
 group used for keys that are written directly below <em class="parameter"><code>root_path</code></em>
 .  For
 example, if <em class="parameter"><code>root_path</code></em>
  is "/apps/example/" and <em class="parameter"><code>root_group</code></em>
  is
 "toplevel", then settings the key "/apps/example/enabled" to a value
-of <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> will cause the following to appear in the keyfile:</p>
+of <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> will cause the following to appear in the keyfile:</p>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">[</span>toplevel<span class="gtkdoc opt">]</span>
-enabled<span class="gtkdoc opt">=</span><span class="keyword">true</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="symbol">[</span><span class="normal">toplevel</span><span class="symbol">]</span>
+<span class="normal">enabled</span><span class="symbol">=</span><span class="normal">true</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -583,7 +583,7 @@ enabled<span class="gtkdoc opt">=</span><span class="keyword">true</span></pre><
 
 <p></p>
 <p>If <em class="parameter"><code>root_group</code></em>
- is <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> then it is not permitted to store keys
+ is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> then it is not permitted to store keys
 directly below the <em class="parameter"><code>root_path</code></em>
 .</p>
 <p>For keys not stored directly below <em class="parameter"><code>root_path</code></em>
@@ -598,8 +598,8 @@ the name of the keyfile group.  To continue the example, if
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">[</span>profiles<span class="gtkdoc opt">/</span><span class="keyword">default</span><span class="gtkdoc opt">]</span>
-font<span class="gtkdoc opt">-</span>size<span class="gtkdoc opt">=</span><span class="number">12</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="symbol">[</span><span class="normal">profiles</span><span class="symbol">/</span><span class="keyword">default</span><span class="symbol">]</span>
+<span class="normal">font</span><span class="symbol">-</span><span class="normal">size</span><span class="symbol">=</span><span class="number">12</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -607,10 +607,10 @@ font<span class="gtkdoc opt">-</span>size<span class="gtkdoc opt">=</span><span 
 
 <p></p>
 <p>The backend will refuse writes (and return writability as being
-<a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>) for keys outside of <em class="parameter"><code>root_path</code></em>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>) for keys outside of <em class="parameter"><code>root_path</code></em>
  and, in the event that
 <em class="parameter"><code>root_group</code></em>
- is <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, also for keys directly under <em class="parameter"><code>root_path</code></em>
+ is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, also for keys directly under <em class="parameter"><code>root_path</code></em>
 .
 Writes will also be refused if the backend detects that it has the
 inability to rewrite the keyfile (ie: the containing directory is not
@@ -642,7 +642,7 @@ trouble.</p>
 <td class="parameter_name"><p>root_group</p></td>
 <td class="parameter_description"><p> the group name corresponding to
 <em class="parameter"><code>root_path</code></em>
-, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 </tbody>

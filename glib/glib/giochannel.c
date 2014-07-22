@@ -69,8 +69,8 @@
  * events you are interested in on the #GIOChannel, and provide a
  * function to be called whenever these events occur.
  *
- * #GIOChannel instances are created with an initial reference count of
- * 1. g_io_channel_ref() and g_io_channel_unref() can be used to
+ * #GIOChannel instances are created with an initial reference count of 1.
+ * g_io_channel_ref() and g_io_channel_unref() can be used to
  * increment or decrement the reference count respectively. When the
  * reference count falls to 0, the #GIOChannel is freed. (Though it
  * isn't closed automatically, unless it was created using
@@ -942,7 +942,7 @@ g_io_channel_get_line_term (GIOChannel *channel,
  *     This flag cannot be changed.
  * @G_IO_FLAG_IS_WRITABLE: indicates that the io channel is writable.
  *     This flag cannot be changed.
- * G_IO_FLAG_IS_WRITEABLE: a misspelled version of @G_IO_FLAG_IS_WRITABLE
+ * @G_IO_FLAG_IS_WRITEABLE: a misspelled version of @G_IO_FLAG_IS_WRITABLE
  *     that existed before the spelling was fixed in GLib 2.30. It is kept
  *     here for compatibility reasons. Deprecated since 2.30
  * @G_IO_FLAG_IS_SEEKABLE: indicates that the io channel is seekable,
@@ -1657,7 +1657,7 @@ g_io_channel_read_line (GIOChannel  *channel,
 
   status = g_io_channel_read_line_backend (channel, &got_length, terminator_pos, error);
 
-  if (length)
+  if (length && status != G_IO_STATUS_ERROR)
     *length = got_length;
 
   if (status == G_IO_STATUS_NORMAL)
@@ -2529,11 +2529,6 @@ g_io_channel_write_unichar (GIOChannel  *channel,
   return status;
 }
 
-/**
- * g_io_channel_error_quark:
- *
- * Returns: the quark used as %G_IO_CHANNEL_ERROR
- **/
 /**
  * G_IO_CHANNEL_ERROR:
  *

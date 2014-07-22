@@ -66,6 +66,11 @@
 #include <windows.h>
 #endif
 
+/* clang defines __ATOMIC_SEQ_CST but doesn't support the GCC extension */
+#if defined(HAVE_FUTEX) && defined(__ATOMIC_SEQ_CST) && !defined(__clang__)
+#define USE_NATIVE_MUTEX
+#endif
+
 static void
 g_thread_abort (gint         status,
                 const gchar *function)
@@ -77,24 +82,26 @@ g_thread_abort (gint         status,
 
 /* {{{1 GMutex */
 
+#if !defined(USE_NATIVE_MUTEX)
+
 static pthread_mutex_t *
 g_mutex_impl_new (void)
 {
   pthread_mutexattr_t *pattr = NULL;
   pthread_mutex_t *mutex;
   gint status;
+#ifdef PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP
+  pthread_mutexattr_t attr;
+#endif
 
   mutex = malloc (sizeof (pthread_mutex_t));
   if G_UNLIKELY (mutex == NULL)
     g_thread_abort (errno, "malloc");
 
 #ifdef PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP
-  {
-    pthread_mutexattr_t attr;
-    pthread_mutexattr_init (&attr);
-    pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_ADAPTIVE_NP);
-    pattr = &attr;
-  }
+  pthread_mutexattr_init (&attr);
+  pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_ADAPTIVE_NP);
+  pattr = &attr;
 #endif
 
   if G_UNLIKELY ((status = pthread_mutex_init (mutex, pattr)) != 0)
@@ -114,7 +121,7 @@ g_mutex_impl_free (pthread_mutex_t *mutex)
   free (mutex);
 }
 
-static pthread_mutex_t *
+static inline pthread_mutex_t *
 g_mutex_get_impl (GMutex *mutex)
 {
   pthread_mutex_t *impl = g_atomic_pointer_get (&mutex->p);
@@ -258,6 +265,8 @@ g_mutex_trylock (GMutex *mutex)
   return FALSE;
 }
 
+#endif /* !defined(USE_NATIVE_MUTEX) */
+
 /* {{{1 GRecMutex */
 
 static pthread_mutex_t *
@@ -285,7 +294,7 @@ g_rec_mutex_impl_free (pthread_mutex_t *mutex)
   free (mutex);
 }
 
-static pthread_mutex_t *
+static inline pthread_mutex_t *
 g_rec_mutex_get_impl (GRecMutex *rec_mutex)
 {
   pthread_mutex_t *impl = g_atomic_pointer_get (&rec_mutex->p);
@@ -445,7 +454,7 @@ g_rw_lock_impl_free (pthread_rwlock_t *rwlock)
   free (rwlock);
 }
 
-static pthread_rwlock_t *
+static inline pthread_rwlock_t *
 g_rw_lock_get_impl (GRWLock *lock)
 {
   pthread_rwlock_t *impl = g_atomic_pointer_get (&lock->p);
@@ -631,6 +640,8 @@ g_rw_lock_reader_unlock (GRWLock *rw_lock)
 
 /* {{{1 GCond */
 
+#if !defined(USE_NATIVE_MUTEX)
+
 static pthread_cond_t *
 g_cond_impl_new (void)
 {
@@ -667,7 +678,7 @@ g_cond_impl_free (pthread_cond_t *cond)
   free (cond);
 }
 
-static pthread_cond_t *
+static inline pthread_cond_t *
 g_cond_get_impl (GCond *cond)
 {
   pthread_cond_t *impl = g_atomic_pointer_get (&cond->p);
@@ -902,6 +913,8 @@ g_cond_wait_until (GCond  *cond,
   return FALSE;
 }
 
+#endif /* defined(USE_NATIVE_MUTEX) */
+
 /* {{{1 GPrivate */
 
 /**
@@ -1007,7 +1020,7 @@ g_private_impl_free (pthread_key_t *key)
   free (key);
 }
 
-static pthread_key_t *
+static inline pthread_key_t *
 g_private_get_impl (GPrivate *key)
 {
   pthread_key_t *impl = g_atomic_pointer_get (&key->p);
@@ -1219,5 +1232,215 @@ g_system_thread_set_name (const gchar *name)
 #endif
 }
 
-/* {{{1 Epilogue */
+/* {{{1 GMutex and GCond futex implementation */
+
+#if defined(USE_NATIVE_MUTEX)
+
+#include <linux/futex.h>
+#include <sys/syscall.h>
+
+/* We should expand the set of operations available in gatomic once we
+ * have better C11 support in GCC in common distributions (ie: 4.9).
+ *
+ * Before then, let's define a couple of useful things for our own
+ * purposes...
+ */
+
+#define exchange_acquire(ptr, new) \
+  __atomic_exchange_4((ptr), (new), __ATOMIC_ACQUIRE)
+#define compare_exchange_acquire(ptr, old, new) \
+  __atomic_compare_exchange_4((ptr), (old), (new), 0, __ATOMIC_ACQUIRE, __ATOMIC_RELAXED)
+
+#define exchange_release(ptr, new) \
+  __atomic_exchange_4((ptr), (new), __ATOMIC_RELEASE)
+#define store_release(ptr, new) \
+  __atomic_store_4((ptr), (new), __ATOMIC_RELEASE)
+
+/* Our strategy for the mutex is pretty simple:
+ *
+ *  0: not in use
+ *
+ *  1: acquired by one thread only, no contention
+ *
+ *  > 1: contended
+ *
+ *
+ * As such, attempting to acquire the lock should involve an increment.
+ * If we find that the previous value was 0 then we can return
+ * immediately.
+ *
+ * On unlock, we always store 0 to indicate that the lock is available.
+ * If the value there was 1 before then we didn't have contention and
+ * can return immediately.  If the value was something other than 1 then
+ * we have the contended case and need to wake a waiter.
+ *
+ * If it was not 0 then there is another thread holding it and we must
+ * wait.  We must always ensure that we mark a value >1 while we are
+ * waiting in order to instruct the holder to do a wake operation on
+ * unlock.
+ */
+
+void
+g_mutex_init (GMutex *mutex)
+{
+  mutex->i[0] = 0;
+}
+
+void
+g_mutex_clear (GMutex *mutex)
+{
+  if G_UNLIKELY (mutex->i[0] != 0)
+    {
+      fprintf (stderr, "g_mutex_clear() called on uninitialised or locked mutex\n");
+      abort ();
+    }
+}
+
+static void __attribute__((noinline))
+g_mutex_lock_slowpath (GMutex *mutex)
+{
+  /* Set to 2 to indicate contention.  If it was zero before then we
+   * just acquired the lock.
+   *
+   * Otherwise, sleep for as long as the 2 remains...
+   */
+  while (exchange_acquire (&mutex->i[0], 2) != 0)
+    syscall (__NR_futex, &mutex->i[0], (gsize) FUTEX_WAIT, (gsize) 2, NULL);
+}
+
+static void __attribute__((noinline))
+g_mutex_unlock_slowpath (GMutex *mutex,
+                         guint   prev)
+{
+  /* We seem to get better code for the uncontended case by splitting
+   * this out...
+   */
+  if G_UNLIKELY (prev == 0)
+    {
+      fprintf (stderr, "Attempt to unlock mutex that was not locked\n");
+      abort ();
+    }
+
+  syscall (__NR_futex, &mutex->i[0], (gsize) FUTEX_WAKE, (gsize) 1, NULL);
+}
+
+void
+g_mutex_lock (GMutex *mutex)
+{
+  /* 0 -> 1 and we're done.  Anything else, and we need to wait... */
+  if G_UNLIKELY (g_atomic_int_add (&mutex->i[0], 1) != 0)
+    g_mutex_lock_slowpath (mutex);
+}
+
+void
+g_mutex_unlock (GMutex *mutex)
+{
+  guint prev;
+
+  prev = exchange_release (&mutex->i[0], 0);
+
+  /* 1-> 0 and we're done.  Anything else and we need to signal... */
+  if G_UNLIKELY (prev != 1)
+    g_mutex_unlock_slowpath (mutex, prev);
+}
+
+gboolean
+g_mutex_trylock (GMutex *mutex)
+{
+  guint zero = 0;
+
+  /* We don't want to touch the value at all unless we can move it from
+   * exactly 0 to 1.
+   */
+  return compare_exchange_acquire (&mutex->i[0], &zero, 1);
+}
+
+/* Condition variables are implemented in a rather simple way as well.
+ * In many ways, futex() as an abstraction is even more ideally suited
+ * to condition variables than it is to mutexes.
+ *
+ * We store a generation counter.  We sample it with the lock held and
+ * unlock before sleeping on the futex.
+ *
+ * Signalling simply involves increasing the counter and making the
+ * appropriate futex call.
+ *
+ * The only thing that is the slightest bit complicated is timed waits
+ * because we must convert our absolute time to relative.
+ */
+
+void
+g_cond_init (GCond *cond)
+{
+  cond->i[0] = 0;
+}
+
+void
+g_cond_clear (GCond *cond)
+{
+}
+
+void
+g_cond_wait (GCond  *cond,
+             GMutex *mutex)
+{
+  guint sampled = g_atomic_int_get (&cond->i[0]);
+
+  g_mutex_unlock (mutex);
+  syscall (__NR_futex, &cond->i[0], (gsize) FUTEX_WAIT, (gsize) sampled, NULL);
+  g_mutex_lock (mutex);
+}
+
+void
+g_cond_signal (GCond *cond)
+{
+  g_atomic_int_inc (&cond->i[0]);
+
+  syscall (__NR_futex, &cond->i[0], (gsize) FUTEX_WAKE, (gsize) 1, NULL);
+}
+
+void
+g_cond_broadcast (GCond *cond)
+{
+  g_atomic_int_inc (&cond->i[0]);
+
+  syscall (__NR_futex, &cond->i[0], (gsize) FUTEX_WAKE, (gsize) INT_MAX, NULL);
+}
+
+gboolean
+g_cond_wait_until (GCond  *cond,
+                   GMutex *mutex,
+                   gint64  end_time)
+{
+  struct timespec now;
+  struct timespec span;
+  guint sampled;
+  int res;
+
+  if (end_time < 0)
+    return FALSE;
+
+  clock_gettime (CLOCK_MONOTONIC, &now);
+  span.tv_sec = (end_time / 1000000) - now.tv_sec;
+  span.tv_nsec = ((end_time % 1000000) * 1000) - now.tv_nsec;
+  if (span.tv_nsec < 0)
+    {
+      span.tv_nsec += 1000000000;
+      span.tv_sec--;
+    }
+
+  if (span.tv_sec < 0)
+    return FALSE;
+
+  sampled = cond->i[0];
+  g_mutex_unlock (mutex);
+  res = syscall (__NR_futex, &cond->i[0], (gsize) FUTEX_WAIT, (gsize) sampled, &span);
+  g_mutex_lock (mutex);
+
+  return (res < 0 && errno == ETIMEDOUT) ? FALSE : TRUE;
+}
+
+#endif
+
+  /* {{{1 Epilogue */
 /* vim:set foldmethod=marker: */

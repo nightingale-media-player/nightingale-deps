@@ -1213,6 +1213,7 @@ assert_main_context_state (gint n_to_poll,
   GMainContext *context;
   gboolean consumed[10] = { };
   GPollFD poll_fds[10];
+  gboolean acquired;
   gboolean immediate;
   gint max_priority;
   gint timeout;
@@ -1221,6 +1222,9 @@ assert_main_context_state (gint n_to_poll,
   va_list ap;
 
   context = g_main_context_default ();
+
+  acquired = g_main_context_acquire (context);
+  g_assert (acquired);
 
   immediate = g_main_context_prepare (context, &max_priority);
   g_assert (!immediate);
@@ -1254,6 +1258,8 @@ assert_main_context_state (gint n_to_poll,
 
   if (g_main_context_check (context, max_priority, poll_fds, n))
     g_main_context_dispatch (context);
+
+  g_main_context_release (context);
 }
 
 static gboolean
@@ -1462,6 +1468,48 @@ test_source_unix_fd_api (void)
   close (fds_b[1]);
 }
 
+static gboolean
+unixfd_quit_loop (gint         fd,
+                  GIOCondition condition,
+                  gpointer     user_data)
+{
+  GMainLoop *loop = user_data;
+
+  g_main_loop_quit (loop);
+
+  return FALSE;
+}
+
+static void
+test_unix_file_poll (void)
+{
+  gint fd;
+  GSource *source;
+  GMainLoop *loop;
+
+  fd = open ("/dev/null", O_RDONLY);
+  g_assert (fd >= 0);
+
+  loop = g_main_loop_new (NULL, FALSE);
+
+  source = g_unix_fd_source_new (fd, G_IO_IN);
+  g_source_set_callback (source, (GSourceFunc) unixfd_quit_loop, loop, NULL);
+  g_source_attach (source, NULL);
+
+  /* Should not block */
+  g_main_loop_run (loop);
+
+  g_source_destroy (source);
+
+  assert_main_context_state (0);
+
+  g_source_unref (source);
+
+  g_main_loop_unref (loop);
+
+  close (fd);
+}
+
 #endif
 
 static gboolean
@@ -1542,6 +1590,7 @@ main (int argc, char *argv[])
   g_test_add_func ("/mainloop/unix-fd-source", test_unix_fd_source);
   g_test_add_func ("/mainloop/source-unix-fd-api", test_source_unix_fd_api);
   g_test_add_func ("/mainloop/wait", test_mainloop_wait);
+  g_test_add_func ("/mainloop/unix-file-poll", test_unix_file_poll);
 #endif
 
   return g_test_run ();

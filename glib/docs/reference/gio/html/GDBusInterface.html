@@ -98,7 +98,7 @@
 </div>
 <div class="refsect1">
 <a name="GDBusInterface.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
+<pre class="screen">    GInterface
     <span class="lineart">╰──</span> GDBusInterface
 </pre>
 </div>
@@ -106,7 +106,7 @@
 <a name="GDBusInterface.prerequisites"></a><h2>Prerequisites</h2>
 <p>
 GDBusInterface requires
- <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>.</p>
+ <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>.</p>
 </div>
 <div class="refsect1">
 <a name="GDBusInterface.implementations"></a><h2>Known Implementations</h2>
@@ -184,7 +184,7 @@ the returned object is being used from other threads. See
 </div>
 <div class="refsect3">
 <a name="id-1.4.18.4.10.3.7"></a><h4>Returns</h4>
-<p> A <a class="link" href="GDBusObject.html" title="GDBusObject"><span class="type">GDBusObject</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. The returned
+<p> A <a class="link" href="GDBusObject.html" title="GDBusObject"><span class="type">GDBusObject</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. The returned
 reference belongs to <em class="parameter"><code>interface_</code></em>
 and should not be freed. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
@@ -215,8 +215,8 @@ g_dbus_interface_dup_object (<em class="parameter"><code><a class="link" href="G
 </div>
 <div class="refsect3">
 <a name="id-1.4.18.4.10.4.6"></a><h4>Returns</h4>
-<p> A <a class="link" href="GDBusObject.html" title="GDBusObject"><span class="type">GDBusObject</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. The returned
-reference should be freed with <a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a>. </p>
+<p> A <a class="link" href="GDBusObject.html" title="GDBusObject"><span class="type">GDBusObject</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. The returned
+reference should be freed with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 <p class="since">Since 2.32</p>
@@ -249,7 +249,7 @@ g_dbus_interface_set_object (<em class="parameter"><code><a class="link" href="G
 </tr>
 <tr>
 <td class="parameter_name"><p>object</p></td>
-<td class="parameter_description"><p> A <a class="link" href="GDBusObject.html" title="GDBusObject"><span class="type">GDBusObject</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> A <a class="link" href="GDBusObject.html" title="GDBusObject"><span class="type">GDBusObject</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 </tbody>
@@ -291,7 +291,7 @@ g_dbus_interface_set_object (<em class="parameter"><code><a class="link" href="G
 </colgroup>
 <tbody>
 <tr>
-<td class="struct_member_name"><p><a href="../gobject/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GDBusInterfaceIface.parent-iface"></a>parent_iface</code></em>;</p></td>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GDBusInterfaceIface.parent-iface"></a>parent_iface</code></em>;</p></td>
 <td class="struct_member_description"><p>The parent interface.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr>

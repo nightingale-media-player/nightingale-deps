@@ -1072,7 +1072,7 @@ _g_io_modules_ensure_loaded (void)
       g_type_ensure (g_win32_directory_monitor_get_type ());
       g_type_ensure (g_registry_backend_get_type ());
 #endif
-#ifdef HAVE_CARBON
+#ifdef HAVE_COCOA
       g_nextstep_settings_backend_get_type ();
 #endif
 #ifdef G_OS_UNIX
@@ -1252,6 +1252,8 @@ g_io_extension_point_get_extension_by_name (GIOExtensionPoint *extension_point,
 					    const char        *name)
 {
   GList *l;
+
+  g_return_val_if_fail (name != NULL, NULL);
 
   lazy_load_modules (extension_point);
   for (l = extension_point->extensions; l != NULL; l = l->next)

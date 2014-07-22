@@ -117,7 +117,7 @@ void maman_ibaz_do_something (MamanIbaz *self);
 G_DEFINE_INTERFACE (MamanIbaz, maman_ibaz, 0);
 
 static void
-maman_ibaz_default_init (gpointer g_class)
+maman_ibaz_default_init (MamanIbazInterface *iface)
 {
     /* add properties and signals to the interface here */
 }

@@ -393,7 +393,7 @@ typedef gboolean (*GSocketSourceFunc) (GSocket *socket,
  * @size: the available size in @buffer.
  *
  * Structure used for scatter/gather data input.
- * You generally pass in an array of #GInputVector<!-- -->s
+ * You generally pass in an array of #GInputVectors
  * and the operation will store the read data starting in the
  * first buffer, switching to the next as needed.
  *
@@ -412,7 +412,7 @@ struct _GInputVector {
  * @size: the size of @buffer.
  *
  * Structure used for scatter/gather data output.
- * You generally pass in an array of #GOutputVector<!-- -->s
+ * You generally pass in an array of #GOutputVectors
  * and the operation will use all the buffers as if they were
  * one buffer.
  *
@@ -497,7 +497,7 @@ typedef struct _GDBusObjectManagerServer    GDBusObjectManagerServer;
  * object proxy (if @interface_name is %NULL).
  *
  * This function is called in the
- * <link linkend="g-main-context-push-thread-default">thread-default main loop</link>
+ * [thread-default main loop][g-main-context-push-thread-default]
  * that @manager was constructed in.
  *
  * Returns: A #GType to use for the remote object. The returned type
@@ -526,7 +526,7 @@ typedef struct _GSubprocess                   GSubprocess;
  *
  * Options for launching a child process.
  *
- * Since: 2.36
+ * Since: 2.40
  */
 typedef struct _GSubprocessLauncher           GSubprocessLauncher;
 

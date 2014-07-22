@@ -191,8 +191,9 @@ g_file_enumerator_init (GFileEnumerator *enumerator)
  * enumerator is at the end, %NULL will be returned and @error will
  * be unset.
  *
- * Returns: (transfer full): A #GFileInfo or %NULL on error or end of enumerator.
- *    Free the returned object with g_object_unref() when no longer needed.
+ * Returns: (nullable) (transfer full): A #GFileInfo or %NULL on error
+ *    or end of enumerator.  Free the returned object with
+ *    g_object_unref() when no longer needed.
  **/
 GFileInfo *
 g_file_enumerator_next_file (GFileEnumerator *enumerator,
@@ -395,7 +396,7 @@ g_file_enumerator_next_files_async (GFileEnumerator     *enumerator,
  * 
  * Finishes the asynchronous operation started with g_file_enumerator_next_files_async().
  * 
- * Returns: (transfer full) (element-type Gio.FileInfo): a #GList of #GFileInfo<!---->s. You must free the list with 
+ * Returns: (transfer full) (element-type Gio.FileInfo): a #GList of #GFileInfos. You must free the list with 
  *     g_list_free() and unref the infos with g_object_unref() when you're 
  *     done with them.
  **/

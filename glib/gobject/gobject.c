@@ -523,7 +523,12 @@ install_property_internal (GType       g_type,
  * @property_id: the id for the new property
  * @pspec: the #GParamSpec for the new property
  *
- * Installs a new property. This is usually done in the class initializer.
+ * Installs a new property.
+ *
+ * All properties should be installed during the class initializer.  It
+ * is possible to install properties after that, but doing so is not
+ * recommend, and specifically, is not guaranteed to be thread-safe vs.
+ * use of properties on the same type on other threads.
  *
  * Note that it is possible to redefine a property in a derived class,
  * by installing a property with the same name. This can be useful at times,
@@ -539,9 +544,6 @@ g_object_class_install_property (GObjectClass *class,
 
   if (CLASS_HAS_DERIVED_CLASS (class))
     g_error ("Attempt to add property %s::%s to class after it was derived", G_OBJECT_CLASS_NAME (class), pspec->name);
-
-  if (!g_type_is_in_init (G_OBJECT_CLASS_TYPE (class)))
-    g_warning ("Attempt to add property %s::%s after class was initialised", G_OBJECT_CLASS_NAME (class), pspec->name);
 
   class->flags |= CLASS_HAS_PROPS_FLAG;
 
@@ -577,8 +579,12 @@ g_object_class_install_property (GObjectClass *class,
  * @pspecs: (array length=n_pspecs): the #GParamSpecs array
  *   defining the new properties
  *
- * Installs new properties from an array of #GParamSpecs. This is
- * usually done in the class initializer.
+ * Installs new properties from an array of #GParamSpecs.
+ *
+ * All properties should be installed during the class initializer.  It
+ * is possible to install properties after that, but doing so is not
+ * recommend, and specifically, is not guaranteed to be thread-safe vs.
+ * use of properties on the same type on other threads.
  *
  * The property id of each property is the index of each #GParamSpec in
  * the @pspecs array.
@@ -652,9 +658,6 @@ g_object_class_install_properties (GObjectClass  *oclass,
   if (CLASS_HAS_DERIVED_CLASS (oclass))
     g_error ("Attempt to add properties to %s after it was derived",
              G_OBJECT_CLASS_NAME (oclass));
-
-  if (!g_type_is_in_init (G_OBJECT_CLASS_TYPE (oclass)))
-    g_warning ("Attempt to add properties to %s after it was initialised", G_OBJECT_CLASS_NAME (oclass));
 
   oclass_type = G_OBJECT_CLASS_TYPE (oclass);
   parent_type = g_type_parent (oclass_type);
@@ -1292,6 +1295,56 @@ g_object_thaw_notify (GObject *object)
   g_object_unref (object);
 }
 
+static void
+consider_issuing_property_deprecation_warning (const GParamSpec *pspec)
+{
+  static GHashTable *already_warned_table;
+  static const gchar *enable_diagnostic;
+  static GMutex already_warned_lock;
+  gboolean already;
+
+  if (!(pspec->flags & G_PARAM_DEPRECATED))
+    return;
+
+  if (g_once_init_enter (&enable_diagnostic))
+    {
+      const gchar *value = g_getenv ("G_ENABLE_DIAGNOSTIC");
+
+      if (!value)
+        value = "-";
+
+      g_once_init_leave (&enable_diagnostic, value);
+    }
+
+  if (enable_diagnostic[0] == '0')
+    return;
+
+  /* We hash only on property names: this means that we could end up in
+   * a situation where we fail to emit a warning about a pair of
+   * same-named deprecated properties used on two separate types.
+   * That's pretty unlikely to occur, and even if it does, you'll still
+   * have seen the warning for the first one...
+   *
+   * Doing it this way lets us hash directly on the (interned) property
+   * name pointers.
+   */
+  g_mutex_lock (&already_warned_lock);
+
+  if (already_warned_table == NULL)
+    already_warned_table = g_hash_table_new (NULL, NULL);
+
+  already = g_hash_table_contains (already_warned_table, (gpointer) pspec->name);
+  if (!already)
+    g_hash_table_add (already_warned_table, (gpointer) pspec->name);
+
+  g_mutex_unlock (&already_warned_lock);
+
+  if (!already)
+    g_warning ("The property %s:%s is deprecated and shouldn't be used "
+               "anymore. It will be removed in a future version.",
+               g_type_name (pspec->owner_type), pspec->name);
+}
+
 static inline void
 object_get_property (GObject     *object,
 		     GParamSpec  *pspec,
@@ -1310,8 +1363,10 @@ object_get_property (GObject     *object,
 
   redirect = g_param_spec_get_redirect_target (pspec);
   if (redirect)
-    pspec = redirect;    
-  
+    pspec = redirect;
+
+  consider_issuing_property_deprecation_warning (pspec);
+
   class->get_property (object, param_id, value, pspec);
 }
 
@@ -1325,7 +1380,6 @@ object_set_property (GObject             *object,
   GObjectClass *class = g_type_class_peek (pspec->owner_type);
   guint param_id = PARAM_SPEC_PARAM_ID (pspec);
   GParamSpec *redirect;
-  static const gchar * enable_diagnostic = NULL;
 
   if (class == NULL)
     {
@@ -1337,21 +1391,6 @@ object_set_property (GObject             *object,
   redirect = g_param_spec_get_redirect_target (pspec);
   if (redirect)
     pspec = redirect;
-
-  if (G_UNLIKELY (!enable_diagnostic))
-    {
-      enable_diagnostic = g_getenv ("G_ENABLE_DIAGNOSTIC");
-      if (!enable_diagnostic)
-        enable_diagnostic = "0";
-    }
-
-  if (enable_diagnostic[0] == '1')
-    {
-      if (pspec->flags & G_PARAM_DEPRECATED)
-        g_warning ("The property %s:%s is deprecated and shouldn't be used "
-                   "anymore. It will be removed in a future version.",
-                   G_OBJECT_TYPE_NAME (object), pspec->name);
-    }
 
   /* provide a copy to work from, convert (if necessary) and validate */
   g_value_init (&tmp_value, pspec->value_type);
@@ -1373,14 +1412,17 @@ object_set_property (GObject             *object,
     }
   else
     {
-      GParamSpec *notify_pspec;
-
       class->set_property (object, param_id, &tmp_value, pspec);
 
-      notify_pspec = get_notify_pspec (pspec);
+      if (~pspec->flags & G_PARAM_EXPLICIT_NOTIFY)
+        {
+          GParamSpec *notify_pspec;
 
-      if (notify_pspec != NULL)
-        g_object_notify_queue_add (object, nqueue, notify_pspec);
+          notify_pspec = get_notify_pspec (pspec);
+
+          if (notify_pspec != NULL)
+            g_object_notify_queue_add (object, nqueue, notify_pspec);
+        }
     }
   g_value_unset (&tmp_value);
 }
@@ -1397,8 +1439,11 @@ object_interface_check_properties (gpointer check_data,
 
   class = g_type_class_ref (iface_class->g_instance_type);
 
-  if (!G_IS_OBJECT_CLASS (class))
+  if (class == NULL)
     return;
+
+  if (!G_IS_OBJECT_CLASS (class))
+    goto out;
 
   pspecs = g_param_spec_pool_list (pspec_pool, iface_type, &n);
 
@@ -1530,6 +1575,7 @@ object_interface_check_properties (gpointer check_data,
 
   g_free (pspecs);
 
+ out:
   g_type_class_unref (class);
 }
 
@@ -1625,6 +1671,7 @@ g_object_new_with_custom_constructor (GObjectClass          *class,
       for (j = 0; j < n_params; j++)
         if (params[j].pspec == pspec)
           {
+            consider_issuing_property_deprecation_warning (pspec);
             value = params[j].value;
             break;
           }
@@ -1701,7 +1748,10 @@ g_object_new_with_custom_constructor (GObjectClass          *class,
   /* set remaining properties */
   for (i = 0; i < n_params; i++)
     if (!(params[i].pspec->flags & (G_PARAM_CONSTRUCT | G_PARAM_CONSTRUCT_ONLY)))
-      object_set_property (object, params[i].pspec, params[i].value, nqueue);
+      {
+        consider_issuing_property_deprecation_warning (params[i].pspec);
+        object_set_property (object, params[i].pspec, params[i].value, nqueue);
+      }
 
   /* If nqueue is non-NULL then we are frozen.  Thaw it. */
   if (nqueue)
@@ -1747,6 +1797,7 @@ g_object_new_internal (GObjectClass          *class,
           for (j = 0; j < n_params; j++)
             if (params[j].pspec == pspec)
               {
+                consider_issuing_property_deprecation_warning (pspec);
                 value = params[j].value;
                 break;
               }
@@ -1772,7 +1823,10 @@ g_object_new_internal (GObjectClass          *class,
        */
       for (i = 0; i < n_params; i++)
         if (!(params[i].pspec->flags & (G_PARAM_CONSTRUCT | G_PARAM_CONSTRUCT_ONLY)))
-          object_set_property (object, params[i].pspec, params[i].value, nqueue);
+          {
+            consider_issuing_property_deprecation_warning (params[i].pspec);
+            object_set_property (object, params[i].pspec, params[i].value, nqueue);
+          }
 
       g_object_notify_queue_thaw (object, nqueue);
     }
@@ -2100,10 +2154,11 @@ g_object_set_valist (GObject	 *object,
           g_value_unset (&value);
 	  break;
 	}
-      
+
+      consider_issuing_property_deprecation_warning (pspec);
       object_set_property (object, pspec, &value, nqueue);
       g_value_unset (&value);
-      
+
       name = va_arg (var_args, gchar*);
     }
 
@@ -2303,8 +2358,11 @@ g_object_set_property (GObject	    *object,
     g_warning ("%s: construct property \"%s\" for object '%s' can't be set after construction",
                G_STRFUNC, pspec->name, G_OBJECT_TYPE_NAME (object));
   else
-    object_set_property (object, pspec, value, nqueue);
-  
+    {
+      consider_issuing_property_deprecation_warning (pspec);
+      object_set_property (object, pspec, value, nqueue);
+    }
+
   g_object_notify_queue_thaw (object, nqueue);
   g_object_unref (object);
 }
@@ -3263,7 +3321,7 @@ g_object_dup_qdata (GObject        *object,
  * or may not include using @old_destroy as sometimes replacement
  * should not destroy the object in the normal way.
  *
- * Return: %TRUE if the existing value for @quark was replaced
+ * Returns: %TRUE if the existing value for @quark was replaced
  *  by @newval, %FALSE otherwise.
  *
  * Since: 2.34
@@ -3472,7 +3530,7 @@ g_object_dup_data (GObject        *object,
  * or may not include using @old_destroy as sometimes replacement
  * should not destroy the object in the normal way.
  *
- * Return: %TRUE if the existing value for @key was replaced
+ * Returns: %TRUE if the existing value for @key was replaced
  *  by @newval, %FALSE otherwise.
  *
  * Since: 2.34

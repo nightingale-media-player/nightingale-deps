@@ -92,6 +92,12 @@
 </div>
 <div class="refsect1">
 <a name="glib-Shell-related-Utilities.description"></a><h2>Description</h2>
+<p>GLib provides the functions <a class="link" href="glib-Shell-related-Utilities.html#g-shell-quote" title="g_shell_quote ()"><code class="function">g_shell_quote()</code></a> and <a class="link" href="glib-Shell-related-Utilities.html#g-shell-unquote" title="g_shell_unquote ()"><code class="function">g_shell_unquote()</code></a>
+to handle shell-like quoting in strings. The function <a class="link" href="glib-Shell-related-Utilities.html#g-shell-parse-argv" title="g_shell_parse_argv ()"><code class="function">g_shell_parse_argv()</code></a>
+parses a string similar to the way a POSIX shell (/bin/sh) would.</p>
+<p>Note that string handling in shells has many obscure and historical
+corner-cases which these functions do not necessarily reproduce. They
+are good enough in practice, though.</p>
 </div>
 <div class="refsect1">
 <a name="glib-Shell-related-Utilities.functions_details"></a><h2>Functions</h2>
@@ -127,18 +133,19 @@ domain. Free the returned vector with <a class="link" href="glib-String-Utility-
 </tr>
 <tr>
 <td class="parameter_name"><p>argcp</p></td>
-<td class="parameter_description"><p> return location for number of args. </p></td>
-<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+<td class="parameter_description"><p> return location for number of args, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][optional]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>argvp</p></td>
-<td class="parameter_description"><p> return location for array of args. </p></td>
-<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=argcp zero-terminated=1]</span></td>
+<td class="parameter_description"><p> return
+location for array of args, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][optional][<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=argcp zero-terminated=1]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p>return location for error</p></td>
-<td class="parameter_annotations"> </td>
+<td class="parameter_description"><p> return location for error, or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[optional]</span></td>
 </tr>
 </tbody>
 </table></div>

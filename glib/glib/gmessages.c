@@ -155,6 +155,13 @@
  */
 
 /**
+ * G_LOG_LEVEL_USER_SHIFT:
+ *
+ * Log levels below 1<<G_LOG_LEVEL_USER_SHIFT are used by GLib.
+ * Higher bits can be used for user-defined log levels.
+ */
+
+/**
  * g_message:
  * @...: format string, followed by parameters to insert
  *     into the format string (as with printf())
@@ -356,7 +363,7 @@ write_string (int          fd,
 static GLogDomain*
 g_log_find_domain_L (const gchar *log_domain)
 {
-  register GLogDomain *domain;
+  GLogDomain *domain;
   
   domain = g_log_domains;
   while (domain)
@@ -371,7 +378,7 @@ g_log_find_domain_L (const gchar *log_domain)
 static GLogDomain*
 g_log_domain_new_L (const gchar *log_domain)
 {
-  register GLogDomain *domain;
+  GLogDomain *domain;
 
   domain = g_new (GLogDomain, 1);
   domain->log_domain = g_strdup (log_domain);
@@ -390,7 +397,7 @@ g_log_domain_check_free_L (GLogDomain *domain)
   if (domain->fatal_mask == G_LOG_FATAL_MASK &&
       domain->handlers == NULL)
     {
-      register GLogDomain *last, *work;
+      GLogDomain *last, *work;
       
       last = NULL;  
 
@@ -420,7 +427,7 @@ g_log_domain_get_handler_L (GLogDomain	*domain,
 {
   if (domain && log_level)
     {
-      register GLogHandler *handler;
+      GLogHandler *handler;
       
       handler = domain->handlers;
       while (handler)
@@ -491,7 +498,7 @@ g_log_set_fatal_mask (const gchar   *log_domain,
 		      GLogLevelFlags fatal_mask)
 {
   GLogLevelFlags old_flags;
-  register GLogDomain *domain;
+  GLogDomain *domain;
   
   if (!log_domain)
     log_domain = "";
@@ -667,7 +674,7 @@ void
 g_log_remove_handler (const gchar *log_domain,
 		      guint	   handler_id)
 {
-  register GLogDomain *domain;
+  GLogDomain *domain;
   
   g_return_if_fail (handler_id > 0);
   
@@ -962,9 +969,10 @@ g_logv (const gchar   *log_domain,
           gchar *expected_message;
 
           mklevel_prefix (level_prefix, expected->log_level);
-          expected_message = g_strdup_printf ("Did not see expected message %s: %s",
+          expected_message = g_strdup_printf ("Did not see expected message %s-%s: %s",
+                                              expected->log_domain ? expected->log_domain : "**",
                                               level_prefix, expected->pattern);
-          g_log_default_handler (log_domain, log_level, expected_message, NULL);
+          g_log_default_handler (G_LOG_DOMAIN, G_LOG_LEVEL_CRITICAL, expected_message, NULL);
           g_free (expected_message);
 
           log_level |= G_LOG_FLAG_FATAL;
@@ -973,7 +981,7 @@ g_logv (const gchar   *log_domain,
 
   for (i = g_bit_nth_msf (log_level, -1); i >= 0; i = g_bit_nth_msf (log_level, i))
     {
-      register GLogLevelFlags test_level;
+      GLogLevelFlags test_level;
 
       test_level = 1 << i;
       if (log_level & test_level)
@@ -1112,15 +1120,21 @@ g_assert_warning (const char *log_domain,
 		  const char *pretty_function,
 		  const char *expression)
 {
-  g_log (log_domain,
-	 G_LOG_LEVEL_ERROR,
-	 expression 
-	 ? "file %s: line %d (%s): assertion failed: (%s)"
-	 : "file %s: line %d (%s): should not be reached",
-	 file, 
-	 line, 
-	 pretty_function,
-	 expression);
+  if (expression)
+    g_log (log_domain,
+	   G_LOG_LEVEL_ERROR,
+	   "file %s: line %d (%s): assertion failed: (%s)",
+	   file,
+	   line,
+	   pretty_function,
+	   expression);
+  else
+    g_log (log_domain,
+	   G_LOG_LEVEL_ERROR,
+	   "file %s: line %d (%s): should not be reached",
+	   file,
+	   line,
+	   pretty_function);
   _g_log_abort (FALSE);
   abort ();
 }
@@ -1198,9 +1212,10 @@ g_test_assert_expected_messages_internal (const char     *domain,
       expected = expected_messages->data;
 
       mklevel_prefix (level_prefix, expected->log_level);
-      message = g_strdup_printf ("Did not see expected message %s: %s",
+      message = g_strdup_printf ("Did not see expected message %s-%s: %s",
+                                 expected->log_domain ? expected->log_domain : "**",
                                  level_prefix, expected->pattern);
-      g_assertion_message (domain, file, line, func, message);
+      g_assertion_message (G_LOG_DOMAIN, file, line, func, message);
       g_free (message);
     }
 }

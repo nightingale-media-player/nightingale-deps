@@ -1622,14 +1622,14 @@ invalidates the returned iterator.</p>
 6
 7
 8</pre></td>
-        <td class="listing_code"><pre class="programlisting">GHashTableIter iter<span class="gtkdoc opt">;</span>
-gpointer key<span class="gtkdoc opt">,</span> value<span class="gtkdoc opt">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="usertype">GHashTableIter</span><span class="normal"> iter</span><span class="symbol">;</span>
+<span class="usertype">gpointer</span><span class="normal"> key</span><span class="symbol">,</span><span class="normal"> value</span><span class="symbol">;</span>
 
-<span class="function"><a href="glib-Hash-Tables.html#g-hash-table-iter-init">g_hash_table_iter_init</a></span> <span class="gtkdoc opt">(&amp;</span>iter<span class="gtkdoc opt">,</span> hash_table<span class="gtkdoc opt">);</span>
-<span class="keyword">while</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-Hash-Tables.html#g-hash-table-iter-next">g_hash_table_iter_next</a></span> <span class="gtkdoc opt">(&amp;</span>iter<span class="gtkdoc opt">, &amp;</span>key<span class="gtkdoc opt">, &amp;</span>value<span class="gtkdoc opt">))</span>
-  <span class="gtkdoc opt">{</span>
-    <span class="gtkdoc slc">// do something with key and value</span>
-  <span class="gtkdoc opt">}</span></pre></td>
+<span class="function"><a href="glib-Hash-Tables.html#g-hash-table-iter-init">g_hash_table_iter_init</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">iter</span><span class="symbol">,</span><span class="normal"> hash_table</span><span class="symbol">);</span>
+<span class="keyword">while</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-Hash-Tables.html#g-hash-table-iter-next">g_hash_table_iter_next</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">iter</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">key</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">value</span><span class="symbol">))</span>
+<span class="normal">  </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="comment">// do something with key and value</span>
+<span class="normal">  </span><span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1796,11 +1796,11 @@ values are freed yourself.</p>
 3
 4
 5</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="keyword">while</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-Hash-Tables.html#g-hash-table-iter-next">g_hash_table_iter_next</a></span> <span class="gtkdoc opt">(&amp;</span>iter<span class="gtkdoc opt">, &amp;</span>key<span class="gtkdoc opt">, &amp;</span>value<span class="gtkdoc opt">))</span>
-  <span class="gtkdoc opt">{</span>
-    <span class="keyword">if</span> <span class="gtkdoc opt">(</span>condition<span class="gtkdoc opt">)</span>
-      <span class="function"><a href="glib-Hash-Tables.html#g-hash-table-iter-remove">g_hash_table_iter_remove</a></span> <span class="gtkdoc opt">(&amp;</span>iter<span class="gtkdoc opt">);</span>
-  <span class="gtkdoc opt">}</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="keyword">while</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-Hash-Tables.html#g-hash-table-iter-next">g_hash_table_iter_next</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">iter</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">key</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">value</span><span class="symbol">))</span>
+<span class="normal">  </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">condition</span><span class="symbol">)</span>
+<span class="normal">      </span><span class="function"><a href="glib-Hash-Tables.html#g-hash-table-iter-remove">g_hash_table_iter_remove</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">iter</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>

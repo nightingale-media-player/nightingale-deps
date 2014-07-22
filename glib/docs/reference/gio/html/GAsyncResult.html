@@ -52,7 +52,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="GAsyncResult.html#g-async-result-get-user-data" title="g_async_result_get_user_data ()">g_async_result_get_user_data</a> <span class="c_punctuation">()</span>
@@ -60,7 +60,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../gobject/gobject-The-Base-Object-Type.html#GObject"><span class="returnvalue">GObject</span></a> *
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="returnvalue">GObject</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="GAsyncResult.html#g-async-result-get-source-object" title="g_async_result_get_source_object ()">g_async_result_get_source_object</a> <span class="c_punctuation">()</span>
@@ -68,7 +68,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="GAsyncResult.html#g-async-result-is-tagged" title="g_async_result_is_tagged ()">g_async_result_is_tagged</a> <span class="c_punctuation">()</span>
@@ -76,7 +76,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="GAsyncResult.html#g-async-result-legacy-propagate-error" title="g_async_result_legacy_propagate_error ()">g_async_result_legacy_propagate_error</a> <span class="c_punctuation">()</span>
@@ -106,7 +106,7 @@
 </div>
 <div class="refsect1">
 <a name="GAsyncResult.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
+<pre class="screen">    GInterface
     <span class="lineart">╰──</span> GAsyncResult
 </pre>
 </div>
@@ -114,7 +114,7 @@
 <a name="GAsyncResult.prerequisites"></a><h2>Prerequisites</h2>
 <p>
 GAsyncResult requires
- <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>.</p>
+ <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>.</p>
 </div>
 <div class="refsect1">
 <a name="GAsyncResult.implementations"></a><h2>Known Implementations</h2>
@@ -149,7 +149,7 @@ operation in question yields (e.g. a <a class="link" href="GFileEnumerator.html"
 operation is not needed, there is no need to call the "<code class="function">_finish()</code>"
 function; GIO will take care of cleaning up the result and error
 information after the <a class="link" href="GAsyncResult.html#GAsyncReadyCallback" title="GAsyncReadyCallback ()"><span class="type">GAsyncReadyCallback</span></a> returns. You can pass
-<a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for the <a class="link" href="GAsyncResult.html#GAsyncReadyCallback" title="GAsyncReadyCallback ()"><span class="type">GAsyncReadyCallback</span></a> if you don't need to take any
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for the <a class="link" href="GAsyncResult.html#GAsyncReadyCallback" title="GAsyncReadyCallback ()"><span class="type">GAsyncReadyCallback</span></a> if you don't need to take any
 action at all after the operation completes. Applications may also
 take a reference to the <a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a> and call "<code class="function">_finish()</code>" later;
 however, the "<code class="function">_finish()</code>" function may be called at most once.</p>
@@ -196,44 +196,44 @@ however, the "<code class="function">_finish()</code>" function may be called at
 36
 37
 38</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">void</span> <span class="function">_theoretical_frobnitz_async</span> <span class="gtkdoc opt">(</span>Theoretical         <span class="gtkdoc opt">*</span>t<span class="gtkdoc opt">,</span>
-                                  GCancellable        <span class="gtkdoc opt">*</span>c<span class="gtkdoc opt">,</span>
-                                  GAsyncReadyCallback  cb<span class="gtkdoc opt">,</span>
-                                  gpointer             u<span class="gtkdoc opt">);</span>
+        <td class="listing_code"><pre class="programlisting"><span class="type">void</span><span class="normal"> </span><span class="function">_theoretical_frobnitz_async</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">Theoretical</span><span class="normal">         </span><span class="symbol">*</span><span class="normal">t</span><span class="symbol">,</span>
+<span class="normal">                                  </span><span class="usertype">GCancellable</span><span class="normal">        </span><span class="symbol">*</span><span class="normal">c</span><span class="symbol">,</span>
+<span class="normal">                                  </span><span class="usertype">GAsyncReadyCallback</span><span class="normal">  cb</span><span class="symbol">,</span>
+<span class="normal">                                  </span><span class="usertype">gpointer</span><span class="normal">             u</span><span class="symbol">);</span>
 
-gboolean <span class="function">_theoretical_frobnitz_finish</span> <span class="gtkdoc opt">(</span>Theoretical   <span class="gtkdoc opt">*</span>t<span class="gtkdoc opt">,</span>
-                                       GAsyncResult  <span class="gtkdoc opt">*</span>res<span class="gtkdoc opt">,</span>
-                                       GError       <span class="gtkdoc opt">**</span>e<span class="gtkdoc opt">);</span>
+<span class="usertype">gboolean</span><span class="normal"> </span><span class="function">_theoretical_frobnitz_finish</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">Theoretical</span><span class="normal">   </span><span class="symbol">*</span><span class="normal">t</span><span class="symbol">,</span>
+<span class="normal">                                       </span><span class="usertype">GAsyncResult</span><span class="normal">  </span><span class="symbol">*</span><span class="normal">res</span><span class="symbol">,</span>
+<span class="normal">                                       </span><span class="usertype">GError</span><span class="normal">       </span><span class="symbol">**</span><span class="normal">e</span><span class="symbol">);</span>
 
-<span class="gtkdoc kwb">static void</span>
-<span class="function">frobnitz_result_func</span> <span class="gtkdoc opt">(</span>GObject      <span class="gtkdoc opt">*</span>source_object<span class="gtkdoc opt">,</span>
-		 GAsyncResult <span class="gtkdoc opt">*</span>res<span class="gtkdoc opt">,</span>
-		 gpointer      user_data<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  gboolean success <span class="gtkdoc opt">=</span> FALSE<span class="gtkdoc opt">;</span>
+<span class="keyword">static</span><span class="normal"> </span><span class="type">void</span>
+<span class="function">frobnitz_result_func</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">GObject</span><span class="normal">      </span><span class="symbol">*</span><span class="normal">source_object</span><span class="symbol">,</span>
+<span class="normal">         </span><span class="usertype">GAsyncResult</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">res</span><span class="symbol">,</span>
+<span class="normal">         </span><span class="usertype">gpointer</span><span class="normal">      user_data</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">gboolean</span><span class="normal"> success </span><span class="symbol">=</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS">FALSE</a></span><span class="symbol">;</span>
 
-  success <span class="gtkdoc opt">=</span> <span class="function">_theoretical_frobnitz_finish</span> <span class="gtkdoc opt">(</span>source_object<span class="gtkdoc opt">,</span> res<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span>
+<span class="normal">  success </span><span class="symbol">=</span><span class="normal"> </span><span class="function">_theoretical_frobnitz_finish</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">source_object</span><span class="symbol">,</span><span class="normal"> res</span><span class="symbol">,</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
 
-  <span class="keyword">if</span> <span class="gtkdoc opt">(</span>success<span class="gtkdoc opt">)</span>
-    <span class="function"><a href="../glib/glib-String-Utility-Functions.html#g-printf">g_printf</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;Hurray!</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">);</span>
-  <span class="keyword">else</span>
-    <span class="function"><a href="../glib/glib-String-Utility-Functions.html#g-printf">g_printf</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;Uh oh!</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">);</span>
+<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">success</span><span class="symbol">)</span>
+<span class="normal">    </span><span class="function"><a href="http://library.gnome.org/devel/glib/unstable/glib-String-Utility-Functions.html#g-printf">g_printf</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Hurray!</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">else</span>
+<span class="normal">    </span><span class="function"><a href="http://library.gnome.org/devel/glib/unstable/glib-String-Utility-Functions.html#g-printf">g_printf</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Uh oh!</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">);</span>
 
-  <span class="gtkdoc opt">...</span>
+<span class="normal">  </span><span class="symbol">...</span>
 
-<span class="gtkdoc opt">}</span>
+<span class="cbracket">}</span>
 
-<span class="gtkdoc kwb">int</span> <span class="function">main</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">int</span> argc<span class="gtkdoc opt">,</span> <span class="gtkdoc kwb">void</span> <span class="gtkdoc opt">*</span>argv<span class="gtkdoc opt">[])</span>
-<span class="gtkdoc opt">{</span>
-   <span class="gtkdoc opt">...</span>
+<span class="type">int</span><span class="normal"> </span><span class="function">main</span><span class="normal"> </span><span class="symbol">(</span><span class="type">int</span><span class="normal"> argc</span><span class="symbol">,</span><span class="normal"> </span><span class="type">void</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">argv</span><span class="symbol">[])</span>
+<span class="cbracket">{</span>
+<span class="normal">   </span><span class="symbol">...</span>
 
-   <span class="function">_theoretical_frobnitz_async</span> <span class="gtkdoc opt">(</span>theoretical_data<span class="gtkdoc opt">,</span>
-                                NULL<span class="gtkdoc opt">,</span>
-                                frobnitz_result_func<span class="gtkdoc opt">,</span>
-                                NULL<span class="gtkdoc opt">);</span>
+<span class="normal">   </span><span class="function">_theoretical_frobnitz_async</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">theoretical_data</span><span class="symbol">,</span>
+<span class="normal">                                <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span>
+<span class="normal">                                frobnitz_result_func</span><span class="symbol">,</span>
+<span class="normal">                                <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
 
-   <span class="gtkdoc opt">...</span>
-<span class="gtkdoc opt">}</span></pre></td>
+<span class="normal">   </span><span class="symbol">...</span>
+<span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -250,7 +250,7 @@ which is used in certain cases to determine the order in which
 operations are executed. They are not used to determine system-wide
 I/O scheduling. Priorities are integers, with lower numbers indicating
 higher priority. It is recommended to choose priorities between
-<a href="../glib/glib-The-Main-Event-Loop.html#G-PRIORITY-LOW:CAPS"><code class="literal">G_PRIORITY_LOW</code></a> and <a href="../glib/glib-The-Main-Event-Loop.html#G-PRIORITY-HIGH:CAPS"><code class="literal">G_PRIORITY_HIGH</code></a>, with <a href="../glib/glib-The-Main-Event-Loop.html#G-PRIORITY-DEFAULT:CAPS"><code class="literal">G_PRIORITY_DEFAULT</code></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#G-PRIORITY-LOW:CAPS"><code class="literal">G_PRIORITY_LOW</code></a> and <a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#G-PRIORITY-HIGH:CAPS"><code class="literal">G_PRIORITY_HIGH</code></a>, with <a href="http://library.gnome.org/devel/glib/unstable/glib-The-Main-Event-Loop.html#G-PRIORITY-DEFAULT:CAPS"><code class="literal">G_PRIORITY_DEFAULT</code></a>
 as a default.</p>
 </div>
 </div>
@@ -259,9 +259,9 @@ as a default.</p>
 <div class="refsect2">
 <a name="GAsyncReadyCallback"></a><h3>GAsyncReadyCallback ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
-<span class="c_punctuation">(</span>*GAsyncReadyCallback<span class="c_punctuation">)</span> (<em class="parameter"><code><a href="../gobject/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *source_object</code></em>,
+<span class="c_punctuation">(</span>*GAsyncReadyCallback<span class="c_punctuation">)</span> (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> *source_object</code></em>,
                         <em class="parameter"><code><a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                        <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+                        <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
 <p>Type definition for a function that will be called back when an asynchronous
 operation within GIO has been completed.</p>
 <div class="refsect3">
@@ -295,7 +295,7 @@ operation within GIO has been completed.</p>
 <hr>
 <div class="refsect2">
 <a name="g-async-result-get-user-data"></a><h3>g_async_result_get_user_data ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="returnvalue">gpointer</span></a>
 g_async_result_get_user_data (<em class="parameter"><code><a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a> *res</code></em>);</pre>
 <p>Gets the user data from a <a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a>.</p>
 <div class="refsect3">
@@ -323,7 +323,7 @@ g_async_result_get_user_data (<em class="parameter"><code><a class="link" href="
 <hr>
 <div class="refsect2">
 <a name="g-async-result-get-source-object"></a><h3>g_async_result_get_source_object ()</h3>
-<pre class="programlisting"><a href="../gobject/gobject-The-Base-Object-Type.html#GObject"><span class="returnvalue">GObject</span></a> *
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="returnvalue">GObject</span></a> *
 g_async_result_get_source_object (<em class="parameter"><code><a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a> *res</code></em>);</pre>
 <p>Gets the source object from a <a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a>.</p>
 <div class="refsect3">
@@ -345,16 +345,16 @@ g_async_result_get_source_object (<em class="parameter"><code><a class="link" hr
 <a name="id-1.4.5.3.10.4.6"></a><h4>Returns</h4>
 <p> a new reference to the source object for the <em class="parameter"><code>res</code></em>
 ,
-or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if there is none. </p>
+or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if there is none. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="g-async-result-is-tagged"></a><h3>g_async_result_is_tagged ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_async_result_is_tagged (<em class="parameter"><code><a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                          <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> source_tag</code></em>);</pre>
+                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> source_tag</code></em>);</pre>
 <p>Checks if <em class="parameter"><code>res</code></em>
  has the given <em class="parameter"><code>source_tag</code></em>
  (generally a function
@@ -384,9 +384,9 @@ pointer indicating the function <em class="parameter"><code>res</code></em>
 </div>
 <div class="refsect3">
 <a name="id-1.4.5.3.10.5.6"></a><h4>Returns</h4>
-<p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>res</code></em>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>res</code></em>
 has the indicated <em class="parameter"><code>source_tag</code></em>
-, <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if
+, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if
 not.</p>
 <p></p>
 </div>
@@ -395,13 +395,13 @@ not.</p>
 <hr>
 <div class="refsect2">
 <a name="g-async-result-legacy-propagate-error"></a><h3>g_async_result_legacy_propagate_error ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_async_result_legacy_propagate_error (<em class="parameter"><code><a class="link" href="GAsyncResult.html" title="GAsyncResult"><span class="type">GAsyncResult</span></a> *res</code></em>,
-                                       <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                                       <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>If <em class="parameter"><code>res</code></em>
  is a <a class="link" href="GSimpleAsyncResult.html" title="GSimpleAsyncResult"><span class="type">GSimpleAsyncResult</span></a>, this is equivalent to
 <a class="link" href="GSimpleAsyncResult.html#g-simple-async-result-propagate-error" title="g_simple_async_result_propagate_error ()"><code class="function">g_simple_async_result_propagate_error()</code></a>. Otherwise it returns
-<a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</p>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a>.</p>
 <p>This can be used for legacy error handling in async *_finish()
 wrapper functions that traditionally handled <a class="link" href="GSimpleAsyncResult.html" title="GSimpleAsyncResult"><span class="type">GSimpleAsyncResult</span></a>
 error returns themselves rather than calling into the virtual method.
@@ -432,10 +432,10 @@ to enable subclasses to chain up correctly.</p>
 </div>
 <div class="refsect3">
 <a name="id-1.4.5.3.10.6.7"></a><h4>Returns</h4>
-<p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>error</code></em>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>error</code></em>
 is has been filled in with an error from
 <em class="parameter"><code>res</code></em>
-, <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not.</p>
+, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not.</p>
 <p></p>
 </div>
 <p class="since">Since 2.34</p>
@@ -475,7 +475,7 @@ usually passed directly to a asynchronous <code class="function">_finish()</code
 </colgroup>
 <tbody>
 <tr>
-<td class="struct_member_name"><p><a href="../gobject/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GAsyncResultIface.g-iface"></a>g_iface</code></em>;</p></td>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GAsyncResultIface.g-iface"></a>g_iface</code></em>;</p></td>
 <td class="struct_member_description"><p>The parent interface.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr>

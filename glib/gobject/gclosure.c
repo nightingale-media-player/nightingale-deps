@@ -42,7 +42,7 @@
  *
  * A #GClosure represents a callback supplied by the programmer. It
  * will generally comprise a function of some kind and a marshaller
- * used to call it. It is the reponsibility of the marshaller to
+ * used to call it. It is the responsibility of the marshaller to
  * convert the arguments for the invocation from #GValues into
  * a suitable form, perform the callback on the converted arguments,
  * and transform the return value back into a #GValue.
@@ -1369,6 +1369,9 @@ va_to_ffi_type (GType gtype,
  * A generic marshaller function implemented via
  * [libffi](http://sourceware.org/libffi/).
  *
+ * Normally this function is not passed explicitly to g_signal_new(),
+ * but used automatically by GLib when specifying a %NULL marshaller.
+ *
  * Since: 2.30
  */
 void
@@ -1486,9 +1489,6 @@ g_cclosure_marshal_generic_va (GClosure *closure,
   atypes = g_alloca (sizeof (ffi_type *) * n_args);
   args =  g_alloca (sizeof (gpointer) * n_args);
   storage = g_alloca (sizeof (va_arg_storage) * n_params);
-
-  if (tmpval_used)
-    enum_tmpval = g_alloca (sizeof (gint));
 
   if (G_CCLOSURE_SWAP_DATA (closure))
     {

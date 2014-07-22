@@ -59,7 +59,7 @@
       <sub name="Glob-style pattern matching" link="glib-Glob-style-pattern-matching.html"/>
       <sub name="Perl-compatible regular expressions" link="glib-Perl-compatible-regular-expressions.html"/>
       <sub name="Regular expression syntax" link="glib-regex-syntax.html"/>
-      <sub name="Simple XML Subset Parser * @Short_description: parses a subset of XML" link="glib-Simple-XML-Subset-Parser.html"/>
+      <sub name="Simple XML Subset Parser" link="glib-Simple-XML-Subset-Parser.html"/>
       <sub name="Key-value file parser" link="glib-Key-value-file-parser.html"/>
       <sub name="Bookmark file parser" link="glib-Bookmark-file-parser.html"/>
       <sub name="Testing" link="glib-Testing.html"/>
@@ -138,6 +138,9 @@
     <keyword type="macro" name="GLIB_VERSION_2_32" link="glib-Version-Information.html#GLIB-VERSION-2-32:CAPS" since="2.32"/>
     <keyword type="macro" name="GLIB_VERSION_2_34" link="glib-Version-Information.html#GLIB-VERSION-2-34:CAPS" since="2.34"/>
     <keyword type="macro" name="GLIB_VERSION_2_36" link="glib-Version-Information.html#GLIB-VERSION-2-36:CAPS" since="2.36"/>
+    <keyword type="macro" name="GLIB_VERSION_2_38" link="glib-Version-Information.html#GLIB-VERSION-2-38:CAPS" since="2.38"/>
+    <keyword type="macro" name="GLIB_VERSION_2_40" link="glib-Version-Information.html#GLIB-VERSION-2-40:CAPS" since="2.40"/>
+    <keyword type="macro" name="GLIB_VERSION_2_42" link="glib-Version-Information.html#GLIB-VERSION-2-42:CAPS" since="2.42"/>
     <keyword type="macro" name="GLIB_VERSION_MIN_REQUIRED" link="glib-Version-Information.html#GLIB-VERSION-MIN-REQUIRED:CAPS" since="2.32"/>
     <keyword type="macro" name="GLIB_VERSION_MAX_ALLOWED" link="glib-Version-Information.html#GLIB-VERSION-MAX-ALLOWED:CAPS" since="2.32"/>
     <keyword type="variable" name="glib_major_version" link="glib-Version-Information.html#glib-major-version"/>
@@ -1443,14 +1446,14 @@
     <keyword type="function" name="g_markup_escape_text ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-escape-text"/>
     <keyword type="function" name="g_markup_printf_escaped ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-printf-escaped" since="2.4"/>
     <keyword type="function" name="g_markup_vprintf_escaped ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-vprintf-escaped" since="2.4"/>
+    <keyword type="function" name="g_markup_parse_context_new ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-new"/>
+    <keyword type="function" name="g_markup_parse_context_parse ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-parse"/>
     <keyword type="function" name="g_markup_parse_context_end_parse ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-end-parse"/>
     <keyword type="function" name="g_markup_parse_context_free ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-free"/>
     <keyword type="function" name="g_markup_parse_context_get_position ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-get-position"/>
     <keyword type="function" name="g_markup_parse_context_get_element ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-get-element" since="2.2"/>
     <keyword type="function" name="g_markup_parse_context_get_element_stack ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-get-element-stack" since="2.16"/>
     <keyword type="function" name="g_markup_parse_context_get_user_data ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-get-user-data" since="2.18"/>
-    <keyword type="function" name="g_markup_parse_context_new ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-new"/>
-    <keyword type="function" name="g_markup_parse_context_parse ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-parse"/>
     <keyword type="function" name="g_markup_parse_context_push ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-push" since="2.18"/>
     <keyword type="function" name="g_markup_parse_context_pop ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-pop" since="2.18"/>
     <keyword type="function" name="g_markup_parse_context_ref ()" link="glib-Simple-XML-Subset-Parser.html#g-markup-parse-context-ref" since="2.36"/>

@@ -30,8 +30,8 @@ m4_define(glib_configure_ac)
 # <mclasen> on the unstable (ie master), interface age = 0
 
 m4_define([glib_major_version], [2])
-m4_define([glib_minor_version], [39])
-m4_define([glib_micro_version], [91])
+m4_define([glib_minor_version], [41])
+m4_define([glib_micro_version], [2])
 m4_define([glib_interface_age], [0])
 m4_define([glib_binary_age],
           [m4_eval(100 * glib_minor_version + glib_micro_version)])
@@ -213,13 +213,19 @@ AM_CONDITIONAL(MS_LIB_AVAILABLE, [test x$ms_librarian = xyes])
 
 AS_IF([test "x$glib_have_carbon" = "xyes"], [
   AC_DEFINE(HAVE_CARBON, 1, [define to 1 if Carbon is available])
-  LDFLAGS="$LDFLAGS -Wl,-framework,Carbon"
-])
+  CARBON_LIBS="-Wl,-framework,Carbon"
+  LDFLAGS="$LDFLAGS $CARBON_LIBS"
+], [CARBON_LIBS=""])
 
-if test "x$glib_have_cocoa" = "xyes"; then
+AC_SUBST([CARBON_LIBS])
+
+AS_IF([test "x$glib_have_cocoa" = "xyes"], [
   AC_DEFINE(HAVE_COCOA, 1, [define to 1 if Cocoa is available])
-  LDFLAGS="$LDFLAGS -Wl,-framework,Foundation"
-fi
+  COCOA_LIBS="-Wl,-framework,Foundation"
+  LDFLAGS="$LDFLAGS $COCOA_LIBS"
+], [COCOA_LIBS=""])
+
+AC_SUBST([COCOA_LIBS])
 
 dnl declare --enable-* args and collect ac_help strings
 AC_ARG_ENABLE(debug,
@@ -2272,9 +2278,6 @@ case $host in
   *-*-freebsd*|*-*-linux*)
     G_THREAD_LIBS_FOR_GTHREAD="`echo $G_THREAD_LIBS | sed s/-pthread/-lpthread/`"
     ;;
-  *-*-openbsd*)
-    LDFLAGS="$LDFLAGS -pthread"
-    ;;
   *)
     G_THREAD_LIBS_FOR_GTHREAD="$G_THREAD_LIBS"
     ;;
@@ -2383,13 +2386,7 @@ AC_CACHE_CHECK(for futex(2) system call,
 #include <sys/syscall.h>
 #include <unistd.h>
 ],[
-int
-main (void)
-{
-  /* it is not like this actually runs or anything... */
   syscall (__NR_futex, NULL, FUTEX_WAKE, FUTEX_WAIT);
-  return 0;
-}
 ])],glib_cv_futex=yes,glib_cv_futex=no))
 if test x"$glib_cv_futex" = xyes; then
   AC_DEFINE(HAVE_FUTEX, 1, [we have the futex(2) system call])
@@ -2400,12 +2397,7 @@ AC_CACHE_CHECK(for eventfd(2) system call,
 #include <sys/eventfd.h>
 #include <unistd.h>
 ],[
-int
-main (void)
-{
   eventfd (0, EFD_CLOEXEC);
-  return 0;
-}
 ])],glib_cv_eventfd=yes,glib_cv_eventfd=no))
 if test x"$glib_cv_eventfd" = x"yes"; then
   AC_DEFINE(HAVE_EVENTFD, 1, [we have the eventfd(2) system call])
@@ -3448,21 +3440,57 @@ dnl
 AC_ARG_ENABLE(Bsymbolic,
               [AS_HELP_STRING([--disable-Bsymbolic],
                               [avoid linking with -Bsymbolic])],,
-              [SAVED_LDFLAGS="${LDFLAGS}"
+              [SAVED_LDFLAGS="${LDFLAGS}" SAVED_LIBS="${LIBS}"
                AC_MSG_CHECKING([for -Bsymbolic-functions linker flag])
                LDFLAGS=-Wl,-Bsymbolic-functions
+               LIBS=
                AC_TRY_LINK([], [int main (void) { return 0; }],
                            AC_MSG_RESULT(yes)
                            enable_Bsymbolic=yes,
                            AC_MSG_RESULT(no)
                            enable_Bsymbolic=no)
-               LDFLAGS="${SAVED_LDFLAGS}"])
+               LDFLAGS="${SAVED_LDFLAGS}" LIBS="${SAVED_LIBS}"])
 
 if test "x${enable_Bsymbolic}" = "xyes"; then
   GLIB_LINK_FLAGS=-Wl,-Bsymbolic-functions
 fi
 
 AC_SUBST(GLIB_LINK_FLAGS)
+
+dnl
+dnl Check for -z,nodelete linker flag: the type system assumes that
+dnl libgobject stays loaded for the lifetime of the process.
+dnl Since ld.bfd does not treat wrong -z options as fatal by default,
+dnl we also try to check for the --fatal-warnings linker flag if
+dnl auto-detecting.
+dnl
+
+AC_ARG_ENABLE([znodelete],
+              [AS_HELP_STRING([--disable-znodelete],
+                              [avoid linking with -z,nodelete])],,
+              [SAVED_LDFLAGS="${LDFLAGS}" SAVED_LIBS="${LIBS}"
+               AC_MSG_CHECKING([for --fatal-warnings linker flag])
+               LDFLAGS=-Wl,--fatal-warnings
+               LIBS=
+               AC_TRY_LINK([], [int main (void) { return 0; }],
+                           AC_MSG_RESULT(yes)
+                           [ldflags_fatal=-Wl,--fatal-warnings],
+                           AC_MSG_RESULT(no)
+                           ldflags_fatal=)
+               AC_MSG_CHECKING([for -z,nodelete linker flag])
+               LDFLAGS="$ldflags_fatal -Wl,-z,nodelete"
+               AC_TRY_LINK([], [int main (void) { return 0; }],
+                           AC_MSG_RESULT(yes)
+                           enable_znodelete=yes,
+                           AC_MSG_RESULT(no)
+                           enable_znodelete=no)
+               LDFLAGS="${SAVED_LDFLAGS}" LIBS="${SAVED_LIBS}"])
+
+if test "x${enable_znodelete}" = "xyes"; then
+  GOBJECT_LINK_FLAGS=-Wl,-z,nodelete
+fi
+
+AC_SUBST(GOBJECT_LINK_FLAGS)
 
 dnl
 dnl Check for -fvisibility=hidden to determine if we can do GNU-style
@@ -3565,6 +3593,7 @@ build/win32/dirent/Makefile
 build/win32/vs9/Makefile
 build/win32/vs10/Makefile
 build/win32/vs11/Makefile
+build/win32/vs12/Makefile
 glib/Makefile
 glib/glib.stp
 glib/libcharset/Makefile

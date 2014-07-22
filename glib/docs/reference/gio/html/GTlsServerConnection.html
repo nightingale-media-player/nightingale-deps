@@ -87,7 +87,7 @@
 </div>
 <div class="refsect1">
 <a name="GTlsServerConnection.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
+<pre class="screen">    GInterface
     <span class="lineart">╰──</span> GTlsServerConnection
 </pre>
 </div>
@@ -114,7 +114,7 @@ representing a server-side TLS connection.</p>
 <pre class="programlisting"><a class="link" href="GIOStream.html" title="GIOStream"><span class="returnvalue">GIOStream</span></a> *
 g_tls_server_connection_new (<em class="parameter"><code><a class="link" href="GIOStream.html" title="GIOStream"><span class="type">GIOStream</span></a> *base_io_stream</code></em>,
                              <em class="parameter"><code><a class="link" href="GTlsCertificate.html" title="GTlsCertificate"><span class="type">GTlsCertificate</span></a> *certificate</code></em>,
-                             <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                             <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Creates a new <a class="link" href="GTlsServerConnection.html" title="GTlsServerConnection"><span class="type">GTlsServerConnection</span></a> wrapping <em class="parameter"><code>base_io_stream</code></em>
  (which
 must have pollable input and output streams).</p>
@@ -134,12 +134,12 @@ must have pollable input and output streams).</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>certificate</p></td>
-<td class="parameter_description"><p> the default server certificate, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_description"><p> the default server certificate, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for error reporting, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore.</p></td>
+<td class="parameter_description"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for error reporting, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -148,7 +148,7 @@ must have pollable input and output streams).</p>
 <div class="refsect3">
 <a name="id-1.4.15.6.10.2.6"></a><h4>Returns</h4>
 <p> the new
-<a class="link" href="GTlsServerConnection.html" title="GTlsServerConnection"><span class="type">GTlsServerConnection</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error. </p>
+<a class="link" href="GTlsServerConnection.html" title="GTlsServerConnection"><span class="type">GTlsServerConnection</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Override the parsed C type with given type."><span class="acronym">type</span></acronym> GTlsServerConnection]</span></p>
 </div>
 <p class="since">Since 2.28</p>

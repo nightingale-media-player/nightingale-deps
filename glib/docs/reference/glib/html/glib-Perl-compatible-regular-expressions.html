@@ -430,7 +430,7 @@ preceded by a letter.</p>
 <p>Note that, unless you set the <a class="link" href="glib-Perl-compatible-regular-expressions.html#G-REGEX-RAW:CAPS"><span class="type">G_REGEX_RAW</span></a> flag, all the strings passed
 to these functions must be encoded in UTF-8. The lengths and the positions
 inside the strings are in bytes and not in characters, so, for instance,
-"\xc3\xa0" (i.e. "&amp;agrave;") is two bytes long but it is treated as a
+"\xc3\xa0" (i.e. "à") is two bytes long but it is treated as a
 single character. If you set <a class="link" href="glib-Perl-compatible-regular-expressions.html#G-REGEX-RAW:CAPS"><span class="type">G_REGEX_RAW</span></a> the strings can be non-valid
 UTF-8 strings and a byte is treated as a character, so "\xc3\xa0" is two
 bytes and two characters long.</p>
@@ -1062,25 +1062,25 @@ string you can use <a class="link" href="glib-Perl-compatible-regular-expression
 17
 18
 19</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">static void</span>
-<span class="function">print_uppercase_words</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">const</span> gchar <span class="gtkdoc opt">*</span>string<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  <span class="gtkdoc slc">// Print all uppercase-only words.</span>
-  GRegex <span class="gtkdoc opt">*</span>regex<span class="gtkdoc opt">;</span>
-  GMatchInfo <span class="gtkdoc opt">*</span>match_info<span class="gtkdoc opt">;</span>
- 
-  regex <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-new">g_regex_new</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;[A-Z]+&quot;</span><span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span>
-  <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-match">g_regex_match</a></span> <span class="gtkdoc opt">(</span>regex<span class="gtkdoc opt">,</span> string<span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">, &amp;</span>match_info<span class="gtkdoc opt">);</span>
-  <span class="keyword">while</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-matches">g_match_info_matches</a></span> <span class="gtkdoc opt">(</span>match_info<span class="gtkdoc opt">))</span>
-    <span class="gtkdoc opt">{</span>
-      gchar <span class="gtkdoc opt">*</span>word <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-fetch">g_match_info_fetch</a></span> <span class="gtkdoc opt">(</span>match_info<span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">);</span>
-      <span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;Found: %s</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">,</span> word<span class="gtkdoc opt">);</span>
-      <span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span> <span class="gtkdoc opt">(</span>word<span class="gtkdoc opt">);</span>
-      <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-next">g_match_info_next</a></span> <span class="gtkdoc opt">(</span>match_info<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span>
-    <span class="gtkdoc opt">}</span>
-  <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-free">g_match_info_free</a></span> <span class="gtkdoc opt">(</span>match_info<span class="gtkdoc opt">);</span>
-  <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-unref">g_regex_unref</a></span> <span class="gtkdoc opt">(</span>regex<span class="gtkdoc opt">);</span>
-<span class="gtkdoc opt">}</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="keyword">static</span><span class="normal"> </span><span class="type">void</span>
+<span class="function">print_uppercase_words</span><span class="normal"> </span><span class="symbol">(</span><span class="keyword">const</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">string</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="comment">// Print all uppercase-only words.</span>
+<span class="normal">  </span><span class="usertype">GRegex</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">regex</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">GMatchInfo</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">match_info</span><span class="symbol">;</span>
+<span class="normal"> </span>
+<span class="normal">  regex </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-new">g_regex_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"[A-Z]+"</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-match">g_regex_match</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">regex</span><span class="symbol">,</span><span class="normal"> string</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">match_info</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">while</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-matches">g_match_info_matches</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">match_info</span><span class="symbol">))</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">      </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">word </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-fetch">g_match_info_fetch</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">match_info</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Found: %s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> word</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">word</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-next">g_match_info_next</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">match_info</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+<span class="normal">  </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-free">g_match_info_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">match_info</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-unref">g_regex_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">regex</span><span class="symbol">);</span>
+<span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1197,31 +1197,31 @@ string you can use <a class="link" href="glib-Perl-compatible-regular-expression
 23
 24
 25</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">static void</span>
-<span class="function">print_uppercase_words</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">const</span> gchar <span class="gtkdoc opt">*</span>string<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  <span class="gtkdoc slc">// Print all uppercase-only words.</span>
-  GRegex <span class="gtkdoc opt">*</span>regex<span class="gtkdoc opt">;</span>
-  GMatchInfo <span class="gtkdoc opt">*</span>match_info<span class="gtkdoc opt">;</span>
-  GError <span class="gtkdoc opt">*</span>error <span class="gtkdoc opt">=</span> NULL<span class="gtkdoc opt">;</span>
-  
-  regex <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-new">g_regex_new</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;[A-Z]+&quot;</span><span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span>
-  <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-match-full">g_regex_match_full</a></span> <span class="gtkdoc opt">(</span>regex<span class="gtkdoc opt">,</span> string<span class="gtkdoc opt">, -</span><span class="number">1</span><span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">, &amp;</span>match_info<span class="gtkdoc opt">, &amp;</span>error<span class="gtkdoc opt">);</span>
-  <span class="keyword">while</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-matches">g_match_info_matches</a></span> <span class="gtkdoc opt">(</span>match_info<span class="gtkdoc opt">))</span>
-    <span class="gtkdoc opt">{</span>
-      gchar <span class="gtkdoc opt">*</span>word <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-fetch">g_match_info_fetch</a></span> <span class="gtkdoc opt">(</span>match_info<span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">);</span>
-      <span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;Found: %s</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">,</span> word<span class="gtkdoc opt">);</span>
-      <span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span> <span class="gtkdoc opt">(</span>word<span class="gtkdoc opt">);</span>
-      <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-next">g_match_info_next</a></span> <span class="gtkdoc opt">(</span>match_info<span class="gtkdoc opt">, &amp;</span>error<span class="gtkdoc opt">);</span>
-    <span class="gtkdoc opt">}</span>
-  <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-free">g_match_info_free</a></span> <span class="gtkdoc opt">(</span>match_info<span class="gtkdoc opt">);</span>
-  <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-unref">g_regex_unref</a></span> <span class="gtkdoc opt">(</span>regex<span class="gtkdoc opt">);</span>
-  <span class="keyword">if</span> <span class="gtkdoc opt">(</span>error <span class="gtkdoc opt">!=</span> NULL<span class="gtkdoc opt">)</span>
-    <span class="gtkdoc opt">{</span>
-      <span class="function"><a href="glib-Warnings-and-Assertions.html#g-printerr">g_printerr</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;Error while matching: %s</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">,</span> error<span class="gtkdoc opt">-&gt;</span>message<span class="gtkdoc opt">);</span>
-      <span class="function"><a href="glib-Error-Reporting.html#g-error-free">g_error_free</a></span> <span class="gtkdoc opt">(</span>error<span class="gtkdoc opt">);</span>
-    <span class="gtkdoc opt">}</span>
-<span class="gtkdoc opt">}</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="keyword">static</span><span class="normal"> </span><span class="type">void</span>
+<span class="function">print_uppercase_words</span><span class="normal"> </span><span class="symbol">(</span><span class="keyword">const</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">string</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="comment">// Print all uppercase-only words.</span>
+<span class="normal">  </span><span class="usertype">GRegex</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">regex</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">GMatchInfo</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">match_info</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">GError</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">error </span><span class="symbol">=</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
+<span class="normal">  </span>
+<span class="normal">  regex </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-new">g_regex_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"[A-Z]+"</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-match-full">g_regex_match_full</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">regex</span><span class="symbol">,</span><span class="normal"> string</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">-</span><span class="number">1</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">match_info</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">error</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">while</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-matches">g_match_info_matches</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">match_info</span><span class="symbol">))</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">      </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">word </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-fetch">g_match_info_fetch</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">match_info</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Found: %s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> word</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">word</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-next">g_match_info_next</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">match_info</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">error</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+<span class="normal">  </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-free">g_match_info_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">match_info</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-unref">g_regex_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">regex</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">error </span><span class="symbol">!=</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">)</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">      </span><span class="function"><a href="glib-Warnings-and-Assertions.html#g-printerr">g_printerr</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Error while matching: %s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> error</span><span class="symbol">-&gt;</span><span class="normal">message</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="function"><a href="glib-Error-Reporting.html#g-error-free">g_error_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">error</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+<span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -1902,40 +1902,40 @@ strings at once:</p>
 32
 33
 34</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">static</span> gboolean
-<span class="function">eval_cb</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">const</span> GMatchInfo <span class="gtkdoc opt">*</span>info<span class="gtkdoc opt">,</span>
-         GString          <span class="gtkdoc opt">*</span>res<span class="gtkdoc opt">,</span>
-         gpointer          data<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  gchar <span class="gtkdoc opt">*</span>match<span class="gtkdoc opt">;</span>
-  gchar <span class="gtkdoc opt">*</span>r<span class="gtkdoc opt">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="keyword">static</span><span class="normal"> <a href="glib-Basic-Types.html#gboolean">gboolean</a></span>
+<span class="function">eval_cb</span><span class="normal"> </span><span class="symbol">(</span><span class="keyword">const</span><span class="normal"> </span><span class="usertype">GMatchInfo</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">info</span><span class="symbol">,</span>
+<span class="normal">         </span><span class="usertype">GString</span><span class="normal">          </span><span class="symbol">*</span><span class="normal">res</span><span class="symbol">,</span>
+<span class="normal">         </span><span class="usertype">gpointer</span><span class="normal">          data</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">match</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">r</span><span class="symbol">;</span>
 
-   match <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-fetch">g_match_info_fetch</a></span> <span class="gtkdoc opt">(</span>info<span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">);</span>
-   r <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Hash-Tables.html#g-hash-table-lookup">g_hash_table_lookup</a></span> <span class="gtkdoc opt">((</span>GHashTable <span class="gtkdoc opt">*)</span>data<span class="gtkdoc opt">,</span> match<span class="gtkdoc opt">);</span>
-   <span class="function"><a href="glib-Strings.html#g-string-append">g_string_append</a></span> <span class="gtkdoc opt">(</span>res<span class="gtkdoc opt">,</span> r<span class="gtkdoc opt">);</span>
-   <span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span> <span class="gtkdoc opt">(</span>match<span class="gtkdoc opt">);</span>
+<span class="normal">   match </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-match-info-fetch">g_match_info_fetch</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">info</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">);</span>
+<span class="normal">   r </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Hash-Tables.html#g-hash-table-lookup">g_hash_table_lookup</a></span><span class="normal"> </span><span class="symbol">((</span><span class="normal"><a href="glib-Hash-Tables.html#GHashTable">GHashTable</a> </span><span class="symbol">*)</span><span class="normal">data</span><span class="symbol">,</span><span class="normal"> match</span><span class="symbol">);</span>
+<span class="normal">   </span><span class="function"><a href="glib-Strings.html#g-string-append">g_string_append</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">res</span><span class="symbol">,</span><span class="normal"> r</span><span class="symbol">);</span>
+<span class="normal">   </span><span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">match</span><span class="symbol">);</span>
 
-   <span class="keyword">return</span> FALSE<span class="gtkdoc opt">;</span>
-<span class="gtkdoc opt">}</span>
+<span class="normal">   </span><span class="keyword">return</span><span class="normal"> <a href="glib-Standard-Macros.html#FALSE:CAPS">FALSE</a></span><span class="symbol">;</span>
+<span class="cbracket">}</span>
 
-<span class="gtkdoc opt">...</span>
+<span class="symbol">...</span>
 
-GRegex <span class="gtkdoc opt">*</span>reg<span class="gtkdoc opt">;</span>
-GHashTable <span class="gtkdoc opt">*</span>h<span class="gtkdoc opt">;</span>
-gchar <span class="gtkdoc opt">*</span>res<span class="gtkdoc opt">;</span>
+<span class="usertype">GRegex</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">reg</span><span class="symbol">;</span>
+<span class="usertype">GHashTable</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">h</span><span class="symbol">;</span>
+<span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">res</span><span class="symbol">;</span>
 
-h <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Hash-Tables.html#g-hash-table-new">g_hash_table_new</a></span> <span class="gtkdoc opt">(</span>g_str_hash<span class="gtkdoc opt">,</span> g_str_equal<span class="gtkdoc opt">);</span>
+<span class="normal">h </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Hash-Tables.html#g-hash-table-new">g_hash_table_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="glib-Hash-Tables.html#g-str-hash">g_str_hash</a></span><span class="symbol">,</span><span class="normal"> <a href="glib-Hash-Tables.html#g-str-equal">g_str_equal</a></span><span class="symbol">);</span>
 
-<span class="function"><a href="glib-Hash-Tables.html#g-hash-table-insert">g_hash_table_insert</a></span> <span class="gtkdoc opt">(</span>h<span class="gtkdoc opt">,</span> <span class="string">&quot;1&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;ONE&quot;</span><span class="gtkdoc opt">);</span>
-<span class="function"><a href="glib-Hash-Tables.html#g-hash-table-insert">g_hash_table_insert</a></span> <span class="gtkdoc opt">(</span>h<span class="gtkdoc opt">,</span> <span class="string">&quot;2&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;TWO&quot;</span><span class="gtkdoc opt">);</span>
-<span class="function"><a href="glib-Hash-Tables.html#g-hash-table-insert">g_hash_table_insert</a></span> <span class="gtkdoc opt">(</span>h<span class="gtkdoc opt">,</span> <span class="string">&quot;3&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;THREE&quot;</span><span class="gtkdoc opt">);</span>
-<span class="function"><a href="glib-Hash-Tables.html#g-hash-table-insert">g_hash_table_insert</a></span> <span class="gtkdoc opt">(</span>h<span class="gtkdoc opt">,</span> <span class="string">&quot;4&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;FOUR&quot;</span><span class="gtkdoc opt">);</span>
+<span class="function"><a href="glib-Hash-Tables.html#g-hash-table-insert">g_hash_table_insert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">h</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"1"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"ONE"</span><span class="symbol">);</span>
+<span class="function"><a href="glib-Hash-Tables.html#g-hash-table-insert">g_hash_table_insert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">h</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"2"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"TWO"</span><span class="symbol">);</span>
+<span class="function"><a href="glib-Hash-Tables.html#g-hash-table-insert">g_hash_table_insert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">h</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"3"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"THREE"</span><span class="symbol">);</span>
+<span class="function"><a href="glib-Hash-Tables.html#g-hash-table-insert">g_hash_table_insert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">h</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"4"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"FOUR"</span><span class="symbol">);</span>
 
-reg <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-new">g_regex_new</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;1|2|3|4&quot;</span><span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span>
-res <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-replace-eval">g_regex_replace_eval</a></span> <span class="gtkdoc opt">(</span>reg<span class="gtkdoc opt">,</span> text<span class="gtkdoc opt">, -</span><span class="number">1</span><span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">,</span> <span class="number">0</span><span class="gtkdoc opt">,</span> eval_cb<span class="gtkdoc opt">,</span> h<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span>
-<span class="function"><a href="glib-Hash-Tables.html#g-hash-table-destroy">g_hash_table_destroy</a></span> <span class="gtkdoc opt">(</span>h<span class="gtkdoc opt">);</span>
+<span class="normal">reg </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-new">g_regex_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"1|2|3|4"</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
+<span class="normal">res </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-Perl-compatible-regular-expressions.html#g-regex-replace-eval">g_regex_replace_eval</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">reg</span><span class="symbol">,</span><span class="normal"> text</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">-</span><span class="number">1</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> </span><span class="number">0</span><span class="symbol">,</span><span class="normal"> eval_cb</span><span class="symbol">,</span><span class="normal"> h</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
+<span class="function"><a href="glib-Hash-Tables.html#g-hash-table-destroy">g_hash_table_destroy</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">h</span><span class="symbol">);</span>
 
-<span class="gtkdoc opt">...</span></pre></td>
+<span class="symbol">...</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -2814,7 +2814,7 @@ match failed <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="N
 <td class="enum_member_name"><p><a name="G-REGEX-ERROR-UNRECOGNIZED-CHARACTER:CAPS"></a>G_REGEX_ERROR_UNRECOGNIZED_CHARACTER</p></td>
 <td class="enum_member_description">
 <p>Unrecognized character after "(?",
-    "(?&amp;lt;" or "(?P". Since 2.16</p>
+    "(?&lt;" or "(?P". Since 2.16</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -3527,14 +3527,16 @@ error domains.</p>
 <div class="refsect2">
 <a name="GRegex"></a><h3>GRegex</h3>
 <pre class="programlisting">typedef struct _GRegex GRegex;</pre>
-<p>A GRegex is the "compiled" form of a regular expression pattern. This
-structure is opaque and its fields cannot be accessed directly.</p>
+<p>A GRegex is the "compiled" form of a regular expression pattern.
+This structure is opaque and its fields cannot be accessed directly.</p>
 <p class="since">Since 2.14</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GMatchInfo"></a><h3>GMatchInfo</h3>
 <pre class="programlisting">typedef struct _GMatchInfo GMatchInfo;</pre>
+<p>A GMatchInfo is an opaque struct used to return information about
+matches.</p>
 </div>
 </div>
 <div class="refsect1">

@@ -28,7 +28,6 @@
 #include "gtype-private.h"
 #include "gtypeplugin.h"
 #include "gvaluecollector.h"
-#include "gbsearcharray.h"
 #include "gatomicarray.h"
 #include "gobject_trace.h"
 
@@ -387,7 +386,7 @@ static TypeNode		*static_fundamental_type_nodes[(G_TYPE_FUNDAMENTAL_MAX >> G_TYP
 static GType		 static_fundamental_next = G_TYPE_RESERVED_USER_FIRST;
 
 static inline TypeNode*
-lookup_type_node_I (register GType utype)
+lookup_type_node_I (GType utype)
 {
   if (utype > G_TYPE_FUNDAMENTAL_MAX)
     return (TypeNode*) (utype & ~TYPE_ID_MASK);
@@ -1007,12 +1006,7 @@ check_add_interface_L (GType instance_type,
     {
       g_warning ("attempting to add an interface (%s) to class (%s) after class_init",
                  NODE_NAME (iface), NODE_NAME (node));
-
-      /* See https://bugzilla.gnome.org/show_bug.cgi?id=697229,
-       * https://bugzilla.gnome.org/show_bug.cgi?id=687659
-       */
-      if (!g_str_has_prefix (NODE_NAME (node), "gtkmm__CustomObject_") && !strstr (NODE_NAME (node), "_gtksharp_"))
-        return FALSE;
+      return FALSE;
     }
   tnode = lookup_type_node_I (NODE_PARENT_TYPE (iface));
   if (NODE_PARENT_TYPE (tnode) && !type_lookup_iface_entry_L (node, tnode))
@@ -1779,6 +1773,9 @@ type_iface_blow_holder_info_Wm (TypeNode *iface,
  * #GObject hierarchy should be created via g_object_new() and never
  * directly through g_type_create_instance() which doesn't handle things
  * like singleton objects or object construction.
+ *
+ * The extended members of the returned instance are guaranteed to be filled
+ * with zeros.
  *
  * Note: Do not use this function, unless you're implementing a
  * fundamental type. Also language bindings should not use this
@@ -3972,6 +3969,15 @@ g_type_check_instance_is_a (GTypeInstance *type_instance,
 }
 
 gboolean
+g_type_check_instance_is_fundamentally_a (GTypeInstance *type_instance,
+                                          GType          fundamental_type)
+{
+  if (!type_instance || !type_instance->g_class)
+    return FALSE;
+  return NODE_FUNDAMENTAL_TYPE(lookup_type_node_I (type_instance->g_class->g_type)) == fundamental_type;
+}
+
+gboolean
 g_type_check_class_is_a (GTypeClass *type_class,
 			 GType       is_a_type)
 {
@@ -4409,7 +4415,7 @@ gobject_init_ctor (void)
  * When an object is allocated, the private structures for
  * the type and all of its parent types are allocated
  * sequentially in the same memory block as the public
- * structures.
+ * structures, and are zero-filled.
  *
  * Note that the accumulated size of the private structures of
  * a type and all its parent types cannot exceed 64 KiB.
@@ -4451,6 +4457,7 @@ gobject_init_ctor (void)
  *   my_object->priv = G_TYPE_INSTANCE_GET_PRIVATE (my_object,
  *                                                  MY_TYPE_OBJECT,
  *                                                  MyObjectPrivate);
+ *   // my_object->priv->some_field will be automatically initialised to 0
  * }
  *
  * static int
@@ -4687,7 +4694,9 @@ g_type_class_get_instance_private_offset (gpointer g_class)
  * when the class is allocated, the private structures for
  * the class and all of its parent types are allocated
  * sequentially in the same memory block as the public
- * structures. This function should be called in the
+ * structures, and are zero-filled.
+ *
+ * This function should be called in the
  * type's get_type() function after the type is registered.
  * The private structure can be retrieved using the
  * G_TYPE_CLASS_GET_PRIVATE() macro.
@@ -4802,14 +4811,4 @@ g_type_ensure (GType type)
    */
   if (G_UNLIKELY (type == (GType)-1))
     g_error ("can't happen");
-}
-
-gboolean
-g_type_is_in_init (GType type)
-{
-  TypeNode *node;
-
-  node = lookup_type_node_I (type);
-
-  return node->data->class.init_state != INITIALIZED;
 }

@@ -206,7 +206,7 @@ it in any public header files.</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting">INCLUDES <span class="gtkdoc opt">= -</span>DG_LOG_DOMAIN<span class="gtkdoc opt">=</span><span class="gtkdoc esc">\&quot;</span>Gtk<span class="gtkdoc esc">\&quot;</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="normal">INCLUDES </span><span class="symbol">=</span><span class="normal"> </span><span class="symbol">-</span><span class="normal">DG_LOG_DOMAIN</span><span class="symbol">=\</span><span class="string">"Gtk</span><span class="specialchar">\"</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -226,6 +226,8 @@ it in any public header files.</p>
 <a name="G-LOG-LEVEL-USER-SHIFT:CAPS"></a><h3>G_LOG_LEVEL_USER_SHIFT</h3>
 <pre class="programlisting">#define G_LOG_LEVEL_USER_SHIFT  (8)
 </pre>
+<p>Log levels below 1&lt;&lt;G_LOG_LEVEL_USER_SHIFT are used by GLib.
+Higher bits can be used for user-defined log levels.</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -567,8 +569,8 @@ in the default domain:</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Message-Logging.html#g-log-set-handler">g_log_set_handler</a></span> <span class="gtkdoc opt">(</span>NULL<span class="gtkdoc opt">,</span> G_LOG_LEVEL_WARNING <span class="gtkdoc opt">|</span> G_LOG_FLAG_FATAL
-                   <span class="gtkdoc opt">|</span> G_LOG_FLAG_RECURSION<span class="gtkdoc opt">,</span> my_log_handler<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Message-Logging.html#g-log-set-handler">g_log_set_handler</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal"><a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> G_LOG_LEVEL_WARNING </span><span class="symbol">|</span><span class="normal"> G_LOG_FLAG_FATAL</span>
+<span class="normal">                   </span><span class="symbol">|</span><span class="normal"> G_LOG_FLAG_RECURSION</span><span class="symbol">,</span><span class="normal"> my_log_handler</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -582,8 +584,8 @@ in the default domain:</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Message-Logging.html#g-log-set-handler">g_log_set_handler</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;Gtk&quot;</span><span class="gtkdoc opt">,</span> G_LOG_LEVEL_CRITICAL <span class="gtkdoc opt">|</span> G_LOG_FLAG_FATAL
-                   <span class="gtkdoc opt">|</span> G_LOG_FLAG_RECURSION<span class="gtkdoc opt">,</span> my_log_handler<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Message-Logging.html#g-log-set-handler">g_log_set_handler</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Gtk"</span><span class="symbol">,</span><span class="normal"> G_LOG_LEVEL_CRITICAL </span><span class="symbol">|</span><span class="normal"> G_LOG_FLAG_FATAL</span>
+<span class="normal">                   </span><span class="symbol">|</span><span class="normal"> G_LOG_FLAG_RECURSION</span><span class="symbol">,</span><span class="normal"> my_log_handler</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -597,8 +599,8 @@ in the default domain:</p>
       <tr>
         <td class="listing_lines" align="right"><pre>1
 2</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Message-Logging.html#g-log-set-handler">g_log_set_handler</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;GLib&quot;</span><span class="gtkdoc opt">,</span> G_LOG_LEVEL_MASK <span class="gtkdoc opt">|</span> G_LOG_FLAG_FATAL
-                   <span class="gtkdoc opt">|</span> G_LOG_FLAG_RECURSION<span class="gtkdoc opt">,</span> my_log_handler<span class="gtkdoc opt">,</span> NULL<span class="gtkdoc opt">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-Message-Logging.html#g-log-set-handler">g_log_set_handler</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"GLib"</span><span class="symbol">,</span><span class="normal"> G_LOG_LEVEL_MASK </span><span class="symbol">|</span><span class="normal"> G_LOG_FLAG_FATAL</span>
+<span class="normal">                   </span><span class="symbol">|</span><span class="normal"> G_LOG_FLAG_RECURSION</span><span class="symbol">,</span><span class="normal"> my_log_handler</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span></pre></td>
       </tr>
     </tbody>
   </table>

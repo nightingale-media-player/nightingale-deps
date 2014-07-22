@@ -480,7 +480,7 @@ g_set_application_name (<em class="parameter"><code>const <a class="link" href="
 <p>Sets a human-readable name for the application. This name should be
 localized if possible, and is intended for display to the user.
 Contrast with <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-set-prgname" title="g_set_prgname ()"><code class="function">g_set_prgname()</code></a>, which sets a non-localized name.
-<a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-set-prgname" title="g_set_prgname ()"><code class="function">g_set_prgname()</code></a> will be called automatically by <code class="function">gtk_init()</code>,
+<a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-set-prgname" title="g_set_prgname ()"><code class="function">g_set_prgname()</code></a> will be called automatically by <a href="http://developer.gnome.org/gtk2/gtk3-General.html#gtk-init"><code class="function">gtk_init()</code></a>,
 but <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-set-application-name" title="g_set_application_name ()"><code class="function">g_set_application_name()</code></a> will not.</p>
 <p>Note that for thread safety reasons, this function can only
 be called once.</p>
@@ -510,8 +510,8 @@ or when displaying an application's name in the task list.</p>
 g_get_prgname (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
 <p>Gets the name of the program. This name should not be localized,
 in contrast to <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-get-application-name" title="g_get_application_name ()"><code class="function">g_get_application_name()</code></a>.</p>
-<p>If you are using GDK or GTK+ the program name is set in <code class="function">gdk_init()</code>, 
-which is called by <code class="function">gtk_init()</code>. The program name is found by taking 
+<p>If you are using GDK or GTK+ the program name is set in <a href="http://developer.gnome.org/gdk2/gdk3-General.html#gdk-init"><code class="function">gdk_init()</code></a>, 
+which is called by <a href="http://developer.gnome.org/gtk2/gtk3-General.html#gtk-init"><code class="function">gtk_init()</code></a>. The program name is found by taking 
 the last component of <em class="parameter"><code>argv</code></em>
 [0].</p>
 <div class="refsect3">
@@ -760,7 +760,7 @@ they can be arbitrary byte strings. On Windows, they should be in
 UTF-8.</p>
 <p>Note that on some systems, when variables are overwritten, the memory
 used for the previous variables and its value isn't reclaimed.</p>
-<p>You should be mindful fo the fact that environment variable handling
+<p>You should be mindful of the fact that environment variable handling
 in UNIX is not thread-safe, and your program may crash if one thread
 calls <a class="link" href="glib-Miscellaneous-Utility-Functions.html#g-setenv" title="g_setenv ()"><code class="function">g_setenv()</code></a> while another thread is calling <code class="function">getenv()</code>. (And note
 that many functions, such as <code class="function">gettext()</code>, call <code class="function">getenv()</code> internally.)

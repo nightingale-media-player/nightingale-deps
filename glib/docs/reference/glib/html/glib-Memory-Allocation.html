@@ -1066,38 +1066,24 @@ pointer casts.</p>
  bytes on the stack; these bytes will be freed when the current
 stack frame is cleaned up. This macro essentially just wraps the <code class="function">alloca()</code>
 function present on most UNIX variants.
-Thus it provides the same advantages and pitfalls as <code class="function">alloca()</code>:
-&lt;variablelist&gt;
-  &lt;varlistentry&gt;&lt;term&gt;&lt;/term&gt;&lt;listitem&gt;&lt;para&gt;</p>
-<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
-<p>alloca() is very fast, as on most systems it's implemented by just adjusting
-the stack pointer register.
-&lt;/para&gt;&lt;/listitem&gt;&lt;/varlistentry&gt;
-&lt;varlistentry&gt;&lt;term&gt;&lt;/term&gt;&lt;listitem&gt;&lt;para&gt;</p>
-<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; ">
+Thus it provides the same advantages and pitfalls as <code class="function">alloca()</code>:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p>alloca() is very fast, as on most systems it's implemented by just adjusting
+the stack pointer register.</p></li>
 <li class="listitem"><p>It doesn't cause any memory fragmentation, within its scope, separate <code class="function">alloca()</code>
-blocks just build up and are released together at function end.
-&lt;/para&gt;&lt;/listitem&gt;&lt;/varlistentry&gt;
-&lt;varlistentry&gt;&lt;term&gt;&lt;/term&gt;&lt;listitem&gt;&lt;para&gt;</p></li>
+blocks just build up and are released together at function end.</p></li>
 <li class="listitem"><p>Allocation sizes have to fit into the current stack frame. For instance in a
 threaded environment on Linux, the per-thread stack size is limited to 2 Megabytes,
-so be sparse with <code class="function">alloca()</code> uses.
-&lt;/para&gt;&lt;/listitem&gt;&lt;/varlistentry&gt;
-&lt;varlistentry&gt;&lt;term&gt;&lt;/term&gt;&lt;listitem&gt;&lt;para&gt;</p></li>
+so be sparse with <code class="function">alloca()</code> uses.</p></li>
 <li class="listitem"><p>Allocation failure due to insufficient stack space is not indicated with a <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>
 return like e.g. with <code class="function">malloc()</code>. Instead, most systems probably handle it the same
 way as out of stack space situations from infinite function recursion, i.e.
-with a segmentation fault.
-&lt;/para&gt;&lt;/listitem&gt;&lt;/varlistentry&gt;
-&lt;varlistentry&gt;&lt;term&gt;&lt;/term&gt;&lt;listitem&gt;&lt;para&gt;</p></li>
+with a segmentation fault.</p></li>
 <li class="listitem"><p>Special care has to be taken when mixing <code class="function">alloca()</code> with GNU C variable sized arrays.
 Stack space allocated with <code class="function">alloca()</code> in the same scope as a variable sized array
 will be freed together with the variable sized array upon exit of that scope, and
-not upon exit of the enclosing function scope.
-&lt;/para&gt;&lt;/listitem&gt;&lt;/varlistentry&gt;
-&lt;/variablelist&gt;</p></li>
+not upon exit of the enclosing function scope.</p></li>
 </ul></div>
-</li></ul></div>
 <div class="refsect3">
 <a name="id-1.4.7.7.22.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">

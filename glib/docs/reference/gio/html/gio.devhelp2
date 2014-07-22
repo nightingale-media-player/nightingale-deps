@@ -264,6 +264,7 @@
     <sub name="Index of new symbols in 2.36" link="api-index-2-36.html"/>
     <sub name="Index of new symbols in 2.38" link="api-index-2-38.html"/>
     <sub name="Index of new symbols in 2.40" link="api-index-2-40.html"/>
+    <sub name="Index of new symbols in 2.42" link="api-index-2-42.html"/>
     <sub name="Annotation Glossary" link="annotation-glossary.html"/>
   </chapters>
   <functions>
@@ -766,9 +767,9 @@
     <keyword type="function" name="g_input_stream_has_pending ()" link="GInputStream.html#g-input-stream-has-pending"/>
     <keyword type="function" name="g_input_stream_set_pending ()" link="GInputStream.html#g-input-stream-set-pending"/>
     <keyword type="function" name="g_input_stream_clear_pending ()" link="GInputStream.html#g-input-stream-clear-pending"/>
-    <keyword type="function" name="g_input_stream_read_bytes ()" link="GInputStream.html#g-input-stream-read-bytes"/>
-    <keyword type="function" name="g_input_stream_read_bytes_async ()" link="GInputStream.html#g-input-stream-read-bytes-async"/>
-    <keyword type="function" name="g_input_stream_read_bytes_finish ()" link="GInputStream.html#g-input-stream-read-bytes-finish"/>
+    <keyword type="function" name="g_input_stream_read_bytes ()" link="GInputStream.html#g-input-stream-read-bytes" since="2.34"/>
+    <keyword type="function" name="g_input_stream_read_bytes_async ()" link="GInputStream.html#g-input-stream-read-bytes-async" since="2.34"/>
+    <keyword type="function" name="g_input_stream_read_bytes_finish ()" link="GInputStream.html#g-input-stream-read-bytes-finish" since="2.34"/>
     <keyword type="struct" name="GInputStream" link="GInputStream.html#GInputStream-struct"/>
     <keyword type="function" name="g_output_stream_write ()" link="GOutputStream.html#g-output-stream-write"/>
     <keyword type="function" name="g_output_stream_write_all ()" link="GOutputStream.html#g-output-stream-write-all"/>
@@ -791,6 +792,8 @@
     <keyword type="function" name="g_output_stream_write_bytes ()" link="GOutputStream.html#g-output-stream-write-bytes"/>
     <keyword type="function" name="g_output_stream_write_bytes_async ()" link="GOutputStream.html#g-output-stream-write-bytes-async"/>
     <keyword type="function" name="g_output_stream_write_bytes_finish ()" link="GOutputStream.html#g-output-stream-write-bytes-finish"/>
+    <keyword type="function" name="g_output_stream_printf ()" link="GOutputStream.html#g-output-stream-printf" since="2.40"/>
+    <keyword type="function" name="g_output_stream_vprintf ()" link="GOutputStream.html#g-output-stream-vprintf" since="2.40"/>
     <keyword type="enum" name="enum GOutputStreamSpliceFlags" link="GOutputStream.html#GOutputStreamSpliceFlags"/>
     <keyword type="struct" name="GOutputStream" link="GOutputStream.html#GOutputStream-struct"/>
     <keyword type="function" name="g_io_stream_get_input_stream ()" link="GIOStream.html#g-io-stream-get-input-stream" since="2.22"/>
@@ -1042,7 +1045,7 @@
     <keyword type="function" name="g_desktop_app_info_get_categories ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-get-categories"/>
     <keyword type="function" name="g_desktop_app_info_get_keywords ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-get-keywords" since="2.32"/>
     <keyword type="function" name="g_desktop_app_info_get_startup_wm_class ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-get-startup-wm-class" since="2.34"/>
-    <keyword type="function" name="g_desktop_app_info_set_desktop_env ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-set-desktop-env"/>
+    <keyword type="function" name="g_desktop_app_info_set_desktop_env ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-set-desktop-env" deprecated=""/>
     <keyword type="function" name="g_desktop_app_info_get_string ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-get-string" since="2.36"/>
     <keyword type="function" name="g_desktop_app_info_get_boolean ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-get-boolean" since="2.36"/>
     <keyword type="function" name="g_desktop_app_info_has_key ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-has-key" since="2.36"/>
@@ -1051,6 +1054,8 @@
     <keyword type="function" name="g_desktop_app_info_list_actions ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-list-actions" since="2.38"/>
     <keyword type="function" name="g_desktop_app_info_get_action_name ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-get-action-name" since="2.38"/>
     <keyword type="function" name="g_desktop_app_info_launch_action ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-launch-action" since="2.38"/>
+    <keyword type="function" name="g_desktop_app_info_search ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-search"/>
+    <keyword type="function" name="g_desktop_app_info_get_implementations ()" link="gio-Desktop-file-based-GAppInfo.html#g-desktop-app-info-get-implementations" since="2.42"/>
     <keyword type="struct" name="GDesktopAppInfo" link="gio-Desktop-file-based-GAppInfo.html#GDesktopAppInfo-struct"/>
     <keyword type="property" name="The “filename” property" link="gio-Desktop-file-based-GAppInfo.html#GDesktopAppInfo--filename"/>
     <keyword type="function" name="g_volume_monitor_get ()" link="GVolumeMonitor.html#g-volume-monitor-get"/>
@@ -1299,24 +1304,24 @@
     <keyword type="enum" name="enum GSubprocessFlags" link="GSubprocess.html#GSubprocessFlags" since="2.40"/>
     <keyword type="property" name="The “argv” property" link="GSubprocess.html#GSubprocess--argv"/>
     <keyword type="property" name="The “flags” property" link="GSubprocess.html#GSubprocess--flags"/>
-    <keyword type="function" name="g_subprocess_launcher_getenv ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-getenv" since="2.40"/>
     <keyword type="function" name="g_subprocess_launcher_new ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-new" since="2.40"/>
-    <keyword type="function" name="g_subprocess_launcher_set_child_setup ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-child-setup" since="2.40"/>
-    <keyword type="function" name="g_subprocess_launcher_set_cwd ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-cwd" since="2.40"/>
-    <keyword type="function" name="g_subprocess_launcher_set_environ ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-environ" since="2.40"/>
-    <keyword type="function" name="g_subprocess_launcher_set_flags ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-flags" since="2.40"/>
-    <keyword type="function" name="g_subprocess_launcher_set_stderr_file_path ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-stderr-file-path" since="2.40"/>
-    <keyword type="function" name="g_subprocess_launcher_set_stdin_file_path ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-stdin-file-path" since="2.40"/>
-    <keyword type="function" name="g_subprocess_launcher_set_stdout_file_path ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-stdout-file-path" since="2.40"/>
-    <keyword type="function" name="g_subprocess_launcher_setenv ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-setenv" since="2.40"/>
     <keyword type="function" name="g_subprocess_launcher_spawn ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-spawn" since="2.40"/>
     <keyword type="function" name="g_subprocess_launcher_spawnv ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-spawnv" since="2.40"/>
-    <keyword type="function" name="g_subprocess_launcher_take_fd ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-take-fd"/>
-    <keyword type="function" name="g_subprocess_launcher_take_stderr_fd ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-take-stderr-fd" since="2.40"/>
-    <keyword type="function" name="g_subprocess_launcher_take_stdin_fd ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-take-stdin-fd" since="2.40"/>
-    <keyword type="function" name="g_subprocess_launcher_take_stdout_fd ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-take-stdout-fd" since="2.40"/>
+    <keyword type="function" name="g_subprocess_launcher_set_environ ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-environ" since="2.40"/>
+    <keyword type="function" name="g_subprocess_launcher_setenv ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-setenv" since="2.40"/>
     <keyword type="function" name="g_subprocess_launcher_unsetenv ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-unsetenv" since="2.40"/>
-    <keyword type="struct" name="GSubprocessLauncher" link="gio-GSubprocessLauncher.html#GSubprocessLauncher" since="2.36"/>
+    <keyword type="function" name="g_subprocess_launcher_getenv ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-getenv" since="2.40"/>
+    <keyword type="function" name="g_subprocess_launcher_set_cwd ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-cwd" since="2.40"/>
+    <keyword type="function" name="g_subprocess_launcher_set_flags ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-flags" since="2.40"/>
+    <keyword type="function" name="g_subprocess_launcher_set_stdin_file_path ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-stdin-file-path" since="2.40"/>
+    <keyword type="function" name="g_subprocess_launcher_take_stdin_fd ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-take-stdin-fd" since="2.40"/>
+    <keyword type="function" name="g_subprocess_launcher_set_stdout_file_path ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-stdout-file-path" since="2.40"/>
+    <keyword type="function" name="g_subprocess_launcher_take_stdout_fd ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-take-stdout-fd" since="2.40"/>
+    <keyword type="function" name="g_subprocess_launcher_set_stderr_file_path ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-stderr-file-path" since="2.40"/>
+    <keyword type="function" name="g_subprocess_launcher_take_stderr_fd ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-take-stderr-fd" since="2.40"/>
+    <keyword type="function" name="g_subprocess_launcher_take_fd ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-take-fd"/>
+    <keyword type="function" name="g_subprocess_launcher_set_child_setup ()" link="gio-GSubprocessLauncher.html#g-subprocess-launcher-set-child-setup" since="2.40"/>
+    <keyword type="struct" name="GSubprocessLauncher" link="gio-GSubprocessLauncher.html#GSubprocessLauncher" since="2.40"/>
     <keyword type="function" name="GSocketSourceFunc ()" link="GSocket.html#GSocketSourceFunc" since="2.22"/>
     <keyword type="function" name="g_socket_new ()" link="GSocket.html#g-socket-new" since="2.22"/>
     <keyword type="function" name="g_socket_new_from_fd ()" link="GSocket.html#g-socket-new-from-fd" since="2.22"/>
@@ -2370,6 +2375,8 @@
     <keyword type="function" name="g_application_set_inactivity_timeout ()" link="GApplication.html#g-application-set-inactivity-timeout" since="2.28"/>
     <keyword type="function" name="g_application_get_flags ()" link="GApplication.html#g-application-get-flags" since="2.28"/>
     <keyword type="function" name="g_application_set_flags ()" link="GApplication.html#g-application-set-flags" since="2.28"/>
+    <keyword type="function" name="g_application_get_resource_base_path ()" link="GApplication.html#g-application-get-resource-base-path" since="2.42"/>
+    <keyword type="function" name="g_application_set_resource_base_path ()" link="GApplication.html#g-application-set-resource-base-path" since="2.42"/>
     <keyword type="function" name="g_application_get_dbus_connection ()" link="GApplication.html#g-application-get-dbus-connection" since="2.34"/>
     <keyword type="function" name="g_application_get_dbus_object_path ()" link="GApplication.html#g-application-get-dbus-object-path" since="2.34"/>
     <keyword type="function" name="g_application_set_action_group ()" link="GApplication.html#g-application-set-action-group" deprecated="" since="2.28"/>
@@ -2399,6 +2406,7 @@
     <keyword type="property" name="The “inactivity-timeout” property" link="GApplication.html#GApplication--inactivity-timeout"/>
     <keyword type="property" name="The “is-registered” property" link="GApplication.html#GApplication--is-registered"/>
     <keyword type="property" name="The “is-remote” property" link="GApplication.html#GApplication--is-remote"/>
+    <keyword type="property" name="The “resource-base-path” property" link="GApplication.html#GApplication--resource-base-path"/>
     <keyword type="signal" name="The “activate” signal" link="GApplication.html#GApplication-activate"/>
     <keyword type="signal" name="The “command-line” signal" link="GApplication.html#GApplication-command-line"/>
     <keyword type="signal" name="The “handle-local-options” signal" link="GApplication.html#GApplication-handle-local-options"/>
@@ -2408,6 +2416,7 @@
     <keyword type="function" name="g_application_command_line_get_arguments ()" link="GApplicationCommandLine.html#g-application-command-line-get-arguments" since="2.28"/>
     <keyword type="function" name="g_application_command_line_get_cwd ()" link="GApplicationCommandLine.html#g-application-command-line-get-cwd" since="2.28"/>
     <keyword type="function" name="g_application_command_line_get_environ ()" link="GApplicationCommandLine.html#g-application-command-line-get-environ" since="2.28"/>
+    <keyword type="function" name="g_application_command_line_get_options_dict ()" link="GApplicationCommandLine.html#g-application-command-line-get-options-dict" since="2.40"/>
     <keyword type="function" name="g_application_command_line_get_stdin ()" link="GApplicationCommandLine.html#g-application-command-line-get-stdin" since="2.34"/>
     <keyword type="function" name="g_application_command_line_create_file_for_arg ()" link="GApplicationCommandLine.html#g-application-command-line-create-file-for-arg" since="2.36"/>
     <keyword type="function" name="g_application_command_line_getenv ()" link="GApplicationCommandLine.html#g-application-command-line-getenv" since="2.28"/>
@@ -2561,7 +2570,7 @@
     <keyword type="function" name="g_notification_set_title ()" link="gio-GNotification.html#g-notification-set-title" since="2.40"/>
     <keyword type="function" name="g_notification_set_body ()" link="gio-GNotification.html#g-notification-set-body" since="2.40"/>
     <keyword type="function" name="g_notification_set_icon ()" link="gio-GNotification.html#g-notification-set-icon" since="2.40"/>
-    <keyword type="function" name="g_notification_set_urgent ()" link="gio-GNotification.html#g-notification-set-urgent" since="2.40"/>
+    <keyword type="function" name="g_notification_set_urgent ()" link="gio-GNotification.html#g-notification-set-urgent" deprecated="" since="2.40"/>
     <keyword type="function" name="g_notification_set_default_action ()" link="gio-GNotification.html#g-notification-set-default-action" since="2.40"/>
     <keyword type="function" name="g_notification_set_default_action_and_target ()" link="gio-GNotification.html#g-notification-set-default-action-and-target" since="2.40"/>
     <keyword type="function" name="g_notification_set_default_action_and_target_value ()" link="gio-GNotification.html#g-notification-set-default-action-and-target-value" since="2.40"/>

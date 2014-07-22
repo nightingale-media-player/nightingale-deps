@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GLib Reference Manual">
 <link rel="up" href="glib-utilities.html" title="GLib Utilities">
-<link rel="prev" href="glib-Simple-XML-Subset-Parser.html" title="Simple XML Subset Parser * @Short_description: parses a subset of XML">
+<link rel="prev" href="glib-Simple-XML-Subset-Parser.html" title="Simple XML Subset Parser">
 <link rel="next" href="glib-Bookmark-file-parser.html" title="Bookmark file parser">
 <meta name="generator" content="GTK-Doc V1.20.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
@@ -577,25 +577,25 @@ consists of groups of key-value pairs, interspersed with comments.</p>
 17
 18
 19</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc ppc"># this is just an example</span>
-<span class="gtkdoc ppc"># there can be comments before the first group</span>
+        <td class="listing_code"><pre class="programlisting"><span class="preproc"># this</span><span class="normal"> is just an example</span>
+<span class="preproc"># there</span><span class="normal"> can be comments before the first group</span>
 
-<span class="gtkdoc opt">[</span>First Group<span class="gtkdoc opt">]</span>
+<span class="symbol">[</span><span class="usertype">First</span><span class="normal"> Group</span><span class="symbol">]</span>
 
-Name<span class="gtkdoc opt">=</span>Key File Example<span class="gtkdoc esc">\t</span>this value shows<span class="gtkdoc esc">\n</span>escaping
+<span class="normal">Name</span><span class="symbol">=</span><span class="normal">Key </span><span class="usertype">File</span><span class="normal"> Example</span><span class="symbol">\</span><span class="normal">tthis </span><span class="usertype">value</span><span class="normal"> shows</span><span class="symbol">\</span><span class="normal">nescaping</span>
 
-<span class="gtkdoc ppc"># localized strings are stored in multiple key-value pairs</span>
-Welcome<span class="gtkdoc opt">=</span>Hello
-Welcome<span class="gtkdoc opt">[</span>de<span class="gtkdoc opt">]=</span>Hallo
-Welcome<span class="gtkdoc opt">[</span>fr_FR<span class="gtkdoc opt">]=</span>Bonjour
-Welcome<span class="gtkdoc opt">[</span>it<span class="gtkdoc opt">]=</span>Ciao
-Welcome<span class="gtkdoc opt">[</span>be&#64;latin<span class="gtkdoc opt">]=</span>Hello
+<span class="preproc"># localized</span><span class="normal"> strings are stored in </span><span class="usertype">multiple</span><span class="normal"> key</span><span class="symbol">-</span><span class="normal">value pairs</span>
+<span class="normal">Welcome</span><span class="symbol">=</span><span class="normal">Hello</span>
+<span class="normal">Welcome</span><span class="symbol">[</span><span class="normal">de</span><span class="symbol">]=</span><span class="normal">Hallo</span>
+<span class="normal">Welcome</span><span class="symbol">[</span><span class="normal">fr_FR</span><span class="symbol">]=</span><span class="normal">Bonjour</span>
+<span class="normal">Welcome</span><span class="symbol">[</span><span class="normal">it</span><span class="symbol">]=</span><span class="normal">Ciao</span>
+<span class="normal">Welcome</span><span class="symbol">[</span><span class="normal">be@latin</span><span class="symbol">]=</span><span class="normal">Hello</span>
 
-<span class="gtkdoc opt">[</span>Another Group<span class="gtkdoc opt">]</span>
+<span class="symbol">[</span><span class="usertype">Another</span><span class="normal"> Group</span><span class="symbol">]</span>
 
-Numbers<span class="gtkdoc opt">=</span><span class="number">2</span><span class="gtkdoc opt">;</span><span class="number">20</span><span class="gtkdoc opt">;-</span><span class="number">200</span><span class="gtkdoc opt">;</span><span class="number">0</span>
+<span class="normal">Numbers</span><span class="symbol">=</span><span class="number">2</span><span class="symbol">;</span><span class="number">20</span><span class="symbol">;-</span><span class="number">200</span><span class="symbol">;</span><span class="number">0</span>
 
-Booleans<span class="gtkdoc opt">=</span><span class="keyword">true</span><span class="gtkdoc opt">;</span><span class="keyword">false</span><span class="gtkdoc opt">;</span><span class="keyword">true</span><span class="gtkdoc opt">;</span><span class="keyword">true</span></pre></td>
+<span class="normal">Booleans</span><span class="symbol">=</span><span class="normal">true</span><span class="symbol">;</span><span class="normal">false</span><span class="symbol">;</span><span class="normal">true</span><span class="symbol">;</span><span class="normal">true</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -609,7 +609,7 @@ the end of the file. Each key-value pair must be contained in a group.</p>
 <p>Key-value pairs generally have the form <code class="literal">key=value</code>, with the
 exception of localized strings, which have the form
 <code class="literal">key[locale]=value</code>, with a locale identifier of the
-form <code class="literal">lang_COUNTRY\@MODIFIER</code> where <code class="literal">COUNTRY</code> and <code class="literal">MODIFIER</code>
+form <code class="literal">lang_COUNTRY@MODIFIER</code> where <code class="literal">COUNTRY</code> and <code class="literal">MODIFIER</code>
 are optional.
 Space before and after the '=' character are ignored. Newline, tab,
 carriage return and backslash characters in value are escaped as \n,

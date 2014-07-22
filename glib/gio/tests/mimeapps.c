@@ -55,7 +55,8 @@ const gchar *myapp3_data =
   "Version=1.0\n"
   "Type=Application\n"
   "Exec=sleep 1\n"
-  "Name=my app 3\n";
+  "Name=my app 3\n"
+  "MimeType=image/png;";
 
 const gchar *myapp4_data =
   "[Desktop Entry]\n"
@@ -91,10 +92,11 @@ const gchar *defaults_data =
 
 const gchar *mimecache_data =
   "[MIME Cache]\n"
-  "image/bmp=myapp4.desktop;myapp5.desktop;\n";
+  "image/bmp=myapp4.desktop;myapp5.desktop;\n"
+  "image/png=myapp3.desktop;\n";
 
 /* Set up XDG_DATA_HOME and XDG_DATA_DIRS.
- * XDG_DATA_DIRS/applications will contain defaults.list
+ * XDG_DATA_DIRS/applications will contain mimeapps.list
  * XDG_DATA_HOME/applications will contain myapp.desktop
  * and myapp2.desktop, and no mimeapps.list
  */
@@ -102,6 +104,7 @@ static void
 setup (void)
 {
   gchar *dir;
+  gchar *xdgconfighome;
   gchar *xdgdatahome;
   gchar *xdgdatadir;
   gchar *appdir;
@@ -112,8 +115,11 @@ setup (void)
   GError *error = NULL;
 
   dir = g_get_current_dir ();
+  xdgconfighome = g_build_filename (dir, "xdgconfighome", NULL);
   xdgdatahome = g_build_filename (dir, "xdgdatahome", NULL);
   xdgdatadir = g_build_filename (dir, "xdgdatadir", NULL);
+  g_test_message ("setting XDG_CONFIG_HOME to '%s'\n", xdgconfighome);
+  g_setenv ("XDG_CONFIG_HOME", xdgconfighome, TRUE);
   g_test_message ("setting XDG_DATA_HOME to '%s'\n", xdgdatahome);
   g_setenv ("XDG_DATA_HOME", xdgdatahome, TRUE);
   g_test_message ("setting XDG_DATA_DIRS to '%s'\n", xdgdatadir);
@@ -124,7 +130,7 @@ setup (void)
   res = g_mkdir_with_parents (appdir, 0700);
   g_assert (res == 0);
 
-  name = g_build_filename (appdir, "defaults.list", NULL);
+  name = g_build_filename (appdir, "mimeapps.list", NULL);
   g_test_message ("creating '%s'\n", name);
   g_file_set_contents (name, defaults_data, -1, &error);
   g_assert_no_error (error);
@@ -182,6 +188,7 @@ setup (void)
   g_free (name);
 
   g_free (dir);
+  g_free (xdgconfighome);
   g_free (xdgdatahome);
   g_free (xdgdatadir);
   g_free (apphome);
@@ -295,7 +302,7 @@ test_mime_file (void)
   const gchar *contenttype = "application/pdf";
 
   dir = g_get_current_dir ();
-  mimeapps = g_build_filename (dir, "xdgdatahome", "applications", "mimeapps.list", NULL);
+  mimeapps = g_build_filename (dir, "xdgconfighome", "mimeapps.list", NULL);
 
   /* clear things out */
   g_app_info_reset_type_associations (contenttype);
@@ -404,7 +411,7 @@ test_mime_file (void)
   g_free (dir);
 }
 
-/* test interaction between defaults.list and mimeapps.list */
+/* test interaction between mimeapps.list at different levels */
 static void
 test_mime_default (void)
 {

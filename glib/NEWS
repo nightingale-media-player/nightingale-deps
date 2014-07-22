@@ -1,3 +1,188 @@
+Overview of changes in GLib 2.41.2
+==================================
+
+* The Unicode support has been updated to version 7.0
+  of the Unicode standard
+
+* GNotification now supports priorities for notifications
+
+* GCredentials has gained NetBSD support
+
+* GMutex now uses a faster, native implementation on Linux
+
+* Bugs fixed:
+ 699132 Pluggable event loop backends
+ 720708 g_assert_warning(): number of arguments doesn't match for...
+ 722092 Add GtkApplication resources support
+ 724986 Change gio/data-to-c.pl to /usr/bin/env perl.
+ 727974 Fix up failure-to-see-expected-message logging
+ 728256 gcredentials: add NetBSD support
+ 728401 GDateTime: Add guards to g_date_time_new()
+ 729825 Formatting of g_alloca documentation
+ 729914 instead of DEBUG_CODE and IF_DEBUG, provide a common macro...
+ 730293 clang++-3.4: error: 'register' storage class specifier is ...
+ 731339 giochannel: avoid setting uninitialised length
+ 731424 #ifdef spaghetti for load_user_special_dirs() implementations
+ 731623 GNotification: add support for a priority setting
+ 731929 update tables to unicode 7.0.0
+ 731950 gvalue: New g_value_from_instance
+ 731986 GLib: implement GMutex natively on Linux
+ 732184 GObject: warn on use of deprecated properties
+ 732357 Docs: various fixes and improvements
+ 732429 GActionEntry: improve documentation
+ 732465 Fix build on x64 Visual C++ builds
+ 732704 Docs: various fixes and improvements
+ 732739 ginetsocketaddress: Explicitly initialise flags for getaddr...
+ 732754 GDBusMessage: optimise (de)serialisation of fixed arrays
+ 732984 g_object_ref(NULL) in g_dbus_object_manager_client_finalize
+ 733084 Typos in g_bytes_hash() and g_time_zone_find_interval() docs
+ 733146 spawn helper does not use correctly the parameters 
+
+* Translation updates:
+ Lithuanian
+
+
+Overview of changes in GLib 2.41.1
+==================================
+
+* Bug fixes:
+ 697229 Custom Interface implementations will be broken with glib 2.37/38
+ 698614 GObject: prevent installing properties after init
+ 729269 gvariant: Fix confusion between type and format strings in the docs
+ 730198 broken valgrind.h leads to crashes in g_type_free_instance on mingw64
+ 730807 GMutex performance regression
+ 730963 gconvert: mention that the g_convert len should be in bytes
+ 730984 Faster instance type check for fundamentals
+ 731050 <structname> tags appear in documentation
+ 731200 unconditional 'notify' during g_object_set() is problematic
+ 731335 gtype: guard uses of new fundamental type check
+ 731341 gparam: change value of G_PARAM_EXPLICIT_NOTIFY
+ 731366 run-assert-msg-test.sh gdb leaves assert-msg-test zombie
+ 731425 giomodule protects function-call with different token than function...
+ 731513 clang: build failure: implicit declaration of function '__atomic_load_4'
+ 731584 gbookmarkfile: Cleaner error handling code to pacify static analysis
+ 731657 Prevent an invalid @CARBON_LIBS@ from appearing in the .pc files
+ 731979 docs: Correct param to interface's default_init()
+ 731996 Return folder as icon for directories
+ 732002 gwakeup: Clarify buffer sizing in g_wakeup_signal()
+ 732005 Remove unused assignments
+ 732019 gtestdbus: Don’t close stdout for dbus-daemon
+ 732068 gsignal: Add an example to the g_signal_connect_swapped() documentation
+ 732081 gsocket: Document that g_socket_create_source() holds a socket ref
+ 732107 gsocketlistener: Reconsider closing sockets on listener finalisation
+
+
+Overview of changes in GLib 2.41.0
+===================================
+
+* Many bugfixes found by static analysis, including potential fd leaks
+  and NULL pointer dereferences.
+
+* Increased use of (nullable) attribute on out values and return types
+  now that it is supported (mostly from porting Vala metadata).
+
+* use XDG_CURRENT_DESKTOP for OnlyShowIn/NotShowIn handling of desktop
+  files, deprecating g_desktop_app_info_set_desktop_env()
+
+* add support for g_desktop_app_info_get_implementations() to find
+  desktop files that have an Implements= line for a given interface
+
+* GHmac has gained SHA-512 support
+
+* support the new mimeapps specification (most notably, moving the
+  assoications/defaults configuration to ~/.config/mimeapps.list).
+
+* libgobject is now linked -Wl,-z,nodelete when possible to avoid errors
+  when gobject is used from a module for a program that does not itself
+  use gobject and that module is unloaded/reloaded
+
+* ... and many other bug fixes.
+
+ 623552 glib warns if backtrace.py is not present
+ 667468 glib-2.30.2: ipv6 tests fail when no ipv6 support is available
+ 668152 -framework Carbon linker flag not passed to pkg-config .pc files
+ 707298 libgobject should be linked with -Wl,-z,nodelete
+ 712391 Add g_desktop_app_info_get_implementors()
+ 722723 Infinite recursion when calling g_io_stream_close_async() from libsoup
+ 724741 hmac: Fix support for SHA-512 in GHmac
+ 726040 networkaddress: fix parsing of uri with @ after authority
+ 726318 gio: Document that GSocket is not thread safe
+ 726611 socketclient: Leak on cancellation
+ 726872 gio: Add names to idles and timeouts
+ 727119 wrong IN6_IS_ADDR_MC_LINKLOCAL usage break android build
+ 727123 GNotification: Some small documentation fixes
+ 727320 docs: Remove escaping '\' from literals
+ 727551 Check use_count of GApplication in g_application_release()
+ 727559 g_file_copy: Don't set GError when we intend to ignore errors
+ 727692 gio/gtlscertificate.c -- broken PEM-file processing (affects local CA root stores, for starters)
+ 727890 soup_content_sniffer_real_sniff segfault
+ 727900 gio: Add newer dbus UnknownXxxx and PropertyReadOnly errors
+ 727928 gapplication-tool fixes
+ 727939 INTLLIBS are always appended in configure checks
+ 727964 g_io_extension_point_get_extension_by_name: Warn, but don't crash, for NULL inputs
+ 728040 Implement new mimeapps spec
+ 728066 Deal with startup notify id being NULL
+ 728280 platform_get_argv0: fix sysctl(3) use on OpenBSD
+ 728285 docs: Use markdown links in .h files, too
+ 728350 gaction: Minor clarifications in the GAction documentation
+ 728380 docs: Remove <!-- --> comment before plural s
+ 728565 gfile: More explicitly document the context for GFileProgressCallback
+ 728983 Docs: various fixes and improvements
+ 729167 gobject: Document that classes/objects/interfaces are zero-filled
+ 729563 GOption: A short option's value is included in G_OPTION_REMAINING
+ 729813 AppInfo: use XDG_CURRENT_DESKTOP for OnlyShowIn
+ 729875 gio: cleanup gdbusmessage.c file
+ 730045 Avoid overeager warning about deprecated properties
+ 730189 gtestutils: Fix a very unlikely FD leak in test fork handling
+ 730190 gsocket: Add missing preconditions to g_socket_send_message()
+ 730277 gthread: Fix use of a local variable after it went out of scope
+ 730278 gsubprocess: Add a missing va_end() call
+ 730295 gdbus-tool: Remove dead variables
+ 730493 Port annotations from Vala metadata
+
+Translations updated:
+ Basque
+ Brazilian Portuguese
+ Catalan
+ Czech
+ Danish
+ Greek
+ Hebrew
+ Hungarian
+ Punjabi
+ Serbian
+ Slovenian
+ Spanish
+ Ukrainian
+
+Overview of changes from GLib 2.39.91 to GLib 2.39.92
+=====================================================
+
+This is a release candidate for 2.40.0.
+
+There are no major changes in this release, but a few serious bugs have
+been fixed.
+
+* Bugs fixed:
+ 710367 Crash in g_settings_backend_dispatch_signal()
+ 723899 G_DEFINE_TYPE() causes compiler warnings with clang due to foo_get_instance_private
+ 724859 Let the test_wait_until() test also run on non-*nix
+ 724916 gio unmount code makes XFCE's Thunar crash
+ 725651 GSubprocessLauncher: Does not copy the calling process environment.
+ 725656 Unskip GVariantDict
+ 725891 gio tests: add codegen to BUILT_SOURCES
+ 726046 Recent commit created symbolic icons issues
+
+* Translations:
+ Chinese
+ French
+ Korean
+ Latvian
+ Norwegian bokmål
+ Portuguese
+ Russian
+ Traditional Chinese
+
 Overview of changes from GLib 2.39.90 to GLib 2.39.91
 =====================================================
 

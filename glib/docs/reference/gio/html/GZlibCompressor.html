@@ -90,7 +90,7 @@
 <td class="property_flags">Read / Write / Construct Only</td>
 </tr>
 <tr>
-<td class="property_type"><a href="../glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
 <td class="property_name"><a class="link" href="GZlibCompressor.html#GZlibCompressor--level" title="The “level” property">level</a></td>
 <td class="property_flags">Read / Write / Construct Only</td>
 </tr>
@@ -118,7 +118,7 @@
 </div>
 <div class="refsect1">
 <a name="GZlibCompressor.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
     <span class="lineart">╰──</span> GZlibCompressor
 </pre>
 </div>
@@ -198,7 +198,7 @@ g_zlib_compressor_get_file_info (<em class="parameter"><code><a class="link" hre
 </div>
 <div class="refsect3">
 <a name="id-1.4.6.4.10.3.6"></a><h4>Returns</h4>
-<p> a <a class="link" href="GFileInfo.html" title="GFileInfo"><span class="type">GFileInfo</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p>
+<p> a <a class="link" href="GFileInfo.html" title="GFileInfo"><span class="type">GFileInfo</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
 </div>
 <p class="since">Since 2.26</p>
@@ -211,7 +211,7 @@ g_zlib_compressor_set_file_info (<em class="parameter"><code><a class="link" hre
                                  <em class="parameter"><code><a class="link" href="GFileInfo.html" title="GFileInfo"><span class="type">GFileInfo</span></a> *file_info</code></em>);</pre>
 <p>Sets <em class="parameter"><code>file_info</code></em>
  in <em class="parameter"><code>compressor</code></em>
-. If non-<a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, and <em class="parameter"><code>compressor</code></em>
+. If non-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, and <em class="parameter"><code>compressor</code></em>
 's
 <a class="link" href="GZlibCompressor.html#GZlibCompressor--format" title="The “format” property"><span class="type">“format”</span></a> property is <a class="link" href="GZlibCompressor.html#G-ZLIB-COMPRESSOR-FORMAT-GZIP:CAPS"><code class="literal">G_ZLIB_COMPRESSOR_FORMAT_GZIP</code></a>,
 it will be used to set the file name and modification time in
@@ -298,7 +298,7 @@ and <a class="link" href="GZlibCompressor.html" title="GZlibCompressor"><span cl
 <div class="refsect2">
 <a name="GZlibCompressor--file-info"></a><h3>The <code class="literal">“file-info”</code> property</h3>
 <pre class="programlisting">  “file-info”                <a class="link" href="GFileInfo.html" title="GFileInfo"><span class="type">GFileInfo</span></a> *</pre>
-<p>If set to a non-<a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> <a class="link" href="GFileInfo.html" title="GFileInfo"><span class="type">GFileInfo</span></a> object, and <a class="link" href="GZlibCompressor.html#GZlibCompressor--format" title="The “format” property"><span class="type">“format”</span></a> is
+<p>If set to a non-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> <a class="link" href="GFileInfo.html" title="GFileInfo"><span class="type">GFileInfo</span></a> object, and <a class="link" href="GZlibCompressor.html#GZlibCompressor--format" title="The “format” property"><span class="type">“format”</span></a> is
 <a class="link" href="GZlibCompressor.html#G-ZLIB-COMPRESSOR-FORMAT-GZIP:CAPS"><code class="literal">G_ZLIB_COMPRESSOR_FORMAT_GZIP</code></a>, the compressor will write the file name
 and modification time from the file info to the GZIP header.</p>
 <p>Flags: Read / Write</p>
@@ -315,7 +315,7 @@ and modification time from the file info to the GZIP header.</p>
 <hr>
 <div class="refsect2">
 <a name="GZlibCompressor--level"></a><h3>The <code class="literal">“level”</code> property</h3>
-<pre class="programlisting">  “level”                    <a href="../glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
+<pre class="programlisting">  “level”                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>The level of compression from 0 (no compression) to 9 (most compression), -1 for the default level.</p>
 <p>Flags: Read / Write / Construct Only</p>
 <p>Allowed values: [-1,9]</p>

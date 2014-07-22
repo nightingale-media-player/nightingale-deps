@@ -1126,7 +1126,7 @@ the converse is not necessarily true. See the
 for details.</p>
 <p>If a character passes the <a class="link" href="glib-Unicode-Manipulation.html#g-unichar-iswide" title="g_unichar_iswide ()"><code class="function">g_unichar_iswide()</code></a> test then it will also pass
 this test, but not the other way around.  Note that some characters may
-pas both this test and <a class="link" href="glib-Unicode-Manipulation.html#g-unichar-iszerowidth" title="g_unichar_iszerowidth ()"><code class="function">g_unichar_iszerowidth()</code></a>.</p>
+pass both this test and <a class="link" href="glib-Unicode-Manipulation.html#g-unichar-iszerowidth" title="g_unichar_iszerowidth ()"><code class="function">g_unichar_iszerowidth()</code></a>.</p>
 <div class="refsect3">
 <a name="id-1.5.4.7.18.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
@@ -1582,7 +1582,7 @@ g_unichar_break_type (<em class="parameter"><code><a class="link" href="glib-Uni
 <a class="link" href="glib-Unicode-Manipulation.html#g-utf8-get-char" title="g_utf8_get_char ()"><code class="function">g_utf8_get_char()</code></a>). The break type is used to find word and line
 breaks ("text boundaries"), Pango implements the Unicode boundary
 resolution algorithms and normally you would use a function such
-as <code class="function">pango_break()</code> instead of caring about break types yourself.</p>
+as <a href="/home/mclasen/gnome/share/gtk-doc/html/pango/pango-Text-Processing.html#pango-break"><code class="function">pango_break()</code></a> instead of caring about break types yourself.</p>
 <div class="refsect3">
 <a name="id-1.5.4.7.29.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
@@ -1767,7 +1767,7 @@ by Unicode Standard Annex #24). No check is made for <em class="parameter"><code
  being a
 valid Unicode character; if you pass in invalid character, the
 result is undefined.</p>
-<p>This function is equivalent to <code class="function">pango_script_for_unichar()</code> and the
+<p>This function is equivalent to <a href="/home/mclasen/gnome/share/gtk-doc/html/pango/pango-Scripts-and-Languages.html#pango-script-for-unichar"><code class="function">pango_script_for_unichar()</code></a> and the
 two are interchangeable.</p>
 <div class="refsect3">
 <a name="id-1.5.4.7.34.6"></a><h4>Parameters</h4>
@@ -3407,9 +3407,9 @@ To scan, use the format string "U+%06"G_GINT32_FORMAT"X".</p>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting">gunichar c<span class="gtkdoc opt">;</span>
-<span class="function">sscanf</span> <span class="gtkdoc opt">(</span><span class="string">&quot;U+0041&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;U+%06&quot;</span>G_GINT32_FORMAT<span class="string">&quot;X&quot;</span><span class="gtkdoc opt">, &amp;</span>amp<span class="gtkdoc opt">;</span>c<span class="gtkdoc opt">)</span>
-<span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;Read U+%04&quot;</span>G_GINT32_FORMAT<span class="string">&quot;X&quot;</span><span class="gtkdoc opt">,</span> c<span class="gtkdoc opt">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="usertype">gunichar</span><span class="normal"> c</span><span class="symbol">;</span>
+<span class="function">sscanf</span><span class="normal"> </span><span class="symbol">(</span><span class="string">"U+0041"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"U+%06"</span><span class="normal"><a href="glib-Basic-Types.html#G-GINT32-FORMAT:CAPS">G_GINT32_FORMAT</a></span><span class="string">"X"</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">c</span><span class="symbol">)</span>
+<span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Read U+%04"</span><span class="normal"><a href="glib-Basic-Types.html#G-GINT32-FORMAT:CAPS">G_GINT32_FORMAT</a></span><span class="string">"X"</span><span class="symbol">,</span><span class="normal"> c</span><span class="symbol">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -3989,7 +3989,7 @@ to handle unknown values. They may be regarded as <a class="link" href="glib-Uni
 <p>The <a class="link" href="glib-Unicode-Manipulation.html#GUnicodeScript" title="enum GUnicodeScript"><span class="type">GUnicodeScript</span></a> enumeration identifies different writing
 systems. The values correspond to the names as defined in the
 Unicode standard. The enumeration has been added in GLib 2.14,
-and is interchangeable with <span class="type">PangoScript</span>.</p>
+and is interchangeable with <a href="/home/mclasen/gnome/share/gtk-doc/html/pango/pango-Scripts-and-Languages.html#PangoScript"><span class="type">PangoScript</span></a>.</p>
 <p>Note that new types may be added in the future. Applications
 should be ready to handle unknown values.
 See &lt;ulink
@@ -4732,6 +4732,167 @@ i                             base glyph to which it is attached</p>
 <p>Takri. Since: 2.32</p>
 </td>
 <td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-BASSA-VAH:CAPS"></a>G_UNICODE_SCRIPT_BASSA_VAH</p></td>
+<td class="enum_member_description">
+<p>Bassa. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-CAUCASIAN-ALBANIAN:CAPS"></a>G_UNICODE_SCRIPT_CAUCASIAN_ALBANIAN</p></td>
+<td class="enum_member_description">
+<p>Caucasian Albanian. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-DUPLOYAN:CAPS"></a>G_UNICODE_SCRIPT_DUPLOYAN</p></td>
+<td class="enum_member_description">
+<p>Duployan. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-ELBASAN:CAPS"></a>G_UNICODE_SCRIPT_ELBASAN</p></td>
+<td class="enum_member_description">
+<p>Elbasan. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-GRANTHA:CAPS"></a>G_UNICODE_SCRIPT_GRANTHA</p></td>
+<td class="enum_member_description">
+<p>Grantha. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-KHOJKI:CAPS"></a>G_UNICODE_SCRIPT_KHOJKI</p></td>
+<td class="enum_member_description">
+<p>Kjohki. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-KHUDAWADI:CAPS"></a>G_UNICODE_SCRIPT_KHUDAWADI</p></td>
+<td class="enum_member_description">
+<p>Khudawadi, Sindhi. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-LINEAR-A:CAPS"></a>G_UNICODE_SCRIPT_LINEAR_A</p></td>
+<td class="enum_member_description">
+<p>Linear A. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-MAHAJANI:CAPS"></a>G_UNICODE_SCRIPT_MAHAJANI</p></td>
+<td class="enum_member_description">
+<p>Mahajani. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-MANICHAEAN:CAPS"></a>G_UNICODE_SCRIPT_MANICHAEAN</p></td>
+<td class="enum_member_description">
+<p>Manichaean. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-MENDE-KIKAKUI:CAPS"></a>G_UNICODE_SCRIPT_MENDE_KIKAKUI</p></td>
+<td class="enum_member_description">
+<p>Mende Kikakui. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-MODI:CAPS"></a>G_UNICODE_SCRIPT_MODI</p></td>
+<td class="enum_member_description">
+<p>Modi. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-MRO:CAPS"></a>G_UNICODE_SCRIPT_MRO</p></td>
+<td class="enum_member_description">
+<p>Mro. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-NABATAEAN:CAPS"></a>G_UNICODE_SCRIPT_NABATAEAN</p></td>
+<td class="enum_member_description">
+<p>Nabataean. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-OLD-NORTH-ARABIAN:CAPS"></a>G_UNICODE_SCRIPT_OLD_NORTH_ARABIAN</p></td>
+<td class="enum_member_description">
+<p>Old North Arabian. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-OLD-PERMIC:CAPS"></a>G_UNICODE_SCRIPT_OLD_PERMIC</p></td>
+<td class="enum_member_description">
+<p>Old Permic. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-PAHAWH-HMONG:CAPS"></a>G_UNICODE_SCRIPT_PAHAWH_HMONG</p></td>
+<td class="enum_member_description">
+<p>Pahawh Hmong. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-PALMYRENE:CAPS"></a>G_UNICODE_SCRIPT_PALMYRENE</p></td>
+<td class="enum_member_description">
+<p>Palmyrene. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-PAU-CIN-HAU:CAPS"></a>G_UNICODE_SCRIPT_PAU_CIN_HAU</p></td>
+<td class="enum_member_description">
+<p>Pau Cin Hau. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-PSALTER-PAHLAVI:CAPS"></a>G_UNICODE_SCRIPT_PSALTER_PAHLAVI</p></td>
+<td class="enum_member_description">
+<p>Psalter Pahlavi. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-SIDDHAM:CAPS"></a>G_UNICODE_SCRIPT_SIDDHAM</p></td>
+<td class="enum_member_description">
+<p>Siddham. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-TIRHUTA:CAPS"></a>G_UNICODE_SCRIPT_TIRHUTA</p></td>
+<td class="enum_member_description">
+<p>Tirhuta. Since: 2.42
+<em class="parameter"><code>G_UNICODE_SCRIPT_WARANG_CITI</code></em>
+           Warang Citi. Since: 2.42</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="G-UNICODE-SCRIPT-WARANG-CITI:CAPS"></a>G_UNICODE_SCRIPT_WARANG_CITI</p></td>
+<td> </td>
+<td> </td>
 </tr>
 </tbody>
 </table></div>

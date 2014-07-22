@@ -96,9 +96,22 @@ do_lookup_by_name (GTask         *task,
           g_object_unref (sockaddr);
         }
 
-      addresses = g_list_reverse (addresses);
-      g_task_return_pointer (task, addresses,
-                             (GDestroyNotify)g_resolver_free_addresses);
+      if (addresses != NULL)
+        {
+          addresses = g_list_reverse (addresses);
+          g_task_return_pointer (task, addresses,
+                                 (GDestroyNotify)g_resolver_free_addresses);
+        }
+      else
+        {
+          /* All addresses failed to be converted to GSocketAddresses. */
+          g_task_return_new_error (task,
+                                   G_RESOLVER_ERROR,
+                                   G_RESOLVER_ERROR_NOT_FOUND,
+                                   _("Error resolving '%s': %s"),
+                                   hostname,
+                                   _("No valid addresses were found"));
+        }
     }
   else
     {
@@ -503,9 +516,6 @@ g_resolver_record_type_to_rrtype (GResolverRecordType type)
   g_return_val_if_reached (-1);
 }
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-nonliteral"
-
 static GList *
 g_resolver_records_from_res_query (const gchar      *rrname,
                                    gint              rrtype,
@@ -615,8 +625,6 @@ g_resolver_records_from_res_query (const gchar      *rrname,
   else
     return records;
 }
-
-#pragma GCC diagnostic pop
 
 #elif defined(G_OS_WIN32)
 

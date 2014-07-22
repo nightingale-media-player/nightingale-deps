@@ -159,7 +159,7 @@ to uniquely identify files.</p></li>
 <li class="listitem"><p><code class="literal">"access"</code>: The "Access" namespace. Used to check if a user has the
 proper privileges to access files and perform file operations. Keys in
 this namespace are made to be generic and easily understood, e.g. the
-"can_read" key is <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the current user has permission to read the
+"can_read" key is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if the current user has permission to read the
 file. UNIX permissions and NTFS ACLs in Windows should be mapped to
 these values.</p></li>
 <li class="listitem"><p><code class="literal">"mountable"</code>: The "Mountable" namespace. Includes simple boolean keys
@@ -258,7 +258,7 @@ g_file_attribute_info_list_ref (<em class="parameter"><code><a class="link" href
 </div>
 <div class="refsect3">
 <a name="id-1.4.2.3.7.3.6"></a><h4>Returns</h4>
-<p> <a class="link" href="gio-GFileAttribute.html#GFileAttributeInfoList" title="GFileAttributeInfoList"><span class="type">GFileAttributeInfoList</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.</p>
+<p> <a class="link" href="gio-GFileAttribute.html#GFileAttributeInfoList" title="GFileAttributeInfoList"><span class="type">GFileAttributeInfoList</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error.</p>
 <p></p>
 </div>
 </div>
@@ -349,7 +349,7 @@ g_file_attribute_info_list_lookup (<em class="parameter"><code><a class="link" h
 <div class="refsect3">
 <a name="id-1.4.2.3.7.6.6"></a><h4>Returns</h4>
 <p> a <a class="link" href="gio-GFileAttribute.html#GFileAttributeInfo" title="GFileAttributeInfo"><span class="type">GFileAttributeInfo</span></a> for the <em class="parameter"><code>name</code></em>
-, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if an
+, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if an
 attribute isn't found.</p>
 <p></p>
 </div>
@@ -475,14 +475,14 @@ its <em class="parameter"><code>type</code></em>
 <tr>
 <td class="enum_member_name"><p><a name="G-FILE-ATTRIBUTE-TYPE-OBJECT:CAPS"></a>G_FILE_ATTRIBUTE_TYPE_OBJECT</p></td>
 <td class="enum_member_description">
-<p>a <a href="../gobject/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>.</p>
+<p>a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a>.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-FILE-ATTRIBUTE-TYPE-STRINGV:CAPS"></a>G_FILE_ATTRIBUTE_TYPE_STRINGV</p></td>
 <td class="enum_member_description">
-<p>a <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> terminated char **. Since 2.22</p>
+<p>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> terminated char **. Since 2.22</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -613,7 +613,7 @@ its <em class="parameter"><code>type</code></em>
 } GFileAttributeInfoList;
 </pre>
 <p>Acts as a lightweight registry for possible valid file attributes.
-The registry stores Key-Value pair formats as <a class="link" href="gio-GFileAttribute.html#GFileAttributeInfo" title="GFileAttributeInfo"><span class="type">GFileAttributeInfo</span></a>&lt;!-- --&gt;s.</p>
+The registry stores Key-Value pair formats as <a href="gio-GFileAttribute.html#GFileAttributeInfo"><span class="type">GFileAttributeInfos</span></a>.</p>
 <div class="refsect3">
 <a name="id-1.4.2.3.8.6.5"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
@@ -625,7 +625,7 @@ The registry stores Key-Value pair formats as <a class="link" href="gio-GFileAtt
 <tbody>
 <tr>
 <td class="struct_member_name"><p><a class="link" href="gio-GFileAttribute.html#GFileAttributeInfo" title="GFileAttributeInfo"><span class="type">GFileAttributeInfo</span></a> *<em class="structfield"><code><a name="GFileAttributeInfoList.infos"></a>infos</code></em>;</p></td>
-<td class="struct_member_description"><p>an array of <a class="link" href="gio-GFileAttribute.html#GFileAttributeInfo" title="GFileAttributeInfo"><span class="type">GFileAttributeInfo</span></a>&lt;!-- --&gt;s.</p></td>
+<td class="struct_member_description"><p>an array of <a href="gio-GFileAttribute.html#GFileAttributeInfo"><span class="type">GFileAttributeInfos</span></a>.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr>
 <tr>

@@ -637,12 +637,12 @@ tricked into writing into a different location. It doesn't work!</p>
 4
 5
 6</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc slc">// DON'T DO THIS</span>
-<span class="keyword">if</span> <span class="gtkdoc opt">(!</span><span class="function"><a href="glib-File-Utilities.html#g-file-test">g_file_test</a></span> <span class="gtkdoc opt">(</span>filename<span class="gtkdoc opt">,</span> G_FILE_TEST_IS_SYMLINK<span class="gtkdoc opt">))</span> 
-  <span class="gtkdoc opt">{</span>
-    fd <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-File-Utilities.html#g-open">g_open</a></span> <span class="gtkdoc opt">(</span>filename<span class="gtkdoc opt">,</span> O_WRONLY<span class="gtkdoc opt">);</span>
-    <span class="gtkdoc slc">// write to fd</span>
-  <span class="gtkdoc opt">}</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="comment">// DON'T DO THIS</span>
+<span class="keyword">if</span><span class="normal"> </span><span class="symbol">(!</span><span class="function"><a href="glib-File-Utilities.html#g-file-test">g_file_test</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">filename</span><span class="symbol">,</span><span class="normal"> G_FILE_TEST_IS_SYMLINK</span><span class="symbol">))</span><span class="normal"> </span>
+<span class="normal">  </span><span class="cbracket">{</span>
+<span class="normal">    fd </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-File-Utilities.html#g-open">g_open</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">filename</span><span class="symbol">,</span><span class="normal"> O_WRONLY</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="comment">// write to fd</span>
+<span class="normal">  </span><span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>

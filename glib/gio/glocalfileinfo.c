@@ -1581,6 +1581,7 @@ _g_local_file_info_get_nostat (GFileInfo              *info,
 
 static const char *
 get_icon_name (const char *path,
+               const char *content_type,
                gboolean    use_symbolic,
                gboolean   *with_fallbacks_out)
 {
@@ -1625,6 +1626,10 @@ get_icon_name (const char *path,
     {
       name = use_symbolic ? "folder-videos-symbolic" : "folder-videos";
     }
+  else if (g_strcmp0 (content_type, "inode/directory") == 0)
+    {
+      name = use_symbolic ? "folder-symbolic" : "folder";
+    }
   else
     {
       name = NULL;
@@ -1639,14 +1644,13 @@ get_icon_name (const char *path,
 static GIcon *
 get_icon (const char *path,
           const char *content_type,
-          gboolean    is_folder,
           gboolean    use_symbolic)
 {
   GIcon *icon = NULL;
   const char *icon_name;
   gboolean with_fallbacks;
 
-  icon_name = get_icon_name (path, use_symbolic, &with_fallbacks);
+  icon_name = get_icon_name (path, content_type, use_symbolic, &with_fallbacks);
   if (icon_name != NULL)
     {
       if (with_fallbacks)
@@ -1660,11 +1664,6 @@ get_icon (const char *path,
         icon = g_content_type_get_symbolic_icon (content_type);
       else
         icon = g_content_type_get_icon (content_type);
-
-      if (G_IS_THEMED_ICON (icon) && is_folder)
-        {
-          g_themed_icon_append_name (G_THEMED_ICON (icon), use_symbolic ? "folder-symbolic" : "folder");
-        }
     }
 
   return icon;
@@ -1852,7 +1851,7 @@ _g_local_file_info_get (const char             *basename,
 	      GIcon *icon;
 
               /* non symbolic icon */
-              icon = get_icon (path, content_type, S_ISDIR (statbuf.st_mode), FALSE);
+              icon = get_icon (path, content_type, FALSE);
               if (icon != NULL)
                 {
                   g_file_info_set_icon (info, icon);
@@ -1860,7 +1859,7 @@ _g_local_file_info_get (const char             *basename,
                 }
 
               /* symbolic icon */
-              icon = get_icon (path, content_type, S_ISDIR (statbuf.st_mode), TRUE);
+              icon = get_icon (path, content_type, TRUE);
               if (icon != NULL)
                 {
                   g_file_info_set_symbolic_icon (info, icon);

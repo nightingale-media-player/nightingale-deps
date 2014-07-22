@@ -469,8 +469,8 @@ g_stpcpy (gchar       *dest,
   g_return_val_if_fail (src != NULL, NULL);
   return stpcpy (dest, src);
 #else
-  register gchar *d = dest;
-  register const gchar *s = src;
+  gchar *d = dest;
+  const gchar *s = src;
 
   g_return_val_if_fail (dest != NULL, NULL);
   g_return_val_if_fail (src != NULL, NULL);
@@ -1348,9 +1348,9 @@ g_strlcpy (gchar       *dest,
            const gchar *src,
            gsize        dest_size)
 {
-  register gchar *d = dest;
-  register const gchar *s = src;
-  register gsize n = dest_size;
+  gchar *d = dest;
+  const gchar *s = src;
+  gsize n = dest_size;
 
   g_return_val_if_fail (dest != NULL, 0);
   g_return_val_if_fail (src  != NULL, 0);
@@ -1359,7 +1359,7 @@ g_strlcpy (gchar       *dest,
   if (n != 0 && --n != 0)
     do
       {
-        register gchar c = *s++;
+        gchar c = *s++;
 
         *d++ = c;
         if (c == 0)
@@ -1409,9 +1409,9 @@ g_strlcat (gchar       *dest,
            const gchar *src,
            gsize        dest_size)
 {
-  register gchar *d = dest;
-  register const gchar *s = src;
-  register gsize bytes_left = dest_size;
+  gchar *d = dest;
+  const gchar *s = src;
+  gsize bytes_left = dest_size;
   gsize dlength;  /* Logically, MIN (strlen (d), dest_size) */
 
   g_return_val_if_fail (dest != NULL, 0);
@@ -1539,7 +1539,7 @@ g_str_is_ascii (const gchar *str)
 gchar*
 g_strdown (gchar *string)
 {
-  register guchar *s;
+  guchar *s;
 
   g_return_val_if_fail (string != NULL, NULL);
 
@@ -1570,7 +1570,7 @@ g_strdown (gchar *string)
 gchar*
 g_strup (gchar *string)
 {
-  register guchar *s;
+  guchar *s;
 
   g_return_val_if_fail (string != NULL, NULL);
 
@@ -1606,14 +1606,14 @@ g_strreverse (gchar *string)
 
   if (*string)
     {
-      register gchar *h, *t;
+      gchar *h, *t;
 
       h = string;
       t = string + strlen (string) - 1;
 
       while (h < t)
         {
-          register gchar c;
+          gchar c;
 
           c = *h;
           *h = *t;
@@ -1934,7 +1934,7 @@ g_strdelimit (gchar       *string,
               const gchar *delimiters,
               gchar        new_delim)
 {
-  register gchar *c;
+  gchar *c;
 
   g_return_val_if_fail (string != NULL, NULL);
 
@@ -1971,7 +1971,7 @@ g_strcanon (gchar       *string,
             const gchar *valid_chars,
             gchar        substitutor)
 {
-  register gchar *c;
+  gchar *c;
 
   g_return_val_if_fail (string != NULL, NULL);
   g_return_val_if_fail (valid_chars != NULL, NULL);
@@ -2246,6 +2246,10 @@ g_strchomp (gchar *string)
  * @delimiter. If @max_tokens is reached, the remainder of @string is
  * appended to the last token.
  *
+ * As an example, the result of g_strsplit (":a:bc::d:", ":", -1) is a
+ * %NULL-terminated vector containing the six strings "", "a", "bc", "", "d"
+ * and "".
+ *
  * As a special case, the result of splitting the empty string "" is an empty
  * vector, not a vector containing a single string. The reason for this
  * special case is that being able to represent a empty vector is typically
@@ -2325,7 +2329,7 @@ g_strsplit (const gchar *string,
  * %NULL-terminated vector containing the three strings "abc", "def",
  * and "ghi".
  *
- * The result if g_strsplit_set (":def/ghi:", ":/", -1) is a %NULL-terminated
+ * The result of g_strsplit_set (":def/ghi:", ":/", -1) is a %NULL-terminated
  * vector containing the four strings "", "def", "ghi", and "".
  *
  * As a special case, the result of splitting the empty string "" is an empty
@@ -2794,19 +2798,10 @@ gboolean
 g_str_has_prefix (const gchar *str,
                   const gchar *prefix)
 {
-  int str_len;
-  int prefix_len;
-
   g_return_val_if_fail (str != NULL, FALSE);
   g_return_val_if_fail (prefix != NULL, FALSE);
 
-  str_len = strlen (str);
-  prefix_len = strlen (prefix);
-
-  if (str_len < prefix_len)
-    return FALSE;
-
-  return strncmp (str, prefix, prefix_len) == 0;
+  return strncmp (str, prefix, strlen (prefix)) == 0;
 }
 
 /**
@@ -2953,6 +2948,8 @@ g_str_tokenize_and_fold (const gchar   *string,
 {
   gchar **result;
 
+  g_return_val_if_fail (string != NULL, NULL);
+
   if (ascii_alternates && g_str_is_ascii (string))
     {
       *ascii_alternates = g_new0 (gchar *, 0 + 1);
@@ -3045,6 +3042,9 @@ g_str_match_string (const gchar *search_term,
   gchar **hit_tokens;
   gboolean matched;
   gint i, j;
+
+  g_return_val_if_fail (search_term != NULL, FALSE);
+  g_return_val_if_fail (potential_hit != NULL, FALSE);
 
   term_tokens = g_str_tokenize_and_fold (search_term, NULL, NULL);
   hit_tokens = g_str_tokenize_and_fold (potential_hit, NULL, accept_alternates ? &alternates : NULL);

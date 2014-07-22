@@ -45,7 +45,7 @@
 <tbody>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="GIcon.html#g-icon-hash" title="g_icon_hash ()">g_icon_hash</a> <span class="c_punctuation">()</span>
@@ -53,7 +53,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="GIcon.html#g-icon-equal" title="g_icon_equal ()">g_icon_equal</a> <span class="c_punctuation">()</span>
@@ -61,7 +61,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="GIcon.html#g-icon-to-string" title="g_icon_to_string ()">g_icon_to_string</a> <span class="c_punctuation">()</span>
@@ -77,7 +77,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-GVariant.html#GVariant"><span class="returnvalue">GVariant</span></a> *
+<a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="returnvalue">GVariant</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="GIcon.html#g-icon-serialize" title="g_icon_serialize ()">g_icon_serialize</a> <span class="c_punctuation">()</span>
@@ -115,7 +115,7 @@
 </div>
 <div class="refsect1">
 <a name="GIcon.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
+<pre class="screen">    GInterface
     <span class="lineart">╰──</span> GIcon
 </pre>
 </div>
@@ -123,7 +123,7 @@
 <a name="GIcon.prerequisites"></a><h2>Prerequisites</h2>
 <p>
 GIcon requires
- <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>.</p>
+ <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>.</p>
 </div>
 <div class="refsect1">
 <a name="GIcon.derived-interfaces"></a><h2>Known Derived Interfaces</h2>
@@ -157,7 +157,7 @@ of an icon (see <a class="link" href="GThemedIcon.html" title="GThemedIcon"><spa
 <p>If you want to consume <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> (for example, in a toolkit) you must
 be prepared to handle at least the three following cases:
 <a class="link" href="GLoadableIcon.html" title="GLoadableIcon"><span class="type">GLoadableIcon</span></a>, <a class="link" href="GThemedIcon.html" title="GThemedIcon"><span class="type">GThemedIcon</span></a> and <a class="link" href="GEmblemedIcon.html" title="GEmblemedIcon"><span class="type">GEmblemedIcon</span></a>.  It may also make
-sense to have fast-paths for other cases (like handling <span class="type">GdkPixbuf</span>
+sense to have fast-paths for other cases (like handling <a href="http://library.gnome.org/devel/gdk-pixbuf/unstable/gdk-pixbuf-The-GdkPixbuf-Structure.html#GdkPixbuf"><span class="type">GdkPixbuf</span></a>
 directly, for example) but all compliant <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> implementations
 outside of GIO must implement <a class="link" href="GLoadableIcon.html" title="GLoadableIcon"><span class="type">GLoadableIcon</span></a>.</p>
 <p>If your application or library provides one or more <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a>
@@ -171,8 +171,8 @@ types.</p>
 <a name="GIcon.functions_details"></a><h2>Functions</h2>
 <div class="refsect2">
 <a name="g-icon-hash"></a><h3>g_icon_hash ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
-g_icon_hash (<em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> icon</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+g_icon_hash (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> icon</code></em>);</pre>
 <p>Gets a hash for an icon.</p>
 <p>Virtual: hash</p>
 <div class="refsect3">
@@ -185,23 +185,23 @@ g_icon_hash (<em class="parameter"><code><a href="../glib/glib-Basic-Types.html#
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>icon</p></td>
-<td class="parameter_description"><p><a href="../glib/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> to an icon object.</p></td>
+<td class="parameter_description"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> to an icon object.</p></td>
 <td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
 <div class="refsect3">
 <a name="id-1.4.10.2.11.2.7"></a><h4>Returns</h4>
-<p> a <a href="../glib/glib-Basic-Types.html#guint"><span class="type">guint</span></a> containing a hash for the <em class="parameter"><code>icon</code></em>
+<p> a <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> containing a hash for the <em class="parameter"><code>icon</code></em>
 , suitable for
-use in a <a href="../glib/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a> or similar data structure.</p>
+use in a <a href="http://library.gnome.org/devel/glib/unstable/glib-Hash-Tables.html#GHashTable"><span class="type">GHashTable</span></a> or similar data structure.</p>
 <p></p>
 </div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="g-icon-equal"></a><h3>g_icon_equal ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_icon_equal (<em class="parameter"><code><a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> *icon1</code></em>,
               <em class="parameter"><code><a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> *icon2</code></em>);</pre>
 <p>Checks if two icons are equal.</p>
@@ -229,16 +229,16 @@ g_icon_equal (<em class="parameter"><code><a class="link" href="GIcon.html" titl
 </div>
 <div class="refsect3">
 <a name="id-1.4.10.2.11.3.6"></a><h4>Returns</h4>
-<p> <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>icon1</code></em>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>icon1</code></em>
 is equal to <em class="parameter"><code>icon2</code></em>
-. <a href="../glib/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
+. <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> otherwise.</p>
 <p></p>
 </div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="g-icon-to-string"></a><h3>g_icon_to_string ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
 g_icon_to_string (<em class="parameter"><code><a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> *icon</code></em>);</pre>
 <p>Generates a textual representation of <em class="parameter"><code>icon</code></em>
  that can be used for
@@ -256,7 +256,7 @@ in the following two cases</p>
 if the <a class="link" href="GFile.html" title="GFile"><span class="type">GFile</span></a> for <em class="parameter"><code>icon</code></em>
  is a native file.  If the file is not
 native, the returned string is the result of <a class="link" href="GFile.html#g-file-get-uri" title="g_file_get_uri ()"><code class="function">g_file_get_uri()</code></a>
-(such as <code class="literal">sftp://path/to/my\%20icon.png</code>).</p></li>
+(such as <code class="literal">sftp://path/to/my%20icon.png</code>).</p></li>
 <li class="listitem"><p>If <em class="parameter"><code>icon</code></em>
  is a <a class="link" href="GThemedIcon.html" title="GThemedIcon"><span class="type">GThemedIcon</span></a> with exactly one name, the encoding is
 simply the name (such as <code class="literal">network-server</code>).</p></li>
@@ -279,10 +279,10 @@ simply the name (such as <code class="literal">network-server</code>).</p></li>
 </div>
 <div class="refsect3">
 <a name="id-1.4.10.2.11.4.9"></a><h4>Returns</h4>
-<p> An allocated NUL-terminated UTF8 string or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>icon</code></em>
-can't
-be serialized. Use <a href="../glib/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a> to free.</p>
-<p></p>
+<p> An allocated NUL-terminated UTF8 string or
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>icon</code></em>
+can't be serialized. Use <a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a> to free. </p>
+<p><span class="annotation">[nullable]</span></p>
 </div>
 <p class="since">Since 2.20</p>
 </div>
@@ -290,14 +290,14 @@ be serialized. Use <a href="../glib/glib-Memory-Allocation.html#g-free"><code cl
 <div class="refsect2">
 <a name="g-icon-new-for-string"></a><h3>g_icon_new_for_string ()</h3>
 <pre class="programlisting"><a class="link" href="GIcon.html" title="GIcon"><span class="returnvalue">GIcon</span></a> *
-g_icon_new_for_string (<em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *str</code></em>,
-                       <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+g_icon_new_for_string (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *str</code></em>,
+                       <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Generate a <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> instance from <em class="parameter"><code>str</code></em>
 . This function can fail if
 <em class="parameter"><code>str</code></em>
  is not valid - see <a class="link" href="GIcon.html#g-icon-to-string" title="g_icon_to_string ()"><code class="function">g_icon_to_string()</code></a> for discussion.</p>
 <p>If your application or library provides one or more <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a>
-implementations you need to ensure that each <a href="../gobject/gobject-Type-Information.html#GType"><span class="type">GType</span></a> is registered
+implementations you need to ensure that each <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GType"><span class="type">GType</span></a> is registered
 with the type system prior to calling <a class="link" href="GIcon.html#g-icon-new-for-string" title="g_icon_new_for_string ()"><code class="function">g_icon_new_for_string()</code></a>.</p>
 <div class="refsect3">
 <a name="id-1.4.10.2.11.5.6"></a><h4>Parameters</h4>
@@ -324,7 +324,7 @@ with the type system prior to calling <a class="link" href="GIcon.html#g-icon-ne
 <div class="refsect3">
 <a name="id-1.4.10.2.11.5.7"></a><h4>Returns</h4>
 <p> An object implementing the <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a>
-interface or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>error</code></em>
+interface or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>error</code></em>
 is set. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -333,12 +333,12 @@ is set. </p>
 <hr>
 <div class="refsect2">
 <a name="g-icon-serialize"></a><h3>g_icon_serialize ()</h3>
-<pre class="programlisting"><a href="../glib/glib-GVariant.html#GVariant"><span class="returnvalue">GVariant</span></a> *
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="returnvalue">GVariant</span></a> *
 g_icon_serialize (<em class="parameter"><code><a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> *icon</code></em>);</pre>
-<p>Serializes a <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> into a <a href="../glib/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a>. An equivalent <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> can be retrieved
+<p>Serializes a <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> into a <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a>. An equivalent <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> can be retrieved
 back by calling <a class="link" href="GIcon.html#g-icon-deserialize" title="g_icon_deserialize ()"><code class="function">g_icon_deserialize()</code></a> on the returned value.
 As serialization will avoid using raw icon data when possible, it only
-makes sense to transfer the <a href="../glib/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> between processes on the same machine,
+makes sense to transfer the <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> between processes on the same machine,
 (as opposed to over the network), and within the same file system namespace.</p>
 <div class="refsect3">
 <a name="id-1.4.10.2.11.6.5"></a><h4>Parameters</h4>
@@ -357,7 +357,7 @@ makes sense to transfer the <a href="../glib/glib-GVariant.html#GVariant"><span 
 </div>
 <div class="refsect3">
 <a name="id-1.4.10.2.11.6.6"></a><h4>Returns</h4>
-<p> a <a href="../glib/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> when serialization fails. </p>
+<p> a <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> when serialization fails. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 <p class="since">Since 2.38</p>
@@ -366,7 +366,7 @@ makes sense to transfer the <a href="../glib/glib-GVariant.html#GVariant"><span 
 <div class="refsect2">
 <a name="g-icon-deserialize"></a><h3>g_icon_deserialize ()</h3>
 <pre class="programlisting"><a class="link" href="GIcon.html" title="GIcon"><span class="returnvalue">GIcon</span></a> *
-g_icon_deserialize (<em class="parameter"><code><a href="../glib/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> *value</code></em>);</pre>
+g_icon_deserialize (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> *value</code></em>);</pre>
 <p>Deserializes a <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> previously serialized using <a class="link" href="GIcon.html#g-icon-serialize" title="g_icon_serialize ()"><code class="function">g_icon_serialize()</code></a>.</p>
 <div class="refsect3">
 <a name="id-1.4.10.2.11.7.5"></a><h4>Parameters</h4>
@@ -378,14 +378,14 @@ g_icon_deserialize (<em class="parameter"><code><a href="../glib/glib-GVariant.h
 </colgroup>
 <tbody><tr>
 <td class="parameter_name"><p>value</p></td>
-<td class="parameter_description"><p>a <a href="../glib/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> created with <a class="link" href="GIcon.html#g-icon-serialize" title="g_icon_serialize ()"><code class="function">g_icon_serialize()</code></a></p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> created with <a class="link" href="GIcon.html#g-icon-serialize" title="g_icon_serialize ()"><code class="function">g_icon_serialize()</code></a></p></td>
 <td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
 <div class="refsect3">
 <a name="id-1.4.10.2.11.7.6"></a><h4>Returns</h4>
-<p> a <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> when deserialization fails. </p>
+<p> a <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> when deserialization fails. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 <p class="since">Since 2.38</p>
@@ -433,7 +433,7 @@ examples of how to implement this interface.</p>
 </colgroup>
 <tbody>
 <tr>
-<td class="struct_member_name"><p><a href="../gobject/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GIconIface.g-iface"></a>g_iface</code></em>;</p></td>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GIconIface.g-iface"></a>g_iface</code></em>;</p></td>
 <td class="struct_member_description"><p>The parent interface.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr>
@@ -444,7 +444,7 @@ examples of how to implement this interface.</p>
 </tr>
 <tr>
 <td class="struct_member_name"><p><em class="structfield"><code><a name="GIconIface.equal"></a>equal</code></em> ()</p></td>
-<td class="struct_member_description"><p>Checks if two <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a>&lt;!-- --&gt;s are equal.</p></td>
+<td class="struct_member_description"><p>Checks if two <a href="GIcon.html"><span class="type">GIcons</span></a> are equal.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr>
 <tr>
@@ -456,7 +456,7 @@ serialized (Since 2.20).</p></td>
 </tr>
 <tr>
 <td class="struct_member_name"><p><em class="structfield"><code><a name="GIconIface.from-tokens"></a>from_tokens</code></em> ()</p></td>
-<td class="struct_member_description"><p>Constructs a <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> from tokens. Set the <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> if
+<td class="struct_member_description"><p>Constructs a <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> from tokens. Set the <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> if
 the tokens are malformed. Don't implement if the <a class="link" href="GIcon.html" title="GIcon"><span class="type">GIcon</span></a> can't be
 serialized (Since 2.20).</p></td>
 <td class="struct_member_annotations"> </td>

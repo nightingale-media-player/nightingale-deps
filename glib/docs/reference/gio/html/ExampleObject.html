@@ -172,9 +172,9 @@
 </div>
 <div class="refsect1">
 <a name="ExampleObject.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
+<pre class="screen">    GInterface
     <span class="lineart">╰──</span> ExampleObject
-    <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
     <span class="lineart">├──</span> <a class="link" href="GDBusObjectProxy.html" title="GDBusObjectProxy">GDBusObjectProxy</a>
     <span class="lineart">│</span>   <span class="lineart">╰──</span> ExampleObjectProxy
     <span class="lineart">╰──</span> <a class="link" href="GDBusObjectSkeleton.html" title="GDBusObjectSkeleton">GDBusObjectSkeleton</a>
@@ -185,7 +185,7 @@
 <a name="ExampleObject.prerequisites"></a><h2>Prerequisites</h2>
 <p>
 ExampleObject requires
- <a class="link" href="GDBusObject.html" title="GDBusObject">GDBusObject</a> and  <a href="../gobject/gobject-The-Base-Object-Type.html#GObject">GObject</a>.</p>
+ <a class="link" href="GDBusObject.html" title="GDBusObject">GDBusObject</a> and  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>.</p>
 </div>
 <div class="refsect1">
 <a name="ExampleObject.implemented-interfaces"></a><h2>Implemented Interfaces</h2>
@@ -231,7 +231,7 @@ example_object_get_animal (<em class="parameter"><code><a class="link" href="Exa
 </div>
 <div class="refsect3">
 <a name="id-1.5.5.6.7.13.2.6"></a><h4>Returns</h4>
-<p> A <a class="link" href="ExampleAnimal.html" title="ExampleAnimal"><span class="type">ExampleAnimal</span></a> that must be freed with <a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>object</code></em>
+<p> A <a class="link" href="ExampleAnimal.html" title="ExampleAnimal"><span class="type">ExampleAnimal</span></a> that must be freed with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>object</code></em>
 does not implement the interface. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -261,7 +261,7 @@ example_object_get_cat (<em class="parameter"><code><a class="link" href="Exampl
 </div>
 <div class="refsect3">
 <a name="id-1.5.5.6.7.13.3.6"></a><h4>Returns</h4>
-<p> A <a class="link" href="ExampleCat.html" title="ExampleCat"><span class="type">ExampleCat</span></a> that must be freed with <a href="../gobject/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>object</code></em>
+<p> A <a class="link" href="ExampleCat.html" title="ExampleCat"><span class="type">ExampleCat</span></a> that must be freed with <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#g-object-unref"><code class="function">g_object_unref()</code></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>object</code></em>
 does not implement the interface. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
@@ -290,7 +290,7 @@ example_object_peek_animal (<em class="parameter"><code><a class="link" href="Ex
 </div>
 <div class="refsect3">
 <a name="id-1.5.5.6.7.13.4.7"></a><h4>Returns</h4>
-<p> A <a class="link" href="ExampleAnimal.html" title="ExampleAnimal"><span class="type">ExampleAnimal</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>object</code></em>
+<p> A <a class="link" href="ExampleAnimal.html" title="ExampleAnimal"><span class="type">ExampleAnimal</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>object</code></em>
 does not implement the interface. Do not free the returned object, it is owned by <em class="parameter"><code>object</code></em>
 . </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
@@ -321,7 +321,7 @@ example_object_peek_cat (<em class="parameter"><code><a class="link" href="Examp
 </div>
 <div class="refsect3">
 <a name="id-1.5.5.6.7.13.5.7"></a><h4>Returns</h4>
-<p> A <a class="link" href="ExampleCat.html" title="ExampleCat"><span class="type">ExampleCat</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>object</code></em>
+<p> A <a class="link" href="ExampleCat.html" title="ExampleCat"><span class="type">ExampleCat</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if <em class="parameter"><code>object</code></em>
 does not implement the interface. Do not free the returned object, it is owned by <em class="parameter"><code>object</code></em>
 . </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
@@ -332,7 +332,7 @@ does not implement the interface. Do not free the returned object, it is owned b
 <a name="example-object-proxy-new"></a><h3>example_object_proxy_new ()</h3>
 <pre class="programlisting"><a class="link" href="ExampleObject.html#ExampleObjectProxy"><span class="returnvalue">ExampleObjectProxy</span></a> *
 example_object_proxy_new (<em class="parameter"><code><a class="link" href="GDBusConnection.html" title="GDBusConnection"><span class="type">GDBusConnection</span></a> *connection</code></em>,
-                          <em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *object_path</code></em>);</pre>
+                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *object_path</code></em>);</pre>
 <p>Creates a new proxy object.</p>
 <div class="refsect3">
 <a name="id-1.5.5.6.7.13.6.5"></a><h4>Parameters</h4>
@@ -366,7 +366,7 @@ example_object_proxy_new (<em class="parameter"><code><a class="link" href="GDBu
 <div class="refsect2">
 <a name="example-object-skeleton-new"></a><h3>example_object_skeleton_new ()</h3>
 <pre class="programlisting"><a class="link" href="ExampleObject.html#ExampleObjectSkeleton"><span class="returnvalue">ExampleObjectSkeleton</span></a> *
-example_object_skeleton_new (<em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *object_path</code></em>);</pre>
+example_object_skeleton_new (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *object_path</code></em>);</pre>
 <p>Creates a new skeleton object.</p>
 <div class="refsect3">
 <a name="id-1.5.5.6.7.13.7.5"></a><h4>Parameters</h4>
@@ -413,7 +413,7 @@ example_object_skeleton_set_animal (<em class="parameter"><code><a class="link" 
 </tr>
 <tr>
 <td class="parameter_name"><p>interface_</p></td>
-<td class="parameter_description"><p> A <a class="link" href="ExampleAnimal.html" title="ExampleAnimal"><span class="type">ExampleAnimal</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to clear the interface. </p></td>
+<td class="parameter_description"><p> A <a class="link" href="ExampleAnimal.html" title="ExampleAnimal"><span class="type">ExampleAnimal</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to clear the interface. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 </tbody>
@@ -445,7 +445,7 @@ example_object_skeleton_set_cat (<em class="parameter"><code><a class="link" hre
 </tr>
 <tr>
 <td class="parameter_name"><p>interface_</p></td>
-<td class="parameter_description"><p> A <a class="link" href="ExampleCat.html" title="ExampleCat"><span class="type">ExampleCat</span></a> or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to clear the interface. </p></td>
+<td class="parameter_description"><p> A <a class="link" href="ExampleCat.html" title="ExampleCat"><span class="type">ExampleCat</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to clear the interface. </p></td>
 <td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
 </tr>
 </tbody>
@@ -477,7 +477,7 @@ example_object_skeleton_set_cat (<em class="parameter"><code><a class="link" hre
 <col width="200px" class="struct_members_annotations">
 </colgroup>
 <tbody><tr>
-<td class="struct_member_name"><p><a href="../gobject/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="ExampleObjectIface.parent-iface"></a>parent_iface</code></em>;</p></td>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="ExampleObjectIface.parent-iface"></a>parent_iface</code></em>;</p></td>
 <td class="struct_member_description"><p>The parent interface.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr></tbody>
@@ -551,7 +551,7 @@ example_object_skeleton_set_cat (<em class="parameter"><code><a class="link" hre
 <a name="ExampleObject--animal"></a><h3>The <code class="literal">“animal”</code> property</h3>
 <pre class="programlisting">  “animal”                   <a class="link" href="ExampleAnimal.html" title="ExampleAnimal"><span class="type">ExampleAnimal</span></a> *</pre>
 <p>The <a class="link" href="ExampleAnimal.html" title="ExampleAnimal"><span class="type">ExampleAnimal</span></a> instance corresponding to the D-Bus interface <a class="link" href="gdbus-org.gtk.GDBus.Example.ObjectManager.Animal.html#gdbus-interface-org-gtk-GDBus-Example-ObjectManager-Animal.top_of_page">org.gtk.GDBus.Example.ObjectManager.Animal</a>, if any.</p>
-<p>Connect to the <a href="../gobject/gobject-The-Base-Object-Type.html#GObject-notify"><span class="type">“notify”</span></a> signal to get informed of property changes.</p>
+<p>Connect to the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject-notify"><span class="type">“notify”</span></a> signal to get informed of property changes.</p>
 <p>Flags: Read / Write</p>
 <p class="since">Since 2.30</p>
 </div>
@@ -560,7 +560,7 @@ example_object_skeleton_set_cat (<em class="parameter"><code><a class="link" hre
 <a name="ExampleObject--cat"></a><h3>The <code class="literal">“cat”</code> property</h3>
 <pre class="programlisting">  “cat”                      <a class="link" href="ExampleCat.html" title="ExampleCat"><span class="type">ExampleCat</span></a> *</pre>
 <p>The <a class="link" href="ExampleCat.html" title="ExampleCat"><span class="type">ExampleCat</span></a> instance corresponding to the D-Bus interface <a class="link" href="gdbus-org.gtk.GDBus.Example.ObjectManager.Cat.html#gdbus-interface-org-gtk-GDBus-Example-ObjectManager-Cat.top_of_page">org.gtk.GDBus.Example.ObjectManager.Cat</a>, if any.</p>
-<p>Connect to the <a href="../gobject/gobject-The-Base-Object-Type.html#GObject-notify"><span class="type">“notify”</span></a> signal to get informed of property changes.</p>
+<p>Connect to the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject-notify"><span class="type">“notify”</span></a> signal to get informed of property changes.</p>
 <p>Flags: Read / Write</p>
 </div>
 </div>

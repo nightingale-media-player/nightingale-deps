@@ -41,7 +41,7 @@
  * (using g_file_get_path()) when using g_app_info_launch() even if
  * the application requested an URI and not a POSIX path. For example
  * for an desktop-file based application with Exec key `totem
- * \%U` and a single URI, `sftp://foo/file.avi`, then
+ * %U` and a single URI, `sftp://foo/file.avi`, then
  * `/home/user/.gvfs/sftp on foo/file.avi` will be passed. This will
  * only work if a set of suitable GIO extensions (such as gvfs 2.26
  * compiled with FUSE support), is available and operational; if this
@@ -1238,6 +1238,7 @@ g_app_info_monitor_fire (void)
 
           idle = g_idle_source_new ();
           g_source_set_callback (idle, g_app_info_monitor_emit, context, NULL);
+          g_source_set_name (idle, "[gio] g_app_info_monitor_emit");
           g_source_attach (idle, context);
           g_source_unref (idle);
         }

@@ -92,7 +92,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
 <a class="link" href="GTlsClientConnection.html#g-tls-client-connection-get-use-ssl3" title="g_tls_client_connection_get_use_ssl3 ()">g_tls_client_connection_get_use_ssl3</a> <span class="c_punctuation">()</span>
@@ -100,7 +100,7 @@
 </tr>
 <tr>
 <td class="function_type">
-<a href="../glib/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
 </td>
 <td class="function_name">
 <a class="link" href="GTlsClientConnection.html#g-tls-client-connection-get-accepted-cas" title="g_tls_client_connection_get_accepted_cas ()">g_tls_client_connection_get_accepted_cas</a> <span class="c_punctuation">()</span>
@@ -119,7 +119,7 @@
 </colgroup>
 <tbody>
 <tr>
-<td class="property_type"><a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a></td>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a></td>
 <td class="property_name"><a class="link" href="GTlsClientConnection.html#GTlsClientConnection--accepted-cas" title="The “accepted-cas” property">accepted-cas</a></td>
 <td class="property_flags">Read</td>
 </tr>
@@ -130,7 +130,7 @@
 <td class="property_flags">Read / Write / Construct</td>
 </tr>
 <tr>
-<td class="property_type"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
 <td class="property_name"><a class="link" href="GTlsClientConnection.html#GTlsClientConnection--use-ssl3" title="The “use-ssl3” property">use-ssl3</a></td>
 <td class="property_flags">Read / Write / Construct</td>
 </tr>
@@ -163,7 +163,7 @@
 </div>
 <div class="refsect1">
 <a name="GTlsClientConnection.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
+<pre class="screen">    GInterface
     <span class="lineart">╰──</span> GTlsClientConnection
 </pre>
 </div>
@@ -190,7 +190,7 @@ GTlsClientConnection requires
 <pre class="programlisting"><a class="link" href="GIOStream.html" title="GIOStream"><span class="returnvalue">GIOStream</span></a> *
 g_tls_client_connection_new (<em class="parameter"><code><a class="link" href="GIOStream.html" title="GIOStream"><span class="type">GIOStream</span></a> *base_io_stream</code></em>,
                              <em class="parameter"><code><a class="link" href="GSocketConnectable.html" title="GSocketConnectable"><span class="type">GSocketConnectable</span></a> *server_identity</code></em>,
-                             <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+                             <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Creates a new <a class="link" href="GTlsClientConnection.html" title="GTlsClientConnection"><span class="type">GTlsClientConnection</span></a> wrapping <em class="parameter"><code>base_io_stream</code></em>
  (which
 must have pollable input and output streams) which is assumed to
@@ -217,7 +217,7 @@ communicate with the server identified by <em class="parameter"><code>server_ide
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for error reporting, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore.</p></td>
+<td class="parameter_description"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for error reporting, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -226,7 +226,7 @@ communicate with the server identified by <em class="parameter"><code>server_ide
 <div class="refsect3">
 <a name="id-1.4.15.5.10.2.6"></a><h4>Returns</h4>
 <p> the new
-<a class="link" href="GTlsClientConnection.html" title="GTlsClientConnection"><span class="type">GTlsClientConnection</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error. </p>
+<a class="link" href="GTlsClientConnection.html" title="GTlsClientConnection"><span class="type">GTlsClientConnection</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Override the parsed C type with given type."><span class="acronym">type</span></acronym> GTlsClientConnection]</span></p>
 </div>
 <p class="since">Since 2.28</p>
@@ -294,7 +294,7 @@ g_tls_client_connection_get_server_identity
 <div class="refsect3">
 <a name="id-1.4.15.5.10.4.6"></a><h4>Returns</h4>
 <p> a <a class="link" href="GSocketConnectable.html" title="GSocketConnectable"><span class="type">GSocketConnectable</span></a> describing the
-expected server identity, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the expected identity is not
+expected server identity, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> if the expected identity is not
 known. </p>
 <p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
 </div>
@@ -370,9 +370,9 @@ g_tls_client_connection_get_validation_flags
 <a name="g-tls-client-connection-set-use-ssl3"></a><h3>g_tls_client_connection_set_use_ssl3 ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>
 g_tls_client_connection_set_use_ssl3 (<em class="parameter"><code><a class="link" href="GTlsClientConnection.html" title="GTlsClientConnection"><span class="type">GTlsClientConnection</span></a> *conn</code></em>,
-                                      <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> use_ssl3</code></em>);</pre>
+                                      <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> use_ssl3</code></em>);</pre>
 <p>If <em class="parameter"><code>use_ssl3</code></em>
- is <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, this forces <em class="parameter"><code>conn</code></em>
+ is <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, this forces <em class="parameter"><code>conn</code></em>
  to use SSL 3.0 rather than
 trying to properly negotiate the right version of TLS or SSL to use.
 This can be used when talking to servers that do not implement the
@@ -405,7 +405,7 @@ a "modern" TLS handshake attempt.</p>
 <hr>
 <div class="refsect2">
 <a name="g-tls-client-connection-get-use-ssl3"></a><h3>g_tls_client_connection_get_use_ssl3 ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 g_tls_client_connection_get_use_ssl3 (<em class="parameter"><code><a class="link" href="GTlsClientConnection.html" title="GTlsClientConnection"><span class="type">GTlsClientConnection</span></a> *conn</code></em>);</pre>
 <p>Gets whether <em class="parameter"><code>conn</code></em>
  will use SSL 3.0 rather than the
@@ -437,14 +437,14 @@ will use SSL 3.0</p>
 <hr>
 <div class="refsect2">
 <a name="g-tls-client-connection-get-accepted-cas"></a><h3>g_tls_client_connection_get_accepted_cas ()</h3>
-<pre class="programlisting"><a href="../glib/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
 g_tls_client_connection_get_accepted_cas
                                (<em class="parameter"><code><a class="link" href="GTlsClientConnection.html" title="GTlsClientConnection"><span class="type">GTlsClientConnection</span></a> *conn</code></em>);</pre>
 <p>Gets the list of distinguished names of the Certificate Authorities
 that the server will accept certificates from. This will be set
 during the TLS handshake if the server requests a certificate.
-Otherwise, it will be <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.</p>
-<p>Each item in the list is a <a href="../glib/glib-Byte-Arrays.html#GByteArray"><span class="type">GByteArray</span></a> which contains the complete
+Otherwise, it will be <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>.</p>
+<p>Each item in the list is a <a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GByteArray"><span class="type">GByteArray</span></a> which contains the complete
 subject DN of the certificate authority.</p>
 <div class="refsect3">
 <a name="id-1.4.15.5.10.9.6"></a><h4>Parameters</h4>
@@ -464,8 +464,8 @@ subject DN of the certificate authority.</p>
 <div class="refsect3">
 <a name="id-1.4.15.5.10.9.7"></a><h4>Returns</h4>
 <p> the list of
-CA DNs. You should unref each element with <a href="../glib/glib-Byte-Arrays.html#g-byte-array-unref"><code class="function">g_byte_array_unref()</code></a> and then
-the free the list with <a href="../glib/glib-Doubly-Linked-Lists.html#g-list-free"><code class="function">g_list_free()</code></a>. </p>
+CA DNs. You should unref each element with <a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#g-byte-array-unref"><code class="function">g_byte_array_unref()</code></a> and then
+the free the list with <a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#g-list-free"><code class="function">g_list_free()</code></a>. </p>
 <p><span class="annotation">[<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GByteArray][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
 </div>
 <p class="since">Since 2.28</p>
@@ -493,15 +493,9 @@ type.</p>
 <a name="GTlsClientConnection.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
 <a name="GTlsClientConnection--accepted-cas"></a><h3>The <code class="literal">“accepted-cas”</code> property</h3>
-<pre class="programlisting">  “accepted-cas”             <a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a></pre>
-<p>A list of the distinguished names of the Certificate Authorities
-that the server will accept client certificates signed by. If the
-server requests a client certificate during the handshake, then
-this property will be set after the handshake completes.</p>
-<p>Each item in the list is a <a href="../glib/glib-Byte-Arrays.html#GByteArray"><span class="type">GByteArray</span></a> which contains the complete
-subject DN of the certificate authority.</p>
+<pre class="programlisting">  “accepted-cas”             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a></pre>
+<p>Distinguished names of the CAs the server accepts certificates from.</p>
 <p>Flags: Read</p>
-<p class="since">Since 2.28</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -525,8 +519,8 @@ virtual hosts.</p>
 <hr>
 <div class="refsect2">
 <a name="GTlsClientConnection--use-ssl3"></a><h3>The <code class="literal">“use-ssl3”</code> property</h3>
-<pre class="programlisting">  “use-ssl3”                 <a href="../glib/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
-<p>If <a href="../glib/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, tells the connection to use SSL 3.0 rather than trying
+<pre class="programlisting">  “use-ssl3”                 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
+<p>If <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a>, tells the connection to use SSL 3.0 rather than trying
 to negotiate the best version of TLS or SSL to use. This can be
 used when talking to servers that don't implement version
 negotiation correctly and therefore refuse to handshake at all with

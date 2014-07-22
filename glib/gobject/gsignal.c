@@ -302,7 +302,7 @@ static guint          g_n_signal_nodes = 0;
 static SignalNode   **g_signal_nodes = NULL;
 
 static inline SignalNode*
-LOOKUP_SIGNAL_NODE (register guint signal_id)
+LOOKUP_SIGNAL_NODE (guint signal_id)
 {
   if (signal_id < g_n_signal_nodes)
     return g_signal_nodes[signal_id];
@@ -1436,7 +1436,7 @@ g_signal_new (const gchar	 *signal_name,
  *
  * See g_signal_new() for information about signal names.
  *
- * If c_marshaller is %NULL @g_cclosure_marshal_generic will be used as
+ * If c_marshaller is %NULL, g_cclosure_marshal_generic() will be used as
  * the marshaller for this signal.
  *
  * Returns: the signal id
@@ -1564,7 +1564,7 @@ signal_add_class_closure (SignalNode *node,
  *
  * See g_signal_new() for details on allowed signal names.
  *
- * If c_marshaller is %NULL @g_cclosure_marshal_generic will be used as
+ * If c_marshaller is %NULL, g_cclosure_marshal_generic() will be used as
  * the marshaller for this signal.
  *
  * Returns: the signal id
@@ -2157,8 +2157,7 @@ g_signal_chain_from_overridden_handler (gpointer instance,
 
       SIGNAL_UNLOCK ();
       instance_and_params->g_type = 0;
-      g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (instance));
-      g_value_set_instance (instance_and_params, instance);
+      g_value_init_from_instance (instance_and_params, instance);
       SIGNAL_LOCK ();
 
       emission->chain_type = chain_type;
@@ -2609,7 +2608,11 @@ g_signal_handler_is_connected (gpointer instance,
 
 /**
  * g_signal_handlers_destroy:
- * @instance: (type GObject.Object): The instance where a signal handler is sought.
+ * @instance: (type GObject.Object): The instance whose signal handlers are destroyed
+ *
+ * Destroy all signal handlers of a type instance. This function is
+ * an implementation detail of the #GObject dispose implementation,
+ * and should not be used outside of the type system.
  */
 void
 g_signal_handlers_destroy (gpointer instance)
@@ -3301,8 +3304,7 @@ g_signal_emit_valist (gpointer instance,
     }
 
   instance_and_params->g_type = 0;
-  g_value_init (instance_and_params, G_TYPE_FROM_INSTANCE (instance));
-  g_value_set_instance (instance_and_params, instance);
+  g_value_init_from_instance (instance_and_params, instance);
   if (signal_return_type == G_TYPE_NONE)
     signal_emit_unlocked_R (node, detail, instance, NULL, instance_and_params);
   else

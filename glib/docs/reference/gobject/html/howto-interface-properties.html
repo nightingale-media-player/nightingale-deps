@@ -40,9 +40,9 @@
 </p>
 <pre class="programlisting">
 static void
-maman_ibaz_default_init (gpointer g_iface)
+maman_ibaz_default_init (MamanIbazInteface *iface)
 {
-  g_object_interface_install_property (g_iface,
+  g_object_interface_install_property (iface,
                                        g_param_spec_string ("name",
                                                             "Name",
                                                             "Name of the MamanIbaz",
@@ -60,7 +60,7 @@ maman_ibaz_default_init (gpointer g_iface)
       interface properties.
     </p>
 <p>
-      An implementation declares and defines it's properties in the usual
+      An implementation declares and defines its properties in the usual
       way as explained in <a class="xref" href="gobject-properties.html" title="Object properties">the section called “Object properties”</a>, except for one
       small change: it can declare the properties of the interface it
       implements using <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-class-override-property" title="g_object_class_override_property ()">g_object_class_override_property</a></code>

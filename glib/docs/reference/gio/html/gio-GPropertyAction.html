@@ -69,20 +69,20 @@
 <div class="refsect1">
 <a name="gio-GPropertyAction.description"></a><h2>Description</h2>
 <p>A <a class="link" href="gio-GPropertyAction.html#GPropertyAction" title="GPropertyAction"><span class="type">GPropertyAction</span></a> is a way to get a <a class="link" href="GAction.html" title="GAction"><span class="type">GAction</span></a> with a state value
-reflecting and controlling the value of a <a href="../gobject/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> property.</p>
+reflecting and controlling the value of a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> property.</p>
 <p>The state of the action will correspond to the value of the property.
 Changing it will change the property (assuming the requested value
-matches the requirements as specified in the <a href="../gobject/gobject-GParamSpec.html#GParamSpec"><span class="type">GParamSpec</span></a>).</p>
+matches the requirements as specified in the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-GParamSpec.html#GParamSpec"><span class="type">GParamSpec</span></a>).</p>
 <p>Only the most common types are presently supported.  Booleans are
 mapped to booleans, strings to strings, signed/unsigned integers to
 int32/uint32 and floats and doubles to doubles.</p>
 <p>If the property is an enum then the state will be string-typed and
 conversion will automatically be performed between the enum value and
-"nick" string as per the <a href="../gobject/gobject-Enumeration-and-Flag-Types.html#GEnumValue"><span class="type">GEnumValue</span></a> table.</p>
+"nick" string as per the <a href="http://library.gnome.org/devel/gobject/unstable/gobject-Enumeration-and-Flag-Types.html#GEnumValue"><span class="type">GEnumValue</span></a> table.</p>
 <p>Flags types are not currently supported.</p>
 <p>Properties of object types, boxed types and pointer types are not
 supported and probably never will be.</p>
-<p>Properties of <a href="../glib/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> types are not currently supported.</p>
+<p>Properties of <a href="http://library.gnome.org/devel/glib/unstable/glib-GVariant.html#GVariant"><span class="type">GVariant</span></a> types are not currently supported.</p>
 <p>If the property is boolean-valued then the action will have a NULL
 parameter type, and activating the action (with no parameter) will
 toggle the value of the property.</p>
@@ -93,16 +93,16 @@ particular piece of state is kept (and therefore has to be synchronised
 between). <a class="link" href="gio-GPropertyAction.html#GPropertyAction" title="GPropertyAction"><span class="type">GPropertyAction</span></a> does not have a separate state that is kept
 in sync with the property value -- its state is the property value.</p>
 <p>For example, it might be useful to create a <a class="link" href="GAction.html" title="GAction"><span class="type">GAction</span></a> corresponding to
-the "visible-child-name" property of a <span class="type">GtkStack</span> so that the current
+the "visible-child-name" property of a <a href="http://developer.gnome.org/gtk2/GtkStack.html"><span class="type">GtkStack</span></a> so that the current
 page can be switched from a menu.  The active radio indication in the
 menu is then directly determined from the active page of the
-<span class="type">GtkStack</span>.</p>
+<a href="http://developer.gnome.org/gtk2/GtkStack.html"><span class="type">GtkStack</span></a>.</p>
 <p>An anti-example would be binding the "active-id" property on a
-<span class="type">GtkComboBox</span>.  This is because the state of the combobox itself is
+<a href="http://developer.gnome.org/gtk2/GtkComboBox.html"><span class="type">GtkComboBox</span></a>.  This is because the state of the combobox itself is
 probably uninteresting and is actually being used to control
 something else.</p>
 <p>Another anti-example would be to bind to the "visible-child-name"
-property of a <span class="type">GtkStack</span> if this value is actually stored in
+property of a <a href="http://developer.gnome.org/gtk2/GtkStack.html"><span class="type">GtkStack</span></a> if this value is actually stored in
 <a class="link" href="GSettings.html" title="GSettings"><span class="type">GSettings</span></a>.  In that case, the real source of the value is
 <a class="link" href="GSettings.html" title="GSettings"><span class="type">GSettings</span></a>.  If you want a <a class="link" href="GAction.html" title="GAction"><span class="type">GAction</span></a> to control a setting stored in
 <a class="link" href="GSettings.html" title="GSettings"><span class="type">GSettings</span></a>, see <a class="link" href="GSettings.html#g-settings-create-action" title="g_settings_create_action ()"><code class="function">g_settings_create_action()</code></a> instead, and possibly
@@ -113,9 +113,9 @@ combine its use with <a class="link" href="GSettings.html#g-settings-bind" title
 <div class="refsect2">
 <a name="g-property-action-new"></a><h3>g_property_action_new ()</h3>
 <pre class="programlisting"><a class="link" href="gio-GPropertyAction.html#GPropertyAction" title="GPropertyAction"><span class="returnvalue">GPropertyAction</span></a> *
-g_property_action_new (<em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
-                       <em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> object</code></em>,
-                       <em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property_name</code></em>);</pre>
+g_property_action_new (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                       <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> object</code></em>,
+                       <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *property_name</code></em>);</pre>
 <p>Creates a <a class="link" href="GAction.html" title="GAction"><span class="type">GAction</span></a> corresponding to the value of property
 <em class="parameter"><code>property_name</code></em>
  on <em class="parameter"><code>object</code></em>

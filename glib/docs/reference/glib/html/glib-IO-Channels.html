@@ -439,13 +439,13 @@ manner with the functions <a class="link" href="glib-IO-Channels.html#g-io-chann
 use <a class="link" href="glib-IO-Channels.html#g-io-add-watch" title="g_io_add_watch ()"><code class="function">g_io_add_watch()</code></a> or <a class="link" href="glib-IO-Channels.html#g-io-add-watch-full" title="g_io_add_watch_full ()"><code class="function">g_io_add_watch_full()</code></a>. Here you specify which
 events you are interested in on the <a class="link" href="glib-IO-Channels.html#GIOChannel" title="struct GIOChannel"><span class="type">GIOChannel</span></a>, and provide a
 function to be called whenever these events occur.</p>
-<p><a class="link" href="glib-IO-Channels.html#GIOChannel" title="struct GIOChannel"><span class="type">GIOChannel</span></a> instances are created with an initial reference count of</p>
-<div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>g_io_channel_ref() and <a class="link" href="glib-IO-Channels.html#g-io-channel-unref" title="g_io_channel_unref ()"><code class="function">g_io_channel_unref()</code></a> can be used to
+<p><a class="link" href="glib-IO-Channels.html#GIOChannel" title="struct GIOChannel"><span class="type">GIOChannel</span></a> instances are created with an initial reference count of 1.
+<a class="link" href="glib-IO-Channels.html#g-io-channel-ref" title="g_io_channel_ref ()"><code class="function">g_io_channel_ref()</code></a> and <a class="link" href="glib-IO-Channels.html#g-io-channel-unref" title="g_io_channel_unref ()"><code class="function">g_io_channel_unref()</code></a> can be used to
 increment or decrement the reference count respectively. When the
 reference count falls to 0, the <a class="link" href="glib-IO-Channels.html#GIOChannel" title="struct GIOChannel"><span class="type">GIOChannel</span></a> is freed. (Though it
 isn't closed automatically, unless it was created using
 <a class="link" href="glib-IO-Channels.html#g-io-channel-new-file" title="g_io_channel_new_file ()"><code class="function">g_io_channel_new_file()</code></a>.) Using <a class="link" href="glib-IO-Channels.html#g-io-add-watch" title="g_io_add_watch ()"><code class="function">g_io_add_watch()</code></a> or
-<a class="link" href="glib-IO-Channels.html#g-io-add-watch-full" title="g_io_add_watch_full ()"><code class="function">g_io_add_watch_full()</code></a> increments a channel's reference count.</p></li></ol></div>
+<a class="link" href="glib-IO-Channels.html#g-io-add-watch-full" title="g_io_add_watch_full ()"><code class="function">g_io_add_watch_full()</code></a> increments a channel's reference count.</p>
 <p>The new functions <a class="link" href="glib-IO-Channels.html#g-io-channel-read-chars" title="g_io_channel_read_chars ()"><code class="function">g_io_channel_read_chars()</code></a>,
 <a class="link" href="glib-IO-Channels.html#g-io-channel-read-line" title="g_io_channel_read_line ()"><code class="function">g_io_channel_read_line()</code></a>, <a class="link" href="glib-IO-Channels.html#g-io-channel-read-line-string" title="g_io_channel_read_line_string ()"><code class="function">g_io_channel_read_line_string()</code></a>,
 <a class="link" href="glib-IO-Channels.html#g-io-channel-read-to-end" title="g_io_channel_read_to_end ()"><code class="function">g_io_channel_read_to_end()</code></a>, <a class="link" href="glib-IO-Channels.html#g-io-channel-write-chars" title="g_io_channel_write_chars ()"><code class="function">g_io_channel_write_chars()</code></a>,
@@ -2461,7 +2461,7 @@ issues are dealt with at a higher level.</p></td>
 </tr>
 <tr>
 <td class="struct_member_name"><p><em class="structfield"><code><a name="GIOFuncs.io-seek"></a>io_seek</code></em> ()</p></td>
-<td class="struct_member_description"><p>&amp;lpar;optional&amp;rpar; seeks the channel.  This is called from
+<td class="struct_member_description"><p>(optional) seeks the channel.  This is called from
 <a class="link" href="glib-IO-Channels.html#g-io-channel-seek" title="g_io_channel_seek ()"><code class="function">g_io_channel_seek()</code></a> on channels that support it.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr>
@@ -2552,18 +2552,19 @@ read with <a class="link" href="glib-IO-Channels.html#g-io-channel-get-flags" ti
 <td class="enum_member_name"><p><a name="G-IO-FLAG-IS-WRITABLE:CAPS"></a>G_IO_FLAG_IS_WRITABLE</p></td>
 <td class="enum_member_description">
 <p>indicates that the io channel is writable.
-    This flag cannot be changed.
-G_IO_FLAG_IS_WRITEABLE: a misspelled version of <em class="parameter"><code>G_IO_FLAG_IS_WRITABLE</code></em>
-
-    that existed before the spelling was fixed in GLib 2.30. It is kept
-    here for compatibility reasons. Deprecated since 2.30</p>
+    This flag cannot be changed.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-IO-FLAG-IS-WRITEABLE:CAPS"></a>G_IO_FLAG_IS_WRITEABLE</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>a misspelled version of <em class="parameter"><code>G_IO_FLAG_IS_WRITABLE</code></em>
+
+    that existed before the spelling was fixed in GLib 2.30. It is kept
+    here for compatibility reasons. Deprecated since 2.30</p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="G-IO-FLAG-IS-SEEKABLE:CAPS"></a>G_IO_FLAG_IS_SEEKABLE</p></td>

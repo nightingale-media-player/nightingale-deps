@@ -8,6 +8,18 @@ print (const gchar *str)
   g_print ("%s\n", str ? str : "nil");
 }
 
+static void
+print_app_list (GList *list)
+{
+  while (list)
+    {
+      GAppInfo *info = list->data;
+      print (g_app_info_get_id (info));
+      list = g_list_delete_link (list, list);
+      g_object_unref (info);
+    }
+}
+
 int
 main (int argc, char **argv)
 {
@@ -39,6 +51,13 @@ main (int argc, char **argv)
         }
       g_free (results);
     }
+  else if (g_str_equal (argv[1], "implementations"))
+    {
+      GList *results;
+
+      results = g_desktop_app_info_get_implementations (argv[2]);
+      print_app_list (results);
+    }
   else if (g_str_equal (argv[1], "show-info"))
     {
       GAppInfo *info;
@@ -50,6 +69,52 @@ main (int argc, char **argv)
           print (g_app_info_get_name (info));
           print (g_app_info_get_display_name (info));
           print (g_app_info_get_description (info));
+          g_object_unref (info);
+        }
+    }
+  else if (g_str_equal (argv[1], "default-for-type"))
+    {
+      GAppInfo *info;
+
+      info = g_app_info_get_default_for_type (argv[2], FALSE);
+
+      if (info)
+        {
+          print (g_app_info_get_id (info));
+          g_object_unref (info);
+        }
+    }
+  else if (g_str_equal (argv[1], "recommended-for-type"))
+    {
+      GList *list;
+
+      list = g_app_info_get_recommended_for_type (argv[2]);
+      print_app_list (list);
+    }
+  else if (g_str_equal (argv[1], "all-for-type"))
+    {
+      GList *list;
+
+      list = g_app_info_get_all_for_type (argv[2]);
+      print_app_list (list);
+    }
+
+  else if (g_str_equal (argv[1], "fallback-for-type"))
+    {
+      GList *list;
+
+      list = g_app_info_get_fallback_for_type (argv[2]);
+      print_app_list (list);
+    }
+
+  else if (g_str_equal (argv[1], "should-show"))
+    {
+      GAppInfo *info;
+
+      info = (GAppInfo *) g_desktop_app_info_new (argv[2]);
+      if (info)
+        {
+          g_print ("%s\n", g_app_info_should_show (info) ? "true" : "false");
           g_object_unref (info);
         }
     }

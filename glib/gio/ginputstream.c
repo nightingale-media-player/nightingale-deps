@@ -141,6 +141,9 @@ g_input_stream_init (GInputStream *stream)
  * can happen e.g. near the end of a file. Zero is returned on end of file
  * (or if @count is zero),  but never otherwise.
  *
+ * The returned @buffer is not a nul-terminated string, it can contain nul bytes
+ * at any position, and this function doesn't nul-terminate the @buffer.
+ *
  * If @cancellable is not %NULL, then the operation can be cancelled by
  * triggering the cancellable object from another thread. If the operation
  * was cancelled, the error %G_IO_ERROR_CANCELLED will be returned. If an
@@ -295,6 +298,8 @@ g_input_stream_read_all (GInputStream  *stream,
  * On error %NULL is returned and @error is set accordingly.
  *
  * Returns: a new #GBytes, or %NULL on error
+ *
+ * Since: 2.34
  **/
 GBytes *
 g_input_stream_read_bytes (GInputStream  *stream,
@@ -711,6 +716,8 @@ read_bytes_callback (GObject      *stream,
  * Any outstanding I/O request with higher priority (lower numerical
  * value) will be executed before an outstanding request with lower
  * priority. Default priority is %G_PRIORITY_DEFAULT.
+ *
+ * Since: 2.34
  **/
 void
 g_input_stream_read_bytes_async (GInputStream          *stream,
@@ -742,6 +749,8 @@ g_input_stream_read_bytes_async (GInputStream          *stream,
  * Finishes an asynchronous stream read-into-#GBytes operation.
  *
  * Returns: the newly-allocated #GBytes, or %NULL on error
+ *
+ * Since: 2.34
  **/
 GBytes *
 g_input_stream_read_bytes_finish (GInputStream  *stream,

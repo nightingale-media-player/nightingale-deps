@@ -129,7 +129,7 @@
 </div>
 <div class="refsect1">
 <a name="GTypePlugin.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
+<pre class="screen">    GInterface
     <span class="lineart">╰──</span> GTypePlugin
 </pre>
 </div>
@@ -162,10 +162,10 @@ introduces what types), like this:</p>
 2
 3
 4</pre></td>
-        <td class="listing_code"><pre class="programlisting">new_type_id <span class="gtkdoc opt">=</span> <span class="function"><a href="gobject-Type-Information.html#g-type-register-dynamic">g_type_register_dynamic</a></span> <span class="gtkdoc opt">(</span>parent_type_id<span class="gtkdoc opt">,</span>
-                                      <span class="string">&quot;TypeName&quot;</span><span class="gtkdoc opt">,</span>
-                                      new_type_plugin<span class="gtkdoc opt">,</span>
-                                      type_flags<span class="gtkdoc opt">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="normal">new_type_id </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="gobject-Type-Information.html#g-type-register-dynamic">g_type_register_dynamic</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">parent_type_id</span><span class="symbol">,</span>
+<span class="normal">                                      </span><span class="string">"TypeName"</span><span class="symbol">,</span>
+<span class="normal">                                      new_type_plugin</span><span class="symbol">,</span>
+<span class="normal">                                      type_flags</span><span class="symbol">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -493,9 +493,8 @@ is added</p></td>
 <div class="refsect2">
 <a name="GTypePlugin-struct"></a><h3>GTypePlugin</h3>
 <pre class="programlisting">typedef struct _GTypePlugin GTypePlugin;</pre>
-<p>The &lt;structname&gt;GTypePlugin&lt;/structname&gt; typedef is used as a placeholder 
-for objects that implement the &lt;structname&gt;GTypePlugin&lt;/structname&gt; 
-interface.</p>
+<p>The GTypePlugin typedef is used as a placeholder 
+for objects that implement the GTypePlugin interface.</p>
 </div>
 <hr>
 <div class="refsect2">

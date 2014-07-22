@@ -238,8 +238,12 @@ app_path_for_id (const gchar *app_id)
 
   path = g_strconcat ("/", app_id, NULL);
   for (i = 0; path[i]; i++)
-    if (path[i] == '.')
-      path[i] = '/';
+    {
+      if (path[i] == '.')
+        path[i] = '/';
+      if (path[i] == '-')
+        path[i] = '_';
+    }
 
   return path;
 }
@@ -293,7 +297,7 @@ app_get_platform_data (void)
 
   g_variant_builder_init (&builder, G_VARIANT_TYPE_VARDICT);
 
-  if ((startup_id = g_getenv ("DESKTOP_STARTUP_iD")))
+  if ((startup_id = g_getenv ("DESKTOP_STARTUP_ID")))
     g_variant_builder_add (&builder, "{sv}", "desktop-startup-id", g_variant_new_string (startup_id));
 
   return g_variant_builder_end (&builder);

@@ -91,8 +91,11 @@
 <div class="refsect2">
 <a name="g-io-error-from-errno"></a><h3>g_io_error_from_errno ()</h3>
 <pre class="programlisting"><a class="link" href="gio-GIOError.html#GIOErrorEnum" title="enum GIOErrorEnum"><span class="returnvalue">GIOErrorEnum</span></a>
-g_io_error_from_errno (<em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> err_no</code></em>);</pre>
-<p>Converts errno.h error codes into GIO error codes.</p>
+g_io_error_from_errno (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> err_no</code></em>);</pre>
+<p>Converts errno.h error codes into GIO error codes. The fallback
+value <a class="link" href="gio-GIOError.html#G-IO-ERROR-FAILED:CAPS"><code class="literal">G_IO_ERROR_FAILED</code></a> is returned for error codes not currently
+handled (but note that future GLib releases may return a more
+specific value instead).</p>
 <div class="refsect3">
 <a name="id-1.4.2.6.7.2.5"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
@@ -118,12 +121,18 @@ g_io_error_from_errno (<em class="parameter"><code><a href="../glib/glib-Basic-T
 <div class="refsect2">
 <a name="g-io-error-from-win32-error"></a><h3>g_io_error_from_win32_error ()</h3>
 <pre class="programlisting"><a class="link" href="gio-GIOError.html#GIOErrorEnum" title="enum GIOErrorEnum"><span class="returnvalue">GIOErrorEnum</span></a>
-g_io_error_from_win32_error (<em class="parameter"><code><a href="../glib/glib-Basic-Types.html#gint"><span class="type">gint</span></a> error_code</code></em>);</pre>
-<p>Converts some common error codes into GIO error codes. The
-fallback value G_IO_ERROR_FAILED is returned for error codes not
-handled.</p>
+g_io_error_from_win32_error (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> error_code</code></em>);</pre>
+<p>Converts some common error codes (as returned from <code class="function">GetLastError()</code>
+or <code class="function">WSAGetLastError()</code>) into GIO error codes. The fallback value
+<a class="link" href="gio-GIOError.html#G-IO-ERROR-FAILED:CAPS"><code class="literal">G_IO_ERROR_FAILED</code></a> is returned for error codes not currently
+handled (but note that future GLib releases may return a more
+specific value instead).</p>
+<p>You can use <a href="http://library.gnome.org/devel/glib/unstable/glib-Windows-Compatibility-Functions.html#g-win32-error-message"><code class="function">g_win32_error_message()</code></a> to get a localized string
+corresponding to <em class="parameter"><code>error_code</code></em>
+. (But note that unlike <a href="http://library.gnome.org/devel/glib/unstable/glib-String-Utility-Functions.html#g-strerror"><code class="function">g_strerror()</code></a>,
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Windows-Compatibility-Functions.html#g-win32-error-message"><code class="function">g_win32_error_message()</code></a> returns a string that must be freed.)</p>
 <div class="refsect3">
-<a name="id-1.4.2.6.7.3.5"></a><h4>Parameters</h4>
+<a name="id-1.4.2.6.7.3.6"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -138,7 +147,7 @@ handled.</p>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.4.2.6.7.3.6"></a><h4>Returns</h4>
+<a name="id-1.4.2.6.7.3.7"></a><h4>Returns</h4>
 <p> <a class="link" href="gio-GIOError.html#GIOErrorEnum" title="enum GIOErrorEnum"><span class="type">GIOErrorEnum</span></a> value for the given error number.</p>
 <p></p>
 </div>
@@ -152,14 +161,40 @@ handled.</p>
 <pre class="programlisting">#define G_IO_ERROR g_io_error_quark()
 </pre>
 <p>Error domain for GIO. Errors in this domain will be from the <a class="link" href="gio-GIOError.html#GIOErrorEnum" title="enum GIOErrorEnum"><span class="type">GIOErrorEnum</span></a> enumeration.
-See <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for more information on error domains.</p>
+See <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for more information on error domains.</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GIOErrorEnum"></a><h3>enum GIOErrorEnum</h3>
 <p>Error codes returned by GIO functions.</p>
+<p>Note that this domain may be extended in future GLib releases. In
+general, new error codes either only apply to new APIs, or else
+replace <a class="link" href="gio-GIOError.html#G-IO-ERROR-FAILED:CAPS"><span class="type">G_IO_ERROR_FAILED</span></a> in cases that were not explicitly
+distinguished before. You should therefore avoid writing code like</p>
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#g-error-matches">g_error_matches</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">error</span><span class="symbol">,</span><span class="normal"> <a href="gio-GIOError.html#G-IO-ERROR:CAPS">G_IO_ERROR</a></span><span class="symbol">,</span><span class="normal"> G_IO_ERROR_FAILED</span><span class="symbol">))</span>
+<span class="normal">  </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="comment">// Assume that this is EPRINTERONFIRE</span>
+<span class="normal">    </span><span class="symbol">...</span>
+<span class="normal">  </span><span class="cbracket">}</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>
+but should instead treat all unrecognized error codes the same as
+<a class="link" href="gio-GIOError.html#G-IO-ERROR-FAILED:CAPS"><span class="type">G_IO_ERROR_FAILED</span></a>.</p>
 <div class="refsect3">
-<a name="id-1.4.2.6.8.3.4"></a><h4>Members</h4>
+<a name="id-1.4.2.6.8.3.7"></a><h4>Members</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="300px" class="enum_members_name">
@@ -170,7 +205,8 @@ See <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError
 <tr>
 <td class="enum_member_name"><p><a name="G-IO-ERROR-FAILED:CAPS"></a>G_IO_ERROR_FAILED</p></td>
 <td class="enum_member_description">
-<p>Generic error condition for when any operation fails.</p>
+<p>Generic error condition for when an operation fails
+    and no more specific <a class="link" href="gio-GIOError.html#GIOErrorEnum" title="enum GIOErrorEnum"><span class="type">GIOErrorEnum</span></a> value is defined.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -275,7 +311,7 @@ See <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError
 <tr>
 <td class="enum_member_name"><p><a name="G-IO-ERROR-NOT-SUPPORTED:CAPS"></a>G_IO_ERROR_NOT_SUPPORTED</p></td>
 <td class="enum_member_description">
-<p>Operation not supported for the current backend.</p>
+<p>Operation (or one of its parameters) not supported</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -426,7 +462,7 @@ See <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError
 <td class="enum_member_name"><p><a name="G-IO-ERROR-DBUS-ERROR:CAPS"></a>G_IO_ERROR_DBUS_ERROR</p></td>
 <td class="enum_member_description">
 <p>A remote object generated an error that
-    doesn't correspond to a locally registered <a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> error
+    doesn't correspond to a locally registered <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> error
     domain. Use <a class="link" href="gio-GDBusError.html#g-dbus-error-get-remote-error" title="g_dbus_error_get_remote_error ()"><code class="function">g_dbus_error_get_remote_error()</code></a> to extract the D-Bus
     error name and <a class="link" href="gio-GDBusError.html#g-dbus-error-strip-remote-error" title="g_dbus_error_strip_remote_error ()"><code class="function">g_dbus_error_strip_remote_error()</code></a> to fix up the
     message so it matches what was received on the wire. Since 2.26.</p>

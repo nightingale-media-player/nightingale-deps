@@ -109,59 +109,34 @@ test_default (void)
   g_app_info_set_as_default_for_type (info2, "application/x-test", &error);
   g_assert (error == NULL);
 
-  list = g_app_info_get_all_for_type ("application/x-test");
-  g_assert (g_list_length (list) == 2);
-  
-  /* check that both are in the list, info2 before info1 */
-  info = (GAppInfo *)list->data;
-  g_assert (g_strcmp0 (g_app_info_get_id (info), g_app_info_get_id (info2)) == 0);
+  info = g_app_info_get_default_for_type ("application/x-test", FALSE);
+  g_assert (info != NULL);
+  g_assert_cmpstr (g_app_info_get_id (info), ==, g_app_info_get_id (info2));
 
-  info = (GAppInfo *)list->next->data;
-  g_assert (g_strcmp0 (g_app_info_get_id (info), g_app_info_get_id (info1)) == 0);
-
-  g_list_free_full (list, g_object_unref);
-
-  /* now try adding something at the end */
+  /* now try adding something, but not setting as default */
   g_app_info_add_supports_type (info3, "application/x-test", &error);
   g_assert (error == NULL);
 
-  list = g_app_info_get_all_for_type ("application/x-test");
-  g_assert (g_list_length (list) == 3);
-  
-  /* check that all are in the list, info2, info1, info3 */
-  info = (GAppInfo *)list->data;
-  g_assert (g_strcmp0 (g_app_info_get_id (info), g_app_info_get_id (info2)) == 0);
-
-  info = (GAppInfo *)list->next->data;
-  g_assert (g_strcmp0 (g_app_info_get_id (info), g_app_info_get_id (info1)) == 0);
-
-  info = (GAppInfo *)list->next->next->data;
-  g_assert (g_strcmp0 (g_app_info_get_id (info), g_app_info_get_id (info3)) == 0);
-
-  g_list_free_full (list, g_object_unref);
+  /* check that info2 is still default */
+  info = g_app_info_get_default_for_type ("application/x-test", FALSE);
+  g_assert (info != NULL);
+  g_assert_cmpstr (g_app_info_get_id (info), ==, g_app_info_get_id (info2));
 
   /* now remove info1 again */
   g_app_info_remove_supports_type (info1, "application/x-test", &error);
   g_assert (error == NULL);
 
-  list = g_app_info_get_all_for_type ("application/x-test");
-  g_assert (g_list_length (list) == 2);
-  
-  /* check that both are in the list, info2 before info3 */
-  info = (GAppInfo *)list->data;
-  g_assert (g_strcmp0 (g_app_info_get_id (info), g_app_info_get_id (info2)) == 0);
-
-  info = (GAppInfo *)list->next->data;
-  g_assert (g_strcmp0 (g_app_info_get_id (info), g_app_info_get_id (info3)) == 0);
-
-  g_list_free_full (list, g_object_unref);
+  /* and make sure info2 is still default */
+  info = g_app_info_get_default_for_type ("application/x-test", FALSE);
+  g_assert (info != NULL);
+  g_assert_cmpstr (g_app_info_get_id (info), ==, g_app_info_get_id (info2));
 
   /* now clean it all up */
   g_app_info_reset_type_associations ("application/x-test");
 
   list = g_app_info_get_all_for_type ("application/x-test");
   g_assert (list == NULL);
-  
+
   g_app_info_delete (info1);
   g_app_info_delete (info2);
   g_app_info_delete (info3);
@@ -187,15 +162,15 @@ test_fallback (void)
   old_length = g_list_length (apps);
   g_list_free_full (apps, g_object_unref);
 
-  g_app_info_set_as_default_for_type (info1, "text/x-python", &error);
+  g_app_info_add_supports_type (info1, "text/x-python", &error);
   g_assert (error == NULL);
 
-  g_app_info_set_as_default_for_type (info2, "text/plain", &error);
+  g_app_info_add_supports_type (info2, "text/plain", &error);
   g_assert (error == NULL);
 
   /* check that both apps are registered */
   apps = g_app_info_get_all_for_type ("text/x-python");
-  g_assert (g_list_length (apps) == old_length + 2);
+  g_assert_cmpint (g_list_length (apps), ==, old_length + 2);
 
   /* check the ordering */
   app = g_list_nth_data (apps, 0);
@@ -207,11 +182,16 @@ test_fallback (void)
   app = g_list_nth_data (recomm, 0);
   g_assert (g_app_info_equal (info1, app));
 
-  /* and that Test2 is the first fallback */
+  /* and that Test2 is among the fallback apps */
   fallback = g_app_info_get_fallback_for_type ("text/x-python");
   g_assert (fallback != NULL);
-  app = g_list_nth_data (fallback, 0);
-  g_assert (g_app_info_equal (info2, app));
+  for (l = fallback; l; l = l->next)
+    {
+      app = l->data;
+      if (g_app_info_equal (info2, app))
+        break;
+    }
+  g_assert_cmpstr (g_app_info_get_name (app), ==, "Test2");
 
   /* check that recomm + fallback = all applications */
   list = g_list_concat (g_list_copy (recomm), g_list_copy (fallback));
@@ -454,7 +434,8 @@ run_apps (const gchar *command,
           gboolean     with_usr,
           gboolean     with_home,
           const gchar *locale_name,
-          const gchar *language)
+          const gchar *language,
+          const gchar *xdg_current_desktop)
 {
   gboolean success;
   gchar **envp;
@@ -498,6 +479,11 @@ run_apps (const gchar *command,
   else
     envp = g_environ_unsetenv (envp, "LANGUAGE");
 
+  if (xdg_current_desktop)
+    envp = g_environ_setenv (envp, "XDG_CURRENT_DESKTOP", xdg_current_desktop, TRUE);
+  else
+    envp = g_environ_unsetenv (envp, "XDG_CURRENT_DESKTOP");
+
   success = g_spawn_sync (NULL, argv, envp, 0, NULL, NULL, &out, NULL, &status, NULL);
   g_assert (success);
   g_assert (status == 0);
@@ -517,7 +503,7 @@ assert_strings_equivalent (const gchar *expected,
   gint i, j;
 
   expected_words = g_strsplit (expected, " ", 0);
-  result_words = g_strsplit (result, " ", 0);
+  result_words = g_strsplit_set (result, " \n", 0);
 
   for (i = 0; expected_words[i]; i++)
     {
@@ -546,7 +532,7 @@ assert_list (const gchar *expected,
 {
   gchar *result;
 
-  result = run_apps ("list", NULL, with_usr, with_home, locale_name, language);
+  result = run_apps ("list", NULL, with_usr, with_home, locale_name, language, NULL);
   g_strchomp (result);
   assert_strings_equivalent (expected, result);
   g_free (result);
@@ -562,7 +548,7 @@ assert_info (const gchar *desktop_id,
 {
   gchar *result;
 
-  result = run_apps ("show-info", desktop_id, with_usr, with_home, locale_name, language);
+  result = run_apps ("show-info", desktop_id, with_usr, with_home, locale_name, language, NULL);
   g_assert_cmpstr (result, ==, expected);
   g_free (result);
 }
@@ -581,13 +567,27 @@ assert_search (const gchar *search_string,
   gint i;
 
   expected_lines = g_strsplit (expected, "\n", -1);
-  result = run_apps ("search", search_string, with_usr, with_home, locale_name, language);
+  result = run_apps ("search", search_string, with_usr, with_home, locale_name, language, NULL);
   result_lines = g_strsplit (result, "\n", -1);
   g_assert_cmpint (g_strv_length (expected_lines), ==, g_strv_length (result_lines));
   for (i = 0; expected_lines[i]; i++)
     assert_strings_equivalent (expected_lines[i], result_lines[i]);
   g_strfreev (expected_lines);
   g_strfreev (result_lines);
+  g_free (result);
+}
+
+static void
+assert_implementations (const gchar *interface,
+                        const gchar *expected,
+                        gboolean     with_usr,
+                        gboolean     with_home)
+{
+  gchar *result;
+
+  result = run_apps ("implementations", interface, with_usr, with_home, NULL, NULL, NULL);
+  g_strchomp (result);
+  assert_strings_equivalent (expected, result);
   g_free (result);
 }
 
@@ -696,6 +696,53 @@ test_search (void)
                             "kde4-konqbrowser.desktop\n", TRUE, TRUE, "en_US.UTF-8", "eo");
 }
 
+static void
+test_implements (void)
+{
+  /* Make sure we can find our search providers... */
+  assert_implementations ("org.gnome.Shell.SearchProvider2",
+                       "gnome-music.desktop gnome-contacts.desktop eog.desktop",
+                       TRUE, FALSE);
+
+  /* And our image acquisition possibilities... */
+  assert_implementations ("org.freedesktop.ImageProvider",
+                       "cheese.desktop",
+                       TRUE, FALSE);
+
+  /* Make sure the user's eog is properly masking the system one */
+  assert_implementations ("org.gnome.Shell.SearchProvider2",
+                       "gnome-music.desktop gnome-contacts.desktop",
+                       TRUE, TRUE);
+
+  /* Make sure we get nothing if we have nothing */
+  assert_implementations ("org.gnome.Shell.SearchProvider2", "", FALSE, FALSE);
+}
+
+static void
+assert_shown (const gchar *desktop_id,
+              gboolean     expected,
+              const gchar *xdg_current_desktop)
+{
+  gchar *result;
+
+  result = run_apps ("should-show", desktop_id, TRUE, TRUE, NULL, NULL, xdg_current_desktop);
+  g_assert_cmpstr (result, ==, expected ? "true\n" : "false\n");
+  g_free (result);
+}
+
+static void
+test_show_in (void)
+{
+  assert_shown ("gcr-prompter.desktop", FALSE, NULL);
+  assert_shown ("gcr-prompter.desktop", FALSE, "GNOME");
+  assert_shown ("gcr-prompter.desktop", FALSE, "KDE");
+  assert_shown ("gcr-prompter.desktop", FALSE, "GNOME:GNOME-Classic");
+  assert_shown ("gcr-prompter.desktop", TRUE, "GNOME-Classic:GNOME");
+  assert_shown ("gcr-prompter.desktop", TRUE, "GNOME-Classic");
+  assert_shown ("gcr-prompter.desktop", TRUE, "GNOME-Classic:KDE");
+  assert_shown ("gcr-prompter.desktop", TRUE, "KDE:GNOME-Classic");
+}
+
 int
 main (int   argc,
       char *argv[])
@@ -715,6 +762,8 @@ main (int   argc,
   g_test_add_func ("/desktop-app-info/extra-getters", test_extra_getters);
   g_test_add_func ("/desktop-app-info/actions", test_actions);
   g_test_add_func ("/desktop-app-info/search", test_search);
+  g_test_add_func ("/desktop-app-info/implements", test_implements);
+  g_test_add_func ("/desktop-app-info/show-in", test_show_in);
 
   result = g_test_run ();
 

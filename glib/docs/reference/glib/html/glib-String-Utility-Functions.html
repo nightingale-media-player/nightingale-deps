@@ -3153,9 +3153,9 @@ on systems with 64bit IEEE-compatible doubles.</p>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc kwb">char</span> buf<span class="gtkdoc opt">[</span>G_ASCII_DTOSTR_BUF_SIZE<span class="gtkdoc opt">];</span>
+        <td class="listing_code"><pre class="programlisting"><span class="type">char</span><span class="normal"> buf</span><span class="symbol">[</span><span class="normal"><a href="glib-String-Utility-Functions.html#G-ASCII-DTOSTR-BUF-SIZE:CAPS">G_ASCII_DTOSTR_BUF_SIZE</a></span><span class="symbol">];</span>
 
-<span class="function">fprintf</span> <span class="gtkdoc opt">(</span>out<span class="gtkdoc opt">,</span> <span class="string">&quot;value=%s</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">,</span> <span class="function"><a href="glib-String-Utility-Functions.html#g-ascii-dtostr">g_ascii_dtostr</a></span> <span class="gtkdoc opt">(</span>buf<span class="gtkdoc opt">,</span> <span class="keyword">sizeof</span> <span class="gtkdoc opt">(</span>buf<span class="gtkdoc opt">),</span> value<span class="gtkdoc opt">));</span></pre></td>
+<span class="function">fprintf</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">out</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"value=%s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="glib-String-Utility-Functions.html#g-ascii-dtostr">g_ascii_dtostr</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">buf</span><span class="symbol">,</span><span class="normal"> </span><span class="keyword">sizeof</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">buf</span><span class="symbol">),</span><span class="normal"> value</span><span class="symbol">));</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -3485,7 +3485,7 @@ allow nesting such as</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-String-Utility-Functions.html#g-ascii-strup">g_ascii_strup</a></span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-String-Utility-Functions.html#g-strdelimit">g_strdelimit</a></span> <span class="gtkdoc opt">(</span>str<span class="gtkdoc opt">,</span> <span class="string">&quot;abc&quot;</span><span class="gtkdoc opt">,</span> <span class="string">'?'</span><span class="gtkdoc opt">))</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-String-Utility-Functions.html#g-ascii-strup">g_ascii_strup</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-String-Utility-Functions.html#g-strdelimit">g_strdelimit</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">str</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"abc"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">'?'</span><span class="symbol">))</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -3534,7 +3534,7 @@ or <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code
 g_strescape (<em class="parameter"><code>const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar"><span class="type">gchar</span></a> *source</code></em>,
              <em class="parameter"><code>const <a class="link" href="glib-Basic-Types.html#gchar" title="gchar"><span class="type">gchar</span></a> *exceptions</code></em>);</pre>
 <p>Escapes the special characters '\b', '\f', '\n', '\r', '\t', '\v', '\'
-and '&amp;quot;' in the string <em class="parameter"><code>source</code></em>
+and '"' in the string <em class="parameter"><code>source</code></em>
  by inserting a '\' before
 them. Additionally all characters in the range 0x01-0x1F (everything
 below SPACE) and in the range 0x7F-0xFF (all non-ASCII chars) are
@@ -3624,7 +3624,7 @@ nesting such as</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-String-Utility-Functions.html#g-ascii-strup">g_ascii_strup</a></span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-String-Utility-Functions.html#g-strcanon">g_strcanon</a></span> <span class="gtkdoc opt">(</span>str<span class="gtkdoc opt">,</span> <span class="string">&quot;abc&quot;</span><span class="gtkdoc opt">,</span> <span class="string">'?'</span><span class="gtkdoc opt">))</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-String-Utility-Functions.html#g-ascii-strup">g_ascii_strup</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-String-Utility-Functions.html#g-strcanon">g_strcanon</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">str</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"abc"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">'?'</span><span class="symbol">))</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -3680,6 +3680,9 @@ g_strsplit (<em class="parameter"><code>const <a class="link" href="glib-Basic-T
  is reached, the remainder of <em class="parameter"><code>string</code></em>
  is
 appended to the last token.</p>
+<p>As an example, the result of g_strsplit (":a:bc::d:", ":", -1) is a
+<a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>-terminated vector containing the six strings "", "a", "bc", "", "d"
+and "".</p>
 <p>As a special case, the result of splitting the empty string "" is an empty
 vector, not a vector containing a single string. The reason for this
 special case is that being able to represent a empty vector is typically
@@ -3687,7 +3690,7 @@ more useful than consistent handling of empty elements. If you do need
 to represent empty elements, you'll need to check for the empty string
 before calling <a class="link" href="glib-String-Utility-Functions.html#g-strsplit" title="g_strsplit ()"><code class="function">g_strsplit()</code></a>.</p>
 <div class="refsect3">
-<a name="id-1.5.2.7.71.6"></a><h4>Parameters</h4>
+<a name="id-1.5.2.7.71.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
 <colgroup>
 <col width="150px" class="parameters_name">
@@ -3719,7 +3722,7 @@ If this is less than 1, the string is split completely.</p></td>
 </table></div>
 </div>
 <div class="refsect3">
-<a name="id-1.5.2.7.71.7"></a><h4>Returns</h4>
+<a name="id-1.5.2.7.71.8"></a><h4>Returns</h4>
 <p> a newly-allocated <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>-terminated array of strings. Use
 <a class="link" href="glib-String-Utility-Functions.html#g-strfreev" title="g_strfreev ()"><code class="function">g_strfreev()</code></a> to free it.</p>
 <p></p>
@@ -3743,7 +3746,7 @@ remainder is appended to the last token.</p>
 <p>For example the result of g_strsplit_set ("abc:def/ghi", ":/", -1) is a
 <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>-terminated vector containing the three strings "abc", "def",
 and "ghi".</p>
-<p>The result if g_strsplit_set (":def/ghi:", ":/", -1) is a <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>-terminated
+<p>The result of g_strsplit_set (":def/ghi:", ":/", -1) is a <a class="link" href="glib-Standard-Macros.html#NULL:CAPS" title="NULL"><code class="literal">NULL</code></a>-terminated
 vector containing the four strings "", "def", "ghi", and "".</p>
 <p>As a special case, the result of splitting the empty string "" is an empty
 vector, not a vector containing a single string. The reason for this

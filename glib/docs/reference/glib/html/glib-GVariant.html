@@ -1055,7 +1055,7 @@ Serialised <a class="link" href="glib-GVariant.html#GVariant" title="GVariant"><
 <p><a class="link" href="glib-GVariant.html#GVariant" title="GVariant"><span class="type">GVariant</span></a> is largely compatible with D-Bus.  Almost all types of
 <a class="link" href="glib-GVariant.html#GVariant" title="GVariant"><span class="type">GVariant</span></a> instances can be sent over D-Bus.  See <a class="link" href="glib-GVariantType.html#GVariantType" title="GVariantType"><span class="type">GVariantType</span></a> for
 exceptions.  (However, <a class="link" href="glib-GVariant.html#GVariant" title="GVariant"><span class="type">GVariant</span></a>'s serialisation format is not the same
-as the serialisation format of a D-Bus message body: use <span class="type">GDBusMessage</span>,
+as the serialisation format of a D-Bus message body: use <a href="http://library.gnome.org/devel/gio/unstable/GDBusMessage.html"><span class="type">GDBusMessage</span></a>,
 in the gio library, for those.)</p>
 <p>For space-efficiency, the <a class="link" href="glib-GVariant.html#GVariant" title="GVariant"><span class="type">GVariant</span></a> serialisation format does not
 automatically include the variant's type or endianness, which must
@@ -1656,7 +1656,7 @@ the data inside of the soon-to-be-freed <a class="link" href="glib-GVariant.html
 check fails then a <a class="link" href="glib-Message-Logging.html#g-critical" title="g_critical()"><code class="function">g_critical()</code></a> is printed and <a class="link" href="glib-Standard-Macros.html#FALSE:CAPS" title="FALSE"><code class="literal">FALSE</code></a> is returned.</p>
 <p>This function is meant to be used by functions that wish to provide
 varargs accessors to <a class="link" href="glib-GVariant.html#GVariant" title="GVariant"><span class="type">GVariant</span></a> values of uncertain values (eg:
-<a class="link" href="glib-GVariant.html#g-variant-lookup" title="g_variant_lookup ()"><code class="function">g_variant_lookup()</code></a> or <code class="function">g_menu_model_get_item_attribute()</code>).</p>
+<a class="link" href="glib-GVariant.html#g-variant-lookup" title="g_variant_lookup ()"><code class="function">g_variant_lookup()</code></a> or <a href="http://library.gnome.org/devel/gio/unstable/GMenuModel.html#g-menu-model-get-item-attribute"><code class="function">g_menu_model_get_item_attribute()</code></a>).</p>
 <div class="refsect3">
 <a name="id-1.6.19.7.13.7"></a><h4>Parameters</h4>
 <div class="informaltable"><table width="100%" border="0">
@@ -1847,14 +1847,14 @@ the <a href="gvariant-format-strings.html#gvariant-varargs">GVariant varargs doc
 6
 7
 8</pre></td>
-        <td class="listing_code"><pre class="programlisting">MyFlags some_flags <span class="gtkdoc opt">=</span> FLAG_ONE <span class="gtkdoc opt">|</span> FLAG_TWO<span class="gtkdoc opt">;</span>
-<span class="gtkdoc kwb">const</span> gchar <span class="gtkdoc opt">*</span>some_strings<span class="gtkdoc opt">[] = {</span> <span class="string">&quot;a&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;b&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;c&quot;</span><span class="gtkdoc opt">,</span> NULL <span class="gtkdoc opt">};</span>
-GVariant <span class="gtkdoc opt">*</span>new_variant<span class="gtkdoc opt">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="usertype">MyFlags</span><span class="normal"> some_flags </span><span class="symbol">=</span><span class="normal"> FLAG_ONE </span><span class="symbol">|</span><span class="normal"> FLAG_TWO</span><span class="symbol">;</span>
+<span class="keyword">const</span><span class="normal"> </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">some_strings</span><span class="symbol">[]</span><span class="normal"> </span><span class="symbol">=</span><span class="normal"> </span><span class="cbracket">{</span><span class="normal"> </span><span class="string">"a"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"b"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"c"</span><span class="symbol">,</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a> </span><span class="cbracket">}</span><span class="symbol">;</span>
+<span class="usertype">GVariant</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">new_variant</span><span class="symbol">;</span>
 
-new_variant <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-GVariant.html#g-variant-new">g_variant_new</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;(t^as)&quot;</span><span class="gtkdoc opt">,</span>
-                             <span class="gtkdoc opt">/&lt;!-- --&gt;*</span> This cast is required<span class="gtkdoc opt">. *&lt;!-- --&gt;/</span>
-                             <span class="gtkdoc opt">(</span>guint64<span class="gtkdoc opt">)</span> some_flags<span class="gtkdoc opt">,</span>
-                             some_strings<span class="gtkdoc opt">);</span></pre></td>
+<span class="normal">new_variant </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-GVariant.html#g-variant-new">g_variant_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"(t^as)"</span><span class="symbol">,</span>
+<span class="normal">                             </span><span class="symbol">/&lt;!--</span><span class="normal"> </span><span class="symbol">--&gt;*</span><span class="normal"> This cast </span><span class="usertype">is</span><span class="normal"> required</span><span class="symbol">.</span><span class="normal"> </span><span class="symbol">*&lt;!--</span><span class="normal"> </span><span class="symbol">--&gt;/</span>
+<span class="normal">                             </span><span class="symbol">(</span><span class="normal"><a href="glib-Basic-Types.html#guint64">guint64</a></span><span class="symbol">)</span><span class="normal"> some_flags</span><span class="symbol">,</span>
+<span class="normal">                             some_strings</span><span class="symbol">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -4172,7 +4172,7 @@ of the result.</p>
 serialised data, you must know the type of the <a class="link" href="glib-GVariant.html#GVariant" title="GVariant"><span class="type">GVariant</span></a>, and (if the
 machine might be different) the endianness of the machine that stored
 it. As a result, file formats or network messages that incorporate
-serialised <a class="link" href="glib-GVariant.html#GVariant" title="GVariant"><span class="type">GVariant</span></a>&lt;!----&gt;s must include this information either
+serialised <a href="glib-GVariant.html#GVariant"><span class="type">GVariants</span></a> must include this information either
 implicitly (for instance "the file always contains a
 <a class="link" href="glib-GVariantType.html#G-VARIANT-TYPE-VARIANT:CAPS" title="G_VARIANT_TYPE_VARIANT"><code class="literal">G_VARIANT_TYPE_VARIANT</code></a> and it is always in little-endian order") or
 explicitly (by storing the type and/or endianness in addition to the
@@ -4911,24 +4911,24 @@ you no longer need it.</p>
 16
 17
 18</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc slc">// recursively iterate a container</span>
-<span class="gtkdoc kwb">void</span>
-<span class="function">iterate_container_recursive</span> <span class="gtkdoc opt">(</span>GVariant <span class="gtkdoc opt">*</span>container<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  GVariantIter iter<span class="gtkdoc opt">;</span>
-  GVariant <span class="gtkdoc opt">*</span>child<span class="gtkdoc opt">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="comment">// recursively iterate a container</span>
+<span class="type">void</span>
+<span class="function">iterate_container_recursive</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">GVariant</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">container</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">GVariantIter</span><span class="normal"> iter</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">GVariant</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">child</span><span class="symbol">;</span>
 
-  <span class="function"><a href="glib-GVariant.html#g-variant-iter-init">g_variant_iter_init</a></span> <span class="gtkdoc opt">(&amp;</span>iter<span class="gtkdoc opt">,</span> container<span class="gtkdoc opt">);</span>
-  <span class="keyword">while</span> <span class="gtkdoc opt">((</span>child <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-GVariant.html#g-variant-iter-next-value">g_variant_iter_next_value</a></span> <span class="gtkdoc opt">(&amp;</span>iter<span class="gtkdoc opt">)))</span>
-    <span class="gtkdoc opt">{</span>
-      <span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;type '%s'</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">,</span> <span class="function"><a href="glib-GVariant.html#g-variant-get-type-string">g_variant_get_type_string</a></span> <span class="gtkdoc opt">(</span>child<span class="gtkdoc opt">));</span>
+<span class="normal">  </span><span class="function"><a href="glib-GVariant.html#g-variant-iter-init">g_variant_iter_init</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">iter</span><span class="symbol">,</span><span class="normal"> container</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">while</span><span class="normal"> </span><span class="symbol">((</span><span class="normal">child </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-GVariant.html#g-variant-iter-next-value">g_variant_iter_next_value</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">iter</span><span class="symbol">)))</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">      </span><span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"type '%s'</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> </span><span class="function"><a href="glib-GVariant.html#g-variant-get-type-string">g_variant_get_type_string</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">child</span><span class="symbol">));</span>
 
-      <span class="keyword">if</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-GVariant.html#g-variant-is-container">g_variant_is_container</a></span> <span class="gtkdoc opt">(</span>child<span class="gtkdoc opt">))</span>
-        <span class="function">iterate_container_recursive</span> <span class="gtkdoc opt">(</span>child<span class="gtkdoc opt">);</span>
+<span class="normal">      </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-GVariant.html#g-variant-is-container">g_variant_is_container</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">child</span><span class="symbol">))</span>
+<span class="normal">        </span><span class="function">iterate_container_recursive</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">child</span><span class="symbol">);</span>
 
-      <span class="function"><a href="glib-GVariant.html#g-variant-unref">g_variant_unref</a></span> <span class="gtkdoc opt">(</span>child<span class="gtkdoc opt">);</span>
-    <span class="gtkdoc opt">}</span>
-<span class="gtkdoc opt">}</span></pre></td>
+<span class="normal">      </span><span class="function"><a href="glib-GVariant.html#g-variant-unref">g_variant_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">child</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+<span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -4996,25 +4996,25 @@ the unpacking process.</p>
 17
 18
 19</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc slc">// Iterates a dictionary of type 'a{sv}'</span>
-<span class="gtkdoc kwb">void</span>
-<span class="function">iterate_dictionary</span> <span class="gtkdoc opt">(</span>GVariant <span class="gtkdoc opt">*</span>dictionary<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  GVariantIter iter<span class="gtkdoc opt">;</span>
-  GVariant <span class="gtkdoc opt">*</span>value<span class="gtkdoc opt">;</span>
-  gchar <span class="gtkdoc opt">*</span>key<span class="gtkdoc opt">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="comment">// Iterates a dictionary of type 'a{sv}'</span>
+<span class="type">void</span>
+<span class="function">iterate_dictionary</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">GVariant</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">dictionary</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">GVariantIter</span><span class="normal"> iter</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">GVariant</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">value</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">key</span><span class="symbol">;</span>
 
-  <span class="function"><a href="glib-GVariant.html#g-variant-iter-init">g_variant_iter_init</a></span> <span class="gtkdoc opt">(&amp;</span>iter<span class="gtkdoc opt">,</span> dictionary<span class="gtkdoc opt">);</span>
-  <span class="keyword">while</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-GVariant.html#g-variant-iter-next">g_variant_iter_next</a></span> <span class="gtkdoc opt">(&amp;</span>iter<span class="gtkdoc opt">,</span> <span class="string">&quot;{sv}&quot;</span><span class="gtkdoc opt">, &amp;</span>key<span class="gtkdoc opt">, &amp;</span>value<span class="gtkdoc opt">))</span>
-    <span class="gtkdoc opt">{</span>
-      <span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;Item '%s' has type '%s'</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">,</span> key<span class="gtkdoc opt">,</span>
-               <span class="function"><a href="glib-GVariant.html#g-variant-get-type-string">g_variant_get_type_string</a></span> <span class="gtkdoc opt">(</span>value<span class="gtkdoc opt">));</span>
+<span class="normal">  </span><span class="function"><a href="glib-GVariant.html#g-variant-iter-init">g_variant_iter_init</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">iter</span><span class="symbol">,</span><span class="normal"> dictionary</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">while</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-GVariant.html#g-variant-iter-next">g_variant_iter_next</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">iter</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"{sv}"</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">key</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">value</span><span class="symbol">))</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">      </span><span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Item '%s' has type '%s'</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> key</span><span class="symbol">,</span>
+<span class="normal">               </span><span class="function"><a href="glib-GVariant.html#g-variant-get-type-string">g_variant_get_type_string</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">value</span><span class="symbol">));</span>
 
-      <span class="gtkdoc slc">// must free data for ourselves</span>
-      <span class="function"><a href="glib-GVariant.html#g-variant-unref">g_variant_unref</a></span> <span class="gtkdoc opt">(</span>value<span class="gtkdoc opt">);</span>
-      <span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span> <span class="gtkdoc opt">(</span>key<span class="gtkdoc opt">);</span>
-    <span class="gtkdoc opt">}</span>
-<span class="gtkdoc opt">}</span></pre></td>
+<span class="normal">      </span><span class="comment">// must free data for ourselves</span>
+<span class="normal">      </span><span class="function"><a href="glib-GVariant.html#g-variant-unref">g_variant_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">value</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="function"><a href="glib-Memory-Allocation.html#g-free">g_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">key</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+<span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -5112,24 +5112,24 @@ you must free or unreference all the unpacked values as you would with
 16
 17
 18</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc slc">// Iterates a dictionary of type 'a{sv}'</span>
-<span class="gtkdoc kwb">void</span>
-<span class="function">iterate_dictionary</span> <span class="gtkdoc opt">(</span>GVariant <span class="gtkdoc opt">*</span>dictionary<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  GVariantIter iter<span class="gtkdoc opt">;</span>
-  GVariant <span class="gtkdoc opt">*</span>value<span class="gtkdoc opt">;</span>
-  gchar <span class="gtkdoc opt">*</span>key<span class="gtkdoc opt">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="comment">// Iterates a dictionary of type 'a{sv}'</span>
+<span class="type">void</span>
+<span class="function">iterate_dictionary</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">GVariant</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">dictionary</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">GVariantIter</span><span class="normal"> iter</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">GVariant</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">value</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">gchar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">key</span><span class="symbol">;</span>
 
-  <span class="function"><a href="glib-GVariant.html#g-variant-iter-init">g_variant_iter_init</a></span> <span class="gtkdoc opt">(&amp;</span>iter<span class="gtkdoc opt">,</span> dictionary<span class="gtkdoc opt">);</span>
-  <span class="keyword">while</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-GVariant.html#g-variant-iter-loop">g_variant_iter_loop</a></span> <span class="gtkdoc opt">(&amp;</span>iter<span class="gtkdoc opt">,</span> <span class="string">&quot;{sv}&quot;</span><span class="gtkdoc opt">, &amp;</span>key<span class="gtkdoc opt">, &amp;</span>value<span class="gtkdoc opt">))</span>
-    <span class="gtkdoc opt">{</span>
-      <span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;Item '%s' has type '%s'</span><span class="gtkdoc esc">\n</span><span class="string">&quot;</span><span class="gtkdoc opt">,</span> key<span class="gtkdoc opt">,</span>
-               <span class="function"><a href="glib-GVariant.html#g-variant-get-type-string">g_variant_get_type_string</a></span> <span class="gtkdoc opt">(</span>value<span class="gtkdoc opt">));</span>
+<span class="normal">  </span><span class="function"><a href="glib-GVariant.html#g-variant-iter-init">g_variant_iter_init</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">iter</span><span class="symbol">,</span><span class="normal"> dictionary</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">while</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-GVariant.html#g-variant-iter-loop">g_variant_iter_loop</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">iter</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"{sv}"</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">key</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">value</span><span class="symbol">))</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">      </span><span class="function"><a href="glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"Item '%s' has type '%s'</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> key</span><span class="symbol">,</span>
+<span class="normal">               </span><span class="function"><a href="glib-GVariant.html#g-variant-get-type-string">g_variant_get_type_string</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">value</span><span class="symbol">));</span>
 
-      <span class="gtkdoc slc">// no need to free 'key' and 'value' here</span>
-      <span class="gtkdoc slc">// unless breaking out of this loop</span>
-    <span class="gtkdoc opt">}</span>
-<span class="gtkdoc opt">}</span></pre></td>
+<span class="normal">      </span><span class="comment">// no need to free 'key' and 'value' here</span>
+<span class="normal">      </span><span class="comment">// unless breaking out of this loop</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+<span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -5447,23 +5447,23 @@ the <a href="gvariant-format-strings.html#gvariant-varargs">GVariant varargs doc
 15
 16
 17</pre></td>
-        <td class="listing_code"><pre class="programlisting">GVariant <span class="gtkdoc opt">*</span>
-<span class="function">make_pointless_dictionary</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">void</span><span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  GVariantBuilder builder<span class="gtkdoc opt">;</span>
-  <span class="gtkdoc kwb">int</span> i<span class="gtkdoc opt">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="normal"><a href="glib-GVariant.html#GVariant">GVariant</a> </span><span class="symbol">*</span>
+<span class="function">make_pointless_dictionary</span><span class="normal"> </span><span class="symbol">(</span><span class="type">void</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">GVariantBuilder</span><span class="normal"> builder</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="type">int</span><span class="normal"> i</span><span class="symbol">;</span>
 
-  <span class="function"><a href="glib-GVariant.html#g-variant-builder-init">g_variant_builder_init</a></span> <span class="gtkdoc opt">(&amp;</span>builder<span class="gtkdoc opt">,</span> G_VARIANT_TYPE_ARRAY<span class="gtkdoc opt">);</span>
-  <span class="keyword">for</span> <span class="gtkdoc opt">(</span>i <span class="gtkdoc opt">=</span> <span class="number">0</span><span class="gtkdoc opt">;</span> i <span class="gtkdoc opt">&lt;</span> <span class="number">16</span><span class="gtkdoc opt">;</span> i<span class="gtkdoc opt">++)</span>
-    <span class="gtkdoc opt">{</span>
-      gchar buf<span class="gtkdoc opt">[</span><span class="number">3</span><span class="gtkdoc opt">];</span>
+<span class="normal">  </span><span class="function"><a href="glib-GVariant.html#g-variant-builder-init">g_variant_builder_init</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">builder</span><span class="symbol">,</span><span class="normal"> <a href="glib-GVariantType.html#G-VARIANT-TYPE-ARRAY:CAPS">G_VARIANT_TYPE_ARRAY</a></span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">for</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">i </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0</span><span class="symbol">;</span><span class="normal"> i </span><span class="symbol">&lt;</span><span class="normal"> </span><span class="number">16</span><span class="symbol">;</span><span class="normal"> i</span><span class="symbol">++)</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">      </span><span class="usertype">gchar</span><span class="normal"> buf</span><span class="symbol">[</span><span class="number">3</span><span class="symbol">];</span>
 
-      <span class="function">sprintf</span> <span class="gtkdoc opt">(</span>buf<span class="gtkdoc opt">,</span> <span class="string">&quot;%d&quot;</span><span class="gtkdoc opt">,</span> i<span class="gtkdoc opt">);</span>
-      <span class="function"><a href="glib-GVariant.html#g-variant-builder-add">g_variant_builder_add</a></span> <span class="gtkdoc opt">(&amp;</span>builder<span class="gtkdoc opt">,</span> <span class="string">&quot;{is}&quot;</span><span class="gtkdoc opt">,</span> i<span class="gtkdoc opt">,</span> buf<span class="gtkdoc opt">);</span>
-    <span class="gtkdoc opt">}</span>
+<span class="normal">      </span><span class="function">sprintf</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">buf</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"%d"</span><span class="symbol">,</span><span class="normal"> i</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="function"><a href="glib-GVariant.html#g-variant-builder-add">g_variant_builder_add</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">builder</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"{is}"</span><span class="symbol">,</span><span class="normal"> i</span><span class="symbol">,</span><span class="normal"> buf</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="cbracket">}</span>
 
-  <span class="keyword">return</span> <span class="function"><a href="glib-GVariant.html#g-variant-builder-end">g_variant_builder_end</a></span> <span class="gtkdoc opt">(&amp;</span>builder<span class="gtkdoc opt">);</span>
-<span class="gtkdoc opt">}</span></pre></td>
+<span class="normal">  </span><span class="keyword">return</span><span class="normal"> </span><span class="function"><a href="glib-GVariant.html#g-variant-builder-end">g_variant_builder_end</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">builder</span><span class="symbol">);</span>
+<span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -5532,18 +5532,18 @@ the <a href="gvariant-format-strings.html#gvariant-varargs">GVariant varargs doc
 10
 11
 12</pre></td>
-        <td class="listing_code"><pre class="programlisting">GVariant <span class="gtkdoc opt">*</span>
-<span class="function">make_pointless_dictionary</span> <span class="gtkdoc opt">(</span><span class="gtkdoc kwb">void</span><span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  GVariantBuilder builder<span class="gtkdoc opt">;</span>
-  <span class="gtkdoc kwb">int</span> i<span class="gtkdoc opt">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="normal"><a href="glib-GVariant.html#GVariant">GVariant</a> </span><span class="symbol">*</span>
+<span class="function">make_pointless_dictionary</span><span class="normal"> </span><span class="symbol">(</span><span class="type">void</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">GVariantBuilder</span><span class="normal"> builder</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="type">int</span><span class="normal"> i</span><span class="symbol">;</span>
 
-  <span class="function"><a href="glib-GVariant.html#g-variant-builder-init">g_variant_builder_init</a></span> <span class="gtkdoc opt">(&amp;</span>builder<span class="gtkdoc opt">,</span> G_VARIANT_TYPE_ARRAY<span class="gtkdoc opt">);</span>
-  <span class="function"><a href="glib-GVariant.html#g-variant-builder-add-parsed">g_variant_builder_add_parsed</a></span> <span class="gtkdoc opt">(&amp;</span>builder<span class="gtkdoc opt">,</span> <span class="string">&quot;{'width', &lt;%i&gt;}&quot;</span><span class="gtkdoc opt">,</span> <span class="number">600</span><span class="gtkdoc opt">);</span>
-  <span class="function"><a href="glib-GVariant.html#g-variant-builder-add-parsed">g_variant_builder_add_parsed</a></span> <span class="gtkdoc opt">(&amp;</span>builder<span class="gtkdoc opt">,</span> <span class="string">&quot;{'title', &lt;%s&gt;}&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;foo&quot;</span><span class="gtkdoc opt">);</span>
-  <span class="function"><a href="glib-GVariant.html#g-variant-builder-add-parsed">g_variant_builder_add_parsed</a></span> <span class="gtkdoc opt">(&amp;</span>builder<span class="gtkdoc opt">,</span> <span class="string">&quot;{'transparency', &lt;0.5&gt;}&quot;</span><span class="gtkdoc opt">);</span>
-  <span class="keyword">return</span> <span class="function"><a href="glib-GVariant.html#g-variant-builder-end">g_variant_builder_end</a></span> <span class="gtkdoc opt">(&amp;</span>builder<span class="gtkdoc opt">);</span>
-<span class="gtkdoc opt">}</span></pre></td>
+<span class="normal">  </span><span class="function"><a href="glib-GVariant.html#g-variant-builder-init">g_variant_builder_init</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">builder</span><span class="symbol">,</span><span class="normal"> <a href="glib-GVariantType.html#G-VARIANT-TYPE-ARRAY:CAPS">G_VARIANT_TYPE_ARRAY</a></span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-GVariant.html#g-variant-builder-add-parsed">g_variant_builder_add_parsed</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">builder</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"{'width', &lt;%i&gt;}"</span><span class="symbol">,</span><span class="normal"> </span><span class="number">600</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-GVariant.html#g-variant-builder-add-parsed">g_variant_builder_add_parsed</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">builder</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"{'title', &lt;%s&gt;}"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"foo"</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-GVariant.html#g-variant-builder-add-parsed">g_variant_builder_add_parsed</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">builder</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"{'transparency', &lt;0.5&gt;}"</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">return</span><span class="normal"> </span><span class="function"><a href="glib-GVariant.html#g-variant-builder-end">g_variant_builder_end</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">builder</span><span class="symbol">);</span>
+<span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -6340,7 +6340,7 @@ the <a href="gvariant-format-strings.html#gvariant-varargs">GVariant varargs doc
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-GVariant.html#g-variant-new-parsed">g_variant_new_parsed</a></span> <span class="gtkdoc opt">(</span><span class="string">&quot;[('one', 1), ('two', %i), (%s, 3)]&quot;</span><span class="gtkdoc opt">,</span> <span class="number">2</span><span class="gtkdoc opt">,</span> <span class="string">&quot;three&quot;</span><span class="gtkdoc opt">);</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="function"><a href="glib-GVariant.html#g-variant-new-parsed">g_variant_new_parsed</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"[('one', 1), ('two', %i), (%s, 3)]"</span><span class="symbol">,</span><span class="normal"> </span><span class="number">2</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"three"</span><span class="symbol">);</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -6355,7 +6355,7 @@ result of</p>
     <tbody>
       <tr>
         <td class="listing_lines" align="right"><pre>1</pre></td>
-        <td class="listing_code"><pre class="programlisting"><span class="gtkdoc opt">[(</span><span class="string">'one'</span><span class="gtkdoc opt">,</span> <span class="number">1</span><span class="gtkdoc opt">), (</span><span class="string">'two'</span><span class="gtkdoc opt">,</span> <span class="number">2</span><span class="gtkdoc opt">), (</span><span class="string">'three'</span><span class="gtkdoc opt">,</span> <span class="number">3</span><span class="gtkdoc opt">)]</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="symbol">[(</span><span class="string">'one'</span><span class="symbol">,</span><span class="normal"> </span><span class="number">1</span><span class="symbol">),</span><span class="normal"> </span><span class="symbol">(</span><span class="string">'two'</span><span class="symbol">,</span><span class="normal"> </span><span class="number">2</span><span class="symbol">),</span><span class="normal"> </span><span class="symbol">(</span><span class="string">'three'</span><span class="symbol">,</span><span class="normal"> </span><span class="number">3</span><span class="symbol">)]</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -6418,8 +6418,8 @@ monospace media where newlines are treated in the usual way.</p>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting">unterminated string constant<span class="gtkdoc opt">:</span>
-  <span class="gtkdoc opt">(</span><span class="number">1</span><span class="gtkdoc opt">,</span> <span class="number">2</span><span class="gtkdoc opt">,</span> <span class="number">3</span><span class="gtkdoc opt">,</span> <span class="string">'abc</span>
+        <td class="listing_code"><pre class="programlisting"><span class="normal">unterminated </span><span class="usertype">string</span><span class="normal"> constant</span><span class="symbol">:</span>
+<span class="normal">  </span><span class="symbol">(</span><span class="number">1</span><span class="symbol">,</span><span class="normal"> </span><span class="number">2</span><span class="symbol">,</span><span class="normal"> </span><span class="number">3</span><span class="symbol">,</span><span class="normal"> </span><span class="string">'abc</span>
 <span class="string">            ^^^^</span></pre></td>
       </tr>
     </tbody>
@@ -6435,9 +6435,9 @@ monospace media where newlines are treated in the usual way.</p>
         <td class="listing_lines" align="right"><pre>1
 2
 3</pre></td>
-        <td class="listing_code"><pre class="programlisting">unable to find a common type<span class="gtkdoc opt">:</span>
-  <span class="gtkdoc opt">[</span><span class="number">1</span><span class="gtkdoc opt">,</span> <span class="number">2</span><span class="gtkdoc opt">,</span> <span class="number">3</span><span class="gtkdoc opt">,</span> <span class="string">'str'</span><span class="gtkdoc opt">]</span>
-   <span class="gtkdoc opt">^        ^^^^^</span></pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="normal">unable to find a </span><span class="usertype">common</span><span class="normal"> type</span><span class="symbol">:</span>
+<span class="normal">  </span><span class="symbol">[</span><span class="number">1</span><span class="symbol">,</span><span class="normal"> </span><span class="number">2</span><span class="symbol">,</span><span class="normal"> </span><span class="number">3</span><span class="symbol">,</span><span class="normal"> </span><span class="string">'str'</span><span class="symbol">]</span>
+<span class="normal">   </span><span class="symbol">^</span><span class="normal">        </span><span class="symbol">^^^^^</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -6718,25 +6718,25 @@ key is not found.  Each returns the new dictionary as a floating
 17
 18
 19</pre></td>
-        <td class="listing_code"><pre class="programlisting">GVariant <span class="gtkdoc opt">*</span>
-<span class="function">add_to_count</span> <span class="gtkdoc opt">(</span>GVariant  <span class="gtkdoc opt">*</span>orig<span class="gtkdoc opt">,</span>
-              GError   <span class="gtkdoc opt">**</span>error<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  GVariantDict dict<span class="gtkdoc opt">;</span>
-  guint32 count<span class="gtkdoc opt">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="normal"><a href="glib-GVariant.html#GVariant">GVariant</a> </span><span class="symbol">*</span>
+<span class="function">add_to_count</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">GVariant</span><span class="normal">  </span><span class="symbol">*</span><span class="normal">orig</span><span class="symbol">,</span>
+<span class="normal">              </span><span class="usertype">GError</span><span class="normal">   </span><span class="symbol">**</span><span class="normal">error</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">GVariantDict</span><span class="normal"> dict</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">guint32</span><span class="normal"> count</span><span class="symbol">;</span>
 
-  <span class="function"><a href="glib-GVariant.html#g-variant-dict-init">g_variant_dict_init</a></span> <span class="gtkdoc opt">(&amp;</span>dict<span class="gtkdoc opt">,</span> orig<span class="gtkdoc opt">);</span>
-  <span class="keyword">if</span> <span class="gtkdoc opt">(!</span><span class="function"><a href="glib-GVariant.html#g-variant-dict-lookup">g_variant_dict_lookup</a></span> <span class="gtkdoc opt">(&amp;</span>dict<span class="gtkdoc opt">,</span> <span class="string">&quot;count&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;u&quot;</span><span class="gtkdoc opt">, &amp;</span>count<span class="gtkdoc opt">))</span>
-    <span class="gtkdoc opt">{</span>
-      <span class="function"><a href="glib-Error-Reporting.html#g-set-error">g_set_error</a></span> <span class="gtkdoc opt">(...);</span>
-      <span class="function"><a href="glib-GVariant.html#g-variant-dict-clear">g_variant_dict_clear</a></span> <span class="gtkdoc opt">(&amp;</span>dict<span class="gtkdoc opt">);</span>
-      <span class="keyword">return</span> NULL<span class="gtkdoc opt">;</span>
-    <span class="gtkdoc opt">}</span>
+<span class="normal">  </span><span class="function"><a href="glib-GVariant.html#g-variant-dict-init">g_variant_dict_init</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">dict</span><span class="symbol">,</span><span class="normal"> orig</span><span class="symbol">);</span>
+<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(!</span><span class="function"><a href="glib-GVariant.html#g-variant-dict-lookup">g_variant_dict_lookup</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">dict</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"count"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"u"</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">count</span><span class="symbol">))</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">      </span><span class="function"><a href="glib-Error-Reporting.html#g-set-error">g_set_error</a></span><span class="normal"> </span><span class="symbol">(...);</span>
+<span class="normal">      </span><span class="function"><a href="glib-GVariant.html#g-variant-dict-clear">g_variant_dict_clear</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">dict</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="keyword">return</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
+<span class="normal">    </span><span class="cbracket">}</span>
 
-  <span class="function"><a href="glib-GVariant.html#g-variant-dict-insert">g_variant_dict_insert</a></span> <span class="gtkdoc opt">(&amp;</span>dict<span class="gtkdoc opt">,</span> <span class="string">&quot;count&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;u&quot;</span><span class="gtkdoc opt">,</span> count <span class="gtkdoc opt">+</span> <span class="number">1</span><span class="gtkdoc opt">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-GVariant.html#g-variant-dict-insert">g_variant_dict_insert</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">dict</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"count"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"u"</span><span class="symbol">,</span><span class="normal"> count </span><span class="symbol">+</span><span class="normal"> </span><span class="number">1</span><span class="symbol">);</span>
 
-  <span class="keyword">return</span> <span class="function"><a href="glib-GVariant.html#g-variant-dict-end">g_variant_dict_end</a></span> <span class="gtkdoc opt">(&amp;</span>dict<span class="gtkdoc opt">);</span>
-<span class="gtkdoc opt">}</span></pre></td>
+<span class="normal">  </span><span class="keyword">return</span><span class="normal"> </span><span class="function"><a href="glib-GVariant.html#g-variant-dict-end">g_variant_dict_end</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">dict</span><span class="symbol">);</span>
+<span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>
@@ -6775,31 +6775,31 @@ key is not found.  Each returns the new dictionary as a floating
 23
 24
 25</pre></td>
-        <td class="listing_code"><pre class="programlisting">GVariant <span class="gtkdoc opt">*</span>
-<span class="function">add_to_count</span> <span class="gtkdoc opt">(</span>GVariant  <span class="gtkdoc opt">*</span>orig<span class="gtkdoc opt">,</span>
-              GError   <span class="gtkdoc opt">**</span>error<span class="gtkdoc opt">)</span>
-<span class="gtkdoc opt">{</span>
-  GVariantDict <span class="gtkdoc opt">*</span>dict<span class="gtkdoc opt">;</span>
-  GVariant <span class="gtkdoc opt">*</span>result<span class="gtkdoc opt">;</span>
-  guint32 count<span class="gtkdoc opt">;</span>
+        <td class="listing_code"><pre class="programlisting"><span class="normal"><a href="glib-GVariant.html#GVariant">GVariant</a> </span><span class="symbol">*</span>
+<span class="function">add_to_count</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">GVariant</span><span class="normal">  </span><span class="symbol">*</span><span class="normal">orig</span><span class="symbol">,</span>
+<span class="normal">              </span><span class="usertype">GError</span><span class="normal">   </span><span class="symbol">**</span><span class="normal">error</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">GVariantDict</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">dict</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">GVariant</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">result</span><span class="symbol">;</span>
+<span class="normal">  </span><span class="usertype">guint32</span><span class="normal"> count</span><span class="symbol">;</span>
 
-  dict <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-GVariant.html#g-variant-dict-new">g_variant_dict_new</a></span> <span class="gtkdoc opt">(</span>orig<span class="gtkdoc opt">);</span>
+<span class="normal">  dict </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-GVariant.html#g-variant-dict-new">g_variant_dict_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">orig</span><span class="symbol">);</span>
 
-  <span class="keyword">if</span> <span class="gtkdoc opt">(</span><span class="function"><a href="glib-GVariant.html#g-variant-dict-lookup">g_variant_dict_lookup</a></span> <span class="gtkdoc opt">(</span>dict<span class="gtkdoc opt">,</span> <span class="string">&quot;count&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;u&quot;</span><span class="gtkdoc opt">, &amp;</span>count<span class="gtkdoc opt">))</span>
-    <span class="gtkdoc opt">{</span>
-      <span class="function"><a href="glib-GVariant.html#g-variant-dict-insert">g_variant_dict_insert</a></span> <span class="gtkdoc opt">(</span>dict<span class="gtkdoc opt">,</span> <span class="string">&quot;count&quot;</span><span class="gtkdoc opt">,</span> <span class="string">&quot;u&quot;</span><span class="gtkdoc opt">,</span> count <span class="gtkdoc opt">+</span> <span class="number">1</span><span class="gtkdoc opt">);</span>
-      result <span class="gtkdoc opt">=</span> <span class="function"><a href="glib-GVariant.html#g-variant-dict-end">g_variant_dict_end</a></span> <span class="gtkdoc opt">(</span>dict<span class="gtkdoc opt">);</span>
-    <span class="gtkdoc opt">}</span>
-  <span class="keyword">else</span>
-    <span class="gtkdoc opt">{</span>
-      <span class="function"><a href="glib-Error-Reporting.html#g-set-error">g_set_error</a></span> <span class="gtkdoc opt">(...);</span>
-      result <span class="gtkdoc opt">=</span> NULL<span class="gtkdoc opt">;</span>
-    <span class="gtkdoc opt">}</span>
+<span class="normal">  </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="glib-GVariant.html#g-variant-dict-lookup">g_variant_dict_lookup</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">dict</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"count"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"u"</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">count</span><span class="symbol">))</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">      </span><span class="function"><a href="glib-GVariant.html#g-variant-dict-insert">g_variant_dict_insert</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">dict</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"count"</span><span class="symbol">,</span><span class="normal"> </span><span class="string">"u"</span><span class="symbol">,</span><span class="normal"> count </span><span class="symbol">+</span><span class="normal"> </span><span class="number">1</span><span class="symbol">);</span>
+<span class="normal">      result </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="glib-GVariant.html#g-variant-dict-end">g_variant_dict_end</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">dict</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+<span class="normal">  </span><span class="keyword">else</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">      </span><span class="function"><a href="glib-Error-Reporting.html#g-set-error">g_set_error</a></span><span class="normal"> </span><span class="symbol">(...);</span>
+<span class="normal">      result </span><span class="symbol">=</span><span class="normal"> <a href="glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">;</span>
+<span class="normal">    </span><span class="cbracket">}</span>
 
-  <span class="function"><a href="glib-GVariant.html#g-variant-dict-unref">g_variant_dict_unref</a></span> <span class="gtkdoc opt">(</span>dict<span class="gtkdoc opt">);</span>
+<span class="normal">  </span><span class="function"><a href="glib-GVariant.html#g-variant-dict-unref">g_variant_dict_unref</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">dict</span><span class="symbol">);</span>
 
-  <span class="keyword">return</span> result<span class="gtkdoc opt">;</span>
-<span class="gtkdoc opt">}</span></pre></td>
+<span class="normal">  </span><span class="keyword">return</span><span class="normal"> result</span><span class="symbol">;</span>
+<span class="cbracket">}</span></pre></td>
       </tr>
     </tbody>
   </table>

@@ -117,6 +117,10 @@
  * account the fact that your program will not automatically be killed
  * if it tries to write to %stdout after it has been closed.
  *
+ * Like most other APIs in GLib, #GSocket is not inherently thread safe. To use
+ * a #GSocket concurrently from multiple threads, you must implement your own
+ * locking.
+ *
  * Since: 2.22
  */
 
@@ -201,34 +205,10 @@ get_socket_errno (void)
 static GIOErrorEnum
 socket_io_error_from_errno (int err)
 {
-#ifndef G_OS_WIN32
-  return g_io_error_from_errno (err);
+#ifdef G_OS_WIN32
+  return g_io_error_from_win32_error (err);
 #else
-  switch (err)
-    {
-    case WSAEADDRINUSE:
-      return G_IO_ERROR_ADDRESS_IN_USE;
-    case WSAEWOULDBLOCK:
-      return G_IO_ERROR_WOULD_BLOCK;
-    case WSAEACCES:
-      return G_IO_ERROR_PERMISSION_DENIED;
-    case WSA_INVALID_HANDLE:
-    case WSA_INVALID_PARAMETER:
-    case WSAEBADF:
-    case WSAENOTSOCK:
-      return G_IO_ERROR_INVALID_ARGUMENT;
-    case WSAEPROTONOSUPPORT:
-      return G_IO_ERROR_NOT_SUPPORTED;
-    case WSAECANCELLED:
-      return G_IO_ERROR_CANCELLED;
-    case WSAESOCKTNOSUPPORT:
-    case WSAEOPNOTSUPP:
-    case WSAEPFNOSUPPORT:
-    case WSAEAFNOSUPPORT:
-      return G_IO_ERROR_NOT_SUPPORTED;
-    default:
-      return G_IO_ERROR_FAILED;
-    }
+  return g_io_error_from_errno (err);
 #endif
 }
 
@@ -328,6 +308,13 @@ check_socket (GSocket *socket,
       return FALSE;
     }
 
+  return TRUE;
+}
+
+static gboolean
+check_timeout (GSocket *socket,
+	       GError **error)
+{
   if (socket->priv->timed_out)
     {
       socket->priv->timed_out = FALSE;
@@ -2232,6 +2219,9 @@ g_socket_accept (GSocket       *socket,
   if (!check_socket (socket, error))
     return NULL;
 
+  if (!check_timeout (socket, error))
+    return NULL;
+
   while (TRUE)
     {
       if (socket->priv->blocking &&
@@ -2428,6 +2418,9 @@ g_socket_check_connect_result (GSocket  *socket,
   if (!check_socket (socket, error))
     return FALSE;
 
+  if (!check_timeout (socket, error))
+    return FALSE;
+
   if (!g_socket_get_option (socket, SOL_SOCKET, SO_ERROR, &value, error))
     {
       g_prefix_error (error, _("Unable to get pending error: "));
@@ -2593,6 +2586,9 @@ g_socket_receive_with_blocking (GSocket       *socket,
   g_return_val_if_fail (G_IS_SOCKET (socket) && buffer != NULL, -1);
 
   if (!check_socket (socket, error))
+    return -1;
+
+  if (!check_timeout (socket, error))
     return -1;
 
   if (g_cancellable_set_error_if_cancelled (cancellable, error))
@@ -2768,6 +2764,9 @@ g_socket_send_with_blocking (GSocket       *socket,
   g_return_val_if_fail (G_IS_SOCKET (socket) && buffer != NULL, -1);
 
   if (!check_socket (socket, error))
+    return -1;
+
+  if (!check_timeout (socket, error))
     return -1;
 
   if (g_cancellable_set_error_if_cancelled (cancellable, error))
@@ -3386,8 +3385,9 @@ socket_source_new (GSocket      *socket,
  * @condition: a #GIOCondition mask to monitor
  * @cancellable: (allow-none): a %GCancellable or %NULL
  *
- * Creates a %GSource that can be attached to a %GMainContext to monitor
- * for the availability of the specified @condition on the socket.
+ * Creates a #GSource that can be attached to a %GMainContext to monitor
+ * for the availability of the specified @condition on the socket. The #GSource
+ * keeps a reference to the @socket.
  *
  * The callback on the source is of the #GSocketSourceFunc type.
  *
@@ -3747,8 +3747,16 @@ g_socket_send_message (GSocket                *socket,
   char zero;
 
   g_return_val_if_fail (G_IS_SOCKET (socket), -1);
+  g_return_val_if_fail (address == NULL || G_IS_SOCKET_ADDRESS (address), -1);
+  g_return_val_if_fail (num_vectors == 0 || vectors != NULL, -1);
+  g_return_val_if_fail (num_messages == 0 || messages != NULL, -1);
+  g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), -1);
+  g_return_val_if_fail (error == NULL || *error == NULL, -1);
 
   if (!check_socket (socket, error))
+    return -1;
+
+  if (!check_timeout (socket, error))
     return -1;
 
   if (g_cancellable_set_error_if_cancelled (cancellable, error))
@@ -4127,6 +4135,9 @@ g_socket_receive_message (GSocket                 *socket,
   if (!check_socket (socket, error))
     return -1;
 
+  if (!check_timeout (socket, error))
+    return -1;
+
   if (g_cancellable_set_error_if_cancelled (cancellable, error))
     return -1;
 
@@ -4456,6 +4467,23 @@ g_socket_get_credentials (GSocket   *socket,
         g_credentials_set_native (ret,
                                   G_CREDENTIALS_NATIVE_TYPE,
                                   native_creds_buf);
+      }
+  }
+#elif G_CREDENTIALS_USE_NETBSD_UNPCBID
+  {
+    struct unpcbid cred;
+    socklen_t optlen = sizeof (cred);
+
+    if (getsockopt (socket->priv->fd,
+                    0,
+                    LOCAL_PEEREID,
+                    &cred,
+                    &optlen) == 0)
+      {
+        ret = g_credentials_new ();
+        g_credentials_set_native (ret,
+                                  G_CREDENTIALS_NATIVE_TYPE,
+                                  &cred);
       }
   }
 #elif G_CREDENTIALS_USE_SOLARIS_UCRED

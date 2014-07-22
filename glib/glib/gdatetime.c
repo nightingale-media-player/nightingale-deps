@@ -944,6 +944,8 @@ g_date_time_new (GTimeZone *tz,
   GDateTime *datetime;
   gint64 full_time;
 
+  g_return_val_if_fail (tz != NULL, NULL);
+
   if (year < 1 || year > 9999 ||
       month < 1 || month > 12 ||
       day < 1 || day > 31 ||
@@ -2548,7 +2550,7 @@ g_date_time_format_locale (GDateTime   *datetime,
  * - \%C: the century number (year/100) as a 2-digit integer (00-99)
  * - \%d: the day of the month as a decimal number (range 01 to 31)
  * - \%e: the day of the month as a decimal number (range  1 to 31)
- * - \%F: equivalent to `\%Y-\%m-\%d` (the ISO 8601 date format)
+ * - \%F: equivalent to `%Y-%m-%d` (the ISO 8601 date format)
  * - \%g: the last two digits of the ISO 8601 week-based year as a
  *   decimal number (00-99). This works well with \%V and \%u.
  * - \%G: the ISO 8601 week-based year as a decimal number. This works

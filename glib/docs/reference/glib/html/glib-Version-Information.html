@@ -78,6 +78,18 @@
 </tr>
 <tr>
 <td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="glib-Version-Information.html#GLIB-VERSION-2-38:CAPS" title="GLIB_VERSION_2_38">GLIB_VERSION_2_38</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="glib-Version-Information.html#GLIB-VERSION-2-40:CAPS" title="GLIB_VERSION_2_40">GLIB_VERSION_2_40</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="glib-Version-Information.html#GLIB-VERSION-2-42:CAPS" title="GLIB_VERSION_2_42">GLIB_VERSION_2_42</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
 <td class="function_name"><a class="link" href="glib-Version-Information.html#GLIB-VERSION-MIN-REQUIRED:CAPS" title="GLIB_VERSION_MIN_REQUIRED">GLIB_VERSION_MIN_REQUIRED</a></td>
 </tr>
 <tr>
@@ -313,6 +325,33 @@ that can be used by the C pre-processor.</p>
 </div>
 <hr>
 <div class="refsect2">
+<a name="GLIB-VERSION-2-38:CAPS"></a><h3>GLIB_VERSION_2_38</h3>
+<pre class="programlisting">#define GLIB_VERSION_2_38       (G_ENCODE_VERSION (2, 38))
+</pre>
+<p>A macro that evaluates to the 2.38 version of GLib, in a format
+that can be used by the C pre-processor.</p>
+<p class="since">Since 2.38</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GLIB-VERSION-2-40:CAPS"></a><h3>GLIB_VERSION_2_40</h3>
+<pre class="programlisting">#define GLIB_VERSION_2_40       (G_ENCODE_VERSION (2, 40))
+</pre>
+<p>A macro that evaluates to the 2.40 version of GLib, in a format
+that can be used by the C pre-processor.</p>
+<p class="since">Since 2.40</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GLIB-VERSION-2-42:CAPS"></a><h3>GLIB_VERSION_2_42</h3>
+<pre class="programlisting">#define GLIB_VERSION_2_42       (G_ENCODE_VERSION (2, 42))
+</pre>
+<p>A macro that evaluates to the 2.42 version of GLib, in a format
+that can be used by the C pre-processor.</p>
+<p class="since">Since 2.42</p>
+</div>
+<hr>
+<div class="refsect2">
 <a name="GLIB-VERSION-MIN-REQUIRED:CAPS"></a><h3>GLIB_VERSION_MIN_REQUIRED</h3>
 <pre class="programlisting"># define GLIB_VERSION_MIN_REQUIRED      (GLIB_VERSION_CUR_STABLE)
 </pre>
@@ -354,30 +393,47 @@ set to the same value as <a class="link" href="glib-Version-Information.html#GLI
 <a name="glib-major-version"></a><h3>glib_major_version</h3>
 <pre class="programlisting">extern const guint glib_major_version;
 </pre>
+<p>The major version of the GLib library.</p>
+<p>An integer variable exported from the library linked
+against at application run time.</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="glib-minor-version"></a><h3>glib_minor_version</h3>
 <pre class="programlisting">extern const guint glib_minor_version;
 </pre>
+<p>The minor version number of the GLib library.</p>
+<p>An integer variable exported from the library linked
+against at application run time.</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="glib-micro-version"></a><h3>glib_micro_version</h3>
 <pre class="programlisting">extern const guint glib_micro_version;
 </pre>
+<p>The micro version number of the GLib library.</p>
+<p>An integer variable exported from the library linked
+against at application run time.</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="glib-binary-age"></a><h3>glib_binary_age</h3>
 <pre class="programlisting">extern const guint glib_binary_age;
 </pre>
+<p>The binary age of the GLib library.
+Defines how far back backwards compatibility reaches.</p>
+<p>An integer variable exported from the library linked
+against at application run time.</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="glib-interface-age"></a><h3>glib_interface_age</h3>
 <pre class="programlisting">extern const guint glib_interface_age;
 </pre>
+<p>The interface age of the GLib library.
+Defines how far back the API has last been extended.</p>
+<p>An integer variable exported from the library linked
+against at application run time.</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -392,20 +448,20 @@ linked against at application run time.</p>
 <hr>
 <div class="refsect2">
 <a name="GLIB-MINOR-VERSION:CAPS"></a><h3>GLIB_MINOR_VERSION</h3>
-<pre class="programlisting">#define GLIB_MINOR_VERSION 39
+<pre class="programlisting">#define GLIB_MINOR_VERSION 41
 </pre>
 <p>The minor version number of the GLib library.</p>
-<p>Like <span class="type">gtk_minor_version</span>, but from the headers used at
+<p>Like <a href="http://library.gnome.org/devel/gtk3/gtk2-Feature-Test-Macros.html#gtk-minor-version"><span class="type">gtk_minor_version</span></a>, but from the headers used at
 application compile time, rather than from the library
 linked against at application run time.</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GLIB-MICRO-VERSION:CAPS"></a><h3>GLIB_MICRO_VERSION</h3>
-<pre class="programlisting">#define GLIB_MICRO_VERSION 91
+<pre class="programlisting">#define GLIB_MICRO_VERSION 2
 </pre>
 <p>The micro version number of the GLib library.</p>
-<p>Like <span class="type">gtk_micro_version</span>, but from the headers used at
+<p>Like <a href="http://library.gnome.org/devel/gtk3/gtk2-Feature-Test-Macros.html#gtk-micro-version"><span class="type">gtk_micro_version</span></a>, but from the headers used at
 application compile time, rather than from the library
 linked against at application run time.</p>
 </div>

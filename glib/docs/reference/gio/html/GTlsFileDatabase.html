@@ -61,7 +61,7 @@
 </colgroup>
 <tbody><tr>
 <td class="property_type">
-<a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
 <td class="property_name"><a class="link" href="GTlsFileDatabase.html#GTlsFileDatabase--anchors" title="The “anchors” property">anchors</a></td>
 <td class="property_flags">Read / Write / Construct</td>
 </tr></tbody>
@@ -88,7 +88,7 @@
 </div>
 <div class="refsect1">
 <a name="GTlsFileDatabase.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="screen">    <a href="/home/desrt/.cache/jhbuild/install/share/gtk-doc/html/gobject/GTypeModule.html">GInterface</a>
+<pre class="screen">    GInterface
     <span class="lineart">╰──</span> GTlsFileDatabase
 </pre>
 </div>
@@ -114,8 +114,8 @@ TLS library specific subtypes implement.</p>
 <div class="refsect2">
 <a name="g-tls-file-database-new"></a><h3>g_tls_file_database_new ()</h3>
 <pre class="programlisting"><a class="link" href="GTlsDatabase.html" title="GTlsDatabase"><span class="returnvalue">GTlsDatabase</span></a> *
-g_tls_file_database_new (<em class="parameter"><code>const <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *anchors</code></em>,
-                         <em class="parameter"><code><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+g_tls_file_database_new (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *anchors</code></em>,
+                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Creates a new <a class="link" href="GTlsFileDatabase.html" title="GTlsFileDatabase"><span class="type">GTlsFileDatabase</span></a> which uses anchor certificate authorities
 in <em class="parameter"><code>anchors</code></em>
  to verify certificate chains.</p>
@@ -137,7 +137,7 @@ in <em class="parameter"><code>anchors</code></em>
 </tr>
 <tr>
 <td class="parameter_name"><p>error</p></td>
-<td class="parameter_description"><p><a href="../glib/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for error reporting, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore.</p></td>
+<td class="parameter_description"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> for error reporting, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> to ignore.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -146,7 +146,7 @@ in <em class="parameter"><code>anchors</code></em>
 <div class="refsect3">
 <a name="id-1.4.15.9.10.2.7"></a><h4>Returns</h4>
 <p> the new
-<a class="link" href="GTlsFileDatabase.html" title="GTlsFileDatabase"><span class="type">GTlsFileDatabase</span></a>, or <a href="../glib/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error. </p>
+<a class="link" href="GTlsFileDatabase.html" title="GTlsFileDatabase"><span class="type">GTlsFileDatabase</span></a>, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on error. </p>
 <p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Override the parsed C type with given type."><span class="acronym">type</span></acronym> GTlsFileDatabase]</span></p>
 </div>
 <p class="since">Since 2.30</p>
@@ -178,7 +178,7 @@ from a file.</p>
 <col width="200px" class="struct_members_annotations">
 </colgroup>
 <tbody><tr>
-<td class="struct_member_name"><p><a href="../gobject/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GTlsFileDatabaseInterface.g-iface"></a>g_iface</code></em>;</p></td>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GTlsFileDatabaseInterface.g-iface"></a>g_iface</code></em>;</p></td>
 <td class="struct_member_description"><p>The parent interface.</p></td>
 <td class="struct_member_annotations"> </td>
 </tr></tbody>
@@ -190,7 +190,7 @@ from a file.</p>
 <a name="GTlsFileDatabase.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
 <a name="GTlsFileDatabase--anchors"></a><h3>The <code class="literal">“anchors”</code> property</h3>
-<pre class="programlisting">  “anchors”                  <a href="../glib/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
+<pre class="programlisting">  “anchors”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>The path to a file containing PEM encoded certificate authority
 root anchors. The certificates in this file will be treated as
 root authorities for the purpose of verifying other certificates

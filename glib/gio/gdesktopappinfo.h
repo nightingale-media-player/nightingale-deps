@@ -71,7 +71,7 @@ GDesktopAppInfo *g_desktop_app_info_new               (const char      *desktop_
 GLIB_AVAILABLE_IN_ALL
 gboolean         g_desktop_app_info_get_is_hidden     (GDesktopAppInfo *info);
 
-GLIB_AVAILABLE_IN_ALL
+GLIB_DEPRECATED_IN_2_42
 void             g_desktop_app_info_set_desktop_env   (const char      *desktop_env);
 
 GLIB_AVAILABLE_IN_2_36
@@ -107,7 +107,7 @@ gchar *                 g_desktop_app_info_get_action_name              (GDeskto
  * G_DESKTOP_APP_INFO_LOOKUP_EXTENSION_POINT_NAME:
  *
  * Extension point for default handler to URI association. See
- * <link linkend="extending-gio">Extending GIO</link>.
+ * [Extending GIO][extending-gio].
  */
 #define G_DESKTOP_APP_INFO_LOOKUP_EXTENSION_POINT_NAME "gio-desktop-app-info-lookup"
 
@@ -164,6 +164,9 @@ gboolean    g_desktop_app_info_launch_uris_as_manager (GDesktopAppInfo          
 
 GLIB_AVAILABLE_IN_2_40
 gchar *** g_desktop_app_info_search (const gchar *search_string);
+
+GLIB_AVAILABLE_IN_2_42
+GList *g_desktop_app_info_get_implementations (const gchar *interface);
 
 G_END_DECLS
 

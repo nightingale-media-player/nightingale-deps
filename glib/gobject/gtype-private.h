@@ -26,6 +26,8 @@
 
 G_BEGIN_DECLS
 
+extern GTypeDebugFlags _g_type_debug_flags;
+
 typedef struct _GRealClosure  GRealClosure;
 struct _GRealClosure
 {
@@ -70,7 +72,6 @@ void        _g_closure_invoke_va (GClosure       *closure,
 				  int             n_params,
 				  GType          *param_types);
 
-gboolean    g_type_is_in_init    (GType type);
 
 G_END_DECLS
 
