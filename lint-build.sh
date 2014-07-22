@@ -32,10 +32,9 @@ case $OSTYPE in
             if [ ! -d "dist/linux-$(uname -m)" ]; then
                 mkdir -p "dist/linux-$(uname -m)"
             fi
-        else
-            if [ ! -d "linux-$(uname -m)" ]; then
-                mkdir -p "linux-$(uname -m)"
-            fi
+        fi
+        if [ ! -d "linux-$(uname -m)" ]; then
+            mkdir -p "linux-$(uname -m)"
         fi
         if [ ! -d "checkout/linux-$(uname -m)" ]; then
             mkdir -p "checkout/linux-$(uname -m)"
