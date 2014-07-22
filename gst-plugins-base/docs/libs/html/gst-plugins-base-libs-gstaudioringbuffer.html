@@ -1,0 +1,1877 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GStreamer Base Plugins 1.0 Library Reference Manual: gstaudioringbuffer</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gstreamer-audio.html" title="Audio Library">
+<link rel="prev" href="gst-plugins-base-libs-gstaudiochannels.html" title="gstaudiochannels">
+<link rel="next" href="gst-plugins-base-libs-gstaudioiec61937.html" title="gstaudioiec61937">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstaudioringbuffer.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstaudioringbuffer.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-audio.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-gstaudiochannels.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-libs-gstaudioiec61937.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-base-libs-gstaudioringbuffer"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstaudioringbuffer.top_of_page"></a>gstaudioringbuffer</span></h2>
+<p>gstaudioringbuffer — Base class for audio ringbuffer implementations</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudioringbuffer.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<span class="c_punctuation">(</span><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBufferCallback" title="GstAudioRingBufferCallback ()">*GstAudioRingBufferCallback</a><span class="c_punctuation">)</span> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GST-AUDIO-RING-BUFFER-BROADCAST:CAPS" title="GST_AUDIO_RING_BUFFER_BROADCAST()">GST_AUDIO_RING_BUFFER_BROADCAST</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GST-AUDIO-RING-BUFFER-GET-COND:CAPS" title="GST_AUDIO_RING_BUFFER_GET_COND()">GST_AUDIO_RING_BUFFER_GET_COND</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GST-AUDIO-RING-BUFFER-SIGNAL:CAPS" title="GST_AUDIO_RING_BUFFER_SIGNAL()">GST_AUDIO_RING_BUFFER_SIGNAL</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GST-AUDIO-RING-BUFFER-WAIT:CAPS" title="GST_AUDIO_RING_BUFFER_WAIT()">GST_AUDIO_RING_BUFFER_WAIT</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-set-callback" title="gst_audio_ring_buffer_set_callback ()">gst_audio_ring_buffer_set_callback</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-acquire" title="gst_audio_ring_buffer_acquire ()">gst_audio_ring_buffer_acquire</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-release" title="gst_audio_ring_buffer_release ()">gst_audio_ring_buffer_release</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-is-acquired" title="gst_audio_ring_buffer_is_acquired ()">gst_audio_ring_buffer_is_acquired</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-activate" title="gst_audio_ring_buffer_activate ()">gst_audio_ring_buffer_activate</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-is-active" title="gst_audio_ring_buffer_is_active ()">gst_audio_ring_buffer_is_active</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-start" title="gst_audio_ring_buffer_start ()">gst_audio_ring_buffer_start</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-pause" title="gst_audio_ring_buffer_pause ()">gst_audio_ring_buffer_pause</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-stop" title="gst_audio_ring_buffer_stop ()">gst_audio_ring_buffer_stop</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-delay" title="gst_audio_ring_buffer_delay ()">gst_audio_ring_buffer_delay</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">guint64</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-samples-done" title="gst_audio_ring_buffer_samples_done ()">gst_audio_ring_buffer_samples_done</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-set-sample" title="gst_audio_ring_buffer_set_sample ()">gst_audio_ring_buffer_set_sample</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-commit" title="gst_audio_ring_buffer_commit ()">gst_audio_ring_buffer_commit</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-convert" title="gst_audio_ring_buffer_convert ()">gst_audio_ring_buffer_convert</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-prepare-read" title="gst_audio_ring_buffer_prepare_read ()">gst_audio_ring_buffer_prepare_read</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-read" title="gst_audio_ring_buffer_read ()">gst_audio_ring_buffer_read</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-clear" title="gst_audio_ring_buffer_clear ()">gst_audio_ring_buffer_clear</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-clear-all" title="gst_audio_ring_buffer_clear_all ()">gst_audio_ring_buffer_clear_all</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-advance" title="gst_audio_ring_buffer_advance ()">gst_audio_ring_buffer_advance</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-close-device" title="gst_audio_ring_buffer_close_device ()">gst_audio_ring_buffer_close_device</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-open-device" title="gst_audio_ring_buffer_open_device ()">gst_audio_ring_buffer_open_device</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-device-is-open" title="gst_audio_ring_buffer_device_is_open ()">gst_audio_ring_buffer_device_is_open</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-may-start" title="gst_audio_ring_buffer_may_start ()">gst_audio_ring_buffer_may_start</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-parse-caps" title="gst_audio_ring_buffer_parse_caps ()">gst_audio_ring_buffer_parse_caps</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-set-flushing" title="gst_audio_ring_buffer_set_flushing ()">gst_audio_ring_buffer_set_flushing</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-is-flushing" title="gst_audio_ring_buffer_is_flushing ()">gst_audio_ring_buffer_is_flushing</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-set-channel-positions" title="gst_audio_ring_buffer_set_channel_positions ()">gst_audio_ring_buffer_set_channel_positions</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-set-timestamp" title="gst_audio_ring_buffer_set_timestamp ()">gst_audio_ring_buffer_set_timestamp</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstAudioRingBuffer"></a><div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudioringbuffer.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer-struct" title="struct GstAudioRingBuffer">GstAudioRingBuffer</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBufferClass" title="struct GstAudioRingBufferClass">GstAudioRingBufferClass</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBufferSpec" title="struct GstAudioRingBufferSpec">GstAudioRingBufferSpec</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBufferState" title="enum GstAudioRingBufferState">GstAudioRingBufferState</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBufferFormatType" title="enum GstAudioRingBufferFormatType">GstAudioRingBufferFormatType</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudioringbuffer.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> GstAudioRingBuffer
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudioringbuffer.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/audio/gstaudioringbuffer.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudioringbuffer.description"></a><h2>Description</h2>
+<div class="refsect2">
+<a name="id-1.2.6.15.8.2"></a><p>
+This object is the base class for audio ringbuffers used by the base
+audio source and sink classes.
+</p>
+<p>
+The ringbuffer abstracts a circular buffer of data. One reader and
+one writer can operate on the data from different threads in a lockfree
+manner. The base class is sufficiently flexible to be used as an
+abstraction for DMA based ringbuffers as well as a pure software
+implementations.
+</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudioringbuffer.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="GstAudioRingBufferCallback"></a><h3>GstAudioRingBufferCallback ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+<span class="c_punctuation">(</span>*GstAudioRingBufferCallback<span class="c_punctuation">)</span> (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *rbuf</code></em>,
+                               <em class="parameter"><code><span class="type">guint8</span> *data</code></em>,
+                               <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> len</code></em>,
+                               <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+<p>This function is set with <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-set-callback" title="gst_audio_ring_buffer_set_callback ()"><code class="function">gst_audio_ring_buffer_set_callback()</code></a> and is
+called to fill the memory at <em class="parameter"><code>data</code></em>
+ with <em class="parameter"><code>len</code></em>
+ bytes of samples.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>rbuf</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p> target to fill. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=len]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>len</p></td>
+<td class="parameter_description"><p>amount to fill</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-AUDIO-RING-BUFFER-BROADCAST:CAPS"></a><h3>GST_AUDIO_RING_BUFFER_BROADCAST()</h3>
+<pre class="programlisting">#define GST_AUDIO_RING_BUFFER_BROADCAST(buf)(g_cond_broadcast (GST_AUDIO_RING_BUFFER_GET_COND (buf)))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-AUDIO-RING-BUFFER-GET-COND:CAPS"></a><h3>GST_AUDIO_RING_BUFFER_GET_COND()</h3>
+<pre class="programlisting">#define GST_AUDIO_RING_BUFFER_GET_COND(buf) (&amp;(((GstAudioRingBuffer *)buf)-&gt;cond))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-AUDIO-RING-BUFFER-SIGNAL:CAPS"></a><h3>GST_AUDIO_RING_BUFFER_SIGNAL()</h3>
+<pre class="programlisting">#define GST_AUDIO_RING_BUFFER_SIGNAL(buf)   (g_cond_signal (GST_AUDIO_RING_BUFFER_GET_COND (buf)))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-AUDIO-RING-BUFFER-WAIT:CAPS"></a><h3>GST_AUDIO_RING_BUFFER_WAIT()</h3>
+<pre class="programlisting">#define GST_AUDIO_RING_BUFFER_WAIT(buf)     (g_cond_wait (GST_AUDIO_RING_BUFFER_GET_COND (buf), GST_OBJECT_GET_LOCK (buf)))
+</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-set-callback"></a><h3>gst_audio_ring_buffer_set_callback ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_audio_ring_buffer_set_callback (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                                    <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBufferCallback" title="GstAudioRingBufferCallback ()"><span class="type">GstAudioRingBufferCallback</span></a> cb</code></em>,
+                                    <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> user_data</code></em>);</pre>
+<p>Sets the given callback function on the buffer. This function
+will be called every time a segment has been written to a device.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.7.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to set the callback on</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>cb</p></td>
+<td class="parameter_description"><p> the callback to set. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="The callback is valid until first called."><span class="acronym">scope async</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>user_data</p></td>
+<td class="parameter_description"><p>user data passed to the callback</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-acquire"></a><h3>gst_audio_ring_buffer_acquire ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_acquire (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                               <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBufferSpec" title="struct GstAudioRingBufferSpec"><span class="type">GstAudioRingBufferSpec</span></a> *spec</code></em>);</pre>
+<p>Allocate the resources for the ringbuffer. This function fills
+in the data pointer of the ring buffer with a valid <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="type">GstBuffer</span></a>
+to which samples can be written.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.8.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to acquire</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>spec</p></td>
+<td class="parameter_description"><p>the specs of the buffer</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.8.6"></a><h4>Returns</h4>
+<p> TRUE if the device could be acquired, FALSE on error.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-release"></a><h3>gst_audio_ring_buffer_release ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_release (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Free the resources of the ringbuffer.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.9.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to release</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.9.6"></a><h4>Returns</h4>
+<p> TRUE if the device could be released, FALSE on error.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-is-acquired"></a><h3>gst_audio_ring_buffer_is_acquired ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_is_acquired (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Check if the ringbuffer is acquired and ready to use.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.10.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to check</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.10.6"></a><h4>Returns</h4>
+<p> TRUE if the ringbuffer is acquired, FALSE on error.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-activate"></a><h3>gst_audio_ring_buffer_activate ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_activate (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> active</code></em>);</pre>
+<p>Activate <em class="parameter"><code>buf</code></em>
+ to start or stop pulling data.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.11.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to activate</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>active</p></td>
+<td class="parameter_description"><p>the new mode</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.11.7"></a><h4>Returns</h4>
+<p> TRUE if the device could be activated in the requested mode,
+FALSE on error.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-is-active"></a><h3>gst_audio_ring_buffer_is_active ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_is_active (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Check if <em class="parameter"><code>buf</code></em>
+ is activated.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.12.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.12.7"></a><h4>Returns</h4>
+<p> TRUE if the device is active.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-start"></a><h3>gst_audio_ring_buffer_start ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_start (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Start processing samples from the ringbuffer.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.13.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to start</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.13.6"></a><h4>Returns</h4>
+<p> TRUE if the device could be started, FALSE on error.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-pause"></a><h3>gst_audio_ring_buffer_pause ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_pause (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Pause processing samples from the ringbuffer.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.14.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to pause</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.14.6"></a><h4>Returns</h4>
+<p> TRUE if the device could be paused, FALSE on error.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-stop"></a><h3>gst_audio_ring_buffer_stop ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_stop (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Stop processing samples from the ringbuffer.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.15.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to stop</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.15.6"></a><h4>Returns</h4>
+<p> TRUE if the device could be stopped, FALSE on error.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-delay"></a><h3>gst_audio_ring_buffer_delay ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+gst_audio_ring_buffer_delay (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Get the number of samples queued in the audio device. This is
+usually less than the segment size but can be bigger when the
+implementation uses another internal buffer between the audio
+device.</p>
+<p>For playback ringbuffers this is the amount of samples transfered from the
+ringbuffer to the device but still not played.</p>
+<p>For capture ringbuffers this is the amount of samples in the device that are
+not yet transfered to the ringbuffer.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.16.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to query</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.16.8"></a><h4>Returns</h4>
+<p> The number of samples queued in the audio device.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-samples-done"></a><h3>gst_audio_ring_buffer_samples_done ()</h3>
+<pre class="programlisting"><span class="returnvalue">guint64</span>
+gst_audio_ring_buffer_samples_done (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Get the number of samples that were processed by the ringbuffer
+since it was last started. This does not include the number of samples not
+yet processed (see <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-delay" title="gst_audio_ring_buffer_delay ()"><code class="function">gst_audio_ring_buffer_delay()</code></a>).</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.17.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to query</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.17.6"></a><h4>Returns</h4>
+<p> The number of samples processed by the ringbuffer.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-set-sample"></a><h3>gst_audio_ring_buffer_set_sample ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_audio_ring_buffer_set_sample (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                                  <em class="parameter"><code><span class="type">guint64</span> sample</code></em>);</pre>
+<p>Make sure that the next sample written to the device is
+accounted for as being the <em class="parameter"><code>sample</code></em>
+ sample written to the
+device. This value will be used in reporting the current
+sample position of the ringbuffer.</p>
+<p>This function will also clear the buffer with silence.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.18.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to use</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>sample</p></td>
+<td class="parameter_description"><p>the sample number to set</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-commit"></a><h3>gst_audio_ring_buffer_commit ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+gst_audio_ring_buffer_commit (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                              <em class="parameter"><code><span class="type">guint64</span> *sample</code></em>,
+                              <em class="parameter"><code><span class="type">guint8</span> *data</code></em>,
+                              <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> in_samples</code></em>,
+                              <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> out_samples</code></em>,
+                              <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *accum</code></em>);</pre>
+<p>Commit <em class="parameter"><code>in_samples</code></em>
+ samples pointed to by <em class="parameter"><code>data</code></em>
+ to the ringbuffer <em class="parameter"><code>buf</code></em>
+.</p>
+<p><em class="parameter"><code>in_samples</code></em>
+ and <em class="parameter"><code>out_samples</code></em>
+ define the rate conversion to perform on the
+samples in <em class="parameter"><code>data</code></em>
+. For negative rates, <em class="parameter"><code>out_samples</code></em>
+ must be negative and
+<em class="parameter"><code>in_samples</code></em>
+ positive.</p>
+<p>When <em class="parameter"><code>out_samples</code></em>
+ is positive, the first sample will be written at position <em class="parameter"><code>sample</code></em>
+
+in the ringbuffer. When <em class="parameter"><code>out_samples</code></em>
+ is negative, the last sample will be written to
+<em class="parameter"><code>sample</code></em>
+ in reverse order.</p>
+<p><em class="parameter"><code>out_samples</code></em>
+ does not need to be a multiple of the segment size of the ringbuffer
+although it is recommended for optimal performance.</p>
+<p><em class="parameter"><code>accum</code></em>
+ will hold a temporary accumulator used in rate conversion and should be
+set to 0 when this function is first called. In case the commit operation is
+interrupted, one can resume the processing by passing the previously returned
+<em class="parameter"><code>accum</code></em>
+ value back to this function.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.19.10"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to commit</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>sample</p></td>
+<td class="parameter_description"><p>the sample position of the data</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>the data to commit</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>in_samples</p></td>
+<td class="parameter_description"><p>the number of samples in the data to commit</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>out_samples</p></td>
+<td class="parameter_description"><p>the number of samples to write to the ringbuffer</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>accum</p></td>
+<td class="parameter_description"><p>accumulator for rate conversion.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.19.11"></a><h4>Returns</h4>
+<p> The number of samples written to the ringbuffer or -1 on error. The
+number of samples written can be less than <em class="parameter"><code>out_samples</code></em>
+when <em class="parameter"><code>buf</code></em>
+was interrupted
+with a flush or stop.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-convert"></a><h3>gst_audio_ring_buffer_convert ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_convert (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                               <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstFormat.html#GstFormat"><span class="type">GstFormat</span></a> src_fmt</code></em>,
+                               <em class="parameter"><code><span class="type">gint64</span> src_val</code></em>,
+                               <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstFormat.html#GstFormat"><span class="type">GstFormat</span></a> dest_fmt</code></em>,
+                               <em class="parameter"><code><span class="type">gint64</span> *dest_val</code></em>);</pre>
+<p>Convert <em class="parameter"><code>src_val</code></em>
+ in <em class="parameter"><code>src_fmt</code></em>
+ to the equivalent value in <em class="parameter"><code>dest_fmt</code></em>
+. The result
+will be put in <em class="parameter"><code>dest_val</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.20.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>src_fmt</p></td>
+<td class="parameter_description"><p>the source format</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>src_val</p></td>
+<td class="parameter_description"><p>the source value</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>dest_fmt</p></td>
+<td class="parameter_description"><p>the destination format</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>dest_val</p></td>
+<td class="parameter_description"><p>a location to store the converted value</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.20.6"></a><h4>Returns</h4>
+<p> TRUE if the conversion succeeded.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-prepare-read"></a><h3>gst_audio_ring_buffer_prepare_read ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_prepare_read (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                                    <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *segment</code></em>,
+                                    <em class="parameter"><code><span class="type">guint8</span> **readptr</code></em>,
+                                    <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *len</code></em>);</pre>
+<p>Returns a pointer to memory where the data from segment <em class="parameter"><code>segment</code></em>
+
+can be found. This function is mostly used by subclasses.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.21.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to read from</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>the segment to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>readptr</p></td>
+<td class="parameter_description"><p>the pointer to the memory where samples can be read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>len</p></td>
+<td class="parameter_description"><p>the number of bytes to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.21.6"></a><h4>Returns</h4>
+<p> FALSE if the buffer is not started.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-read"></a><h3>gst_audio_ring_buffer_read ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+gst_audio_ring_buffer_read (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                            <em class="parameter"><code><span class="type">guint64</span> sample</code></em>,
+                            <em class="parameter"><code><span class="type">guint8</span> *data</code></em>,
+                            <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> len</code></em>,
+                            <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> *timestamp</code></em>);</pre>
+<p>Read <em class="parameter"><code>len</code></em>
+ samples from the ringbuffer into the memory pointed
+to by <em class="parameter"><code>data</code></em>
+.
+The first sample should be read from position <em class="parameter"><code>sample</code></em>
+ in
+the ringbuffer.</p>
+<p><em class="parameter"><code>len</code></em>
+ should not be a multiple of the segment size of the ringbuffer
+although it is recommended.</p>
+<p><em class="parameter"><code>timestamp</code></em>
+ will return the timestamp associated with the data returned.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.22.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to read from</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>sample</p></td>
+<td class="parameter_description"><p>the sample position of the data</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>where the data should be read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>len</p></td>
+<td class="parameter_description"><p>the number of samples in data to read</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>timestamp</p></td>
+<td class="parameter_description"><p>where the timestamp is returned</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.22.8"></a><h4>Returns</h4>
+<p> The number of samples read from the ringbuffer or -1 on
+error.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-clear"></a><h3>gst_audio_ring_buffer_clear ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_audio_ring_buffer_clear (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                             <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> segment</code></em>);</pre>
+<p>Clear the given segment of the buffer with silence samples.
+This function is used by subclasses.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.23.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to clear</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>segment</p></td>
+<td class="parameter_description"><p>the segment to clear</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-clear-all"></a><h3>gst_audio_ring_buffer_clear_all ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_audio_ring_buffer_clear_all (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Fill the ringbuffer with silence.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.24.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to clear</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-advance"></a><h3>gst_audio_ring_buffer_advance ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_audio_ring_buffer_advance (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                               <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> advance</code></em>);</pre>
+<p>Subclasses should call this function to notify the fact that
+<em class="parameter"><code>advance</code></em>
+ segments are now processed by the device.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.25.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to advance</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>advance</p></td>
+<td class="parameter_description"><p>the number of segments written</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-close-device"></a><h3>gst_audio_ring_buffer_close_device ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_close_device (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Close the audio device associated with the ring buffer. The ring buffer
+should already have been released via <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#gst-audio-ring-buffer-release" title="gst_audio_ring_buffer_release ()"><code class="function">gst_audio_ring_buffer_release()</code></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.26.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.26.6"></a><h4>Returns</h4>
+<p> TRUE if the device could be closed, FALSE on error.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-open-device"></a><h3>gst_audio_ring_buffer_open_device ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_open_device (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Open the audio device associated with the ring buffer. Does not perform any
+setup on the device. You must open the device before acquiring the ring
+buffer.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.27.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.27.6"></a><h4>Returns</h4>
+<p> TRUE if the device could be opened, FALSE on error.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-device-is-open"></a><h3>gst_audio_ring_buffer_device_is_open ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_device_is_open (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Checks the status of the device associated with the ring buffer.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.28.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.28.6"></a><h4>Returns</h4>
+<p> TRUE if the device was open, FALSE if it was closed.</p>
+<p>MT safe.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-may-start"></a><h3>gst_audio_ring_buffer_may_start ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_audio_ring_buffer_may_start (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> allowed</code></em>);</pre>
+<p>Tell the ringbuffer that it is allowed to start playback when
+the ringbuffer is filled with samples.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.29.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>allowed</p></td>
+<td class="parameter_description"><p>the new value</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-parse-caps"></a><h3>gst_audio_ring_buffer_parse_caps ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_parse_caps (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBufferSpec" title="struct GstAudioRingBufferSpec"><span class="type">GstAudioRingBufferSpec</span></a> *spec</code></em>,
+                                  <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> *caps</code></em>);</pre>
+<p>Parse <em class="parameter"><code>caps</code></em>
+ into <em class="parameter"><code>spec</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.30.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>spec</p></td>
+<td class="parameter_description"><p>a spec</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>caps</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.30.6"></a><h4>Returns</h4>
+<p> TRUE if the caps could be parsed.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-set-flushing"></a><h3>gst_audio_ring_buffer_set_flushing ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_audio_ring_buffer_set_flushing (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                                    <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> flushing</code></em>);</pre>
+<p>Set the ringbuffer to flushing mode or normal mode.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.31.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> to flush</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>flushing</p></td>
+<td class="parameter_description"><p>the new mode</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-is-flushing"></a><h3>gst_audio_ring_buffer_is_flushing ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_audio_ring_buffer_is_flushing (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>);</pre>
+<p>Check if <em class="parameter"><code>buf</code></em>
+ is flushing.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.32.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.32.7"></a><h4>Returns</h4>
+<p> TRUE if the device is flushing.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-set-channel-positions"></a><h3>gst_audio_ring_buffer_set_channel_positions ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_audio_ring_buffer_set_channel_positions
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                                <em class="parameter"><code>const <a class="link" href="gst-plugins-base-libs-gstaudiochannels.html#GstAudioChannelPosition" title="enum GstAudioChannelPosition"><span class="type">GstAudioChannelPosition</span></a> *position</code></em>);</pre>
+<p>Tell the ringbuffer about the device's channel positions. This must
+be called in when the ringbuffer is acquired.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.9.33.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>buf</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>position</p></td>
+<td class="parameter_description"><p>the device channel positions</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-audio-ring-buffer-set-timestamp"></a><h3>gst_audio_ring_buffer_set_timestamp ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_audio_ring_buffer_set_timestamp (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> *buf</code></em>,
+                                     <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> readseg</code></em>,
+                                     <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> timestamp</code></em>);</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudioringbuffer.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstAudioRingBuffer-struct"></a><h3>struct GstAudioRingBuffer</h3>
+<pre class="programlisting">struct GstAudioRingBuffer {
+  GCond                      cond;
+  gboolean                    open;
+  gboolean                    acquired;
+  guint8                     *memory;
+  gsize                       size;
+  GstClockTime               *timestamps;
+  GstAudioRingBufferSpec      spec;
+  gint                        samples_per_seg;
+  guint8                     *empty_seg;
+
+  gint                        state;
+  gint                        segdone;
+  gint                        segbase;
+  gint                        waiting;
+};
+</pre>
+<p>The ringbuffer base class structure.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.10.2.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Threads.html#GCond"><span class="type">GCond</span></a> <em class="structfield"><code><a name="GstAudioRingBuffer-struct.cond"></a>cond</code></em>;</p></td>
+<td class="struct_member_description"><p>used to signal start/stop/pause/resume actions</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstAudioRingBuffer-struct.open"></a>open</code></em>;</p></td>
+<td class="struct_member_description"><p>boolean indicating that the ringbuffer is open</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstAudioRingBuffer-struct.acquired"></a>acquired</code></em>;</p></td>
+<td class="struct_member_description"><p>boolean indicating that the ringbuffer is acquired</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> *<em class="structfield"><code><a name="GstAudioRingBuffer-struct.memory"></a>memory</code></em>;</p></td>
+<td class="struct_member_description"><p>data in the ringbuffer</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">gsize</span> <em class="structfield"><code><a name="GstAudioRingBuffer-struct.size"></a>size</code></em>;</p></td>
+<td class="struct_member_description"><p>size of data in the ringbuffer</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> *<em class="structfield"><code><a name="GstAudioRingBuffer-struct.timestamps"></a>timestamps</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBufferSpec" title="struct GstAudioRingBufferSpec"><span class="type">GstAudioRingBufferSpec</span></a> <em class="structfield"><code><a name="GstAudioRingBuffer-struct.spec"></a>spec</code></em>;</p></td>
+<td class="struct_member_description"><p>format and layout of the ringbuffer data</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstAudioRingBuffer-struct.samples-per-seg"></a>samples_per_seg</code></em>;</p></td>
+<td class="struct_member_description"><p>number of samples in one segment</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> *<em class="structfield"><code><a name="GstAudioRingBuffer-struct.empty-seg"></a>empty_seg</code></em>;</p></td>
+<td class="struct_member_description"><p>pointer to memory holding one segment of silence samples</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstAudioRingBuffer-struct.state"></a>state</code></em>;</p></td>
+<td class="struct_member_description"><p>state of the buffer</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstAudioRingBuffer-struct.segdone"></a>segdone</code></em>;</p></td>
+<td class="struct_member_description"><p>readpointer in the ringbuffer</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstAudioRingBuffer-struct.segbase"></a>segbase</code></em>;</p></td>
+<td class="struct_member_description"><p>segment corresponding to segment 0 (unused)</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstAudioRingBuffer-struct.waiting"></a>waiting</code></em>;</p></td>
+<td class="struct_member_description"><p>is a reader or writer waiting for a free segment</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstAudioRingBufferClass"></a><h3>struct GstAudioRingBufferClass</h3>
+<pre class="programlisting">struct GstAudioRingBufferClass {
+  GstObjectClass parent_class;
+
+  gboolean     (*open_device)  (GstAudioRingBuffer *buf);
+  gboolean     (*acquire)      (GstAudioRingBuffer *buf, GstAudioRingBufferSpec *spec);
+  gboolean     (*release)      (GstAudioRingBuffer *buf);
+  gboolean     (*close_device) (GstAudioRingBuffer *buf);
+
+  gboolean     (*start)        (GstAudioRingBuffer *buf);
+  gboolean     (*pause)        (GstAudioRingBuffer *buf);
+  gboolean     (*resume)       (GstAudioRingBuffer *buf);
+  gboolean     (*stop)         (GstAudioRingBuffer *buf);
+
+  guint        (*delay)        (GstAudioRingBuffer *buf);
+
+  /* ABI added */
+  gboolean     (*activate)     (GstAudioRingBuffer *buf, gboolean active);
+
+  guint        (*commit)       (GstAudioRingBuffer * buf, guint64 *sample,
+                                guint8 * data, gint in_samples,
+                                gint out_samples, gint * accum);
+
+  void         (*clear_all)    (GstAudioRingBuffer * buf);
+};
+</pre>
+<p>The vmethods that subclasses can override to implement the ringbuffer.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.10.3.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html#GstObjectClass"><span class="type">GstObjectClass</span></a> <em class="structfield"><code><a name="GstAudioRingBufferClass.parent-class"></a>parent_class</code></em>;</p></td>
+<td class="struct_member_description"><p>parent class</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioRingBufferClass.open-device"></a>open_device</code></em> ()</p></td>
+<td class="struct_member_description"><p>open the device, don't set any params or allocate anything</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioRingBufferClass.acquire"></a>acquire</code></em> ()</p></td>
+<td class="struct_member_description"><p>allocate the resources for the ringbuffer using the given spec</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioRingBufferClass.release"></a>release</code></em> ()</p></td>
+<td class="struct_member_description"><p>free resources of the ringbuffer</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioRingBufferClass.close-device"></a>close_device</code></em> ()</p></td>
+<td class="struct_member_description"><p>close the device</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioRingBufferClass.start"></a>start</code></em> ()</p></td>
+<td class="struct_member_description"><p>start processing of samples</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioRingBufferClass.pause"></a>pause</code></em> ()</p></td>
+<td class="struct_member_description"><p>pause processing of samples</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioRingBufferClass.resume"></a>resume</code></em> ()</p></td>
+<td class="struct_member_description"><p>resume processing of samples after pause</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioRingBufferClass.stop"></a>stop</code></em> ()</p></td>
+<td class="struct_member_description"><p>stop processing of samples</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioRingBufferClass.delay"></a>delay</code></em> ()</p></td>
+<td class="struct_member_description"><p>get number of samples queued in device</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioRingBufferClass.activate"></a>activate</code></em> ()</p></td>
+<td class="struct_member_description"><p>activate the thread that starts pulling and monitoring the
+consumed segments in the device.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioRingBufferClass.commit"></a>commit</code></em> ()</p></td>
+<td class="struct_member_description"><p>write samples into the ringbuffer</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioRingBufferClass.clear-all"></a>clear_all</code></em> ()</p></td>
+<td class="struct_member_description"><p>clear the entire ringbuffer.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstAudioRingBufferSpec"></a><h3>struct GstAudioRingBufferSpec</h3>
+<pre class="programlisting">struct GstAudioRingBufferSpec {
+  /* in */
+  GstCaps  *caps;               /* the caps of the buffer */
+
+  /* in/out */
+  GstAudioRingBufferFormatType  type;
+  GstAudioInfo                  info;
+
+
+  guint64  latency_time;        /* the required/actual latency time, this is the
+				 * actual the size of one segment and the
+				 * minimum possible latency we can achieve. */
+  guint64  buffer_time;         /* the required/actual time of the buffer, this is
+				 * the total size of the buffer and maximum
+				 * latency we can compensate for. */
+  gint     segsize;             /* size of one buffer segment in bytes, this value
+				 * should be chosen to match latency_time as
+				 * well as possible. */
+  gint     segtotal;            /* total number of segments, this value is the
+				 * number of segments of @segsize and should be
+				 * chosen so that it matches buffer_time as
+				 * close as possible. */
+  /* ABI added 0.10.20 */
+  gint     seglatency;          /* number of segments queued in the lower
+				 * level device, defaults to segtotal. */
+};
+</pre>
+<p>The structure containing the format specification of the ringbuffer.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.10.4.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> *<em class="structfield"><code><a name="GstAudioRingBufferSpec.caps"></a>caps</code></em>;</p></td>
+<td class="struct_member_description"><p>The caps that generated the Spec.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBufferFormatType" title="enum GstAudioRingBufferFormatType"><span class="type">GstAudioRingBufferFormatType</span></a> <em class="structfield"><code><a name="GstAudioRingBufferSpec.type"></a>type</code></em>;</p></td>
+<td class="struct_member_description"><p>the sample type</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstaudio.html#GstAudioInfo" title="struct GstAudioInfo"><span class="type">GstAudioInfo</span></a> <em class="structfield"><code><a name="GstAudioRingBufferSpec.info"></a>info</code></em>;</p></td>
+<td class="struct_member_description"><p>the <a class="link" href="gst-plugins-base-libs-gstaudio.html#GstAudioInfo" title="struct GstAudioInfo"><span class="type">GstAudioInfo</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint64</span> <em class="structfield"><code><a name="GstAudioRingBufferSpec.latency-time"></a>latency_time</code></em>;</p></td>
+<td class="struct_member_description"><p>the latency in microseconds</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint64</span> <em class="structfield"><code><a name="GstAudioRingBufferSpec.buffer-time"></a>buffer_time</code></em>;</p></td>
+<td class="struct_member_description"><p>the total buffer size in microseconds</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstAudioRingBufferSpec.segsize"></a>segsize</code></em>;</p></td>
+<td class="struct_member_description"><p>the size of one segment in bytes</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstAudioRingBufferSpec.segtotal"></a>segtotal</code></em>;</p></td>
+<td class="struct_member_description"><p>the total number of segments</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> <em class="structfield"><code><a name="GstAudioRingBufferSpec.seglatency"></a>seglatency</code></em>;</p></td>
+<td class="struct_member_description"><p>number of segments queued in the lower level device,
+defaults to segtotal</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstAudioRingBufferState"></a><h3>enum GstAudioRingBufferState</h3>
+<p>The state of the ringbuffer.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.10.5.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-STATE-STOPPED:CAPS"></a>GST_AUDIO_RING_BUFFER_STATE_STOPPED</p></td>
+<td class="enum_member_description">
+<p>The ringbuffer is stopped</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-STATE-PAUSED:CAPS"></a>GST_AUDIO_RING_BUFFER_STATE_PAUSED</p></td>
+<td class="enum_member_description">
+<p>The ringbuffer is paused</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-STATE-STARTED:CAPS"></a>GST_AUDIO_RING_BUFFER_STATE_STARTED</p></td>
+<td class="enum_member_description">
+<p>The ringbuffer is started</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-STATE-ERROR:CAPS"></a>GST_AUDIO_RING_BUFFER_STATE_ERROR</p></td>
+<td class="enum_member_description">
+<p>The ringbuffer has encountered an
+    error after it has been started, e.g. because the device was
+    disconnected (Since 1.2)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstAudioRingBufferFormatType"></a><h3>enum GstAudioRingBufferFormatType</h3>
+<p>The format of the samples in the ringbuffer.</p>
+<div class="refsect3">
+<a name="id-1.2.6.15.10.6.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-FORMAT-TYPE-RAW:CAPS"></a>GST_AUDIO_RING_BUFFER_FORMAT_TYPE_RAW</p></td>
+<td class="enum_member_description">
+<p>samples in linear or float</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-FORMAT-TYPE-MU-LAW:CAPS"></a>GST_AUDIO_RING_BUFFER_FORMAT_TYPE_MU_LAW</p></td>
+<td class="enum_member_description">
+<p>samples in mulaw</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-FORMAT-TYPE-A-LAW:CAPS"></a>GST_AUDIO_RING_BUFFER_FORMAT_TYPE_A_LAW</p></td>
+<td class="enum_member_description">
+<p>samples in alaw</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-FORMAT-TYPE-IMA-ADPCM:CAPS"></a>GST_AUDIO_RING_BUFFER_FORMAT_TYPE_IMA_ADPCM</p></td>
+<td class="enum_member_description">
+<p>samples in ima adpcm</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-FORMAT-TYPE-MPEG:CAPS"></a>GST_AUDIO_RING_BUFFER_FORMAT_TYPE_MPEG</p></td>
+<td class="enum_member_description">
+<p>samples in mpeg audio (but not AAC) format</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-FORMAT-TYPE-GSM:CAPS"></a>GST_AUDIO_RING_BUFFER_FORMAT_TYPE_GSM</p></td>
+<td class="enum_member_description">
+<p>samples in gsm format</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-FORMAT-TYPE-IEC958:CAPS"></a>GST_AUDIO_RING_BUFFER_FORMAT_TYPE_IEC958</p></td>
+<td class="enum_member_description">
+<p>samples in IEC958 frames (e.g. AC3)</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-FORMAT-TYPE-AC3:CAPS"></a>GST_AUDIO_RING_BUFFER_FORMAT_TYPE_AC3</p></td>
+<td class="enum_member_description">
+<p>samples in AC3 format</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-FORMAT-TYPE-EAC3:CAPS"></a>GST_AUDIO_RING_BUFFER_FORMAT_TYPE_EAC3</p></td>
+<td class="enum_member_description">
+<p>samples in EAC3 format</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-FORMAT-TYPE-DTS:CAPS"></a>GST_AUDIO_RING_BUFFER_FORMAT_TYPE_DTS</p></td>
+<td class="enum_member_description">
+<p>samples in DTS format</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-FORMAT-TYPE-MPEG2-AAC:CAPS"></a>GST_AUDIO_RING_BUFFER_FORMAT_TYPE_MPEG2_AAC</p></td>
+<td class="enum_member_description">
+<p>samples in MPEG-2 AAC format</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-AUDIO-RING-BUFFER-FORMAT-TYPE-MPEG4-AAC:CAPS"></a>GST_AUDIO_RING_BUFFER_FORMAT_TYPE_MPEG4_AAC</p></td>
+<td class="enum_member_description">
+<p>samples in MPEG-4 AAC format</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudioringbuffer.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="gst-plugins-base-libs-gstaudiobasesink.html#GstAudioBaseSink"><span class="type">GstAudioBaseSink</span></a>, <a class="link" href="gst-plugins-base-libs-gstaudiosink.html#GstAudioSink"><span class="type">GstAudioSink</span></a></p>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.20</div>
+</body>
+</html>

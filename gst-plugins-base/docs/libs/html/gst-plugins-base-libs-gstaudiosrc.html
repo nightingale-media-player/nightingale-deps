@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GStreamer Base Plugins 1.0 Library Reference Manual: gstaudiosrc</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gstreamer-audio.html" title="Audio Library">
+<link rel="prev" href="gst-plugins-base-libs-gstaudiosink.html" title="gstaudiosink">
+<link rel="next" href="gst-plugins-base-libs-gstaudiobasesink.html" title="gstaudiobasesink">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstaudiosrc.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstaudiosrc.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-audio.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-gstaudiosink.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-libs-gstaudiobasesink.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-base-libs-gstaudiosrc"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstaudiosrc.top_of_page"></a>gstaudiosrc</span></h2>
+<p>gstaudiosrc — Simple base class for audio sources</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<a name="GstAudioSrc"></a><div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudiosrc.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrc-struct" title="struct GstAudioSrc">GstAudioSrc</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrcClass" title="struct GstAudioSrcClass">GstAudioSrcClass</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudiosrc.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseSrc.html">GstBaseSrc</a>
+                    <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstPushSrc.html">GstPushSrc</a>
+                        <span class="lineart">╰──</span> <a class="link" href="gst-plugins-base-libs-gstaudiobasesrc.html#GstAudioBaseSrc">GstAudioBaseSrc</a>
+                            <span class="lineart">╰──</span> GstAudioSrc
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudiosrc.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/audio/gstaudiosrc.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudiosrc.description"></a><h2>Description</h2>
+<p>This is the most simple base class for audio sources that only requires
+subclasses to implement a set of simple functions:</p>
+<div class="variablelist"><table border="0" class="variablelist">
+<colgroup>
+<col align="left" valign="top">
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td><p><span class="term"><code class="function">open()</code></span></p></td>
+<td><p>Open the device.</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="function">prepare()</code></span></p></td>
+<td><p>Configure the device with the specified format.</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="function">read()</code></span></p></td>
+<td><p>Read samples from the device.</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="function">reset()</code></span></p></td>
+<td><p>Unblock reads and flush the device.</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="function">delay()</code></span></p></td>
+<td><p>Get the number of samples in the device but not yet read.
+    </p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="function">unprepare()</code></span></p></td>
+<td><p>Undo operations done by prepare.</p></td>
+</tr>
+<tr>
+<td><p><span class="term"><code class="function">close()</code></span></p></td>
+<td><p>Close the device.</p></td>
+</tr>
+</tbody>
+</table></div>
+<p>All scheduling of samples and timestamps is done in this base class
+together with <a class="link" href="gst-plugins-base-libs-gstaudiobasesrc.html#GstAudioBaseSrc"><span class="type">GstAudioBaseSrc</span></a> using a default implementation of a
+<a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a> that uses threads.</p>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudiosrc.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudiosrc.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstAudioSrc-struct"></a><h3>struct GstAudioSrc</h3>
+<pre class="programlisting">struct GstAudioSrc;</pre>
+<p>Base class for simple audio sources.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstAudioSrcClass"></a><h3>struct GstAudioSrcClass</h3>
+<pre class="programlisting">struct GstAudioSrcClass {
+  GstAudioBaseSrcClass parent_class;
+
+  /* vtable */
+
+  /* open the device with given specs */
+  gboolean (*open)      (GstAudioSrc *src);
+  /* prepare resources and state to operate with the given specs */
+  gboolean (*prepare)   (GstAudioSrc *src, GstAudioRingBufferSpec *spec);
+  /* undo anything that was done in prepare() */
+  gboolean (*unprepare) (GstAudioSrc *src);
+  /* close the device */
+  gboolean (*close)     (GstAudioSrc *src);
+  /* read samples from the device */
+  guint    (*read)      (GstAudioSrc *src, gpointer data, guint length,
+      GstClockTime *timestamp);
+  /* get number of samples queued in the device */
+  guint    (*delay)     (GstAudioSrc *src);
+  /* reset the audio device, unblock from a write */
+  void     (*reset)     (GstAudioSrc *src);
+};
+</pre>
+<p><a class="link" href="gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrc"><span class="type">GstAudioSrc</span></a> class. Override the vmethod to implement
+functionality.</p>
+<div class="refsect3">
+<a name="id-1.2.6.11.9.3.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstaudiobasesrc.html#GstAudioBaseSrcClass" title="struct GstAudioBaseSrcClass"><span class="type">GstAudioBaseSrcClass</span></a> <em class="structfield"><code><a name="GstAudioSrcClass.parent-class"></a>parent_class</code></em>;</p></td>
+<td class="struct_member_description"><p>the parent class.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioSrcClass.open"></a>open</code></em> ()</p></td>
+<td class="struct_member_description"><p>open the device with the specified caps</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioSrcClass.prepare"></a>prepare</code></em> ()</p></td>
+<td class="struct_member_description"><p>configure device with format</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioSrcClass.unprepare"></a>unprepare</code></em> ()</p></td>
+<td class="struct_member_description"><p>undo the configuration</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioSrcClass.close"></a>close</code></em> ()</p></td>
+<td class="struct_member_description"><p>close the device</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioSrcClass.read"></a>read</code></em> ()</p></td>
+<td class="struct_member_description"><p>read samples from the audio device</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioSrcClass.delay"></a>delay</code></em> ()</p></td>
+<td class="struct_member_description"><p>the number of samples queued in the device</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstAudioSrcClass.reset"></a>reset</code></em> ()</p></td>
+<td class="struct_member_description"><p>unblock a read to the device and reset.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstaudiosrc.see-also"></a><h2>See Also</h2>
+<p><a class="link" href="gst-plugins-base-libs-gstaudiobasesrc.html#GstAudioBaseSrc"><span class="type">GstAudioBaseSrc</span></a>, <a class="link" href="gst-plugins-base-libs-gstaudioringbuffer.html#GstAudioRingBuffer"><span class="type">GstAudioRingBuffer</span></a>, <a class="link" href="gst-plugins-base-libs-gstaudiosrc.html#GstAudioSrc"><span class="type">GstAudioSrc</span></a>.</p>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.20</div>
+</body>
+</html>
