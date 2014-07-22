@@ -29,6 +29,7 @@ version_get ()
 {
   COMMAND=$1
   VARPREFIX=`echo $2 | tr .,- _`
+  local ${VARPREFIX}_VERSION
 
   # strip everything that's not a digit, then use cut to get the first field
   pkg_version=`$COMMAND --version|head -n 1|sed 's/^.*)[^0-9]*//'|cut -d' ' -f1`

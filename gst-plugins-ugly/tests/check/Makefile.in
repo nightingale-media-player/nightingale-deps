@@ -85,7 +85,7 @@ DIST_COMMON = $(top_srcdir)/common/check.mak $(srcdir)/Makefile.in \
 	$(top_srcdir)/test-driver
 check_PROGRAMS = generic/states$(EXEEXT) $(am__EXEEXT_1) \
 	$(am__EXEEXT_2) $(am__EXEEXT_3) $(am__EXEEXT_4) \
-	elements/xingmux$(EXEEXT)
+	$(am__EXEEXT_5)
 noinst_PROGRAMS =
 subdir = tests/check
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -93,7 +93,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -131,6 +130,7 @@ CONFIG_CLEAN_VPATH_FILES =
 @USE_LAME_TRUE@am__EXEEXT_2 = pipelines/lame$(EXEEXT)
 @USE_MPEG2DEC_TRUE@am__EXEEXT_3 = elements/mpeg2dec$(EXEEXT)
 @USE_X264_TRUE@am__EXEEXT_4 = elements/x264enc$(EXEEXT)
+@USE_PLUGIN_XINGMUX_TRUE@am__EXEEXT_5 = elements/xingmux$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 elements_amrnbenc_SOURCES = elements/amrnbenc.c
 am__dirstamp = $(am__leading_dot)dirstamp
@@ -725,6 +725,8 @@ TESTS = $(check_PROGRAMS)
 @USE_MPEG2DEC_TRUE@MPEG2DEC = elements/mpeg2dec
 @USE_X264_FALSE@check_x264enc = 
 @USE_X264_TRUE@check_x264enc = elements/x264enc
+@USE_PLUGIN_XINGMUX_FALSE@check_xingmux = 
+@USE_PLUGIN_XINGMUX_TRUE@check_xingmux = elements/xingmux
 noinst_HEADERS = elements/xingmux_testdata.h
 AM_CFLAGS = $(GST_OBJ_CFLAGS) $(GST_CHECK_CFLAGS) $(CHECK_CFLAGS) \
 		-UG_DISABLE_ASSERT -UG_DISABLE_CAST_CHECKS

@@ -86,7 +86,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -462,9 +461,10 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@ENABLE_GTK_DOC_FALSE@GTK_DOC_DIRS = 
-@ENABLE_GTK_DOC_TRUE@GTK_DOC_DIRS = plugins
-SUBDIRS = $(GTK_DOC_DIRS)
+@ENABLE_GTK_DOC_FALSE@PLUGIN_DOCS_DIRS = plugins
+@ENABLE_GTK_DOC_TRUE@@ENABLE_PLUGIN_DOCS_FALSE@PLUGIN_DOCS_DIRS = 
+@ENABLE_GTK_DOC_TRUE@@ENABLE_PLUGIN_DOCS_TRUE@PLUGIN_DOCS_DIRS = plugins
+SUBDIRS = $(PLUGIN_DOCS_DIRS)
 DIST_SUBDIRS = plugins
 EXTRA_DIST = \
         random/ChangeLog-0.8 \
@@ -784,7 +784,7 @@ uninstall-am:
 
 
 upload:
-	make -C plugins upload
+	@if test "x$(SUBDIRS)" != x; then for a in $(SUBDIRS); do cd $$a; make upload; cd ..; done; fi
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

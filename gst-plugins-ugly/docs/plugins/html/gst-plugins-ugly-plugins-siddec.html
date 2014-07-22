@@ -2,34 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>siddec</title>
+<title>GStreamer Ugly Plugins 1.0 Plugins Reference Manual: siddec</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Ugly Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-ugly Elements">
 <link rel="prev" href="gst-plugins-ugly-plugins-rtspwms.html" title="rtspwms">
 <link rel="next" href="gst-plugins-ugly-plugins-twolame.html" title="twolame">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-ugly-plugins-rtspwms.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Ugly Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-ugly-plugins-twolame.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-ugly-plugins-siddec.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-siddec.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-siddec.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-ugly-plugins-siddec.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-ugly-plugins-siddec.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-ugly-plugins-siddec.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-ugly-plugins-siddec.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-ugly-plugins-rtspwms.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-ugly-plugins-twolame.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-ugly-plugins-siddec"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -37,35 +31,86 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-ugly-plugins-siddec.top_of_page"></a>siddec</span></h2>
 <p>siddec — Use libsidplay to decode SID audio tunes</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-ugly-plugins-siddec.synopsis"></a><h2>Synopsis</h2>
-<a name="GstSidDec"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec-struct" title="struct GstSidDec">GstSidDec</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-ugly-plugins-siddec.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--blocksize" title="The “blocksize” property">blocksize</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">GstSidClock</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--clock" title="The “clock” property">clock</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--filter" title="The “filter” property">filter</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--force-speed" title="The “force-speed” property">force-speed</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--measured-volume" title="The “measured-volume” property">measured-volume</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><span class="type">GstSidMemory</span></td>
+<td class="property_name"><a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--memory" title="The “memory” property">memory</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--metadata" title="The “metadata” property">metadata</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--mos8580" title="The “mos8580” property">mos8580</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--tune" title="The “tune” property">tune</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstSidDec"></a><div class="refsect1">
+<a name="gst-plugins-ugly-plugins-siddec.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec-struct" title="struct GstSidDec">GstSidDec</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-ugly-plugins-siddec.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----GstSidDec
-</pre>
-</div>
-<div class="refsect1">
-<a name="gst-plugins-ugly-plugins-siddec.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--blocksize" title='The "blocksize" property'>blocksize</a>"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--clock" title='The "clock" property'>clock</a>"                    <span class="type">GstSidClock</span>           : Read / Write
-  "<a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--filter" title='The "filter" property'>filter</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--force-speed" title='The "force-speed" property'>force-speed</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--measured-volume" title='The "measured-volume" property'>measured-volume</a>"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--memory" title='The "memory" property'>memory</a>"                   <span class="type">GstSidMemory</span>          : Read / Write
-  "<a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--metadata" title='The "metadata" property'>metadata</a>"                 <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a>*              : Read
-  "<a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--mos8580" title='The "mos8580" property'>mos8580</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-ugly-plugins-siddec.html#GstSidDec--tune" title='The "tune" property'>tune</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstSidDec
 </pre>
 </div>
 <div class="refsect1">
@@ -73,7 +118,7 @@
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.14.6.2.1"></a><h3>Element Information</h3>
+<a name="id-1.2.14.7.2.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -99,7 +144,7 @@
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.14.6.2.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.14.7.2.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -154,7 +199,10 @@
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-ugly-plugins-siddec.details"></a><h2>Details</h2>
+<a name="gst-plugins-ugly-plugins-siddec.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-ugly-plugins-siddec.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstSidDec-struct"></a><h3>struct GstSidDec</h3>
 <pre class="programlisting">struct GstSidDec;</pre>
@@ -165,65 +213,74 @@
 <div class="refsect1">
 <a name="gst-plugins-ugly-plugins-siddec.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstSidDec--blocksize"></a><h3>The <code class="literal">"blocksize"</code> property</h3>
-<pre class="programlisting">  "blocksize"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
+<a name="GstSidDec--blocksize"></a><h3>The <code class="literal">“blocksize”</code> property</h3>
+<pre class="programlisting">  “blocksize”                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a></pre>
 <p>Size in bytes to output per buffer.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: &gt;= 1</p>
 <p>Default value: 4096</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSidDec--clock"></a><h3>The <code class="literal">"clock"</code> property</h3>
-<pre class="programlisting">  "clock"                    <span class="type">GstSidClock</span>           : Read / Write</pre>
+<a name="GstSidDec--clock"></a><h3>The <code class="literal">“clock”</code> property</h3>
+<pre class="programlisting">  “clock”                    <span class="type">GstSidClock</span></pre>
 <p>clock.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: PAL</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSidDec--filter"></a><h3>The <code class="literal">"filter"</code> property</h3>
-<pre class="programlisting">  "filter"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstSidDec--filter"></a><h3>The <code class="literal">“filter”</code> property</h3>
+<pre class="programlisting">  “filter”                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>filter.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSidDec--force-speed"></a><h3>The <code class="literal">"force-speed"</code> property</h3>
-<pre class="programlisting">  "force-speed"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstSidDec--force-speed"></a><h3>The <code class="literal">“force-speed”</code> property</h3>
+<pre class="programlisting">  “force-speed”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>force_speed.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSidDec--measured-volume"></a><h3>The <code class="literal">"measured-volume"</code> property</h3>
-<pre class="programlisting">  "measured-volume"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstSidDec--measured-volume"></a><h3>The <code class="literal">“measured-volume”</code> property</h3>
+<pre class="programlisting">  “measured-volume”          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>measured_volume.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: TRUE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSidDec--memory"></a><h3>The <code class="literal">"memory"</code> property</h3>
-<pre class="programlisting">  "memory"                   <span class="type">GstSidMemory</span>          : Read / Write</pre>
+<a name="GstSidDec--memory"></a><h3>The <code class="literal">“memory”</code> property</h3>
+<pre class="programlisting">  “memory”                   <span class="type">GstSidMemory</span></pre>
 <p>memory.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: Bank Switching</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSidDec--metadata"></a><h3>The <code class="literal">"metadata"</code> property</h3>
-<pre class="programlisting">  "metadata"                 <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a>*              : Read</pre>
+<a name="GstSidDec--metadata"></a><h3>The <code class="literal">“metadata”</code> property</h3>
+<pre class="programlisting">  “metadata”                 <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstCaps.html#GstCaps"><span class="type">GstCaps</span></a> *</pre>
 <p>Metadata.</p>
+<p>Flags: Read</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSidDec--mos8580"></a><h3>The <code class="literal">"mos8580"</code> property</h3>
-<pre class="programlisting">  "mos8580"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstSidDec--mos8580"></a><h3>The <code class="literal">“mos8580”</code> property</h3>
+<pre class="programlisting">  “mos8580”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>mos8580.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstSidDec--tune"></a><h3>The <code class="literal">"tune"</code> property</h3>
-<pre class="programlisting">  "tune"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<a name="GstSidDec--tune"></a><h3>The <code class="literal">“tune”</code> property</h3>
+<pre class="programlisting">  “tune”                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>tune.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [0,100]</p>
 <p>Default value: 0</p>
 </div>
@@ -231,6 +288,6 @@
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

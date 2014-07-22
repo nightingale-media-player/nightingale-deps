@@ -8,10 +8,10 @@ AC_DEFUN([AG_GST_BISON_CHECK],
   fi
 
   dnl check bison version
-  dnl we need version >= 1.875 for the reentrancy support
+  dnl we need version >= 2.4 for the '<>' support
   dnl in the parser.
   dnl First lines observed: 'bison (GNU Bison) 2.3' or 'GNU Bison version 1.28'
-  bison_min_version=1.875
+  bison_min_version=2.4
   bison_version=`$BISON_PATH --version | head -n 1 |  sed 's/^[[^0-9]]*//' | sed 's/[[^0-9]]*$//' | cut -d' ' -f1`
   AC_MSG_CHECKING([bison version $bison_version >= $bison_min_version])
 

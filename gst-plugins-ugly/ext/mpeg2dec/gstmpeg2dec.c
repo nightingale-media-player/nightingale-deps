@@ -134,6 +134,7 @@ static void
 gst_mpeg2dec_init (GstMpeg2dec * mpeg2dec)
 {
   gst_video_decoder_set_packetized (GST_VIDEO_DECODER (mpeg2dec), TRUE);
+  gst_video_decoder_set_needs_format (GST_VIDEO_DECODER (mpeg2dec), TRUE);
 
   /* initialize the mpeg2dec acceleration */
 }
@@ -589,6 +590,7 @@ handle_sequence (GstMpeg2dec * mpeg2dec, const mpeg2_info_t * info)
   GstVideoCodecState *state;
   GstVideoInfo *dinfo = &mpeg2dec->decoded_info;
   GstVideoInfo *vinfo;
+  GstVideoInfo pre_crop_info;
   GstVideoFormat format;
 
   sequence = info->sequence;
@@ -759,7 +761,13 @@ handle_sequence (GstMpeg2dec * mpeg2dec, const mpeg2_info_t * info)
 
   /* we store the codec size before cropping */
   *dinfo = *vinfo;
-  gst_video_info_set_format (dinfo, format, sequence->width, sequence->height);
+  gst_video_info_set_format (&pre_crop_info, format, sequence->width,
+      sequence->height);
+  dinfo->width = sequence->width;
+  dinfo->height = sequence->height;
+  dinfo->size = pre_crop_info.size;
+  memcpy (dinfo->stride, pre_crop_info.stride, sizeof (pre_crop_info.stride));
+  memcpy (dinfo->offset, pre_crop_info.offset, sizeof (pre_crop_info.offset));
 
   /* Mpeg2dec has 2 frame latency to produce a picture and 1 frame latency in
    * it's parser */
@@ -800,6 +808,7 @@ invalid_size:
 negotiation_fail:
   {
     GST_WARNING_OBJECT (mpeg2dec, "Failed to negotiate with downstream");
+    gst_video_codec_state_unref (state);
     return GST_FLOW_ERROR;
   }
 }

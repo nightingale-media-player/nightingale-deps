@@ -143,6 +143,7 @@ gst_amrnbdec_class_init (GstAmrnbDecClass * klass)
 static void
 gst_amrnbdec_init (GstAmrnbDec * amrnbdec)
 {
+  gst_audio_decoder_set_needs_format (GST_AUDIO_DECODER (amrnbdec), TRUE);
 }
 
 static gboolean
@@ -289,9 +290,6 @@ gst_amrnbdec_handle_frame (GstAudioDecoder * dec, GstBuffer * buffer)
   if (!buffer || !gst_buffer_get_size (buffer))
     return GST_FLOW_OK;
 
-  if (amrnbdec->rate == 0 || amrnbdec->channels == 0)
-    goto not_negotiated;
-
   gst_buffer_map (buffer, &inmap, GST_MAP_READ);
 
   /* get output */
@@ -305,12 +303,4 @@ gst_amrnbdec_handle_frame (GstAudioDecoder * dec, GstBuffer * buffer)
   gst_buffer_unmap (buffer, &inmap);
 
   return gst_audio_decoder_finish_frame (dec, out, 1);
-
-  /* ERRORS */
-not_negotiated:
-  {
-    GST_ELEMENT_ERROR (amrnbdec, STREAM, TYPE_NOT_FOUND, (NULL),
-        ("Decoder is not initialized"));
-    return GST_FLOW_NOT_NEGOTIATED;
-  }
 }

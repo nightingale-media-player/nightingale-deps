@@ -106,9 +106,6 @@ AC_DEFUN([AG_GST_GLIB_CHECK],
   fi
   AC_SUBST(GLIB_MKENUMS)
 
-  dnl for the poor souls who for example have glib in /usr/local
-  AS_SCRUB_INCLUDE(GLIB_CFLAGS)
-
   AC_SUBST(GLIB_EXTRA_CFLAGS)
 
   dnl Now check for GIO

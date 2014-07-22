@@ -9,7 +9,6 @@ EXTRA_DIST = \
 	as-libtool.m4 \
 	as-libtool-tags.m4 \
 	as-python.m4 \
-	as-scrub-include.m4 \
 	as-version.m4 \
 	ax_create_stdint_h.m4 \
 	glib-gettext.m4 \

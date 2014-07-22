@@ -5,9 +5,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-ugly 1.2.3\n"
+"Project-Id-Version: gst-plugins-ugly 1.4.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 12:33+0100\n"
+"POT-Creation-Date: 2014-07-19 16:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,13 +50,13 @@ msgid ""
 "element"
 msgstr ""
 
-#: ext/dvdread/dvdreadsrc.c:985
+#: ext/dvdread/dvdreadsrc.c:986
 msgid ""
 "Could not read DVD. This may be because the DVD is encrypted and a DVD "
 "decryption library is not installed."
 msgstr ""
 
-#: ext/dvdread/dvdreadsrc.c:988
+#: ext/dvdread/dvdreadsrc.c:989
 msgid "Could not read DVD."
 msgstr ""
 
@@ -76,10 +76,10 @@ msgstr ""
 msgid "Failed to configure TwoLAME encoder. Check your encoding parameters."
 msgstr ""
 
-#: gst/asfdemux/gstasfdemux.c:412
+#: gst/asfdemux/gstasfdemux.c:413
 msgid "This stream contains no data."
 msgstr ""
 
-#: gst/asfdemux/gstasfdemux.c:419 gst/asfdemux/gstasfdemux.c:1971
+#: gst/asfdemux/gstasfdemux.c:420 gst/asfdemux/gstasfdemux.c:1961
 msgid "Internal data stream error."
 msgstr ""

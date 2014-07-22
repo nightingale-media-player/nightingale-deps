@@ -106,6 +106,7 @@ gst_amrwbdec_class_init (GstAmrwbDecClass * klass)
 static void
 gst_amrwbdec_init (GstAmrwbDec * amrwbdec)
 {
+  gst_audio_decoder_set_needs_format (GST_AUDIO_DECODER (amrwbdec), TRUE);
 }
 
 static gboolean
@@ -212,9 +213,6 @@ gst_amrwbdec_handle_frame (GstAudioDecoder * dec, GstBuffer * buffer)
   if (!buffer || !gst_buffer_get_size (buffer))
     return GST_FLOW_OK;
 
-  if (amrwbdec->rate == 0 || amrwbdec->channels == 0)
-    goto not_negotiated;
-
   /* the library seems to write into the source data, hence the copy. */
   /* should be no problem */
   gst_buffer_map (buffer, &inmap, GST_MAP_READ);
@@ -232,12 +230,4 @@ gst_amrwbdec_handle_frame (GstAudioDecoder * dec, GstBuffer * buffer)
 
   /* send out */
   return gst_audio_decoder_finish_frame (dec, out, 1);
-
-  /* ERRORS */
-not_negotiated:
-  {
-    GST_ELEMENT_ERROR (amrwbdec, STREAM, TYPE_NOT_FOUND, (NULL),
-        ("Decoder is not initialized"));
-    return GST_FLOW_NOT_NEGOTIATED;
-  }
 }

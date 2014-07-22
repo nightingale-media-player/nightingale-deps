@@ -33,8 +33,6 @@
  * ]| Stream RealAudio data containing AC3 (dnet) compressed audio and decode it
  * and output it to the soundcard using the ALSA element.
  * </refsect2>
- *
- * Last reviewed on 2006-10-24 (0.10.5)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -523,8 +521,7 @@ gst_real_audio_demux_parse_header (GstRealAudioDemux * demux)
 unknown_fourcc:
   {
     GST_ELEMENT_ERROR (GST_ELEMENT (demux), STREAM, DECODE, (NULL),
-        ("Unknown fourcc '%" GST_FOURCC_FORMAT "'",
-            GST_FOURCC_ARGS (demux->fourcc)));
+        ("Unknown fourcc '0x%" G_GINT32_MODIFIER "x'", demux->fourcc));
     return GST_FLOW_ERROR;
   }
 broken_file:
