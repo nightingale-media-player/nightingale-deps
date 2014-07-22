@@ -1,0 +1,138 @@
+
+Release notes for GStreamer Bad Plugins 1.4.0
+
+
+The GStreamer team is pleased to announce the first release of
+the stable 1.4 release series. The 1.4 release series is adding new
+features on top of the 1.0 and 1.2 series and is part of the API and
+ABI-stable 1.x release series of the GStreamer multimedia framework.
+
+
+
+Binaries for Android, iOS, Mac OS X and Windows are provided together
+with this release.
+
+
+
+The stable 1.4 release series is API and ABI compatible with 1.0.x,
+1.2.x and any other 1.x release series in the future. Compared to 1.2.x
+it contains some new features and more intrusive changes that were
+considered too risky as a bugfix.
+
+
+
+"That an accusation?"
+
+
+No perfectly groomed moustache or any amount of fine clothing is going to
+cover up the truth - these plugins are Bad with a capital B.
+They look fine on the outside, and might even appear to get the job done, but
+at the end of the day they're a black sheep. Without a golden-haired angel
+to watch over them, they'll probably land in an unmarked grave at the final
+showdown.
+
+
+Don't bug us about their quality - exercise your Free Software rights,
+patch up the offender and send us the patch on the fastest steed you can
+steal from the Confederates. Because you see, in this world, there's two
+kinds of people, my friend: those with loaded guns and those who dig.
+You dig.
+
+
+This module contains a set of plugins that aren't up to par compared to the
+rest.  They might be close to being good quality, but they're missing something
+- be it a good code review, some documentation, a set of tests, a real live
+maintainer, or some actual wide use.  If the blanks are filled in they might be
+upgraded to become part of either gst-plugins-good or gst-plugins-ugly,
+depending on the other factors.
+If the plugins break, you can't complain - instead, you can fix the
+problem and send us a patch, or bribe someone into fixing them for you.
+New contributors can start here for things to work on.
+
+
+Other modules containing plugins are:
+
+
+gst-plugins-base
+contains a basic set of well-supported plugins
+gst-plugins-good
+contains a set of well-supported plugins under our preferred license
+gst-plugins-ugly
+contains a set of well-supported plugins, but might pose problems for
+    distributors
+gst-libav
+contains a set of codecs plugins based on libav (formerly gst-ffmpeg)
+
+
+
+  
+
+Bugs fixed in this release
+     
+      * 726555 : POTFILES.in is out of date
+      * 733052 : Include windsock header for Windows targets
+      * 733063 : examples: gl fxtest example fails to build on win32 with gtk+ 3.0
+      * 733072 : camerabin: Taking a picture in cheese leads to all sort of race
+      * 733123 : mxfmux: Avoid taking unnecessary ref
+      * 733248 : gl: GLintptr/GLsizeiptr/etc typechecks ignore GL_CFLAGS, potentially causing typedef redefinition errors from gst-libs/gst/gl/glprototypes/gstgl_compat.h at buildtime
+
+==== Download ====
+
+You can find source releases of gst-plugins-bad in the download
+directory: http://gstreamer.freedesktop.org/src/gst-plugins-bad/
+
+The git repository and details how to clone it can be found at
+http://cgit.freedesktop.org/gstreamer/gst-plugins-bad/
+
+==== Homepage ====
+
+The project's website is http://gstreamer.freedesktop.org/
+
+==== Support and Bugs ====
+
+We use GNOME's bugzilla for bug reports and feature requests:
+http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer
+
+Please submit patches via bugzilla as well.
+
+For help and support, please subscribe to and send questions to the
+gstreamer-devel mailing list (see below for details).
+
+There is also a #gstreamer IRC channel on the Freenode IRC network.
+
+==== Developers ====
+
+GStreamer is stored in Git, hosted at git.freedesktop.org, and can be cloned
+from there (see link above).
+
+Interested developers of the core library, plugins, and applications should
+subscribe to the gstreamer-devel list.
+
+        
+Contributors to this release
+    
+      * Alessandro Decina
+      * Alexey Pavlov
+      * Arun Raghavan
+      * Edward Hervey
+      * Gwenole Beauchesne
+      * Göran Jönsson
+      * Jan Alexander Steffens (heftig)
+      * Jan Schmidt
+      * Julien Isorce
+      * Mart Raudsepp
+      * Mathieu Duponchelle
+      * Matthew Waters
+      * Matthieu Bouron
+      * Nicolas Dufresne
+      * Philip Withnall
+      * Piotr Drąg
+      * Sebastian Dröge
+      * Sebastian Rasmussen
+      * Stefan Ringel
+      * Thiago Santos
+      * Thibault Saunier
+      * Tim-Philipp Müller
+      * Vincent Penquerc'h
+      * Wang Xin-yu (王昕宇)
+ 

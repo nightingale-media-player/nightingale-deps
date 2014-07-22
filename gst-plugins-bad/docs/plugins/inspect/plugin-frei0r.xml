@@ -1,0 +1,13 @@
+<plugin>
+  <name>frei0r</name>
+  <description>frei0r plugin library</description>
+  <filename>../../gst/frei0r/.libs/libgstfrei0r.so</filename>
+  <basename>libgstfrei0r.so</basename>
+  <version>1.4.0</version>
+  <license>LGPL</license>
+  <source>gst-plugins-bad</source>
+  <package>GStreamer Bad Plug-ins source release</package>
+  <origin>Unknown package origin</origin>
+  <elements>
+  </elements>
+</plugin>

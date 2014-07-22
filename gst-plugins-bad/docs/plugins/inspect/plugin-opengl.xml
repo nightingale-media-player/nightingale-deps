@@ -1,0 +1,379 @@
+<plugin>
+  <name>opengl</name>
+  <description>OpenGL plugin</description>
+  <filename>../../ext/gl/.libs/libgstopengl.so</filename>
+  <basename>libgstopengl.so</basename>
+  <version>1.4.0</version>
+  <license>LGPL</license>
+  <source>gst-plugins-bad</source>
+  <package>GStreamer Bad Plug-ins source release</package>
+  <origin>Unknown package origin</origin>
+  <elements>
+    <element>
+      <name>glbumper</name>
+      <longname>OpenGL bumper filter</longname>
+      <class>Filter/Effect/Video</class>
+      <description>Bump mapping filter</description>
+      <author>Cyril Comparon &lt;cyril.comparon@gmail.com&gt;, Julien Isorce &lt;julien.isorce@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>glcolorscale</name>
+      <longname>OpenGL color scale</longname>
+      <class>Filter/Effect/Video</class>
+      <description>Colorspace converter and video scaler</description>
+      <author>Julien Isorce &lt;julien.isorce@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>gldeinterlace</name>
+      <longname>OpenGL deinterlacing filter</longname>
+      <class>Deinterlace</class>
+      <description>Deinterlacing based on fragment shaders</description>
+      <author>Julien Isorce &lt;julien.isorce@mail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>gldifferencematte</name>
+      <longname>Gstreamer OpenGL DifferenceMatte</longname>
+      <class>Filter/Effect/Video</class>
+      <description>Saves a background frame and replace it with a pixbuf</description>
+      <author>Filippo Argiolas &lt;filippo.argiolas@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>gleffects</name>
+      <longname>Gstreamer OpenGL Effects</longname>
+      <class>Filter/Effect/Video</class>
+      <description>GL Shading Language effects</description>
+      <author>Filippo Argiolas &lt;filippo.argiolas@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>glfilterapp</name>
+      <longname>OpenGL application filter</longname>
+      <class>Filter/Effect</class>
+      <description>Use client callbacks to define the scene</description>
+      <author>Julien Isorce &lt;julien.isorce@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>glfilterblur</name>
+      <longname>Gstreamer OpenGL Blur</longname>
+      <class>Filter/Effect/Video</class>
+      <description>Blur with 9x9 separable convolution</description>
+      <author>Filippo Argiolas &lt;filippo.argiolas@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>glfiltercube</name>
+      <longname>OpenGL cube filter</longname>
+      <class>Filter/Effect/Video</class>
+      <description>Map input texture on the 6 cube faces</description>
+      <author>Julien Isorce &lt;julien.isorce@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>glfilterglass</name>
+      <longname>OpenGL glass filter</longname>
+      <class>Filter/Effect/Video</class>
+      <description>Glass Filter</description>
+      <author>Julien Isorce &lt;julien.isorce@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>glfilterlaplacian</name>
+      <longname>OpenGL laplacian filter</longname>
+      <class>Filter/Effect/Video</class>
+      <description>Laplacian Convolution Demo Filter</description>
+      <author>Filippo Argiolas &lt;filippo.argiolas@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>glfilterreflectedscreen</name>
+      <longname>OpenGL Reflected Screen filter</longname>
+      <class>Filter/Effect/Video</class>
+      <description>Reflected Screen Filter</description>
+      <author>Pierre POUZOL &lt;pierre.pouzol@hotmail.fr&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>glfiltersobel</name>
+      <longname>Gstreamer OpenGL Sobel</longname>
+      <class>Filter/Effect/Video</class>
+      <description>Sobel edge detection</description>
+      <author>Filippo Argiolas &lt;filippo.argiolas@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>glimagesink</name>
+      <longname>OpenGL video sink</longname>
+      <class>Sink/Video</class>
+      <description>A videosink based on OpenGL</description>
+      <author>Julien Isorce &lt;julien.isorce@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>glmosaic</name>
+      <longname>OpenGL mosaic</longname>
+      <class>Filter/Effect/Video</class>
+      <description>OpenGL mosaic</description>
+      <author>Julien Isorce &lt;julien.isorce@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink_%u</name>
+          <direction>sink</direction>
+          <presence>request</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>gloverlay</name>
+      <longname>Gstreamer OpenGL Overlay</longname>
+      <class>Filter/Effect/Video</class>
+      <description>Overlay GL video texture with a PNG image</description>
+      <author>Filippo Argiolas &lt;filippo.argiolas@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>glshader</name>
+      <longname>OpenGL fragment shader filter</longname>
+      <class>Filter/Effect</class>
+      <description>Load GLSL fragment shader from file</description>
+      <author>&lt;luc.deschenaux@freesurf.ch&gt;</author>
+      <pads>
+        <caps>
+          <name>sink</name>
+          <direction>sink</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>gltestsrc</name>
+      <longname>Video test source</longname>
+      <class>Source/Video</class>
+      <description>Creates a test video stream</description>
+      <author>David A. Schleef &lt;ds@schleef.org&gt;</author>
+      <pads>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(memory:EGLImage), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+    <element>
+      <name>glvideomixer</name>
+      <longname>OpenGL video_mixer</longname>
+      <class>Filter/Effect/Video/Compositor</class>
+      <description>OpenGL video_mixer</description>
+      <author>Julien Isorce &lt;julien.isorce@gmail.com&gt;</author>
+      <pads>
+        <caps>
+          <name>sink_%u</name>
+          <direction>sink</direction>
+          <presence>request</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+        <caps>
+          <name>src</name>
+          <direction>source</direction>
+          <presence>always</presence>
+          <details>video/x-raw(memory:GLMemory), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw(meta:GstVideoGLTextureUploadMeta), format=(string)RGBA, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]; video/x-raw, format=(string){ RGB, RGBx, RGBA, BGR, BGRx, BGRA, xRGB, xBGR, ARGB, ABGR, Y444, I420, YV12, Y42B, Y41B, NV12, NV21, YUY2, UYVY, AYUV, GRAY8, GRAY16_LE, GRAY16_BE }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</details>
+        </caps>
+      </pads>
+    </element>
+  </elements>
+</plugin>
