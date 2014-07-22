@@ -28,8 +28,14 @@ case $OSTYPE in
 
         export SB_LDFLAGS=$LDFLAGS
 
-        if [ ! -d "linux-$(uname -m)" ]; then
-            mkdir -p "linux-$(uname -m)"
+        if [ "$DIST_NAME_BINARIES_DIR" -eq "1" ] ; then
+            if [ ! -d "dist/linux-$(uname -m)" ]; then
+                mkdir -p "dist/linux-$(uname -m)"
+            fi
+        else
+            if [ ! -d "linux-$(uname -m)" ]; then
+                mkdir -p "linux-$(uname -m)"
+            fi
         fi
         if [ ! -d "checkout/linux-$(uname -m)" ]; then
             mkdir -p "checkout/linux-$(uname -m)"
