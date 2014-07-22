@@ -538,6 +538,10 @@ GST_START_TEST (test_deserialize_string)
     const gchar *to;
   } tests[] = {
     {
+    "\"foo\"", "foo"}, {
+    "\"foo\\%\"", "foo%"}, {
+    "\"0123456789_-+/:.\"", "0123456789_-+/:."}, {
+    "\"Hello\\ World\"", "Hello World"}, {
     "", ""},                    /* empty strings */
     {
     "\"\"", ""},                /* quoted empty string -> empty string */
@@ -584,6 +588,7 @@ GST_START_TEST (test_value_compare)
   GValue value1 = { 0 };
   GValue value2 = { 0 };
   GValue tmp = { 0 };
+  GstAllocationParams alloc_params = { 0 };
 
   g_value_init (&value1, G_TYPE_INT);
   g_value_set_int (&value1, 10);
@@ -771,6 +776,27 @@ GST_START_TEST (test_value_compare)
   fail_unless (gst_value_compare (&value1, &value1) == GST_VALUE_EQUAL);
   g_value_unset (&value1);
   g_value_unset (&value2);
+
+  /* Check that we can compare objects */
+  g_value_init (&value1, GST_TYPE_BIN);
+  g_value_take_object (&value1, gst_bin_new (NULL));
+  g_value_init (&value2, GST_TYPE_BIN);
+  g_value_take_object (&value2, gst_bin_new (NULL));
+  fail_unless (gst_value_compare (&value1, &value2) == GST_VALUE_UNORDERED);
+  fail_unless (gst_value_compare (&value1, &value1) == GST_VALUE_EQUAL);
+  g_value_unset (&value1);
+  g_value_unset (&value2);
+
+  /* Check that we can compare allocation params */
+  g_value_init (&value1, GST_TYPE_ALLOCATION_PARAMS);
+  g_value_set_boxed (&value1, &alloc_params);
+  g_value_init (&value2, GST_TYPE_ALLOCATION_PARAMS);
+  alloc_params.align = 1;
+  g_value_set_boxed (&value2, &alloc_params);
+  fail_unless (gst_value_compare (&value1, &value2) == GST_VALUE_UNORDERED);
+  fail_unless (gst_value_compare (&value1, &value1) == GST_VALUE_EQUAL);
+  g_value_unset (&value1);
+  g_value_unset (&value2);
 }
 
 GST_END_TEST;
@@ -855,7 +881,7 @@ GST_START_TEST (test_value_subtract_int)
   /* and the other way around, should create a list of two ranges. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_LIST (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_LIST);
   tmp = gst_value_list_get_value (&dest, 0);
   fail_unless (GST_VALUE_HOLDS_INT_RANGE (tmp) == TRUE);
   fail_unless (gst_value_get_int_range_min (tmp) == 0);
@@ -879,7 +905,7 @@ GST_START_TEST (test_value_subtract_int)
   /* and the other way around, should create a new range. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT_RANGE);
   fail_unless (gst_value_get_int_range_min (&dest) == 11);
   fail_unless (gst_value_get_int_range_max (&dest) == 20);
   g_value_unset (&dest);
@@ -897,7 +923,7 @@ GST_START_TEST (test_value_subtract_int)
   /* and the other way around, should create a new range. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT_RANGE);
   fail_unless (gst_value_get_int_range_min (&dest) == 10);
   fail_unless (gst_value_get_int_range_max (&dest) == 19);
   g_value_unset (&dest);
@@ -918,7 +944,7 @@ GST_START_TEST (test_value_subtract_int)
   /* and the other way around, should keep the range. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT_RANGE);
   fail_unless (gst_value_get_int_range_min (&dest) == 10);
   fail_unless (gst_value_get_int_range_max (&dest) == 20);
   g_value_unset (&dest);
@@ -947,14 +973,14 @@ GST_START_TEST (test_value_subtract_int)
   gst_value_set_int_range (&src2, 30, 40);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT_RANGE);
   fail_unless (gst_value_get_int_range_min (&dest) == 10);
   fail_unless (gst_value_get_int_range_max (&dest) == 20);
   g_value_unset (&dest);
   /* the other way */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT_RANGE);
   fail_unless (gst_value_get_int_range_min (&dest) == 30);
   fail_unless (gst_value_get_int_range_max (&dest) == 40);
   g_value_unset (&dest);
@@ -971,7 +997,7 @@ GST_START_TEST (test_value_subtract_int)
   /* the other way */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT_RANGE);
   fail_unless (gst_value_get_int_range_min (&dest) == 21);
   fail_unless (gst_value_get_int_range_max (&dest) == 30);
   g_value_unset (&dest);
@@ -985,14 +1011,14 @@ GST_START_TEST (test_value_subtract_int)
   gst_value_set_int_range (&src2, 15, 30);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT_RANGE);
   fail_unless (gst_value_get_int_range_min (&dest) == 10);
   fail_unless (gst_value_get_int_range_max (&dest) == 14);
   g_value_unset (&dest);
   /* the other way */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT_RANGE);
   fail_unless (gst_value_get_int_range_min (&dest) == 21);
   fail_unless (gst_value_get_int_range_max (&dest) == 30);
   g_value_unset (&dest);
@@ -1006,7 +1032,7 @@ GST_START_TEST (test_value_subtract_int)
   gst_value_set_int_range (&src2, 15, 20);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_LIST (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_LIST);
   tmp = gst_value_list_get_value (&dest, 0);
   fail_unless (GST_VALUE_HOLDS_INT_RANGE (tmp) == TRUE);
   fail_unless (gst_value_get_int_range_min (tmp) == 10);
@@ -1029,7 +1055,7 @@ GST_START_TEST (test_value_subtract_int)
   gst_value_set_int_range (&src2, 11, 29);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_LIST (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_LIST);
   tmp = gst_value_list_get_value (&dest, 0);
   fail_unless (G_VALUE_HOLDS_INT (tmp) == TRUE);
   fail_unless (g_value_get_int (tmp) == 10);
@@ -1050,7 +1076,7 @@ GST_START_TEST (test_value_subtract_int)
   gst_value_set_int_range (&src2, 11, 28);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_LIST (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_LIST);
   tmp = gst_value_list_get_value (&dest, 0);
   fail_unless (G_VALUE_HOLDS_INT (tmp) == TRUE);
   fail_unless (g_value_get_int (tmp) == 10);
@@ -1072,7 +1098,7 @@ GST_START_TEST (test_value_subtract_int)
   gst_value_set_int_range (&src2, 12, 29);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_LIST (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_LIST);
   tmp = gst_value_list_get_value (&dest, 0);
   fail_unless (GST_VALUE_HOLDS_INT_RANGE (tmp) == TRUE);
   fail_unless (gst_value_get_int_range_min (tmp) == 10);
@@ -1130,7 +1156,7 @@ GST_START_TEST (test_value_subtract_int64)
   /* and the other way around, should create a list of two ranges. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_LIST (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_LIST);
   tmp = gst_value_list_get_value (&dest, 0);
   fail_unless (GST_VALUE_HOLDS_INT64_RANGE (tmp) == TRUE);
   fail_unless (gst_value_get_int64_range_min (tmp) == 0);
@@ -1154,7 +1180,7 @@ GST_START_TEST (test_value_subtract_int64)
   /* and the other way around, should create a new range. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT64_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT64_RANGE);
   fail_unless (gst_value_get_int64_range_min (&dest) == 11);
   fail_unless (gst_value_get_int64_range_max (&dest) == 20);
   g_value_unset (&dest);
@@ -1172,7 +1198,7 @@ GST_START_TEST (test_value_subtract_int64)
   /* and the other way around, should create a new range. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT64_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT64_RANGE);
   fail_unless (gst_value_get_int64_range_min (&dest) == 10);
   fail_unless (gst_value_get_int64_range_max (&dest) == 19);
   g_value_unset (&dest);
@@ -1193,7 +1219,7 @@ GST_START_TEST (test_value_subtract_int64)
   /* and the other way around, should keep the range. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT64_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT64_RANGE);
   fail_unless (gst_value_get_int64_range_min (&dest) == 10);
   fail_unless (gst_value_get_int64_range_max (&dest) == 20);
   g_value_unset (&dest);
@@ -1222,14 +1248,14 @@ GST_START_TEST (test_value_subtract_int64)
   gst_value_set_int64_range (&src2, 30, 40);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT64_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT64_RANGE);
   fail_unless (gst_value_get_int64_range_min (&dest) == 10);
   fail_unless (gst_value_get_int64_range_max (&dest) == 20);
   g_value_unset (&dest);
   /* the other way */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT64_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT64_RANGE);
   fail_unless (gst_value_get_int64_range_min (&dest) == 30);
   fail_unless (gst_value_get_int64_range_max (&dest) == 40);
   g_value_unset (&dest);
@@ -1246,7 +1272,7 @@ GST_START_TEST (test_value_subtract_int64)
   /* the other way */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT64_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT64_RANGE);
   fail_unless (gst_value_get_int64_range_min (&dest) == 21);
   fail_unless (gst_value_get_int64_range_max (&dest) == 30);
   g_value_unset (&dest);
@@ -1260,14 +1286,14 @@ GST_START_TEST (test_value_subtract_int64)
   gst_value_set_int64_range (&src2, 15, 30);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT64_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT64_RANGE);
   fail_unless (gst_value_get_int64_range_min (&dest) == 10);
   fail_unless (gst_value_get_int64_range_max (&dest) == 14);
   g_value_unset (&dest);
   /* the other way */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_INT64_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_INT64_RANGE);
   fail_unless (gst_value_get_int64_range_min (&dest) == 21);
   fail_unless (gst_value_get_int64_range_max (&dest) == 30);
   g_value_unset (&dest);
@@ -1281,7 +1307,7 @@ GST_START_TEST (test_value_subtract_int64)
   gst_value_set_int64_range (&src2, 15, 20);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_LIST (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_LIST);
   tmp = gst_value_list_get_value (&dest, 0);
   fail_unless (GST_VALUE_HOLDS_INT64_RANGE (tmp) == TRUE);
   fail_unless (gst_value_get_int64_range_min (tmp) == 10);
@@ -1304,7 +1330,7 @@ GST_START_TEST (test_value_subtract_int64)
   gst_value_set_int64_range (&src2, 11, 29);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_LIST (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_LIST);
   tmp = gst_value_list_get_value (&dest, 0);
   fail_unless (G_VALUE_HOLDS_INT64 (tmp) == TRUE);
   fail_unless (g_value_get_int64 (tmp) == 10);
@@ -1325,7 +1351,7 @@ GST_START_TEST (test_value_subtract_int64)
   gst_value_set_int64_range (&src2, 11, 28);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_LIST (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_LIST);
   tmp = gst_value_list_get_value (&dest, 0);
   fail_unless (G_VALUE_HOLDS_INT64 (tmp) == TRUE);
   fail_unless (g_value_get_int64 (tmp) == 10);
@@ -1347,7 +1373,7 @@ GST_START_TEST (test_value_subtract_int64)
   gst_value_set_int64_range (&src2, 12, 29);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_LIST (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_LIST);
   tmp = gst_value_list_get_value (&dest, 0);
   fail_unless (GST_VALUE_HOLDS_INT64_RANGE (tmp) == TRUE);
   fail_unless (gst_value_get_int64_range_min (tmp) == 10);
@@ -1406,7 +1432,7 @@ GST_START_TEST (test_value_subtract_double)
    * so the result is the range again */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_DOUBLE_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_DOUBLE_RANGE);
   fail_unless (gst_value_get_double_range_min (&dest) == 0.0);
   fail_unless (gst_value_get_double_range_max (&dest) == 20.0);
   g_value_unset (&dest);
@@ -1425,7 +1451,7 @@ GST_START_TEST (test_value_subtract_double)
    * we don't have open ranges. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_DOUBLE_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_DOUBLE_RANGE);
   fail_unless (gst_value_get_double_range_min (&dest) == 10.0);
   fail_unless (gst_value_get_double_range_max (&dest) == 20.0);
   g_value_unset (&dest);
@@ -1444,7 +1470,7 @@ GST_START_TEST (test_value_subtract_double)
    * we don't have open ranges. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_DOUBLE_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_DOUBLE_RANGE);
   fail_unless (gst_value_get_double_range_min (&dest) == 10.0);
   fail_unless (gst_value_get_double_range_max (&dest) == 20.0);
   g_value_unset (&dest);
@@ -1465,7 +1491,7 @@ GST_START_TEST (test_value_subtract_double)
   /* and the other way around, should keep the range. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_DOUBLE_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_DOUBLE_RANGE);
   fail_unless (gst_value_get_double_range_min (&dest) == 10.0);
   fail_unless (gst_value_get_double_range_max (&dest) == 20.0);
   g_value_unset (&dest);
@@ -1474,6 +1500,26 @@ GST_START_TEST (test_value_subtract_double)
 
   /*  double_range <-> double_range
    */
+
+  /* Check equality */
+  g_value_init (&src1, GST_TYPE_DOUBLE_RANGE);
+  gst_value_set_double_range (&src1, 10.0, 20.0);
+  g_value_init (&src2, GST_TYPE_DOUBLE_RANGE);
+  gst_value_set_double_range (&src2, 10.0, 15.0);
+  /* They are not equal (higher bound is different */
+  fail_if (gst_value_compare (&src1, &src2) == GST_VALUE_EQUAL);
+  g_value_unset (&src1);
+  /* They are not equal (lower bound is different */
+  g_value_init (&src1, GST_TYPE_DOUBLE_RANGE);
+  gst_value_set_double_range (&src1, 5.0, 15.0);
+  fail_if (gst_value_compare (&src1, &src2) == GST_VALUE_EQUAL);
+  g_value_unset (&src1);
+  /* And finally check equality */
+  g_value_init (&src1, GST_TYPE_DOUBLE_RANGE);
+  gst_value_set_double_range (&src1, 10.0, 15.0);
+  fail_unless (gst_value_compare (&src1, &src2) == GST_VALUE_EQUAL);
+  g_value_unset (&src1);
+  g_value_unset (&src2);
 
   /* same range, empty set */
   g_value_init (&src1, GST_TYPE_DOUBLE_RANGE);
@@ -1494,14 +1540,14 @@ GST_START_TEST (test_value_subtract_double)
   gst_value_set_double_range (&src2, 30.0, 40.0);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_DOUBLE_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_DOUBLE_RANGE);
   fail_unless (gst_value_get_double_range_min (&dest) == 10.0);
   fail_unless (gst_value_get_double_range_max (&dest) == 20.0);
   g_value_unset (&dest);
   /* the other way */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_DOUBLE_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_DOUBLE_RANGE);
   fail_unless (gst_value_get_double_range_min (&dest) == 30.0);
   fail_unless (gst_value_get_double_range_max (&dest) == 40.0);
   g_value_unset (&dest);
@@ -1518,7 +1564,7 @@ GST_START_TEST (test_value_subtract_double)
   /* the other way */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_DOUBLE_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_DOUBLE_RANGE);
   fail_unless (gst_value_get_double_range_min (&dest) == 20.0);
   fail_unless (gst_value_get_double_range_max (&dest) == 30.0);
   g_value_unset (&dest);
@@ -1532,14 +1578,14 @@ GST_START_TEST (test_value_subtract_double)
   gst_value_set_double_range (&src2, 15.0, 30.0);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_DOUBLE_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_DOUBLE_RANGE);
   fail_unless (gst_value_get_double_range_min (&dest) == 10.0);
   fail_unless (gst_value_get_double_range_max (&dest) == 15.0);
   g_value_unset (&dest);
   /* the other way */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_DOUBLE_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_DOUBLE_RANGE);
   fail_unless (gst_value_get_double_range_min (&dest) == 20.0);
   fail_unless (gst_value_get_double_range_max (&dest) == 30.0);
   g_value_unset (&dest);
@@ -1553,7 +1599,7 @@ GST_START_TEST (test_value_subtract_double)
   gst_value_set_double_range (&src2, 15.0, 20.0);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_LIST (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_LIST);
   tmp = gst_value_list_get_value (&dest, 0);
   fail_unless (GST_VALUE_HOLDS_DOUBLE_RANGE (tmp) == TRUE);
   fail_unless (gst_value_get_double_range_min (tmp) == 10.0);
@@ -1674,7 +1720,7 @@ GST_START_TEST (test_value_subtract_fraction_range)
    * so the result is the range again */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_FRACTION_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_FRACTION_RANGE);
   gst_value_set_fraction (&cmp, 0, 1);
   fail_unless (gst_value_compare (gst_value_get_fraction_range_min (&dest),
           &cmp) == GST_VALUE_EQUAL);
@@ -1697,7 +1743,7 @@ GST_START_TEST (test_value_subtract_fraction_range)
    * we don't have open ranges. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_FRACTION_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_FRACTION_RANGE);
   gst_value_set_fraction (&cmp, 10, 1);
   fail_unless (gst_value_compare (gst_value_get_fraction_range_min (&dest),
           &cmp) == GST_VALUE_EQUAL);
@@ -1715,14 +1761,14 @@ GST_START_TEST (test_value_subtract_fraction_range)
   gst_value_set_fraction_range_full (&src2, 10, 1, 20, 1);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_FRACTION (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_FRACTION);
   fail_unless (gst_value_compare (&dest, &src1) == GST_VALUE_EQUAL);
   g_value_unset (&dest);
 
   /* and the other way around, should keep the range. */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_FRACTION_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_FRACTION_RANGE);
   fail_unless (gst_value_compare (&dest, &src2) == GST_VALUE_EQUAL);
   g_value_unset (&dest);
   g_value_unset (&src1);
@@ -1750,7 +1796,7 @@ GST_START_TEST (test_value_subtract_fraction_range)
   gst_value_set_fraction_range_full (&src2, 30, 2, 40, 2);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_FRACTION_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_FRACTION_RANGE);
   gst_value_set_fraction (&cmp, 5, 1);
   fail_unless (gst_value_compare (gst_value_get_fraction_range_min (&dest),
           &cmp) == GST_VALUE_EQUAL);
@@ -1762,7 +1808,7 @@ GST_START_TEST (test_value_subtract_fraction_range)
   /* the other way */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_FRACTION_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_FRACTION_RANGE);
   gst_value_set_fraction (&cmp, 15, 1);
   fail_unless (gst_value_compare (gst_value_get_fraction_range_min (&dest),
           &cmp) == GST_VALUE_EQUAL);
@@ -1783,7 +1829,7 @@ GST_START_TEST (test_value_subtract_fraction_range)
   /* the other way */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_FRACTION_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_FRACTION_RANGE);
   gst_value_set_fraction (&cmp, 20, 1);
   fail_unless (gst_value_compare (gst_value_get_fraction_range_min (&dest),
           &cmp) == GST_VALUE_EQUAL);
@@ -1801,7 +1847,7 @@ GST_START_TEST (test_value_subtract_fraction_range)
   gst_value_set_fraction_range_full (&src2, 15, 1, 30, 1);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_FRACTION_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_FRACTION_RANGE);
   gst_value_set_fraction (&cmp, 10, 1);
   fail_unless (gst_value_compare (gst_value_get_fraction_range_min (&dest),
           &cmp) == GST_VALUE_EQUAL);
@@ -1813,7 +1859,7 @@ GST_START_TEST (test_value_subtract_fraction_range)
   /* the other way */
   ret = gst_value_subtract (&dest, &src2, &src1);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_FRACTION_RANGE (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_FRACTION_RANGE);
   gst_value_set_fraction (&cmp, 20, 1);
   fail_unless (gst_value_compare (gst_value_get_fraction_range_min (&dest),
           &cmp) == GST_VALUE_EQUAL);
@@ -1831,7 +1877,7 @@ GST_START_TEST (test_value_subtract_fraction_range)
   gst_value_set_fraction_range_full (&src2, 15, 1, 20, 1);
   ret = gst_value_subtract (&dest, &src1, &src2);
   fail_unless (ret == TRUE);
-  fail_unless (GST_VALUE_HOLDS_LIST (&dest) == TRUE);
+  fail_unless (G_VALUE_TYPE (&dest) == GST_TYPE_LIST);
   /* 1st list entry */
   tmp = gst_value_list_get_value (&dest, 0);
   fail_unless (GST_VALUE_HOLDS_FRACTION_RANGE (tmp) == TRUE);
@@ -2379,11 +2425,17 @@ GST_START_TEST (test_serialize_deserialize_caps)
   , value2 = {
   0};
   GstCaps *caps, *caps2;
+  GstCaps *incaps;
   gchar *serialized;
 
+  incaps = gst_caps_new_simple ("caps/internal",
+      "in-field", G_TYPE_INT, 20, "in-field2",
+      G_TYPE_STRING, "some in ternal field", NULL);
   caps = gst_caps_new_simple ("test/caps",
-      "foo", G_TYPE_INT, 10, "bar", G_TYPE_STRING, "test", NULL);
+      "foo", G_TYPE_INT, 10, "bar", G_TYPE_STRING, "test",
+      "int-caps", GST_TYPE_CAPS, incaps, NULL);
   fail_if (GST_CAPS_REFCOUNT_VALUE (caps) != 1);
+  gst_caps_unref (incaps);
 
   /* and assign caps to gvalue */
   g_value_init (&value, GST_TYPE_CAPS);
@@ -2452,6 +2504,13 @@ GST_START_TEST (test_int_range)
   gst_value_set_int_range (&range2, 6, 7);
   g_value_unset (&dest);
   fail_unless (gst_value_intersect (&dest, &range, &range2) == FALSE);
+
+  gst_value_set_int_range (&range, -7, -6);
+  fail_unless_equals_int (gst_value_get_int_range_min (&range), -7);
+  fail_unless_equals_int (gst_value_get_int_range_max (&range), -6);
+  gst_value_set_int_range (&range, -7, 7);
+  fail_unless_equals_int (gst_value_get_int_range_min (&range), -7);
+  fail_unless_equals_int (gst_value_get_int_range_max (&range), 7);
 
   g_value_unset (&start);
   g_value_unset (&end);

@@ -288,19 +288,19 @@ gst_caps_copy (const GstCaps * caps)
 
 /**
  * gst_caps_replace:
- * @old_caps: (inout) (transfer full): pointer to a pointer to a #GstCaps to be
- *     replaced.
+ * @old_caps: (inout) (transfer full) (nullable): pointer to a pointer
+ *     to a #GstCaps to be replaced.
  * @new_caps: (transfer none) (allow-none): pointer to a #GstCaps that will
- *     replace the caps pointed to by @ocaps.
+ *     replace the caps pointed to by @old_caps.
  *
  * Modifies a pointer to a #GstCaps to point to a different #GstCaps. The
  * modification is done atomically (so this is useful for ensuring thread safety
  * in some cases), and the reference counts are updated appropriately (the old
  * caps is unreffed, the new is reffed).
  *
- * Either @ncaps or the #GstCaps pointed to by @ocaps may be NULL.
+ * Either @new_caps or the #GstCaps pointed to by @old_caps may be %NULL.
  *
- * Returns: TRUE if @new_caps was different from @old_caps
+ * Returns: %TRUE if @new_caps was different from @old_caps
  */
 #ifdef _FOOL_GTK_DOC_
 G_INLINE_FUNC gboolean gst_caps_replace (GstCaps **old_caps, GstCaps *new_caps);
@@ -317,13 +317,13 @@ gst_caps_replace (GstCaps **old_caps, GstCaps *new_caps)
  * @old_caps: (inout) (transfer full): pointer to a pointer to a #GstCaps to be
  *     replaced.
  * @new_caps: (transfer full) (allow-none): pointer to a #GstCaps that will
- *     replace the caps pointed to by @ocaps.
+ *     replace the caps pointed to by @old_caps.
  *
  * Modifies a pointer to a #GstCaps to point to a different #GstCaps. This
  * function is similar to gst_caps_replace() except that it takes ownership
  * of @new_caps.
  *
- * Returns: TRUE if @new_caps was different from @old_caps
+ * Returns: %TRUE if @new_caps was different from @old_caps
  */
 #ifdef _FOOL_GTK_DOC_
 G_INLINE_FUNC gboolean gst_caps_take (GstCaps **old_caps, GstCaps *new_caps);

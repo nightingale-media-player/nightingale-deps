@@ -6,21 +6,21 @@
 #include "../gstparse.h"
 
 typedef struct {
-  GstElement *src;
-  GstElement *sink;
-  gchar *src_name;
-  gchar *sink_name;
-  GSList *src_pads;
-  GSList *sink_pads;
+  GstElement *element;
+  gchar *name;
+  GSList *pads;
+} reference_t;
+
+typedef struct {
+  reference_t src;
+  reference_t sink;
   GstCaps *caps;
 } link_t;
 
 typedef struct {
   GSList *elements;
-  GstElement *first;
-  GstElement *last;
-  link_t *front;
-  link_t *back;
+  reference_t first;
+  reference_t last;
 } chain_t;
 
 typedef struct _graph_t graph_t;
@@ -38,17 +38,21 @@ struct _graph_t {
  * doesn't really work.
  * This is not safe from reentrance issues, but that doesn't matter as long as
  * we lock a mutex before parsing anyway.
+ *
+ * FIXME: Disable this for now for the above reasons
  */
+#if 0
 #ifdef GST_DEBUG_ENABLED
 #  define __GST_PARSE_TRACE
+#endif
 #endif
 
 #ifdef __GST_PARSE_TRACE
 G_GNUC_INTERNAL  gchar  *__gst_parse_strdup (gchar *org);
 G_GNUC_INTERNAL  void	__gst_parse_strfree (gchar *str);
-G_GNUC_INTERNAL  link_t *__gst_parse_link_new ();
+G_GNUC_INTERNAL  link_t *__gst_parse_link_new (void);
 G_GNUC_INTERNAL  void	__gst_parse_link_free (link_t *data);
-G_GNUC_INTERNAL  chain_t *__gst_parse_chain_new ();
+G_GNUC_INTERNAL  chain_t *__gst_parse_chain_new (void);
 G_GNUC_INTERNAL  void	__gst_parse_chain_free (chain_t *data);
 #  define gst_parse_strdup __gst_parse_strdup
 #  define gst_parse_strfree __gst_parse_strfree
@@ -59,10 +63,10 @@ G_GNUC_INTERNAL  void	__gst_parse_chain_free (chain_t *data);
 #else /* __GST_PARSE_TRACE */
 #  define gst_parse_strdup g_strdup
 #  define gst_parse_strfree g_free
-#  define gst_parse_link_new() g_new0 (link_t, 1)
-#  define gst_parse_link_free g_free
-#  define gst_parse_chain_new() g_new0 (chain_t, 1)
-#  define gst_parse_chain_free g_free
+#  define gst_parse_link_new() g_slice_new0 (link_t)
+#  define gst_parse_link_free(l) g_slice_free (link_t, l)
+#  define gst_parse_chain_new() g_slice_new0 (chain_t)
+#  define gst_parse_chain_free(c) g_slice_free (chain_t, c)
 #endif /* __GST_PARSE_TRACE */
 
 static inline void

@@ -113,6 +113,7 @@ guint           gst_util_group_id_next          (void);
 #define _GST_PUT(__data, __idx, __size, __shift, __num) \
     (((guint8 *) (__data))[__idx] = (((guint##__size) (__num)) >> (__shift)) & 0xff)
 
+#ifndef __GTK_DOC_IGNORE__
 #if GST_HAVE_UNALIGNED_ACCESS
 static inline guint16 __gst_fast_read16(const guint8 *v) {
   return *(const guint16*)(v);
@@ -134,6 +135,7 @@ static inline guint64 __gst_fast_read_swap64(const guint8 *v) {
 }
 # define _GST_FAST_READ(s, d) __gst_fast_read##s((const guint8 *)(d))
 # define _GST_FAST_READ_SWAP(s, d) __gst_fast_read_swap##s((const guint8 *)(d))
+#endif
 #endif
 
 
@@ -814,6 +816,24 @@ GST_WRITE_DOUBLE_BE(guint8 *data, gdouble num)
  * Rounds an integer value up to the next multiple of 64.
  */
 #define GST_ROUND_UP_64(num) (((num)+63)&~63)
+/**
+ * GST_ROUND_UP_128:
+ * @num: integer value to round up
+ *
+ * Rounds an integer value up to the next multiple of 128.
+ * Since: 1.4
+ */
+#define GST_ROUND_UP_128(num) (((num)+127)&~127)
+/**
+ * GST_ROUND_UP_N:
+ * @num: integrer value to round up
+ * @align: a power of two to round up to
+ *
+ * Rounds an integer value up to the next multiple of @align. @align MUST be a
+ * power of two.
+ */
+#define GST_ROUND_UP_N(num,align) ((((num) + ((align) - 1)) & ~((align) - 1)))
+
 
 /**
  * GST_ROUND_DOWN_2:
@@ -857,6 +877,24 @@ GST_WRITE_DOUBLE_BE(guint8 *data, gdouble num)
  * Rounds an integer value down to the next multiple of 64.
  */
 #define GST_ROUND_DOWN_64(num) ((num)&(~63))
+/**
+ * GST_ROUND_DOWN_128:
+ * @num: integer value to round down
+ *
+ * Rounds an integer value down to the next multiple of 128.
+ * Since: 1.4
+ */
+#define GST_ROUND_DOWN_128(num) ((num)&(~127))
+/**
+ * GST_ROUND_DOWN_N:
+ * @num: integrer value to round down
+ * @align: a power of two to round down to
+ *
+ * Rounds an integer value down to the next multiple of @align. @align MUST be a
+ * power of two.
+ */
+#define GST_ROUND_DOWN_N(num,align) (((num) & ~((align) - 1)))
+
 
 void                    gst_object_default_error        (GstObject    * source,
                                                          const GError * error,
@@ -934,9 +972,9 @@ gboolean                gst_pad_peer_query_convert      (GstPad *pad, GstFormat 
 GstCaps *               gst_pad_peer_query_caps         (GstPad * pad, GstCaps *filter);
 gboolean                gst_pad_peer_query_accept_caps  (GstPad * pad, GstCaps *caps);
 
-gchar *                 gst_pad_create_stream_id               (GstPad * pad, GstElement * parent, const gchar *stream_id);
-gchar *                 gst_pad_create_stream_id_printf        (GstPad * pad, GstElement * parent, const gchar *stream_id, ...);
-gchar *                 gst_pad_create_stream_id_printf_valist (GstPad * pad, GstElement * parent, const gchar *stream_id, va_list var_args);
+gchar *                 gst_pad_create_stream_id               (GstPad * pad, GstElement * parent, const gchar *stream_id) G_GNUC_MALLOC;
+gchar *                 gst_pad_create_stream_id_printf        (GstPad * pad, GstElement * parent, const gchar *stream_id, ...) G_GNUC_PRINTF (3, 4) G_GNUC_MALLOC;
+gchar *                 gst_pad_create_stream_id_printf_valist (GstPad * pad, GstElement * parent, const gchar *stream_id, va_list var_args) G_GNUC_PRINTF (3, 0) G_GNUC_MALLOC;
 
 gchar *                 gst_pad_get_stream_id           (GstPad * pad);
 

@@ -34,10 +34,10 @@ G_BEGIN_DECLS
  * GstDebugLevel:
  * @GST_LEVEL_NONE: No debugging level specified or desired. Used to deactivate
  *  debugging output.
- * @GST_LEVEL_ERROR: Error messages are to be used only when an error occured
+ * @GST_LEVEL_ERROR: Error messages are to be used only when an error occurred
  *  that stops the application from keeping working correctly.
  *  An examples is gst_element_error, which outputs a message with this priority.
- *  It does not mean that the application is terminating as with g_errror.
+ *  It does not mean that the application is terminating as with g_error.
  * @GST_LEVEL_WARNING: Warning messages are to inform about abnormal behaviour
  *  that could lead to problems or weird behaviour later on. An example of this
  *  would be clocking issues ("your computer is pretty slow") or broken input
@@ -197,11 +197,11 @@ struct _GstDebugCategory {
 
 /**
  * GST_STR_NULL:
- * @str: The string to check.
+ * @str: (allow-none): The string to check.
  *
- * Macro to use when a string must not be NULL, but may be NULL. If the string
- * is NULL, "(NULL)" is printed instead.
- * In GStreamer printf string arguments may not be NULL, because on some
+ * Macro to use when a string must not be %NULL, but may be %NULL. If the string
+ * is %NULL, "(NULL)" is printed instead.
+ * In GStreamer printf string arguments may not be %NULL, because on some
  * platforms (ie Solaris) the libc crashes in that case. This includes debugging
  * strings.
  */
@@ -470,7 +470,7 @@ G_STMT_START{                                        \
  *
  * Looks up an existing #GstDebugCategory by its @name and sets @cat. If the
  * category is not found, but GST_CAT_DEFAULT is defined, that is assigned to
- * @cat. Otherwise @cat will be NULL.
+ * @cat. Otherwise @cat will be %NULL.
  *
  * |[
  * GST_DEBUG_CATEGORY_STATIC (gst_myplugin_debug);
@@ -511,7 +511,7 @@ GST_EXPORT GstDebugLevel            _gst_debug_min;
  * GST_CAT_LEVEL_LOG:
  * @cat: category to use
  * @level: the severity of the message
- * @object: (allow-none): the #GObject the message belongs to or NULL if none
+ * @object: (allow-none): the #GObject the message belongs to or %NULL if none
  * @...: A printf-style message to output
  *
  * Outputs a debugging message. This is the most general macro for outputting

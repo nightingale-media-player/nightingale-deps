@@ -78,6 +78,13 @@
 #endif
 #include <glib/gstdio.h>
 
+#ifdef G_OS_WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+extern HMODULE _priv_gst_dll_handle;
+#endif
+
 #define GST_CAT_DEFAULT preset_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
@@ -109,9 +116,9 @@ static gboolean gst_preset_default_save_presets_file (GstPreset * preset);
 /*
  * preset_get_paths:
  * @preset: a #GObject that implements #GstPreset
- * @preset_user_path: location for path or %NULL
- * @preset_app_path: location for path or %NULL
- * @preset_system_path: location for path or %NULL
+ * @preset_user_path: (out) (allow-none): location for path or %NULL
+ * @preset_app_path: (out) (allow-none): location for path or %NULL
+ * @preset_system_path: (out) (allow-none): location for path or %NULL
  *
  * Fetch the preset_path for user local, application specific and system wide
  * settings. Don't free after use.
@@ -175,8 +182,18 @@ preset_get_paths (GstPreset * preset, const gchar ** preset_user_path,
       gchar *preset_dir;
 
       /* system presets in '$GST_DATADIR/gstreamer-1.0/presets/GstAudioPanorama.prs' */
+#ifdef G_OS_WIN32
+      gchar *basedir =
+          g_win32_get_package_installation_directory_of_module
+          (_priv_gst_dll_handle);
+      preset_dir =
+          g_build_filename (basedir, "share", "gstreamer-" GST_API_VERSION,
+          "presets", NULL);
+      g_free (basedir);
+#else
       preset_dir = g_build_filename (GST_DATADIR, "gstreamer-" GST_API_VERSION,
           "presets", NULL);
+#endif
       GST_INFO_OBJECT (preset, "system_preset_dir: '%s'", preset_dir);
       preset_path = g_strdup_printf ("%s" G_DIR_SEPARATOR_S "%s.prs",
           preset_dir, element_name);
@@ -514,6 +531,8 @@ gst_preset_default_get_property_names (GstPreset * preset)
         }
         g_free (props);
       }
+
+      g_object_unref (child);
     }
   }
   if (!result) {
@@ -937,10 +956,10 @@ no_presets:
  * gst_preset_get_preset_names:
  * @preset: a #GObject that implements #GstPreset
  *
- * Get a copy of preset names as a NULL terminated string array.
+ * Get a copy of preset names as a %NULL terminated string array.
  *
  * Returns: (transfer full) (array zero-terminated=1) (element-type gchar*):
- *     list with names, ue g_strfreev() after usage.
+ *     list with names, use g_strfreev() after usage.
  */
 gchar **
 gst_preset_get_preset_names (GstPreset * preset)
@@ -1050,7 +1069,7 @@ gst_preset_delete_preset (GstPreset * preset, const gchar * name)
  * @preset: a #GObject that implements #GstPreset
  * @name: preset name
  * @tag: meta data item name
- * @value: new value
+ * @value: (allow-none): new value
  *
  * Sets a new @value for an existing meta data item or adds a new item. Meta
  * data @tag names can be something like e.g. "comment". Supplying %NULL for the
@@ -1122,7 +1141,8 @@ gst_preset_set_app_dir (const gchar * app_dir)
  * Gets the directory for application specific presets if set by the
  * application.
  *
- * Returns: the directory or %NULL, don't free or modify the string
+ * Returns: (nullable): the directory or %NULL, don't free or modify
+ * the string
  */
 const gchar *
 gst_preset_get_app_dir (void)

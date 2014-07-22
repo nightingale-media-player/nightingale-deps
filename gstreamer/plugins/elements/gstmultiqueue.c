@@ -35,10 +35,10 @@
  *   <itemizedlist><title>Multiple streamhandling</title>
  *   <listitem><para>
  *     The element handles queueing data on more than one stream at once. To
- *     achieve such a feature it has request sink pads (sink&percnt;d) and
- *     'sometimes' src pads (src&percnt;d).
+ *     achieve such a feature it has request sink pads (sink&percnt;u) and
+ *     'sometimes' src pads (src&percnt;u).
  *   </para><para>
- *     When requesting a given sinkpad with gst_element_get_request_pad(),
+ *     When requesting a given sinkpad with gst_element_request_pad(),
  *     the associated srcpad for that stream will be created.
  *     Example: requesting sink1 will generate src1.
  *   </para></listitem>
@@ -101,8 +101,6 @@
  *   Both signals are emitted from the context of the streaming thread.
  * </para>
  * </refsect2>
- *
- * Last reviewed on 2008-01-25 (0.10.17)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -146,6 +144,9 @@ struct _GstSingleQueue
   /* segments */
   GstSegment sink_segment;
   GstSegment src_segment;
+  gboolean has_src_segment;     /* preferred over initializing the src_segment to
+                                 * UNDEFINED as this doesn't requires adding ifs
+                                 * in every segment usage */
 
   /* position of src/sink */
   GstClockTime sinktime, srctime;
@@ -197,6 +198,8 @@ static void compute_high_id (GstMultiQueue * mq);
 static void compute_high_time (GstMultiQueue * mq);
 static void single_queue_overrun_cb (GstDataQueue * dq, GstSingleQueue * sq);
 static void single_queue_underrun_cb (GstDataQueue * dq, GstSingleQueue * sq);
+
+static void update_buffering (GstMultiQueue * mq, GstSingleQueue * sq);
 
 static void gst_single_queue_flush_queue (GstSingleQueue * sq, gboolean full);
 
@@ -303,7 +306,7 @@ gst_multi_queue_class_init (GstMultiQueueClass * klass)
 
   /**
    * GstMultiQueue::underrun:
-   * @multiqueue: the multqueue instance
+   * @multiqueue: the multiqueue instance
    *
    * This signal is emitted from the streaming thread when there is
    * no data in any of the queues inside the multiqueue instance (underrun).
@@ -371,7 +374,7 @@ gst_multi_queue_class_init (GstMultiQueueClass * klass)
    * GstMultiQueue:use-buffering
    * 
    * Enable the buffering option in multiqueue so that BUFFERING messages are
-   * emited based on low-/high-percent thresholds.
+   * emitted based on low-/high-percent thresholds.
    */
   g_object_class_install_property (gobject_class, PROP_USE_BUFFERING,
       g_param_spec_boolean ("use-buffering", "Use buffering",
@@ -477,6 +480,8 @@ gst_multi_queue_finalize (GObject * object)
     while (tmp) {						\
       GstSingleQueue *q = (GstSingleQueue*)tmp->data;		\
       q->max_size.format = mq->max_size.format;                 \
+      update_buffering (mq, q);                                 \
+      gst_data_queue_limits_changed (q->queue);                 \
       tmp = g_list_next(tmp);					\
     };								\
 } G_STMT_END
@@ -501,6 +506,8 @@ gst_multi_queue_set_property (GObject * object, guint prop_id,
 
       GST_MULTI_QUEUE_MUTEX_LOCK (mq);
 
+      mq->max_size.visible = new_size;
+
       tmp = mq->queues;
       while (tmp) {
         GstDataQueueSize size;
@@ -513,10 +520,10 @@ gst_multi_queue_set_property (GObject * object, guint prop_id,
         } else if (new_size > size.visible) {
           q->max_size.visible = new_size;
         }
+        update_buffering (mq, q);
+        gst_data_queue_limits_changed (q->queue);
         tmp = g_list_next (tmp);
-      };
-
-      mq->max_size.visible = new_size;
+      }
 
       GST_MULTI_QUEUE_MUTEX_UNLOCK (mq);
 
@@ -539,6 +546,32 @@ gst_multi_queue_set_property (GObject * object, guint prop_id,
       break;
     case PROP_USE_BUFFERING:
       mq->use_buffering = g_value_get_boolean (value);
+      if (!mq->use_buffering && mq->buffering) {
+        GstMessage *message;
+
+        mq->buffering = FALSE;
+        GST_DEBUG_OBJECT (mq, "buffering 100 percent");
+        message = gst_message_new_buffering (GST_OBJECT_CAST (mq), 100);
+
+        gst_element_post_message (GST_ELEMENT_CAST (mq), message);
+      }
+
+      if (mq->use_buffering) {
+        GList *tmp;
+
+        GST_MULTI_QUEUE_MUTEX_LOCK (mq);
+
+        mq->buffering = TRUE;
+        tmp = mq->queues;
+        while (tmp) {
+          GstSingleQueue *q = (GstSingleQueue *) tmp->data;
+          update_buffering (mq, q);
+          gst_data_queue_limits_changed (q->queue);
+          tmp = g_list_next (tmp);
+        }
+
+        GST_MULTI_QUEUE_MUTEX_UNLOCK (mq);
+      }
       break;
     case PROP_LOW_PERCENT:
       mq->low_percent = g_value_get_int (value);
@@ -796,6 +829,7 @@ gst_single_queue_flush (GstMultiQueue * mq, GstSingleQueue * sq, gboolean flush,
     gst_single_queue_flush_queue (sq, full);
     gst_segment_init (&sq->sink_segment, GST_FORMAT_TIME);
     gst_segment_init (&sq->src_segment, GST_FORMAT_TIME);
+    sq->has_src_segment = FALSE;
     /* All pads start off not-linked for a smooth kick-off */
     sq->srcresult = GST_FLOW_OK;
     sq->pushed = FALSE;
@@ -915,9 +949,27 @@ update_time_level (GstMultiQueue * mq, GstSingleQueue * sq)
     sink_time = sq->sinktime;
 
   if (sq->src_tainted) {
+    GstSegment *segment;
+    gint64 position;
+
+    if (sq->has_src_segment) {
+      segment = &sq->src_segment;
+      position = sq->src_segment.position;
+    } else {
+      /*
+       * If the src pad had no segment yet, use the sink segment
+       * to avoid signalling overrun if the received sink segment has a
+       * a position > max-size-time while the src pad time would be the default=0
+       *
+       * This can happen when switching pads on chained/adaptive streams and the
+       * new chain has a segment with a much larger position
+       */
+      segment = &sq->sink_segment;
+      position = sq->sink_segment.position;
+    }
+
     src_time = sq->srctime =
-        gst_segment_to_running_time (&sq->src_segment, GST_FORMAT_TIME,
-        sq->src_segment.position);
+        gst_segment_to_running_time (segment, GST_FORMAT_TIME, position);
     /* if we have a time, we become untainted and use the time */
     if (G_UNLIKELY (src_time != GST_CLOCK_TIME_NONE))
       sq->src_tainted = FALSE;
@@ -963,8 +1015,10 @@ apply_segment (GstMultiQueue * mq, GstSingleQueue * sq, GstEvent * event,
 
   if (segment == &sq->sink_segment)
     sq->sink_tainted = TRUE;
-  else
+  else {
+    sq->has_src_segment = TRUE;
     sq->src_tainted = TRUE;
+  }
 
   GST_DEBUG_OBJECT (mq,
       "queue %d, configured SEGMENT %" GST_SEGMENT_FORMAT, sq->id, segment);
@@ -1067,7 +1121,7 @@ static GstFlowReturn
 gst_single_queue_push_one (GstMultiQueue * mq, GstSingleQueue * sq,
     GstMiniObject * object)
 {
-  GstFlowReturn result = GST_FLOW_OK;
+  GstFlowReturn result = sq->srcresult;
 
   if (GST_IS_BUFFER (object)) {
     GstBuffer *buffer;
@@ -1903,6 +1957,8 @@ single_queue_overrun_cb (GstDataQueue * dq, GstSingleQueue * sq)
   GList *tmp;
   GstDataQueueSize size;
   gboolean filled = TRUE;
+  gboolean all_not_linked = TRUE;
+  gboolean empty_found = FALSE;
 
   gst_data_queue_get_level (sq->queue, &size);
 
@@ -1920,8 +1976,7 @@ single_queue_overrun_cb (GstDataQueue * dq, GstSingleQueue * sq)
     goto done;
   }
 
-  /* if hard limits are not reached then we allow one more buffer in the full
-   * queue, but only if any of the other singelqueues are empty */
+  /* Search for empty or unlinked queues */
   for (tmp = mq->queues; tmp; tmp = g_list_next (tmp)) {
     GstSingleQueue *oq = (GstSingleQueue *) tmp->data;
 
@@ -1933,18 +1988,31 @@ single_queue_overrun_cb (GstDataQueue * dq, GstSingleQueue * sq)
       continue;
     }
 
+    all_not_linked = FALSE;
     GST_LOG_OBJECT (mq, "Checking Queue %d", oq->id);
-
     if (gst_data_queue_is_empty (oq->queue)) {
       GST_LOG_OBJECT (mq, "Queue %d is empty", oq->id);
-      if (IS_FILLED (sq, visible, size.visible)) {
-        sq->max_size.visible = size.visible + 1;
-        GST_DEBUG_OBJECT (mq,
-            "Queue %d is empty, bumping single queue %d max visible to %d",
-            oq->id, sq->id, sq->max_size.visible);
-        filled = FALSE;
-        break;
-      }
+      empty_found = TRUE;
+      break;
+    }
+  }
+
+  if (!mq->queues || !mq->queues->next)
+    all_not_linked = FALSE;
+
+  /* if hard limits are not reached then we allow one more buffer in the full
+   * queue, but only if any of the other singelqueues are empty or all are
+   * not linked */
+  if (all_not_linked || empty_found) {
+    if (all_not_linked) {
+      GST_LOG_OBJECT (mq, "All other queues are not linked");
+    }
+    if (IS_FILLED (sq, visible, size.visible)) {
+      sq->max_size.visible = size.visible + 1;
+      GST_DEBUG_OBJECT (mq,
+          "Bumping single queue %d max visible to %d",
+          sq->id, sq->max_size.visible);
+      filled = FALSE;
     }
   }
 
@@ -2063,6 +2131,8 @@ gst_single_queue_flush_queue (GstSingleQueue * sq, gboolean full)
   gst_data_queue_flush (sq->queue);
   if (was_flushing)
     gst_data_queue_set_flushing (sq->queue, TRUE);
+
+  update_buffering (sq->mqueue, sq);
 }
 
 static void

@@ -98,7 +98,6 @@ struct _GstBufferPoolAcquireParams {
 
 /**
  * GstBufferPool:
- * @object: the parent structure
  *
  * The structure of a #GstBufferPool. Use the associated macros to access the public
  * variables.
@@ -133,22 +132,29 @@ struct _GstBufferPool {
  *        buffers from the configured memory allocator and with the configured
  *        parameters. All metadata that is present on the allocated buffer will
  *        be marked as #GST_META_FLAG_POOLED and #GST_META_FLAG_LOCKED and will
- *        not be removed from the buffer in @reset_buffer.
+ *        not be removed from the buffer in @reset_buffer. The buffer should
+ *        have the GST_BUFFER_FLAG_TAG_MEMORY cleared.
  * @reset_buffer: reset the buffer to its state when it was freshly allocated.
  *        The default implementation will clear the flags, timestamps and
  *        will remove the metadata without the #GST_META_FLAG_POOLED flag (even
- *        the metadata with #GST_META_FLAG_LOCKED).
+ *        the metadata with #GST_META_FLAG_LOCKED). If the
+ *        #GST_BUFFER_FLAG_TAG_MEMORY was set, this function can also try to
+ *        restore the memory and clear the #GST_BUFFER_FLAG_TAG_MEMORY again.
  * @release_buffer: release a buffer back in the pool. The default
  *        implementation will put the buffer back in the queue and notify any
- *        blocking acquire_buffer calls.
+ *        blocking acquire_buffer calls when the #GST_BUFFER_FLAG_TAG_MEMORY
+ *        is not set on the buffer. If #GST_BUFFER_FLAG_TAG_MEMORY is set, the 
+ *        buffer will be freed with @free_buffer.
  * @free_buffer: free a buffer. The default implementation unrefs the buffer.
+ * @flush_start: enter the flushing state. Since: 1.4
+ * @flush_stop: leave the flushign state. Since: 1.4
  *
  * The GstBufferPool class.
  */
 struct _GstBufferPoolClass {
   GstObjectClass    object_class;
 
-  /* vmethods */
+  /*< public >*/
   const gchar ** (*get_options)    (GstBufferPool *pool);
   gboolean       (*set_config)     (GstBufferPool *pool, GstStructure *config);
 
@@ -162,9 +168,11 @@ struct _GstBufferPoolClass {
   void           (*reset_buffer)   (GstBufferPool *pool, GstBuffer *buffer);
   void           (*release_buffer) (GstBufferPool *pool, GstBuffer *buffer);
   void           (*free_buffer)    (GstBufferPool *pool, GstBuffer *buffer);
+  void           (*flush_start)    (GstBufferPool *pool);
+  void           (*flush_stop)     (GstBufferPool *pool);
 
   /*< private >*/
-  gpointer _gst_reserved[GST_PADDING];
+  gpointer _gst_reserved[GST_PADDING - 2];
 };
 
 GType       gst_buffer_pool_get_type (void);
@@ -182,6 +190,8 @@ GstStructure *   gst_buffer_pool_get_config      (GstBufferPool *pool);
 const gchar **   gst_buffer_pool_get_options     (GstBufferPool *pool);
 gboolean         gst_buffer_pool_has_option      (GstBufferPool *pool, const gchar *option);
 
+void             gst_buffer_pool_set_flushing    (GstBufferPool *pool, gboolean flushing);
+
 /* helpers for configuring the config structure */
 void             gst_buffer_pool_config_set_params    (GstStructure *config, GstCaps *caps,
                                                        guint size, guint min_buffers, guint max_buffers);
@@ -197,6 +207,8 @@ guint            gst_buffer_pool_config_n_options   (GstStructure *config);
 void             gst_buffer_pool_config_add_option  (GstStructure *config, const gchar *option);
 const gchar *    gst_buffer_pool_config_get_option  (GstStructure *config, guint index);
 gboolean         gst_buffer_pool_config_has_option  (GstStructure *config, const gchar *option);
+gboolean         gst_buffer_pool_config_validate_params (GstStructure *config, GstCaps *caps,
+                                                         guint size, guint min_buffers, guint max_buffers);
 
 /* buffer management */
 GstFlowReturn    gst_buffer_pool_acquire_buffer  (GstBufferPool *pool, GstBuffer **buffer,

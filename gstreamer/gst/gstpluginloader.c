@@ -33,8 +33,13 @@
 #include <fcntl.h>
 #include <unistd.h>
 #else
+#define WIN32_LEAN_AND_MEAN
+
 #define fsync(fd) _commit(fd)
 #include <io.h>
+
+#include <windows.h>
+extern HMODULE _priv_gst_dll_handle;
 #endif
 
 #ifdef HAVE_SYS_UTSNAME_H
@@ -470,7 +475,22 @@ gst_plugin_loader_spawn (GstPluginLoader * loader)
 
   if (!res) {
     GST_LOG ("Trying installed plugin scanner");
+
+#ifdef G_OS_WIN32
+    {
+      gchar *basedir;
+
+      basedir = g_win32_get_package_installation_directory_of_module (_priv_gst_dll_handle);
+      helper_bin = g_build_filename (basedir,
+                                     "lib",
+                                     "gstreamer-" GST_API_VERSION,
+                                     "gst-plugin-scanner.exe",
+                                     NULL);
+      g_free (basedir);
+    }
+#else
     helper_bin = g_strdup (GST_PLUGIN_SCANNER_INSTALLED);
+#endif
     res = gst_plugin_loader_try_helper (loader, helper_bin);
     g_free (helper_bin);
 
@@ -508,6 +528,7 @@ plugin_loader_cleanup_child (GstPluginLoader * l)
 gboolean
 _gst_plugin_loader_client_run (void)
 {
+  gboolean res = TRUE;
   GstPluginLoader *l;
 
   l = plugin_loader_new (NULL);
@@ -524,7 +545,8 @@ _gst_plugin_loader_client_run (void)
     dup_fd = dup (0);           /* STDIN */
     if (dup_fd == -1) {
       GST_ERROR ("Failed to start. Could no dup STDIN, errno %d", errno);
-      return FALSE;
+      res = FALSE;
+      goto beach;
     }
     l->fd_r.fd = dup_fd;
     close (0);
@@ -532,7 +554,8 @@ _gst_plugin_loader_client_run (void)
     dup_fd = dup (1);           /* STDOUT */
     if (dup_fd == -1) {
       GST_ERROR ("Failed to start. Could no dup STDOUT, errno %d", errno);
-      return FALSE;
+      res = FALSE;
+      goto beach;
     }
     l->fd_w.fd = dup_fd;
     close (1);
@@ -558,9 +581,13 @@ _gst_plugin_loader_client_run (void)
   /* Loop, listening for incoming packets on the fd and writing responses */
   while (!l->rx_done && exchange_packets (l));
 
+#ifndef G_OS_WIN32
+beach:
+#endif
+
   plugin_loader_free (l);
 
-  return TRUE;
+  return res;
 }
 
 static void

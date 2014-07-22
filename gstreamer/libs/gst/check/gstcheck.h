@@ -73,10 +73,20 @@ GstElement *gst_check_setup_element (const gchar * factory);
 void gst_check_teardown_element (GstElement * element);
 GstPad *gst_check_setup_src_pad (GstElement * element,
     GstStaticPadTemplate * tmpl);
+GstPad *gst_check_setup_src_pad_from_template (GstElement * element,
+    GstPadTemplate * tmpl);
 GstPad * gst_check_setup_src_pad_by_name (GstElement * element,
           GstStaticPadTemplate * tmpl, const gchar *name);
+GstPad * gst_check_setup_src_pad_by_name_from_template (GstElement * element,
+          GstPadTemplate * tmpl, const gchar *name);
+GstPad *gst_check_setup_sink_pad (GstElement * element,
+    GstStaticPadTemplate * tmpl);
+GstPad *gst_check_setup_sink_pad_from_template (GstElement * element,
+    GstPadTemplate * tmpl);
 GstPad * gst_check_setup_sink_pad_by_name (GstElement * element, 
           GstStaticPadTemplate * tmpl, const gchar *name);
+GstPad * gst_check_setup_sink_pad_by_name_from_template (GstElement * element, 
+          GstPadTemplate * tmpl, const gchar *name);
 void gst_check_teardown_pad_by_name (GstElement * element, const gchar *name);
 void gst_check_teardown_src_pad (GstElement * element);
 void gst_check_drop_buffers (void);
@@ -88,8 +98,6 @@ void gst_check_element_push_buffer_list (const gchar * element_name,
 void gst_check_element_push_buffer (const gchar * element_name,
     GstBuffer * buffer_in, GstCaps * caps_in, GstBuffer * buffer_out,
     GstCaps *caps_out);
-GstPad *gst_check_setup_sink_pad (GstElement * element,
-    GstStaticPadTemplate * tmpl);
 void gst_check_teardown_sink_pad (GstElement * element);
 void gst_check_abi_list (GstCheckABIStruct list[], gboolean have_abi_sizes);
 gint gst_check_run_suite (Suite * suite, const gchar * name,
@@ -408,6 +416,9 @@ MAIN_SYNCHRONIZE();
 
 #define MAIN_INIT()                     \
 G_STMT_START {                          \
+  g_mutex_init (&mutex);                \
+  g_cond_init (&start_cond);            \
+  g_cond_init (&sync_cond);             \
   _gst_check_threads_running = TRUE;    \
 } G_STMT_END;
 
@@ -451,6 +462,9 @@ G_STMT_START {                                                  \
   g_list_foreach (thread_list, (GFunc) g_thread_join, NULL);    \
   g_list_free (thread_list);                                    \
   thread_list = NULL;                                           \
+  g_mutex_clear (&mutex);                                       \
+  g_cond_clear (&start_cond);                                   \
+  g_cond_clear (&sync_cond);                                    \
   GST_DEBUG ("MAIN: joined");                                   \
 } G_STMT_END;
 
@@ -470,6 +484,8 @@ G_STMT_START {                                                  \
 G_STMT_START {                                                  \
   /* synchronize everyone */                                    \
   GST_DEBUG ("THREAD %p: syncing", g_thread_self ());           \
+  fail_if (g_mutex_trylock (&mutex),                            \
+      "bug in unit test, mutex should be locked at this point");\
   g_cond_wait (&sync_cond, &mutex);                             \
   GST_DEBUG ("THREAD %p: synced", g_thread_self ());            \
   g_mutex_unlock (&mutex);                                      \
@@ -558,7 +574,8 @@ int main (int argc, char **argv)                                \
 }
 
 /* Hack to allow run-time selection of unit tests to run via the
- * GST_CHECKS environment variable (test function names, comma-separated) */
+ * GST_CHECKS environment variable (test function names globs, comma
+ * separated), or GST_CHECKS_IGNORE with the same semantics */
 
 gboolean _gst_check_run_test_func (const gchar * func_name);
 
@@ -573,12 +590,13 @@ __gst_tcase_add_test (TCase * tc, TFun tf, const char * fname, int signal,
 
 #define _tcase_add_test __gst_tcase_add_test
 
-/* add define to skip broken tests */
+/* A special variant to add broken tests. These are normally skipped, but can be 
+ * forced to run via GST_CHECKS */
 #define tcase_skip_broken_test(chain,test_func) \
 G_STMT_START {                                                  \
   const char *env = g_getenv ("GST_CHECKS");                    \
                                                                 \
-  if (env != NULL && strstr (env, G_STRINGIFY (test_func))) {   \
+  if (env != NULL && g_pattern_match_simple (env, G_STRINGIFY (test_func))) {   \
     tcase_add_test(chain,test_func);                            \
   } else {                                                      \
     g_printerr ("FIXME: skipping test %s because it's broken\n", G_STRINGIFY (test_func)); \

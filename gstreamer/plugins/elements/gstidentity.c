@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "gstelements_private.h"
 #include "../../gst/gst-i18n-lib.h"
 #include "gstidentity.h"
 
@@ -109,6 +110,8 @@ static gboolean gst_identity_start (GstBaseTransform * trans);
 static gboolean gst_identity_stop (GstBaseTransform * trans);
 static GstStateChangeReturn gst_identity_change_state (GstElement * element,
     GstStateChange transition);
+static gboolean gst_identity_accept_caps (GstBaseTransform * base,
+    GstPadDirection direction, GstCaps * caps);
 
 static guint gst_identity_signals[LAST_SIGNAL] = { 0 };
 
@@ -194,7 +197,7 @@ gst_identity_class_init (GstIdentityClass * klass)
    * GstIdentity:signal-handoffs
    *
    * If set to #TRUE, the identity will emit a handoff signal when handling a buffer.
-   * When set to #FALSE, no signal will be emited, which might improve performance.
+   * When set to #FALSE, no signal will be emitted, which might improve performance.
    */
   g_object_class_install_property (gobject_class, PROP_SIGNAL_HANDOFFS,
       g_param_spec_boolean ("signal-handoffs",
@@ -234,6 +237,8 @@ gst_identity_class_init (GstIdentityClass * klass)
       GST_DEBUG_FUNCPTR (gst_identity_transform_ip);
   gstbasetrans_class->start = GST_DEBUG_FUNCPTR (gst_identity_start);
   gstbasetrans_class->stop = GST_DEBUG_FUNCPTR (gst_identity_stop);
+  gstbasetrans_class->accept_caps =
+      GST_DEBUG_FUNCPTR (gst_identity_accept_caps);
 }
 
 static void
@@ -466,28 +471,11 @@ gst_identity_update_last_message_for_buffer (GstIdentity * identity,
     const gchar * action, GstBuffer * buf, gsize size)
 {
   gchar dts_str[64], pts_str[64], dur_str[64];
-  gchar flag_str[100];
+  gchar *flag_str;
 
   GST_OBJECT_LOCK (identity);
 
-  {
-    const char *flag_list[15] = {
-      "", "", "", "", "live", "decode-only", "discont", "resync", "corrupted",
-      "marker", "header", "gap", "droppable", "delta-unit", "in-caps"
-    };
-    int i;
-    char *end = flag_str;
-    end[0] = '\0';
-    for (i = 0; i < G_N_ELEMENTS (flag_list); i++) {
-      if (GST_MINI_OBJECT_CAST (buf)->flags & (1 << i)) {
-        strcpy (end, flag_list[i]);
-        end += strlen (end);
-        end[0] = ' ';
-        end[1] = '\0';
-        end++;
-      }
-    }
-  }
+  flag_str = gst_buffer_get_flags_string (buf);
 
   g_free (identity->last_message);
   identity->last_message = g_strdup_printf ("%s   ******* (%s:%s) "
@@ -500,6 +488,7 @@ gst_identity_update_last_message_for_buffer (GstIdentity * identity,
       print_pretty_time (dur_str, sizeof (dur_str), GST_BUFFER_DURATION (buf)),
       GST_BUFFER_OFFSET (buf), GST_BUFFER_OFFSET_END (buf),
       GST_BUFFER_FLAGS (buf), flag_str, buf);
+  g_free (flag_str);
 
   GST_OBJECT_UNLOCK (identity);
 
@@ -758,6 +747,25 @@ gst_identity_stop (GstBaseTransform * trans)
   GST_OBJECT_UNLOCK (identity);
 
   return TRUE;
+}
+
+static gboolean
+gst_identity_accept_caps (GstBaseTransform * base,
+    GstPadDirection direction, GstCaps * caps)
+{
+  gboolean ret;
+  GstPad *pad;
+
+  /* Proxy accept-caps */
+
+  if (direction == GST_PAD_SRC)
+    pad = GST_BASE_TRANSFORM_SINK_PAD (base);
+  else
+    pad = GST_BASE_TRANSFORM_SRC_PAD (base);
+
+  ret = gst_pad_peer_query_accept_caps (pad, caps);
+
+  return ret;
 }
 
 static GstStateChangeReturn

@@ -139,7 +139,7 @@ gst_parse_context_free (GstParseContext * context)
  * of %GST_PARSE_ERROR_NO_SUCH_ELEMENT was returned.
  *
  * Returns: (transfer full) (array zero-terminated=1) (element-type gchar*): a
- *     NULL-terminated array of element factory name strings of missing
+ *     %NULL-terminated array of element factory name strings of missing
  *     elements. Free with g_strfreev() when no longer needed.
  */
 gchar **
@@ -204,7 +204,7 @@ _gst_parse_escape (const gchar * str)
  * @error: pointer to a #GError
  *
  * Create a new element based on command line syntax.
- * @error will contain an error message if an erroneuos pipeline is specified.
+ * @error will contain an error message if an erroneous pipeline is specified.
  * An error does not mean that the pipeline could not be constructed.
  *
  * Returns: (transfer floating): a new element on success and %NULL on failure.
@@ -314,6 +314,7 @@ gst_parse_launch_full (const gchar * pipeline_description,
 {
 #ifndef GST_DISABLE_PARSE
   GstElement *element;
+  GError *myerror = NULL;
 
   g_return_val_if_fail (pipeline_description != NULL, NULL);
   g_return_val_if_fail (error == NULL || *error == NULL, NULL);
@@ -321,15 +322,19 @@ gst_parse_launch_full (const gchar * pipeline_description,
   GST_CAT_INFO (GST_CAT_PIPELINE, "parsing pipeline description '%s'",
       pipeline_description);
 
-  element = priv_gst_parse_launch (pipeline_description, error, context, flags);
+  element = priv_gst_parse_launch (pipeline_description, &myerror, context,
+      flags);
 
   /* don't return partially constructed pipeline if FATAL_ERRORS was given */
-  if (G_UNLIKELY (error != NULL && *error != NULL && element != NULL)) {
+  if (G_UNLIKELY (myerror != NULL && element != NULL)) {
     if ((flags & GST_PARSE_FLAG_FATAL_ERRORS)) {
       gst_object_unref (element);
       element = NULL;
     }
   }
+
+  if (myerror)
+    g_propagate_error (error, myerror);
 
   return element;
 #else

@@ -23,7 +23,7 @@
  * @see_also: #GstMessage
  *
  * GStreamer elements can throw non-fatal warnings and fatal errors.
- * Higher-level elements and applications can programatically filter
+ * Higher-level elements and applications can programmatically filter
  * the ones they are interested in or can recover from,
  * and have a default handler handle the rest of them.
  *
@@ -80,7 +80,7 @@
  *     currently provided should be enough.  If you find your type of error
  *     does not fit the current codes, you should use FAILED.</para></listitem>
  *   <listitem><para>Don't provide a message if the default one suffices.
- *     this keeps messages more uniform.  Use (NULL) - not forgetting the
+ *     this keeps messages more uniform.  Use (%NULL) - not forgetting the
  *     parentheses.</para></listitem>
  *   <listitem><para>If you do supply a custom message, it should be
  *     marked for translation.  The message should start with a capital
@@ -89,13 +89,11 @@
  *     A user interface will present this message as the first thing a user
  *     sees.  Details, technical info, ... should go in the debug string.
  *   </para></listitem>
- *   <listitem><para>The debug string can be as you like.  Again, use (NULL)
+ *   <listitem><para>The debug string can be as you like.  Again, use (%NULL)
  *     if there's nothing to add - file and line number will still be
  *     passed.  #GST_ERROR_SYSTEM can be used as a shortcut to give
  *     debug information on a system call error.</para></listitem>
  * </itemizedlist>
- *
- * Last reviewed on 2006-09-15 (0.10.10)
  */
 
 /* FIXME 0.11: the entire error system needs an overhaul - it's not very
@@ -223,6 +221,8 @@ gst_error_get_resource_error (GstResourceError code)
       return _("Could not get/set settings from/on resource.");
     case GST_RESOURCE_ERROR_NO_SPACE_LEFT:
       return _("No space left on the resource.");
+    case GST_RESOURCE_ERROR_NOT_AUTHORIZED:
+      return _("Not authorized to access resource.");
     case GST_RESOURCE_ERROR_NUM_ERRORS:
     default:
       break;

@@ -94,7 +94,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-docbook.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -175,17 +174,19 @@ am__libgstreamer_@GST_API_VERSION@_la_SOURCES_DIST = gst.c gstobject.c \
 	gstallocator.c gstbin.c gstbuffer.c gstbufferlist.c \
 	gstbufferpool.c gstbus.c gstcaps.c gstcapsfeatures.c \
 	gstchildproxy.c gstclock.c gstcontext.c gstcontrolbinding.c \
-	gstcontrolsource.c gstdatetime.c gstdebugutils.c gstelement.c \
+	gstcontrolsource.c gstdatetime.c gstdebugutils.c gstdevice.c \
+	gstdeviceprovider.c gstdeviceproviderfactory.c gstelement.c \
 	gstelementfactory.c gsterror.c gstevent.c gstformat.c \
-	gstghostpad.c gstinfo.c gstiterator.c gstatomicqueue.c \
-	gstmessage.c gstmeta.c gstmemory.c gstminiobject.c gstpad.c \
-	gstpadtemplate.c gstparamspecs.c gstpipeline.c gstplugin.c \
-	gstpluginfeature.c gstpluginloader.c gstpoll.c gstpreset.c \
-	gstquark.c gstquery.c gstregistry.c gstregistrychunks.c \
-	gstsample.c gstsegment.c gststructure.c gstsystemclock.c \
-	gsttaglist.c gsttagsetter.c gsttask.c gsttaskpool.c gsttoc.c \
-	gsttocsetter.c gsttrace.c gsttypefind.c gsttypefindfactory.c \
-	gsturi.c gstutils.c gstvalue.c gstparse.c gstregistrybinary.c
+	gstghostpad.c gstdevicemonitor.c gstinfo.c gstiterator.c \
+	gstatomicqueue.c gstmessage.c gstmeta.c gstmemory.c \
+	gstminiobject.c gstpad.c gstpadtemplate.c gstparamspecs.c \
+	gstpipeline.c gstplugin.c gstpluginfeature.c gstpluginloader.c \
+	gstpoll.c gstpreset.c gstquark.c gstquery.c gstregistry.c \
+	gstregistrychunks.c gstsample.c gstsegment.c gststructure.c \
+	gstsystemclock.c gsttaglist.c gsttagsetter.c gsttask.c \
+	gsttaskpool.c gsttoc.c gsttocsetter.c gsttrace.c gsttypefind.c \
+	gsttypefindfactory.c gsturi.c gstutils.c gstvalue.c gstparse.c \
+	gstregistrybinary.c
 @GST_DISABLE_TRACE_FALSE@am__objects_1 = libgstreamer_@GST_API_VERSION@_la-gsttrace.lo
 @GST_DISABLE_REGISTRY_FALSE@am__objects_2 = libgstreamer_@GST_API_VERSION@_la-gstregistrybinary.lo
 am_libgstreamer_@GST_API_VERSION@_la_OBJECTS =  \
@@ -206,12 +207,16 @@ am_libgstreamer_@GST_API_VERSION@_la_OBJECTS =  \
 	libgstreamer_@GST_API_VERSION@_la-gstcontrolsource.lo \
 	libgstreamer_@GST_API_VERSION@_la-gstdatetime.lo \
 	libgstreamer_@GST_API_VERSION@_la-gstdebugutils.lo \
+	libgstreamer_@GST_API_VERSION@_la-gstdevice.lo \
+	libgstreamer_@GST_API_VERSION@_la-gstdeviceprovider.lo \
+	libgstreamer_@GST_API_VERSION@_la-gstdeviceproviderfactory.lo \
 	libgstreamer_@GST_API_VERSION@_la-gstelement.lo \
 	libgstreamer_@GST_API_VERSION@_la-gstelementfactory.lo \
 	libgstreamer_@GST_API_VERSION@_la-gsterror.lo \
 	libgstreamer_@GST_API_VERSION@_la-gstevent.lo \
 	libgstreamer_@GST_API_VERSION@_la-gstformat.lo \
 	libgstreamer_@GST_API_VERSION@_la-gstghostpad.lo \
+	libgstreamer_@GST_API_VERSION@_la-gstdevicemonitor.lo \
 	libgstreamer_@GST_API_VERSION@_la-gstinfo.lo \
 	libgstreamer_@GST_API_VERSION@_la-gstiterator.lo \
 	libgstreamer_@GST_API_VERSION@_la-gstatomicqueue.lo \
@@ -695,12 +700,16 @@ libgstreamer_@GST_API_VERSION@_la_SOURCES = \
 	gstcontrolsource.c \
 	gstdatetime.c		\
 	gstdebugutils.c		\
+	gstdevice.c		\
+	gstdeviceprovider.c	\
+	gstdeviceproviderfactory.c \
 	gstelement.c		\
 	gstelementfactory.c	\
 	gsterror.c		\
 	gstevent.c		\
 	gstformat.c		\
 	gstghostpad.c		\
+	gstdevicemonitor.c 	\
 	gstinfo.c		\
 	gstiterator.c		\
 	gstatomicqueue.c	\
@@ -798,11 +807,15 @@ gst_headers = \
 	gstdebugutils.h		\
 	gstelement.h		\
 	gstelementmetadata.h	\
+	gstdevice.h		\
+	gstdeviceprovider.h	\
+	gstdeviceproviderfactory.h \
 	gstelementfactory.h	\
 	gsterror.h		\
 	gstevent.h		\
 	gstformat.h		\
 	gstghostpad.h		\
+	gstdevicemonitor.h 	\
 	gstinfo.h		\
 	gstiterator.h		\
 	gstatomicqueue.h	\
@@ -859,7 +872,8 @@ noinst_HEADERS = \
 @HAVE_INTROSPECTION_TRUE@gir_headers = $(patsubst %,$(srcdir)/%, \
 @HAVE_INTROSPECTION_TRUE@	$(libgstreamer_@GST_API_VERSION@include_HEADERS)) \
 @HAVE_INTROSPECTION_TRUE@	$(patsubst %,$(builddir)/%, \
-@HAVE_INTROSPECTION_TRUE@	$(built_header_make))
+@HAVE_INTROSPECTION_TRUE@	$(built_header_make)) $(patsubst \
+@HAVE_INTROSPECTION_TRUE@	%,$(builddir)/%, gstversion.h)
 @HAVE_INTROSPECTION_TRUE@gir_sources = $(patsubst %,$(srcdir)/%, \
 @HAVE_INTROSPECTION_TRUE@	$(libgstreamer_@GST_API_VERSION@_la_SOURCES)) \
 @HAVE_INTROSPECTION_TRUE@	$(patsubst %,$(builddir)/%, \
@@ -972,6 +986,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstcontrolsource.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdatetime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdebugutils.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdevice.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdevicemonitor.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdeviceprovider.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdeviceproviderfactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstelement.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstelementfactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstenumtypes.Plo@am__quote@
@@ -1161,6 +1179,27 @@ libgstreamer_@GST_API_VERSION@_la-gstdebugutils.lo: gstdebugutils.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_API_VERSION@_la-gstdebugutils.lo `test -f 'gstdebugutils.c' || echo '$(srcdir)/'`gstdebugutils.c
 
+libgstreamer_@GST_API_VERSION@_la-gstdevice.lo: gstdevice.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_API_VERSION@_la-gstdevice.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdevice.Tpo -c -o libgstreamer_@GST_API_VERSION@_la-gstdevice.lo `test -f 'gstdevice.c' || echo '$(srcdir)/'`gstdevice.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdevice.Tpo $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdevice.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstdevice.c' object='libgstreamer_@GST_API_VERSION@_la-gstdevice.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_API_VERSION@_la-gstdevice.lo `test -f 'gstdevice.c' || echo '$(srcdir)/'`gstdevice.c
+
+libgstreamer_@GST_API_VERSION@_la-gstdeviceprovider.lo: gstdeviceprovider.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_API_VERSION@_la-gstdeviceprovider.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdeviceprovider.Tpo -c -o libgstreamer_@GST_API_VERSION@_la-gstdeviceprovider.lo `test -f 'gstdeviceprovider.c' || echo '$(srcdir)/'`gstdeviceprovider.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdeviceprovider.Tpo $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdeviceprovider.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstdeviceprovider.c' object='libgstreamer_@GST_API_VERSION@_la-gstdeviceprovider.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_API_VERSION@_la-gstdeviceprovider.lo `test -f 'gstdeviceprovider.c' || echo '$(srcdir)/'`gstdeviceprovider.c
+
+libgstreamer_@GST_API_VERSION@_la-gstdeviceproviderfactory.lo: gstdeviceproviderfactory.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_API_VERSION@_la-gstdeviceproviderfactory.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdeviceproviderfactory.Tpo -c -o libgstreamer_@GST_API_VERSION@_la-gstdeviceproviderfactory.lo `test -f 'gstdeviceproviderfactory.c' || echo '$(srcdir)/'`gstdeviceproviderfactory.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdeviceproviderfactory.Tpo $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdeviceproviderfactory.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstdeviceproviderfactory.c' object='libgstreamer_@GST_API_VERSION@_la-gstdeviceproviderfactory.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_API_VERSION@_la-gstdeviceproviderfactory.lo `test -f 'gstdeviceproviderfactory.c' || echo '$(srcdir)/'`gstdeviceproviderfactory.c
+
 libgstreamer_@GST_API_VERSION@_la-gstelement.lo: gstelement.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_API_VERSION@_la-gstelement.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstelement.Tpo -c -o libgstreamer_@GST_API_VERSION@_la-gstelement.lo `test -f 'gstelement.c' || echo '$(srcdir)/'`gstelement.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstelement.Tpo $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstelement.Plo
@@ -1202,6 +1241,13 @@ libgstreamer_@GST_API_VERSION@_la-gstghostpad.lo: gstghostpad.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstghostpad.c' object='libgstreamer_@GST_API_VERSION@_la-gstghostpad.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_API_VERSION@_la-gstghostpad.lo `test -f 'gstghostpad.c' || echo '$(srcdir)/'`gstghostpad.c
+
+libgstreamer_@GST_API_VERSION@_la-gstdevicemonitor.lo: gstdevicemonitor.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_API_VERSION@_la-gstdevicemonitor.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdevicemonitor.Tpo -c -o libgstreamer_@GST_API_VERSION@_la-gstdevicemonitor.lo `test -f 'gstdevicemonitor.c' || echo '$(srcdir)/'`gstdevicemonitor.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdevicemonitor.Tpo $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstdevicemonitor.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstdevicemonitor.c' object='libgstreamer_@GST_API_VERSION@_la-gstdevicemonitor.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -c -o libgstreamer_@GST_API_VERSION@_la-gstdevicemonitor.lo `test -f 'gstdevicemonitor.c' || echo '$(srcdir)/'`gstdevicemonitor.c
 
 libgstreamer_@GST_API_VERSION@_la-gstinfo.lo: gstinfo.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstreamer_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -MT libgstreamer_@GST_API_VERSION@_la-gstinfo.lo -MD -MP -MF $(DEPDIR)/libgstreamer_@GST_API_VERSION@_la-gstinfo.Tpo -c -o libgstreamer_@GST_API_VERSION@_la-gstinfo.lo `test -f 'gstinfo.c' || echo '$(srcdir)/'`gstinfo.c
@@ -1919,7 +1965,7 @@ Android.mk: Makefile.am
 @HAVE_INTROSPECTION_TRUE@		--include=GLib-2.0 \
 @HAVE_INTROSPECTION_TRUE@		--include=GObject-2.0 \
 @HAVE_INTROSPECTION_TRUE@		--include=GModule-2.0 \
-@HAVE_INTROSPECTION_TRUE@		--libtool="$(top_builddir)/libtool" \
+@HAVE_INTROSPECTION_TRUE@		--libtool="${LIBTOOL}" \
 @HAVE_INTROSPECTION_TRUE@		--pkg glib-2.0 \
 @HAVE_INTROSPECTION_TRUE@		--pkg gobject-2.0 \
 @HAVE_INTROSPECTION_TRUE@		--pkg gmodule-no-export-2.0 \

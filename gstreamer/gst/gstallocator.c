@@ -25,7 +25,7 @@
  * @see_also: #GstMemory
  *
  * Memory is usually created by allocators with a gst_allocator_alloc()
- * method call. When NULL is used as the allocator, the default allocator will
+ * method call. When %NULL is used as the allocator, the default allocator will
  * be used.
  *
  * New allocators can be registered with gst_allocator_register().
@@ -35,8 +35,6 @@
  *
  * New memory can be created with gst_memory_new_wrapped() that wraps the memory
  * allocated elsewhere.
- *
- * Last reviewed on 2012-07-09 (0.11.3)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -220,11 +218,12 @@ gst_allocator_register (const gchar * name, GstAllocator * allocator)
  * gst_allocator_find:
  * @name: (allow-none): the name of the allocator
  *
- * Find a previously registered allocator with @name. When @name is NULL, the
+ * Find a previously registered allocator with @name. When @name is %NULL, the
  * default allocator will be returned.
  *
- * Returns: (transfer full): a #GstAllocator or NULL when the allocator with @name was not
- * registered. Use gst_object_unref() to release the allocator after usage.
+ * Returns: (transfer full) (nullable): a #GstAllocator or %NULL when
+ * the allocator with @name was not registered. Use gst_object_unref()
+ * to release the allocator after usage.
  */
 GstAllocator *
 gst_allocator_find (const gchar * name)
@@ -276,13 +275,13 @@ gst_allocator_set_default (GstAllocator * allocator)
  * @size big.
  *
  * The optional @params can specify the prefix and padding for the memory. If
- * NULL is passed, no flags, no extra prefix/padding and a default alignment is
+ * %NULL is passed, no flags, no extra prefix/padding and a default alignment is
  * used.
  *
  * The prefix/padding will be filled with 0 if flags contains
  * #GST_MEMORY_FLAG_ZERO_PREFIXED and #GST_MEMORY_FLAG_ZERO_PADDED respectively.
  *
- * When @allocator is NULL, the default allocator will be used.
+ * When @allocator is %NULL, the default allocator will be used.
  *
  * The alignment in @params is given as a bitmask so that @align + 1 equals
  * the amount of bytes to align to. For example, to align to 8 bytes,
@@ -571,7 +570,7 @@ gst_allocator_sysmem_init (GstAllocatorSysmem * allocator)
 }
 
 void
-_priv_gst_memory_initialize (void)
+_priv_gst_allocator_initialize (void)
 {
   g_rw_lock_init (&lock);
   allocators = g_hash_table_new (g_str_hash, g_str_equal);

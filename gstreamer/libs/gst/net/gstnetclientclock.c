@@ -38,13 +38,13 @@
  * This clock will poll the time provider and will update its calibration
  * parameters based on the local and remote observations.
  *
+ * The "round-trip" property limits the maximum round trip packets can take.
+ *
  * Various parameters of the clock can be configured with the parent #GstClock
  * "timeout", "window-size" and "window-threshold" object properties.
  *
  * A #GstNetClientClock is typically set on a #GstPipeline with 
  * gst_pipeline_use_clock().
- *
- * Last reviewed on 2005-11-23 (0.9.5)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -62,12 +62,14 @@ GST_DEBUG_CATEGORY_STATIC (ncc_debug);
 #define DEFAULT_ADDRESS         "127.0.0.1"
 #define DEFAULT_PORT            5637
 #define DEFAULT_TIMEOUT         GST_SECOND
+#define DEFAULT_ROUNDTRIP_LIMIT GST_SECOND
 
 enum
 {
   PROP_0,
   PROP_ADDRESS,
-  PROP_PORT
+  PROP_PORT,
+  PROP_ROUNDTRIP_LIMIT
 };
 
 #define GST_NET_CLIENT_CLOCK_GET_PRIVATE(obj)  \
@@ -82,6 +84,8 @@ struct _GstNetClientClockPrivate
   GCancellable *cancel;
 
   GstClockTime timeout_expiration;
+  GstClockTime roundtrip_limit;
+  GstClockTime rtt_avg;
 
   gchar *address;
   gint port;
@@ -122,6 +126,26 @@ gst_net_client_clock_class_init (GstNetClientClockClass * klass)
       g_param_spec_int ("port", "port",
           "The port on which the remote server is listening", 0, G_MAXUINT16,
           DEFAULT_PORT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  /**
+   * GstNetClientClock::round-trip-limit:
+   *
+   * Maximum allowed round-trip for packets. If this property is set to a nonzero
+   * value, all packets with a round-trip interval larger than this limit will be
+   * ignored. This is useful for networks with severe and fluctuating transport
+   * delays. Filtering out these packets increases stability of the synchronization.
+   * On the other hand, the lower the limit, the higher the amount of filtered
+   * packets. Empirical tests are typically necessary to estimate a good value
+   * for the limit.
+   * If the property is set to zero, the limit is disabled.
+   *
+   * Since: 1.4
+   */
+  g_object_class_install_property (gobject_class, PROP_ROUNDTRIP_LIMIT,
+      g_param_spec_uint64 ("round-trip-limit", "round-trip limit",
+          "Maximum tolerable round-trip interval for packets, in nanoseconds "
+          "(0 = no limit)", 0, G_MAXUINT64, DEFAULT_ROUNDTRIP_LIMIT,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -140,6 +164,8 @@ gst_net_client_clock_init (GstNetClientClock * self)
   priv->thread = NULL;
 
   priv->servaddr = NULL;
+  priv->rtt_avg = GST_CLOCK_TIME_NONE;
+  priv->roundtrip_limit = DEFAULT_ROUNDTRIP_LIMIT;
 }
 
 static void
@@ -184,6 +210,9 @@ gst_net_client_clock_set_property (GObject * object, guint prop_id,
     case PROP_PORT:
       self->priv->port = g_value_get_int (value);
       break;
+    case PROP_ROUNDTRIP_LIMIT:
+      self->priv->roundtrip_limit = g_value_get_uint64 (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -203,6 +232,9 @@ gst_net_client_clock_get_property (GObject * object, guint prop_id,
     case PROP_PORT:
       g_value_set_int (value, self->priv->port);
       break;
+    case PROP_ROUNDTRIP_LIMIT:
+      g_value_set_uint64 (value, self->priv->roundtrip_limit);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -213,21 +245,58 @@ static void
 gst_net_client_clock_observe_times (GstNetClientClock * self,
     GstClockTime local_1, GstClockTime remote, GstClockTime local_2)
 {
+  GstNetClientClockPrivate *priv = self->priv;
   GstClockTime current_timeout;
   GstClockTime local_avg;
   gdouble r_squared;
   GstClock *clock;
+  GstClockTime rtt;
 
-  if (local_2 < local_1)
+  if (local_2 < local_1) {
+    GST_LOG_OBJECT (self, "Dropping observation: receive time %" GST_TIME_FORMAT
+        " < send time %" GST_TIME_FORMAT, GST_TIME_ARGS (local_1),
+        GST_TIME_ARGS (local_2));
     goto bogus_observation;
+  }
+
+  rtt = GST_CLOCK_DIFF (local_1, local_2);
+
+  if ((self->priv->roundtrip_limit > 0) && (rtt > self->priv->roundtrip_limit)) {
+    GST_LOG_OBJECT (self,
+        "Dropping observation: RTT %" GST_TIME_FORMAT " > limit %"
+        GST_TIME_FORMAT, GST_TIME_ARGS (rtt),
+        GST_TIME_ARGS (self->priv->roundtrip_limit));
+    goto bogus_observation;
+  }
+
+  /* Track an average round trip time, for a bit of smoothing */
+  /* Always update before discarding a sample, so genuine changes in
+   * the network get picked up, eventually */
+  if (priv->rtt_avg == GST_CLOCK_TIME_NONE)
+    priv->rtt_avg = rtt;
+  else if (rtt < priv->rtt_avg) /* Shorter RTTs carry more weight than longer */
+    priv->rtt_avg = (3 * priv->rtt_avg + rtt) / 4;
+  else
+    priv->rtt_avg = (7 * priv->rtt_avg + rtt) / 8;
+
+  if (rtt > 2 * priv->rtt_avg) {
+    GST_LOG_OBJECT (self,
+        "Dropping observation, long RTT %" GST_TIME_FORMAT " > 2 * avg %"
+        GST_TIME_FORMAT, GST_TIME_ARGS (rtt), GST_TIME_ARGS (priv->rtt_avg));
+    goto bogus_observation;
+  }
 
   local_avg = (local_2 + local_1) / 2;
+
+  GST_LOG_OBJECT (self, "local1 %" G_GUINT64_FORMAT " remote %" G_GUINT64_FORMAT
+      " localavg %" G_GUINT64_FORMAT " local2 %" G_GUINT64_FORMAT,
+      local_1, remote, local_avg, local_2);
 
   clock = GST_CLOCK_CAST (self);
 
   if (gst_clock_add_observation (GST_CLOCK (self), local_avg, remote,
           &r_squared)) {
-    /* geto formula */
+    /* ghetto formula - shorter timeout for bad correlations */
     current_timeout = (1e-3 / (1 - MIN (r_squared, 0.99999))) * GST_SECOND;
     current_timeout = MIN (current_timeout, gst_clock_get_timeout (clock));
   } else {
@@ -240,12 +309,9 @@ gst_net_client_clock_observe_times (GstNetClientClock * self,
   return;
 
 bogus_observation:
-  {
-    GST_WARNING_OBJECT (self, "time packet receive time < send time (%"
-        GST_TIME_FORMAT " < %" GST_TIME_FORMAT ")", GST_TIME_ARGS (local_1),
-        GST_TIME_ARGS (local_2));
-    return;
-  }
+  /* Schedule a new packet again soon */
+  self->priv->timeout_expiration = gst_util_get_timestamp () + (GST_SECOND / 4);
+  return;
 }
 
 static gpointer
@@ -487,7 +553,7 @@ gst_net_client_clock_stop (GstNetClientClock * self)
  * clock.
  */
 GstClock *
-gst_net_client_clock_new (gchar * name, const gchar * remote_address,
+gst_net_client_clock_new (const gchar * name, const gchar * remote_address,
     gint remote_port, GstClockTime base_time)
 {
   /* FIXME: gst_net_client_clock_new() should be a thin wrapper for g_object_new() */

@@ -70,13 +70,13 @@
  * }
  * ]|
  *
- * For another example, a simple element inside GStreamer that uses GstAdapter
+ * For another example, a simple element inside GStreamer that uses #GstAdapter
  * is the libvisual element.
  *
- * An element using GstAdapter in its sink pad chain function should ensure that
+ * An element using #GstAdapter in its sink pad chain function should ensure that
  * when the FLUSH_STOP event is received, that any queued data is cleared using
  * gst_adapter_clear(). Data should also be cleared or processed on EOS and
- * when changing state from #GST_STATE_PAUSED to #GST_STATE_READY.
+ * when changing state from %GST_STATE_PAUSED to %GST_STATE_READY.
  *
  * Also check the GST_BUFFER_FLAG_DISCONT flag on the buffer. Some elements might
  * need to clear the adapter after a discontinuity.
@@ -92,7 +92,7 @@
  * gst_adapter_prev_pts_at_offset() can be used to determine the last
  * seen timestamp at a particular offset in the adapter.
  *
- * A last thing to note is that while GstAdapter is pretty optimized,
+ * A last thing to note is that while #GstAdapter is pretty optimized,
  * merging buffers still might be an operation that requires a malloc() and
  * memcpy() operation, and these operations are not the fastest. Because of
  * this, some functions like gst_adapter_available_fast() are provided to help
@@ -100,17 +100,15 @@
  * gst_adapter_copy() can be used to copy data into a (statically allocated)
  * user provided buffer.
  *
- * GstAdapter is not MT safe. All operations on an adapter must be serialized by
+ * #GstAdapter is not MT safe. All operations on an adapter must be serialized by
  * the caller. This is not normally a problem, however, as the normal use case
- * of GstAdapter is inside one pad's chain function, in which case access is
+ * of #GstAdapter is inside one pad's chain function, in which case access is
  * serialized via the pad's STREAM_LOCK.
  *
  * Note that gst_adapter_push() takes ownership of the buffer passed. Use
  * gst_buffer_ref() before pushing it into the adapter if you still want to
  * access the buffer later. The adapter will never modify the data in the
  * buffer pushed in it.
- *
- * Last reviewed on 2009-05-13 (0.10.24).
  */
 
 #include <gst/gst_private.h>
@@ -354,7 +352,7 @@ gst_adapter_push (GstAdapter * adapter, GstBuffer * buf)
 /* Internal method only. Tries to merge buffers at the head of the queue
  * to form a single larger buffer of size 'size'.
  *
- * Returns TRUE if it managed to merge anything.
+ * Returns %TRUE if it managed to merge anything.
  */
 static gboolean
 gst_adapter_try_to_merge_up (GstAdapter * adapter, gsize size)
@@ -425,10 +423,10 @@ gst_adapter_try_to_merge_up (GstAdapter * adapter, gsize size)
  * as #GstBuffer memory or the potentially more performant
  * gst_adapter_take_buffer().
  *
- * Returns #NULL if @size bytes are not available.
+ * Returns %NULL if @size bytes are not available.
  *
- * Returns: (transfer none) (array length=size) (element-type guint8):
- *     a pointer to the first @size bytes of data, or NULL
+ * Returns: (transfer none) (array length=size) (element-type guint8) (nullable):
+ *     a pointer to the first @size bytes of data, or %NULL
  */
 gconstpointer
 gst_adapter_map (GstAdapter * adapter, gsize size)
@@ -526,7 +524,7 @@ gst_adapter_unmap (GstAdapter * adapter)
 }
 
 /**
- * gst_adapter_copy:
+ * gst_adapter_copy: (skip)
  * @adapter: a #GstAdapter
  * @dest: (out caller-allocates) (array length=size) (element-type guint8):
  *     the memory to copy into
@@ -534,7 +532,7 @@ gst_adapter_unmap (GstAdapter * adapter)
  * @size: the number of bytes to copy
  *
  * Copies @size bytes of data starting at @offset out of the buffers
- * contained in @GstAdapter into an array @dest provided by the caller.
+ * contained in #GstAdapter into an array @dest provided by the caller.
  *
  * The array @dest should be large enough to contain @size bytes.
  * The user should check that the adapter has (@offset + @size) bytes
@@ -548,6 +546,32 @@ gst_adapter_copy (GstAdapter * adapter, gpointer dest, gsize offset, gsize size)
   g_return_if_fail (offset + size <= adapter->size);
 
   copy_into_unchecked (adapter, dest, offset + adapter->skip, size);
+}
+
+/**
+ * gst_adapter_copy_bytes:
+ * @adapter: a #GstAdapter
+ * @offset: the bytes offset in the adapter to start from
+ * @size: the number of bytes to copy
+ *
+ * Similar to gst_adapter_copy, but more suitable for language bindings. @size
+ * bytes of data starting at @offset will be copied out of the buffers contained
+ * in @adapter and into a new #GBytes structure which is returned. Depending on
+ * the value of the @size argument an empty #GBytes structure may be returned.
+ *
+ * Returns: (transfer full): A new #GBytes structure containing the copied data.
+ *
+ * Rename to: gst_adapter_copy
+ *
+ * Since: 1.4
+ */
+GBytes *
+gst_adapter_copy_bytes (GstAdapter * adapter, gsize offset, gsize size)
+{
+  gpointer data;
+  data = g_malloc (size);
+  gst_adapter_copy (adapter, data, offset, size);
+  return g_bytes_new_take (data, size);
 }
 
 /*Flushes the first @flush bytes in the @adapter*/
@@ -684,8 +708,8 @@ gst_adapter_take_internal (GstAdapter * adapter, gsize nbytes)
  *
  * Free-function: g_free
  *
- * Returns: (transfer full) (array length=nbytes) (element-type guint8):
- *     oven-fresh hot data, or #NULL if @nbytes bytes are not available
+ * Returns: (transfer full) (array length=nbytes) (element-type guint8) (nullable):
+ *     oven-fresh hot data, or %NULL if @nbytes bytes are not available
  */
 gpointer
 gst_adapter_take (GstAdapter * adapter, gsize nbytes)
@@ -734,8 +758,8 @@ gst_adapter_take (GstAdapter * adapter, gsize nbytes)
  *
  * Free-function: gst_buffer_unref
  *
- * Returns: (transfer full): a #GstBuffer containing the first @nbytes of
- *     the adapter, or #NULL if @nbytes bytes are not available.
+ * Returns: (transfer full) (nullable): a #GstBuffer containing the first
+ *     @nbytes of the adapter, or %NULL if @nbytes bytes are not available.
  *     gst_buffer_unref() when no longer needed.
  *
  * Since: 1.2
@@ -816,8 +840,8 @@ done:
  *
  * Free-function: gst_buffer_unref
  *
- * Returns: (transfer full): a #GstBuffer containing the first @nbytes of
- *     the adapter, or #NULL if @nbytes bytes are not available.
+ * Returns: (transfer full) (nullable): a #GstBuffer containing the first
+ *     @nbytes of the adapter, or %NULL if @nbytes bytes are not available.
  *     gst_buffer_unref() when no longer needed.
  */
 GstBuffer *
@@ -893,9 +917,9 @@ done:
  * Caller owns returned list and contained buffers. gst_buffer_unref() each
  * buffer in the list before freeing the list after usage.
  *
- * Returns: (element-type Gst.Buffer) (transfer full): a #GList of buffers
- *     containing the first @nbytes of the adapter, or #NULL if @nbytes bytes
- *     are not available
+ * Returns: (element-type Gst.Buffer) (transfer full) (nullable): a #GList of
+ *     buffers containing the first @nbytes of the adapter, or %NULL if @nbytes
+ *     bytes are not available
  */
 GList *
 gst_adapter_take_list (GstAdapter * adapter, gsize nbytes)
@@ -929,7 +953,7 @@ gst_adapter_take_list (GstAdapter * adapter, gsize nbytes)
  *
  * Gets the maximum amount of bytes available, that is it returns the maximum
  * value that can be supplied to gst_adapter_map() without that function
- * returning NULL.
+ * returning %NULL.
  *
  * Returns: number of bytes available in @adapter
  */
@@ -986,7 +1010,7 @@ gst_adapter_available_fast (GstAdapter * adapter)
 /**
  * gst_adapter_prev_pts:
  * @adapter: a #GstAdapter
- * @distance: (out) (allow-none): pointer to location for distance, or NULL
+ * @distance: (out) (allow-none): pointer to location for distance, or %NULL
  *
  * Get the pts that was before the current byte in the adapter. When
  * @distance is given, the amount of bytes between the pts and the current
@@ -1013,7 +1037,7 @@ gst_adapter_prev_pts (GstAdapter * adapter, guint64 * distance)
 /**
  * gst_adapter_prev_dts:
  * @adapter: a #GstAdapter
- * @distance: (out) (allow-none): pointer to location for distance, or NULL
+ * @distance: (out) (allow-none): pointer to location for distance, or %NULL
  *
  * Get the dts that was before the current byte in the adapter. When
  * @distance is given, the amount of bytes between the dts and the current
@@ -1041,7 +1065,7 @@ gst_adapter_prev_dts (GstAdapter * adapter, guint64 * distance)
  * gst_adapter_prev_pts_at_offset:
  * @adapter: a #GstAdapter
  * @offset: the offset in the adapter at which to get timestamp
- * @distance: (out) (allow-none): pointer to location for distance, or NULL
+ * @distance: (out) (allow-none): pointer to location for distance, or %NULL
  *
  * Get the pts that was before the byte at offset @offset in the adapter. When
  * @distance is given, the amount of bytes between the pts and the current
@@ -1065,7 +1089,6 @@ gst_adapter_prev_pts_at_offset (GstAdapter * adapter, gsize offset,
   GstClockTime pts = adapter->pts;
 
   g_return_val_if_fail (GST_IS_ADAPTER (adapter), GST_CLOCK_TIME_NONE);
-  g_return_val_if_fail (offset >= 0, GST_CLOCK_TIME_NONE);
 
   g = adapter->buflist;
 
@@ -1090,7 +1113,7 @@ gst_adapter_prev_pts_at_offset (GstAdapter * adapter, gsize offset,
  * gst_adapter_prev_dts_at_offset:
  * @adapter: a #GstAdapter
  * @offset: the offset in the adapter at which to get timestamp
- * @distance: (out) (allow-none): pointer to location for distance, or NULL
+ * @distance: (out) (allow-none): pointer to location for distance, or %NULL
  *
  * Get the dts that was before the byte at offset @offset in the adapter. When
  * @distance is given, the amount of bytes between the dts and the current
@@ -1114,7 +1137,6 @@ gst_adapter_prev_dts_at_offset (GstAdapter * adapter, gsize offset,
   GstClockTime dts = adapter->dts;
 
   g_return_val_if_fail (GST_IS_ADAPTER (adapter), GST_CLOCK_TIME_NONE);
-  g_return_val_if_fail (offset >= 0, GST_CLOCK_TIME_NONE);
 
   g = adapter->buflist;
 
@@ -1143,7 +1165,7 @@ gst_adapter_prev_dts_at_offset (GstAdapter * adapter, gsize offset,
  * @offset: offset into the adapter data from which to start scanning, returns
  *          the last scanned position.
  * @size: number of bytes to scan from offset
- * @value: pointer to uint32 to return matching data
+ * @value: (out) (allow-none): pointer to uint32 to return matching data
  *
  * Scan for pattern @pattern with applied mask @mask in the adapter data,
  * starting from offset @offset.  If a match is found, the value that matched
@@ -1270,7 +1292,7 @@ gst_adapter_masked_scan_uint32_peek (GstAdapter * adapter, guint32 mask,
  * It is an error to call this function without making sure that there is
  * enough data (offset+size bytes) in the adapter.
  *
- * This function calls gst_adapter_masked_scan_uint32_peek() passing NULL
+ * This function calls gst_adapter_masked_scan_uint32_peek() passing %NULL
  * for value.
  *
  * Returns: offset of the first match, or -1 if no match was found.

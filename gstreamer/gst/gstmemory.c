@@ -33,7 +33,7 @@
  * in the allocated region.
  *
  * Memory is usually created by allocators with a gst_allocator_alloc()
- * method call. When NULL is used as the allocator, the default allocator will
+ * method call. When %NULL is used as the allocator, the default allocator will
  * be used.
  *
  * New allocators can be registered with gst_allocator_register().
@@ -59,9 +59,7 @@
  * memory with an existing memory block at a custom offset and with a custom
  * size.
  *
- * Memory can be efficiently merged when gst_memory_is_span() returns TRUE.
- *
- * Last reviewed on 2012-03-28 (0.11.3)
+ * Memory can be efficiently merged when gst_memory_is_span() returns %TRUE.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -71,6 +69,7 @@
 #include "gst_private.h"
 #include "gstmemory.h"
 
+GType _gst_memory_type = 0;
 GST_DEFINE_MINI_OBJECT_TYPE (GstMemory, gst_memory);
 
 static GstMemory *
@@ -226,8 +225,8 @@ gst_memory_resize (GstMemory * mem, gssize offset, gsize size)
  * This function takes ownership of old @mem and returns a reference to a new
  * #GstMemory.
  *
- * Returns: (transfer full): a #GstMemory object mapped with @flags or NULL when
- * a mapping is not possible.
+ * Returns: (transfer full) (nullable): a #GstMemory object mapped
+ * with @flags or %NULL when a mapping is not possible.
  */
 GstMemory *
 gst_memory_make_mapped (GstMemory * mem, GstMapInfo * info, GstMapFlags flags)
@@ -290,7 +289,7 @@ gst_memory_map (GstMemory * mem, GstMapInfo * info, GstMapFlags flags)
   g_return_val_if_fail (mem != NULL, FALSE);
   g_return_val_if_fail (info != NULL, FALSE);
 
-  if (!gst_memory_lock (mem, flags))
+  if (!gst_memory_lock (mem, (GstLockFlags) flags))
     goto lock_failed;
 
   info->data = mem->allocator->mem_map (mem, mem->maxsize, flags);
@@ -310,13 +309,15 @@ gst_memory_map (GstMemory * mem, GstMapInfo * info, GstMapFlags flags)
 lock_failed:
   {
     GST_CAT_DEBUG (GST_CAT_MEMORY, "mem %p: lock %d failed", mem, flags);
+    memset (info, 0, sizeof (GstMapInfo));
     return FALSE;
   }
 error:
   {
     /* something went wrong, restore the orginal state again */
     GST_CAT_ERROR (GST_CAT_MEMORY, "mem %p: subclass map failed", mem);
-    gst_memory_unlock (mem, flags);
+    gst_memory_unlock (mem, (GstLockFlags) flags);
+    memset (info, 0, sizeof (GstMapInfo));
     return FALSE;
   }
 }
@@ -336,7 +337,7 @@ gst_memory_unmap (GstMemory * mem, GstMapInfo * info)
   g_return_if_fail (info->memory == mem);
 
   mem->allocator->mem_unmap (mem);
-  gst_memory_unlock (mem, info->flags);
+  gst_memory_unlock (mem, (GstLockFlags) info->flags);
 }
 
 /**
@@ -424,4 +425,10 @@ gst_memory_is_span (GstMemory * mem1, GstMemory * mem2, gsize * offset)
     return FALSE;
 
   return TRUE;
+}
+
+void
+_priv_gst_memory_initialize (void)
+{
+  _gst_memory_type = gst_memory_get_type ();
 }

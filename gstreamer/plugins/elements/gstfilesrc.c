@@ -28,7 +28,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch filesrc location=song.ogg ! decodebin2 ! autoaudiosink
+ * gst-launch filesrc location=song.ogg ! decodebin ! autoaudiosink
  * ]| Play a song.ogg from local dir.
  * </refsect2>
  */
@@ -241,7 +241,7 @@ gst_file_src_set_location (GstFileSrc * src, const gchar * location)
   g_free (src->filename);
   g_free (src->uri);
 
-  /* clear the filename if we get a NULL (is that possible?) */
+  /* clear the filename if we get a NULL */
   if (location == NULL) {
     src->filename = NULL;
     src->uri = NULL;
@@ -330,7 +330,7 @@ gst_file_src_fill (GstBaseSrc * basesrc, guint64 offset, guint length,
 
   src = GST_FILE_SRC_CAST (basesrc);
 
-  if (G_UNLIKELY (src->read_position != offset)) {
+  if (G_UNLIKELY (offset != -1 && src->read_position != offset)) {
     off_t res;
 
     res = lseek (src->fd, offset, SEEK_SET);
@@ -480,9 +480,16 @@ gst_file_src_start (GstBaseSrc * basesrc)
           g_strerror (errno));
       src->seekable = FALSE;
     } else {
+      res = lseek (src->fd, 0, SEEK_SET);
+
+      if (res < 0) {
+        /* We really don't like not being able to go back to 0 */
+        src->seekable = FALSE;
+        goto lseek_wonky;
+      }
+
       src->seekable = TRUE;
     }
-    lseek (src->fd, 0, SEEK_SET);
   }
 
   /* We can only really do seeking on regular files - for other file types, we
@@ -531,6 +538,13 @@ was_socket:
   {
     GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ,
         (_("File \"%s\" is a socket."), src->filename), (NULL));
+    goto error_close;
+  }
+lseek_wonky:
+  {
+    GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL),
+        ("Could not seek back to zero after seek test in file \"%s\"",
+            src->filename));
     goto error_close;
   }
 error_close:
@@ -618,7 +632,7 @@ gst_file_src_uri_set_uri (GstURIHandler * handler, const gchar * uri,
    * form. Correct this.
    */
   if (location[0] == '\\' && location[1] == '\\' && location[2] == '\\')
-    g_memmove (location, location + 1, strlen (location + 1) + 1);
+    memmove (location, location + 1, strlen (location + 1) + 1);
 #endif
 
   ret = gst_file_src_set_location (src, location);

@@ -26,8 +26,6 @@
  *
  * Various functions for receiving, sending an serializing #GstNetTimePacket
  * structures.
- *
- * Last reviewed on 2005-11-23 (0.9.5)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -210,7 +208,7 @@ short_packet:
  *
  * MT safe.
  *
- * Returns: TRUE if successful, FALSE in case an error occured.
+ * Returns: TRUE if successful, FALSE in case an error occurred.
  */
 gboolean
 gst_net_time_packet_send (const GstNetTimePacket * packet,

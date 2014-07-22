@@ -93,7 +93,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-docbook.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -173,6 +172,7 @@ am_libgstbase_@GST_API_VERSION@_la_OBJECTS =  \
 	libgstbase_@GST_API_VERSION@_la-gstbytewriter.lo \
 	libgstbase_@GST_API_VERSION@_la-gstcollectpads.lo \
 	libgstbase_@GST_API_VERSION@_la-gstdataqueue.lo \
+	libgstbase_@GST_API_VERSION@_la-gstflowcombiner.lo \
 	libgstbase_@GST_API_VERSION@_la-gstpushsrc.lo \
 	libgstbase_@GST_API_VERSION@_la-gstqueuearray.lo \
 	libgstbase_@GST_API_VERSION@_la-gsttypefindhelper.lo
@@ -541,6 +541,7 @@ libgstbase_@GST_API_VERSION@_la_SOURCES = \
 	gstbytewriter.c         \
 	gstcollectpads.c	\
 	gstdataqueue.c		\
+	gstflowcombiner.c	\
 	gstpushsrc.c		\
 	gstqueuearray.c		\
 	gsttypefindhelper.c
@@ -563,6 +564,7 @@ libgstbase_@GST_API_VERSION@include_HEADERS = \
 	gstbytewriter.h         \
 	gstcollectpads.h	\
 	gstdataqueue.h		\
+	gstflowcombiner.h	\
 	gstpushsrc.h		\
 	gstqueuearray.h		\
 	gsttypefindhelper.h
@@ -674,6 +676,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_API_VERSION@_la-gstbytewriter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_API_VERSION@_la-gstcollectpads.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_API_VERSION@_la-gstdataqueue.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_API_VERSION@_la-gstflowcombiner.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_API_VERSION@_la-gstpushsrc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_API_VERSION@_la-gstqueuearray.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstbase_@GST_API_VERSION@_la-gsttypefindhelper.Plo@am__quote@
@@ -771,6 +774,13 @@ libgstbase_@GST_API_VERSION@_la-gstdataqueue.lo: gstdataqueue.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstdataqueue.c' object='libgstbase_@GST_API_VERSION@_la-gstdataqueue.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -c -o libgstbase_@GST_API_VERSION@_la-gstdataqueue.lo `test -f 'gstdataqueue.c' || echo '$(srcdir)/'`gstdataqueue.c
+
+libgstbase_@GST_API_VERSION@_la-gstflowcombiner.lo: gstflowcombiner.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -MT libgstbase_@GST_API_VERSION@_la-gstflowcombiner.lo -MD -MP -MF $(DEPDIR)/libgstbase_@GST_API_VERSION@_la-gstflowcombiner.Tpo -c -o libgstbase_@GST_API_VERSION@_la-gstflowcombiner.lo `test -f 'gstflowcombiner.c' || echo '$(srcdir)/'`gstflowcombiner.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstbase_@GST_API_VERSION@_la-gstflowcombiner.Tpo $(DEPDIR)/libgstbase_@GST_API_VERSION@_la-gstflowcombiner.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstflowcombiner.c' object='libgstbase_@GST_API_VERSION@_la-gstflowcombiner.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -c -o libgstbase_@GST_API_VERSION@_la-gstflowcombiner.lo `test -f 'gstflowcombiner.c' || echo '$(srcdir)/'`gstflowcombiner.c
 
 libgstbase_@GST_API_VERSION@_la-gstpushsrc.lo: gstpushsrc.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstbase_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -MT libgstbase_@GST_API_VERSION@_la-gstpushsrc.lo -MD -MP -MF $(DEPDIR)/libgstbase_@GST_API_VERSION@_la-gstpushsrc.Tpo -c -o libgstbase_@GST_API_VERSION@_la-gstpushsrc.lo `test -f 'gstpushsrc.c' || echo '$(srcdir)/'`gstpushsrc.c
@@ -1112,7 +1122,7 @@ Android.mk: Makefile.am
 @HAVE_INTROSPECTION_TRUE@		--library-path=$(top_builddir)/gst \
 @HAVE_INTROSPECTION_TRUE@		--library=libgstbase-@GST_API_VERSION@.la \
 @HAVE_INTROSPECTION_TRUE@		--include=Gst-@GST_API_VERSION@ \
-@HAVE_INTROSPECTION_TRUE@		--libtool="$(top_builddir)/libtool" \
+@HAVE_INTROSPECTION_TRUE@		--libtool="${LIBTOOL}" \
 @HAVE_INTROSPECTION_TRUE@		--pkg gstreamer-@GST_API_VERSION@ \
 @HAVE_INTROSPECTION_TRUE@		--pkg-export gstreamer-base-@GST_API_VERSION@ \
 @HAVE_INTROSPECTION_TRUE@		--add-init-section="gst_init(NULL,NULL);" \

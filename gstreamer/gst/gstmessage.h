@@ -33,11 +33,11 @@ typedef struct _GstMessage GstMessage;
  * only receive this message in the PLAYING state and every time it sets a
  * pipeline to PLAYING that is in the EOS state. The application can perform a
  * flushing seek in the pipeline, which will undo the EOS state again.
- * @GST_MESSAGE_ERROR: an error occured. When the application receives an error
+ * @GST_MESSAGE_ERROR: an error occurred. When the application receives an error
  * message it should stop playback of the pipeline and not assume that more
  * data will be played.
- * @GST_MESSAGE_WARNING: a warning occured.
- * @GST_MESSAGE_INFO: an info message occured
+ * @GST_MESSAGE_WARNING: a warning occurred.
+ * @GST_MESSAGE_INFO: an info message occurred
  * @GST_MESSAGE_TAG: a tag was found.
  * @GST_MESSAGE_BUFFERING: the pipeline is buffering. When the application
  * receives a buffering message in the PLAYING state for a non-live pipeline it
@@ -99,12 +99,25 @@ typedef struct _GstMessage GstMessage;
  *     the URI for the next title has been set).
  * @GST_MESSAGE_NEED_CONTEXT: Message indicating that an element wants a specific context (Since 1.2)
  * @GST_MESSAGE_HAVE_CONTEXT: Message indicating that an element created a context (Since 1.2)
+ * @GST_MESSAGE_EXTENDED: Message is an extended message type (see below).
+ *     These extended message IDs can't be used directly with mask-based API
+ *     like gst_bus_poll() or gst_bus_timed_pop_filtered(), but you can still
+ *     filter for GST_MESSAGE_EXTENDED and then check the result for the
+ *     specific type. (Since 1.4)
+ * @GST_MESSAGE_DEVICE_ADDED: Message indicating a #GstDevice was added to
+ *     a #GstDeviceProvider (Since 1.4)
+ * @GST_MESSAGE_DEVICE_REMOVED: Message indicating a #GstDevice was removed
+ *     from a #GstDeviceProvider (Since 1.4)
  * @GST_MESSAGE_ANY: mask for all of the above messages.
  *
  * The different message types that are available.
  */
 /* NOTE: keep in sync with quark registration in gstmessage.c
  * NOTE: keep GST_MESSAGE_ANY a valid gint to avoid compiler warnings.
+ */
+/* FIXME: 2.0: Make it NOT flags, just a regular 1,2,3,4.. enumeration */
+/* FIXME: For GST_MESSAGE_ANY ~0 -> 0xffffffff see
+ *        https://bugzilla.gnome.org/show_bug.cgi?id=732633
  */
 typedef enum
 {
@@ -140,7 +153,10 @@ typedef enum
   GST_MESSAGE_STREAM_START      = (1 << 28),
   GST_MESSAGE_NEED_CONTEXT      = (1 << 29),
   GST_MESSAGE_HAVE_CONTEXT      = (1 << 30),
-  GST_MESSAGE_ANY               = ~0
+  GST_MESSAGE_EXTENDED          = (1 << 31),
+  GST_MESSAGE_DEVICE_ADDED      = GST_MESSAGE_EXTENDED + 1,
+  GST_MESSAGE_DEVICE_REMOVED    = GST_MESSAGE_EXTENDED + 2,
+  GST_MESSAGE_ANY               = (gint) (0xffffffff)
 } GstMessageType;
 
 #include <gst/gstminiobject.h>
@@ -150,8 +166,11 @@ typedef enum
 #include <gst/gststructure.h>
 #include <gst/gstquery.h>
 #include <gst/gsttoc.h>
+#include <gst/gstdevice.h>
 
-#define GST_TYPE_MESSAGE                         (gst_message_get_type())
+GST_EXPORT GType _gst_message_type;
+
+#define GST_TYPE_MESSAGE                         (_gst_message_type)
 #define GST_IS_MESSAGE(obj)                      (GST_IS_MINI_OBJECT_TYPE (obj, GST_TYPE_MESSAGE))
 #define GST_MESSAGE_CAST(obj)                    ((GstMessage*)(obj))
 #define GST_MESSAGE(obj)                         (GST_MESSAGE_CAST(obj))
@@ -173,6 +192,15 @@ typedef enum
  * Get the #GstMessageType of @message.
  */
 #define GST_MESSAGE_TYPE(message)       (GST_MESSAGE_CAST(message)->type)
+/**
+ * GST_MESSAGE_TYPE_IS_EXTENDED:
+ * @message: a #GstMessage
+ *
+ * Check if the message is in the extended message group
+ * (Since 1.4)
+ */
+#define GST_MESSAGE_TYPE_IS_EXTENDED(message)       (!!(GST_MESSAGE_CAST(message)->type & GST_MESSAGE_EXTENDED))
+
 /**
  * GST_MESSAGE_TYPE_NAME:
  * @message: a #GstMessage
@@ -260,7 +288,7 @@ typedef enum {
  *          posted on the bus.
  *
  * The type of a %GST_MESSAGE_PROGRESS. The progress messages inform the
- * application of the status of assynchronous tasks.
+ * application of the status of asynchronous tasks.
  */
 typedef enum {
   GST_PROGRESS_TYPE_START    = 0,
@@ -379,8 +407,8 @@ gst_message_copy (const GstMessage * msg)
 #define         gst_message_make_writable(msg)  GST_MESSAGE_CAST (gst_mini_object_make_writable (GST_MINI_OBJECT_CAST (msg)))
 /**
  * gst_message_replace:
- * @old_message: (inout) (transfer full): pointer to a pointer to a #GstMessage
- *     to be replaced.
+ * @old_message: (inout) (transfer full) (nullable): pointer to a
+ *     pointer to a #GstMessage to be replaced.
  * @new_message: (allow-none) (transfer none): pointer to a #GstMessage that will
  *     replace the message pointed to by @old_message.
  *
@@ -389,9 +417,9 @@ gst_message_copy (const GstMessage * msg)
  * in some cases), and the reference counts are updated appropriately (the old
  * message is unreffed, the new one is reffed).
  *
- * Either @new_message or the #GstMessage pointed to by @old_message may be NULL.
+ * Either @new_message or the #GstMessage pointed to by @old_message may be %NULL.
  *
- * Returns: TRUE if @new_message was different from @old_message
+ * Returns: %TRUE if @new_message was different from @old_message
  */
 #ifdef _FOOL_GTK_DOC_
 G_INLINE_FUNC gboolean gst_message_replace (GstMessage **old_message, GstMessage *new_message);
@@ -571,6 +599,15 @@ gboolean        gst_message_parse_context_type  (GstMessage * message, const gch
 /* HAVE_CONTEXT */
 GstMessage *    gst_message_new_have_context    (GstObject * src, GstContext *context) G_GNUC_MALLOC;
 void            gst_message_parse_have_context  (GstMessage *message, GstContext **context);
+
+/* DEVICE_ADDED */
+GstMessage *    gst_message_new_device_added    (GstObject * src, GstDevice * device) G_GNUC_MALLOC;
+void            gst_message_parse_device_added  (GstMessage * message, GstDevice ** device);
+
+/* DEVICE_REMOVED */
+GstMessage *    gst_message_new_device_removed    (GstObject * src, GstDevice * device) G_GNUC_MALLOC;
+void            gst_message_parse_device_removed  (GstMessage * message, GstDevice ** device);
+
 
 G_END_DECLS
 

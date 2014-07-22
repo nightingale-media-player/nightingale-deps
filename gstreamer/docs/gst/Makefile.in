@@ -107,7 +107,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-docbook.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -467,7 +466,9 @@ DOC_MAIN_SGML_FILE = $(DOC_MODULE)-docs.sgml
 DOC_SOURCE_DIR = $(top_srcdir)/gst
 
 # Extra options to supply to gtkdoc-scan.
-SCAN_OPTIONS = --deprecated-guards="GST_DISABLE_DEPRECATED"
+SCAN_OPTIONS = --deprecated-guards="GST_DISABLE_DEPRECATED" \
+  --ignore-decorators='GST_EXPORT'
+
 
 # Extra options to supply to gtkdoc-mkdb.
 MKDB_OPTIONS = --sgml-mode --output-format=xml --ignore-files=parse

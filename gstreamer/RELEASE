@@ -1,22 +1,35 @@
 
-Release notes for GStreamer 1.2.3
+Release notes for GStreamer 1.4.0
 
 
-The GStreamer team is proud to announce a new bug-fix release
-in the 1.x stable series of the
-core of the GStreamer streaming media framework.
+The GStreamer team is pleased to announce the first release of
+the stable 1.4 release series. The 1.4 release series is adding new
+features on top of the 1.0 and 1.2 series and is part of the API and
+ABI-stable 1.x release series of the GStreamer multimedia framework.
 
 
-The 1.x series is a stable series targeted at end users.
-It is not API or ABI compatible with the stable 0.10.x series.
-It is, however, parallel installable with the 0.10.x series and
-will not affect an existing 0.10.x installation.
+
+Binaries for Android, iOS, Mac OS X and Windows are provided together
+with this release.
 
 
-The 1.x series has been reworked for more flexible memory handling, improved
-caps negotiation and re-negotiation, better handling of dynamic pipelines,
-and increased performance in general. It also features countless other feature
-additions and enhancements.
+
+The stable 1.4 release series is API and ABI compatible with 1.0.x,
+1.2.x and any other 1.x release series in the future. Compared to 1.2.x
+it contains some new features and more intrusive changes that were
+considered too risky as a bugfix.
+
+
+
+The versioning scheme that is used in general is that 1.x.y is API and
+ABI backwards compatible with previous 1.x.y releases. If x is an even
+number it is a stable release series and all releases in this series
+will only contain important bugfixes, e.g. the 1.0 series with 1.0.7. If
+x is odd it is a development release series that will lead to the next
+stable release series 1.x+1 and contains new features and bigger
+changes. During the development release series, new API can still
+change.
+
 
 
 This module, gstreamer, only contains core functionality.
@@ -42,15 +55,8 @@ contains a set of codecs plugins based on libav (formerly gst-ffmpeg)
 
 Bugs fixed in this release
      
-      * 712597 : multiqueue: regression: buffering of live radio stream never finishes
-      * 719814 : docs: add missing files for distribution
-      * 721253 : multiqueue: May cause hanging if shut down while handling a serialized query
-      * 721289 : pad: using multiple blocking probes doesn't work as expected
-      * 721300 : tee: Does not protect pad from being destroyed from pad probe during gst_pad_push()
-      * 721350 : baseparse: push pending events before GAP
-      * 721422 : Negative pad offsets don't work
-      * 721941 : baseparse: do not accumulate buffers on passthrough mode
-      * 722467 : pad: Leaks events when iterating sticky events and callback drops event
+      * 733121 : debugutils: Unref pad template after use
+      * 733291 : typefindelement: Propagate input buffer PTS and DTS
 
 ==== Download ====
 
@@ -87,11 +93,9 @@ subscribe to the gstreamer-devel list.
         
 Contributors to this release
     
-      * Arnaud Vrac
-      * Pedro Côrte-Real
+      * Edward Hervey
       * Sebastian Dröge
       * Sebastian Rasmussen
       * Thiago Santos
-      * Wim Taymans
-      * YanpingZhang
+      * Thibault Saunier
  

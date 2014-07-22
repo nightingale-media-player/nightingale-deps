@@ -31,8 +31,6 @@
  * query the exposed clock over the network for its values.
  *
  * The #GstNetTimeProvider typically wraps the clock used by a #GstPipeline.
- *
- * Last reviewed on 2005-11-23 (0.9.5)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -209,8 +207,7 @@ gst_net_time_provider_thread (gpointer data)
     }
   }
 
-  if (err != NULL)
-    g_error_free (err);
+  g_error_free (err);
 
   GST_INFO_OBJECT (self, "time provider thread is stopping");
   return NULL;
@@ -325,7 +322,8 @@ gst_net_time_provider_start (GstNetTimeProvider * self)
     GST_DEBUG_OBJECT (self, "notifying port %d", port);
     g_object_notify (G_OBJECT (self), "port");
   }
-  GST_DEBUG_OBJECT (self, "bound on UDP address %s, port %d", address, port);
+  GST_DEBUG_OBJECT (self, "bound on UDP address %s, port %d",
+      self->priv->address, port);
   g_object_unref (bound_addr);
 
   self->priv->socket = socket;

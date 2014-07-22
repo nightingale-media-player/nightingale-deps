@@ -54,6 +54,9 @@ extern const char             g_log_domain_gstreamer[];
 /* for GstElement */
 #include "gstelement.h"
 
+/* for GstDeviceProvider */
+#include "gstdeviceprovider.h"
+
 /* for GstToc */
 #include "gsttoc.h"
 
@@ -101,6 +104,8 @@ G_GNUC_INTERNAL  gboolean _priv_gst_in_valgrind (void);
 /* init functions called from gst_init(). */
 G_GNUC_INTERNAL  void  _priv_gst_quarks_initialize (void);
 G_GNUC_INTERNAL  void  _priv_gst_mini_object_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_memory_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_allocator_initialize (void);
 G_GNUC_INTERNAL  void  _priv_gst_buffer_initialize (void);
 G_GNUC_INTERNAL  void  _priv_gst_buffer_list_initialize (void);
 G_GNUC_INTERNAL  void  _priv_gst_structure_initialize (void);
@@ -109,7 +114,6 @@ G_GNUC_INTERNAL  void  _priv_gst_caps_features_initialize (void);
 G_GNUC_INTERNAL  void  _priv_gst_event_initialize (void);
 G_GNUC_INTERNAL  void  _priv_gst_format_initialize (void);
 G_GNUC_INTERNAL  void  _priv_gst_message_initialize (void);
-G_GNUC_INTERNAL  void  _priv_gst_memory_initialize (void);
 G_GNUC_INTERNAL  void  _priv_gst_meta_initialize (void);
 G_GNUC_INTERNAL  void  _priv_gst_plugin_initialize (void);
 G_GNUC_INTERNAL  void  _priv_gst_query_initialize (void);
@@ -118,6 +122,8 @@ G_GNUC_INTERNAL  void  _priv_gst_tag_initialize (void);
 G_GNUC_INTERNAL  void  _priv_gst_value_initialize (void);
 G_GNUC_INTERNAL  void  _priv_gst_debug_init (void);
 G_GNUC_INTERNAL  void  _priv_gst_context_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_toc_initialize (void);
+G_GNUC_INTERNAL  void  _priv_gst_date_time_initialize (void);
 
 /* Private registry functions */
 G_GNUC_INTERNAL
@@ -352,7 +358,7 @@ struct _GstTypeFindFactory {
 
   GstTypeFindFunction           function;
   gchar **                      extensions;
-  GstCaps *                     caps; /* FIXME: not yet saved in registry */
+  GstCaps *                     caps;
 
   gpointer                      user_data;
   GDestroyNotify                user_data_notify;
@@ -389,6 +395,25 @@ struct _GstElementFactory {
 
 struct _GstElementFactoryClass {
   GstPluginFeatureClass parent_class;
+
+  gpointer _gst_reserved[GST_PADDING];
+};
+
+struct _GstDeviceProviderFactory {
+  GstPluginFeature           feature;
+  /* <private> */
+
+  GType                      type;              /* unique GType the device factory or 0 if not loaded */
+
+  volatile GstDeviceProvider *provider;
+  gpointer                   metadata;
+
+  gpointer _gst_reserved[GST_PADDING];
+};
+
+struct _GstDeviceProviderFactoryClass {
+  GstPluginFeatureClass         parent;
+  /* <private> */
 
   gpointer _gst_reserved[GST_PADDING];
 };

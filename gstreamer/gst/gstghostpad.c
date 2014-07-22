@@ -40,8 +40,6 @@
  * association later on.
  *
  * Note that GhostPads add overhead to the data processing of a pipeline.
- *
- * Last reviewed on 2005-11-18 (0.9.5)
  */
 
 #include "gst_private.h"
@@ -77,12 +75,12 @@ static GstPad *gst_proxy_pad_get_target (GstPad * pad);
 /**
  * gst_proxy_pad_iterate_internal_links_default:
  * @pad: the #GstPad to get the internal links of.
- * @parent: (allow-none): the parent of @pad or NULL
+ * @parent: (allow-none): the parent of @pad or %NULL
  *
  * Invoke the default iterate internal links function of the proxy pad.
  *
- * Returns: a #GstIterator of #GstPad, or NULL if @pad has no parent. Unref each
- * returned pad with gst_object_unref().
+ * Returns: (nullable): a #GstIterator of #GstPad, or %NULL if @pad
+ * has no parent. Unref each returned pad with gst_object_unref().
  */
 GstIterator *
 gst_proxy_pad_iterate_internal_links_default (GstPad * pad, GstObject * parent)
@@ -106,7 +104,7 @@ gst_proxy_pad_iterate_internal_links_default (GstPad * pad, GstObject * parent)
 /**
  * gst_proxy_pad_chain_default:
  * @pad: a sink #GstPad, returns GST_FLOW_ERROR if not.
- * @parent: (allow-none): the parent of @pad or NULL
+ * @parent: (allow-none): the parent of @pad or %NULL
  * @buffer: (transfer full): the #GstBuffer to send, return GST_FLOW_ERROR
  *     if not.
  *
@@ -134,7 +132,7 @@ gst_proxy_pad_chain_default (GstPad * pad, GstObject * parent,
 /**
  * gst_proxy_pad_chain_list_default:
  * @pad: a sink #GstPad, returns GST_FLOW_ERROR if not.
- * @parent: (allow-none): the parent of @pad or NULL
+ * @parent: (allow-none): the parent of @pad or %NULL
  * @list: (transfer full): the #GstBufferList to send, return GST_FLOW_ERROR
  *     if not.
  *
@@ -195,9 +193,7 @@ gst_proxy_pad_get_target (GstPad * pad)
   GstPad *target;
 
   GST_OBJECT_LOCK (pad);
-  target = GST_PROXY_PAD_TARGET (pad);
-  if (target)
-    gst_object_ref (target);
+  target = gst_pad_get_peer (GST_PROXY_PAD_INTERNAL (pad));
   GST_OBJECT_UNLOCK (pad);
 
   return target;
@@ -212,8 +208,8 @@ gst_proxy_pad_get_target (GstPad * pad)
  * The internal pad of a #GstGhostPad is the internally used
  * pad of opposite direction, which is used to link to the target.
  *
- * Returns: (transfer full): the target #GstProxyPad, can be NULL.
- * Unref target pad after usage.
+ * Returns: (transfer full) (nullable): the target #GstProxyPad, can
+ * be %NULL.  Unref target pad after usage.
  */
 GstProxyPad *
 gst_proxy_pad_get_internal (GstProxyPad * pad)
@@ -334,7 +330,7 @@ gst_ghost_pad_internal_activate_pull_default (GstPad * pad, GstObject * parent,
 /**
  * gst_ghost_pad_internal_activate_mode_default:
  * @pad: the #GstPad to activate or deactivate.
- * @parent: (allow-none): the parent of @pad or NULL
+ * @parent: (allow-none): the parent of @pad or %NULL
  * @mode: the requested activation mode
  * @active: whether the pad should be active or not.
  *
@@ -422,7 +418,7 @@ gst_ghost_pad_activate_pull_default (GstPad * pad, GstObject * parent,
 /**
  * gst_ghost_pad_activate_mode_default:
  * @pad: the #GstPad to activate or deactivate.
- * @parent: (allow-none): the parent of @pad or NULL
+ * @parent: (allow-none): the parent of @pad or %NULL
  * @mode: the requested activation mode
  * @active: whether the pad should be active or not.
  *
@@ -648,7 +644,7 @@ construct_failed:
 
 /**
  * gst_ghost_pad_new_no_target:
- * @name: (allow-none): the name of the new pad, or NULL to assign a default name.
+ * @name: (allow-none): the name of the new pad, or %NULL to assign a default name.
  * @dir: the direction of the ghostpad
  *
  * Create a new ghostpad without a target with the given direction.
@@ -657,7 +653,8 @@ construct_failed:
  *
  * The created ghostpad will not have a padtemplate.
  *
- * Returns: (transfer full): a new #GstPad, or NULL in case of an error.
+ * Returns: (transfer full) (nullable): a new #GstPad, or %NULL in
+ * case of an error.
  */
 GstPad *
 gst_ghost_pad_new_no_target (const gchar * name, GstPadDirection dir)
@@ -675,7 +672,7 @@ gst_ghost_pad_new_no_target (const gchar * name, GstPadDirection dir)
 
 /**
  * gst_ghost_pad_new:
- * @name: (allow-none): the name of the new pad, or NULL to assign a default name
+ * @name: (allow-none): the name of the new pad, or %NULL to assign a default name
  * @target: (transfer none): the pad to ghost.
  *
  * Create a new ghostpad with @target as the target. The direction will be taken
@@ -683,7 +680,8 @@ gst_ghost_pad_new_no_target (const gchar * name, GstPadDirection dir)
  *
  * Will ref the target.
  *
- * Returns: (transfer floating): a new #GstPad, or NULL in case of an error.
+ * Returns: (transfer floating) (nullable): a new #GstPad, or %NULL in
+ * case of an error.
  */
 GstPad *
 gst_ghost_pad_new (const gchar * name, GstPad * target)
@@ -714,7 +712,7 @@ set_target_failed:
 
 /**
  * gst_ghost_pad_new_from_template:
- * @name: (allow-none): the name of the new pad, or NULL to assign a default name.
+ * @name: (allow-none): the name of the new pad, or %NULL to assign a default name.
  * @target: (transfer none): the pad to ghost.
  * @templ: (transfer none): the #GstPadTemplate to use on the ghostpad.
  *
@@ -723,7 +721,8 @@ set_target_failed:
  *
  * Will ref the target.
  *
- * Returns: (transfer full): a new #GstPad, or NULL in case of an error.
+ * Returns: (transfer full) (nullable): a new #GstPad, or %NULL in
+ * case of an error.
  */
 
 GstPad *
@@ -759,13 +758,14 @@ set_target_failed:
 
 /**
  * gst_ghost_pad_new_no_target_from_template:
- * @name: (allow-none): the name of the new pad, or NULL to assign a default name
+ * @name: (allow-none): the name of the new pad, or %NULL to assign a default name
  * @templ: (transfer none): the #GstPadTemplate to create the ghostpad from.
  *
  * Create a new ghostpad based on @templ, without setting a target. The
  * direction will be taken from the @templ.
  *
- * Returns: (transfer full): a new #GstPad, or NULL in case of an error.
+ * Returns: (transfer full) (nullable): a new #GstPad, or %NULL in
+ * case of an error.
  */
 GstPad *
 gst_ghost_pad_new_no_target_from_template (const gchar * name,
@@ -787,8 +787,9 @@ gst_ghost_pad_new_no_target_from_template (const gchar * name,
  *
  * Get the target pad of @gpad. Unref target pad after usage.
  *
- * Returns: (transfer full): the target #GstPad, can be NULL if the ghostpad
- * has no target set. Unref target pad after usage.
+ * Returns: (transfer full) (nullable): the target #GstPad, can be
+ * %NULL if the ghostpad has no target set. Unref target pad after
+ * usage.
  */
 GstPad *
 gst_ghost_pad_get_target (GstGhostPad * gpad)
@@ -811,10 +812,10 @@ gst_ghost_pad_get_target (GstGhostPad * gpad)
  *
  * Set the new target of the ghostpad @gpad. Any existing target
  * is unlinked and links to the new target are established. if @newtarget is
- * NULL the target will be cleared.
+ * %NULL the target will be cleared.
  *
- * Returns: (transfer full): TRUE if the new target could be set. This function
- *     can return FALSE when the internal pads could not be linked.
+ * Returns: (transfer full): %TRUE if the new target could be set. This function
+ *     can return %FALSE when the internal pads could not be linked.
  */
 gboolean
 gst_ghost_pad_set_target (GstGhostPad * gpad, GstPad * newtarget)
@@ -836,7 +837,7 @@ gst_ghost_pad_set_target (GstGhostPad * gpad, GstPad * newtarget)
     GST_DEBUG_OBJECT (gpad, "clearing target");
 
   /* clear old target */
-  if ((oldtarget = GST_PROXY_PAD_TARGET (gpad))) {
+  if ((oldtarget = gst_pad_get_peer (internal))) {
     GST_OBJECT_UNLOCK (gpad);
 
     /* unlink internal pad */
@@ -844,6 +845,8 @@ gst_ghost_pad_set_target (GstGhostPad * gpad, GstPad * newtarget)
       gst_pad_unlink (internal, oldtarget);
     else
       gst_pad_unlink (oldtarget, internal);
+
+    gst_object_unref (oldtarget);
   } else {
     GST_OBJECT_UNLOCK (gpad);
   }
@@ -869,8 +872,8 @@ gst_ghost_pad_set_target (GstGhostPad * gpad, GstPad * newtarget)
   /* ERRORS */
 link_failed:
   {
-    GST_WARNING_OBJECT (gpad, "could not link internal and target, reason:%d",
-        lret);
+    GST_WARNING_OBJECT (gpad, "could not link internal and target, reason:%s",
+        gst_pad_link_get_name (lret));
     return FALSE;
   }
 }

@@ -37,7 +37,7 @@ GQuark gst_parse_error_quark (void);
 
 /**
  * GstParseError:
- * @GST_PARSE_ERROR_SYNTAX: A syntax error occured.
+ * @GST_PARSE_ERROR_SYNTAX: A syntax error occurred.
  * @GST_PARSE_ERROR_NO_SUCH_ELEMENT: The description contained an unknown element
  * @GST_PARSE_ERROR_NO_SUCH_PROPERTY: An element did not have a specified property
  * @GST_PARSE_ERROR_LINK: There was an error linking two pads.
@@ -61,7 +61,7 @@ typedef enum
 /**
  * GstParseFlags:
  * @GST_PARSE_FLAG_NONE: Do not use any special parsing options.
- * @GST_PARSE_FLAG_FATAL_ERRORS: Always return NULL when an error occurs
+ * @GST_PARSE_FLAG_FATAL_ERRORS: Always return %NULL when an error occurs
  *     (default behaviour is to return partially constructed bins or elements
  *      in some cases)
  * @GST_PARSE_FLAG_NO_SINGLE_ELEMENT_BINS: If a bin only has a single element,

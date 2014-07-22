@@ -26,6 +26,10 @@
  *
  * These macros and functions are for internal use of the unit tests found
  * inside the 'check' directories of various GStreamer packages.
+ *
+ * One notable feature is that one can use the environment variables GST_CHECK
+ * and GST_CHECK_IGNORE to select which tests to run or skip. Both variables
+ * can contain a comman separated list of test name globs (e.g. test_*).
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -259,10 +263,51 @@ GstPad *
 gst_check_setup_src_pad_by_name (GstElement * element,
     GstStaticPadTemplate * tmpl, const gchar * name)
 {
+  GstPadTemplate *ptmpl = gst_static_pad_template_get (tmpl);
+  GstPad *srcpad;
+
+  srcpad =
+      gst_check_setup_src_pad_by_name_from_template (element, ptmpl, "sink");
+
+  gst_object_unref (ptmpl);
+
+  return srcpad;
+}
+
+/**
+ * gst_check_setup_src_pad_from_template:
+ * @element: element to setup pad on
+ * @tmpl: pad template
+ *
+ * Returns: (transfer full): a new pad
+ *
+ * Since: 1.4
+ */
+GstPad *
+gst_check_setup_src_pad_from_template (GstElement * element,
+    GstPadTemplate * tmpl)
+{
+  return gst_check_setup_src_pad_by_name_from_template (element, tmpl, "sink");
+}
+
+/**
+ * gst_check_setup_src_pad_by_name_from_template:
+ * @element: element to setup pad on
+ * @tmpl: pad template
+ * @name: name
+ *
+ * Returns: (transfer full): a new pad
+ *
+ * Since: 1.4
+ */
+GstPad *
+gst_check_setup_src_pad_by_name_from_template (GstElement * element,
+    GstPadTemplate * tmpl, const gchar * name)
+{
   GstPad *srcpad, *sinkpad;
 
   /* sending pad */
-  srcpad = gst_pad_new_from_static_template (tmpl, "src");
+  srcpad = gst_pad_new_from_template (tmpl, "src");
   GST_DEBUG_OBJECT (element, "setting up sending pad %p", srcpad);
   fail_if (srcpad == NULL, "Could not create a srcpad");
   ASSERT_OBJECT_REFCOUNT (srcpad, "srcpad", 1);
@@ -345,10 +390,51 @@ GstPad *
 gst_check_setup_sink_pad_by_name (GstElement * element,
     GstStaticPadTemplate * tmpl, const gchar * name)
 {
+  GstPadTemplate *ptmpl = gst_static_pad_template_get (tmpl);
+  GstPad *sinkpad;
+
+  sinkpad =
+      gst_check_setup_sink_pad_by_name_from_template (element, ptmpl, "src");
+
+  gst_object_unref (ptmpl);
+
+  return sinkpad;
+}
+
+/**
+ * gst_check_setup_sink_pad_from_template:
+ * @element: element to setup pad on
+ * @tmpl: pad template
+ *
+ * Returns: (transfer full): a new pad
+ *
+ * Since: 1.4
+ */
+GstPad *
+gst_check_setup_sink_pad_from_template (GstElement * element,
+    GstPadTemplate * tmpl)
+{
+  return gst_check_setup_sink_pad_by_name_from_template (element, tmpl, "src");
+}
+
+/**
+ * gst_check_setup_sink_pad_by_name_from_template:
+ * @element: element to setup pad on
+ * @tmpl: pad template
+ * @name: name
+ *
+ * Returns: (transfer full): a new pad
+ *
+ * Since: 1.4
+ */
+GstPad *
+gst_check_setup_sink_pad_by_name_from_template (GstElement * element,
+    GstPadTemplate * tmpl, const gchar * name)
+{
   GstPad *srcpad, *sinkpad;
 
   /* receiving pad */
-  sinkpad = gst_pad_new_from_static_template (tmpl, "sink");
+  sinkpad = gst_pad_new_from_template (tmpl, "sink");
   GST_DEBUG_OBJECT (element, "setting up receiving pad %p", sinkpad);
   fail_if (sinkpad == NULL, "Could not create a sinkpad");
 
@@ -460,15 +546,17 @@ buffer_event_function (GstPad * pad, GstObject * noparent, GstEvent * event)
  * gst_check_element_push_buffer_list:
  * @element_name: name of the element that needs to be created
  * @buffer_in: (element-type GstBuffer) (transfer full): a list of buffers that needs to be
- *  puched to the element
+ *  pushed to the element
+ * @caps_in: the #GstCaps expected of the sinkpad of the element
  * @buffer_out: (element-type GstBuffer) (transfer full): a list of buffers that we expect from
  * the element
+ * @caps_out: the #GstCaps expected of the srcpad of the element
  * @last_flow_return: the last buffer push needs to give this GstFlowReturn
  *
- * Create an @element with the factory with the name and push the buffers in
- * @buffer_in to this element. The element should create the buffers equal to
- * the buffers in @buffer_out. We only check the caps, size and the data of the
- * buffers. This function unrefs the buffers in the two lists.
+ * Create an element using the factory providing the @element_name and push the
+ * buffers in @buffer_in to this element. The element should create the buffers
+ * equal to the buffers in @buffer_out. We only check the size and the data of
+ * the buffers. This function unrefs the buffers in the two lists.
  * The last_flow_return parameter indicates the expected flow return value from
  * pushing the final buffer in the list.
  * This can be used to set up a test which pushes some buffers and then an
@@ -608,10 +696,12 @@ gst_check_element_push_buffer_list (const gchar * element_name,
  * gst_check_element_push_buffer:
  * @element_name: name of the element that needs to be created
  * @buffer_in: push this buffer to the element
+ * @caps_in: the #GstCaps expected of the sinkpad of the element
  * @buffer_out: compare the result with this buffer
+ * @caps_out: the #GstCaps expected of the srcpad of the element
  *
- * Create an @element with the factory with the name and push the
- * @buffer_in to this element. The element should create one buffer
+ * Create an element using the factory providing the @element_name and
+ * push the @buffer_in to this element. The element should create one buffer
  * and this will be compared with @buffer_out. We only check the caps
  * and the data of the buffers. This function unrefs the buffers.
  */
@@ -697,18 +787,26 @@ gst_check_run_suite (Suite * suite, const gchar * name, const gchar * fname)
   return nf;
 }
 
-gboolean
-_gst_check_run_test_func (const gchar * func_name)
+static gboolean
+gst_check_have_checks_list (const gchar * env_var_name)
+{
+  const gchar *env_val;
+
+  env_val = g_getenv (env_var_name);
+  return (env_val != NULL && *env_val != '\0');
+}
+
+static gboolean
+gst_check_func_is_in_list (const gchar * env_var, const gchar * func_name)
 {
   const gchar *gst_checks;
   gboolean res = FALSE;
   gchar **funcs, **f;
 
-  gst_checks = g_getenv ("GST_CHECKS");
+  gst_checks = g_getenv (env_var);
 
-  /* no filter specified => run all checks */
   if (gst_checks == NULL || *gst_checks == '\0')
-    return TRUE;
+    return FALSE;
 
   /* only run specified functions */
   funcs = g_strsplit (gst_checks, ",", -1);
@@ -722,6 +820,21 @@ _gst_check_run_test_func (const gchar * func_name)
   return res;
 }
 
+gboolean
+_gst_check_run_test_func (const gchar * func_name)
+{
+  /* if we have a whitelist, run it only if it's in the whitelist */
+  if (gst_check_have_checks_list ("GST_CHECKS"))
+    return gst_check_func_is_in_list ("GST_CHECKS", func_name);
+
+  /* if we have a blacklist, run it only if it's not in the blacklist */
+  if (gst_check_have_checks_list ("GST_CHECKS_IGNORE"))
+    return !gst_check_func_is_in_list ("GST_CHECKS_IGNORE", func_name);
+
+  /* no filter specified => run all checks */
+  return TRUE;
+}
+
 /**
  * gst_check_setup_events_with_stream_id:
  * @srcpad: The src #GstPad to push on
@@ -730,7 +843,7 @@ _gst_check_run_test_func (const gchar * func_name)
  * @format: The #GstFormat of the default segment to send
  * @stream_id: A unique identifier for the stream
  *
- * Push stream-start, caps and segment event, which concist of the minimum
+ * Push stream-start, caps and segment event, which consist of the minimum
  * required events to allow streaming. Caps is optional to allow raw src
  * testing.
  */
@@ -756,7 +869,7 @@ gst_check_setup_events_with_stream_id (GstPad * srcpad, GstElement * element,
  * @caps: (allow-none): #GstCaps in case caps event must be sent
  * @format: The #GstFormat of the default segment to send
  *
- * Push stream-start, caps and segment event, which concist of the minimum
+ * Push stream-start, caps and segment event, which consist of the minimum
  * required events to allow streaming. Caps is optional to allow raw src
  * testing. If @element has more than one src or sink pad, use
  * gst_check_setup_events_with_stream_id() instead.

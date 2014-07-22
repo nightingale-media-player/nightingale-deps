@@ -85,10 +85,11 @@ DIST_COMMON = $(top_srcdir)/common/check.mak $(srcdir)/Makefile.in \
 	$(top_srcdir)/test-driver
 check_PROGRAMS = $(am__EXEEXT_1) gst/gstatomicqueue$(EXEEXT) \
 	gst/gstbuffer$(EXEEXT) gst/gstbufferlist$(EXEEXT) \
-	gst/gstmeta$(EXEEXT) gst/gstmemory$(EXEEXT) \
-	gst/gstbus$(EXEEXT) gst/gstcaps$(EXEEXT) \
-	gst/gstcapsfeatures$(EXEEXT) $(am__EXEEXT_2) \
-	gst/gstdatetime$(EXEEXT) gst/gstinfo$(EXEEXT) \
+	gst/gstbufferpool$(EXEEXT) gst/gstmeta$(EXEEXT) \
+	gst/gstmemory$(EXEEXT) gst/gstbus$(EXEEXT) \
+	gst/gstcaps$(EXEEXT) gst/gstcapsfeatures$(EXEEXT) \
+	$(am__EXEEXT_2) gst/gstdatetime$(EXEEXT) \
+	gst/gstdevice$(EXEEXT) gst/gstinfo$(EXEEXT) \
 	gst/gstiterator$(EXEEXT) gst/gstmessage$(EXEEXT) \
 	gst/gstminiobject$(EXEEXT) gst/gstobject$(EXEEXT) \
 	gst/gstpad$(EXEEXT) gst/gstparamspecs$(EXEEXT) \
@@ -101,7 +102,11 @@ check_PROGRAMS = $(am__EXEEXT_1) gst/gstatomicqueue$(EXEEXT) \
 	generic/states$(EXEEXT) $(am__EXEEXT_3) $(am__EXEEXT_4) \
 	$(am__EXEEXT_5) libs/adapter$(EXEEXT) libs/bitreader$(EXEEXT) \
 	libs/bytereader$(EXEEXT) libs/bytewriter$(EXEEXT) \
-	libs/collectpads$(EXEEXT) libs/gstnetclientclock$(EXEEXT) \
+	libs/bitreader-noinline$(EXEEXT) \
+	libs/bytereader-noinline$(EXEEXT) \
+	libs/bytewriter-noinline$(EXEEXT) libs/flowcombiner$(EXEEXT) \
+	libs/sparsefile$(EXEEXT) libs/collectpads$(EXEEXT) \
+	libs/gstnetclientclock$(EXEEXT) \
 	libs/gstnettimeprovider$(EXEEXT) libs/gsttestclock$(EXEEXT) \
 	libs/transform1$(EXEEXT) tools/gstinspect$(EXEEXT)
 noinst_PROGRAMS =
@@ -112,7 +117,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-docbook.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -190,6 +194,7 @@ CONFIG_CLEAN_VPATH_FILES =
 @GST_DISABLE_REGISTRY_FALSE@	libs/baseparse$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	libs/basesrc$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	libs/basesink$(EXEEXT) \
+@GST_DISABLE_REGISTRY_FALSE@	libs/sparsefile$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	libs/controller$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	libs/queuearray$(EXEEXT) \
 @GST_DISABLE_REGISTRY_FALSE@	libs/typefindhelper$(EXEEXT) \
@@ -345,6 +350,12 @@ gst_gstbufferlist_LDADD = $(LDADD)
 gst_gstbufferlist_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
 	$(am__DEPENDENCIES_1)
+gst_gstbufferpool_SOURCES = gst/gstbufferpool.c
+gst_gstbufferpool_OBJECTS = gst/gstbufferpool.$(OBJEXT)
+gst_gstbufferpool_LDADD = $(LDADD)
+gst_gstbufferpool_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
+	$(am__DEPENDENCIES_1)
 gst_gstbus_SOURCES = gst/gstbus.c
 gst_gstbus_OBJECTS = gst/gstbus.$(OBJEXT)
 gst_gstbus_LDADD = $(LDADD)
@@ -397,6 +408,12 @@ gst_gstdatetime_SOURCES = gst/gstdatetime.c
 gst_gstdatetime_OBJECTS = gst/gstdatetime.$(OBJEXT)
 gst_gstdatetime_LDADD = $(LDADD)
 gst_gstdatetime_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
+	$(am__DEPENDENCIES_1)
+gst_gstdevice_SOURCES = gst/gstdevice.c
+gst_gstdevice_OBJECTS = gst/gstdevice.$(OBJEXT)
+gst_gstdevice_LDADD = $(LDADD)
+gst_gstdevice_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
 	$(am__DEPENDENCIES_1)
 gst_gstelement_SOURCES = gst/gstelement.c
@@ -610,16 +627,34 @@ libs_bitreader_LDADD = $(LDADD)
 libs_bitreader_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
 	$(am__DEPENDENCIES_1)
+libs_bitreader_noinline_SOURCES = libs/bitreader-noinline.c
+libs_bitreader_noinline_OBJECTS = libs/bitreader-noinline.$(OBJEXT)
+libs_bitreader_noinline_LDADD = $(LDADD)
+libs_bitreader_noinline_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
+	$(am__DEPENDENCIES_1)
 libs_bytereader_SOURCES = libs/bytereader.c
 libs_bytereader_OBJECTS = libs/bytereader.$(OBJEXT)
 libs_bytereader_LDADD = $(LDADD)
 libs_bytereader_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
 	$(am__DEPENDENCIES_1)
+libs_bytereader_noinline_SOURCES = libs/bytereader-noinline.c
+libs_bytereader_noinline_OBJECTS = libs/bytereader-noinline.$(OBJEXT)
+libs_bytereader_noinline_LDADD = $(LDADD)
+libs_bytereader_noinline_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
+	$(am__DEPENDENCIES_1)
 libs_bytewriter_SOURCES = libs/bytewriter.c
 libs_bytewriter_OBJECTS = libs/bytewriter.$(OBJEXT)
 libs_bytewriter_LDADD = $(LDADD)
 libs_bytewriter_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
+	$(am__DEPENDENCIES_1)
+libs_bytewriter_noinline_SOURCES = libs/bytewriter-noinline.c
+libs_bytewriter_noinline_OBJECTS = libs/bytewriter-noinline.$(OBJEXT)
+libs_bytewriter_noinline_LDADD = $(LDADD)
+libs_bytewriter_noinline_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
 	$(am__DEPENDENCIES_1)
 libs_collectpads_SOURCES = libs/collectpads.c
@@ -632,6 +667,12 @@ libs_controller_SOURCES = libs/controller.c
 libs_controller_OBJECTS = libs/controller.$(OBJEXT)
 libs_controller_DEPENDENCIES = $(top_builddir)/libs/gst/controller/libgstcontroller-@GST_API_VERSION@.la \
 	$(am__DEPENDENCIES_2)
+libs_flowcombiner_SOURCES = libs/flowcombiner.c
+libs_flowcombiner_OBJECTS = libs/flowcombiner.$(OBJEXT)
+libs_flowcombiner_LDADD = $(LDADD)
+libs_flowcombiner_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
+	$(am__DEPENDENCIES_1)
 am_libs_gstlibscpp_OBJECTS = libs/gstlibscpp.$(OBJEXT)
 libs_gstlibscpp_OBJECTS = $(am_libs_gstlibscpp_OBJECTS)
 libs_gstlibscpp_LDADD = $(LDADD)
@@ -664,6 +705,12 @@ libs_queuearray_SOURCES = libs/queuearray.c
 libs_queuearray_OBJECTS = libs/queuearray.$(OBJEXT)
 libs_queuearray_LDADD = $(LDADD)
 libs_queuearray_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
+	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
+	$(am__DEPENDENCIES_1)
+libs_sparsefile_SOURCES = libs/sparsefile.c
+libs_sparsefile_OBJECTS = libs/sparsefile.$(OBJEXT)
+libs_sparsefile_LDADD = $(LDADD)
+libs_sparsefile_DEPENDENCIES = $(top_builddir)/libs/gst/check/libgstcheck-@GST_API_VERSION@.la \
 	$(top_builddir)/libs/gst/base/libgstbase-@GST_API_VERSION@.la \
 	$(am__DEPENDENCIES_1)
 libs_transform1_SOURCES = libs/transform1.c
@@ -786,10 +833,11 @@ SOURCES = elements/capsfilter.c elements/fakesink.c elements/fakesrc.c \
 	elements/queue.c elements/queue2.c elements/selector.c \
 	elements/tee.c elements/valve.c generic/sinks.c \
 	generic/states.c gst/gst.c gst/gstabi.c gst/gstatomicqueue.c \
-	gst/gstbin.c gst/gstbuffer.c gst/gstbufferlist.c gst/gstbus.c \
-	gst/gstcaps.c gst/gstcapsfeatures.c gst/gstchildproxy.c \
-	gst/gstclock.c gst/gstcontext.c gst/gstcontroller.c \
-	$(gst_gstcpp_SOURCES) gst/gstdatetime.c gst/gstelement.c \
+	gst/gstbin.c gst/gstbuffer.c gst/gstbufferlist.c \
+	gst/gstbufferpool.c gst/gstbus.c gst/gstcaps.c \
+	gst/gstcapsfeatures.c gst/gstchildproxy.c gst/gstclock.c \
+	gst/gstcontext.c gst/gstcontroller.c $(gst_gstcpp_SOURCES) \
+	gst/gstdatetime.c gst/gstdevice.c gst/gstelement.c \
 	gst/gstelementfactory.c gst/gstevent.c gst/gstghostpad.c \
 	gst/gstinfo.c gst/gstiterator.c gst/gstmemory.c \
 	gst/gstmessage.c gst/gstmeta.c gst/gstminiobject.c \
@@ -800,15 +848,18 @@ SOURCES = elements/capsfilter.c elements/fakesink.c elements/fakesrc.c \
 	gst/gsttag.c gst/gsttagsetter.c gst/gsttask.c gst/gsttoc.c \
 	gst/gsttocsetter.c gst/gsturi.c gst/gstutils.c gst/gstvalue.c \
 	libs/adapter.c libs/baseparse.c libs/basesink.c libs/basesrc.c \
-	libs/bitreader.c libs/bytereader.c libs/bytewriter.c \
-	libs/collectpads.c libs/controller.c \
+	libs/bitreader.c libs/bitreader-noinline.c libs/bytereader.c \
+	libs/bytereader-noinline.c libs/bytewriter.c \
+	libs/bytewriter-noinline.c libs/collectpads.c \
+	libs/controller.c libs/flowcombiner.c \
 	$(libs_gstlibscpp_SOURCES) libs/gstnetclientclock.c \
 	libs/gstnettimeprovider.c libs/gsttestclock.c libs/libsabi.c \
-	libs/queuearray.c libs/transform1.c libs/typefindhelper.c \
-	pipelines/cleanup.c pipelines/parse-disabled.c \
-	pipelines/parse-launch.c pipelines/queue-error.c \
-	pipelines/seek.c pipelines/simple-launch-lines.c \
-	pipelines/stress.c tools/gstinspect.c
+	libs/queuearray.c libs/sparsefile.c libs/transform1.c \
+	libs/typefindhelper.c pipelines/cleanup.c \
+	pipelines/parse-disabled.c pipelines/parse-launch.c \
+	pipelines/queue-error.c pipelines/seek.c \
+	pipelines/simple-launch-lines.c pipelines/stress.c \
+	tools/gstinspect.c
 DIST_SOURCES = elements/capsfilter.c elements/fakesink.c \
 	elements/fakesrc.c elements/fdsrc.c elements/filesink.c \
 	elements/filesrc.c elements/funnel.c elements/identity.c \
@@ -816,28 +867,32 @@ DIST_SOURCES = elements/capsfilter.c elements/fakesink.c \
 	elements/selector.c elements/tee.c elements/valve.c \
 	generic/sinks.c generic/states.c gst/gst.c gst/gstabi.c \
 	gst/gstatomicqueue.c gst/gstbin.c gst/gstbuffer.c \
-	gst/gstbufferlist.c gst/gstbus.c gst/gstcaps.c \
-	gst/gstcapsfeatures.c gst/gstchildproxy.c gst/gstclock.c \
-	gst/gstcontext.c gst/gstcontroller.c $(gst_gstcpp_SOURCES) \
-	gst/gstdatetime.c gst/gstelement.c gst/gstelementfactory.c \
-	gst/gstevent.c gst/gstghostpad.c gst/gstinfo.c \
-	gst/gstiterator.c gst/gstmemory.c gst/gstmessage.c \
-	gst/gstmeta.c gst/gstminiobject.c gst/gstobject.c gst/gstpad.c \
+	gst/gstbufferlist.c gst/gstbufferpool.c gst/gstbus.c \
+	gst/gstcaps.c gst/gstcapsfeatures.c gst/gstchildproxy.c \
+	gst/gstclock.c gst/gstcontext.c gst/gstcontroller.c \
+	$(gst_gstcpp_SOURCES) gst/gstdatetime.c gst/gstdevice.c \
+	gst/gstelement.c gst/gstelementfactory.c gst/gstevent.c \
+	gst/gstghostpad.c gst/gstinfo.c gst/gstiterator.c \
+	gst/gstmemory.c gst/gstmessage.c gst/gstmeta.c \
+	gst/gstminiobject.c gst/gstobject.c gst/gstpad.c \
 	gst/gstparamspecs.c gst/gstpipeline.c gst/gstplugin.c \
 	gst/gstpoll.c gst/gstpreset.c gst/gstquery.c gst/gstregistry.c \
 	gst/gstsegment.c gst/gststructure.c gst/gstsystemclock.c \
 	gst/gsttag.c gst/gsttagsetter.c gst/gsttask.c gst/gsttoc.c \
 	gst/gsttocsetter.c gst/gsturi.c gst/gstutils.c gst/gstvalue.c \
 	libs/adapter.c libs/baseparse.c libs/basesink.c libs/basesrc.c \
-	libs/bitreader.c libs/bytereader.c libs/bytewriter.c \
-	libs/collectpads.c libs/controller.c \
+	libs/bitreader.c libs/bitreader-noinline.c libs/bytereader.c \
+	libs/bytereader-noinline.c libs/bytewriter.c \
+	libs/bytewriter-noinline.c libs/collectpads.c \
+	libs/controller.c libs/flowcombiner.c \
 	$(libs_gstlibscpp_SOURCES) libs/gstnetclientclock.c \
 	libs/gstnettimeprovider.c libs/gsttestclock.c libs/libsabi.c \
-	libs/queuearray.c libs/transform1.c libs/typefindhelper.c \
-	pipelines/cleanup.c pipelines/parse-disabled.c \
-	pipelines/parse-launch.c pipelines/queue-error.c \
-	pipelines/seek.c pipelines/simple-launch-lines.c \
-	pipelines/stress.c tools/gstinspect.c
+	libs/queuearray.c libs/sparsefile.c libs/transform1.c \
+	libs/typefindhelper.c pipelines/cleanup.c \
+	pipelines/parse-disabled.c pipelines/parse-launch.c \
+	pipelines/queue-error.c pipelines/seek.c \
+	pipelines/simple-launch-lines.c pipelines/stress.c \
+	tools/gstinspect.c
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -1410,6 +1465,7 @@ LIBSABI_CHECKS = libs/libsabi
 @GST_DISABLE_REGISTRY_FALSE@	libs/baseparse				\
 @GST_DISABLE_REGISTRY_FALSE@	libs/basesrc				\
 @GST_DISABLE_REGISTRY_FALSE@	libs/basesink				\
+@GST_DISABLE_REGISTRY_FALSE@	libs/sparsefile				\
 @GST_DISABLE_REGISTRY_FALSE@	libs/controller				\
 @GST_DISABLE_REGISTRY_FALSE@	libs/queuearray				\
 @GST_DISABLE_REGISTRY_FALSE@	libs/typefindhelper			\
@@ -1710,6 +1766,12 @@ gst/gstbufferlist.$(OBJEXT): gst/$(am__dirstamp) \
 gst/gstbufferlist$(EXEEXT): $(gst_gstbufferlist_OBJECTS) $(gst_gstbufferlist_DEPENDENCIES) $(EXTRA_gst_gstbufferlist_DEPENDENCIES) gst/$(am__dirstamp)
 	@rm -f gst/gstbufferlist$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(gst_gstbufferlist_OBJECTS) $(gst_gstbufferlist_LDADD) $(LIBS)
+gst/gstbufferpool.$(OBJEXT): gst/$(am__dirstamp) \
+	gst/$(DEPDIR)/$(am__dirstamp)
+
+gst/gstbufferpool$(EXEEXT): $(gst_gstbufferpool_OBJECTS) $(gst_gstbufferpool_DEPENDENCIES) $(EXTRA_gst_gstbufferpool_DEPENDENCIES) gst/$(am__dirstamp)
+	@rm -f gst/gstbufferpool$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(gst_gstbufferpool_OBJECTS) $(gst_gstbufferpool_LDADD) $(LIBS)
 gst/gstbus.$(OBJEXT): gst/$(am__dirstamp) \
 	gst/$(DEPDIR)/$(am__dirstamp)
 
@@ -1764,6 +1826,12 @@ gst/gstdatetime.$(OBJEXT): gst/$(am__dirstamp) \
 gst/gstdatetime$(EXEEXT): $(gst_gstdatetime_OBJECTS) $(gst_gstdatetime_DEPENDENCIES) $(EXTRA_gst_gstdatetime_DEPENDENCIES) gst/$(am__dirstamp)
 	@rm -f gst/gstdatetime$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(gst_gstdatetime_OBJECTS) $(gst_gstdatetime_LDADD) $(LIBS)
+gst/gstdevice.$(OBJEXT): gst/$(am__dirstamp) \
+	gst/$(DEPDIR)/$(am__dirstamp)
+
+gst/gstdevice$(EXEEXT): $(gst_gstdevice_OBJECTS) $(gst_gstdevice_DEPENDENCIES) $(EXTRA_gst_gstdevice_DEPENDENCIES) gst/$(am__dirstamp)
+	@rm -f gst/gstdevice$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(gst_gstdevice_OBJECTS) $(gst_gstdevice_LDADD) $(LIBS)
 gst/gstelement.$(OBJEXT): gst/$(am__dirstamp) \
 	gst/$(DEPDIR)/$(am__dirstamp)
 
@@ -1980,18 +2048,36 @@ libs/bitreader.$(OBJEXT): libs/$(am__dirstamp) \
 libs/bitreader$(EXEEXT): $(libs_bitreader_OBJECTS) $(libs_bitreader_DEPENDENCIES) $(EXTRA_libs_bitreader_DEPENDENCIES) libs/$(am__dirstamp)
 	@rm -f libs/bitreader$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(libs_bitreader_OBJECTS) $(libs_bitreader_LDADD) $(LIBS)
+libs/bitreader-noinline.$(OBJEXT): libs/$(am__dirstamp) \
+	libs/$(DEPDIR)/$(am__dirstamp)
+
+libs/bitreader-noinline$(EXEEXT): $(libs_bitreader_noinline_OBJECTS) $(libs_bitreader_noinline_DEPENDENCIES) $(EXTRA_libs_bitreader_noinline_DEPENDENCIES) libs/$(am__dirstamp)
+	@rm -f libs/bitreader-noinline$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(libs_bitreader_noinline_OBJECTS) $(libs_bitreader_noinline_LDADD) $(LIBS)
 libs/bytereader.$(OBJEXT): libs/$(am__dirstamp) \
 	libs/$(DEPDIR)/$(am__dirstamp)
 
 libs/bytereader$(EXEEXT): $(libs_bytereader_OBJECTS) $(libs_bytereader_DEPENDENCIES) $(EXTRA_libs_bytereader_DEPENDENCIES) libs/$(am__dirstamp)
 	@rm -f libs/bytereader$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(libs_bytereader_OBJECTS) $(libs_bytereader_LDADD) $(LIBS)
+libs/bytereader-noinline.$(OBJEXT): libs/$(am__dirstamp) \
+	libs/$(DEPDIR)/$(am__dirstamp)
+
+libs/bytereader-noinline$(EXEEXT): $(libs_bytereader_noinline_OBJECTS) $(libs_bytereader_noinline_DEPENDENCIES) $(EXTRA_libs_bytereader_noinline_DEPENDENCIES) libs/$(am__dirstamp)
+	@rm -f libs/bytereader-noinline$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(libs_bytereader_noinline_OBJECTS) $(libs_bytereader_noinline_LDADD) $(LIBS)
 libs/bytewriter.$(OBJEXT): libs/$(am__dirstamp) \
 	libs/$(DEPDIR)/$(am__dirstamp)
 
 libs/bytewriter$(EXEEXT): $(libs_bytewriter_OBJECTS) $(libs_bytewriter_DEPENDENCIES) $(EXTRA_libs_bytewriter_DEPENDENCIES) libs/$(am__dirstamp)
 	@rm -f libs/bytewriter$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(libs_bytewriter_OBJECTS) $(libs_bytewriter_LDADD) $(LIBS)
+libs/bytewriter-noinline.$(OBJEXT): libs/$(am__dirstamp) \
+	libs/$(DEPDIR)/$(am__dirstamp)
+
+libs/bytewriter-noinline$(EXEEXT): $(libs_bytewriter_noinline_OBJECTS) $(libs_bytewriter_noinline_DEPENDENCIES) $(EXTRA_libs_bytewriter_noinline_DEPENDENCIES) libs/$(am__dirstamp)
+	@rm -f libs/bytewriter-noinline$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(libs_bytewriter_noinline_OBJECTS) $(libs_bytewriter_noinline_LDADD) $(LIBS)
 libs/collectpads.$(OBJEXT): libs/$(am__dirstamp) \
 	libs/$(DEPDIR)/$(am__dirstamp)
 
@@ -2004,6 +2090,12 @@ libs/controller.$(OBJEXT): libs/$(am__dirstamp) \
 libs/controller$(EXEEXT): $(libs_controller_OBJECTS) $(libs_controller_DEPENDENCIES) $(EXTRA_libs_controller_DEPENDENCIES) libs/$(am__dirstamp)
 	@rm -f libs/controller$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(libs_controller_OBJECTS) $(libs_controller_LDADD) $(LIBS)
+libs/flowcombiner.$(OBJEXT): libs/$(am__dirstamp) \
+	libs/$(DEPDIR)/$(am__dirstamp)
+
+libs/flowcombiner$(EXEEXT): $(libs_flowcombiner_OBJECTS) $(libs_flowcombiner_DEPENDENCIES) $(EXTRA_libs_flowcombiner_DEPENDENCIES) libs/$(am__dirstamp)
+	@rm -f libs/flowcombiner$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(libs_flowcombiner_OBJECTS) $(libs_flowcombiner_LDADD) $(LIBS)
 libs/gstlibscpp.$(OBJEXT): libs/$(am__dirstamp) \
 	libs/$(DEPDIR)/$(am__dirstamp)
 
@@ -2040,6 +2132,12 @@ libs/queuearray.$(OBJEXT): libs/$(am__dirstamp) \
 libs/queuearray$(EXEEXT): $(libs_queuearray_OBJECTS) $(libs_queuearray_DEPENDENCIES) $(EXTRA_libs_queuearray_DEPENDENCIES) libs/$(am__dirstamp)
 	@rm -f libs/queuearray$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(libs_queuearray_OBJECTS) $(libs_queuearray_LDADD) $(LIBS)
+libs/sparsefile.$(OBJEXT): libs/$(am__dirstamp) \
+	libs/$(DEPDIR)/$(am__dirstamp)
+
+libs/sparsefile$(EXEEXT): $(libs_sparsefile_OBJECTS) $(libs_sparsefile_DEPENDENCIES) $(EXTRA_libs_sparsefile_DEPENDENCIES) libs/$(am__dirstamp)
+	@rm -f libs/sparsefile$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(libs_sparsefile_OBJECTS) $(libs_sparsefile_LDADD) $(LIBS)
 libs/transform1.$(OBJEXT): libs/$(am__dirstamp) \
 	libs/$(DEPDIR)/$(am__dirstamp)
 
@@ -2147,6 +2245,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstbin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstbuffer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstbufferlist.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstbufferpool.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstcaps.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstcapsfeatures.Po@am__quote@
@@ -2156,6 +2255,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstcontroller.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstcpp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstdatetime.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstdevice.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstelement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstelementfactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@gst/$(DEPDIR)/gstevent.Po@am__quote@
@@ -2190,17 +2290,22 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/baseparse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/basesink.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/basesrc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/bitreader-noinline.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/bitreader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/bytereader-noinline.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/bytereader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/bytewriter-noinline.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/bytewriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/collectpads.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/controller.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/flowcombiner.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/gstlibscpp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/gstnetclientclock.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/gstnettimeprovider.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/gsttestclock.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/libsabi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/queuearray.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/sparsefile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/transform1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libs/$(DEPDIR)/typefindhelper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@pipelines/$(DEPDIR)/cleanup.Po@am__quote@
@@ -2521,6 +2626,13 @@ gst/gstbufferlist.log: gst/gstbufferlist$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+gst/gstbufferpool.log: gst/gstbufferpool$(EXEEXT)
+	@p='gst/gstbufferpool$(EXEEXT)'; \
+	b='gst/gstbufferpool'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 gst/gstmeta.log: gst/gstmeta$(EXEEXT)
 	@p='gst/gstmeta$(EXEEXT)'; \
 	b='gst/gstmeta'; \
@@ -2573,6 +2685,13 @@ libs/gstlibscpp.log: libs/gstlibscpp$(EXEEXT)
 gst/gstdatetime.log: gst/gstdatetime$(EXEEXT)
 	@p='gst/gstdatetime$(EXEEXT)'; \
 	b='gst/gstdatetime'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+gst/gstdevice.log: gst/gstdevice$(EXEEXT)
+	@p='gst/gstdevice$(EXEEXT)'; \
+	b='gst/gstdevice'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -2976,6 +3095,13 @@ libs/basesink.log: libs/basesink$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+libs/sparsefile.log: libs/sparsefile$(EXEEXT)
+	@p='libs/sparsefile$(EXEEXT)'; \
+	b='libs/sparsefile'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 libs/controller.log: libs/controller$(EXEEXT)
 	@p='libs/controller$(EXEEXT)'; \
 	b='libs/controller'; \
@@ -3049,6 +3175,34 @@ libs/bytereader.log: libs/bytereader$(EXEEXT)
 libs/bytewriter.log: libs/bytewriter$(EXEEXT)
 	@p='libs/bytewriter$(EXEEXT)'; \
 	b='libs/bytewriter'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+libs/bitreader-noinline.log: libs/bitreader-noinline$(EXEEXT)
+	@p='libs/bitreader-noinline$(EXEEXT)'; \
+	b='libs/bitreader-noinline'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+libs/bytereader-noinline.log: libs/bytereader-noinline$(EXEEXT)
+	@p='libs/bytereader-noinline$(EXEEXT)'; \
+	b='libs/bytereader-noinline'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+libs/bytewriter-noinline.log: libs/bytewriter-noinline$(EXEEXT)
+	@p='libs/bytewriter-noinline$(EXEEXT)'; \
+	b='libs/bytewriter-noinline'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+libs/flowcombiner.log: libs/flowcombiner$(EXEEXT)
+	@p='libs/flowcombiner$(EXEEXT)'; \
+	b='libs/flowcombiner'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \

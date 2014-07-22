@@ -44,13 +44,13 @@ typedef struct _GstBufferPool GstBufferPool;
  * GST_BUFFER_FLAGS:
  * @buf: a #GstBuffer.
  *
- * A flags word containing #GstBufferFlag flags set on this buffer.
+ * A flags word containing #GstBufferFlags flags set on this buffer.
  */
 #define GST_BUFFER_FLAGS(buf)                   GST_MINI_OBJECT_FLAGS(buf)
 /**
  * GST_BUFFER_FLAG_IS_SET:
  * @buf: a #GstBuffer.
- * @flag: the #GstBufferFlag to check.
+ * @flag: the #GstBufferFlags flag to check.
  *
  * Gives the status of a specific flag on a buffer.
  */
@@ -58,7 +58,7 @@ typedef struct _GstBufferPool GstBufferPool;
 /**
  * GST_BUFFER_FLAG_SET:
  * @buf: a #GstBuffer.
- * @flag: the #GstBufferFlag to set.
+ * @flag: the #GstBufferFlags flag to set.
  *
  * Sets a buffer flag on a buffer.
  */
@@ -66,7 +66,7 @@ typedef struct _GstBufferPool GstBufferPool;
 /**
  * GST_BUFFER_FLAG_UNSET:
  * @buf: a #GstBuffer.
- * @flag: the #GstBufferFlag to clear.
+ * @flag: the #GstBufferFlags flag to clear.
  *
  * Clears a buffer flag.
  */
@@ -192,6 +192,8 @@ typedef struct _GstBufferPool GstBufferPool;
  * @GST_BUFFER_FLAG_DROPPABLE:   the buffer can be dropped without breaking the
  *                               stream, for example to reduce bandwidth.
  * @GST_BUFFER_FLAG_DELTA_UNIT:  this unit cannot be decoded independently.
+ * @GST_BUFFER_FLAG_TAG_MEMORY:  this flag is set when memory of the buffer
+ *                               is added/removed
  * @GST_BUFFER_FLAG_LAST:        additional media specific flags can be added starting from
  *                               this flag.
  *
@@ -208,6 +210,7 @@ typedef enum {
   GST_BUFFER_FLAG_GAP         = (GST_MINI_OBJECT_FLAG_LAST << 7),
   GST_BUFFER_FLAG_DROPPABLE   = (GST_MINI_OBJECT_FLAG_LAST << 8),
   GST_BUFFER_FLAG_DELTA_UNIT  = (GST_MINI_OBJECT_FLAG_LAST << 9),
+  GST_BUFFER_FLAG_TAG_MEMORY  = (GST_MINI_OBJECT_FLAG_LAST << 10),
 
   GST_BUFFER_FLAG_LAST        = (GST_MINI_OBJECT_FLAG_LAST << 16)
 } GstBufferFlags;
@@ -284,6 +287,9 @@ void        gst_buffer_remove_all_memory    (GstBuffer *buffer);
 gboolean    gst_buffer_find_memory         (GstBuffer *buffer, gsize offset, gsize size,
                                             guint *idx, guint *length, gsize *skip);
 
+gboolean    gst_buffer_is_memory_range_writable  (GstBuffer *buffer, guint idx, gint length);
+gboolean    gst_buffer_is_all_memory_writable    (GstBuffer *buffer);
+
 gsize       gst_buffer_fill                (GstBuffer *buffer, gsize offset,
                                             gconstpointer src, gsize size);
 gsize       gst_buffer_extract             (GstBuffer *buffer, gsize offset,
@@ -319,7 +325,7 @@ void        gst_buffer_extract_dup         (GstBuffer *buffer, gsize offset,
  *
  * Increases the refcount of the given buffer by one.
  *
- * Note that the refcount affects the writeability
+ * Note that the refcount affects the writability
  * of @buf and its metadata, see gst_buffer_is_writable().
  * It is important to note that keeping additional references to
  * GstBuffer instances can potentially increase the number
@@ -451,8 +457,8 @@ gboolean        gst_buffer_copy_into            (GstBuffer *dest, GstBuffer *src
 
 /**
  * gst_buffer_replace:
- * @obuf: (inout) (transfer full): pointer to a pointer to a #GstBuffer to be
- *     replaced.
+ * @obuf: (inout) (transfer full) (nullable): pointer to a pointer to
+ *     a #GstBuffer to be replaced.
  * @nbuf: (transfer none) (allow-none): pointer to a #GstBuffer that will
  *     replace the buffer pointed to by @obuf.
  *
@@ -461,9 +467,9 @@ gboolean        gst_buffer_copy_into            (GstBuffer *dest, GstBuffer *src
  * in some cases), and the reference counts are updated appropriately (the old
  * buffer is unreffed, the new is reffed).
  *
- * Either @nbuf or the #GstBuffer pointed to by @obuf may be NULL.
+ * Either @nbuf or the #GstBuffer pointed to by @obuf may be %NULL.
  *
- * Returns: TRUE when @obuf was different from @nbuf.
+ * Returns: %TRUE when @obuf was different from @nbuf.
  */
 #ifdef _FOOL_GTK_DOC_
 G_INLINE_FUNC gboolean gst_buffer_replace (GstBuffer **obuf, GstBuffer *nbuf);
@@ -490,7 +496,7 @@ GstBuffer*      gst_buffer_append               (GstBuffer *buf1, GstBuffer *buf
 /**
  * GstBufferForeachMetaFunc:
  * @buffer: a #GstBuffer
- * @meta: a pointer to a #GstMeta
+ * @meta: (out) (nullable): a pointer to a #GstMeta
  * @user_data: user data passed to gst_buffer_foreach_meta()
  *
  * A function that will be called from gst_buffer_foreach_meta(). The @meta
@@ -501,7 +507,7 @@ GstBuffer*      gst_buffer_append               (GstBuffer *buf1, GstBuffer *buf
  * When this function returns %TRUE, the next meta will be
  * returned. When %FALSE is returned, gst_buffer_foreach_meta() will return.
  *
- * When @meta is set to NULL, the item will be removed from the buffer.
+ * When @meta is set to %NULL, the item will be removed from the buffer.
  *
  * Returns: %FALSE when gst_buffer_foreach_meta() should stop
  */

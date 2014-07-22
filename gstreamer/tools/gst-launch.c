@@ -335,11 +335,13 @@ print_tag (const GstTagList * list, const gchar * tag, gpointer unused)
   count = gst_tag_list_get_tag_size (list, tag);
 
   for (i = 0; i < count; i++) {
-    gchar *str;
+    gchar *str = NULL;
 
     if (gst_tag_get_type (tag) == G_TYPE_STRING) {
-      if (!gst_tag_list_get_string_index (list, tag, i, &str))
+      if (!gst_tag_list_get_string_index (list, tag, i, &str)) {
+        g_warning ("Couldn't fetch string for %s tag", tag);
         g_assert_not_reached ();
+      }
     } else if (gst_tag_get_type (tag) == GST_TYPE_SAMPLE) {
       GstSample *sample = NULL;
 
@@ -362,6 +364,9 @@ print_tag (const GstTagList * list, const gchar * tag, gpointer unused)
         } else {
           str = g_strdup ("NULL buffer");
         }
+      } else {
+        g_warning ("Couldn't fetch sample for %s tag", tag);
+        g_assert_not_reached ();
       }
     } else if (gst_tag_get_type (tag) == GST_TYPE_DATE_TIME) {
       GstDateTime *dt = NULL;
@@ -392,13 +397,10 @@ print_tag (const GstTagList * list, const gchar * tag, gpointer unused)
           g_strdup_value_contents (gst_tag_list_get_value_index (list, tag, i));
     }
 
-    if (i == 0) {
-      PRINT ("%16s: %s\n", gst_tag_get_nick (tag), str);
-    } else {
-      PRINT ("%16s: %s\n", "", str);
+    if (str) {
+      PRINT ("%16s: %s\n", i == 0 ? gst_tag_get_nick (tag) : "", str);
+      g_free (str);
     }
-
-    g_free (str);
   }
 }
 
@@ -410,7 +412,8 @@ print_tag_foreach (const GstTagList * tags, const gchar * tag,
   gchar *str;
   gint depth = GPOINTER_TO_INT (user_data);
 
-  gst_tag_list_copy_value (&val, tags, tag);
+  if (!gst_tag_list_copy_value (&val, tags, tag))
+    return;
 
   if (G_VALUE_HOLDS_STRING (&val))
     str = g_value_dup_string (&val);
@@ -927,6 +930,8 @@ main (int argc, char *argv[])
 
   free (malloc (8));            /* -lefence */
 
+  setlocale (LC_ALL, "");
+
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -983,13 +988,6 @@ main (int argc, char *argv[])
     return 1;
   }
 
-  if (verbose) {
-    gchar **exclude_list =
-        exclude_args ? g_strsplit (exclude_args, ",", 0) : NULL;
-    deep_notify_id = g_signal_connect (pipeline, "deep-notify",
-        G_CALLBACK (gst_object_default_deep_notify), exclude_list);
-  }
-
   if (!savefile) {
     GstState state, pending;
     GstStateChangeReturn ret;
@@ -1005,6 +1003,12 @@ main (int argc, char *argv[])
       }
       gst_bin_add (GST_BIN (real_pipeline), pipeline);
       pipeline = real_pipeline;
+    }
+    if (verbose) {
+      gchar **exclude_list =
+          exclude_args ? g_strsplit (exclude_args, ",", 0) : NULL;
+      deep_notify_id = g_signal_connect (pipeline, "deep-notify",
+          G_CALLBACK (gst_object_default_deep_notify), exclude_list);
     }
 #if 0
     if (check_index) {

@@ -33,8 +33,6 @@
  * (gst_element_make_from_uri()).
  *
  * Source and Sink plugins should implement this interface when possible.
- *
- * Last reviewed on 2005-11-09 (0.9.4)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -235,9 +233,9 @@ unescape_character (const char *scanner)
  * Characters are encoded in PERCENTxy form, where xy is the ASCII hex code
  * for character 16x+y.
  *
- * Return value: a newly allocated string with the unescaped equivalents,
- * or %NULL if @escaped_string contained one of the characters
- * in @illegal_characters.
+ * Return value: (nullable): a newly allocated string with the
+ * unescaped equivalents, or %NULL if @escaped_string contained one of
+ * the characters in @illegal_characters.
  **/
 static char *
 unescape_string (const gchar * escaped_string, const gchar * illegal_characters)
@@ -303,7 +301,7 @@ gst_uri_protocol_check_internal (const gchar * uri, gchar ** endptr)
  * must consist of alphanumeric characters, '+', '-' and '.' and must
  * start with a alphabetic character. See RFC 3986 Section 3.1.
  *
- * Returns: TRUE if the string is a valid protocol identifier, FALSE otherwise.
+ * Returns: %TRUE if the string is a valid protocol identifier, %FALSE otherwise.
  */
 gboolean
 gst_uri_protocol_is_valid (const gchar * protocol)
@@ -324,7 +322,7 @@ gst_uri_protocol_is_valid (const gchar * protocol)
  * Tests if the given string is a valid URI identifier. URIs start with a valid
  * scheme followed by ":" and maybe a string identifying the location.
  *
- * Returns: TRUE if the string is a valid URI
+ * Returns: %TRUE if the string is a valid URI
  */
 gboolean
 gst_uri_is_valid (const gchar * uri)
@@ -397,7 +395,7 @@ gst_uri_has_protocol (const gchar * uri, const gchar * protocol)
  *
  * Free-function: g_free
  *
- * Returns: (transfer full): the location for this URI. Returns NULL if the
+ * Returns: (transfer full): the location for this URI. Returns %NULL if the
  *     URI isn't valid. If the URI does not contain a location, an empty
  *     string is returned.
  */
@@ -426,7 +424,7 @@ gst_uri_get_location (const gchar * uri)
       g_ascii_isalpha (unescaped[1]) &&
       (unescaped[2] == ':' || unescaped[2] == '|')) {
     unescaped[2] = ':';
-    g_memmove (unescaped, unescaped + 1, strlen (unescaped + 1) + 1);
+    memmove (unescaped, unescaped + 1, strlen (unescaped + 1) + 1);
   }
 #endif
 
@@ -444,8 +442,8 @@ gst_uri_get_location (const gchar * uri)
  *
  * Free-function: g_free
  *
- * Returns: (transfer full): a new string for this URI. Returns NULL if the
- *     given URI protocol is not valid, or the given location is NULL.
+ * Returns: (transfer full): a new string for this URI. Returns %NULL if the
+ *     given URI protocol is not valid, or the given location is %NULL.
  */
 gchar *
 gst_uri_construct (const gchar * protocol, const gchar * location)
@@ -535,7 +533,7 @@ get_element_factories_from_uri_protocol (const GstURIType type,
  * that a positive return value does not imply that a subsequent call to
  * gst_element_make_from_uri() is guaranteed to work.
  *
- * Returns: TRUE
+ * Returns: %TRUE
 */
 gboolean
 gst_uri_protocol_is_supported (const GstURIType type, const gchar * protocol)
@@ -557,12 +555,12 @@ gst_uri_protocol_is_supported (const GstURIType type, const gchar * protocol)
  * gst_element_make_from_uri:
  * @type: Whether to create a source or a sink
  * @uri: URI to create an element for
- * @elementname: (allow-none): Name of created element, can be NULL.
- * @error: (allow-none): address where to store error information, or NULL.
+ * @elementname: (allow-none): Name of created element, can be %NULL.
+ * @error: (allow-none): address where to store error information, or %NULL.
  *
  * Creates an element for handling the given URI.
  *
- * Returns: (transfer floating): a new element or NULL if none could be created
+ * Returns: (transfer floating): a new element or %NULL if none could be created
  */
 GstElement *
 gst_element_make_from_uri (const GstURIType type, const gchar * uri,
@@ -666,9 +664,10 @@ gst_uri_handler_get_uri_type (GstURIHandler * handler)
  * Gets the list of protocols supported by @handler. This list may not be
  * modified.
  *
- * Returns: (transfer none) (element-type utf8): the supported protocols.
- *     Returns NULL if the @handler isn't implemented properly, or the @handler
- *     doesn't support any protocols.
+ * Returns: (transfer none) (element-type utf8) (nullable): the
+ *     supported protocols.  Returns %NULL if the @handler isn't
+ *     implemented properly, or the @handler doesn't support any
+ *     protocols.
  */
 const gchar *const *
 gst_uri_handler_get_protocols (GstURIHandler * handler)
@@ -694,9 +693,10 @@ gst_uri_handler_get_protocols (GstURIHandler * handler)
  *
  * Gets the currently handled URI.
  *
- * Returns: (transfer full): the URI currently handled by the @handler.
- *   Returns NULL if there are no URI currently handled. The
- *   returned string must be freed with g_free() when no longer needed.
+ * Returns: (transfer full) (nullable): the URI currently handled by
+ *   the @handler.  Returns %NULL if there are no URI currently
+ *   handled. The returned string must be freed with g_free() when no
+ *   longer needed.
  */
 gchar *
 gst_uri_handler_get_uri (GstURIHandler * handler)
@@ -721,11 +721,11 @@ gst_uri_handler_get_uri (GstURIHandler * handler)
  * @handler: A #GstURIHandler
  * @uri: URI to set
  * @error: (allow-none): address where to store a #GError in case of
- *    an error, or NULL
+ *    an error, or %NULL
  *
  * Tries to set the URI of the given handler.
  *
- * Returns: TRUE if the URI was set successfully, else FALSE.
+ * Returns: %TRUE if the URI was set successfully, else %FALSE.
  */
 gboolean
 gst_uri_handler_set_uri (GstURIHandler * handler, const gchar * uri,
@@ -801,7 +801,7 @@ gst_file_utils_canonicalise_path (const gchar * path)
     if (strcmp (*p, ".") == 0) {
       /* just move all following parts on top of this, incl. NUL terminator */
       g_free (*p);
-      g_memmove (p, p + 1, (g_strv_length (p + 1) + 1) * sizeof (gchar *));
+      memmove (p, p + 1, (g_strv_length (p + 1) + 1) * sizeof (gchar *));
       /* re-check the new current part again in the next iteration */
       continue;
     } else if (strcmp (*p, "..") == 0 && p > parts) {
@@ -809,7 +809,7 @@ gst_file_utils_canonicalise_path (const gchar * path)
        * NUL terminator */
       g_free (*(p - 1));
       g_free (*p);
-      g_memmove (p - 1, p + 1, (g_strv_length (p + 1) + 1) * sizeof (gchar *));
+      memmove (p - 1, p + 1, (g_strv_length (p + 1) + 1) * sizeof (gchar *));
       /* re-check the new current part again in the next iteration */
       --p;
       continue;
@@ -821,7 +821,7 @@ gst_file_utils_canonicalise_path (const gchar * path)
 
     num_parts = g_strv_length (parts) + 1;      /* incl. terminator */
     parts = g_renew (gchar *, parts, num_parts + 1);
-    g_memmove (parts + 1, parts, num_parts * sizeof (gchar *));
+    memmove (parts + 1, parts, num_parts * sizeof (gchar *));
     parts[0] = g_strdup ("/");
   }
 
@@ -841,7 +841,7 @@ file_path_contains_relatives (const gchar * path)
 /**
  * gst_filename_to_uri:
  * @filename: absolute or relative file name path
- * @error: pointer to error, or NULL
+ * @error: pointer to error, or %NULL
  *
  * Similar to g_filename_to_uri(), but attempts to handle relative file paths
  * as well. Before converting @filename into an URI, it will be prefixed by

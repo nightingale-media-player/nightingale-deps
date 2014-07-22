@@ -223,6 +223,7 @@ typedef struct
 {
   gboolean is_query;
   GstMiniObject *item;
+  gsize size;
 } GstQueueItem;
 
 #define GST_TYPE_QUEUE_LEAKY (queue_leaky_get_type ())
@@ -376,7 +377,7 @@ gst_queue_class_init (GstQueueClass * klass)
    * Flushing the queue on EOS might be useful when capturing and encoding
    * from a live source, to finish up the recording quickly in cases when
    * the encoder is slow. Note that this might mean some data from the end of
-   * the recoding data might be lost though (never more than the configured
+   * the recording data might be lost though (never more than the configured
    * max. sizes though).
    *
    * Since: 1.2
@@ -619,25 +620,27 @@ gst_queue_locked_flush (GstQueue * queue, gboolean full)
 static inline void
 gst_queue_locked_enqueue_buffer (GstQueue * queue, gpointer item)
 {
+  GstQueueItem *qitem;
   GstBuffer *buffer = GST_BUFFER_CAST (item);
+  gsize bsize = gst_buffer_get_size (buffer);
 
   /* add buffer to the statistics */
   queue->cur_level.buffers++;
-  queue->cur_level.bytes += gst_buffer_get_size (buffer);
+  queue->cur_level.bytes += bsize;
   apply_buffer (queue, buffer, &queue->sink_segment, TRUE, TRUE);
 
-  if (item) {
-    GstQueueItem *qitem = g_slice_new (GstQueueItem);
-    qitem->item = item;
-    qitem->is_query = FALSE;
-    gst_queue_array_push_tail (queue->queue, qitem);
-  }
+  qitem = g_slice_new (GstQueueItem);
+  qitem->item = item;
+  qitem->is_query = FALSE;
+  qitem->size = bsize;
+  gst_queue_array_push_tail (queue->queue, qitem);
   GST_QUEUE_SIGNAL_ADD (queue);
 }
 
 static inline void
 gst_queue_locked_enqueue_event (GstQueue * queue, gpointer item)
 {
+  GstQueueItem *qitem;
   GstEvent *event = GST_EVENT_CAST (item);
 
   switch (GST_EVENT_TYPE (event)) {
@@ -668,12 +671,10 @@ gst_queue_locked_enqueue_event (GstQueue * queue, gpointer item)
       break;
   }
 
-  if (item) {
-    GstQueueItem *qitem = g_slice_new (GstQueueItem);
-    qitem->item = item;
-    qitem->is_query = FALSE;
-    gst_queue_array_push_tail (queue->queue, qitem);
-  }
+  qitem = g_slice_new (GstQueueItem);
+  qitem->item = item;
+  qitem->is_query = FALSE;
+  gst_queue_array_push_tail (queue->queue, qitem);
   GST_QUEUE_SIGNAL_ADD (queue);
 }
 
@@ -683,12 +684,14 @@ gst_queue_locked_dequeue (GstQueue * queue)
 {
   GstQueueItem *qitem;
   GstMiniObject *item;
+  gsize bufsize;
 
   qitem = gst_queue_array_pop_head (queue->queue);
   if (qitem == NULL)
     goto no_item;
 
   item = qitem->item;
+  bufsize = qitem->size;
   g_slice_free (GstQueueItem, qitem);
 
   if (GST_IS_BUFFER (item)) {
@@ -698,7 +701,7 @@ gst_queue_locked_dequeue (GstQueue * queue)
         "retrieved buffer %p from queue", buffer);
 
     queue->cur_level.buffers--;
-    queue->cur_level.bytes -= gst_buffer_get_size (buffer);
+    queue->cur_level.bytes -= bufsize;
     apply_buffer (queue, buffer, &queue->src_segment, TRUE, FALSE);
 
     /* if the queue is empty now, update the other side */
@@ -1086,7 +1089,7 @@ out_unexpected:
 static GstFlowReturn
 gst_queue_push_one (GstQueue * queue)
 {
-  GstFlowReturn result = GST_FLOW_OK;
+  GstFlowReturn result = queue->srcresult;
   GstMiniObject *data;
 
   data = gst_queue_locked_dequeue (queue);

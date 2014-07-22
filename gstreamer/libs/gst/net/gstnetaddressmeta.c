@@ -24,8 +24,6 @@
  * #GstNetAddress can be used to store a network address. #GstNetAddressMeta can
  * be used to store a network address in a #GstBuffer so that it network
  * elements can track the to and from address of the buffer.
- *
- * Last reviewed on 2011-11-03 (0.11.2)
  */
 
 #include <string.h>
@@ -93,6 +91,15 @@ gst_net_address_meta_get_info (void)
   return meta_info;
 }
 
+/**
+ * gst_buffer_add_net_address_meta:
+ * @buffer: a #GstBuffer
+ * @addr: a @GSocketAddress to connect to @buffer
+ *
+ * Attaches @addr as metadata in a #GstNetAddressMeta to @buffer.
+ *
+ * Returns: (transfer none): a #GstNetAddressMeta connected to @buffer
+ */
 GstNetAddressMeta *
 gst_buffer_add_net_address_meta (GstBuffer * buffer, GSocketAddress * addr)
 {

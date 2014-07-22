@@ -82,9 +82,13 @@ LIBGSTCHECK_EXPORTED_FUNCS = \
 	gst_check_setup_events \
 	gst_check_setup_events_with_stream_id \
 	gst_check_setup_sink_pad \
+	gst_check_setup_sink_pad_from_template \
 	gst_check_setup_sink_pad_by_name \
+	gst_check_setup_sink_pad_by_name_from_template \
 	gst_check_setup_src_pad \
+	gst_check_setup_src_pad_from_template \
 	gst_check_setup_src_pad_by_name \
+	gst_check_setup_src_pad_by_name_from_template \
 	gst_check_teardown_element \
 	gst_check_teardown_pad_by_name \
 	gst_check_teardown_sink_pad \
@@ -104,7 +108,11 @@ LIBGSTCHECK_EXPORTED_FUNCS = \
 	gst_test_clock_wait_for_next_pending_id \
 	gst_test_clock_wait_for_pending_id_count \
 	gst_test_clock_process_next_clock_id \
-	gst_test_clock_get_next_entry_time
+	gst_test_clock_get_next_entry_time \
+	gst_test_clock_wait_for_multiple_pending_ids \
+	gst_test_clock_process_id_list \
+	gst_test_clock_id_list_get_latest_time
+
 
 LIBGSTCHECK_EXPORTED_SYMBOLS = \
 	$(LIBGSTCHECK_EXPORTED_VARS) \
@@ -146,7 +154,7 @@ GstCheck-@GST_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libgstcheck-@GST_API_VE
 		--library-path=$(top_builddir)/gst \
 		--library=libgstcheck-@GST_API_VERSION@.la \
 		--include=Gst-@GST_API_VERSION@ \
-		--libtool="$(top_builddir)/libtool" \
+		--libtool="${LIBTOOL}" \
 		--pkg gstreamer-@GST_API_VERSION@ \
 		--pkg-export gstreamer-check-@GST_API_VERSION@ \
 		--add-init-section="gst_init(NULL,NULL);" \

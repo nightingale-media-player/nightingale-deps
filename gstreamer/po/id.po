@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gstreamer 1.2.1\n"
+"Project-Id-Version: gstreamer 1.3.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 11:32+0100\n"
-"PO-Revision-Date: 2014-01-27 20:09+0700\n"
+"POT-Creation-Date: 2014-07-19 16:11+0200\n"
+"PO-Revision-Date: 2014-05-31 22:06+0700\n"
 "Last-Translator: Andhika Padmawan <andhika.padmawan@gmail.com>\n"
 "Language-Team: Indonesian <translation-team-id@lists.sourceforge.net>\n"
 "Language: id\n"
@@ -201,6 +201,9 @@ msgstr "Tak bisa mendapatkan/mengatur pengaturan dari/di sumber daya."
 
 msgid "No space left on the resource."
 msgstr "Tak ada ruang tersisa di sumber daya."
+
+msgid "Not authorized to access resource."
+msgstr "Tak diizinkan untuk mengakses sumber daya."
 
 msgid "GStreamer encountered a general stream error."
 msgstr "GStreamer menghadapai galat arus umum."
@@ -809,6 +812,12 @@ msgid "Information about the people behind a remix and similar interpretations"
 msgstr ""
 "Informasi tentang orang di belakang suatu remix dan interpretasi yang serupa"
 
+msgid "midi-base-note"
+msgstr "midi-base-note"
+
+msgid "Midi note number of the audio track."
+msgstr "Nomor catatan midi dari jalur audio."
+
 msgid ", "
 msgstr ", "
 
@@ -833,12 +842,12 @@ msgstr ""
 "%s\n"
 
 #, c-format
-msgid "specified empty bin \"%s\", not allowed"
-msgstr "menentukan kotak sampah kosong \"%s\", tak diizinkan"
+msgid "link has no source [sink=%s@%p]"
+msgstr "tautan tidak mempunyai sumber [sink=%s@%p]"
 
 #, c-format
-msgid "no bin \"%s\", skipping"
-msgstr "tak ada tempat sampah \"%s\", dilewati"
+msgid "link has no sink [source=%s@%p]"
+msgstr "tautan mempunyai buangan [source=%s@%p]"
 
 #, c-format
 msgid "no property \"%s\" in element \"%s\""
@@ -857,30 +866,38 @@ msgid "no element \"%s\""
 msgstr "tak ada elemen \"%s\""
 
 #, c-format
+msgid "unexpected reference \"%s\" - ignoring"
+msgstr "referensi tak diharapkan \"%s\" - mengabaikan"
+
+#, c-format
+msgid "unexpected pad-reference \"%s\" - ignoring"
+msgstr "referensi pad tak diharapkan \"%s\" - mengabaikan"
+
+#, c-format
 msgid "could not parse caps \"%s\""
 msgstr "tak dapat menguraikan huruf \"%s\""
-
-msgid "link without source element"
-msgstr "taut tanpa elemen sumber"
-
-msgid "link without sink element"
-msgstr "taut tanpa elemen buang"
-
-#, c-format
-msgid "no source element for URI \"%s\""
-msgstr "tak ada elemen sumber untuk URI \"%s\""
-
-#, c-format
-msgid "no element to link URI \"%s\" to"
-msgstr "tak ada elemen ke taut URI \"%s\""
 
 #, c-format
 msgid "no sink element for URI \"%s\""
 msgstr "tak ada elemen buang untuk URI \"%s\""
 
 #, c-format
-msgid "could not link sink element for URI \"%s\""
-msgstr "tak dapat menautkan elemen buang untuk URI \"%s\""
+msgid "no source element for URI \"%s\""
+msgstr "tak ada elemen sumber untuk URI \"%s\""
+
+msgid "syntax error"
+msgstr "galat sintaksis"
+
+msgid "bin"
+msgstr "tempat sampah"
+
+#, c-format
+msgid "specified empty bin \"%s\", not allowed"
+msgstr "menentukan kotak sampah kosong \"%s\", tak diizinkan"
+
+#, c-format
+msgid "no bin \"%s\", unpacking elements"
+msgstr "tak ada tempat sampah \"%s\", membongkar elemen"
 
 msgid "empty pipeline not allowed"
 msgstr "baris pipa kosong tak diizinkan"
@@ -913,6 +930,20 @@ msgstr ""
 "Larang kemampuan yang mungkin diizinkan (KOSONG berarti APAPUN). Pengaturan "
 "properti ini bersumber pada objek GstCaps yang disediakan."
 
+msgid "No Temp directory specified."
+msgstr "Tak ada direktori Temp yang ditentukan."
+
+#, c-format
+msgid "Could not create temp file \"%s\"."
+msgstr "Tak bisa membuat berkas temp \"%s\"."
+
+#, c-format
+msgid "Could not open file \"%s\" for reading."
+msgstr "Tak dapat membuka berkas \"%s\" untuk dibaca."
+
+msgid "Error while writing to download file."
+msgstr "Galat ketika menulis ke berkas unduhan."
+
 msgid "No file name specified for writing."
 msgstr "Tak ada nama berkas yang ditentukan untuk ditulis."
 
@@ -936,10 +967,6 @@ msgid "No file name specified for reading."
 msgstr "Tak ada nama yang ditentukan untuk dibaca."
 
 #, c-format
-msgid "Could not open file \"%s\" for reading."
-msgstr "Tak dapat membuka berkas \"%s\" untuk dibaca."
-
-#, c-format
 msgid "Could not get info on \"%s\"."
 msgstr "Tak bisa mendapatkan info di \"%s\"."
 
@@ -953,16 +980,6 @@ msgstr "Berkas \"%s\" adalah soket."
 
 msgid "Failed after iterations as requested."
 msgstr "Gagal setelah pengulangan seperti yang diminta."
-
-msgid "No Temp directory specified."
-msgstr "Tak ada direktori Temp yang ditentukan."
-
-#, c-format
-msgid "Could not create temp file \"%s\"."
-msgstr "Tak bisa membuat berkas temp \"%s\"."
-
-msgid "Error while writing to download file."
-msgstr "Galat ketika menulis ke berkas unduhan."
 
 msgid "caps"
 msgstr "huruf"
@@ -1266,3 +1283,15 @@ msgstr "Mengatur baris pipa ke KOSONG ...\n"
 
 msgid "Freeing pipeline ...\n"
 msgstr "Membebaskan baris pipa ...\n"
+
+#~ msgid "link without source element"
+#~ msgstr "taut tanpa elemen sumber"
+
+#~ msgid "link without sink element"
+#~ msgstr "taut tanpa elemen buang"
+
+#~ msgid "no element to link URI \"%s\" to"
+#~ msgstr "tak ada elemen ke taut URI \"%s\""
+
+#~ msgid "could not link sink element for URI \"%s\""
+#~ msgstr "tak dapat menautkan elemen buang untuk URI \"%s\""

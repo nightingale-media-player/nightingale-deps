@@ -122,7 +122,7 @@ typedef struct _GstRegistryChunkElementFactory
  * GstRegistryChunkTypeFindFactory:
  * @nextensions: stores the number of typefind extensions
  *
- * A structure containing the element factory fields
+ * A structure containing the type find factory fields
  */
 typedef struct _GstRegistryChunkTypeFindFactory
 {
@@ -130,6 +130,17 @@ typedef struct _GstRegistryChunkTypeFindFactory
 
   guint nextensions;
 } GstRegistryChunkTypeFindFactory;
+
+/*
+ * GstRegistryChunkDeviceProviderFactory:
+ *
+ * A structure containing the device provider factory fields
+ */
+typedef struct _GstRegistryChunkDeviceProviderFactory
+{
+  GstRegistryChunkPluginFeature plugin_feature;
+
+} GstRegistryChunkDeviceProviderFactory;
 
 /*
  * GstRegistryChunkPadTemplate:

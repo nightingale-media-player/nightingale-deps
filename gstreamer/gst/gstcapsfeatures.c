@@ -66,6 +66,7 @@ struct _GstCapsFeatures
 };
 
 GType _gst_caps_features_type = 0;
+static gint static_caps_features_parent_refcount = G_MAXINT;
 GstCapsFeatures *_gst_caps_features_any = NULL;
 GstCapsFeatures *_gst_caps_features_memory_system_memory = NULL;
 static GQuark _gst_caps_feature_memory_system_memory = 0;
@@ -95,8 +96,13 @@ _priv_gst_caps_features_initialize (void)
       gst_caps_features_transform_to_string);
 
   _gst_caps_features_any = gst_caps_features_new_any ();
+  gst_caps_features_set_parent_refcount (_gst_caps_features_any,
+      &static_caps_features_parent_refcount);
   _gst_caps_features_memory_system_memory =
       gst_caps_features_new_id (_gst_caps_feature_memory_system_memory, 0);
+  gst_caps_features_set_parent_refcount
+      (_gst_caps_features_memory_system_memory,
+      &static_caps_features_parent_refcount);
 }
 
 gboolean
@@ -197,7 +203,7 @@ gst_caps_features_new_any (void)
  * @...: additional features
  *
  * Creates a new #GstCapsFeatures with the given features.
- * The last argument must be NULL.
+ * The last argument must be %NULL.
  *
  * Free-function: gst_caps_features_free
  *
@@ -411,7 +417,7 @@ gst_caps_features_free (GstCapsFeatures * features)
  * |[
  * GST_LOG ("features is %" GST_PTR_FORMAT, features);
  * ]|
- * This prints the features in human readble form.
+ * This prints the features in human readable form.
  *
  * Free-function: g_free
  *
@@ -465,8 +471,9 @@ priv_gst_caps_features_append_to_gstring (const GstCapsFeatures * features,
  *
  * Free-function: gst_caps_features_free
  *
- * Returns: (transfer full): a new #GstCapsFeatures or NULL when the string could
- *     not be parsed. Free with gst_caps_features_free() after use.
+ * Returns: (transfer full) (nullable): a new #GstCapsFeatures or
+ *     %NULL when the string could not be parsed. Free with
+ *     gst_caps_features_free() after use.
  *
  * Since: 1.2
  */

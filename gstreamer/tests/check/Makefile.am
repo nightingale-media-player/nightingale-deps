@@ -91,6 +91,7 @@ REGISTRY_CHECKS =				\
 	libs/baseparse				\
 	libs/basesrc				\
 	libs/basesink				\
+	libs/sparsefile				\
 	libs/controller				\
 	libs/queuearray				\
 	libs/typefindhelper			\
@@ -104,6 +105,7 @@ check_PROGRAMS =				\
 	gst/gstatomicqueue			\
 	gst/gstbuffer				\
 	gst/gstbufferlist			\
+	gst/gstbufferpool			\
 	gst/gstmeta				\
 	gst/gstmemory				\
 	gst/gstbus				\
@@ -111,6 +113,7 @@ check_PROGRAMS =				\
 	gst/gstcapsfeatures    			\
 	$(CXX_CHECKS)			     	\
 	gst/gstdatetime     			\
+	gst/gstdevice				\
 	gst/gstinfo		 		\
 	gst/gstiterator 			\
 	gst/gstmessage	 			\
@@ -138,6 +141,11 @@ check_PROGRAMS =				\
 	libs/bitreader				\
 	libs/bytereader				\
 	libs/bytewriter				\
+	libs/bitreader-noinline		\
+	libs/bytereader-noinline	\
+	libs/bytewriter-noinline	\
+	libs/flowcombiner			\
+	libs/sparsefile				\
 	libs/collectpads			\
 	libs/gstnetclientclock			\
 	libs/gstnettimeprovider			\

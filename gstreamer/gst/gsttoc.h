@@ -30,8 +30,11 @@
 
 G_BEGIN_DECLS
 
-#define GST_TYPE_TOC (gst_toc_get_type ())
-#define GST_TYPE_TOC_ENTRY (gst_toc_entry_get_type ())
+GST_EXPORT GType _gst_toc_type;
+GST_EXPORT GType _gst_toc_entry_type;
+
+#define GST_TYPE_TOC (_gst_toc_type)
+#define GST_TYPE_TOC_ENTRY (_gst_toc_entry_type)
 
 typedef struct _GstTocEntry GstTocEntry;
 typedef struct _GstToc GstToc;
@@ -78,8 +81,50 @@ typedef enum {
   GST_TOC_ENTRY_TYPE_CHAPTER     = 3,
 } GstTocEntryType;
 
+/**
+ * GST_TOC_ENTRY_TYPE_IS_ALTERNATIVE:
+ * @entry_type: The #GstTocEntryType from a #GstTocEntry
+ *
+ * Checks if @entry_type indicates that its #GstTocEntry is an alternative.
+ */
 #define GST_TOC_ENTRY_TYPE_IS_ALTERNATIVE(entry_type)  (entry_type < 0)
+
+/**
+ * GST_TOC_ENTRY_TYPE_IS_SEQUENCE:
+ * @entry_type: The #GstTocEntryType from a #GstTocEntry
+ *
+ * Checks if @entry_type indicates that its #GstTocEntry is a sequence.
+ */
 #define GST_TOC_ENTRY_TYPE_IS_SEQUENCE(entry_type)     (entry_type > 0)
+
+/**
+ * GstTocLoopType:
+ * @GST_TOC_LOOP_NONE: single forward playback
+ * @GST_TOC_LOOP_FORWARD: repeat forward
+ * @GST_TOC_LOOP_REVERSE: repeat backward
+ * @GST_TOC_LOOP_PING_PONG: repeat forward and backward
+ *
+ * How a #GstTocEntry should be repeated. By default, entries are played a
+ * single time.
+ *
+ * Since: 1.4
+ */
+typedef enum {
+  GST_TOC_LOOP_NONE = 0,
+  GST_TOC_LOOP_FORWARD,
+  GST_TOC_LOOP_REVERSE,
+  GST_TOC_LOOP_PING_PONG
+} GstTocLoopType;
+
+/**
+ * GST_TOC_REPEAT_COUNT_INFINITE:
+ *
+ * Special value for the repeat_count set in gst_toc_entry_set_loop() or
+ * returned by gst_toc_entry_set_loop() to indicate infinite looping.
+ *
+ * Since: 1.4
+ */
+#define GST_TOC_REPEAT_COUNT_INFINITE (-1)
 
 /* functions to return type structures */
 GType           gst_toc_get_type                (void);
@@ -129,6 +174,9 @@ gboolean           gst_toc_entry_is_sequence             (const GstTocEntry *ent
 
 void               gst_toc_entry_set_start_stop_times    (GstTocEntry *entry, gint64 start, gint64 stop);
 gboolean           gst_toc_entry_get_start_stop_times    (const GstTocEntry *entry, gint64 *start, gint64 *stop);
+
+void               gst_toc_entry_set_loop                (GstTocEntry *entry, GstTocLoopType loop_type, gint repeat_count);
+gboolean           gst_toc_entry_get_loop                (const GstTocEntry *entry, GstTocLoopType *loop_type, gint *repeat_count);
 
 GstToc *           gst_toc_entry_get_toc                 (GstTocEntry *entry);
 GstTocEntry *      gst_toc_entry_get_parent              (GstTocEntry *entry);

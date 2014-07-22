@@ -25,8 +25,8 @@
  * @short_description: base class for control source sources
  *
  * The #GstControlSource is a base class for control value sources that could
- * be used by #GstController to get timestamp-value pairs. A control source
- * essentially is a function over time, returning gloat values between 0.0 and 1.0.
+ * be used to get timestamp-value pairs. A control source essentially is a
+ * function over time, returning float values between 0.0 and 1.0.
  *
  * A #GstControlSource is used by first getting an instance of a specific
  * control-source, creating a binding for the control-source to the target property
@@ -96,7 +96,7 @@ gst_control_source_constructor (GType type, guint n_construct_params,
  *
  * Gets the value for this #GstControlSource at a given timestamp.
  *
- * Returns: FALSE if the value couldn't be returned, TRUE otherwise.
+ * Returns: %FALSE if the value couldn't be returned, %TRUE otherwise.
  */
 gboolean
 gst_control_source_get_value (GstControlSource * self, GstClockTime timestamp,
@@ -118,7 +118,7 @@ gst_control_source_get_value (GstControlSource * self, GstClockTime timestamp,
  * @timestamp: the first timestamp
  * @interval: the time steps
  * @n_values: the number of values to fetch
- * @values: array to put control-values in
+ * @values: (array length=n_values): array to put control-values in
  *
  * Gets an array of values for for this #GstControlSource. Values that are
  * undefined contain NANs.

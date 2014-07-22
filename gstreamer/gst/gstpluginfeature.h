@@ -73,9 +73,9 @@ typedef enum {
  * @feature: a #GstPluginFeature to get the name of @feature.
  *
  * Returns the name of @feature.
- * For a nameless plugin feature, this returns NULL.
+ * For a nameless plugin feature, this returns %NULL.
  *
- * Returns: (transfer none): the name of @feature. MT safe.
+ * Returns: (transfer none) (nullable): the name of @feature. MT safe.
  *
  */
 #define                 gst_plugin_feature_get_name(feature)      GST_OBJECT_NAME(feature)

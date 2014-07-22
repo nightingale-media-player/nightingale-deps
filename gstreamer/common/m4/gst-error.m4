@@ -169,7 +169,7 @@ AC_DEFUN([AG_GST_SET_ERROR_CXXFLAGS],
                  'no%E_MACRO_REDEFINED' \
                  'no%E_LOOP_NOT_ENTERED_AT_TOP'
         do
-          AS_CXX_COMPILER_FLAG([-errwarn=%all,$f], ERROR_CXXFLAGS="$ERROR_CXXFLAGS,$f")
+          AS_CXX_COMPILER_FLAG([-errwarn=%all,$f], [ERROR_CXXFLAGS="$ERROR_CXXFLAGS,$f"])
         done
       fi
     fi
@@ -254,7 +254,7 @@ AC_DEFUN([AG_GST_SET_ERROR_OBJCFLAGS],
                  'no%E_MACRO_REDEFINED' \
                  'no%E_LOOP_NOT_ENTERED_AT_TOP'
         do
-          AS_OBJC_COMPILER_FLAG([-errwarn=%all,$f], ERROR_OBJCFLAGS="$ERROR_OBJCFLAGS,$f")
+          AS_OBJC_COMPILER_FLAG([-errwarn=%all,$f], [ERROR_OBJCFLAGS="$ERROR_OBJCFLAGS,$f"])
         done
       fi
     fi

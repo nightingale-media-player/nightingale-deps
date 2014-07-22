@@ -92,7 +92,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-docbook.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -958,7 +957,7 @@ Android.mk: Makefile.am
 @HAVE_INTROSPECTION_TRUE@		--library-path=$(top_builddir)/gst \
 @HAVE_INTROSPECTION_TRUE@		--library=libgstcontroller-@GST_API_VERSION@.la \
 @HAVE_INTROSPECTION_TRUE@		--include=Gst-@GST_API_VERSION@ \
-@HAVE_INTROSPECTION_TRUE@		--libtool="$(top_builddir)/libtool" \
+@HAVE_INTROSPECTION_TRUE@		--libtool="${LIBTOOL}" \
 @HAVE_INTROSPECTION_TRUE@		--pkg gstreamer-@GST_API_VERSION@ \
 @HAVE_INTROSPECTION_TRUE@		--pkg-export gstreamer-controller-@GST_API_VERSION@ \
 @HAVE_INTROSPECTION_TRUE@		--add-init-section="gst_init(NULL,NULL);" \

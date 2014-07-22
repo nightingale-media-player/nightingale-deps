@@ -43,8 +43,7 @@
  *
  * An existing pad of an element can be retrieved by name with
  * gst_element_get_static_pad(). A new dynamic pad can be created using
- * gst_element_request_pad() with a #GstPadTemplate or 
- * gst_element_get_request_pad() with the template name such as "src_\%u".
+ * gst_element_request_pad() with a #GstPadTemplate.
  * An iterator of all pads can be retrieved with gst_element_iterate_pads().
  *
  * Elements can be linked through their pads.
@@ -72,11 +71,9 @@
  * #GST_ELEMENT_FLAG_REQUIRE_CLOCK() flag is set, a clock should be set on the
  * element with gst_element_set_clock().
  *
- * Note that clock slection and distribution is normally handled by the
+ * Note that clock selection and distribution is normally handled by the
  * toplevel #GstPipeline so the clock functions are only to be used in very
  * specific situations.
- *
- * Last reviewed on 2012-03-28 (0.11.3)
  */
 
 #include "gst_private.h"
@@ -308,10 +305,10 @@ gst_element_init (GstElement * element)
  * @pad: the #GstPad to release.
  *
  * Makes the element free the previously requested pad as obtained
- * with gst_element_get_request_pad().
+ * with gst_element_request_pad().
  *
  * This does not unref the pad. If the pad was created by using
- * gst_element_get_request_pad(), gst_element_release_request_pad() needs to be
+ * gst_element_request_pad(), gst_element_release_request_pad() needs to be
  * followed by gst_object_unref() to free the @pad.
  *
  * MT safe.
@@ -345,8 +342,8 @@ gst_element_release_request_pad (GstElement * element, GstPad * pad)
  * <note>An element is only required to provide a clock in the PAUSED
  * state. Some elements can provide a clock in other states.</note>
  *
- * Returns: (transfer full): the GstClock provided by the element or %NULL
- * if no clock could be provided.  Unref after usage.
+ * Returns: (transfer full) (nullable): the GstClock provided by the
+ * element or %NULL if no clock could be provided.  Unref after usage.
  *
  * MT safe.
  */
@@ -586,8 +583,8 @@ gst_element_set_index (GstElement * element, GstIndex * index)
  *
  * Gets the index from the element.
  *
- * Returns: (transfer full): a #GstIndex or %NULL when no index was set on the
- * element. unref after usage.
+ * Returns: (transfer full) (nullable): a #GstIndex or %NULL when no
+ * index was set on the element. unref after usage.
  *
  * MT safe.
  */
@@ -735,7 +732,7 @@ no_direction:
  *
  * This function is used by plugin developers and should not be used
  * by applications. Pads that were dynamically requested from elements
- * with gst_element_get_request_pad() should be released with the
+ * with gst_element_request_pad() should be released with the
  * gst_element_release_request_pad() function instead.
  *
  * Pads are not automatically deactivated so elements should perform the needed
@@ -798,6 +795,7 @@ gst_element_remove_pad (GstElement * element, GstPad * pad)
       break;
   }
   element->pads = g_list_remove (element->pads, pad);
+  GST_OBJECT_FLAG_UNSET (pad, GST_PAD_FLAG_NEED_PARENT);
   element->numpads--;
   element->pads_cookie++;
   GST_OBJECT_UNLOCK (element);
@@ -867,8 +865,8 @@ pad_compare_name (GstPad * pad1, const gchar * name)
  * Retrieves a pad from @element by name. This version only retrieves
  * already-existing (i.e. 'static') pads.
  *
- * Returns: (transfer full): the requested #GstPad if found, otherwise %NULL.
- *     unref after usage.
+ * Returns: (transfer full) (nullable): the requested #GstPad if
+ *     found, otherwise %NULL.  unref after usage.
  *
  * MT safe.
  */
@@ -980,8 +978,8 @@ _gst_element_request_pad (GstElement * element, GstPadTemplate * templ,
  * This method is slow and will be deprecated in the future. New code should
  * use gst_element_request_pad() with the requested template.
  *
- * Returns: (transfer full): requested #GstPad if found, otherwise %NULL.
- *     Release after usage.
+ * Returns: (transfer full) (nullable): requested #GstPad if found,
+ *     otherwise %NULL.  Release after usage.
  */
 GstPad *
 gst_element_get_request_pad (GstElement * element, const gchar * name)
@@ -1085,8 +1083,8 @@ gst_element_get_request_pad (GstElement * element, const gchar * name)
  *
  * The pad should be released with gst_element_release_request_pad().
  *
- * Returns: (transfer full): requested #GstPad if found, otherwise %NULL.
- *     Release after usage.
+ * Returns: (transfer full) (nullable): requested #GstPad if found,
+ *     otherwise %NULL.  Release after usage.
  */
 GstPad *
 gst_element_request_pad (GstElement * element,
@@ -1398,8 +1396,9 @@ gst_element_class_get_pad_template_list (GstElementClass * element_class)
  * that has subclasses, make sure to pass the g_class parameter of the
  * #GInstanceInitFunc here.</note>
  *
- * Returns: (transfer none): the #GstPadTemplate with the given name, or %NULL
- *     if none was found. No unreferencing is necessary.
+ * Returns: (transfer none) (nullable): the #GstPadTemplate with the
+ *     given name, or %NULL if none was found. No unreferencing is
+ *     necessary.
  */
 GstPadTemplate *
 gst_element_class_get_pad_template (GstElementClass *
@@ -1535,7 +1534,7 @@ gst_element_default_send_event (GstElement * element, GstEvent * event)
  * event handler, the event will be pushed on a random linked sink pad for
  * upstream events or a random linked source pad for downstream events.
  *
- * This function takes owership of the provided event so you should
+ * This function takes ownership of the provided event so you should
  * gst_event_ref() it if you want to reuse the event after this call.
  *
  * MT safe.
@@ -1643,7 +1642,7 @@ gst_element_default_query (GstElement * element, GstQuery * query)
  *
  * Please note that some queries might need a running pipeline to work.
  *
- * Returns: TRUE if the query could be performed.
+ * Returns: %TRUE if the query could be performed.
  *
  * MT safe.
  */
@@ -1732,12 +1731,12 @@ gst_element_post_message (GstElement * element, GstMessage * message)
 
 /**
  * _gst_element_error_printf:
- * @format: the printf-like format to use, or %NULL
+ * @format: (allow-none): the printf-like format to use, or %NULL
  *
  * This function is only used internally by the gst_element_error() macro.
  *
- * Returns: (transfer full): a newly allocated string, or %NULL if the format
- *     was %NULL or ""
+ * Returns: (transfer full) (nullable): a newly allocated string, or
+ *     %NULL if the format was %NULL or ""
  *
  * MT safe.
  */
@@ -1875,7 +1874,7 @@ void gst_element_message_full
  *
  * MT safe.
  *
- * Returns: TRUE, if the element's state is locked.
+ * Returns: %TRUE, if the element's state is locked.
  */
 gboolean
 gst_element_is_locked_state (GstElement * element)
@@ -1894,14 +1893,14 @@ gst_element_is_locked_state (GstElement * element)
 /**
  * gst_element_set_locked_state:
  * @element: a #GstElement
- * @locked_state: TRUE to lock the element's state
+ * @locked_state: %TRUE to lock the element's state
  *
  * Locks the state of an element, so state changes of the parent don't affect
  * this element anymore.
  *
  * MT safe.
  *
- * Returns: TRUE if the state was changed, FALSE if bad parameters were given
+ * Returns: %TRUE if the state was changed, %FALSE if bad parameters were given
  * or the elements state-locking needed no change.
  */
 gboolean
@@ -1946,9 +1945,9 @@ was_ok:
  * @element: a #GstElement.
  *
  * Tries to change the state of the element to the same as its parent.
- * If this function returns FALSE, the state of element is undefined.
+ * If this function returns %FALSE, the state of element is undefined.
  *
- * Returns: TRUE, if the element's state could be synced to the parent's state.
+ * Returns: %TRUE, if the element's state could be synced to the parent's state.
  *
  * MT safe.
  */

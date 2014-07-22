@@ -89,7 +89,7 @@ typedef enum
  * @obj: a #GstObject.
  *
  * This macro will try to obtain a lock on the object, but will return with
- * FALSE if it can't get it immediately.
+ * %FALSE if it can't get it immediately.
  */
 #define GST_OBJECT_TRYLOCK(obj)                g_mutex_trylock(GST_OBJECT_GET_LOCK(obj))
 /**
@@ -145,7 +145,7 @@ typedef enum
  * @obj: a #GstObject
  * @flag: Flag to set
  *
- * This macro usets the given bits.
+ * This macro unsets the given bits.
  */
 #define GST_OBJECT_FLAG_UNSET(obj,flag)        (GST_OBJECT_FLAGS (obj) &= ~(flag))
 

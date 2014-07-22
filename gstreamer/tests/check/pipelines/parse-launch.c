@@ -38,9 +38,11 @@ setup_pipeline (const gchar * pipe_descr)
   GstElement *pipeline;
   GError *error = NULL;
 
+  GST_DEBUG ("creating [%s] setup_pipeline", pipe_descr);
+
   pipeline = gst_parse_launch (pipe_descr, &error);
 
-  GST_DEBUG ("created %s", pipe_descr);
+  GST_DEBUG ("created [%s] setup_pipeline", pipe_descr);
 
   if (error != NULL) {
     fail_if (error != NULL, "Error parsing pipeline %s: %s", pipe_descr,
@@ -101,8 +103,15 @@ static const gchar *test_lines[] = {
   "fakesrc !   video/raw,  format=(string)YUY2; video/raw, format=(string)YV12 ! fakesink silent=true",
   "fakesrc ! audio/x-raw, width=[16,  32], depth={16, 24, 32}, signed=TRUE ! fakesink silent=true",
   "fakesrc ! identity silent=true ! identity silent=true ! identity silent=true ! fakesink silent=true",
-  "fakesrc name=100 fakesink name=101 silent=true 100. ! 101.",
-  "fakesrc ! 1dentity ! fakesink silent=true",
+  "fakesrc name=100 fakesink name=101 silent=true 100. ! 101.", /* linking with named reference on both sides */
+  "fakesrc ! 1__dentity ! fakesink silent=true",        /* using a freshly registered element type */
+  "fakesrc ! tee name=t  t.src_12 ! queue ! fakesink  t.src_3 ! queue ! fakesink",
+  "fakesrc name=foo name=fin  fin. ! fakesink", /* testing assignments are executed in correct order (left-to-right) */
+  "( fakesrc ) ! fakesink",     /* ghostPad creation on-the-fly, infix notation link */
+  "( fakesrc name=dasrc ) dasrc. ! fakesink",   /* ghostPad creation on-the-fly, named link */
+/*  "(name=mabin fakesrc) mabin. ! fakesink", FIXME: linking to named bin does not work yet */
+/*  "(name=mabin name=yoyo fakesrc) yoyo. ! fakesink", FIXME: linking to named bin does not work yet  */
+  "deepsrc. ! fakesink fakesrc  ! ( identity ! ( identity ! (  identity name=deepsrc ) ) )",    /* deep name resolution, multilevel ghostpad creation */
   NULL
 };
 
@@ -121,7 +130,7 @@ GST_START_TEST (test_launch_lines)
   type = gst_element_factory_get_element_type (efac);
   fail_unless (type != 0);
   g_object_unref (efac);
-  fail_unless (gst_element_register (NULL, "1dentity", GST_RANK_NONE, type));
+  fail_unless (gst_element_register (NULL, "1__dentity", GST_RANK_NONE, type));
 
   for (s = test_lines; *s != NULL; s++) {
     pipeline = setup_pipeline (*s);
@@ -136,14 +145,14 @@ GST_END_TEST;
 #define PIPELINE3  "fakesrc identity silent=true fakesink silent=true"
 #define PIPELINE4  "fakesrc num-buffers=4 .src ! identity silent=true !.sink identity silent=true .src ! .sink fakesink silent=true"
 #define PIPELINE5  "fakesrc num-buffers=4 name=src identity silent=true name=id1 identity silent=true name = id2 fakesink silent=true name =sink src. ! id1. id1.! id2.sink id2.src!sink.sink"
-#define PIPELINE6  "pipeline.(name=\"john\" fakesrc num-buffers=4 ( bin. ( ! queue ! identity silent=true !( queue ! fakesink silent=true )) ))"
-#define PIPELINE7  "fakesrc num-buffers=4 ! tee name=tee .src_%u! queue ! fakesink silent=true tee.src_%u ! queue ! fakesink silent=true queue name =\"foo\" ! fakesink silent=true tee.src_%u ! foo."
+#define PIPELINE6  "pipeline.(name=\"john\" fakesrc num-buffers=4 ! ( bin. (  queue ! identity silent=true !( queue ! fakesink silent=true )) ))"
+#define PIPELINE7  "fakesrc num-buffers=4 ! tee name=tee .src_%u ! queue ! fakesink silent=true tee.src_%u ! queue ! fakesink silent=true queue name =\"foo\" ! fakesink silent=true tee.src_%u ! foo."
 /* aggregator is borked
  * #define PIPELINE8  "fakesrc num-buffers=4 ! tee name=tee1 .src0,src1 ! .sink0, sink1 aggregator ! fakesink silent=true"
  * */
 #define PIPELINE8  "fakesrc num-buffers=4 ! fakesink silent=true"
 #define PIPELINE9  "fakesrc num-buffers=4 ! test. fakesink silent=true name=test"
-#define PIPELINE10 "( fakesrc num-buffers=\"4\" ! ) identity silent=true ! fakesink silent=true"
+#define PIPELINE10 "( fakesrc num-buffers=\"4\"  ) ! identity silent=true ! fakesink silent=true"
 #define PIPELINE11 "fakesink silent=true name = sink identity silent=true name=id ( fakesrc num-buffers=\"4\" ! id. ) id. ! sink."
 #define PIPELINE12 "file:///tmp/test.file ! fakesink silent=true"
 #define PIPELINE13 "fakesrc ! file:///tmp/test.file"
@@ -224,6 +233,7 @@ GST_START_TEST (test_launch_lines2)
    * - test if escaping strings works
    */
   cur = setup_pipeline (PIPELINE6);
+  /* FIXME: valgrind finds element later */
   fail_unless (GST_IS_PIPELINE (cur), "Parse did not produce a pipeline");
   g_object_get (G_OBJECT (cur), "name", &s, NULL);
   fail_if (s == NULL, "name was NULL");
@@ -285,11 +295,6 @@ GST_START_TEST (test_launch_lines2)
   cur = setup_pipeline (PIPELINE13);
   gst_object_unref (cur);
 
-  /* Checks handling of a assignment followed by error inside a bin. 
-   * This should warn, but ignore the error and carry on */
-  cur = setup_pipeline ("( filesrc blocksize=4 location=/dev/null @ )");
-  gst_object_unref (cur);
-
   /**
    * Checks if characters inside quotes are not escaped.
   */
@@ -335,6 +340,35 @@ static const gchar *expected_failures[] = {
   "bin.( )",
   /* bin with non-existent element counts as empty, and not allowed */
   "bin.( non_existent_element )",
+  /* bin with an element, assignments and then a syntax error */
+  "( filesrc blocksize=4 location=/dev/null @ )",
+  /* bin linking with the ! inside the bin and no ! outside */
+  "( fakesrc num-buffers=\"4\" ! ) identity silent=true ! fakesink silent=true",
+  /* bins with linking without ! */
+  /* FIXME: one element leaks as reported by valgrind */
+  "pipeline.(name=\"john\" fakesrc num-buffers=4 ( bin. ( ! queue ! identity silent=true !( queue ! fakesink silent=true )) ))",
+  /* non-existent bin-type containing already created elements */
+  "coffeebin.( fakesrc ! identity ! fakesink )",
+  /* non-existent bin-type in pipeline */
+  "fakesrc ! coffeebin.( identity ) ! fakesink",
+  /* unexpected pad references Part I */
+  "fakesrc ! .ch0 .ch1 fakesink",
+  /* unexpected pad references Part II */
+  "fakesrc .ch0 .ch1 !  fakesink",
+  /* unexpected pad references Part III */
+  "(fakesrc .ch1) !  fakesink",
+  /* unexpected full reference, I */
+  "(fakesrc name=s  s.ch1) !  fakesink",
+  /* unexpected full reference, II */
+  "s.ch1 fakesrc ! fakesink",
+  /* unexpected full reference, III */
+  "fakesrc ! fakesink s.ch1",
+  /* unlinked src/sink URI */
+  "http://eff.org fakesrc ! fakesink",
+  /* catch assignments evaluated in wrong order */
+  "fakesrc name=ss name=st  ss. ! fakesink",
+  /* unbalanced brackets */
+  "(", ")", ")  (",
   /* END: */
   NULL
 };
@@ -461,10 +495,12 @@ GST_START_TEST (delayed_link)
   run_delayed_test
       ("parsetestelement name=src ! fakesink silent=true name=sink", "sink",
       TRUE);
+  /* FIXME: valgrind finds one element */
 
   /* Test, but this time specifying both pad names */
   run_delayed_test ("parsetestelement name=src .src ! "
       ".sink fakesink silent=true name=sink", "sink", TRUE);
+  /* FIXME: valgrind finds one element */
 
   /* Now try with a caps filter, but not testing that
    * the peerpad == sinkpad, because the peer will actually
@@ -651,6 +687,11 @@ GST_START_TEST (test_flags)
   fail_unless (element == NULL, "expected NULL return with FATAL_ERRORS");
   g_error_free (err);
   err = NULL;
+
+  /* test GST_PARSE_FLAG_FATAL_ERRORS without GError */
+  element = gst_parse_launch_full ("fakesrc ! coffeesink", NULL,
+      GST_PARSE_FLAG_FATAL_ERRORS, NULL);
+  fail_unless (element == NULL, "expected NULL return with FATAL_ERRORS");
 }
 
 GST_END_TEST;

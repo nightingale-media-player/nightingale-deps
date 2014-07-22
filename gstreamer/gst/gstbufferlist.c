@@ -33,8 +33,6 @@
  * Buffer lists can be pushed on a srcpad with gst_pad_push_list(). This is
  * interesting when multiple buffers need to be pushed in one go because it
  * can reduce the amount of overhead for pushing each buffer individually.
- *
- * Last reviewed on 2012-03-28 (0.11.3)
  */
 #include "gst_private.h"
 
@@ -229,8 +227,9 @@ gst_buffer_list_foreach (GstBufferList * list, GstBufferListFunc func,
  *
  * Get the buffer at @idx.
  *
- * Returns: (transfer none): the buffer at @idx in @group or NULL when there
- *     is no buffer. The buffer remains valid as long as @list is valid.
+ * Returns: (transfer none) (nullable): the buffer at @idx in @group
+ *     or %NULL when there is no buffer. The buffer remains valid as
+ *     long as @list is valid.
  */
 GstBuffer *
 gst_buffer_list_get (GstBufferList * list, guint idx)
@@ -283,14 +282,21 @@ gst_buffer_list_insert (GstBufferList * list, gint idx, GstBuffer * buffer)
  * @idx: the index
  * @length: the amount to remove
  *
- * Remove @length buffers starting from @idx in @list. The following buffers are
- * moved to close the gap.
+ * Remove @length buffers starting from @idx in @list. The following buffers
+ * are moved to close the gap.
  */
 void
 gst_buffer_list_remove (GstBufferList * list, guint idx, guint length)
 {
+  GstBuffer *buf;
+  gint i;
+
   g_return_if_fail (GST_IS_BUFFER_LIST (list));
   g_return_if_fail (idx < list->array->len);
 
+  for (i = idx; i < idx + length; ++i) {
+    buf = g_array_index (list->array, GstBuffer *, i);
+    gst_buffer_unref (buf);
+  }
   g_array_remove_range (list->array, idx, length);
 }

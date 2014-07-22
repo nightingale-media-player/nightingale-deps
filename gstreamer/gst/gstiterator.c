@@ -34,40 +34,34 @@
  *
  * In general, whenever calling a GstIterator function results in your code
  * receiving a refcounted object, the refcount for that object will have been
- * increased.  Your code is responsible for unrefing that object after use.
+ * increased.  Your code is responsible for unreffing that object after use.
  *
  * The basic use pattern of an iterator is as follows:
- *
- * <example>
- * <title>Using an iterator</title>
- *   <programlisting>
- *    it = _get_iterator(object);
- *    done = FALSE;
- *    while (!done) {
- *      switch (gst_iterator_next (it, &amp;item)) {
- *        case GST_ITERATOR_OK:
- *          ... use/change item here...
- *          g_value_reset (&amp;item);
- *          break;
- *        case GST_ITERATOR_RESYNC:
- *          ...rollback changes to items...
- *          gst_iterator_resync (it);
- *          break;
- *        case GST_ITERATOR_ERROR:
- *          ...wrong parameters were given...
- *          done = TRUE;
- *          break;
- *        case GST_ITERATOR_DONE:
- *          done = TRUE;
- *          break;
- *      }
- *    }
- *    g_value_unset (&amp;item);
- *    gst_iterator_free (it);
- *   </programlisting>
- * </example>
- *
- * Last reviewed on 2009-06-16 (0.10.24)
+ * |[
+ *   GstIterator *it = _get_iterator(object);
+ *   done = FALSE;
+ *   while (!done) {
+ *     switch (gst_iterator_next (it, &amp;item)) {
+ *       case GST_ITERATOR_OK:
+ *         ... use/change item here...
+ *         g_value_reset (&amp;item);
+ *         break;
+ *       case GST_ITERATOR_RESYNC:
+ *         ...rollback changes to items...
+ *         gst_iterator_resync (it);
+ *         break;
+ *       case GST_ITERATOR_ERROR:
+ *         ...wrong parameters were given...
+ *         done = TRUE;
+ *         break;
+ *       case GST_ITERATOR_DONE:
+ *         done = TRUE;
+ *         break;
+ *     }
+ *   }
+ *   g_value_unset (&amp;item);
+ *   gst_iterator_free (it);
+ * ]|
  */
 
 #include "gst_private.h"
@@ -459,6 +453,7 @@ typedef struct _GstIteratorFilter
   GstIterator iterator;
   GstIterator *slave;
 
+  GMutex *master_lock;
   GCompareFunc func;
   GValue user_data;
   gboolean have_user_data;
@@ -475,15 +470,15 @@ filter_next (GstIteratorFilter * it, GValue * elem)
     result = gst_iterator_next (it->slave, &item);
     switch (result) {
       case GST_ITERATOR_OK:
-        if (G_LIKELY (GST_ITERATOR (it)->lock))
-          g_mutex_unlock (GST_ITERATOR (it)->lock);
+        if (G_LIKELY (it->master_lock))
+          g_mutex_unlock (it->master_lock);
         if (it->func (&item, &it->user_data) == 0) {
           g_value_copy (&item, elem);
           done = TRUE;
         }
         g_value_reset (&item);
-        if (G_LIKELY (GST_ITERATOR (it)->lock))
-          g_mutex_lock (GST_ITERATOR (it)->lock);
+        if (G_LIKELY (it->master_lock))
+          g_mutex_lock (it->master_lock);
         break;
       case GST_ITERATOR_RESYNC:
       case GST_ITERATOR_DONE:
@@ -502,6 +497,8 @@ static void
 filter_copy (const GstIteratorFilter * it, GstIteratorFilter * copy)
 {
   copy->slave = gst_iterator_copy (it->slave);
+  copy->master_lock = copy->slave->lock ? copy->slave->lock : it->master_lock;
+  copy->slave->lock = NULL;
 
   if (it->have_user_data) {
     memset (&copy->user_data, 0, sizeof (copy->user_data));
@@ -559,6 +556,7 @@ gst_iterator_filter (GstIterator * it, GCompareFunc func,
       (GstIteratorResyncFunction) filter_resync,
       (GstIteratorFreeFunction) filter_free);
 
+  result->master_lock = it->lock;
   it->lock = NULL;
   result->func = func;
   if (user_data) {
@@ -588,8 +586,8 @@ gst_iterator_filter (GstIterator * it, GCompareFunc func,
  * This procedure can be used (and is used internally) to implement the
  * gst_iterator_foreach() and gst_iterator_find_custom() operations.
  *
- * The fold will proceed as long as @func returns TRUE. When the iterator has no
- * more arguments, %GST_ITERATOR_DONE will be returned. If @func returns FALSE,
+ * The fold will proceed as long as @func returns %TRUE. When the iterator has no
+ * more arguments, %GST_ITERATOR_DONE will be returned. If @func returns %FALSE,
  * the fold will stop, and %GST_ITERATOR_OK will be returned. Errors or resyncs
  * will cause fold to return %GST_ITERATOR_ERROR or %GST_ITERATOR_RESYNC as
  * appropriate.
@@ -705,10 +703,10 @@ find_custom_fold_func (const GValue * item, GValue * ret,
  *
  * The iterator will not be freed.
  *
- * This function will return FALSE if an error happened to the iterator
+ * This function will return %FALSE if an error happened to the iterator
  * or if the element wasn't found.
  *
- * Returns: Returns TRUE if the element was found, else FALSE.
+ * Returns: Returns %TRUE if the element was found, else %FALSE.
  *
  * MT safe.
  */

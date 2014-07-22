@@ -13,6 +13,7 @@ libgstbase_@GST_API_VERSION@_la_SOURCES = \
 	gstbytewriter.c         \
 	gstcollectpads.c	\
 	gstdataqueue.c		\
+	gstflowcombiner.c	\
 	gstpushsrc.c		\
 	gstqueuearray.c		\
 	gsttypefindhelper.c
@@ -36,6 +37,7 @@ libgstbase_@GST_API_VERSION@include_HEADERS =	\
 	gstbytewriter.h         \
 	gstcollectpads.h	\
 	gstdataqueue.h		\
+	gstflowcombiner.h	\
 	gstpushsrc.h		\
 	gstqueuearray.h		\
 	gsttypefindhelper.h
@@ -89,7 +91,7 @@ GstBase-@GST_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libgstbase-@GST_API_VERS
 		--library-path=$(top_builddir)/gst \
 		--library=libgstbase-@GST_API_VERSION@.la \
 		--include=Gst-@GST_API_VERSION@ \
-		--libtool="$(top_builddir)/libtool" \
+		--libtool="${LIBTOOL}" \
 		--pkg gstreamer-@GST_API_VERSION@ \
 		--pkg-export gstreamer-base-@GST_API_VERSION@ \
 		--add-init-section="gst_init(NULL,NULL);" \

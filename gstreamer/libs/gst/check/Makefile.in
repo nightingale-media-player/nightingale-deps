@@ -92,7 +92,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-docbook.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -634,9 +633,13 @@ LIBGSTCHECK_EXPORTED_FUNCS = \
 	gst_check_setup_events \
 	gst_check_setup_events_with_stream_id \
 	gst_check_setup_sink_pad \
+	gst_check_setup_sink_pad_from_template \
 	gst_check_setup_sink_pad_by_name \
+	gst_check_setup_sink_pad_by_name_from_template \
 	gst_check_setup_src_pad \
+	gst_check_setup_src_pad_from_template \
 	gst_check_setup_src_pad_by_name \
+	gst_check_setup_src_pad_by_name_from_template \
 	gst_check_teardown_element \
 	gst_check_teardown_pad_by_name \
 	gst_check_teardown_sink_pad \
@@ -656,7 +659,10 @@ LIBGSTCHECK_EXPORTED_FUNCS = \
 	gst_test_clock_wait_for_next_pending_id \
 	gst_test_clock_wait_for_pending_id_count \
 	gst_test_clock_process_next_clock_id \
-	gst_test_clock_get_next_entry_time
+	gst_test_clock_get_next_entry_time \
+	gst_test_clock_wait_for_multiple_pending_ids \
+	gst_test_clock_process_id_list \
+	gst_test_clock_id_list_get_latest_time
 
 LIBGSTCHECK_EXPORTED_SYMBOLS = \
 	$(LIBGSTCHECK_EXPORTED_VARS) \
@@ -1237,7 +1243,7 @@ $(SYMBOLS_FILE): $(libgstcheck_@GST_API_VERSION@include_HEADERS) libcheck/check.
 @HAVE_INTROSPECTION_TRUE@		--library-path=$(top_builddir)/gst \
 @HAVE_INTROSPECTION_TRUE@		--library=libgstcheck-@GST_API_VERSION@.la \
 @HAVE_INTROSPECTION_TRUE@		--include=Gst-@GST_API_VERSION@ \
-@HAVE_INTROSPECTION_TRUE@		--libtool="$(top_builddir)/libtool" \
+@HAVE_INTROSPECTION_TRUE@		--libtool="${LIBTOOL}" \
 @HAVE_INTROSPECTION_TRUE@		--pkg gstreamer-@GST_API_VERSION@ \
 @HAVE_INTROSPECTION_TRUE@		--pkg-export gstreamer-check-@GST_API_VERSION@ \
 @HAVE_INTROSPECTION_TRUE@		--add-init-section="gst_init(NULL,NULL);" \

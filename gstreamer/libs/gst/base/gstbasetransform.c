@@ -57,14 +57,14 @@
  *     intact.
  *   </para></listitem>
  *   <listitem><para>
- *     On the GstBaseTransformClass is the passthrough_on_same_caps variable
- *     which will automatically set/unset passthrough based on whether the
+ *     The #GstBaseTransformClass.passthrough_on_same_caps variable
+ *     will automatically set/unset passthrough based on whether the
  *     element negotiates the same caps on both pads.
  *   </para></listitem>
  *   <listitem><para>
- *     passthrough_on_same_caps on an element that doesn't implement a
- *     transform_caps function is useful for elements that only inspect data
- *     (such as level)
+ *     #GstBaseTransformClass.passthrough_on_same_caps on an element that
+ *     doesn't implement a transform_caps function is useful for elements that
+ *     only inspect data (such as level)
  *   </para></listitem>
  *   </itemizedlist>
  *   <itemizedlist>
@@ -94,7 +94,7 @@
  *     immediately.  </para></listitem>
  *   <listitem><para>
  *     only implementing transform_ip and not transform implies always_in_place
- *     = TRUE
+ *     = %TRUE
  *   </para></listitem>
  *   </itemizedlist>
  *   <itemizedlist>
@@ -116,7 +116,7 @@
  *   <listitem><para>
  *     Elements wishing to operate in this mode should replace the
  *     prepare_output_buffer method to create subbuffers of the input buffer
- *     and set always_in_place to TRUE
+ *     and set always_in_place to %TRUE
  *   </para></listitem>
  *   </itemizedlist>
  *   <itemizedlist>
@@ -185,10 +185,10 @@
  *       to the transform_ip function.
  *     </para></listitem>
  *     <listitem><para>
- *       Implied TRUE if no transform function is implemented.
+ *       Implied %TRUE if no transform function is implemented.
  *     </para></listitem>
  *     <listitem><para>
- *       Implied FALSE if ONLY transform function is implemented.
+ *       Implied %FALSE if ONLY transform function is implemented.
  *     </para></listitem>
  *   </itemizedlist>
  * </para></listitem>
@@ -844,7 +844,7 @@ gst_base_transform_default_decide_allocation (GstBaseTransform * trans,
 
     /* by default we remove all metadata, subclasses should implement a
      * filter_meta function */
-    if (gst_meta_api_type_has_tag (api, GST_META_TAG_MEMORY)) {
+    if (gst_meta_api_type_has_tag (api, _gst_meta_tag_memory)) {
       /* remove all memory dependent metadata because we are going to have to
        * allocate different memory for input and output. */
       GST_LOG_OBJECT (trans, "removing memory specific metadata %s",
@@ -899,7 +899,25 @@ gst_base_transform_default_decide_allocation (GstBaseTransform * trans,
     config = gst_buffer_pool_get_config (pool);
     gst_buffer_pool_config_set_params (config, outcaps, size, min, max);
     gst_buffer_pool_config_set_allocator (config, allocator, &params);
-    gst_buffer_pool_set_config (pool, config);
+
+    /* buffer pool may have to do some changes */
+    if (!gst_buffer_pool_set_config (pool, config)) {
+      config = gst_buffer_pool_get_config (pool);
+
+      /* If change are not acceptable, fallback to generic pool */
+      if (!gst_buffer_pool_config_validate_params (config, outcaps, size, min,
+              max)) {
+        GST_DEBUG_OBJECT (trans, "unsuported pool, making new pool");
+
+        gst_object_unref (pool);
+        pool = gst_buffer_pool_new ();
+        gst_buffer_pool_config_set_params (config, outcaps, size, min, max);
+        gst_buffer_pool_config_set_allocator (config, allocator, &params);
+      }
+
+      if (!gst_buffer_pool_set_config (pool, config))
+        goto config_failed;
+    }
   }
 
   if (update_allocator)
@@ -915,6 +933,12 @@ gst_base_transform_default_decide_allocation (GstBaseTransform * trans,
   }
 
   return TRUE;
+
+config_failed:
+  GST_ELEMENT_ERROR (trans, RESOURCE, SETTINGS,
+      ("Failed to configure the buffer pool"),
+      ("Configuration is most likely invalid, please report this issue."));
+  return FALSE;
 }
 
 static gboolean
@@ -1433,16 +1457,15 @@ gst_base_transform_default_query (GstBaseTransform * trans,
     case GST_QUERY_ALLOCATION:
     {
       GstQuery *decide_query = NULL;
-      gboolean negotiated;
 
       /* can only be done on the sinkpad */
       if (direction != GST_PAD_SINK)
         goto done;
 
       GST_OBJECT_LOCK (trans);
-      if (G_UNLIKELY (!(negotiated = priv->negotiated))) {
+      if (!priv->negotiated && !priv->passthrough && (klass->set_caps != NULL)) {
         GST_DEBUG_OBJECT (trans,
-            "not negotiated yet, can't answer ALLOCATION query");
+            "not negotiated yet but need negotiation, can't answer ALLOCATION query");
         GST_OBJECT_UNLOCK (trans);
         goto done;
       }
@@ -1558,7 +1581,7 @@ default_prepare_output_buffer (GstBaseTransform * trans,
 
   /* figure out how to allocate an output buffer */
   if (priv->passthrough) {
-    /* passthrough, we will not modify the incomming buffer so we can just
+    /* passthrough, we will not modify the incoming buffer so we can just
      * reuse it */
     GST_DEBUG_OBJECT (trans, "passthrough: reusing input buffer");
     *outbuf = inbuf;
@@ -1682,7 +1705,7 @@ foreach_metadata (GstBuffer * inbuf, GstMeta ** meta, gpointer user_data)
     GST_DEBUG_OBJECT (trans, "not copying pooled metadata %s",
         g_type_name (info->api));
     do_copy = FALSE;
-  } else if (gst_meta_api_type_has_tag (info->api, GST_META_TAG_MEMORY)) {
+  } else if (gst_meta_api_type_has_tag (info->api, _gst_meta_tag_memory)) {
     /* never call the transform_meta with memory specific metadata */
     GST_DEBUG_OBJECT (trans, "not copying memory specific metadata %s",
         g_type_name (info->api));
@@ -1694,7 +1717,7 @@ foreach_metadata (GstBuffer * inbuf, GstMeta ** meta, gpointer user_data)
   }
 
   /* we only copy metadata when the subclass implemented a transform_meta
-   * function and when it returns TRUE */
+   * function and when it returns %TRUE */
   if (do_copy) {
     GstMetaTransformCopy copy_data = { FALSE, 0, -1 };
     GST_DEBUG_OBJECT (trans, "copy metadata %s", g_type_name (info->api));
@@ -1755,7 +1778,7 @@ not_writable:
  * We have two cache locations to store the size, one for the source caps
  * and one for the sink caps.
  *
- * this function returns FALSE if no size could be calculated.
+ * this function returns %FALSE if no size could be calculated.
  */
 static gboolean
 gst_base_transform_get_unit_size (GstBaseTransform * trans, GstCaps * caps,
@@ -2416,7 +2439,7 @@ gst_base_transform_src_activate_mode (GstPad * pad, GstObject * parent,
  * Set passthrough mode for this filter by default. This is mostly
  * useful for filters that do not care about negotiation.
  *
- * Always TRUE for filters which don't implement either a transform
+ * Always %TRUE for filters which don't implement either a transform
  * or transform_ip method.
  *
  * MT safe.
@@ -2449,7 +2472,7 @@ gst_base_transform_set_passthrough (GstBaseTransform * trans,
  *
  * See if @trans is configured as a passthrough transform.
  *
- * Returns: TRUE is the transform is configured in passthrough mode.
+ * Returns: %TRUE is the transform is configured in passthrough mode.
  *
  * MT safe.
  */
@@ -2476,8 +2499,8 @@ gst_base_transform_is_passthrough (GstBaseTransform * trans)
  * Determines whether a non-writable buffer will be copied before passing
  * to the transform_ip function.
  * <itemizedlist>
- *   <listitem>Always TRUE if no transform function is implemented.</listitem>
- *   <listitem>Always FALSE if ONLY transform function is implemented.</listitem>
+ *   <listitem>Always %TRUE if no transform function is implemented.</listitem>
+ *   <listitem>Always %FALSE if ONLY transform function is implemented.</listitem>
  * </itemizedlist>
  *
  * MT safe.
@@ -2514,7 +2537,7 @@ gst_base_transform_set_in_place (GstBaseTransform * trans, gboolean in_place)
  *
  * See if @trans is configured as a in_place transform.
  *
- * Returns: TRUE is the transform is configured in in_place mode.
+ * Returns: %TRUE is the transform is configured in in_place mode.
  *
  * MT safe.
  */
@@ -2589,7 +2612,7 @@ gst_base_transform_set_qos_enabled (GstBaseTransform * trans, gboolean enabled)
  *
  * Queries if the transform will handle QoS.
  *
- * Returns: TRUE if QoS is enabled.
+ * Returns: %TRUE if QoS is enabled.
  *
  * MT safe.
  */
@@ -2642,7 +2665,7 @@ gst_base_transform_set_gap_aware (GstBaseTransform * trans, gboolean gap_aware)
  * transform_caps vmethod.
  *
  * If set to %FALSE, the element must order the caps returned from the
- * transform_caps function in such a way that the prefered format is
+ * transform_caps function in such a way that the preferred format is
  * first in the list. This can be interesting for transforms that can do
  * passthrough transforms but prefer to do something else, like a
  * capsfilter.
@@ -2722,7 +2745,7 @@ gst_base_transform_get_buffer_pool (GstBaseTransform * trans)
  * @allocator: (out) (allow-none) (transfer full): the #GstAllocator
  * used
  * @params: (out) (allow-none) (transfer full): the
- * #GstAllocatorParams of @allocator
+ * #GstAllocationParams of @allocator
  *
  * Lets #GstBaseTransform sub-classes to know the memory @allocator
  * used by the base class and its @params.

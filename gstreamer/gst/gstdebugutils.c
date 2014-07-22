@@ -154,6 +154,7 @@ debug_dump_pad (GstPad * pad, const gchar * color_name,
   style_name = "filled,solid";
   if ((pad_templ = gst_pad_get_pad_template (pad))) {
     presence = GST_PAD_TEMPLATE_PRESENCE (pad_templ);
+    gst_object_unref (pad_templ);
     if (presence == GST_PAD_SOMETIMES) {
       style_name = "filled,dotted";
     } else if (presence == GST_PAD_REQUEST) {
@@ -163,6 +164,25 @@ debug_dump_pad (GstPad * pad, const gchar * color_name,
   if (details & GST_DEBUG_GRAPH_SHOW_STATES) {
     gchar pad_flags[4];
     const gchar *activation_mode = "-><";
+    const gchar *task_mode = "";
+    GstTask *task;
+
+    GST_OBJECT_LOCK (pad);
+    task = GST_PAD_TASK (pad);
+    if (task) {
+      switch (gst_task_get_state (task)) {
+        case GST_TASK_STARTED:
+          task_mode = "[T]";
+          break;
+        case GST_TASK_PAUSED:
+          task_mode = "[t]";
+          break;
+        default:
+          /* Invalid task state, ignoring */
+          break;
+      }
+    }
+    GST_OBJECT_UNLOCK (pad);
 
     /* check if pad flags */
     pad_flags[0] =
@@ -174,9 +194,9 @@ debug_dump_pad (GstPad * pad, const gchar * color_name,
     pad_flags[3] = '\0';
 
     fprintf (out,
-        "%s  %s_%s [color=black, fillcolor=\"%s\", label=\"%s\\n[%c][%s]\", height=\"0.2\", style=\"%s\"];\n",
+        "%s  %s_%s [color=black, fillcolor=\"%s\", label=\"%s\\n[%c][%s]%s\", height=\"0.2\", style=\"%s\"];\n",
         spc, element_name, pad_name, color_name, GST_OBJECT_NAME (pad),
-        activation_mode[pad->mode], pad_flags, style_name);
+        activation_mode[pad->mode], pad_flags, task_mode, style_name);
   } else {
     fprintf (out,
         "%s  %s_%s [color=black, fillcolor=\"%s\", label=\"%s\", height=\"0.2\", style=\"%s\"];\n",
@@ -253,6 +273,11 @@ string_append_field (GQuark field, const GValue * value, gpointer ptr)
   GString *str = (GString *) ptr;
   gchar *value_str = gst_value_serialize (value);
   gchar *esc_value_str;
+
+  if (value_str == NULL) {
+    g_string_append_printf (str, "  %18s: NULL\\l", g_quark_to_string (field));
+    return TRUE;
+  }
 
   /* some enums can become really long */
   if (strlen (value_str) > 25) {
@@ -645,6 +670,12 @@ gst_debug_bin_to_dot_file (GstBin * bin, GstDebugGraphDetails details,
         "  label=\"<%s>\\n%s%s%s\";\n"
         "  node [style=filled, shape=box, fontsize=\"9\", fontname=\"sans\", margin=\"0.0,0.0\"];\n"
         "  edge [labelfontsize=\"6\", fontsize=\"9\", fontname=\"monospace\"];\n"
+        "  \n"
+        "  legend [\n"
+        "    pos=\"0,0!\",\n"
+        "    margin=\"0.05,0.05\",\n"
+        "    label=\"Legend\\lElement-States: [~] void-pending, [0] null, [-] ready, [=] paused, [>] playing\\lPad-Activation: [-] none, [>] push, [<] pull\\lPad-Flags: [b]locked, [f]lushing, [b]locking; upper-case is set\\lPad-Task: [T] has started task, [t] has paused task\\l\"\n,"
+        "  ];"
         "\n", G_OBJECT_TYPE_NAME (bin), GST_OBJECT_NAME (bin),
         (state_name ? state_name : ""), (param_name ? param_name : "")
         );

@@ -22,6 +22,7 @@ GObject
           GstIdentity
         GstBin
           GstPipeline
+        GstDownloadBuffer
         GstFunnel
         GstInputSelector
         GstMultiQueue
@@ -35,6 +36,7 @@ GObject
       GstPadTemplate
       GstPlugin
       GstPluginFeature
+        GstDeviceProviderFactory
         GstElementFactory
         GstTypeFindFactory
       GstRegistry

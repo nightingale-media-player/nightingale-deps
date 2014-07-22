@@ -134,27 +134,27 @@ struct _GstCollectData
 
 /**
  * GstCollectPadsFunction:
- * @pads: the #GstCollectPads that trigered the callback
+ * @pads: the #GstCollectPads that triggered the callback
  * @user_data: user data passed to gst_collect_pads_set_function()
  *
  * A function that will be called when all pads have received data.
  *
- * Returns: #GST_FLOW_OK for success
+ * Returns: %GST_FLOW_OK for success
  */
 typedef GstFlowReturn (*GstCollectPadsFunction) (GstCollectPads *pads, gpointer user_data);
 
 /**
  * GstCollectPadsBufferFunction:
- * @pads: the #GstCollectPads that trigered the callback
+ * @pads: the #GstCollectPads that triggered the callback
  * @data: the #GstCollectData of pad that has received the buffer
  * @buffer: (transfer full): the #GstBuffer
  * @user_data: user data passed to gst_collect_pads_set_buffer_function()
  *
  * A function that will be called when a (considered oldest) buffer can be muxed.
- * If all pads have reached EOS, this function is called with NULL @buffer
- * and NULL @data.
+ * If all pads have reached EOS, this function is called with %NULL @buffer
+ * and %NULL @data.
  *
- * Returns: #GST_FLOW_OK for success
+ * Returns: %GST_FLOW_OK for success
  */
 typedef GstFlowReturn (*GstCollectPadsBufferFunction) (GstCollectPads *pads, GstCollectData *data,
                                                        GstBuffer *buffer, gpointer user_data);
@@ -172,7 +172,7 @@ typedef GstFlowReturn (*GstCollectPadsBufferFunction) (GstCollectPads *pads, Gst
  *
  * Returns: Integer less than zero when first timestamp is deemed older than the second one.
  *          Zero if the timestamps are deemed equally old.
- *          Integer greate than zero when second timestamp is deemed older than the first one.
+ *          Integer greater than zero when second timestamp is deemed older than the first one.
  */
 typedef gint (*GstCollectPadsCompareFunction) (GstCollectPads *pads,
                                                GstCollectData * data1, GstClockTime timestamp1,
@@ -181,7 +181,7 @@ typedef gint (*GstCollectPadsCompareFunction) (GstCollectPads *pads,
 
 /**
  * GstCollectPadsEventFunction:
- * @pads: the #GstCollectPads that trigered the callback
+ * @pads: the #GstCollectPads that triggered the callback
  * @pad: the #GstPad that received an event
  * @event: the #GstEvent received
  * @user_data: user data passed to gst_collect_pads_set_event_function()
@@ -199,7 +199,7 @@ typedef gboolean (*GstCollectPadsEventFunction)        (GstCollectPads *pads, Gs
 
 /**
  * GstCollectPadsQueryFunction:
- * @pads: the #GstCollectPads that trigered the callback
+ * @pads: the #GstCollectPads that triggered the callback
  * @pad: the #GstPad that received an event
  * @query: the #GstEvent received
  * @user_data: user data passed to gst_collect_pads_set_query_function()
@@ -222,7 +222,7 @@ typedef gboolean (*GstCollectPadsQueryFunction)        (GstCollectPads *pads, Gs
  * @user_data: user data
  *
  * A function that will be called when @inbuffer is received on the pad managed
- * by @data in the collecpad object @pads.
+ * by @data in the collectpad object @pads.
  *
  * The function should use the segment of @data and the negotiated media type on
  * the pad to perform clipping of @inbuffer.
@@ -235,6 +235,23 @@ typedef gboolean (*GstCollectPadsQueryFunction)        (GstCollectPads *pads, Gs
 typedef GstFlowReturn (*GstCollectPadsClipFunction) (GstCollectPads *pads, GstCollectData *data,
                                                      GstBuffer *inbuffer, GstBuffer **outbuffer,
                                                      gpointer user_data);
+
+
+/**
+ * GstCollectPadsFlushFunction:
+ * @pads: a #GstCollectPads
+ * @user_data: user data
+ *
+ * A function that will be called while processing a flushing seek event.
+ *
+ * The function should flush any internal state of the element and the state of
+ * all the pads. It should clear only the state not directly managed by the
+ * @pads object. It is therefore not necessary to call
+ * gst_collect_pads_set_flushing nor gst_collect_pads_clear from this function.
+ *
+ * Since: 1.4
+ */
+typedef void (*GstCollectPadsFlushFunction) (GstCollectPads *pads, gpointer user_data);
 
 /**
  * GST_COLLECT_PADS_GET_STREAM_LOCK:
@@ -262,7 +279,8 @@ typedef GstFlowReturn (*GstCollectPadsClipFunction) (GstCollectPads *pads, GstCo
 
 /**
  * GstCollectPads:
- * @data: #GList of #GstCollectData managed by this #GstCollectPads.
+ * @data: (element-type GstBase.CollectData): #GList of #GstCollectData managed
+ *   by this #GstCollectPads.
  *
  * Collectpads object.
  */
@@ -311,6 +329,9 @@ void            gst_collect_pads_set_compare_function (GstCollectPads *pads,
 void            gst_collect_pads_set_clip_function    (GstCollectPads *pads,
                                                        GstCollectPadsClipFunction clipfunc,
                                                        gpointer user_data);
+void            gst_collect_pads_set_flush_function    (GstCollectPads *pads,
+                                                       GstCollectPadsFlushFunction func,
+                                                       gpointer user_data);
 
 /* pad management */
 GstCollectData* gst_collect_pads_add_pad       (GstCollectPads *pads, GstPad *pad, guint size,
@@ -349,6 +370,8 @@ GstFlowReturn	gst_collect_pads_clip_running_time (GstCollectPads * pads,
 /* default handlers */
 gboolean        gst_collect_pads_event_default (GstCollectPads * pads, GstCollectData * data,
                                                 GstEvent * event, gboolean discard);
+gboolean        gst_collect_pads_src_event_default (GstCollectPads * pads, GstPad * pad,
+                                                    GstEvent * event);
 gboolean        gst_collect_pads_query_default (GstCollectPads * pads, GstCollectData * data,
                                                 GstQuery * query, gboolean discard);
 

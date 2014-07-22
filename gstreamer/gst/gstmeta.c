@@ -42,8 +42,6 @@
  *
  * See #GstBuffer for how the metadata can be added, retrieved and removed from
  * buffers.
- *
- * Last reviewed on 2012-03-28 (0.11.3)
  */
 #include "gst_private.h"
 
@@ -150,9 +148,9 @@ gst_meta_api_type_get_tags (GType api)
  * @api: the type of the #GstMeta API
  * @impl: the name of the #GstMeta implementation
  * @size: the size of the #GstMeta structure
- * @init_func: (scope async) a #GstMetaInitFunction
- * @free_func: (scope async) a #GstMetaFreeFunction
- * @transform_func: (scope async) a #GstMetaTransformFunction
+ * @init_func: (scope async): a #GstMetaInitFunction
+ * @free_func: (scope async): a #GstMetaFreeFunction
+ * @transform_func: (scope async): a #GstMetaTransformFunction
  *
  * Register a new #GstMeta implementation.
  *
@@ -207,8 +205,8 @@ gst_meta_register (GType api, const gchar * impl, gsize size,
  * Lookup a previously registered meta info structure by its implementation name
  * @impl.
  *
- * Returns: (transfer none): a #GstMetaInfo with @impl, or #NULL when no such
- * metainfo exists.
+ * Returns: (transfer none) (nullable): a #GstMetaInfo with @impl, or
+ * %NULL when no such metainfo exists.
  */
 const GstMetaInfo *
 gst_meta_get_info (const gchar * impl)

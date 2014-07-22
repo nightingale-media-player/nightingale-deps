@@ -34,20 +34,15 @@
  * handle or produce at runtime.
  *
  * A #GstCaps can be constructed with the following code fragment:
- *
- * <example>
- *  <title>Creating caps</title>
- *  <programlisting>
- *  GstCaps *caps;
- *  caps = gst_caps_new_simple ("video/x-raw",
- *       "format", G_TYPE_STRING, "I420",
- *       "framerate", GST_TYPE_FRACTION, 25, 1,
- *       "pixel-aspect-ratio", GST_TYPE_FRACTION, 1, 1,
- *       "width", G_TYPE_INT, 320,
- *       "height", G_TYPE_INT, 240,
- *       NULL);
- *  </programlisting>
- * </example>
+ * |[
+ *   GstCaps *caps = gst_caps_new_simple ("video/x-raw",
+ *      "format", G_TYPE_STRING, "I420",
+ *      "framerate", GST_TYPE_FRACTION, 25, 1,
+ *      "pixel-aspect-ratio", GST_TYPE_FRACTION, 1, 1,
+ *      "width", G_TYPE_INT, 320,
+ *      "height", G_TYPE_INT, 240,
+ *      NULL);
+ * ]|
  *
  * A #GstCaps is fixed when it has no properties with ranges or lists. Use
  * gst_caps_is_fixed() to test for fixed caps. Fixed caps can be used in a
@@ -56,7 +51,11 @@
  * Various methods exist to work with the media types such as subtracting
  * or intersecting.
  *
- * Last reviewed on 2011-03-28 (0.11.3)
+ * Be aware that the current #GstCaps / #GstStructure serialization into string
+ * has limited support for nested #GstCaps / #GstStructure fields. It can only
+ * support one level of nesting. Using more levels will lead to unexpected
+ * behavior when using serialization features, such as gst_caps_to_string() or
+ * gst_value_serialize() and their counterparts.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -93,7 +92,7 @@ typedef struct _GstCapsImpl
 
 /* same as gst_caps_is_any () */
 #define CAPS_IS_ANY(caps)				\
-  (GST_CAPS_FLAGS(caps) & GST_CAPS_FLAG_ANY)
+  (!!(GST_CAPS_FLAGS(caps) & GST_CAPS_FLAG_ANY))
 
 /* same as gst_caps_is_empty () */
 #define CAPS_IS_EMPTY(caps)				\
@@ -108,8 +107,10 @@ typedef struct _GstCapsImpl
  * length check */
 #define gst_caps_get_structure_unchecked(caps, index) \
      (g_array_index (GST_CAPS_ARRAY (caps), GstCapsArrayElement, (index)).structure)
+#define gst_caps_get_features_storage_unchecked(caps, index) \
+     (&g_array_index (GST_CAPS_ARRAY (caps), GstCapsArrayElement, (index)).features)
 #define gst_caps_get_features_unchecked(caps, index) \
-     (g_array_index (GST_CAPS_ARRAY (caps), GstCapsArrayElement, (index)).features)
+     (g_atomic_pointer_get (gst_caps_get_features_storage_unchecked (caps, index)))
 /* quick way to append a structure without checking the args */
 #define gst_caps_append_structure_unchecked(caps, s, f) G_STMT_START{\
   GstCapsArrayElement __e={s, f};                                      \
@@ -326,7 +327,7 @@ gst_caps_new_simple (const char *media_type, const char *fieldname, ...)
  * @...: additional structures to add
  *
  * Creates a new #GstCaps and adds all the structures listed as
- * arguments.  The list must be NULL-terminated.  The structures
+ * arguments.  The list must be %NULL-terminated.  The structures
  * are not copied; the returned #GstCaps owns the structures.
  *
  * Returns: (transfer full): the new #GstCaps
@@ -350,7 +351,7 @@ gst_caps_new_full (GstStructure * struct1, ...)
  * @var_args: additional structures to add
  *
  * Creates a new #GstCaps and adds all the structures listed as
- * arguments.  The list must be NULL-terminated.  The structures
+ * arguments.  The list must be %NULL-terminated.  The structures
  * are not copied; the returned #GstCaps owns the structures.
  *
  * Returns: (transfer full): the new #GstCaps
@@ -644,7 +645,7 @@ gst_caps_append_structure_full (GstCaps * caps, GstStructure * structure,
  * @caps: the #GstCaps to remove from
  * @idx: Index of the structure to remove
  *
- * removes the stucture with the given index from the list of structures
+ * removes the structure with the given index from the list of structures
  * contained in @caps.
  */
 void
@@ -850,8 +851,25 @@ gst_caps_get_features (const GstCaps * caps, guint index)
   g_return_val_if_fail (index < GST_CAPS_LEN (caps), NULL);
 
   features = gst_caps_get_features_unchecked (caps, index);
-  if (!features)
-    features = GST_CAPS_FEATURES_MEMORY_SYSTEM_MEMORY;
+  if (!features) {
+    GstCapsFeatures **storage;
+
+    /* We have to do some atomic pointer magic here as the caps
+     * might not be writable and someone else calls this function
+     * at the very same time */
+    features = gst_caps_features_copy (GST_CAPS_FEATURES_MEMORY_SYSTEM_MEMORY);
+    gst_caps_features_set_parent_refcount (features, &GST_CAPS_REFCOUNT (caps));
+
+    storage = gst_caps_get_features_storage_unchecked (caps, index);
+    if (!g_atomic_pointer_compare_and_exchange (storage, NULL, features)) {
+      /* Someone did the same we just tried in the meantime */
+      gst_caps_features_set_parent_refcount (features, NULL);
+      gst_caps_features_free (features);
+
+      features = gst_caps_get_features_unchecked (caps, index);
+      g_assert (features != NULL);
+    }
+  }
 
   return features;
 }
@@ -860,7 +878,7 @@ gst_caps_get_features (const GstCaps * caps, guint index)
  * gst_caps_set_features:
  * @caps: a #GstCaps
  * @index: the index of the structure
- * @features: (allow-none) (transfer full): the #GstFeatures to set
+ * @features: (allow-none) (transfer full): the #GstCapsFeatures to set
  *
  * Sets the #GstCapsFeatures @features for the structure at @index.
  *
@@ -875,15 +893,18 @@ gst_caps_set_features (GstCaps * caps, guint index, GstCapsFeatures * features)
   g_return_if_fail (index <= gst_caps_get_size (caps));
   g_return_if_fail (IS_WRITABLE (caps));
 
-  storage = &gst_caps_get_features_unchecked (caps, index);
-  old = *storage;
-  *storage = features;
+  storage = gst_caps_get_features_storage_unchecked (caps, index);
+  /* Not much problem here as caps are writable */
+  old = g_atomic_pointer_get (storage);
+  g_atomic_pointer_set (storage, features);
 
   if (features)
     gst_caps_features_set_parent_refcount (features, &GST_CAPS_REFCOUNT (caps));
 
-  if (old)
+  if (old) {
+    gst_caps_features_set_parent_refcount (old, NULL);
     gst_caps_features_free (old);
+  }
 }
 
 /**
@@ -980,7 +1001,7 @@ gst_caps_set_value (GstCaps * caps, const char *field, const GValue * value)
  * @varargs: additional parameters
  *
  * Sets fields in a #GstCaps.  The arguments must be passed in the same
- * manner as gst_structure_set(), and be NULL-terminated.
+ * manner as gst_structure_set(), and be %NULL-terminated.
  */
 void
 gst_caps_set_simple_valist (GstCaps * caps, const char *field, va_list varargs)
@@ -1017,7 +1038,7 @@ gst_caps_set_simple_valist (GstCaps * caps, const char *field, va_list varargs)
  * @...: additional parameters
  *
  * Sets fields in a #GstCaps.  The arguments must be passed in the same
- * manner as gst_structure_set(), and be NULL-terminated.
+ * manner as gst_structure_set(), and be %NULL-terminated.
  */
 void
 gst_caps_set_simple (GstCaps * caps, const char *field, ...)
@@ -1040,7 +1061,7 @@ gst_caps_set_simple (GstCaps * caps, const char *field, ...)
  *
  * Determines if @caps represents any media format.
  *
- * Returns: TRUE if @caps represents any format.
+ * Returns: %TRUE if @caps represents any format.
  */
 gboolean
 gst_caps_is_any (const GstCaps * caps)
@@ -1056,7 +1077,7 @@ gst_caps_is_any (const GstCaps * caps)
  *
  * Determines if @caps represents no media formats.
  *
- * Returns: TRUE if @caps represents no formats.
+ * Returns: %TRUE if @caps represents no formats.
  */
 gboolean
 gst_caps_is_empty (const GstCaps * caps)
@@ -1084,7 +1105,7 @@ gst_caps_is_fixed_foreach (GQuark field_id, const GValue * value,
  * one structure, and each field in the structure describes a fixed type.
  * Examples of non-fixed types are GST_TYPE_INT_RANGE and GST_TYPE_LIST.
  *
- * Returns: TRUE if @caps is fixed
+ * Returns: %TRUE if @caps is fixed
  */
 gboolean
 gst_caps_is_fixed (const GstCaps * caps)
@@ -1097,7 +1118,7 @@ gst_caps_is_fixed (const GstCaps * caps)
   if (GST_CAPS_LEN (caps) != 1)
     return FALSE;
 
-  features = gst_caps_get_features (caps, 0);
+  features = gst_caps_get_features_unchecked (caps, 0);
   if (features && gst_caps_features_is_any (features))
     return FALSE;
 
@@ -1114,7 +1135,7 @@ gst_caps_is_fixed (const GstCaps * caps)
  * Tests if two #GstCaps are equal.  This function only works on fixed
  * #GstCaps.
  *
- * Returns: TRUE if the arguments represent the same format
+ * Returns: %TRUE if the arguments represent the same format
  */
 gboolean
 gst_caps_is_equal_fixed (const GstCaps * caps1, const GstCaps * caps2)
@@ -1147,7 +1168,7 @@ gst_caps_is_equal_fixed (const GstCaps * caps1, const GstCaps * caps2)
  * every media format that is in the first is also contained in the
  * second.  That is, @caps1 is a subset of @caps2.
  *
- * Returns: TRUE if @caps1 is a subset of @caps2.
+ * Returns: %TRUE if @caps1 is a subset of @caps2.
  */
 gboolean
 gst_caps_is_always_compatible (const GstCaps * caps1, const GstCaps * caps2)
@@ -1303,7 +1324,7 @@ gst_caps_is_subset_structure_full (const GstCaps * caps,
  *
  * Checks if the given caps represent the same set of caps.
  *
- * Returns: TRUE if both caps are equal.
+ * Returns: %TRUE if both caps are equal.
  */
 gboolean
 gst_caps_is_equal (const GstCaps * caps1, const GstCaps * caps2)
@@ -1327,7 +1348,7 @@ gst_caps_is_equal (const GstCaps * caps1, const GstCaps * caps2)
  *
  * Checks if the given caps are exactly the same set of caps.
  *
- * Returns: TRUE if both caps are strictly equal.
+ * Returns: %TRUE if both caps are strictly equal.
  */
 gboolean
 gst_caps_is_strictly_equal (const GstCaps * caps1, const GstCaps * caps2)
@@ -2105,7 +2126,7 @@ gst_caps_fixate (GstCaps * caps)
   gst_structure_fixate (s);
 
   /* Set features to sysmem if they're still ANY */
-  f = gst_caps_get_features (caps, 0);
+  f = gst_caps_get_features_unchecked (caps, 0);
   if (f && gst_caps_features_is_any (f)) {
     f = gst_caps_features_new_empty ();
     gst_caps_set_features (caps, 0, f);
@@ -2128,6 +2149,9 @@ gst_caps_fixate (GstCaps * caps)
  * GST_LOG ("caps are %" GST_PTR_FORMAT, caps);
  * ]|
  * This prints the caps in human readable form.
+ *
+ * The current implementation of serialization will lead to unexpected results
+ * when there are nested #GstCaps / #GstStructure deeper than one level.
  *
  * Returns: (transfer full): a newly allocated string representing @caps.
  */
@@ -2277,12 +2301,15 @@ gst_caps_from_string_inplace (GstCaps * caps, const gchar * string)
 
     if (!priv_gst_structure_parse_fields (s, &s, structure)) {
       gst_structure_free (structure);
+      if (features)
+        gst_caps_features_free (features);
       g_free (copy);
       return FALSE;
     }
 
   append:
     gst_caps_append_structure_unchecked (caps, structure, features);
+    features = NULL;
     if (*s == '\0')
       break;
   } while (TRUE);
@@ -2297,6 +2324,9 @@ gst_caps_from_string_inplace (GstCaps * caps, const gchar * string)
  * @string: a string to convert to #GstCaps
  *
  * Converts @caps from a string representation.
+ *
+ * The current implementation of serialization will lead to unexpected results
+ * when there are nested #GstCaps / #GstStructure deeper than one level.
  *
  * Returns: (transfer full): a newly allocated #GstCaps
  */

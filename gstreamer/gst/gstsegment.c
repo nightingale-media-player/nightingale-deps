@@ -79,8 +79,6 @@
  * For elements that need to perform operations on media data in stream_time,
  * gst_segment_to_stream_time() can be used to convert a timestamp and the segment
  * info to stream time (which is always between 0 and the duration of the stream).
- *
- * Last reviewed on 2012-03-29 (0.11.3)
  */
 
 /**
@@ -218,8 +216,8 @@ gst_segment_init (GstSegment * segment, GstFormat format)
  * If the caller can apply a rate change, it should update @segment
  * rate and applied_rate after calling this function.
  *
- * @update will be set to TRUE if a seek should be performed to the segment
- * position field. This field can be FALSE if, for example, only the @rate
+ * @update will be set to %TRUE if a seek should be performed to the segment
+ * position field. This field can be %FALSE if, for example, only the @rate
  * has been changed but not the playback position.
  *
  * Returns: %TRUE if the seek could be performed.
@@ -460,7 +458,7 @@ gst_segment_to_stream_time (const GstSegment * segment, GstFormat format,
  * segment. Position is a value between @segment start and stop time.
  *
  * This function is typically used by elements that need to synchronize to the
- * global clock in a pipeline. The runnning time is a constantly increasing value
+ * global clock in a pipeline. The running time is a constantly increasing value
  * starting from 0. When gst_segment_init() is called, this value will reset to
  * 0.
  *
@@ -553,18 +551,18 @@ gst_segment_to_running_time (const GstSegment * segment, GstFormat format,
  * in @segment. @start and @stop are compared and clipped to @segment
  * start and stop values.
  *
- * If the function returns FALSE, @start and @stop are known to fall
+ * If the function returns %FALSE, @start and @stop are known to fall
  * outside of @segment and @clip_start and @clip_stop are not updated.
  *
- * When the function returns TRUE, @clip_start and @clip_stop will be
+ * When the function returns %TRUE, @clip_start and @clip_stop will be
  * updated. If @clip_start or @clip_stop are different from @start or @stop
  * respectively, the region fell partially in the segment.
  *
  * Note that when @stop is -1, @clip_stop will be set to the end of the
  * segment. Depending on the use case, this may or may not be what you want.
  *
- * Returns: TRUE if the given @start and @stop times fall partially or
- *     completely in @segment, FALSE if the values are completely outside
+ * Returns: %TRUE if the given @start and @stop times fall partially or
+ *     completely in @segment, %FALSE if the values are completely outside
  *     of the segment.
  */
 gboolean

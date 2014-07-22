@@ -19,13 +19,15 @@
  * Boston, MA 02110-1301, USA.
  */
 
-/* this benchmark recursively builds a pipeline and measures the time to go
- * from ready to paused.
- * The graph size and type can be controlled with a few commandline args:
+/* This benchmark recursively builds a pipeline and measures the time to go
+ * from READY to PAUSED state.
+ *
+ * The graph size and type can be controlled with a few command line options:
+ *
  *  -d depth: is the depth of the tree
  *  -c children: is the number of branches on each level
- *  -f <flavour>: can be a=udio/v=ideo and is conttrolling the kind of elements
- *                that are used.
+ *  -f <flavour>: can be "audio" or "video" and is controlling the kind of
+ *                elements that are used.
  */
 
 #include <gst/gst.h>
@@ -132,7 +134,7 @@ create_nodes (GstBin * bin, GstElement * sink, gint depth, gint children,
 }
 
 static void
-event_loop (GstElement * bin, GstClockTime start)
+event_loop (GstElement * bin)
 {
   GstBus *bus;
   GstMessage *msg = NULL;
@@ -142,27 +144,11 @@ event_loop (GstElement * bin, GstClockTime start)
 
   while (running) {
     msg = gst_bus_poll (bus,
-        GST_MESSAGE_STATE_CHANGED | GST_MESSAGE_ERROR | GST_MESSAGE_WARNING,
-        -1);
+        GST_MESSAGE_ASYNC_DONE | GST_MESSAGE_ERROR | GST_MESSAGE_WARNING, -1);
 
     switch (GST_MESSAGE_TYPE (msg)) {
-      case GST_MESSAGE_STATE_CHANGED:
-        if (GST_MESSAGE_SRC (msg) == (GstObject *) bin) {
-          GstState old_state, new_state;
-          GstClockTime end;
-
-          gst_message_parse_state_changed (msg, &old_state, &new_state, NULL);
-
-          end = gst_util_get_timestamp ();
-          g_print ("%" GST_TIME_FORMAT " state change on the bin: %s -> %s\n",
-              GST_TIME_ARGS (end - start),
-              gst_element_state_get_name (old_state),
-              gst_element_state_get_name (new_state));
-
-          if (old_state == GST_STATE_READY && new_state == GST_STATE_PAUSED) {
-            running = FALSE;
-          }
-        }
+      case GST_MESSAGE_ASYNC_DONE:
+        running = FALSE;
         break;
       case GST_MESSAGE_WARNING:{
         GError *err = NULL;
@@ -195,52 +181,49 @@ event_loop (GstElement * bin, GstClockTime start)
   gst_object_unref (bus);
 }
 
-
 gint
 main (gint argc, gchar * argv[])
 {
+  /* default parameters */
+  const gchar *flavour_str = "audio";
+  gint flavour = FLAVOUR_AUDIO;
+  gint children = 3;
+  gint depth = 4;
+  gint loops = 50;
+
+  GOptionContext *ctx;
+  GOptionEntry options[] = {
+    {"children", 'c', 0, G_OPTION_ARG_INT, &children,
+        "Number of children (branches on each level) (default: 3)", NULL},
+    {"depth", 'd', 0, G_OPTION_ARG_INT, &depth,
+        "Depth of pipeline hierarchy tree (default: 4)", NULL},
+    {"flavour", 'f', 0, G_OPTION_ARG_STRING, &flavour_str,
+        "Flavour (video|audio) controlling the kind of elements used "
+          "(default: audio)", NULL},
+    {"loops", 'l', 0, G_OPTION_ARG_INT, &loops,
+        "How many loops to run (default: 50)", NULL},
+    {NULL}
+  };
+  GError *err = NULL;
   GstBin *bin;
   GstClockTime start, end;
   GstElement *sink, *new_sink;
+  gint i;
 
-  /* default parameters */
-  gint depth = 4;
-  gint children = 3;
-  gint flavour = FLAVOUR_AUDIO;
-  const gchar *flavour_str = "audio";
-
-  gst_init (&argc, &argv);
+  g_set_prgname ("capsnego");
 
   /* check command line options */
-  if (argc) {
-    gint arg;
-    for (arg = 0; arg < argc; arg++) {
-      if (!strcmp (argv[arg], "-d")) {
-        arg++;
-        if (arg < argc)
-          depth = atoi (argv[arg]);
-      } else if (!strcmp (argv[arg], "-c")) {
-        arg++;
-        if (arg < argc)
-          children = atoi (argv[arg]);
-      } else if (!strcmp (argv[arg], "-f")) {
-        arg++;
-        if (arg < argc) {
-          flavour_str = argv[arg];
-          switch (*flavour_str) {
-            case 'a':
-              flavour = FLAVOUR_AUDIO;
-              break;
-            case 'v':
-              flavour = FLAVOUR_VIDEO;
-              break;
-            default:
-              break;
-          }
-        }
-      }
-    }
+  ctx = g_option_context_new ("");
+  g_option_context_add_main_entries (ctx, options, NULL);
+  g_option_context_add_group (ctx, gst_init_get_option_group ());
+  if (!g_option_context_parse (ctx, &argc, &argv, &err)) {
+    g_print ("Error initializing: %s\n", GST_STR_NULL (err->message));
+    return 1;
   }
+  g_option_context_free (ctx);
+
+  if (strcmp (flavour_str, "video") == 0)
+    flavour = FLAVOUR_VIDEO;
 
   /* build pipeline */
   g_print ("building %s pipeline with depth = %d and children = %d\n",
@@ -264,13 +247,16 @@ main (gint argc, gchar * argv[])
   g_print ("starting pipeline\n");
   gst_element_set_state (GST_ELEMENT (bin), GST_STATE_READY);
   GST_DEBUG_BIN_TO_DOT_FILE (bin, GST_DEBUG_GRAPH_SHOW_MEDIA_TYPE, "capsnego");
-  start = gst_util_get_timestamp ();
-  gst_element_set_state (GST_ELEMENT (bin), GST_STATE_PAUSED);
-  event_loop (GST_ELEMENT (bin), start);
-  end = gst_util_get_timestamp ();
-  g_print ("%" GST_TIME_FORMAT " reached paused\n",
-      GST_TIME_ARGS (end - start));
 
+  start = gst_util_get_timestamp ();
+  for (i = 0; i < loops; ++i) {
+    gst_element_set_state (GST_ELEMENT (bin), GST_STATE_PAUSED);
+    event_loop (GST_ELEMENT (bin));
+    gst_element_set_state (GST_ELEMENT (bin), GST_STATE_READY);
+  }
+  end = gst_util_get_timestamp ();
+  g_print ("%" GST_TIME_FORMAT " reached PAUSED state (%d loop iterations)\n",
+      GST_TIME_ARGS (end - start), loops);
   /* clean up */
 Error:
   gst_element_set_state (GST_ELEMENT (bin), GST_STATE_NULL);

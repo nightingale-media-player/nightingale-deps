@@ -71,12 +71,16 @@ libgstreamer_@GST_API_VERSION@_la_SOURCES = \
 	gstcontrolsource.c \
 	gstdatetime.c		\
 	gstdebugutils.c		\
+	gstdevice.c		\
+	gstdeviceprovider.c	\
+	gstdeviceproviderfactory.c \
 	gstelement.c		\
 	gstelementfactory.c	\
 	gsterror.c		\
 	gstevent.c		\
 	gstformat.c		\
 	gstghostpad.c		\
+	gstdevicemonitor.c 	\
 	gstinfo.c		\
 	gstiterator.c		\
 	gstatomicqueue.c	\
@@ -172,11 +176,15 @@ gst_headers =			\
 	gstdebugutils.h		\
 	gstelement.h		\
 	gstelementmetadata.h	\
+	gstdevice.h		\
+	gstdeviceprovider.h	\
+	gstdeviceproviderfactory.h \
 	gstelementfactory.h	\
 	gsterror.h		\
 	gstevent.h		\
 	gstformat.h		\
 	gstghostpad.h		\
+	gstdevicemonitor.h 	\
 	gstinfo.h		\
 	gstiterator.h		\
 	gstatomicqueue.h	\
@@ -274,6 +282,7 @@ BUILT_GIRSOURCES = Gst-@GST_API_VERSION@.gir
 
 gir_headers=$(patsubst %,$(srcdir)/%, $(libgstreamer_@GST_API_VERSION@include_HEADERS))
 gir_headers+=$(patsubst %,$(builddir)/%, $(built_header_make))
+gir_headers+=$(patsubst %,$(builddir)/%, gstversion.h)
 gir_sources=$(patsubst %,$(srcdir)/%, $(libgstreamer_@GST_API_VERSION@_la_SOURCES))
 gir_sources+=$(patsubst %,$(builddir)/%, $(built_source_make))
 
@@ -290,7 +299,7 @@ Gst-@GST_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libgstreamer-@GST_API_VERSIO
 		--include=GLib-2.0 \
 		--include=GObject-2.0 \
 		--include=GModule-2.0 \
-		--libtool="$(top_builddir)/libtool" \
+		--libtool="${LIBTOOL}" \
 		--pkg glib-2.0 \
 		--pkg gobject-2.0 \
 		--pkg gmodule-no-export-2.0 \

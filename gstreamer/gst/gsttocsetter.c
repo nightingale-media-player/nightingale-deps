@@ -128,8 +128,8 @@ gst_toc_setter_reset (GstTocSetter * setter)
  * modified without making it writable first.
  *
  *
- * Returns: (transfer full): TOC set, or NULL. Unref with gst_toc_unref()
- *     when no longer needed
+ * Returns: (transfer full) (nullable): TOC set, or %NULL. Unref with
+ *     gst_toc_unref() when no longer needed
  */
 GstToc *
 gst_toc_setter_get_toc (GstTocSetter * setter)
@@ -155,8 +155,8 @@ gst_toc_setter_get_toc (GstTocSetter * setter)
  * @setter: a #GstTocSetter.
  * @toc: (allow-none): a #GstToc to set.
  *
- * Set the given TOC on the setter. Previously setted TOC will be
- * unrefed before setting a new one.
+ * Set the given TOC on the setter. Previously set TOC will be
+ * unreffed before setting a new one.
  */
 void
 gst_toc_setter_set_toc (GstTocSetter * setter, GstToc * toc)

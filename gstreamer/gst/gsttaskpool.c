@@ -28,8 +28,6 @@
  * implementation uses a regular GThreadPool to start tasks.
  *
  * Subclasses can be made to create custom threads.
- *
- * Last reviewed on 2009-04-23 (0.10.24)
  */
 
 #include "gst_private.h"
@@ -141,6 +139,8 @@ gst_task_pool_class_init (GstTaskPoolClass * klass)
 static void
 gst_task_pool_init (GstTaskPool * pool)
 {
+  /* clear floating flag */
+  gst_object_ref_sink (pool);
 }
 
 #ifndef GST_DISABLE_GST_DEBUG
@@ -223,9 +223,9 @@ gst_task_pool_cleanup (GstTaskPool * pool)
  *
  * Start the execution of a new thread from @pool.
  *
- * Returns: (transfer none): a pointer that should be used for the
- * gst_task_pool_join function. This pointer can be NULL, you must
- * check @error to detect errors.
+ * Returns: (transfer none) (nullable): a pointer that should be used
+ * for the gst_task_pool_join function. This pointer can be %NULL, you
+ * must check @error to detect errors.
  */
 gpointer
 gst_task_pool_push (GstTaskPool * pool, GstTaskPoolFunction func,

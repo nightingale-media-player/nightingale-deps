@@ -51,9 +51,7 @@
  * construct and use seek events.
  * To do that gst_event_new_seek() is used to create a seek event. It takes
  * the needed parameters to specify seeking time and mode.
- * <example>
- * <title>performing a seek on a pipeline</title>
- *   <programlisting>
+ * |[
  *   GstEvent *event;
  *   gboolean result;
  *   ...
@@ -69,10 +67,7 @@
  *   if (!result)
  *     g_warning ("seek failed");
  *   ...
- *   </programlisting>
- * </example>
- *
- * Last reviewed on 2012-03-28 (0.11.3)
+ * ]|
  */
 
 
@@ -93,6 +88,7 @@ typedef struct
   GstEvent event;
 
   GstStructure *structure;
+  gint64 running_time_offset;
 } GstEventImpl;
 
 #define GST_EVENT_STRUCTURE(e)  (((GstEventImpl *)(e))->structure)
@@ -254,6 +250,10 @@ _gst_event_copy (GstEvent * event)
   } else {
     GST_EVENT_STRUCTURE (copy) = NULL;
   }
+
+  ((GstEventImpl *) copy)->running_time_offset =
+      ((GstEventImpl *) event)->running_time_offset;
+
   return GST_EVENT_CAST (copy);
 }
 
@@ -267,6 +267,7 @@ gst_event_init (GstEventImpl * event, GstEventType type)
   GST_EVENT_TYPE (event) = type;
   GST_EVENT_TIMESTAMP (event) = GST_CLOCK_TIME_NONE;
   GST_EVENT_SEQNUM (event) = gst_util_seqnum_next ();
+  event->running_time_offset = 0;
 }
 
 
@@ -347,10 +348,11 @@ gst_event_get_structure (GstEvent * event)
  *
  * Get a writable version of the structure.
  *
- * Returns: The structure of the event. The structure is still
- * owned by the event, which means that you should not free it and
- * that the pointer becomes invalid when you free the event.
- * This function checks if @event is writable and will never return NULL.
+ * Returns: (transfer none): The structure of the event. The structure
+ * is still owned by the event, which means that you should not free
+ * it and that the pointer becomes invalid when you free the event.
+ * This function checks if @event is writable and will never return
+ * %NULL.
  *
  * MT safe.
  */
@@ -446,6 +448,54 @@ gst_event_set_seqnum (GstEvent * event, guint32 seqnum)
 }
 
 /**
+ * gst_event_get_running_time_offset:
+ * @event: A #GstEvent.
+ *
+ * Retrieve the accumulated running time offset of the event.
+ *
+ * Events passing through #GstPads that have a running time
+ * offset set via gst_pad_set_offset() will get their offset
+ * adjusted according to the pad's offset.
+ *
+ * If the event contains any information that related to the
+ * running time, this information will need to be updated
+ * before usage with this offset.
+ *
+ * Returns: The event's running time offset
+ *
+ * MT safe.
+ *
+ * Since: 1.4
+ */
+gint64
+gst_event_get_running_time_offset (GstEvent * event)
+{
+  g_return_val_if_fail (GST_IS_EVENT (event), 0);
+
+  return ((GstEventImpl *) event)->running_time_offset;
+}
+
+/**
+ * gst_event_set_running_time_offset:
+ * @event: A #GstEvent.
+ * @offset: A the new running time offset
+ *
+ * Set the running time offset of a event. See
+ * gst_event_get_running_time_offset() for more information.
+ *
+ * MT safe.
+ *
+ * Since: 1.4
+ */
+void
+gst_event_set_running_time_offset (GstEvent * event, gint64 offset)
+{
+  g_return_if_fail (GST_IS_EVENT (event));
+
+  ((GstEventImpl *) event)->running_time_offset = offset;
+}
+
+/**
  * gst_event_new_flush_start:
  *
  * Allocate a new flush start event. The flush start event can be sent
@@ -481,7 +531,7 @@ gst_event_new_flush_start (void)
  * pads accept data again.
  *
  * Elements can process this event synchronized with the dataflow since
- * the preceeding FLUSH_START event stopped the dataflow.
+ * the preceding FLUSH_START event stopped the dataflow.
  *
  * This event is typically generated to complete a seek and to resume
  * dataflow.
@@ -934,7 +984,7 @@ gst_event_parse_buffer_size (GstEvent * event, GstFormat * format,
  * increasing value.
  *
  * The upstream element can use the @diff and @timestamp values to decide
- * whether to process more buffers. For possitive @diff, all buffers with
+ * whether to process more buffers. For positive @diff, all buffers with
  * timestamp <= @timestamp + @diff will certainly arrive late in the sink
  * as well. A (negative) @diff value so that @timestamp + @diff would yield a
  * result smaller than 0 is not allowed.
@@ -979,6 +1029,8 @@ gst_event_new_qos (GstQOSType type, gdouble proportion,
  *
  * Get the type, proportion, diff and timestamp in the qos event. See
  * gst_event_new_qos() for more information about the different QoS values.
+ *
+ * @timestamp will be adjusted for any pad offsets of pads it was passing through.
  */
 void
 gst_event_parse_qos (GstEvent * event, GstQOSType * type,
@@ -1002,10 +1054,18 @@ gst_event_parse_qos (GstEvent * event, GstQOSType * type,
     *diff =
         g_value_get_int64 (gst_structure_id_get_value (structure,
             GST_QUARK (DIFF)));
-  if (timestamp)
+  if (timestamp) {
+    gint64 offset = gst_event_get_running_time_offset (event);
+
     *timestamp =
         g_value_get_uint64 (gst_structure_id_get_value (structure,
             GST_QUARK (TIMESTAMP)));
+    /* Catch underflows */
+    if (*timestamp > -offset)
+      *timestamp += offset;
+    else
+      *timestamp = 0;
+  }
 }
 
 /**
@@ -1097,9 +1157,9 @@ gst_event_new_seek (gdouble rate, GstFormat format, GstSeekFlags flags,
  * @format: (out): result location for the stream format
  * @flags:  (out): result location for the #GstSeekFlags
  * @start_type: (out): result location for the #GstSeekType of the start position
- * @start: (out): result location for the start postion expressed in @format
+ * @start: (out): result location for the start position expressed in @format
  * @stop_type:  (out): result location for the #GstSeekType of the stop position
- * @stop: (out): result location for the stop postion expressed in @format
+ * @stop: (out): result location for the stop position expressed in @format
  *
  * Parses a seek @event and stores the results in the given result locations.
  */
@@ -1298,7 +1358,7 @@ gst_event_parse_step (GstEvent * event, GstFormat * format, guint64 * amount,
 /**
  * gst_event_new_reconfigure:
 
- * Create a new reconfigure event. The purpose of the reconfingure event is
+ * Create a new reconfigure event. The purpose of the reconfigure event is
  * to travel upstream and make elements renegotiate their caps or reconfigure
  * their buffer pools. This is useful when changing properties on elements
  * or changing the topology of the pipeline.
@@ -1660,8 +1720,8 @@ gst_event_new_segment_done (GstFormat format, gint64 position)
 /**
  * gst_event_parse_segment_done:
  * @event: A valid #GstEvent of type GST_EVENT_SEGMENT_DONE.
- * @format: (out) (allow-none): Result location for the format, or NULL
- * @position: (out) (allow-none): Result location for the position, or NULL
+ * @format: (out) (allow-none): Result location for the format, or %NULL
+ * @position: (out) (allow-none): Result location for the position, or %NULL
  *
  * Extracts the position and format from the segment done message.
  *

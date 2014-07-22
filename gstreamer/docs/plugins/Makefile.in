@@ -105,7 +105,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-docbook.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -498,6 +497,7 @@ IGNORE_CFILES =
 # the registry won't have the element
 EXTRA_HFILES = \
 	$(top_srcdir)/plugins/elements/gstcapsfilter.h \
+	$(top_srcdir)/plugins/elements/gstdownloadbuffer.h \
 	$(top_srcdir)/plugins/elements/gstfakesrc.h \
 	$(top_srcdir)/plugins/elements/gstfakesink.h \
 	$(top_srcdir)/plugins/elements/gstfdsink.h \

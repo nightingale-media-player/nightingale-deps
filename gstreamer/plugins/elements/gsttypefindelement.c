@@ -22,7 +22,7 @@
  * SECTION:element-typefind
  *
  * Determines the media-type of a stream. It applies typefind functions in the
- * order of their rank. One the type has been deteted it sets its src pad caps
+ * order of their rank. Once the type has been detected it sets its src pad caps
  * to the found media type.
  *
  * Whenever a type is found the #GstTypeFindElement::have-type signal is
@@ -540,6 +540,7 @@ stop_typefinding (GstTypeFindElement * typefind)
   gboolean push_cached_buffers;
   gsize avail;
   GstBuffer *buffer;
+  GstClockTime pts, dts;
 
   gst_element_get_state (GST_ELEMENT (typefind), &state, NULL, 0);
 
@@ -557,7 +558,11 @@ stop_typefinding (GstTypeFindElement * typefind)
   if (avail == 0)
     goto no_data;
 
+  pts = gst_adapter_prev_pts (typefind->adapter, NULL);
+  dts = gst_adapter_prev_dts (typefind->adapter, NULL);
   buffer = gst_adapter_take_buffer (typefind->adapter, avail);
+  GST_BUFFER_PTS (buffer) = pts;
+  GST_BUFFER_DTS (buffer) = dts;
   GST_OBJECT_UNLOCK (typefind);
 
   if (!push_cached_buffers) {
@@ -642,15 +647,27 @@ gst_type_find_element_sink_event (GstPad * pad, GstObject * parent,
           res = gst_pad_push_event (typefind->src, event);
           break;
         }
-        case GST_EVENT_FLUSH_STOP:
+        case GST_EVENT_FLUSH_STOP:{
+          GList *l;
+
           GST_OBJECT_LOCK (typefind);
-          g_list_foreach (typefind->cached_events,
-              (GFunc) gst_mini_object_unref, NULL);
+
+          for (l = typefind->cached_events; l; l = l->next) {
+            if (!GST_EVENT_IS_STICKY (l->data) ||
+                GST_EVENT_TYPE (l->data) == GST_EVENT_SEGMENT ||
+                GST_EVENT_TYPE (l->data) == GST_EVENT_EOS) {
+              gst_event_unref (l->data);
+            } else {
+              gst_pad_store_sticky_event (typefind->src, l->data);
+            }
+          }
+
           g_list_free (typefind->cached_events);
           typefind->cached_events = NULL;
           gst_adapter_clear (typefind->adapter);
           GST_OBJECT_UNLOCK (typefind);
           /* fall through */
+        }
         case GST_EVENT_FLUSH_START:
           res = gst_pad_push_event (typefind->src, event);
           break;

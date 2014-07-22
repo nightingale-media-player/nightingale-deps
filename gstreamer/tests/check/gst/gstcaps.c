@@ -335,6 +335,41 @@ GST_START_TEST (test_subset)
 
 GST_END_TEST;
 
+GST_START_TEST (test_subset_duplication)
+{
+  GstCaps *c1, *c2;
+
+  c1 = gst_caps_from_string ("audio/x-raw, format=(string)F32LE");
+  c2 = gst_caps_from_string ("audio/x-raw, format=(string)F32LE");
+
+  fail_unless (gst_caps_is_subset (c1, c2));
+  fail_unless (gst_caps_is_subset (c2, c1));
+
+  gst_caps_unref (c2);
+  c2 = gst_caps_from_string ("audio/x-raw, format=(string){ F32LE }");
+
+  fail_unless (gst_caps_is_subset (c1, c2));
+  fail_unless (gst_caps_is_subset (c2, c1));
+
+  gst_caps_unref (c2);
+  c2 = gst_caps_from_string ("audio/x-raw, format=(string){ F32LE, F32LE }");
+
+  fail_unless (gst_caps_is_subset (c1, c2));
+  fail_unless (gst_caps_is_subset (c2, c1));
+
+  gst_caps_unref (c2);
+  c2 = gst_caps_from_string
+      ("audio/x-raw, format=(string){ F32LE, F32LE, F32LE }");
+
+  fail_unless (gst_caps_is_subset (c1, c2));
+  fail_unless (gst_caps_is_subset (c2, c1));
+
+  gst_caps_unref (c1);
+  gst_caps_unref (c2);
+}
+
+GST_END_TEST;
+
 GST_START_TEST (test_merge_fundamental)
 {
   GstCaps *c1, *c2;
@@ -1079,10 +1114,52 @@ GST_START_TEST (test_features)
   gst_caps_unref (c3);
   gst_caps_unref (c2);
   gst_caps_unref (c1);
+
+  c1 = gst_caps_from_string ("video/x-raw");
+  c2 = gst_caps_from_string ("video/x-raw");
+
+  f1 = gst_caps_get_features (c1, 0);
+  gst_caps_features_add (f1, "memory:VASurface");
+
+  fail_unless (gst_caps_features_is_equal (f1, gst_caps_get_features (c1, 0)));
+
+  f2 = gst_caps_get_features (c2, 0);
+  fail_unless (gst_caps_features_is_equal
+      (GST_CAPS_FEATURES_MEMORY_SYSTEM_MEMORY, f2));
+
+  gst_caps_unref (c2);
+  gst_caps_unref (c1);
+
+  c1 = gst_caps_from_string ("video/x-raw");
+  f1 = gst_caps_get_features (c1, 0);
+  f2 = gst_caps_features_new ("memory:dmabuf", NULL);
+  gst_caps_set_features (c1, 0, f2);
+
+  gst_caps_unref (c1);
 }
 
 GST_END_TEST;
 
+GST_START_TEST (test_special_caps)
+{
+  GstCaps *caps;
+
+  caps = gst_caps_new_any ();
+  fail_unless (gst_caps_is_any (caps));
+  fail_unless (gst_caps_is_any (caps) == TRUE);
+  fail_if (gst_caps_is_empty (caps));
+  fail_unless (gst_caps_is_empty (caps) == FALSE);
+  gst_caps_unref (caps);
+
+  caps = gst_caps_new_empty ();
+  fail_if (gst_caps_is_any (caps));
+  fail_unless (gst_caps_is_any (caps) == FALSE);
+  fail_unless (gst_caps_is_empty (caps));
+  fail_unless (gst_caps_is_empty (caps) == TRUE);
+  gst_caps_unref (caps);
+}
+
+GST_END_TEST;
 static Suite *
 gst_caps_suite (void)
 {
@@ -1097,6 +1174,7 @@ gst_caps_suite (void)
   tcase_add_test (tc_chain, test_simplify);
   tcase_add_test (tc_chain, test_truncate);
   tcase_add_test (tc_chain, test_subset);
+  tcase_add_test (tc_chain, test_subset_duplication);
   tcase_add_test (tc_chain, test_merge_fundamental);
   tcase_add_test (tc_chain, test_merge_same);
   tcase_add_test (tc_chain, test_merge_subset);
@@ -1110,6 +1188,7 @@ gst_caps_suite (void)
   tcase_add_test (tc_chain, test_normalize);
   tcase_add_test (tc_chain, test_broken);
   tcase_add_test (tc_chain, test_features);
+  tcase_add_test (tc_chain, test_special_caps);
 
   return s;
 }

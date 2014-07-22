@@ -43,12 +43,12 @@ typedef struct _GstDataQueueItem GstDataQueueItem;
 typedef struct _GstDataQueuePrivate GstDataQueuePrivate;
 
 /**
- * GstDataQueueItem:
+ * GstDataQueueItem: (skip)
  * @object: the #GstMiniObject to queue.
  * @size: the size in bytes of the miniobject.
  * @duration: the duration in #GstClockTime of the miniobject. Can not be
- * #GST_CLOCK_TIME_NONE.
- * @visible: #TRUE if @object should be considered as a visible object.
+ * %GST_CLOCK_TIME_NONE.
+ * @visible: %TRUE if @object should be considered as a visible object.
  * @destroy: The #GDestroyNotify function to use to free the #GstDataQueueItem.
  * This function should also drop the reference to @object the owner of the
  * #GstDataQueueItem is assumed to hold.
@@ -72,7 +72,7 @@ struct _GstDataQueueItem
 };
 
 /**
- * GstDataQueueSize:
+ * GstDataQueueSize: (skip)
  * @visible: number of buffers
  * @bytes: number of bytes
  * @time: amount of time
@@ -87,7 +87,7 @@ struct _GstDataQueueSize
 };
 
 /**
- * GstDataQueueCheckFullFunction:
+ * GstDataQueueCheckFullFunction: (skip)
  * @queue: a #GstDataQueue.
  * @visible: The number of visible items currently in the queue.
  * @bytes: The amount of bytes currently in the queue.
@@ -97,7 +97,7 @@ struct _GstDataQueueSize
  * The prototype of the function used to inform the queue that it should be
  * considered as full.
  *
- * Returns: #TRUE if the queue should be considered full.
+ * Returns: %TRUE if the queue should be considered full.
  */
 typedef gboolean (*GstDataQueueCheckFullFunction) (GstDataQueue * queue,
     guint visible, guint bytes, guint64 time, gpointer checkdata);
@@ -106,7 +106,7 @@ typedef void (*GstDataQueueFullCallback) (GstDataQueue * queue, gpointer checkda
 typedef void (*GstDataQueueEmptyCallback) (GstDataQueue * queue, gpointer checkdata);
 
 /**
- * GstDataQueue:
+ * GstDataQueue: (skip)
  * @object: the parent structure
  *
  * Opaque #GstDataQueue structure.
@@ -120,6 +120,9 @@ struct _GstDataQueue
   gpointer _gst_reserved[GST_PADDING];
 };
 
+/**
+ * GstDataQueueClass: (skip)
+ */
 struct _GstDataQueueClass
 {
   GObjectClass parent_class;

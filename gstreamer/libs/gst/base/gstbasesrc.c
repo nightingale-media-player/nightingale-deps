@@ -25,7 +25,7 @@
  * @short_description: Base class for getrange based source elements
  * @see_also: #GstPushSrc, #GstBaseTransform, #GstBaseSink
  *
- * This is a generice base class for source elements. The following
+ * This is a generic base class for source elements. The following
  * types of sources are supported:
  * <itemizedlist>
  *   <listitem><para>random access sources like files</para></listitem>
@@ -35,13 +35,13 @@
  *
  * The source can be configured to operate in any #GstFormat with the
  * gst_base_src_set_format() method. The currently set format determines
- * the format of the internal #GstSegment and any #GST_EVENT_SEGMENT
- * events. The default format for #GstBaseSrc is #GST_FORMAT_BYTES.
+ * the format of the internal #GstSegment and any %GST_EVENT_SEGMENT
+ * events. The default format for #GstBaseSrc is %GST_FORMAT_BYTES.
  *
  * #GstBaseSrc always supports push mode scheduling. If the following
  * conditions are met, it also supports pull mode scheduling:
  * <itemizedlist>
- *   <listitem><para>The format is set to #GST_FORMAT_BYTES (default).</para>
+ *   <listitem><para>The format is set to %GST_FORMAT_BYTES (default).</para>
  *   </listitem>
  *   <listitem><para>#GstBaseSrcClass.is_seekable() returns %TRUE.</para>
  *   </listitem>
@@ -50,7 +50,7 @@
  * If all the conditions are met for operating in pull mode, #GstBaseSrc is
  * automatically seekable in push mode as well. The following conditions must
  * be met to make the element seekable in push mode when the format is not
- * #GST_FORMAT_BYTES:
+ * %GST_FORMAT_BYTES:
  * <itemizedlist>
  *   <listitem><para>
  *     #GstBaseSrcClass.is_seekable() returns %TRUE.
@@ -82,7 +82,7 @@
  * #GstBaseSrcClass.create() method will not be called in PAUSED but only in
  * PLAYING. To signal the pipeline that the element will not produce data, the
  * return value from the READY to PAUSED state will be
- * #GST_STATE_CHANGE_NO_PREROLL.
+ * %GST_STATE_CHANGE_NO_PREROLL.
  *
  * A typical live source will timestamp the buffers it creates with the
  * current running time of the pipeline. This is one reason why a live source
@@ -118,7 +118,7 @@
  * {
  *   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
  *   // srctemplate should be a #GstStaticPadTemplate with direction
- *   // #GST_PAD_SRC and name "src"
+ *   // %GST_PAD_SRC and name "src"
  *   gst_element_class_add_pad_template (gstelement_class,
  *       gst_static_pad_template_get (&amp;srctemplate));
  *
@@ -144,14 +144,12 @@
  *
  * An application may send an EOS event to a source element to make it
  * perform the EOS logic (send EOS event downstream or post a
- * #GST_MESSAGE_SEGMENT_DONE on the bus). This can typically be done
+ * %GST_MESSAGE_SEGMENT_DONE on the bus). This can typically be done
  * with the gst_element_send_event() function on the element or its parent bin.
  *
  * After the EOS has been sent to the element, the application should wait for
  * an EOS message to be posted on the pipeline's bus. Once this EOS message is
  * received, it may safely shut down the entire pipeline.
- *
- * Last reviewed on 2007-12-19 (0.10.16)
  * </para>
  * </refsect2>
  */
@@ -187,6 +185,12 @@ GST_DEBUG_CATEGORY_STATIC (gst_base_src_debug);
 #define GST_ASYNC_GET_COND(elem)              (&GST_BASE_SRC_CAST(elem)->priv->async_cond)
 #define GST_ASYNC_WAIT(elem)                  g_cond_wait (GST_ASYNC_GET_COND (elem), GST_OBJECT_GET_LOCK (elem))
 #define GST_ASYNC_SIGNAL(elem)                g_cond_signal (GST_ASYNC_GET_COND (elem));
+
+#define CLEAR_PENDING_EOS(bsrc) \
+  G_STMT_START { \
+    g_atomic_int_set (&bsrc->priv->has_pending_eos, FALSE); \
+    gst_event_replace (&bsrc->priv->pending_eos, NULL); \
+  } G_STMT_END
 
 
 /* BaseSrc signals and args */
@@ -230,7 +234,11 @@ struct _GstBaseSrcPrivate
   guint32 segment_seqnum;
 
   /* if EOS is pending (atomic) */
-  gint pending_eos;
+  GstEvent *pending_eos;
+  gint has_pending_eos;
+
+  /* if the eos was caused by a forced eos from the application */
+  gboolean forced_eos;
 
   /* startup latency is the time it takes between going to PLAYING and producing
    * the first BUFFER with running_time 0. This value is included in the latency
@@ -242,6 +250,7 @@ struct _GstBaseSrcPrivate
 
   gboolean do_timestamp;
   volatile gint dynamic_size;
+  volatile gint automatic_eos;
 
   /* stream sequence number */
   guint32 seqnum;
@@ -425,6 +434,7 @@ gst_base_src_init (GstBaseSrc * basesrc, gpointer g_class)
   g_cond_init (&basesrc->live_cond);
   basesrc->num_buffers = DEFAULT_NUM_BUFFERS;
   basesrc->num_buffers_left = -1;
+  basesrc->priv->automatic_eos = TRUE;
 
   basesrc->can_activate_push = TRUE;
 
@@ -496,11 +506,11 @@ gst_base_src_finalize (GObject * object)
  * and call this method before continuing to produce the remaining data.
  *
  * This function will block until a state change to PLAYING happens (in which
- * case this function returns #GST_FLOW_OK) or the processing must be stopped due
+ * case this function returns %GST_FLOW_OK) or the processing must be stopped due
  * to a state change to READY or a FLUSH event (in which case this function
- * returns #GST_FLOW_FLUSHING).
+ * returns %GST_FLOW_FLUSHING).
  *
- * Returns: #GST_FLOW_OK if @src is PLAYING and processing can
+ * Returns: %GST_FLOW_OK if @src is PLAYING and processing can
  * continue. Any other return value should be returned from the create vmethod.
  */
 GstFlowReturn
@@ -582,7 +592,7 @@ gst_base_src_is_live (GstBaseSrc * src)
  * for sending SEGMENT events and for performing seeks.
  *
  * If a format of GST_FORMAT_BYTES is set, the element will be able to
- * operate in pull mode if the #GstBaseSrcClass.is_seekable() returns TRUE.
+ * operate in pull mode if the #GstBaseSrcClass.is_seekable() returns %TRUE.
  *
  * This function must only be called in states < %GST_STATE_PAUSED.
  */
@@ -612,6 +622,26 @@ gst_base_src_set_dynamic_size (GstBaseSrc * src, gboolean dynamic)
   g_return_if_fail (GST_IS_BASE_SRC (src));
 
   g_atomic_int_set (&src->priv->dynamic_size, dynamic);
+}
+
+/**
+ * gst_base_src_set_automatic_eos:
+ * @src: base source instance
+ * @automatic_eos: automatic eos
+ *
+ * If @automatic_eos is %TRUE, @src will automatically go EOS if a buffer
+ * after the total size is returned. By default this is %TRUE but sources
+ * that can't return an authoritative size and only know that they're EOS
+ * when trying to read more should set this to %FALSE.
+ *
+ * Since: 1.4
+ */
+void
+gst_base_src_set_automatic_eos (GstBaseSrc * src, gboolean automatic_eos)
+{
+  g_return_if_fail (GST_IS_BASE_SRC (src));
+
+  g_atomic_int_set (&src->priv->automatic_eos, automatic_eos);
 }
 
 /**
@@ -664,14 +694,14 @@ gst_base_src_is_async (GstBaseSrc * src)
  * @min_latency: (out) (allow-none): the min latency of the source
  * @max_latency: (out) (allow-none): the max latency of the source
  *
- * Query the source for the latency parameters. @live will be TRUE when @src is
+ * Query the source for the latency parameters. @live will be %TRUE when @src is
  * configured as a live source. @min_latency will be set to the difference
  * between the running time and the timestamp of the first buffer.
  * @max_latency is always the undefined value of -1.
  *
  * This function is mostly used by subclasses.
  *
- * Returns: TRUE if the query succeeded.
+ * Returns: %TRUE if the query succeeded.
  */
 gboolean
 gst_base_src_query_latency (GstBaseSrc * src, gboolean * live,
@@ -763,6 +793,8 @@ gst_base_src_set_do_timestamp (GstBaseSrc * src, gboolean timestamp)
 
   GST_OBJECT_LOCK (src);
   src->priv->do_timestamp = timestamp;
+  if (timestamp && src->segment.format != GST_FORMAT_TIME)
+    gst_segment_init (&src->segment, GST_FORMAT_TIME);
   GST_OBJECT_UNLOCK (src);
 }
 
@@ -793,7 +825,7 @@ gst_base_src_get_do_timestamp (GstBaseSrc * src)
  * @src: The source
  * @start: The new start value for the segment
  * @stop: Stop value for the new segment
- * @time: The new time value for the start of the new segent
+ * @time: The new time value for the start of the new segment
  *
  * Prepare a new seamless segment for emission downstream. This function must
  * only be called by derived sub-classes, and only from the create() function,
@@ -1727,7 +1759,12 @@ gst_base_src_send_event (GstElement * element, GstEvent * event)
       GST_LIVE_LOCK (src);
       src->priv->flushing = TRUE;
       /* clear pending EOS if any */
-      g_atomic_int_set (&src->priv->pending_eos, FALSE);
+      if (g_atomic_int_get (&src->priv->has_pending_eos)) {
+        GST_OBJECT_LOCK (src);
+        CLEAR_PENDING_EOS (src);
+        src->priv->forced_eos = FALSE;
+        GST_OBJECT_UNLOCK (src);
+      }
       if (bclass->unlock_stop)
         bclass->unlock_stop (src);
       if (src->clock_id)
@@ -1768,18 +1805,24 @@ gst_base_src_send_event (GstElement * element, GstEvent * event)
        *
        * We have two possibilities:
        *
-       *  - Before we are to enter the _create function, we check the pending_eos
+       *  - Before we are to enter the _create function, we check the has_pending_eos
        *    first and do EOS instead of entering it.
        *  - If we are in the _create function or we did not manage to set the
        *    flag fast enough and we are about to enter the _create function,
        *    we unlock it so that we exit with FLUSHING immediately. We then
        *    check the EOS flag and do the EOS logic.
        */
-      g_atomic_int_set (&src->priv->pending_eos, TRUE);
+      GST_OBJECT_LOCK (src);
+      g_atomic_int_set (&src->priv->has_pending_eos, TRUE);
+      if (src->priv->pending_eos)
+        gst_event_unref (src->priv->pending_eos);
+      src->priv->pending_eos = event;
+      event = NULL;
+      GST_OBJECT_UNLOCK (src);
+
       GST_DEBUG_OBJECT (src, "EOS marked, calling unlock");
 
-
-      /* unlock the _create function so that we can check the pending_eos flag
+      /* unlock the _create function so that we can check the has_pending_eos flag
        * and we can do EOS. This will eventually release the LIVE_LOCK again so
        * that we can grab it and stop the unlock again. We don't take the stream
        * lock so that this operation is guaranteed to never block. */
@@ -2185,7 +2228,11 @@ gst_base_src_do_sync (GstBaseSrc * basesrc, GstBuffer * buffer)
       if (do_timestamp) {
         dts = running_time;
       } else {
-        dts = 0;
+        if (GST_CLOCK_TIME_IS_VALID (basesrc->segment.start)) {
+          dts = basesrc->segment.start;
+        } else {
+          dts = 0;
+        }
       }
       GST_BUFFER_DTS (buffer) = dts;
 
@@ -2277,10 +2324,14 @@ gst_base_src_update_length (GstBaseSrc * src, guint64 offset, guint * length,
   if (format != GST_FORMAT_BYTES)
     return TRUE;
 
-  /* the max amount of bytes to read is the total size or
-   * up to the segment.stop if present. */
-  if (stop != -1)
-    maxsize = MIN (size, stop);
+  /* when not doing automatic EOS, just use the stop position. We don't use
+   * the size to check for EOS */
+  if (!g_atomic_int_get (&src->priv->automatic_eos))
+    maxsize = stop;
+  /* Otherwise, the max amount of bytes to read is the total
+   * size or up to the segment.stop if present. */
+  else if (stop != -1)
+    maxsize = size != -1 ? MIN (size, stop) : stop;
   else
     maxsize = size;
 
@@ -2317,8 +2368,8 @@ gst_base_src_update_length (GstBaseSrc * src, guint64 offset, guint * length,
     }
   }
 
-  /* keep track of current duration.
-   * segment is in bytes, we checked that above. */
+  /* keep track of current duration. segment is in bytes, we checked
+   * that above. */
   GST_OBJECT_LOCK (src);
   src->segment.duration = size;
   GST_OBJECT_UNLOCK (src);
@@ -2379,9 +2430,11 @@ again:
   }
 
   /* don't enter the create function if a pending EOS event was set. For the
-   * logic of the pending_eos, check the event function of this class. */
-  if (G_UNLIKELY (g_atomic_int_get (&src->priv->pending_eos)))
+   * logic of the has_pending_eos, check the event function of this class. */
+  if (G_UNLIKELY (g_atomic_int_get (&src->priv->has_pending_eos))) {
+    src->priv->forced_eos = TRUE;
     goto eos;
+  }
 
   GST_DEBUG_OBJECT (src,
       "calling create offset %" G_GUINT64_FORMAT " length %u, time %"
@@ -2394,11 +2447,12 @@ again:
   /* The create function could be unlocked because we have a pending EOS. It's
    * possible that we have a valid buffer from create that we need to
    * discard when the create function returned _OK. */
-  if (G_UNLIKELY (g_atomic_int_get (&src->priv->pending_eos))) {
+  if (G_UNLIKELY (g_atomic_int_get (&src->priv->has_pending_eos))) {
     if (ret == GST_FLOW_OK) {
       if (*buf == NULL)
         gst_buffer_unref (res_buf);
     }
+    src->priv->forced_eos = TRUE;
     goto eos;
   }
 
@@ -2628,10 +2682,12 @@ gst_base_src_loop (GstPad * pad)
   if (gst_pad_check_reconfigure (pad)) {
     if (!gst_base_src_negotiate (src)) {
       gst_pad_mark_reconfigure (pad);
-      if (GST_PAD_IS_FLUSHING (pad))
+      if (GST_PAD_IS_FLUSHING (pad)) {
+        GST_LIVE_LOCK (src);
         goto flushing;
-      else
+      } else {
         goto negotiate_failed;
+      }
     }
   }
 
@@ -2786,7 +2842,9 @@ gst_base_src_loop (GstPad * pad)
     goto pause;
   }
 
-  if (G_UNLIKELY (eos)) {
+  /* Segment pending means that a new segment was configured
+   * during this loop run */
+  if (G_UNLIKELY (eos && !src->priv->segment_pending)) {
     GST_INFO_OBJECT (src, "pausing after end of segment");
     ret = GST_FLOW_EOS;
     goto pause;
@@ -2831,12 +2889,19 @@ pause:
       GstFormat format;
       gint64 position;
 
-      /* perform EOS logic */
       flag_segment = (src->segment.flags & GST_SEGMENT_FLAG_SEGMENT) != 0;
       format = src->segment.format;
       position = src->segment.position;
 
-      if (flag_segment) {
+      /* perform EOS logic */
+      if (src->priv->forced_eos) {
+        g_assert (g_atomic_int_get (&src->priv->has_pending_eos));
+        GST_OBJECT_LOCK (src);
+        event = src->priv->pending_eos;
+        src->priv->pending_eos = NULL;
+        GST_OBJECT_UNLOCK (src);
+
+      } else if (flag_segment) {
         GstMessage *message;
 
         message = gst_message_new_segment_done (GST_OBJECT_CAST (src),
@@ -2845,12 +2910,15 @@ pause:
         gst_element_post_message (GST_ELEMENT_CAST (src), message);
         event = gst_event_new_segment_done (format, position);
         gst_event_set_seqnum (event, src->priv->seqnum);
-        gst_pad_push_event (pad, event);
+
       } else {
         event = gst_event_new_eos ();
         gst_event_set_seqnum (event, src->priv->seqnum);
-        gst_pad_push_event (pad, event);
       }
+
+      gst_pad_push_event (pad, event);
+      src->priv->forced_eos = FALSE;
+
     } else if (ret == GST_FLOW_NOT_LINKED || ret <= GST_FLOW_EOS) {
       event = gst_event_new_eos ();
       gst_event_set_seqnum (event, src->priv->seqnum);
@@ -2987,7 +3055,25 @@ gst_base_src_decide_allocation_default (GstBaseSrc * basesrc, GstQuery * query)
     config = gst_buffer_pool_get_config (pool);
     gst_buffer_pool_config_set_params (config, outcaps, size, min, max);
     gst_buffer_pool_config_set_allocator (config, allocator, &params);
-    gst_buffer_pool_set_config (pool, config);
+
+    /* buffer pool may have to do some changes */
+    if (!gst_buffer_pool_set_config (pool, config)) {
+      config = gst_buffer_pool_get_config (pool);
+
+      /* If change are not acceptable, fallback to generic pool */
+      if (!gst_buffer_pool_config_validate_params (config, outcaps, size, min,
+              max)) {
+        GST_DEBUG_OBJECT (basesrc, "unsuported pool, making new pool");
+
+        gst_object_unref (pool);
+        pool = gst_buffer_pool_new ();
+        gst_buffer_pool_config_set_params (config, outcaps, size, min, max);
+        gst_buffer_pool_config_set_allocator (config, allocator, &params);
+      }
+
+      if (!gst_buffer_pool_set_config (pool, config))
+        goto config_failed;
+    }
   }
 
   if (update_allocator)
@@ -3003,6 +3089,12 @@ gst_base_src_decide_allocation_default (GstBaseSrc * basesrc, GstQuery * query)
   }
 
   return TRUE;
+
+config_failed:
+  GST_ELEMENT_ERROR (basesrc, RESOURCE, SETTINGS,
+      ("Failed to configure the buffer pool"),
+      ("Configuration is most likely invalid, please report this issue."));
+  return FALSE;
 }
 
 static gboolean
@@ -3191,6 +3283,7 @@ gst_base_src_start (GstBaseSrc * basesrc)
   basesrc->running = FALSE;
   basesrc->priv->segment_pending = FALSE;
   basesrc->priv->segment_seqnum = gst_util_seqnum_next ();
+  basesrc->priv->forced_eos = FALSE;
   GST_LIVE_UNLOCK (basesrc);
 
   bclass = GST_BASE_SRC_GET_CLASS (basesrc);
@@ -3305,24 +3398,30 @@ gst_base_src_start_complete (GstBaseSrc * basesrc, GstFlowReturn ret)
   /* take the stream lock here, we only want to let the task run when we have
    * set the STARTED flag */
   GST_PAD_STREAM_LOCK (basesrc->srcpad);
-  if (mode == GST_PAD_MODE_PUSH) {
-    /* do initial seek, which will start the task */
-    GST_OBJECT_LOCK (basesrc);
-    event = basesrc->pending_seek;
-    basesrc->pending_seek = NULL;
-    GST_OBJECT_UNLOCK (basesrc);
+  switch (mode) {
+    case GST_PAD_MODE_PUSH:
+      /* do initial seek, which will start the task */
+      GST_OBJECT_LOCK (basesrc);
+      event = basesrc->pending_seek;
+      basesrc->pending_seek = NULL;
+      GST_OBJECT_UNLOCK (basesrc);
 
-    /* The perform seek code will start the task when finished. We don't have to
-     * unlock the streaming thread because it is not running yet */
-    if (G_UNLIKELY (!gst_base_src_perform_seek (basesrc, event, FALSE)))
-      goto seek_failed;
+      /* The perform seek code will start the task when finished. We don't have to
+       * unlock the streaming thread because it is not running yet */
+      if (G_UNLIKELY (!gst_base_src_perform_seek (basesrc, event, FALSE)))
+        goto seek_failed;
 
-    if (event)
-      gst_event_unref (event);
-  } else {
-    /* if not random_access, we cannot operate in pull mode for now */
-    if (G_UNLIKELY (!basesrc->random_access))
-      goto no_get_range;
+      if (event)
+        gst_event_unref (event);
+      break;
+    case GST_PAD_MODE_PULL:
+      /* if not random_access, we cannot operate in pull mode for now */
+      if (G_UNLIKELY (!basesrc->random_access))
+        goto no_get_range;
+      break;
+    default:
+      goto not_activated_yet;
+      break;
   }
 
   GST_OBJECT_LOCK (basesrc);
@@ -3351,6 +3450,14 @@ no_get_range:
     GST_PAD_STREAM_UNLOCK (basesrc->srcpad);
     gst_base_src_stop (basesrc);
     GST_ERROR_OBJECT (basesrc, "Cannot operate in pull mode, stopping");
+    ret = GST_FLOW_ERROR;
+    goto error;
+  }
+not_activated_yet:
+  {
+    GST_PAD_STREAM_UNLOCK (basesrc->srcpad);
+    gst_base_src_stop (basesrc);
+    GST_WARNING_OBJECT (basesrc, "pad not activated yet");
     ret = GST_FLOW_ERROR;
     goto error;
   }
@@ -3461,7 +3568,12 @@ gst_base_src_set_flushing (GstBaseSrc * basesrc,
     basesrc->live_running = TRUE;
 
     /* clear pending EOS if any */
-    g_atomic_int_set (&basesrc->priv->pending_eos, FALSE);
+    if (g_atomic_int_get (&basesrc->priv->has_pending_eos)) {
+      GST_OBJECT_LOCK (basesrc);
+      CLEAR_PENDING_EOS (basesrc);
+      basesrc->priv->forced_eos = FALSE;
+      GST_OBJECT_UNLOCK (basesrc);
+    }
 
     /* step 1, now that we have the LIVE lock, clear our unlock request */
     if (bclass->unlock_stop)
@@ -3632,6 +3744,8 @@ gst_base_src_activate_mode (GstPad * pad, GstObject * parent,
 
   src->priv->stream_start_pending = FALSE;
 
+  GST_DEBUG_OBJECT (pad, "activating in mode %d", mode);
+
   switch (mode) {
     case GST_PAD_MODE_PULL:
       res = gst_base_src_activate_pull (pad, parent, active);
@@ -3693,7 +3807,11 @@ gst_base_src_change_state (GstElement * element, GstStateChange transition)
     {
       /* we don't need to unblock anything here, the pad deactivation code
        * already did this */
-      g_atomic_int_set (&basesrc->priv->pending_eos, FALSE);
+      if (g_atomic_int_get (&basesrc->priv->has_pending_eos)) {
+        GST_OBJECT_LOCK (basesrc);
+        CLEAR_PENDING_EOS (basesrc);
+        GST_OBJECT_UNLOCK (basesrc);
+      }
       gst_event_replace (&basesrc->pending_seek, NULL);
       break;
     }
@@ -3740,7 +3858,7 @@ gst_base_src_get_buffer_pool (GstBaseSrc * src)
  * @allocator: (out) (allow-none) (transfer full): the #GstAllocator
  * used
  * @params: (out) (allow-none) (transfer full): the
- * #GstAllocatorParams of @allocator
+ * #GstAllocationParams of @allocator
  *
  * Lets #GstBaseSrc sub-classes to know the memory @allocator
  * used by the base class and its @params.

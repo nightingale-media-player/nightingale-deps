@@ -37,7 +37,7 @@
  * <refsect2>
  * <title>Example launch line</title>
  * |[
- * gst-launch filesrc location=song.ogg ! decodebin2 ! tee name=t ! queue ! autoaudiosink t. ! queue ! audioconvert ! goom ! videoconvert ! autovideosink
+ * gst-launch filesrc location=song.ogg ! decodebin ! tee name=t ! queue ! autoaudiosink t. ! queue ! audioconvert ! goom ! videoconvert ! autovideosink
  * ]| Play a song.ogg from local dir and render visualisations using the goom
  * element.
  * </refsect2>
@@ -51,6 +51,7 @@
 #include "gst/glib-compat-private.h"
 
 #include <string.h>
+#include <stdio.h>
 
 static GstStaticPadTemplate sinktemplate = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -131,6 +132,7 @@ struct _GstTeePad
 {
   GstPad parent;
 
+  guint index;
   gboolean pushed;
   GstFlowReturn result;
   gboolean removed;
@@ -214,6 +216,8 @@ gst_tee_finalize (GObject * object)
 
   tee = GST_TEE (object);
 
+  g_hash_table_unref (tee->pad_indexes);
+
   g_free (tee->last_message);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -294,6 +298,8 @@ gst_tee_init (GstTee * tee)
   GST_OBJECT_FLAG_SET (tee->sinkpad, GST_PAD_FLAG_PROXY_CAPS);
   gst_element_add_pad (GST_ELEMENT (tee), tee->sinkpad);
 
+  tee->pad_indexes = g_hash_table_new (NULL, NULL);
+
   tee->last_message = NULL;
 }
 
@@ -307,32 +313,61 @@ static gboolean
 forward_sticky_events (GstPad * pad, GstEvent ** event, gpointer user_data)
 {
   GstPad *srcpad = GST_PAD_CAST (user_data);
+  GstFlowReturn ret;
 
-  gst_pad_push_event (srcpad, gst_event_ref (*event));
+  ret = gst_pad_store_sticky_event (srcpad, *event);
+  if (ret != GST_FLOW_OK) {
+    GST_DEBUG_OBJECT (srcpad, "storing sticky event %p (%s) failed: %s", *event,
+        GST_EVENT_TYPE_NAME (*event), gst_flow_get_name (ret));
+  }
 
   return TRUE;
 }
 
 static GstPad *
 gst_tee_request_new_pad (GstElement * element, GstPadTemplate * templ,
-    const gchar * unused, const GstCaps * caps)
+    const gchar * name_templ, const GstCaps * caps)
 {
   gchar *name;
   GstPad *srcpad;
   GstTee *tee;
   GstPadMode mode;
   gboolean res;
+  guint index = 0;
 
   tee = GST_TEE (element);
 
   GST_DEBUG_OBJECT (tee, "requesting pad");
 
   GST_OBJECT_LOCK (tee);
-  name = g_strdup_printf ("src_%u", tee->pad_counter++);
+
+  if (name_templ) {
+    sscanf (name_templ, "src_%u", &index);
+    GST_LOG_OBJECT (element, "name: %s (index %d)", name_templ, index);
+    if (g_hash_table_contains (tee->pad_indexes, GUINT_TO_POINTER (index))) {
+      GST_ERROR_OBJECT (element, "pad name %s is not unique", name_templ);
+      GST_OBJECT_UNLOCK (tee);
+      return NULL;
+    }
+    if (index >= tee->next_pad_index)
+      tee->next_pad_index = index + 1;
+  } else {
+    index = tee->next_pad_index;
+
+    while (g_hash_table_contains (tee->pad_indexes, GUINT_TO_POINTER (index)))
+      index++;
+
+    tee->next_pad_index = index + 1;
+  }
+
+  g_hash_table_insert (tee->pad_indexes, GUINT_TO_POINTER (index), NULL);
+
+  name = g_strdup_printf ("src_%u", index);
 
   srcpad = GST_PAD_CAST (g_object_new (GST_TYPE_TEE_PAD,
           "name", name, "direction", templ->direction, "template", templ,
           NULL));
+  GST_TEE_PAD_CAST (srcpad)->index = index;
   g_free (name);
 
   mode = tee->sink_mode;
@@ -391,12 +426,14 @@ gst_tee_release_pad (GstElement * element, GstPad * pad)
 {
   GstTee *tee;
   gboolean changed = FALSE;
+  guint index;
 
   tee = GST_TEE (element);
 
   GST_DEBUG_OBJECT (tee, "releasing pad");
 
   GST_OBJECT_LOCK (tee);
+  index = GST_TEE_PAD_CAST (pad)->index;
   /* mark the pad as removed so that future pad_alloc fails with NOT_LINKED. */
   GST_TEE_PAD_CAST (pad)->removed = TRUE;
   if (tee->allocpad == pad) {
@@ -415,6 +452,10 @@ gst_tee_release_pad (GstElement * element, GstPad * pad)
   if (changed) {
     gst_tee_notify_alloc_pad (tee);
   }
+
+  GST_OBJECT_LOCK (tee);
+  g_hash_table_remove (tee->pad_indexes, GUINT_TO_POINTER (index));
+  GST_OBJECT_UNLOCK (tee);
 }
 
 static void
@@ -616,12 +657,12 @@ restart:
       gst_object_ref (pad);
       GST_OBJECT_UNLOCK (tee);
 
-      GST_LOG_OBJECT (tee, "Starting to push %s %p",
+      GST_LOG_OBJECT (pad, "Starting to push %s %p",
           is_list ? "list" : "buffer", data);
 
       ret = gst_tee_do_push (tee, pad, data, is_list);
 
-      GST_LOG_OBJECT (tee, "Pushing item %p yielded result %s", data,
+      GST_LOG_OBJECT (pad, "Pushing item %p yielded result %s", data,
           gst_flow_get_name (ret));
 
       GST_OBJECT_LOCK (tee);
@@ -632,7 +673,7 @@ restart:
     } else {
       /* already pushed, use previous return value */
       ret = GST_TEE_PAD_CAST (pad)->result;
-      GST_LOG_OBJECT (tee, "pad already pushed with %s",
+      GST_LOG_OBJECT (pad, "pad already pushed with %s",
           gst_flow_get_name (ret));
     }
 
@@ -640,7 +681,7 @@ restart:
      * the same. It could be possible that the pad we just pushed was removed
      * and the return value it not valid anymore */
     if (G_UNLIKELY (GST_ELEMENT_CAST (tee)->pads_cookie != cookie)) {
-      GST_LOG_OBJECT (tee, "pad list changed");
+      GST_LOG_OBJECT (pad, "pad list changed");
       /* the list of pads changed, restart iteration. Pads that we already
        * pushed on and are still in the new list, will not be pushed on
        * again. */
@@ -653,7 +694,7 @@ restart:
 
     /* keep all other return values, overwriting the previous one. */
     if (G_LIKELY (ret != GST_FLOW_NOT_LINKED)) {
-      GST_LOG_OBJECT (tee, "Replacing ret val %d with %d", cret, ret);
+      GST_LOG_OBJECT (pad, "Replacing ret val %d with %d", cret, ret);
       cret = ret;
     }
     pads = g_list_next (pads);

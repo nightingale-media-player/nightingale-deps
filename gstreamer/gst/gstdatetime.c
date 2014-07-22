@@ -56,11 +56,17 @@ typedef enum
 
 struct _GstDateTime
 {
+  GstMiniObject mini_object;
+
   GDateTime *datetime;
 
   GstDateTimeFields fields;
-  volatile gint ref_count;
 };
+
+GType _gst_date_time_type = 0;
+GST_DEFINE_MINI_OBJECT_TYPE (GstDateTime, gst_date_time);
+
+static void gst_date_time_free (GstDateTime * datetime);
 
 /**
  * gst_date_time_new_from_g_date_time:
@@ -70,7 +76,8 @@ struct _GstDateTime
  *
  * Free-function: gst_date_time_unref
  *
- * Returns: (transfer full): a newly created #GstDateTime, or NULL on error
+ * Returns: (transfer full) (nullable): a newly created #GstDateTime,
+ * or %NULL on error
  */
 GstDateTime *
 gst_date_time_new_from_g_date_time (GDateTime * dt)
@@ -81,9 +88,12 @@ gst_date_time_new_from_g_date_time (GDateTime * dt)
     return NULL;
 
   gst_dt = g_slice_new (GstDateTime);
+
+  gst_mini_object_init (GST_MINI_OBJECT_CAST (gst_dt), 0, GST_TYPE_DATE_TIME,
+      NULL, NULL, (GstMiniObjectFreeFunction) gst_date_time_free);
+
   gst_dt->datetime = dt;
   gst_dt->fields = GST_DATE_TIME_FIELDS_YMD_HMS;
-  gst_dt->ref_count = 1;
   return gst_dt;
 }
 
@@ -95,7 +105,8 @@ gst_date_time_new_from_g_date_time (GDateTime * dt)
  *
  * Free-function: g_date_time_unref
  *
- * Returns: (transfer full): a newly created #GDateTime, or NULL on error
+ * Returns: (transfer full) (nullable): a newly created #GDateTime, or
+ * %NULL on error
  */
 GDateTime *
 gst_date_time_to_g_date_time (GstDateTime * datetime)
@@ -112,8 +123,8 @@ gst_date_time_to_g_date_time (GstDateTime * datetime)
  * gst_date_time_has_year:
  * @datetime: a #GstDateTime
  *
- * Returns: TRUE if @datetime<!-- -->'s year field is set (which should always
- *     be the case), otherwise FALSE
+ * Returns: %TRUE if @datetime<!-- -->'s year field is set (which should always
+ *     be the case), otherwise %FALSE
  */
 gboolean
 gst_date_time_has_year (const GstDateTime * datetime)
@@ -127,7 +138,7 @@ gst_date_time_has_year (const GstDateTime * datetime)
  * gst_date_time_has_month:
  * @datetime: a #GstDateTime
  *
- * Returns: TRUE if @datetime<!-- -->'s month field is set, otherwise FALSE
+ * Returns: %TRUE if @datetime<!-- -->'s month field is set, otherwise %FALSE
  */
 gboolean
 gst_date_time_has_month (const GstDateTime * datetime)
@@ -141,7 +152,7 @@ gst_date_time_has_month (const GstDateTime * datetime)
  * gst_date_time_has_day:
  * @datetime: a #GstDateTime
  *
- * Returns: TRUE if @datetime<!-- -->'s day field is set, otherwise FALSE
+ * Returns: %TRUE if @datetime<!-- -->'s day field is set, otherwise %FALSE
  */
 gboolean
 gst_date_time_has_day (const GstDateTime * datetime)
@@ -155,8 +166,8 @@ gst_date_time_has_day (const GstDateTime * datetime)
  * gst_date_time_has_time:
  * @datetime: a #GstDateTime
  *
- * Returns: TRUE if @datetime<!-- -->'s hour and minute fields are set,
- *     otherwise FALSE
+ * Returns: %TRUE if @datetime<!-- -->'s hour and minute fields are set,
+ *     otherwise %FALSE
  */
 gboolean
 gst_date_time_has_time (const GstDateTime * datetime)
@@ -170,7 +181,7 @@ gst_date_time_has_time (const GstDateTime * datetime)
  * gst_date_time_has_second:
  * @datetime: a #GstDateTime
  *
- * Returns: TRUE if @datetime<!-- -->'s second field is set, otherwise FALSE
+ * Returns: %TRUE if @datetime<!-- -->'s second field is set, otherwise %FALSE
  */
 gboolean
 gst_date_time_has_second (const GstDateTime * datetime)
@@ -587,7 +598,7 @@ __gst_date_time_compare (const GstDateTime * dt1, const GstDateTime * dt2)
  *
  * Note that @tzoffset is a float and was chosen so for being able to handle
  * some fractional timezones, while it still keeps the readability of
- * represeting it in hours for most timezones.
+ * representing it in hours for most timezones.
  *
  * If value is -1 then all over value will be ignored. For example
  * if @month == -1, then #GstDateTime will created only for @year. If
@@ -716,9 +727,10 @@ done:
  * are (for example): 2012, 2012-06, 2012-06-23, 2012-06-23T23:30Z,
  * 2012-06-23T23:30+0100, 2012-06-23T23:30:59Z, 2012-06-23T23:30:59+0100
  *
- * Returns: a newly allocated string formatted according to ISO 8601 and
- *     only including the datetime fields that are valid, or NULL in case
- *     there was an error. The string should be freed with g_free().
+ * Returns: (nullable): a newly allocated string formatted according
+ *     to ISO 8601 and only including the datetime fields that are
+ *     valid, or %NULL in case there was an error. The string should
+ *     be freed with g_free().
  */
 gchar *
 gst_date_time_to_iso8601_string (GstDateTime * datetime)
@@ -740,7 +752,8 @@ gst_date_time_to_iso8601_string (GstDateTime * datetime)
  *
  * Free-function: gst_date_time_unref
  *
- * Returns: (transfer full): a newly created #GstDateTime, or NULL on error
+ * Returns: (transfer full) (nullable): a newly created #GstDateTime,
+ * or %NULL on error
  */
 GstDateTime *
 gst_date_time_new_from_iso8601_string (const gchar * string)
@@ -868,7 +881,6 @@ ymd:
   return gst_date_time_new_ymd (year, month, day);
 }
 
-
 static void
 gst_date_time_free (GstDateTime * datetime)
 {
@@ -887,10 +899,7 @@ gst_date_time_free (GstDateTime * datetime)
 GstDateTime *
 gst_date_time_ref (GstDateTime * datetime)
 {
-  g_return_val_if_fail (datetime != NULL, NULL);
-  g_return_val_if_fail (datetime->ref_count > 0, NULL);
-  g_atomic_int_inc (&datetime->ref_count);
-  return datetime;
+  return (GstDateTime *) gst_mini_object_ref (GST_MINI_OBJECT_CAST (datetime));
 }
 
 /**
@@ -903,9 +912,11 @@ gst_date_time_ref (GstDateTime * datetime)
 void
 gst_date_time_unref (GstDateTime * datetime)
 {
-  g_return_if_fail (datetime != NULL);
-  g_return_if_fail (datetime->ref_count > 0);
+  gst_mini_object_unref (GST_MINI_OBJECT_CAST (datetime));
+}
 
-  if (g_atomic_int_dec_and_test (&datetime->ref_count))
-    gst_date_time_free (datetime);
+void
+_priv_gst_date_time_initialize (void)
+{
+  _gst_date_time_type = gst_date_time_get_type ();
 }

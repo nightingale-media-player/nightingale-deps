@@ -38,7 +38,7 @@ typedef struct _GstBufferList GstBufferList;
 
 /**
  * GstBufferListFunc:
- * @buffer: pointer the buffer
+ * @buffer: (out) (nullable): pointer the buffer
  * @idx: the index of @buffer
  * @user_data: user data passed to gst_buffer_list_foreach()
  *
@@ -48,7 +48,7 @@ typedef struct _GstBufferList GstBufferList;
  * When this function returns %TRUE, the next buffer will be
  * returned. When %FALSE is returned, gst_buffer_list_foreach() will return.
  *
- * When @buffer is set to NULL, the item will be removed from the bufferlist.
+ * When @buffer is set to %NULL, the item will be removed from the bufferlist.
  * When @buffer has been made writable, the new buffer reference can be assigned
  * to @buffer. This function is responsible for unreffing the old buffer when
  * removing or modifying.
@@ -66,7 +66,7 @@ typedef gboolean   (*GstBufferListFunc)   (GstBuffer **buffer, guint idx,
  *
  * Increases the refcount of the given buffer list by one.
  *
- * Note that the refcount affects the writeability of @list and its data, see
+ * Note that the refcount affects the writability of @list and its data, see
  * gst_buffer_list_make_writable(). It is important to note that keeping
  * additional references to GstBufferList instances can potentially increase
  * the number of memcpy operations in a pipeline.

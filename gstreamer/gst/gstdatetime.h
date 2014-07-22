@@ -32,9 +32,23 @@ G_BEGIN_DECLS
  * information. It currently supports ranges from 0001-01-01 to
  * 9999-12-31 in the Gregorian proleptic calendar.
  *
- * Use the acessor functions to get the stored values.
+ * Use the accessor functions to get the stored values.
  */
 typedef struct _GstDateTime GstDateTime;
+
+GST_EXPORT GType _gst_date_time_type;
+
+/**
+ * GST_TYPE_DATE_TIME:
+ *
+ * a boxed #GValue type for #GstDateTime that represents a date and time.
+ *
+ * Returns: the #GType of GstDateTime
+ */
+
+#define GST_TYPE_DATE_TIME (_gst_date_time_type)
+
+GType           gst_date_time_get_type (void);
 
 /* query which fields are set */
 

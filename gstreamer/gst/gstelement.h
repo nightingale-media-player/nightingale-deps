@@ -212,7 +212,7 @@ typedef enum {
  *   </para></listitem>
  *   <listitem><para>
  *     The pipeline selects a #GstClock and distributes this to all the children
- *     before setting them to PLAYING. This means that it is only alowed to
+ *     before setting them to PLAYING. This means that it is only allowed to
  *     synchronize on the #GstClock in the PLAYING state.
  *   </para></listitem>
  *   <listitem><para>
@@ -691,10 +691,11 @@ GType                   gst_element_get_type            (void);
  *
  * Returns a copy of the name of @elem.
  * Caller should g_free() the return value after usage.
- * For a nameless element, this returns NULL, which you can safely g_free()
+ * For a nameless element, this returns %NULL, which you can safely g_free()
  * as well.
  *
- * Returns: (transfer full): the name of @elem. g_free() after usage. MT safe.
+ * Returns: (transfer full) (nullable): the name of @elem. g_free()
+ * after usage. MT safe.
  *
  */
 #define                 gst_element_get_name(elem)      gst_object_get_name(GST_OBJECT_CAST(elem))

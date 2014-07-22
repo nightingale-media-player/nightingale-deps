@@ -40,6 +40,9 @@ static char *_name = NULL;
 static int print_element_info (GstElementFactory * factory,
     gboolean print_names);
 
+/* *INDENT-OFF* */
+G_GNUC_PRINTF (1, 2)
+/* *INDENT-ON* */
 static void
 n_print (const char *format, ...)
 {
@@ -97,73 +100,6 @@ print_caps (const GstCaps * caps, const gchar * pfx)
     gst_structure_foreach (structure, print_field, (gpointer) pfx);
   }
 }
-
-#if 0
-static void
-print_formats (const GstFormat * formats)
-{
-  while (formats && *formats) {
-    const GstFormatDefinition *definition;
-
-    definition = gst_format_get_details (*formats);
-    if (definition)
-      n_print ("\t\t(%d):\t%s (%s)\n", *formats,
-          definition->nick, definition->description);
-    else
-      n_print ("\t\t(%d):\tUnknown format\n", *formats);
-
-    formats++;
-  }
-}
-
-static void
-print_event_masks (const GstEventMask * masks)
-{
-  GType event_type;
-  GEnumClass *klass;
-  GType event_flags;
-  GFlagsClass *flags_class = NULL;
-
-  event_type = gst_event_type_get_type ();
-  klass = (GEnumClass *) g_type_class_ref (event_type);
-
-  while (masks && masks->type) {
-    GEnumValue *value;
-    gint flags = 0, index = 0;
-
-    switch (masks->type) {
-      case GST_EVENT_SEEK:
-        flags = masks->flags;
-        event_flags = gst_seek_type_get_type ();
-        flags_class = (GFlagsClass *) g_type_class_ref (event_flags);
-        break;
-      default:
-        break;
-    }
-
-    value = g_enum_get_value (klass, masks->type);
-    g_print ("\t\t%s ", value->value_nick);
-
-    while (flags) {
-      GFlagsValue *value;
-
-      if (flags & 1) {
-        value = g_flags_get_first_value (flags_class, 1 << index);
-
-        if (value)
-          g_print ("| %s ", value->value_nick);
-        else
-          g_print ("| ? ");
-      }
-      flags >>= 1;
-      index++;
-    }
-    g_print ("\n");
-
-    masks++;
-  }
-}
-#endif
 
 static const char *
 get_rank_name (char *s, gint rank)
@@ -547,6 +483,12 @@ print_element_properties_info (GstElement * element)
         } else if (G_IS_PARAM_SPEC_BOXED (param)) {
           n_print ("%-23.23s Boxed pointer of type \"%s\"", "",
               g_type_name (param->value_type));
+          if (param->value_type == GST_TYPE_STRUCTURE) {
+            const GstStructure *s = gst_value_get_structure (&value);
+            if (s)
+              gst_structure_foreach (s, print_field,
+                  (gpointer) "                           ");
+          }
         } else if (G_IS_PARAM_SPEC_POINTER (param)) {
           if (param->value_type != G_TYPE_POINTER) {
             n_print ("%-23.23s Pointer of type \"%s\".", "",
@@ -574,8 +516,8 @@ print_element_properties_info (GstElement * element)
               gst_value_get_fraction_numerator (&value),
               gst_value_get_fraction_denominator (&value));
         } else {
-          n_print ("%-23.23s Unknown type %ld \"%s\"", "", param->value_type,
-              g_type_name (param->value_type));
+          n_print ("%-23.23s Unknown type %ld \"%s\"", "",
+              (glong) param->value_type, g_type_name (param->value_type));
         }
         break;
     }
@@ -684,7 +626,7 @@ print_clocking_info (GstElement * element)
 
   if (!requires_clock && !provides_clock) {
     n_print ("\n");
-    n_print ("Element has no clocking capabilities.");
+    n_print ("Element has no clocking capabilities.\n");
     return;
   }
 
@@ -703,19 +645,6 @@ print_clocking_info (GstElement * element)
       gst_object_unref (clock);
     } else
       n_print ("  element is supposed to provide a clock but returned NULL\n");
-  }
-}
-
-static void
-print_index_info (GstElement * element)
-{
-  if (GST_OBJECT_FLAG_IS_SET (element, GST_ELEMENT_FLAG_INDEXABLE)) {
-    n_print ("\n");
-    n_print ("Indexing capabilities:\n");
-    n_print ("  element can do indexing\n");
-  } else {
-    n_print ("\n");
-    n_print ("Element has no indexing capabilities.\n");
   }
 }
 
@@ -773,8 +702,6 @@ print_pad_info (GstElement * element)
 
     pad = GST_PAD (pads->data);
     pads = g_list_next (pads);
-
-    n_print ("");
 
     name = gst_pad_get_name (pad);
     if (gst_pad_get_direction (pad) == GST_PAD_SRC)
@@ -1038,15 +965,6 @@ print_element_list (gboolean print_all)
               GST_OBJECT_NAME (factory),
               gst_element_factory_get_metadata (factory,
                   GST_ELEMENT_METADATA_LONGNAME));
-#if 0
-      } else if (GST_IS_INDEX_FACTORY (feature)) {
-        GstIndexFactory *factory;
-
-        factory = GST_INDEX_FACTORY (feature);
-        if (!print_all)
-          g_print ("%s:  %s: %s\n", plugin->desc.name,
-              GST_OBJECT_NAME (factory), factory->longdesc);
-#endif
       } else if (GST_IS_TYPE_FIND_FACTORY (feature)) {
         GstTypeFindFactory *factory;
         const gchar *const *extensions;
@@ -1221,7 +1139,7 @@ print_plugin_features (GstPlugin * plugin)
   gint num_features = 0;
   gint num_elements = 0;
   gint num_typefinders = 0;
-  gint num_indexes = 0;
+  gint num_devproviders = 0;
   gint num_other = 0;
 
   origlist = features =
@@ -1241,14 +1159,6 @@ print_plugin_features (GstPlugin * plugin)
           gst_element_factory_get_metadata (factory,
               GST_ELEMENT_METADATA_LONGNAME));
       num_elements++;
-#if 0
-    } else if (GST_IS_INDEX_FACTORY (feature)) {
-      GstIndexFactory *factory;
-
-      factory = GST_INDEX_FACTORY (feature);
-      n_print ("  %s: %s\n", GST_OBJECT_NAME (factory), factory->longdesc);
-      num_indexes++;
-#endif
     } else if (GST_IS_TYPE_FIND_FACTORY (feature)) {
       GstTypeFindFactory *factory;
       const gchar *const *extensions;
@@ -1270,6 +1180,14 @@ print_plugin_features (GstPlugin * plugin)
             gst_plugin_feature_get_name (feature));
 
       num_typefinders++;
+    } else if (GST_IS_DEVICE_PROVIDER_FACTORY (feature)) {
+      GstDeviceProviderFactory *factory;
+
+      factory = GST_DEVICE_PROVIDER_FACTORY (feature);
+      n_print ("  %s: %s\n", GST_OBJECT_NAME (factory),
+          gst_device_provider_factory_get_metadata (factory,
+              GST_ELEMENT_METADATA_LONGNAME));
+      num_devproviders++;
     } else if (feature) {
       n_print ("  %s (%s)\n", gst_object_get_name (GST_OBJECT (feature)),
           g_type_name (G_OBJECT_TYPE (feature)));
@@ -1287,8 +1205,8 @@ print_plugin_features (GstPlugin * plugin)
     n_print ("  +-- %d elements\n", num_elements);
   if (num_typefinders > 0)
     n_print ("  +-- %d typefinders\n", num_typefinders);
-  if (num_indexes > 0)
-    n_print ("  +-- %d indexes\n", num_indexes);
+  if (num_devproviders > 0)
+    n_print ("  +-- %d device providers\n", num_devproviders);
   if (num_other > 0)
     n_print ("  +-- %d other objects\n", num_other);
 
@@ -1301,14 +1219,6 @@ print_element_features (const gchar * element_name)
   GstPluginFeature *feature;
 
   /* FIXME implement other pretty print function for these */
-#if 0
-  feature = gst_default_registry_find_feature (element_name,
-      GST_TYPE_INDEX_FACTORY);
-  if (feature) {
-    n_print ("%s: an index\n", element_name);
-    return 0;
-  }
-#endif
   feature = gst_registry_find_feature (gst_registry_get (), element_name,
       GST_TYPE_TYPE_FIND_FACTORY);
   if (feature) {
@@ -1362,7 +1272,6 @@ print_element_info (GstElementFactory * factory, gboolean print_names)
   print_element_flag_info (element);
   print_implementation_info (element);
   print_clocking_info (element);
-  print_index_info (element);
   print_uri_handler_info (element);
   print_pad_info (element);
   print_element_properties_info (element);
@@ -1567,11 +1476,16 @@ main (int argc, char *argv[])
   GError *err = NULL;
 #endif
 
+  setlocale (LC_ALL, "");
+
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 #endif
+
+  /* avoid glib warnings when inspecting deprecated properties */
+  g_setenv ("G_ENABLE_DIAGNOSTIC", "0", FALSE);
 
   g_set_prgname ("gst-inspect-" GST_API_VERSION);
 

@@ -3,6 +3,7 @@ EXPORTS
 	gst_adapter_available_fast
 	gst_adapter_clear
 	gst_adapter_copy
+	gst_adapter_copy_bytes
 	gst_adapter_flush
 	gst_adapter_get_type
 	gst_adapter_map
@@ -77,6 +78,7 @@ EXPORTS
 	gst_base_src_new_seamless_segment
 	gst_base_src_query_latency
 	gst_base_src_set_async
+	gst_base_src_set_automatic_eos
 	gst_base_src_set_blocksize
 	gst_base_src_set_caps
 	gst_base_src_set_do_timestamp
@@ -238,10 +240,12 @@ EXPORTS
 	gst_collect_pads_set_clip_function
 	gst_collect_pads_set_compare_function
 	gst_collect_pads_set_event_function
+	gst_collect_pads_set_flush_function
 	gst_collect_pads_set_flushing
 	gst_collect_pads_set_function
 	gst_collect_pads_set_query_function
 	gst_collect_pads_set_waiting
+	gst_collect_pads_src_event_default
 	gst_collect_pads_start
 	gst_collect_pads_stop
 	gst_collect_pads_take_buffer
@@ -258,6 +262,12 @@ EXPORTS
 	gst_data_queue_push
 	gst_data_queue_push_force
 	gst_data_queue_set_flushing
+	gst_flow_combiner_add_pad
+	gst_flow_combiner_free
+	gst_flow_combiner_get_type
+	gst_flow_combiner_new
+	gst_flow_combiner_remove_pad
+	gst_flow_combiner_update_flow
 	gst_push_src_get_type
 	gst_queue_array_drop_element
 	gst_queue_array_find

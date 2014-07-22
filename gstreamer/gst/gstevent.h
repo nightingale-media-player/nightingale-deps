@@ -275,8 +275,8 @@ GST_EXPORT GType _gst_event_type;
 #define         gst_event_make_writable(ev)   GST_EVENT_CAST (gst_mini_object_make_writable (GST_MINI_OBJECT_CAST (ev)))
 /**
  * gst_event_replace:
- * @old_event: (inout) (transfer full): pointer to a pointer to a #GstEvent
- *     to be replaced.
+ * @old_event: (inout) (transfer full) (nullable): pointer to a
+ *     pointer to a #GstEvent to be replaced.
  * @new_event: (allow-none) (transfer none): pointer to a #GstEvent that will
  *     replace the event pointed to by @old_event.
  *
@@ -285,9 +285,9 @@ GST_EXPORT GType _gst_event_type;
  * in some cases), and the reference counts are updated appropriately (the old
  * event is unreffed, the new one is reffed).
  *
- * Either @new_event or the #GstEvent pointed to by @old_event may be NULL.
+ * Either @new_event or the #GstEvent pointed to by @old_event may be %NULL.
  *
- * Returns: TRUE if @new_event was different from @old_event
+ * Returns: %TRUE if @new_event was different from @old_event
  */
 #ifdef _FOOL_GTK_DOC_
 G_INLINE_FUNC gboolean gst_event_replace (GstEvent **old_event, GstEvent *new_event);
@@ -301,10 +301,10 @@ gst_event_replace (GstEvent **old_event, GstEvent *new_event)
 
 /**
  * gst_event_steal:
- * @old_event: (inout) (transfer full): pointer to a pointer to a #GstEvent
- *     to be stolen.
+ * @old_event: (inout) (transfer full) (nullable): pointer to a
+ *     pointer to a #GstEvent to be stolen.
  *
- * Atomically replace the #GstEvent pointed to by @old_event with NULL and
+ * Atomically replace the #GstEvent pointed to by @old_event with %NULL and
  * return the original event.
  *
  * Returns: the #GstEvent that was in @old_event
@@ -321,8 +321,8 @@ gst_event_steal (GstEvent **old_event)
 
 /**
  * gst_event_take:
- * @old_event: (inout) (transfer full): pointer to a pointer to a #GstEvent
- *     to be stolen.
+ * @old_event: (inout) (transfer full) (nullable): pointer to a
+ *     pointer to a #GstEvent to be stolen.
  * @new_event: (allow-none) (transfer full): pointer to a #GstEvent that will
  *     replace the event pointed to by @old_event.
  *
@@ -330,9 +330,9 @@ gst_event_steal (GstEvent **old_event)
  * function is similar to gst_event_replace() except that it takes ownership of
  * @new_event.
  *
- * Either @new_event or the #GstEvent pointed to by @old_event may be NULL.
+ * Either @new_event or the #GstEvent pointed to by @old_event may be %NULL.
  *
- * Returns: TRUE if @new_event was different from @old_event
+ * Returns: %TRUE if @new_event was different from @old_event
  */
 #ifdef _FOOL_GTK_DOC_
 G_INLINE_FUNC gboolean gst_event_take (GstEvent **old_event, GstEvent *new_event);
@@ -481,6 +481,10 @@ gboolean        gst_event_has_name              (GstEvent *event, const gchar *n
 /* identifiers for events and messages */
 guint32         gst_event_get_seqnum            (GstEvent *event);
 void            gst_event_set_seqnum            (GstEvent *event, guint32 seqnum);
+
+/* accumulated pad offsets for the event */
+gint64          gst_event_get_running_time_offset (GstEvent *event);
+void            gst_event_set_running_time_offset (GstEvent *event, gint64 offset);
 
 /* Stream start event */
 GstEvent *      gst_event_new_stream_start      (const gchar *stream_id) G_GNUC_MALLOC;
