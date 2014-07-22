@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "">
+<book xmlns="http://www.devhelp.net/book" title="GStreamer Core Plugins 1.0 Plugins Reference Manual" link="index.html" author="" name="gstreamer-plugins-1.0" version="2" language="c">
+  <chapters>
+    <sub name="gstreamer Elements" link="ch01.html">
+      <sub name="capsfilter" link="gstreamer-plugins-capsfilter.html"/>
+      <sub name="downloadbuffer" link="gstreamer-plugins-downloadbuffer.html"/>
+      <sub name="fakesrc" link="gstreamer-plugins-fakesrc.html"/>
+      <sub name="fakesink" link="gstreamer-plugins-fakesink.html"/>
+      <sub name="fdsink" link="gstreamer-plugins-fdsink.html"/>
+      <sub name="fdsrc" link="gstreamer-plugins-fdsrc.html"/>
+      <sub name="filesrc" link="gstreamer-plugins-filesrc.html"/>
+      <sub name="filesink" link="gstreamer-plugins-filesink.html"/>
+      <sub name="funnel" link="gstreamer-plugins-funnel.html"/>
+      <sub name="identity" link="gstreamer-plugins-identity.html"/>
+      <sub name="input-selector" link="gstreamer-plugins-input-selector.html"/>
+      <sub name="multiqueue" link="gstreamer-plugins-multiqueue.html"/>
+      <sub name="output-selector" link="gstreamer-plugins-output-selector.html"/>
+      <sub name="queue" link="gstreamer-plugins-queue.html"/>
+      <sub name="queue2" link="gstreamer-plugins-queue2.html"/>
+      <sub name="tee" link="gstreamer-plugins-tee.html"/>
+      <sub name="typefind" link="gstreamer-plugins-typefind.html"/>
+      <sub name="valve" link="gstreamer-plugins-valve.html"/>
+    </sub>
+    <sub name="gstreamer Plugins" link="ch02.html">
+      <sub name="coreelements" link="gstreamer-plugins-plugin-coreelements.html"/>
+    </sub>
+  </chapters>
+  <functions>
+    <keyword type="" name="Example launch line" link="gstreamer-plugins-capsfilter.html#id-1.2.2.7.3"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-capsfilter.html#id-1.2.2.7.4.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-capsfilter.html#id-1.2.2.7.4.2"/>
+    <keyword type="struct" name="struct GstCapsFilter" link="gstreamer-plugins-capsfilter.html#GstCapsFilter-struct"/>
+    <keyword type="property" name="The “caps” property" link="gstreamer-plugins-capsfilter.html#GstCapsFilter--caps"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-downloadbuffer.html#id-1.2.3.7.8.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-downloadbuffer.html#id-1.2.3.7.8.2"/>
+    <keyword type="struct" name="struct GstDownloadBuffer" link="gstreamer-plugins-downloadbuffer.html#GstDownloadBuffer-struct"/>
+    <keyword type="property" name="The “high-percent” property" link="gstreamer-plugins-downloadbuffer.html#GstDownloadBuffer--high-percent"/>
+    <keyword type="property" name="The “low-percent” property" link="gstreamer-plugins-downloadbuffer.html#GstDownloadBuffer--low-percent"/>
+    <keyword type="property" name="The “max-size-bytes” property" link="gstreamer-plugins-downloadbuffer.html#GstDownloadBuffer--max-size-bytes"/>
+    <keyword type="property" name="The “max-size-time” property" link="gstreamer-plugins-downloadbuffer.html#GstDownloadBuffer--max-size-time"/>
+    <keyword type="property" name="The “temp-location” property" link="gstreamer-plugins-downloadbuffer.html#GstDownloadBuffer--temp-location"/>
+    <keyword type="property" name="The “temp-remove” property" link="gstreamer-plugins-downloadbuffer.html#GstDownloadBuffer--temp-remove"/>
+    <keyword type="property" name="The “temp-template” property" link="gstreamer-plugins-downloadbuffer.html#GstDownloadBuffer--temp-template"/>
+    <keyword type="" name="Example launch line" link="gstreamer-plugins-fakesrc.html#id-1.2.4.8.4"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-fakesrc.html#id-1.2.4.8.5.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-fakesrc.html#id-1.2.4.8.5.2"/>
+    <keyword type="struct" name="struct GstFakeSrc" link="gstreamer-plugins-fakesrc.html#GstFakeSrc-struct"/>
+    <keyword type="enum" name="enum GstFakeSrcDataType" link="gstreamer-plugins-fakesrc.html#GstFakeSrcDataType"/>
+    <keyword type="enum" name="enum GstFakeSrcFillType" link="gstreamer-plugins-fakesrc.html#GstFakeSrcFillType"/>
+    <keyword type="enum" name="enum GstFakeSrcOutputType" link="gstreamer-plugins-fakesrc.html#GstFakeSrcOutputType"/>
+    <keyword type="enum" name="enum GstFakeSrcSizeType" link="gstreamer-plugins-fakesrc.html#GstFakeSrcSizeType"/>
+    <keyword type="property" name="The “can-activate-pull” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--can-activate-pull"/>
+    <keyword type="property" name="The “can-activate-push” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--can-activate-push"/>
+    <keyword type="property" name="The “data” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--data"/>
+    <keyword type="property" name="The “datarate” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--datarate"/>
+    <keyword type="property" name="The “dump” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--dump"/>
+    <keyword type="property" name="The “filltype” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--filltype"/>
+    <keyword type="property" name="The “format” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--format"/>
+    <keyword type="property" name="The “is-live” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--is-live"/>
+    <keyword type="property" name="The “last-message” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--last-message"/>
+    <keyword type="property" name="The “parentsize” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--parentsize"/>
+    <keyword type="property" name="The “pattern” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--pattern"/>
+    <keyword type="property" name="The “signal-handoffs” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--signal-handoffs"/>
+    <keyword type="property" name="The “silent” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--silent"/>
+    <keyword type="property" name="The “sizemax” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--sizemax"/>
+    <keyword type="property" name="The “sizemin” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--sizemin"/>
+    <keyword type="property" name="The “sizetype” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--sizetype"/>
+    <keyword type="property" name="The “sync” property" link="gstreamer-plugins-fakesrc.html#GstFakeSrc--sync"/>
+    <keyword type="signal" name="The “handoff” signal" link="gstreamer-plugins-fakesrc.html#GstFakeSrc-handoff"/>
+    <keyword type="" name="Example launch line" link="gstreamer-plugins-fakesink.html#id-1.2.5.8.3"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-fakesink.html#id-1.2.5.8.4.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-fakesink.html#id-1.2.5.8.4.2"/>
+    <keyword type="struct" name="struct GstFakeSink" link="gstreamer-plugins-fakesink.html#GstFakeSink-struct"/>
+    <keyword type="enum" name="enum GstFakeSinkStateError" link="gstreamer-plugins-fakesink.html#GstFakeSinkStateError"/>
+    <keyword type="property" name="The “can-activate-pull” property" link="gstreamer-plugins-fakesink.html#GstFakeSink--can-activate-pull"/>
+    <keyword type="property" name="The “can-activate-push” property" link="gstreamer-plugins-fakesink.html#GstFakeSink--can-activate-push"/>
+    <keyword type="property" name="The “dump” property" link="gstreamer-plugins-fakesink.html#GstFakeSink--dump"/>
+    <keyword type="property" name="The “last-message” property" link="gstreamer-plugins-fakesink.html#GstFakeSink--last-message"/>
+    <keyword type="property" name="The “num-buffers” property" link="gstreamer-plugins-fakesink.html#GstFakeSink--num-buffers"/>
+    <keyword type="property" name="The “signal-handoffs” property" link="gstreamer-plugins-fakesink.html#GstFakeSink--signal-handoffs"/>
+    <keyword type="property" name="The “silent” property" link="gstreamer-plugins-fakesink.html#GstFakeSink--silent"/>
+    <keyword type="property" name="The “state-error” property" link="gstreamer-plugins-fakesink.html#GstFakeSink--state-error"/>
+    <keyword type="signal" name="The “handoff” signal" link="gstreamer-plugins-fakesink.html#GstFakeSink-handoff"/>
+    <keyword type="signal" name="The “preroll-handoff” signal" link="gstreamer-plugins-fakesink.html#GstFakeSink-preroll-handoff"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-fdsink.html#id-1.2.6.8.3.2.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-fdsink.html#id-1.2.6.8.3.2.2"/>
+    <keyword type="struct" name="struct GstFdSink" link="gstreamer-plugins-fdsink.html#GstFdSink-struct"/>
+    <keyword type="property" name="The “fd” property" link="gstreamer-plugins-fdsink.html#GstFdSink--fd"/>
+    <keyword type="" name="Example launch line" link="gstreamer-plugins-fdsrc.html#id-1.2.7.8.8"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-fdsrc.html#id-1.2.7.8.9.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-fdsrc.html#id-1.2.7.8.9.2"/>
+    <keyword type="struct" name="struct GstFdSrc" link="gstreamer-plugins-fdsrc.html#GstFdSrc-struct"/>
+    <keyword type="property" name="The “fd” property" link="gstreamer-plugins-fdsrc.html#GstFdSrc--fd"/>
+    <keyword type="property" name="The “timeout” property" link="gstreamer-plugins-fdsrc.html#GstFdSrc--timeout"/>
+    <keyword type="" name="Example launch line" link="gstreamer-plugins-filesrc.html#id-1.2.8.8.3"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-filesrc.html#id-1.2.8.8.4.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-filesrc.html#id-1.2.8.8.4.2"/>
+    <keyword type="struct" name="struct GstFileSrc" link="gstreamer-plugins-filesrc.html#GstFileSrc-struct"/>
+    <keyword type="property" name="The “location” property" link="gstreamer-plugins-filesrc.html#GstFileSrc--location"/>
+    <keyword type="" name="Example launch line" link="gstreamer-plugins-filesink.html#id-1.2.9.8.3"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-filesink.html#id-1.2.9.8.4.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-filesink.html#id-1.2.9.8.4.2"/>
+    <keyword type="struct" name="struct GstFileSink" link="gstreamer-plugins-filesink.html#GstFileSink-struct"/>
+    <keyword type="property" name="The “append” property" link="gstreamer-plugins-filesink.html#GstFileSink--append"/>
+    <keyword type="property" name="The “buffer-mode” property" link="gstreamer-plugins-filesink.html#GstFileSink--buffer-mode"/>
+    <keyword type="property" name="The “buffer-size” property" link="gstreamer-plugins-filesink.html#GstFileSink--buffer-size"/>
+    <keyword type="property" name="The “location” property" link="gstreamer-plugins-filesink.html#GstFileSink--location"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-funnel.html#id-1.2.10.6.3.2.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-funnel.html#id-1.2.10.6.3.2.2"/>
+    <keyword type="struct" name="struct GstFunnel" link="gstreamer-plugins-funnel.html#GstFunnel-struct"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-identity.html#id-1.2.11.8.2.1.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-identity.html#id-1.2.11.8.2.1.2"/>
+    <keyword type="struct" name="struct GstIdentity" link="gstreamer-plugins-identity.html#GstIdentity-struct"/>
+    <keyword type="property" name="The “check-imperfect-offset” property" link="gstreamer-plugins-identity.html#GstIdentity--check-imperfect-offset"/>
+    <keyword type="property" name="The “check-imperfect-timestamp” property" link="gstreamer-plugins-identity.html#GstIdentity--check-imperfect-timestamp"/>
+    <keyword type="property" name="The “datarate” property" link="gstreamer-plugins-identity.html#GstIdentity--datarate"/>
+    <keyword type="property" name="The “drop-probability” property" link="gstreamer-plugins-identity.html#GstIdentity--drop-probability"/>
+    <keyword type="property" name="The “dump” property" link="gstreamer-plugins-identity.html#GstIdentity--dump"/>
+    <keyword type="property" name="The “error-after” property" link="gstreamer-plugins-identity.html#GstIdentity--error-after"/>
+    <keyword type="property" name="The “last-message” property" link="gstreamer-plugins-identity.html#GstIdentity--last-message"/>
+    <keyword type="property" name="The “signal-handoffs” property" link="gstreamer-plugins-identity.html#GstIdentity--signal-handoffs"/>
+    <keyword type="property" name="The “silent” property" link="gstreamer-plugins-identity.html#GstIdentity--silent"/>
+    <keyword type="property" name="The “single-segment” property" link="gstreamer-plugins-identity.html#GstIdentity--single-segment"/>
+    <keyword type="property" name="The “sleep-time” property" link="gstreamer-plugins-identity.html#GstIdentity--sleep-time"/>
+    <keyword type="property" name="The “sync” property" link="gstreamer-plugins-identity.html#GstIdentity--sync"/>
+    <keyword type="signal" name="The “handoff” signal" link="gstreamer-plugins-identity.html#GstIdentity-handoff"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-input-selector.html#id-1.2.12.8.5.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-input-selector.html#id-1.2.12.8.5.2"/>
+    <keyword type="struct" name="struct GstInputSelector" link="gstreamer-plugins-input-selector.html#GstInputSelector-struct"/>
+    <keyword type="enum" name="enum GstInputSelectorSyncMode" link="gstreamer-plugins-input-selector.html#GstInputSelectorSyncMode"/>
+    <keyword type="property" name="The “active-pad” property" link="gstreamer-plugins-input-selector.html#GstInputSelector--active-pad"/>
+    <keyword type="property" name="The “cache-buffers” property" link="gstreamer-plugins-input-selector.html#GstInputSelector--cache-buffers"/>
+    <keyword type="property" name="The “n-pads” property" link="gstreamer-plugins-input-selector.html#GstInputSelector--n-pads"/>
+    <keyword type="property" name="The “sync-mode” property" link="gstreamer-plugins-input-selector.html#GstInputSelector--sync-mode"/>
+    <keyword type="property" name="The “sync-streams” property" link="gstreamer-plugins-input-selector.html#GstInputSelector--sync-streams"/>
+    <keyword type="signal" name="The “block” signal" link="gstreamer-plugins-input-selector.html#GstInputSelector-block"/>
+    <keyword type="" name="" link="gstreamer-plugins-multiqueue.html#id-1.2.13.8.2"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-multiqueue.html#id-1.2.13.8.3.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-multiqueue.html#id-1.2.13.8.3.2"/>
+    <keyword type="struct" name="struct GstMultiQueue" link="gstreamer-plugins-multiqueue.html#GstMultiQueue-struct"/>
+    <keyword type="property" name="The “extra-size-buffers” property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--extra-size-buffers"/>
+    <keyword type="property" name="The “extra-size-bytes” property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--extra-size-bytes"/>
+    <keyword type="property" name="The “extra-size-time” property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--extra-size-time"/>
+    <keyword type="property" name="The “high-percent” property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--high-percent"/>
+    <keyword type="property" name="The “low-percent” property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--low-percent"/>
+    <keyword type="property" name="The “max-size-buffers” property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--max-size-buffers"/>
+    <keyword type="property" name="The “max-size-bytes” property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--max-size-bytes"/>
+    <keyword type="property" name="The “max-size-time” property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--max-size-time"/>
+    <keyword type="property" name="The “sync-by-running-time” property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--sync-by-running-time"/>
+    <keyword type="property" name="The “use-buffering” property" link="gstreamer-plugins-multiqueue.html#GstMultiQueue--use-buffering"/>
+    <keyword type="signal" name="The “overrun” signal" link="gstreamer-plugins-multiqueue.html#GstMultiQueue-overrun"/>
+    <keyword type="signal" name="The “underrun” signal" link="gstreamer-plugins-multiqueue.html#GstMultiQueue-underrun"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-output-selector.html#id-1.2.14.7.2.1.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-output-selector.html#id-1.2.14.7.2.1.2"/>
+    <keyword type="struct" name="struct GstOutputSelector" link="gstreamer-plugins-output-selector.html#GstOutputSelector-struct"/>
+    <keyword type="enum" name="enum GstOutputSelectorPadNegotiationMode" link="gstreamer-plugins-output-selector.html#GstOutputSelectorPadNegotiationMode"/>
+    <keyword type="property" name="The “active-pad” property" link="gstreamer-plugins-output-selector.html#GstOutputSelector--active-pad"/>
+    <keyword type="property" name="The “pad-negotiation-mode” property" link="gstreamer-plugins-output-selector.html#GstOutputSelector--pad-negotiation-mode"/>
+    <keyword type="property" name="The “resend-latest” property" link="gstreamer-plugins-output-selector.html#GstOutputSelector--resend-latest"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-queue.html#id-1.2.15.8.7.3.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-queue.html#id-1.2.15.8.7.3.2"/>
+    <keyword type="struct" name="struct GstQueue" link="gstreamer-plugins-queue.html#GstQueue-struct"/>
+    <keyword type="enum" name="enum GstQueueLeaky" link="gstreamer-plugins-queue.html#GstQueueLeaky"/>
+    <keyword type="property" name="The “current-level-buffers” property" link="gstreamer-plugins-queue.html#GstQueue--current-level-buffers"/>
+    <keyword type="property" name="The “current-level-bytes” property" link="gstreamer-plugins-queue.html#GstQueue--current-level-bytes"/>
+    <keyword type="property" name="The “current-level-time” property" link="gstreamer-plugins-queue.html#GstQueue--current-level-time"/>
+    <keyword type="property" name="The “flush-on-eos” property" link="gstreamer-plugins-queue.html#GstQueue--flush-on-eos"/>
+    <keyword type="property" name="The “leaky” property" link="gstreamer-plugins-queue.html#GstQueue--leaky"/>
+    <keyword type="property" name="The “max-size-buffers” property" link="gstreamer-plugins-queue.html#GstQueue--max-size-buffers"/>
+    <keyword type="property" name="The “max-size-bytes” property" link="gstreamer-plugins-queue.html#GstQueue--max-size-bytes"/>
+    <keyword type="property" name="The “max-size-time” property" link="gstreamer-plugins-queue.html#GstQueue--max-size-time"/>
+    <keyword type="property" name="The “min-threshold-buffers” property" link="gstreamer-plugins-queue.html#GstQueue--min-threshold-buffers"/>
+    <keyword type="property" name="The “min-threshold-bytes” property" link="gstreamer-plugins-queue.html#GstQueue--min-threshold-bytes"/>
+    <keyword type="property" name="The “min-threshold-time” property" link="gstreamer-plugins-queue.html#GstQueue--min-threshold-time"/>
+    <keyword type="property" name="The “silent” property" link="gstreamer-plugins-queue.html#GstQueue--silent"/>
+    <keyword type="signal" name="The “overrun” signal" link="gstreamer-plugins-queue.html#GstQueue-overrun"/>
+    <keyword type="signal" name="The “pushing” signal" link="gstreamer-plugins-queue.html#GstQueue-pushing"/>
+    <keyword type="signal" name="The “running” signal" link="gstreamer-plugins-queue.html#GstQueue-running"/>
+    <keyword type="signal" name="The “underrun” signal" link="gstreamer-plugins-queue.html#GstQueue-underrun"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-queue2.html#id-1.2.16.7.7.1.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-queue2.html#id-1.2.16.7.7.1.2"/>
+    <keyword type="struct" name="struct GstQueue2" link="gstreamer-plugins-queue2.html#GstQueue2-struct"/>
+    <keyword type="property" name="The “current-level-buffers” property" link="gstreamer-plugins-queue2.html#GstQueue2--current-level-buffers"/>
+    <keyword type="property" name="The “current-level-bytes” property" link="gstreamer-plugins-queue2.html#GstQueue2--current-level-bytes"/>
+    <keyword type="property" name="The “current-level-time” property" link="gstreamer-plugins-queue2.html#GstQueue2--current-level-time"/>
+    <keyword type="property" name="The “high-percent” property" link="gstreamer-plugins-queue2.html#GstQueue2--high-percent"/>
+    <keyword type="property" name="The “low-percent” property" link="gstreamer-plugins-queue2.html#GstQueue2--low-percent"/>
+    <keyword type="property" name="The “max-size-buffers” property" link="gstreamer-plugins-queue2.html#GstQueue2--max-size-buffers"/>
+    <keyword type="property" name="The “max-size-bytes” property" link="gstreamer-plugins-queue2.html#GstQueue2--max-size-bytes"/>
+    <keyword type="property" name="The “max-size-time” property" link="gstreamer-plugins-queue2.html#GstQueue2--max-size-time"/>
+    <keyword type="property" name="The “ring-buffer-max-size” property" link="gstreamer-plugins-queue2.html#GstQueue2--ring-buffer-max-size"/>
+    <keyword type="property" name="The “temp-location” property" link="gstreamer-plugins-queue2.html#GstQueue2--temp-location"/>
+    <keyword type="property" name="The “temp-remove” property" link="gstreamer-plugins-queue2.html#GstQueue2--temp-remove"/>
+    <keyword type="property" name="The “temp-template” property" link="gstreamer-plugins-queue2.html#GstQueue2--temp-template"/>
+    <keyword type="property" name="The “use-buffering” property" link="gstreamer-plugins-queue2.html#GstQueue2--use-buffering"/>
+    <keyword type="property" name="The “use-rate-estimate” property" link="gstreamer-plugins-queue2.html#GstQueue2--use-rate-estimate"/>
+    <keyword type="" name="Example launch line" link="gstreamer-plugins-tee.html#id-1.2.17.7.4"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-tee.html#id-1.2.17.7.5.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-tee.html#id-1.2.17.7.5.2"/>
+    <keyword type="struct" name="struct GstTee" link="gstreamer-plugins-tee.html#GstTee-struct"/>
+    <keyword type="enum" name="enum GstTeePullMode" link="gstreamer-plugins-tee.html#GstTeePullMode"/>
+    <keyword type="property" name="The “alloc-pad” property" link="gstreamer-plugins-tee.html#GstTee--alloc-pad"/>
+    <keyword type="property" name="The “has-chain” property" link="gstreamer-plugins-tee.html#GstTee--has-chain"/>
+    <keyword type="property" name="The “last-message” property" link="gstreamer-plugins-tee.html#GstTee--last-message"/>
+    <keyword type="property" name="The “num-src-pads” property" link="gstreamer-plugins-tee.html#GstTee--num-src-pads"/>
+    <keyword type="property" name="The “pull-mode” property" link="gstreamer-plugins-tee.html#GstTee--pull-mode"/>
+    <keyword type="property" name="The “silent” property" link="gstreamer-plugins-tee.html#GstTee--silent"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-typefind.html#id-1.2.18.8.4.2.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-typefind.html#id-1.2.18.8.4.2.2"/>
+    <keyword type="struct" name="struct GstTypeFindElement" link="gstreamer-plugins-typefind.html#GstTypeFindElement-struct"/>
+    <keyword type="property" name="The “caps” property" link="gstreamer-plugins-typefind.html#GstTypeFindElement--caps"/>
+    <keyword type="property" name="The “force-caps” property" link="gstreamer-plugins-typefind.html#GstTypeFindElement--force-caps"/>
+    <keyword type="property" name="The “minimum” property" link="gstreamer-plugins-typefind.html#GstTypeFindElement--minimum"/>
+    <keyword type="signal" name="The “have-type” signal" link="gstreamer-plugins-typefind.html#GstTypeFindElement-have-type"/>
+    <keyword type="" name="Element Information" link="gstreamer-plugins-valve.html#id-1.2.19.7.3.4.1"/>
+    <keyword type="" name="Element Pads" link="gstreamer-plugins-valve.html#id-1.2.19.7.3.4.2"/>
+    <keyword type="struct" name="struct GstValve" link="gstreamer-plugins-valve.html#GstValve-struct"/>
+    <keyword type="property" name="The “drop” property" link="gstreamer-plugins-valve.html#GstValve--drop"/>
+  </functions>
+</book>

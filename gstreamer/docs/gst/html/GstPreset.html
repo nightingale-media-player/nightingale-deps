@@ -1,0 +1,628 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GStreamer 1.0 Core Reference Manual: GstPreset</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer 1.0 Core Reference Manual">
+<link rel="up" href="libgstreamer.html" title="GStreamer Core Library">
+<link rel="prev" href="gstreamer-GstPoll.html" title="GstPoll">
+<link rel="next" href="GstQuery.html" title="GstQuery">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#GstPreset.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#GstPreset.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="libgstreamer.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gstreamer-GstPoll.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="GstQuery.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="GstPreset"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="GstPreset.top_of_page"></a>GstPreset</span></h2>
+<p>GstPreset — helper interface for element presets</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="GstPreset.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **
+</td>
+<td class="function_name">
+<a class="link" href="GstPreset.html#gst-preset-get-preset-names" title="gst_preset_get_preset_names ()">gst_preset_get_preset_names</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **
+</td>
+<td class="function_name">
+<a class="link" href="GstPreset.html#gst-preset-get-property-names" title="gst_preset_get_property_names ()">gst_preset_get_property_names</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstPreset.html#gst-preset-load-preset" title="gst_preset_load_preset ()">gst_preset_load_preset</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstPreset.html#gst-preset-save-preset" title="gst_preset_save_preset ()">gst_preset_save_preset</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstPreset.html#gst-preset-rename-preset" title="gst_preset_rename_preset ()">gst_preset_rename_preset</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstPreset.html#gst-preset-delete-preset" title="gst_preset_delete_preset ()">gst_preset_delete_preset</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstPreset.html#gst-preset-set-meta" title="gst_preset_set_meta ()">gst_preset_set_meta</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstPreset.html#gst-preset-get-meta" title="gst_preset_get_meta ()">gst_preset_get_meta</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="GstPreset.html#gst-preset-set-app-dir" title="gst_preset_set_app_dir ()">gst_preset_set_app_dir</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="GstPreset.html#gst-preset-get-app-dir" title="gst_preset_get_app_dir ()">gst_preset_get_app_dir</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstPreset.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="GstPreset.html#GstPreset-struct" title="GstPreset">GstPreset</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="GstPreset.html#GstPresetInterface" title="struct GstPresetInterface">GstPresetInterface</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="GstPreset.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">    GInterface
+    <span class="lineart">╰──</span> GstPreset
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstPreset.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/gst.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="GstPreset.description"></a><h2>Description</h2>
+<p>This interface offers methods to query and manipulate parameter preset sets.
+A preset is a bunch of property settings, together with meta data and a name.
+The name of a preset serves as key for subsequent method calls to manipulate
+single presets.
+All instances of one type will share the list of presets. The list is created
+on demand, if presets are not used, the list is not created.</p>
+<p>The interface comes with a default implementation that serves most plugins.
+Wrapper plugins will override most methods to implement support for the
+native preset format of those wrapped plugins.
+One method that is useful to be overridden is <a class="link" href="GstPreset.html#gst-preset-get-property-names" title="gst_preset_get_property_names ()"><code class="function">gst_preset_get_property_names()</code></a>.
+With that one can control which properties are saved and in which order.</p>
+<p>The default implementation supports presets located in a system directory, 
+application specific directory and in the users home directory. When getting
+a list of presets individual presets are read and overlaid in 1) system, 
+2) application and 3) user order. Whenever an earlier entry is newer, the
+later entries will be updated.</p>
+</div>
+<div class="refsect1">
+<a name="GstPreset.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-preset-get-preset-names"></a><h3>gst_preset_get_preset_names ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **
+gst_preset_get_preset_names (<em class="parameter"><code><a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a> *preset</code></em>);</pre>
+<p>Get a copy of preset names as a <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> terminated string array.</p>
+<div class="refsect3">
+<a name="id-1.3.41.8.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>preset</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> that implements <a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.41.8.2.6"></a><h4>Returns</h4>
+<p>    list with names, use <a href="http://library.gnome.org/devel/glib/unstable/glib-String-Utility-Functions.html#g-strfreev"><code class="function">g_strfreev()</code></a> after usage. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> gchar*]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-preset-get-property-names"></a><h3>gst_preset_get_property_names ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> **
+gst_preset_get_property_names (<em class="parameter"><code><a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a> *preset</code></em>);</pre>
+<p>Get a the names of the GObject properties that can be used for presets.</p>
+<div class="refsect3">
+<a name="id-1.3.41.8.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>preset</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> that implements <a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.41.8.3.6"></a><h4>Returns</h4>
+<p> an
+array of property names which should be freed with <a href="http://library.gnome.org/devel/glib/unstable/glib-String-Utility-Functions.html#g-strfreev"><code class="function">g_strfreev()</code></a> after use. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> zero-terminated=1][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> gchar*]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-preset-load-preset"></a><h3>gst_preset_load_preset ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_preset_load_preset (<em class="parameter"><code><a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a> *preset</code></em>,
+                        <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
+<p>Load the given preset.</p>
+<div class="refsect3">
+<a name="id-1.3.41.8.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>preset</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> that implements <a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>name</p></td>
+<td class="parameter_description"><p>preset name to load</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.41.8.4.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> for success, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if e.g. there is no preset with that <em class="parameter"><code>name</code></em>
+</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-preset-save-preset"></a><h3>gst_preset_save_preset ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_preset_save_preset (<em class="parameter"><code><a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a> *preset</code></em>,
+                        <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
+<p>Save the current object settings as a preset under the given name. If there
+is already a preset by this <em class="parameter"><code>name</code></em>
+ it will be overwritten.</p>
+<div class="refsect3">
+<a name="id-1.3.41.8.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>preset</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> that implements <a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>name</p></td>
+<td class="parameter_description"><p>preset name to save</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.41.8.5.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> for success, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a></p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-preset-rename-preset"></a><h3>gst_preset_rename_preset ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_preset_rename_preset (<em class="parameter"><code><a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a> *preset</code></em>,
+                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *old_name</code></em>,
+                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *new_name</code></em>);</pre>
+<p>Renames a preset. If there is already a preset by the <em class="parameter"><code>new_name</code></em>
+ it will be
+overwritten.</p>
+<div class="refsect3">
+<a name="id-1.3.41.8.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>preset</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> that implements <a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>old_name</p></td>
+<td class="parameter_description"><p>current preset name</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>new_name</p></td>
+<td class="parameter_description"><p>new preset name</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.41.8.6.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> for success, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if e.g. there is no preset with <em class="parameter"><code>old_name</code></em>
+</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-preset-delete-preset"></a><h3>gst_preset_delete_preset ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_preset_delete_preset (<em class="parameter"><code><a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a> *preset</code></em>,
+                          <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>);</pre>
+<p>Delete the given preset.</p>
+<div class="refsect3">
+<a name="id-1.3.41.8.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>preset</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> that implements <a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>name</p></td>
+<td class="parameter_description"><p>preset name to remove</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.41.8.7.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> for success, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if e.g. there is no preset with that <em class="parameter"><code>name</code></em>
+</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-preset-set-meta"></a><h3>gst_preset_set_meta ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_preset_set_meta (<em class="parameter"><code><a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a> *preset</code></em>,
+                     <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                     <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *tag</code></em>,
+                     <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *value</code></em>);</pre>
+<p>Sets a new <em class="parameter"><code>value</code></em>
+ for an existing meta data item or adds a new item. Meta
+data <em class="parameter"><code>tag</code></em>
+ names can be something like e.g. "comment". Supplying <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> for the
+<em class="parameter"><code>value</code></em>
+ will unset an existing value.</p>
+<div class="refsect3">
+<a name="id-1.3.41.8.8.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>preset</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> that implements <a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>name</p></td>
+<td class="parameter_description"><p>preset name</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>tag</p></td>
+<td class="parameter_description"><p>meta data item name</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>value</p></td>
+<td class="parameter_description"><p> new value. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.41.8.8.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> for success, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if e.g. there is no preset with that <em class="parameter"><code>name</code></em>
+</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-preset-get-meta"></a><h3>gst_preset_get_meta ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_preset_get_meta (<em class="parameter"><code><a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a> *preset</code></em>,
+                     <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *name</code></em>,
+                     <em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *tag</code></em>,
+                     <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> **value</code></em>);</pre>
+<p>Gets the <em class="parameter"><code>value</code></em>
+ for an existing meta data <em class="parameter"><code>tag</code></em>
+. Meta data <em class="parameter"><code>tag</code></em>
+ names can be
+something like e.g. "comment". Returned values need to be released when done.</p>
+<div class="refsect3">
+<a name="id-1.3.41.8.9.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>preset</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject"><span class="type">GObject</span></a> that implements <a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>name</p></td>
+<td class="parameter_description"><p>preset name</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>tag</p></td>
+<td class="parameter_description"><p>meta data item name</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>value</p></td>
+<td class="parameter_description"><p> value. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Out parameter, where caller must allocate storage."><span class="acronym">out callee-allocates</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.41.8.9.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> for success, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if e.g. there is no preset with that <em class="parameter"><code>name</code></em>
+or no value for the given <em class="parameter"><code>tag</code></em>
+</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-preset-set-app-dir"></a><h3>gst_preset_set_app_dir ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_preset_set_app_dir (<em class="parameter"><code>const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *app_dir</code></em>);</pre>
+<p>Sets an extra directory as an absolute path that should be considered when
+looking for presets. Any presets in the application dir will shadow the 
+system presets.</p>
+<div class="refsect3">
+<a name="id-1.3.41.8.10.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>app_dir</p></td>
+<td class="parameter_description"><p>the application specific preset dir</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.3.41.8.10.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> for success, <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if the dir already has been set</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-preset-get-app-dir"></a><h3>gst_preset_get_app_dir ()</h3>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="returnvalue">gchar</span></a> *
+gst_preset_get_app_dir (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Gets the directory for application specific presets if set by the
+application.</p>
+<div class="refsect3">
+<a name="id-1.3.41.8.11.5"></a><h4>Returns</h4>
+<p> the directory or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>, don't free or modify
+the string. </p>
+<p><span class="annotation">[nullable]</span></p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="GstPreset.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GstPreset-struct"></a><h3>GstPreset</h3>
+<pre class="programlisting">typedef struct _GstPreset GstPreset;</pre>
+<p>Opaque <a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a> data structure.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstPresetInterface"></a><h3>struct GstPresetInterface</h3>
+<pre class="programlisting">struct GstPresetInterface {
+  GTypeInterface parent;
+
+  /* methods */
+  gchar**      (*get_preset_names)    (GstPreset *preset);
+
+  gchar**      (*get_property_names)  (GstPreset *preset);
+
+  gboolean     (*load_preset)         (GstPreset *preset, const gchar *name);
+  gboolean     (*save_preset)         (GstPreset *preset, const gchar *name);
+  gboolean     (*rename_preset)       (GstPreset *preset, const gchar *old_name,
+                                       const gchar *new_name);
+  gboolean     (*delete_preset)       (GstPreset *preset, const gchar *name);
+
+  gboolean     (*set_meta)            (GstPreset *preset, const gchar *name,
+                                       const gchar *tag, const gchar *value);
+  gboolean     (*get_meta)            (GstPreset *preset, const gchar *name,
+                                       const gchar *tag, gchar **value);
+};
+</pre>
+<p><a class="link" href="GstPreset.html" title="GstPreset"><span class="type">GstPreset</span></a> interface.</p>
+<div class="refsect3">
+<a name="id-1.3.41.9.3.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GstPresetInterface.parent"></a>parent</code></em>;</p></td>
+<td class="struct_member_description"><p>parent interface type.</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstPresetInterface.get-preset-names"></a>get_preset_names</code></em> ()</p></td>
+<td class="struct_member_description"><p>virtual method to get list of presets</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstPresetInterface.get-property-names"></a>get_property_names</code></em> ()</p></td>
+<td class="struct_member_description"><p>virtual methods to get properties that are persistent</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstPresetInterface.load-preset"></a>load_preset</code></em> ()</p></td>
+<td class="struct_member_description"><p>virtual methods to load a preset into properties</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstPresetInterface.save-preset"></a>save_preset</code></em> ()</p></td>
+<td class="struct_member_description"><p>virtual methods to save properties into a preset</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstPresetInterface.rename-preset"></a>rename_preset</code></em> ()</p></td>
+<td class="struct_member_description"><p>virtual methods to rename a preset</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstPresetInterface.delete-preset"></a>delete_preset</code></em> ()</p></td>
+<td class="struct_member_description"><p>virtual methods to remove a preset</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstPresetInterface.set-meta"></a>set_meta</code></em> ()</p></td>
+<td class="struct_member_description"><p>virtual methods to set textual meta data to a preset</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstPresetInterface.get-meta"></a>get_meta</code></em> ()</p></td>
+<td class="struct_member_description"><p>virtual methods to get textual meta data from a preset</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.20</div>
+</body>
+</html>
