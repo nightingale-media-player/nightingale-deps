@@ -81,7 +81,7 @@ host_triplet = @host@
 target_triplet = @target@
 @HAVE_GTK_X11_TRUE@@USE_X_TRUE@am__append_1 = gtk-videooverlay
 @HAVE_QT_TRUE@@USE_X_TRUE@am__append_2 = qt-videooverlay
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@am__append_3 = qtgv-videooverlay
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@am__append_3 = qtgv-videooverlay
 noinst_PROGRAMS = $(am__EXEEXT_4)
 subdir = tests/examples/overlay
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
@@ -91,7 +91,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -131,8 +130,8 @@ CONFIG_CLEAN_VPATH_FILES =
 @HAVE_GTK_X11_TRUE@@USE_X_TRUE@am__EXEEXT_1 =  \
 @HAVE_GTK_X11_TRUE@@USE_X_TRUE@	gtk-videooverlay$(EXEEXT)
 @HAVE_QT_TRUE@@USE_X_TRUE@am__EXEEXT_2 = qt-videooverlay$(EXEEXT)
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@am__EXEEXT_3 =  \
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@	qtgv-videooverlay$(EXEEXT)
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@am__EXEEXT_3 =  \
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@	qtgv-videooverlay$(EXEEXT)
 am__EXEEXT_4 = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3)
 PROGRAMS = $(noinst_PROGRAMS)
 am__gtk_videooverlay_SOURCES_DIST = gtk-videooverlay.c
@@ -166,15 +165,15 @@ qt_videooverlay_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(LDFLAGS) -o $@
 am__qtgv_videooverlay_SOURCES_DIST = qtgv-videooverlay.cpp \
 	qtgv-videooverlay.h
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@am_qtgv_videooverlay_OBJECTS = qtgv_videooverlay-qtgv-videooverlay.$(OBJEXT)
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@nodist_qtgv_videooverlay_OBJECTS = qtgv_videooverlay-moc_qtgv-videooverlay.$(OBJEXT)
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@am_qtgv_videooverlay_OBJECTS = qtgv_videooverlay-qtgv-videooverlay.$(OBJEXT)
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@nodist_qtgv_videooverlay_OBJECTS = qtgv_videooverlay-moc_qtgv-videooverlay.$(OBJEXT)
 qtgv_videooverlay_OBJECTS = $(am_qtgv_videooverlay_OBJECTS) \
 	$(nodist_qtgv_videooverlay_OBJECTS)
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@qtgv_videooverlay_DEPENDENCIES = $(top_builddir)/gst-libs/gst/video/libgstvideo-$(GST_API_VERSION).la \
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@	$(am__DEPENDENCIES_1) \
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@	$(am__DEPENDENCIES_1) \
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@	$(am__DEPENDENCIES_1) \
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@	$(am__DEPENDENCIES_1)
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@qtgv_videooverlay_DEPENDENCIES = $(top_builddir)/gst-libs/gst/video/libgstvideo-$(GST_API_VERSION).la \
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@	$(am__DEPENDENCIES_1) \
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@	$(am__DEPENDENCIES_1) \
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@	$(am__DEPENDENCIES_1) \
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@	$(am__DEPENDENCIES_1)
 qtgv_videooverlay_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(qtgv_videooverlay_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
@@ -457,9 +456,10 @@ PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
 PYTHON_VERSION = @PYTHON_VERSION@
-QT4_MOC = @QT4_MOC@
+QTCHOOSER = @QTCHOOSER@
 QT_CFLAGS = @QT_CFLAGS@
 QT_LIBS = @QT_LIBS@
+QT_MOC = @QT_MOC@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -476,6 +476,7 @@ VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
 WARNING_CFLAGS = @WARNING_CFLAGS@
 WARNING_CXXFLAGS = @WARNING_CXXFLAGS@
+WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
@@ -558,22 +559,22 @@ EXAMPLES = $(am__append_1) $(am__append_2) $(am__append_3)
 @HAVE_GTK_X11_TRUE@@USE_X_TRUE@	$(GST_LIBS) $(X_LIBS) $(LIBM) $(GTK_LIBS)
 
 @HAVE_QT_TRUE@@USE_X_TRUE@qt_videooverlay_SOURCES = qt-videooverlay.cpp
-@HAVE_QT_TRUE@@USE_X_TRUE@qt_videooverlay_CXXFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CXXFLAGS) $(X_CFLAGS) $(QT_CFLAGS)
+@HAVE_QT_TRUE@@USE_X_TRUE@qt_videooverlay_CXXFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CXXFLAGS) $(X_CFLAGS) $(QT_CFLAGS) -fPIC
 @HAVE_QT_TRUE@@USE_X_TRUE@qt_videooverlay_LDADD = \
 @HAVE_QT_TRUE@@USE_X_TRUE@	$(top_builddir)/gst-libs/gst/video/libgstvideo-$(GST_API_VERSION).la \
 @HAVE_QT_TRUE@@USE_X_TRUE@	$(GST_LIBS) $(X_LIBS) $(LIBM) $(QT_LIBS)
 
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@qtgv_videooverlay_SOURCES = qtgv-videooverlay.cpp qtgv-videooverlay.h
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@qtgv_videooverlay_CXXFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CXXFLAGS) $(X_CFLAGS) $(QT_CFLAGS)
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@qtgv_videooverlay_LDADD = \
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@	$(top_builddir)/gst-libs/gst/video/libgstvideo-$(GST_API_VERSION).la \
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@	$(GST_LIBS) $(X_LIBS) $(LIBM) $(QT_LIBS)
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@qtgv_videooverlay_SOURCES = qtgv-videooverlay.cpp qtgv-videooverlay.h
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@qtgv_videooverlay_CXXFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CXXFLAGS) $(X_CFLAGS) $(QT_CFLAGS) -fPIC
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@qtgv_videooverlay_LDADD = \
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@	$(top_builddir)/gst-libs/gst/video/libgstvideo-$(GST_API_VERSION).la \
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@	$(GST_LIBS) $(X_LIBS) $(LIBM) $(QT_LIBS)
 
 
 # qt moc support, according to http://qtnode.net/wiki/Qt_with_autotools
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@nodist_qtgv_videooverlay_SOURCES = moc_qtgv-videooverlay.cpp
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@EXTRA_DIST = $(nodist_qtgv_videooverlay_SOURCES:moc_%.cpp=%.h)
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@CLEANFILES = $(nodist_qtgv_videooverlay_SOURCES)
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@nodist_qtgv_videooverlay_SOURCES = moc_qtgv-videooverlay.cpp
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@EXTRA_DIST = $(nodist_qtgv_videooverlay_SOURCES:moc_%.cpp=%.h)
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@CLEANFILES = $(nodist_qtgv_videooverlay_SOURCES)
 all: all-am
 
 .SUFFIXES:
@@ -956,8 +957,8 @@ uninstall-am:
 	tags tags-am uninstall uninstall-am
 
 
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@moc_%.cpp:%.h
-@HAVE_QT_GV_TRUE@@USE_X_TRUE@	$(AM_V_GEN)$(QT4_MOC) $< -o $@
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@moc_%.cpp:%.h
+@HAVE_QT_MOC_TRUE@@USE_X_TRUE@	$(AM_V_GEN)$(QT_MOC) $< -o $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

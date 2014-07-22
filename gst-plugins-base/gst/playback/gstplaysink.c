@@ -99,6 +99,7 @@ typedef struct
   GstPlayChain chain;
   GstPad *sinkpad;
   GstElement *queue;
+  GstElement *filter;
   GstElement *conv;
   GstElement *volume;           /* element with the volume property */
   gboolean sink_volume;         /* if the volume was provided by the sink */
@@ -122,6 +123,7 @@ typedef struct
   GstPlayChain chain;
   GstPad *sinkpad;
   GstElement *queue;
+  GstElement *filter;
   GstElement *conv;
   GstElement *sink;
   gboolean async;
@@ -237,6 +239,8 @@ struct _GstPlaySink
   /* properties */
   GstElement *audio_sink;
   GstElement *video_sink;
+  GstElement *audio_filter;
+  GstElement *video_filter;
   GstElement *visualisation;
   GstElement *text_sink;
   gdouble volume;
@@ -338,6 +342,8 @@ enum
   PROP_TEXT_SINK,
   PROP_SEND_EVENT_MODE,
   PROP_FORCE_ASPECT_RATIO,
+  PROP_VIDEO_FILTER,
+  PROP_AUDIO_FILTER,
   PROP_LAST
 };
 
@@ -503,8 +509,6 @@ gst_play_sink_class_init (GstPlaySinkClass * klass)
    * Control the synchronisation offset between the audio and video streams.
    * Positive values make the audio ahead of the video and negative values make
    * the audio go behind the video.
-   *
-   * Since: 0.10.30
    */
   g_object_class_install_property (gobject_klass, PROP_AV_OFFSET,
       g_param_spec_int64 ("av-offset", "AV Offset",
@@ -513,12 +517,33 @@ gst_play_sink_class_init (GstPlaySinkClass * klass)
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
   /**
+   * GstPlaySink:video-filter:
+   *
+   * Set the video filter element/bin to use. Will apply on a best-effort basis
+   * unless GST_PLAY_FLAG_FORCE_FILTERS is set. playsink must be in
+   * %GST_STATE_NULL
+   */
+  g_object_class_install_property (gobject_klass, PROP_VIDEO_SINK,
+      g_param_spec_object ("video-filter", "Video filter",
+          "the video filter(s) to apply, if possible",
+          GST_TYPE_ELEMENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  /**
+   * GstPlaySink:audio-filter:
+   *
+   * Set the audio filter element/bin to use. Will apply on a best-effort basis
+   * unless GST_PLAY_FLAG_FORCE_FILTERS is set. playsink must be in
+   * %GST_STATE_NULL
+   */
+  g_object_class_install_property (gobject_klass, PROP_AUDIO_FILTER,
+      g_param_spec_object ("audio-filter", "Audio filter",
+          "the audio filter(s) to apply, if possible",
+          GST_TYPE_ELEMENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  /**
    * GstPlaySink:video-sink:
    *
    * Set the used video sink element. NULL will use the default sink. playsink
    * must be in %GST_STATE_NULL
-   *
-   * Since: 0.10.36
    */
   g_object_class_install_property (gobject_klass, PROP_VIDEO_SINK,
       g_param_spec_object ("video-sink", "Video Sink",
@@ -529,8 +554,6 @@ gst_play_sink_class_init (GstPlaySinkClass * klass)
    *
    * Set the used audio sink element. NULL will use the default sink. playsink
    * must be in %GST_STATE_NULL
-   *
-   * Since: 0.10.36
    */
   g_object_class_install_property (gobject_klass, PROP_AUDIO_SINK,
       g_param_spec_object ("audio-sink", "Audio Sink",
@@ -542,8 +565,6 @@ gst_play_sink_class_init (GstPlaySinkClass * klass)
    *
    * Set the used text sink element. NULL will use the default sink. playsink
    * must be in %GST_STATE_NULL
-   *
-   * Since: 0.10.36
    */
   g_object_class_install_property (gobject_klass, PROP_TEXT_SINK,
       g_param_spec_object ("text-sink", "Text sink",
@@ -556,8 +577,6 @@ gst_play_sink_class_init (GstPlaySinkClass * klass)
    * Sets the handling method used for events received from send_event
    * function. The default is %MODE_DEFAULT, that uses %GstBin's default
    * handling (push the event to all internal sinks).
-   *
-   * Since: 0.10.37
    */
   g_object_class_install_property (gobject_klass, PROP_SEND_EVENT_MODE,
       g_param_spec_enum ("send-event-mode", "Send event mode",
@@ -569,8 +588,6 @@ gst_play_sink_class_init (GstPlaySinkClass * klass)
    * GstPlaySink::force-aspect-ratio:
    *
    * Requests the video sink to enforce the video display aspect ratio.
-   *
-   * Since: 0.10.37
    */
   g_object_class_install_property (gobject_klass, PROP_FORCE_ASPECT_RATIO,
       g_param_spec_boolean ("force-aspect-ratio", "Force Aspect Ratio",
@@ -732,6 +749,16 @@ gst_play_sink_dispose (GObject * object)
 
   playsink = GST_PLAY_SINK (object);
 
+  if (playsink->audio_filter != NULL) {
+    gst_element_set_state (playsink->audio_filter, GST_STATE_NULL);
+    gst_object_unref (playsink->audio_filter);
+    playsink->audio_filter = NULL;
+  }
+  if (playsink->video_filter != NULL) {
+    gst_element_set_state (playsink->video_filter, GST_STATE_NULL);
+    gst_object_unref (playsink->video_filter);
+    playsink->video_filter = NULL;
+  }
   if (playsink->audio_sink != NULL) {
     gst_element_set_state (playsink->audio_sink, GST_STATE_NULL);
     gst_object_unref (playsink->audio_sink);
@@ -900,6 +927,85 @@ gst_play_sink_get_sink (GstPlaySink * playsink, GstPlaySinkType type)
   return result;
 }
 
+void
+gst_play_sink_set_filter (GstPlaySink * playsink, GstPlaySinkType type,
+    GstElement * filter)
+{
+  GstElement **elem = NULL, *old = NULL;
+
+  GST_LOG_OBJECT (playsink,
+      "Setting filter %" GST_PTR_FORMAT " as filter type %d", filter, type);
+
+  GST_PLAY_SINK_LOCK (playsink);
+  switch (type) {
+    case GST_PLAY_SINK_TYPE_AUDIO:
+    case GST_PLAY_SINK_TYPE_AUDIO_RAW:
+      elem = &playsink->audio_filter;
+      break;
+    case GST_PLAY_SINK_TYPE_VIDEO:
+    case GST_PLAY_SINK_TYPE_VIDEO_RAW:
+      elem = &playsink->video_filter;
+      break;
+    default:
+      break;
+  }
+  if (elem) {
+    old = *elem;
+    if (filter)
+      gst_object_ref_sink (filter);
+    *elem = filter;
+  }
+  GST_PLAY_SINK_UNLOCK (playsink);
+
+  if (old) {
+    /* Set the old filter to NULL if it is not used any longer */
+    if (old != filter && !GST_OBJECT_PARENT (old))
+      gst_element_set_state (old, GST_STATE_NULL);
+    gst_object_unref (old);
+  }
+}
+
+GstElement *
+gst_play_sink_get_filter (GstPlaySink * playsink, GstPlaySinkType type)
+{
+  GstElement *result = NULL;
+  GstElement *elem = NULL, *chainp = NULL;
+
+  GST_PLAY_SINK_LOCK (playsink);
+  switch (type) {
+    case GST_PLAY_SINK_TYPE_AUDIO:
+    case GST_PLAY_SINK_TYPE_AUDIO_RAW:
+    {
+      GstPlayAudioChain *chain;
+      if ((chain = (GstPlayAudioChain *) playsink->audiochain))
+        chainp = chain->filter;
+      elem = playsink->audio_filter;
+      break;
+    }
+    case GST_PLAY_SINK_TYPE_VIDEO:
+    case GST_PLAY_SINK_TYPE_VIDEO_RAW:
+    {
+      GstPlayVideoChain *chain;
+      if ((chain = (GstPlayVideoChain *) playsink->videochain))
+        chainp = chain->filter;
+      elem = playsink->video_filter;
+      break;
+    }
+    default:
+      break;
+  }
+  if (chainp) {
+    /* we have an active chain with a filter, get the filter */
+    result = gst_object_ref (chainp);
+  }
+  /* nothing found, return last configured filter */
+  if (result == NULL && elem)
+    result = gst_object_ref (elem);
+  GST_PLAY_SINK_UNLOCK (playsink);
+
+  return result;
+}
+
 static GstPadProbeReturn
 gst_play_sink_vis_blocked (GstPad * tee_pad, GstPadProbeInfo * info,
     gpointer user_data)
@@ -908,6 +1014,12 @@ gst_play_sink_vis_blocked (GstPad * tee_pad, GstPadProbeInfo * info,
   GstPlayVisChain *chain;
 
   playsink = GST_PLAY_SINK (user_data);
+
+  if (GST_IS_EVENT (info->data) && !GST_EVENT_IS_SERIALIZED (info->data)) {
+    GST_DEBUG_OBJECT (playsink, "Letting non-serialized event %s pass",
+        GST_EVENT_TYPE_NAME (info->data));
+    return GST_PAD_PROBE_PASS;
+  }
 
   GST_PLAY_SINK_LOCK (playsink);
   GST_DEBUG_OBJECT (playsink, "vis pad blocked");
@@ -1583,14 +1695,14 @@ update_colorbalance (GstPlaySink * playsink)
 /* make the element (bin) that contains the elements needed to perform
  * video display.
  *
- *  +------------------------------------------------------------+
- *  | vbin                                                       |
- *  |      +-------+   +----------+   +----------+   +---------+ |
- *  |      | queue |   |colorspace|   |videoscale|   |videosink| |
- *  |   +-sink    src-sink       src-sink       src-sink       | |
- *  |   |  +-------+   +----------+   +----------+   +---------+ |
- * sink-+                                                        |
- *  +------------------------------------------------------------+
+ *  +------------------------------------------------------------------------+
+ *  | vbin                                                                   |
+ *  |      +--------+  +-------+   +----------+   +----------+   +---------+ |
+ *  |      | filter |  | queue |   |colorspace|   |videoscale|   |videosink| |
+ *  |   +-sink    src-sink    src-sink       src-sink       src-sink       | |
+ *  |   |  +--------+  +-------+   +----------+   +----------+   +---------+ |
+ * sink-+                                                                    |
+ *  +------------------------------------------------------------------------+
  *
  */
 static GstPlayVideoChain *
@@ -1695,6 +1807,28 @@ gen_video_chain (GstPlaySink * playsink, gboolean raw, gboolean async)
     }
   }
 
+  head = chain->sink;
+  prev = NULL;
+
+  /* add the video filter first, so everything is working with post-filter
+   * samples */
+  chain->filter = gst_play_sink_get_filter (playsink,
+      GST_PLAY_SINK_TYPE_VIDEO_RAW);
+  if (chain->filter) {
+    if (!raw) {
+      if (playsink->flags & GST_PLAY_FLAG_FORCE_FILTERS) {
+        goto filter_with_nonraw;
+      } else {
+        GST_DEBUG_OBJECT (playsink,
+            "skipping video filter since we're not raw");
+      }
+    } else {
+      GST_DEBUG_OBJECT (playsink, "adding video filter");
+      gst_bin_add (bin, chain->filter);
+      head = prev = chain->filter;
+    }
+  }
+
   /* decouple decoder from sink, this improves playback quite a lot since the
    * decoder can continue while the sink blocks for synchronisation. We don't
    * need a lot of buffers as this consumes a lot of memory and we don't want
@@ -1705,13 +1839,18 @@ gen_video_chain (GstPlaySink * playsink, gboolean raw, gboolean async)
     GST_ELEMENT_WARNING (playsink, CORE, MISSING_PLUGIN,
         (_("Missing element '%s' - check your GStreamer installation."),
             "queue"), ("video rendering might be suboptimal"));
-    head = chain->sink;
-    prev = NULL;
   } else {
     g_object_set (G_OBJECT (chain->queue), "max-size-buffers", 3,
         "max-size-bytes", 0, "max-size-time", (gint64) 0, "silent", TRUE, NULL);
     gst_bin_add (bin, chain->queue);
-    head = prev = chain->queue;
+    if (prev) {
+      if (!gst_element_link_pads_full (prev, "src", chain->queue, "sink",
+              GST_PAD_LINK_CHECK_TEMPLATE_CAPS))
+        goto link_failed;
+    } else {
+      head = chain->queue;
+    }
+    prev = chain->queue;
   }
 
   GST_OBJECT_LOCK (playsink);
@@ -1825,13 +1964,21 @@ link_failed:
   {
     GST_ELEMENT_ERROR (playsink, CORE, PAD,
         (NULL), ("Failed to configure the video sink."));
-    /* checking sink made it READY */
-    gst_element_set_state (chain->sink, GST_STATE_NULL);
-    /* Remove chain from the bin to allow reuse later */
-    gst_bin_remove (bin, chain->sink);
-    free_chain ((GstPlayChain *) chain);
-    return NULL;
+    goto cleanup;
   }
+filter_with_nonraw:
+  {
+    GST_ELEMENT_ERROR (playsink, CORE, NEGOTIATION,
+        (NULL), ("Cannot apply video-filter on non-raw stream"));
+    goto cleanup;
+  }
+cleanup:
+  /* checking sink made it READY */
+  gst_element_set_state (chain->sink, GST_STATE_NULL);
+  /* Remove chain from the bin to allow reuse later */
+  gst_bin_remove (bin, chain->sink);
+  free_chain ((GstPlayChain *) chain);
+  return NULL;
 }
 
 static gboolean
@@ -1842,6 +1989,10 @@ setup_video_chain (GstPlaySink * playsink, gboolean raw, gboolean async)
   GstStateChangeReturn ret;
 
   chain = playsink->videochain;
+
+  /* if we have a filter, and raw-ness changed, we have to force a rebuild */
+  if (chain->filter && chain->chain.raw != raw)
+    return FALSE;
 
   chain->chain.raw = raw;
 
@@ -2456,14 +2607,14 @@ notify_mute_cb (GObject * object, GParamSpec * pspec, GstPlaySink * playsink)
  * We add a tee as the first element so that we can link the visualisation chain
  * to it when requested.
  *
- *  +-------------------------------------------------------------+
- *  | abin                                                        |
- *  |      +---------+   +----------+   +---------+   +---------+ |
- *  |      |audioconv|   |audioscale|   | volume  |   |audiosink| |
- *  |   +-srck      src-sink       src-sink      src-sink       | |
- *  |   |  +---------+   +----------+   +---------+   +---------+ |
- * sink-+                                                         |
- *  +-------------------------------------------------------------+
+ *  +--------------------------------------------------------------+
+ *  | abin                                                         |
+ *  |      +----------+   +--------+   +---------+   +-----------+ |
+ *  |      |  filter  |   | queue  |   | convbin |   | audiosink | |
+ *  |   +-sink       src-sink     src-sink      src-sink         | |
+ *  |   |  +----------+   +--------+   +---------+   +-----------+ |
+ * sink-+                                                          |
+ *  +--------------------------------------------------------------+
  */
 static GstPlayAudioChain *
 gen_audio_chain (GstPlaySink * playsink, gboolean raw)
@@ -2510,6 +2661,28 @@ gen_audio_chain (GstPlaySink * playsink, gboolean raw)
   gst_object_ref_sink (bin);
   gst_bin_add (bin, chain->sink);
 
+  head = chain->sink;
+  prev = NULL;
+
+  /* add the audio filter first, so everything is working with post-filter
+   * samples */
+  chain->filter = gst_play_sink_get_filter (playsink,
+      GST_PLAY_SINK_TYPE_AUDIO_RAW);
+  if (chain->filter) {
+    if (!raw) {
+      if (playsink->flags & GST_PLAY_FLAG_FORCE_FILTERS) {
+        goto filter_with_nonraw;
+      } else {
+        GST_DEBUG_OBJECT (playsink,
+            "skipping video filter since we're not raw");
+      }
+    } else {
+      GST_DEBUG_OBJECT (playsink, "adding video filter");
+      gst_bin_add (bin, chain->filter);
+      head = prev = chain->filter;
+    }
+  }
+
   /* we have to add a queue when we need to decouple for the video sink in
    * visualisations and for streamsynchronizer */
   GST_DEBUG_OBJECT (playsink, "adding audio queue");
@@ -2519,12 +2692,17 @@ gen_audio_chain (GstPlaySink * playsink, gboolean raw)
     GST_ELEMENT_WARNING (playsink, CORE, MISSING_PLUGIN,
         (_("Missing element '%s' - check your GStreamer installation."),
             "queue"), ("audio playback and visualizations might not work"));
-    head = chain->sink;
-    prev = NULL;
   } else {
     g_object_set (chain->queue, "silent", TRUE, NULL);
     gst_bin_add (bin, chain->queue);
-    prev = head = chain->queue;
+    if (prev) {
+      if (!gst_element_link_pads_full (prev, "src", chain->queue, "sink",
+              GST_PAD_LINK_CHECK_TEMPLATE_CAPS))
+        goto link_failed;
+    } else {
+      head = chain->queue;
+    }
+    prev = chain->queue;
   }
 
   /* find ts-offset element */
@@ -2694,13 +2872,21 @@ link_failed:
   {
     GST_ELEMENT_ERROR (playsink, CORE, PAD,
         (NULL), ("Failed to configure the audio sink."));
-    /* checking sink made it READY */
-    gst_element_set_state (chain->sink, GST_STATE_NULL);
-    /* Remove chain from the bin to allow reuse later */
-    gst_bin_remove (bin, chain->sink);
-    free_chain ((GstPlayChain *) chain);
-    return NULL;
+    goto cleanup;
   }
+filter_with_nonraw:
+  {
+    GST_ELEMENT_ERROR (playsink, CORE, NEGOTIATION,
+        (NULL), ("Cannot apply video-filter on non-raw stream"));
+    goto cleanup;
+  }
+cleanup:
+  /* checking sink made it READY */
+  gst_element_set_state (chain->sink, GST_STATE_NULL);
+  /* Remove chain from the bin to allow reuse later */
+  gst_bin_remove (bin, chain->sink);
+  free_chain ((GstPlayChain *) chain);
+  return NULL;
 }
 
 static gboolean
@@ -2713,6 +2899,10 @@ setup_audio_chain (GstPlaySink * playsink, gboolean raw)
 
   chain = playsink->audiochain;
   conv = GST_PLAY_SINK_AUDIO_CONVERT_CAST (chain->conv);
+
+  /* if we have a filter, and raw-ness changed, we have to force a rebuild */
+  if (chain->filter && chain->chain.raw != raw)
+    return FALSE;
 
   chain->chain.raw = raw;
 
@@ -3354,8 +3544,8 @@ gst_play_sink_do_reconfigure (GstPlaySink * playsink)
         /* unlink the old plugin and unghost the pad */
         gst_pad_unlink (playsink->vischain->vispeerpad,
             playsink->vischain->vissinkpad);
-        gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (playsink->
-                vischain->srcpad), NULL);
+        gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (playsink->vischain->
+                srcpad), NULL);
 
         /* set the old plugin to NULL and remove */
         gst_element_set_state (playsink->vischain->vis, GST_STATE_NULL);
@@ -3377,8 +3567,8 @@ gst_play_sink_do_reconfigure (GstPlaySink * playsink)
         /* link pads */
         gst_pad_link_full (playsink->vischain->vispeerpad,
             playsink->vischain->vissinkpad, GST_PAD_LINK_CHECK_NOTHING);
-        gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (playsink->
-                vischain->srcpad), playsink->vischain->vissrcpad);
+        gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (playsink->vischain->
+                srcpad), playsink->vischain->vissrcpad);
       } else {
         srcpad =
             gst_element_get_static_pad (playsink->vischain->chain.bin, "src");
@@ -3476,22 +3666,44 @@ gst_play_sink_do_reconfigure (GstPlaySink * playsink)
     GST_DEBUG_OBJECT (playsink, "no text needed");
     /* we have no subtitles/text or we are requested to not show them */
 
-    if (playsink->text_sinkpad_stream_synchronizer) {
-      gst_element_release_request_pad (GST_ELEMENT_CAST
-          (playsink->stream_synchronizer),
-          playsink->text_sinkpad_stream_synchronizer);
-      gst_object_unref (playsink->text_sinkpad_stream_synchronizer);
-      playsink->text_sinkpad_stream_synchronizer = NULL;
-      gst_object_unref (playsink->text_srcpad_stream_synchronizer);
-      playsink->text_srcpad_stream_synchronizer = NULL;
-    }
-
     if (playsink->textchain) {
       if (playsink->text_pad == NULL) {
         /* no text pad, remove the chain entirely */
         GST_DEBUG_OBJECT (playsink, "removing text chain");
         add_chain (GST_PLAY_CHAIN (playsink->textchain), FALSE);
         activate_chain (GST_PLAY_CHAIN (playsink->textchain), FALSE);
+
+        if (playsink->text_sinkpad_stream_synchronizer) {
+          gst_element_release_request_pad (GST_ELEMENT_CAST
+              (playsink->stream_synchronizer),
+              playsink->text_sinkpad_stream_synchronizer);
+          gst_object_unref (playsink->text_sinkpad_stream_synchronizer);
+          playsink->text_sinkpad_stream_synchronizer = NULL;
+          gst_object_unref (playsink->text_srcpad_stream_synchronizer);
+          playsink->text_srcpad_stream_synchronizer = NULL;
+        }
+
+        if (!need_video && playsink->video_pad) {
+          if (playsink->video_sinkpad_stream_synchronizer) {
+            gst_element_release_request_pad (GST_ELEMENT_CAST
+                (playsink->stream_synchronizer),
+                playsink->video_sinkpad_stream_synchronizer);
+            gst_object_unref (playsink->video_sinkpad_stream_synchronizer);
+            playsink->video_sinkpad_stream_synchronizer = NULL;
+            gst_object_unref (playsink->video_srcpad_stream_synchronizer);
+            playsink->video_srcpad_stream_synchronizer = NULL;
+          }
+
+          gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (playsink->video_pad),
+              NULL);
+        }
+
+        if (playsink->text_pad && !playsink->textchain)
+          gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (playsink->text_pad),
+              NULL);
+
+        if (playsink->text_sink)
+          gst_element_set_state (playsink->text_sink, GST_STATE_NULL);
       } else {
         /* we have a chain and a textpad, turn the subtitles off */
         GST_DEBUG_OBJECT (playsink, "turning off the text");
@@ -3500,25 +3712,6 @@ gst_play_sink_do_reconfigure (GstPlaySink * playsink)
               NULL);
       }
     }
-    if (!need_video && playsink->video_pad) {
-      if (playsink->video_sinkpad_stream_synchronizer) {
-        gst_element_release_request_pad (GST_ELEMENT_CAST
-            (playsink->stream_synchronizer),
-            playsink->video_sinkpad_stream_synchronizer);
-        gst_object_unref (playsink->video_sinkpad_stream_synchronizer);
-        playsink->video_sinkpad_stream_synchronizer = NULL;
-        gst_object_unref (playsink->video_srcpad_stream_synchronizer);
-        playsink->video_srcpad_stream_synchronizer = NULL;
-      }
-
-      gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (playsink->video_pad), NULL);
-    }
-
-    if (playsink->text_pad && !playsink->textchain)
-      gst_ghost_pad_set_target (GST_GHOST_PAD_CAST (playsink->text_pad), NULL);
-
-    if (playsink->text_sink)
-      gst_element_set_state (playsink->text_sink, GST_STATE_NULL);
   }
   update_av_offset (playsink);
   do_async_done (playsink);
@@ -3845,8 +4038,8 @@ video_set_blocked (GstPlaySink * playsink, gboolean blocked)
             (playsink->video_pad)));
     if (blocked && playsink->video_block_id == 0) {
       if (playsink->vis_pad_block_id)
-        gst_pad_remove_probe (((GstPlayVisChain *) playsink->
-                vischain)->blockpad, playsink->vis_pad_block_id);
+        gst_pad_remove_probe (((GstPlayVisChain *) playsink->vischain)->
+            blockpad, playsink->vis_pad_block_id);
       playsink->vis_pad_block_id = 0;
 
       playsink->video_block_id =
@@ -3872,8 +4065,8 @@ audio_set_blocked (GstPlaySink * playsink, gboolean blocked)
             (playsink->audio_pad)));
     if (blocked && playsink->audio_block_id == 0) {
       if (playsink->vis_pad_block_id)
-        gst_pad_remove_probe (((GstPlayVisChain *) playsink->
-                vischain)->blockpad, playsink->vis_pad_block_id);
+        gst_pad_remove_probe (((GstPlayVisChain *) playsink->vischain)->
+            blockpad, playsink->vis_pad_block_id);
       playsink->vis_pad_block_id = 0;
 
       playsink->audio_block_id =
@@ -3881,8 +4074,8 @@ audio_set_blocked (GstPlaySink * playsink, gboolean blocked)
           sinkpad_blocked_cb, playsink, NULL);
     } else if (!blocked && playsink->audio_block_id) {
       if (playsink->vis_pad_block_id)
-        gst_pad_remove_probe (((GstPlayVisChain *) playsink->
-                vischain)->blockpad, playsink->vis_pad_block_id);
+        gst_pad_remove_probe (((GstPlayVisChain *) playsink->vischain)->
+            blockpad, playsink->vis_pad_block_id);
       playsink->vis_pad_block_id = 0;
 
       gst_pad_remove_probe (opad, playsink->audio_block_id);
@@ -3904,8 +4097,8 @@ text_set_blocked (GstPlaySink * playsink, gboolean blocked)
             (playsink->text_pad)));
     if (blocked && playsink->text_block_id == 0) {
       if (playsink->vis_pad_block_id)
-        gst_pad_remove_probe (((GstPlayVisChain *) playsink->
-                vischain)->blockpad, playsink->vis_pad_block_id);
+        gst_pad_remove_probe (((GstPlayVisChain *) playsink->vischain)->
+            blockpad, playsink->vis_pad_block_id);
       playsink->vis_pad_block_id = 0;
 
       playsink->text_block_id =
@@ -3941,6 +4134,12 @@ sinkpad_blocked_cb (GstPad * blockedpad, GstPadProbeInfo * info,
 {
   GstPlaySink *playsink = (GstPlaySink *) user_data;
   GstPad *pad;
+
+  if (GST_IS_EVENT (info->data) && !GST_EVENT_IS_SERIALIZED (info->data)) {
+    GST_DEBUG_OBJECT (playsink, "Letting non-serialized event %s pass",
+        GST_EVENT_TYPE_NAME (info->data));
+    return GST_PAD_PROBE_PASS;
+  }
 
   GST_PLAY_SINK_LOCK (playsink);
 
@@ -4191,13 +4390,15 @@ gst_play_sink_request_pad (GstPlaySink * playsink, GstPlaySinkType type)
      * element is 'running' */
     gst_pad_set_active (res, TRUE);
     gst_element_add_pad (GST_ELEMENT_CAST (playsink), res);
+
+    GST_PLAY_SINK_LOCK (playsink);
     if (block_id && *block_id == 0) {
       GstPad *blockpad =
           GST_PAD_CAST (gst_proxy_pad_get_internal (GST_PROXY_PAD (res)));
 
       if (playsink->vis_pad_block_id)
-        gst_pad_remove_probe (((GstPlayVisChain *) playsink->
-                vischain)->blockpad, playsink->vis_pad_block_id);
+        gst_pad_remove_probe (((GstPlayVisChain *) playsink->vischain)->
+            blockpad, playsink->vis_pad_block_id);
       playsink->vis_pad_block_id = 0;
 
       *block_id =
@@ -4206,6 +4407,7 @@ gst_play_sink_request_pad (GstPlaySink * playsink, GstPlaySinkType type)
       PENDING_FLAG_SET (playsink, type);
       gst_object_unref (blockpad);
     }
+    GST_PLAY_SINK_UNLOCK (playsink);
     if (!activate)
       gst_pad_set_active (res, activate);
   }
@@ -4506,8 +4708,8 @@ gst_play_sink_change_state (GstElement * element, GstStateChange transition)
       audio_set_blocked (playsink, FALSE);
       text_set_blocked (playsink, FALSE);
       if (playsink->vis_pad_block_id)
-        gst_pad_remove_probe (((GstPlayVisChain *) playsink->
-                vischain)->blockpad, playsink->vis_pad_block_id);
+        gst_pad_remove_probe (((GstPlayVisChain *) playsink->vischain)->
+            blockpad, playsink->vis_pad_block_id);
       playsink->vis_pad_block_id = 0;
 
       GST_PLAY_SINK_UNLOCK (playsink);
@@ -4715,6 +4917,14 @@ gst_play_sink_set_property (GObject * object, guint prop_id,
     case PROP_AV_OFFSET:
       gst_play_sink_set_av_offset (playsink, g_value_get_int64 (value));
       break;
+    case PROP_VIDEO_FILTER:
+      gst_play_sink_set_filter (playsink, GST_PLAY_SINK_TYPE_VIDEO,
+          g_value_get_object (value));
+      break;
+    case PROP_AUDIO_FILTER:
+      gst_play_sink_set_filter (playsink, GST_PLAY_SINK_TYPE_AUDIO,
+          g_value_get_object (value));
+      break;
     case PROP_VIDEO_SINK:
       gst_play_sink_set_sink (playsink, GST_PLAY_SINK_TYPE_VIDEO,
           g_value_get_object (value));
@@ -4789,6 +4999,14 @@ gst_play_sink_get_property (GObject * object, guint prop_id,
       break;
     case PROP_AV_OFFSET:
       g_value_set_int64 (value, gst_play_sink_get_av_offset (playsink));
+      break;
+    case PROP_VIDEO_FILTER:
+      g_value_take_object (value, gst_play_sink_get_filter (playsink,
+              GST_PLAY_SINK_TYPE_VIDEO));
+      break;
+    case PROP_AUDIO_FILTER:
+      g_value_take_object (value, gst_play_sink_get_filter (playsink,
+              GST_PLAY_SINK_TYPE_AUDIO));
       break;
     case PROP_VIDEO_SINK:
       g_value_take_object (value, gst_play_sink_get_sink (playsink,

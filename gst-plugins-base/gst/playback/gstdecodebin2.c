@@ -183,6 +183,8 @@ struct _GstDecodeBin
   gboolean expose_allstreams;   /* Whether to expose unknow type streams or not */
 
   GList *filtered;              /* elements for which error messages are filtered */
+
+  GList *buffering_status;      /* element currently buffering messages */
 };
 
 struct _GstDecodeBinClass
@@ -233,10 +235,11 @@ enum
 #define AUTO_PREROLL_NOT_SEEKABLE_SIZE_TIME      10 * GST_SECOND
 #define AUTO_PREROLL_SEEKABLE_SIZE_TIME          0
 
-/* whan playing, keep a max of 2MB of data but try to keep the number of buffers
+/* when playing, keep a max of 2MB of data but try to keep the number of buffers
  * as low as possible (try to aim for 5 buffers) */
 #define AUTO_PLAY_SIZE_BYTES        2 * 1024 * 1024
 #define AUTO_PLAY_SIZE_BUFFERS      5
+#define AUTO_PLAY_ADAPTIVE_SIZE_BUFFERS 2
 #define AUTO_PLAY_SIZE_TIME         0
 
 #define DEFAULT_SUBTITLE_ENCODING NULL
@@ -282,7 +285,8 @@ static void type_found (GstElement * typefind, guint probability,
     GstCaps * caps, GstDecodeBin * decode_bin);
 
 static void decodebin_set_queue_size (GstDecodeBin * dbin,
-    GstElement * multiqueue, gboolean preroll, gboolean seekable);
+    GstElement * multiqueue, gboolean preroll, gboolean seekable,
+    gboolean adaptive_streaming);
 
 static gboolean gst_decode_bin_autoplug_continue (GstElement * element,
     GstPad * pad, GstCaps * caps);
@@ -416,6 +420,7 @@ struct _GstDecodeChain
 
   gboolean drained;             /* TRUE if the all children are drained */
   gboolean demuxer;             /* TRUE if elements->data is a demuxer */
+  gboolean adaptive_demuxer;    /* TRUE if elements->data is an adaptive streaming demuxer */
   gboolean seekable;            /* TRUE if this chain ends on a demuxer and is seekable */
   GList *elements;              /* All elements in this group, first
                                    is the latest and most downstream element */
@@ -611,6 +616,13 @@ _gst_select_accumulator (GSignalInvocationHint * ihint,
   if (!(ihint->run_type & G_SIGNAL_RUN_CLEANUP))
     g_value_set_enum (return_accu, res);
 
+  /* Call the next handler in the chain (if any) when the current callback
+   * returns TRY. This makes it possible to register separate autoplug-select
+   * handlers that implement different TRY/EXPOSE/SKIP strategies.
+   */
+  if (res == GST_AUTOPLUG_SELECT_TRY)
+    return TRUE;
+
   return FALSE;
 }
 
@@ -778,9 +790,11 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
    * next factory.
    *
    * <note>
-   *   Only the signal handler that is connected first will ever by invoked.
-   *   Don't connect signal handlers with the #G_CONNECT_AFTER flag to this
-   *   signal, they will never be invoked!
+   *   The signal handler will not be invoked if any of the previously
+   *   registered signal handlers (if any) return a value other than
+   *   GST_AUTOPLUG_SELECT_TRY. Which also means that if you return
+   *   GST_AUTOPLUG_SELECT_TRY from one signal handler, handlers that get
+   *   registered next (again, if any) can override that decision.
    * </note>
    *
    * Returns: a #GST_TYPE_AUTOPLUG_SELECT_RESULT that indicates the required
@@ -822,8 +836,6 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
    * @bin: The decodebin
    *
    * This signal is emitted once decodebin has finished decoding all the data.
-   *
-   * Since: 0.10.16
    */
   gst_decode_bin_signals[SIGNAL_DRAINED] =
       g_signal_new ("drained", G_TYPE_FROM_CLASS (klass),
@@ -852,8 +864,6 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
    *
    * Activate buffering in decodebin. This will instruct the multiqueues behind
    * decoders to emit BUFFERING messages.
-
-   * Since: 0.10.26
    */
   g_object_class_install_property (gobject_klass, PROP_USE_BUFFERING,
       g_param_spec_boolean ("use-buffering", "Use Buffering",
@@ -864,8 +874,6 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
    * GstDecodeBin:low-percent
    *
    * Low threshold percent for buffering to start.
-   *
-   * Since: 0.10.26
    */
   g_object_class_install_property (gobject_klass, PROP_LOW_PERCENT,
       g_param_spec_int ("low-percent", "Low percent",
@@ -875,8 +883,6 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
    * GstDecodeBin:high-percent
    *
    * High threshold percent for buffering to finish.
-   *
-   * Since: 0.10.26
    */
   g_object_class_install_property (gobject_klass, PROP_HIGH_PERCENT,
       g_param_spec_int ("high-percent", "High percent",
@@ -887,8 +893,6 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
    * GstDecodeBin:max-size-bytes
    *
    * Max amount of bytes in the queue (0=automatic).
-   *
-   * Since: 0.10.26
    */
   g_object_class_install_property (gobject_klass, PROP_MAX_SIZE_BYTES,
       g_param_spec_uint ("max-size-bytes", "Max. size (bytes)",
@@ -899,8 +903,6 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
    * GstDecodeBin:max-size-buffers
    *
    * Max amount of buffers in the queue (0=automatic).
-   *
-   * Since: 0.10.26
    */
   g_object_class_install_property (gobject_klass, PROP_MAX_SIZE_BUFFERS,
       g_param_spec_uint ("max-size-buffers", "Max. size (buffers)",
@@ -911,8 +913,6 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
    * GstDecodeBin:max-size-time
    *
    * Max amount of time in the queue (in ns, 0=automatic).
-   *
-   * Since: 0.10.26
    */
   g_object_class_install_property (gobject_klass, PROP_MAX_SIZE_TIME,
       g_param_spec_uint64 ("max-size-time", "Max. size (ns)",
@@ -924,8 +924,6 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
    * GstDecodeBin::post-stream-topology
    *
    * Post stream-topology messages on the bus every time the topology changes.
-   *
-   * Since: 0.10.26
    */
   g_object_class_install_property (gobject_klass, PROP_POST_STREAM_TOPOLOGY,
       g_param_spec_boolean ("post-stream-topology", "Post Stream Topology",
@@ -942,8 +940,6 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
    * caps (see 'caps' property) will have a pad exposed. Streams that do not
    * match those caps but could have been decoded will not have decoder plugged
    * in internally and will not have a pad exposed.
-   *
-   * Since: 0.10.30
    */
   g_object_class_install_property (gobject_klass, PROP_EXPOSE_ALL_STREAMS,
       g_param_spec_boolean ("expose-all-streams", "Expose All Streams",
@@ -955,8 +951,6 @@ gst_decode_bin_class_init (GstDecodeBinClass * klass)
    * GstDecodeBin2::connection-speed
    *
    * Network connection speed in kbps (0 = unknownw)
-   *
-   * Since: 0.10.XX
    */
   g_object_class_install_property (gobject_klass, PROP_CONNECTION_SPEED,
       g_param_spec_uint64 ("connection-speed", "Connection Speed",
@@ -1421,6 +1415,7 @@ gst_decode_bin_autoplug_query (GstElement * element, GstPad * pad,
 
 static gboolean are_final_caps (GstDecodeBin * dbin, GstCaps * caps);
 static gboolean is_demuxer_element (GstElement * srcelement);
+static gboolean is_adaptive_demuxer_element (GstElement * srcelement);
 
 static gboolean connect_pad (GstDecodeBin * dbin, GstElement * src,
     GstDecodePad * dpad, GstPad * pad, GstCaps * caps, GValueArray * factories,
@@ -1512,6 +1507,7 @@ analyze_new_pad (GstDecodeBin * dbin, GstElement * src, GstPad * pad,
   if (chain->demuxer) {
     GstDecodeGroup *group;
     GstDecodeChain *oldchain = chain;
+    GstDecodeElement *demux = (chain->elements ? chain->elements->data : NULL);
 
     if (chain->current_pad)
       gst_object_unref (chain->current_pad);
@@ -1530,6 +1526,12 @@ analyze_new_pad (GstDecodeBin * dbin, GstElement * src, GstPad * pad,
       GST_WARNING_OBJECT (dbin, "No current group");
       return;
     }
+
+    /* If this is not a dynamic pad demuxer, we're no-more-pads
+     * already before anything else happens
+     */
+    if (demux == NULL || !demux->no_more_pads_id)
+      group->no_more_pads = TRUE;
   }
 
   if ((caps == NULL) || gst_caps_is_empty (caps))
@@ -2003,6 +2005,15 @@ connect_pad (GstDecodeBin * dbin, GstElement * src, GstDecodePad * dpad,
           break;
         }
       }
+
+      if (!skip && chain->parent && chain->parent->parent) {
+        GstDecodeChain *parent_chain = chain->parent->parent;
+        GstDecodeElement *pelem =
+            parent_chain->elements ? parent_chain->elements->data : NULL;
+
+        if (pelem && gst_element_get_factory (pelem->element) == factory)
+          skip = TRUE;
+      }
       CHAIN_MUTEX_UNLOCK (chain);
       if (skip) {
         GST_DEBUG_OBJECT (dbin,
@@ -2114,6 +2125,27 @@ connect_pad (GstDecodeBin * dbin, GstElement * src, GstDecodePad * dpad,
     delem->capsfilter = NULL;
     chain->elements = g_list_prepend (chain->elements, delem);
     chain->demuxer = is_demuxer_element (element);
+    chain->adaptive_demuxer = is_adaptive_demuxer_element (element);
+
+    /* For adaptive streaming demuxer we insert a multiqueue after
+     * this demuxer. This multiqueue will get one fragment per buffer.
+     * Now for the case where we have a container stream inside these
+     * buffers, another demuxer will be plugged and after this second
+     * demuxer there will be a second multiqueue. This second multiqueue
+     * will get smaller buffers and will be the one emitting buffering
+     * messages.
+     * If we don't have a container stream inside the fragment buffers,
+     * we'll insert a multiqueue below right after the next element after
+     * the adaptive streaming demuxer. This is going to be a parser or
+     * decoder, and will output smaller buffers.
+     */
+    if (chain->parent && chain->parent->parent) {
+      GstDecodeChain *parent_chain = chain->parent->parent;
+
+      if (parent_chain->adaptive_demuxer)
+        chain->demuxer = TRUE;
+    }
+
     CHAIN_MUTEX_UNLOCK (chain);
 
     /* Set connection-speed property if needed */
@@ -2628,12 +2660,6 @@ no_more_pads_cb (GstElement * element, GstDecodeChain * chain)
   GST_DEBUG_OBJECT (element, "Setting group %p to complete", group);
 
   group->no_more_pads = TRUE;
-  /* this group has prerolled enough to not need more pads,
-   * we can probably set its buffering state to playing now */
-  GST_DEBUG_OBJECT (group->dbin, "Setting group %p multiqueue to "
-      "'playing' buffering mode", group);
-  decodebin_set_queue_size (group->dbin, group->multiqueue, FALSE,
-      (group->parent ? group->parent->seekable : TRUE));
   CHAIN_MUTEX_UNLOCK (chain);
 
   EXPOSE_LOCK (chain->dbin);
@@ -2717,6 +2743,23 @@ is_demuxer_element (GstElement * srcelement)
   }
 
   if (potential_src_pads < 2)
+    return FALSE;
+
+  return TRUE;
+}
+
+static gboolean
+is_adaptive_demuxer_element (GstElement * srcelement)
+{
+  GstElementFactory *srcfactory;
+  const gchar *klass;
+
+  srcfactory = gst_element_get_factory (srcelement);
+  klass =
+      gst_element_factory_get_metadata (srcfactory, GST_ELEMENT_METADATA_KLASS);
+
+  /* Can't be a demuxer unless it has Demux in the klass name */
+  if (!strstr (klass, "Demux") || !strstr (klass, "Adaptive"))
     return FALSE;
 
   return TRUE;
@@ -3030,12 +3073,6 @@ multi_queue_overrun_cb (GstElement * queue, GstDecodeGroup * group)
       queue);
 
   group->overrun = TRUE;
-  /* this group has prerolled enough to not need more pads,
-   * we can probably set its buffering state to playing now */
-  GST_DEBUG_OBJECT (group->dbin, "Setting group %p multiqueue to "
-      "'playing' buffering mode", group);
-  decodebin_set_queue_size (group->dbin, group->multiqueue, FALSE,
-      (group->parent ? group->parent->seekable : TRUE));
 
   /* FIXME: We should make sure that everything gets exposed now
    * even if child chains are not complete because the will never
@@ -3141,7 +3178,7 @@ gst_decode_group_hide (GstDecodeGroup * group)
  * playing or prerolling. */
 static void
 decodebin_set_queue_size (GstDecodeBin * dbin, GstElement * multiqueue,
-    gboolean preroll, gboolean seekable)
+    gboolean preroll, gboolean seekable, gboolean adaptive_streaming)
 {
   guint max_bytes, max_buffers;
   guint64 max_time;
@@ -3155,13 +3192,25 @@ decodebin_set_queue_size (GstDecodeBin * dbin, GstElement * multiqueue,
   if (preroll || use_buffering) {
     /* takes queue limits, initially we only queue up up to the max bytes limit,
      * with a default of 2MB. we use the same values for buffering mode. */
-    if ((max_bytes = dbin->max_size_bytes) == 0)
+    if (preroll || (max_bytes = dbin->max_size_bytes) == 0)
       max_bytes = AUTO_PREROLL_SIZE_BYTES;
-    if ((max_buffers = dbin->max_size_buffers) == 0)
+    if (preroll || (max_buffers = dbin->max_size_buffers) == 0)
       max_buffers = AUTO_PREROLL_SIZE_BUFFERS;
-    if ((max_time = dbin->max_size_time) == 0)
-      max_time = seekable ? AUTO_PREROLL_SEEKABLE_SIZE_TIME :
-          AUTO_PREROLL_NOT_SEEKABLE_SIZE_TIME;
+    if (preroll || (max_time = dbin->max_size_time) == 0) {
+      if (dbin->use_buffering && !preroll)
+        max_time = 5 * GST_SECOND;
+      else
+        max_time = seekable ? AUTO_PREROLL_SEEKABLE_SIZE_TIME :
+            AUTO_PREROLL_NOT_SEEKABLE_SIZE_TIME;
+    }
+  } else if (adaptive_streaming && dbin->use_buffering) {
+    /* If we're doing adaptive streaming and this is *not*
+     * the multiqueue doing the buffering messages, we only
+     * want a buffers limit here
+     */
+    max_buffers = AUTO_PLAY_ADAPTIVE_SIZE_BUFFERS;
+    max_time = 0;
+    max_bytes = 0;
   } else {
     /* update runtime limits. At runtime, we try to keep the amount of buffers
      * in the queues as low as possible (but at least 5 buffers). */
@@ -3169,6 +3218,9 @@ decodebin_set_queue_size (GstDecodeBin * dbin, GstElement * multiqueue,
       max_bytes = 0;
     else if ((max_bytes = dbin->max_size_bytes) == 0)
       max_bytes = AUTO_PLAY_SIZE_BYTES;
+    /* if we're after an adaptive streaming demuxer keep
+     * a lower number of buffers as they are usually very
+     * large */
     if ((max_buffers = dbin->max_size_buffers) == 0)
       max_buffers = AUTO_PLAY_SIZE_BUFFERS;
     /* this is a multiqueue with disabled buffering, don't limit max_time */
@@ -3209,14 +3261,6 @@ gst_decode_group_new (GstDecodeBin * dbin, GstDecodeChain * parent)
   if (G_UNLIKELY (!group->multiqueue))
     goto missing_multiqueue;
 
-  /* default is for use-buffering is FALSE */
-  if (dbin->use_buffering) {
-    g_object_set (mq,
-        "use-buffering", TRUE,
-        "low-percent", dbin->low_percent,
-        "high-percent", dbin->high_percent, NULL);
-  }
-
   /* configure queue sizes for preroll */
   seekable = FALSE;
   if (parent && parent->demuxer) {
@@ -3228,7 +3272,8 @@ gst_decode_group_new (GstDecodeBin * dbin, GstDecodeChain * parent)
       gst_object_unref (pad);
     }
   }
-  decodebin_set_queue_size (dbin, mq, TRUE, seekable);
+  decodebin_set_queue_size (dbin, mq, TRUE, seekable,
+      (parent ? parent->adaptive_demuxer : FALSE));
 
   group->overrunsig = g_signal_connect (mq, "overrun",
       G_CALLBACK (multi_queue_overrun_cb), group);
@@ -3638,9 +3683,13 @@ gst_decode_group_reset_buffering (GstDecodeGroup * group)
     /* all chains are buffering already, no need to do it here */
     g_object_set (group->multiqueue, "use-buffering", FALSE, NULL);
   } else {
-    g_object_set (group->multiqueue, "use-buffering", TRUE, NULL);
+    g_object_set (group->multiqueue, "use-buffering", TRUE,
+        "low-percent", group->dbin->low_percent,
+        "high-percent", group->dbin->high_percent, NULL);
   }
-  decodebin_set_queue_size (group->dbin, group->multiqueue, FALSE, FALSE);
+  decodebin_set_queue_size (group->dbin, group->multiqueue, FALSE,
+      (group->parent ? group->parent->seekable : TRUE),
+      (group->parent ? group->parent->adaptive_demuxer : FALSE));
 
   GST_DEBUG_OBJECT (group->dbin, "Setting %s buffering to %d",
       GST_ELEMENT_NAME (group->multiqueue), !ret);
@@ -3933,6 +3982,8 @@ gst_decode_bin_expose (GstDecodeBin * dbin)
       GST_ELEMENT_ERROR (dbin, STREAM, FAILED, (NULL),
           ("all streams without buffers"));
     }
+
+    do_async_done (dbin);
     return FALSE;
   }
 
@@ -4062,9 +4113,6 @@ gst_decode_chain_expose (GstDecodeChain * chain, GList ** endpads,
     return FALSE;
 
   dbin = group->dbin;
-
-  /* configure queues for playback */
-  decodebin_set_queue_size (dbin, group->multiqueue, FALSE, TRUE);
 
   /* we can now disconnect any overrun signal, which is used to expose the
    * group. */
@@ -4519,6 +4567,9 @@ gst_decode_bin_change_state (GstElement * element, GstStateChange transition)
         dbin->decode_chain = NULL;
       }
       EXPOSE_UNLOCK (dbin);
+      g_list_free_full (dbin->buffering_status,
+          (GDestroyNotify) gst_message_unref);
+      dbin->buffering_status = NULL;
       break;
     case GST_STATE_CHANGE_READY_TO_NULL:
     default:
@@ -4553,6 +4604,80 @@ gst_decode_bin_handle_message (GstBin * bin, GstMessage * msg)
     GST_OBJECT_LOCK (dbin);
     drop = (g_list_find (dbin->filtered, GST_MESSAGE_SRC (msg)) != NULL);
     GST_OBJECT_UNLOCK (dbin);
+  } else if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_BUFFERING) {
+    gint perc, msg_perc;
+    gint smaller_perc = 100;
+    GstMessage *smaller = NULL;
+    GList *found = NULL;
+    GList *iter;
+
+    /* buffering messages must be aggregated as there might be multiple
+     * multiqueue in the pipeline and their independent buffering messages
+     * will confuse the application
+     *
+     * decodebin keeps a list of messages received from elements that are
+     * buffering.
+     * Rules are:
+     * 1) Always post the smaller buffering %
+     * 2) If an element posts a 100% buffering message, remove it from the list
+     * 3) When there are no more messages on the list, post 100% message
+     * 4) When an element posts a new buffering message, update the one
+     *    on the list to this new value
+     */
+
+    gst_message_parse_buffering (msg, &msg_perc);
+
+    /*
+     * Single loop for 2 things:
+     * 1) Look for a message with the same source
+     *   1.1) If the received message is 100%, remove it from the list
+     * 2) Find the minimum buffering from the list
+     */
+    for (iter = dbin->buffering_status; iter;) {
+      GstMessage *bufstats = iter->data;
+      if (GST_MESSAGE_SRC (bufstats) == GST_MESSAGE_SRC (msg)) {
+        found = iter;
+        if (msg_perc < 100) {
+          gst_message_unref (iter->data);
+          bufstats = iter->data = gst_message_ref (msg);
+        } else {
+          GList *current = iter;
+
+          /* remove the element here and avoid confusing the loop */
+          iter = g_list_next (iter);
+
+          gst_message_unref (current->data);
+          dbin->buffering_status =
+              g_list_delete_link (dbin->buffering_status, current);
+
+          continue;
+        }
+      }
+
+      gst_message_parse_buffering (bufstats, &perc);
+      if (perc < smaller_perc) {
+        smaller_perc = perc;
+        smaller = bufstats;
+      }
+      iter = g_list_next (iter);
+    }
+
+    if (found == NULL && msg_perc < 100) {
+      if (msg_perc < smaller_perc) {
+        smaller_perc = msg_perc;
+        smaller = msg;
+      }
+      dbin->buffering_status =
+          g_list_prepend (dbin->buffering_status, gst_message_ref (msg));
+    }
+
+    /* now compute the buffering message that should be posted */
+    if (smaller_perc == 100) {
+      g_assert (dbin->buffering_status == NULL);
+      /* we are posting the original received msg */
+    } else {
+      gst_message_replace (&msg, smaller);
+    }
   }
 
   if (drop)

@@ -221,6 +221,7 @@ struct _StreamGroup
   GstElement *outfilter;        /* Output capsfilter (streamprofile.format) */
   GstElement *formatter;
   GstElement *outqueue;         /* Queue just before the muxer */
+  gulong restriction_sid;
 };
 
 /* Default for queues (same defaults as queue element) */
@@ -1060,8 +1061,19 @@ _has_class (GstElement * element, const gchar * classname)
 
   klass = GST_ELEMENT_GET_CLASS (element);
   value = gst_element_class_get_metadata (klass, GST_ELEMENT_METADATA_KLASS);
+  if (!value)
+    return FALSE;
 
   return strstr (value, classname) != NULL;
+}
+
+static void
+_profile_restriction_caps_cb (GstEncodingProfile * profile,
+    GParamSpec * arg G_GNUC_UNUSED, StreamGroup * group)
+{
+  GstCaps *restriction = gst_encoding_profile_get_restriction (profile);
+
+  g_object_set (group->capsfilter, "caps", restriction, NULL);
 }
 
 /* FIXME : Add handling of streams that don't need encoding  */
@@ -1292,16 +1304,17 @@ _create_stream_group (GstEncodeBin * ebin, GstEncodingProfile * sprof,
 
   /* 3. Create the conversion/restriction elements */
   /* 3.1. capsfilter */
-  if (restriction && !gst_caps_is_any (restriction)) {
-    GST_LOG ("Adding capsfilter for restriction caps : %" GST_PTR_FORMAT,
-        restriction);
+  GST_LOG ("Adding capsfilter for restriction caps : %" GST_PTR_FORMAT,
+      restriction);
 
-    last = sgroup->capsfilter = gst_element_factory_make ("capsfilter", NULL);
+  last = sgroup->capsfilter = gst_element_factory_make ("capsfilter", NULL);
+  if (restriction && !gst_caps_is_any (restriction))
     g_object_set (sgroup->capsfilter, "caps", restriction, NULL);
-    gst_bin_add ((GstBin *) ebin, sgroup->capsfilter);
-    tosync = g_list_append (tosync, sgroup->capsfilter);
-    fast_element_link (sgroup->capsfilter, sgroup->encoder);
-  }
+  gst_bin_add ((GstBin *) ebin, sgroup->capsfilter);
+  tosync = g_list_append (tosync, sgroup->capsfilter);
+  fast_element_link (sgroup->capsfilter, sgroup->encoder);
+  sgroup->restriction_sid = g_signal_connect (sprof, "notify::restriction-caps",
+      G_CALLBACK (_profile_restriction_caps_cb), sgroup);
 
   /* 3.2. restriction elements */
   /* FIXME : Once we have properties for specific converters, use those */
@@ -1870,18 +1883,22 @@ stream_group_free (GstEncodeBin * ebin, StreamGroup * sgroup)
 
   GST_DEBUG_OBJECT (ebin, "Freeing StreamGroup %p", sgroup);
 
+  g_signal_handler_disconnect (sgroup->profile, sgroup->restriction_sid);
+
   if (ebin->muxer) {
     /* outqueue - Muxer */
     tmppad = gst_element_get_static_pad (sgroup->outqueue, "src");
     pad = gst_pad_get_peer (tmppad);
 
-    /* Remove muxer request sink pad */
-    gst_pad_unlink (tmppad, pad);
-    if (GST_PAD_TEMPLATE_PRESENCE (GST_PAD_PAD_TEMPLATE (pad)) ==
-        GST_PAD_REQUEST)
-      gst_element_release_request_pad (ebin->muxer, pad);
+    if (pad) {
+      /* Remove muxer request sink pad */
+      gst_pad_unlink (tmppad, pad);
+      if (GST_PAD_TEMPLATE_PRESENCE (GST_PAD_PAD_TEMPLATE (pad)) ==
+          GST_PAD_REQUEST)
+        gst_element_release_request_pad (ebin->muxer, pad);
+      gst_object_unref (pad);
+    }
     gst_object_unref (tmppad);
-    gst_object_unref (pad);
   }
   if (sgroup->outqueue)
     gst_element_set_state (sgroup->outqueue, GST_STATE_NULL);

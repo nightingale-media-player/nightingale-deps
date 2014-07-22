@@ -31,8 +31,6 @@
  * ]| Encodes a video stream captured from a v4l2-compatible camera to Ogg/Theora
  * (the encoding will stop automatically after 500 frames)
  * </refsect2>
- *
- * Last reviewed on 2008-02-06 (0.10.17)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -137,6 +135,8 @@ static gboolean gst_ogg_mux_handle_src_event (GstPad * pad, GstObject * parent,
 static GstPad *gst_ogg_mux_request_new_pad (GstElement * element,
     GstPadTemplate * templ, const gchar * name, const GstCaps * caps);
 static void gst_ogg_mux_release_pad (GstElement * element, GstPad * pad);
+static void gst_ogg_pad_data_reset (GstOggMux * ogg_mux,
+    GstOggPadData * pad_data);
 
 static void gst_ogg_mux_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
@@ -293,6 +293,22 @@ gst_ogg_mux_sinkconnect (GstPad * pad, GstObject * parent, GstPad * peer)
   return GST_PAD_LINK_OK;
 }
 
+static void
+gst_ogg_mux_flush (GstOggMux * ogg_mux)
+{
+  GSList *walk;
+
+  for (walk = ogg_mux->collect->data; walk; walk = g_slist_next (walk)) {
+    GstOggPadData *pad;
+
+    pad = (GstOggPadData *) walk->data;
+
+    gst_ogg_pad_data_reset (ogg_mux, pad);
+  }
+
+  gst_ogg_mux_clear (ogg_mux);
+}
+
 static gboolean
 gst_ogg_mux_sink_event (GstCollectPads * pads, GstCollectData * pad,
     GstEvent * event, gpointer user_data)
@@ -320,7 +336,8 @@ gst_ogg_mux_sink_event (GstCollectPads * pads, GstCollectData * pad,
       break;
     }
     case GST_EVENT_FLUSH_STOP:{
-      gst_segment_init (&ogg_pad->segment, GST_FORMAT_TIME);
+      /* only a single flush-stop is forwarded from collect pads */
+      gst_ogg_mux_flush (ogg_mux);
       break;
     }
     case GST_EVENT_TAG:{
@@ -360,6 +377,41 @@ gst_ogg_mux_is_serialno_present (GstOggMux * ogg_mux, guint32 serialno)
   }
 
   return FALSE;
+}
+
+static void
+gst_ogg_pad_data_reset (GstOggMux * ogg_mux, GstOggPadData * oggpad)
+{
+  oggpad->packetno = 0;
+  oggpad->pageno = 0;
+  oggpad->eos = FALSE;
+
+  /* we assume there will be some control data first for this pad */
+  oggpad->state = GST_OGG_PAD_STATE_CONTROL;
+  oggpad->new_page = TRUE;
+  oggpad->first_delta = FALSE;
+  oggpad->prev_delta = FALSE;
+  oggpad->data_pushed = FALSE;
+  oggpad->map.headers = NULL;
+  oggpad->map.queued = NULL;
+  oggpad->next_granule = 0;
+  oggpad->keyframe_granule = -1;
+  ogg_stream_clear (&oggpad->map.stream);
+  ogg_stream_init (&oggpad->map.stream, oggpad->map.serialno);
+
+  if (oggpad->pagebuffers) {
+    GstBuffer *buf;
+
+    while ((buf = g_queue_pop_head (oggpad->pagebuffers)) != NULL) {
+      gst_buffer_unref (buf);
+    }
+  } else if (GST_STATE (ogg_mux) > GST_STATE_READY) {
+    /* This will be initialized in init_collectpads when going from ready
+     * paused state */
+    oggpad->pagebuffers = g_queue_new ();
+  }
+
+  gst_segment_init (&oggpad->segment, GST_FORMAT_TIME);
 }
 
 static guint32
@@ -442,28 +494,7 @@ gst_ogg_mux_request_new_pad (GstElement * element,
       ogg_mux->active_pads++;
 
       oggpad->map.serialno = serial;
-      oggpad->packetno = 0;
-      oggpad->pageno = 0;
-      oggpad->eos = FALSE;
-      /* we assume there will be some control data first for this pad */
-      oggpad->state = GST_OGG_PAD_STATE_CONTROL;
-      oggpad->new_page = TRUE;
-      oggpad->first_delta = FALSE;
-      oggpad->prev_delta = FALSE;
-      oggpad->data_pushed = FALSE;
-      oggpad->map.headers = NULL;
-      oggpad->map.queued = NULL;
-      oggpad->next_granule = 0;
-      oggpad->keyframe_granule = -1;
-
-      if (GST_STATE (ogg_mux) > GST_STATE_READY) {
-        /* This will be initialized in init_collectpads when going from ready
-         * paused state */
-        ogg_stream_init (&oggpad->map.stream, oggpad->map.serialno);
-        oggpad->pagebuffers = g_queue_new ();
-      }
-
-      gst_segment_init (&oggpad->segment, GST_FORMAT_TIME);
+      gst_ogg_pad_data_reset (ogg_mux, oggpad);
     }
   }
 
@@ -815,7 +846,11 @@ gst_ogg_mux_decorate_buffer (GstOggMux * ogg_mux, GstOggPadData * pad,
   gst_buffer_map (buf, &map, GST_MAP_READ);
   packet.packet = map.data;
   packet.bytes = map.size;
+
+  gst_ogg_stream_update_stats (&pad->map, &packet);
+
   duration = gst_ogg_stream_get_packet_duration (&pad->map, &packet);
+
   gst_buffer_unmap (buf, &map);
 
   /* give up if no duration can be determined, relying on upstream */
@@ -977,6 +1012,11 @@ gst_ogg_mux_queue_pads (GstOggMux * ogg_mux, gboolean * popped)
               pad->have_type = gst_ogg_stream_setup_map (&pad->map, &packet);
             }
             if (!pad->have_type) {
+              /* fallback 2 to try to get the mapping from the caps */
+              pad->have_type =
+                  gst_ogg_stream_setup_map_from_caps (&pad->map, caps);
+            }
+            if (!pad->have_type) {
               GST_ERROR_OBJECT (data->pad,
                   "mapper didn't recognise input stream " "(pad caps: %"
                   GST_PTR_FORMAT ")", caps);
@@ -1065,6 +1105,7 @@ gst_ogg_mux_get_headers (GstOggPadData * pad)
   GstCaps *caps;
   const GValue *streamheader;
   GstPad *thepad;
+  GstBuffer *header;
 
   thepad = pad->collect.pad;
 
@@ -1106,6 +1147,9 @@ gst_ogg_mux_get_headers (GstOggPadData * pad)
   } else if (gst_structure_has_name (structure, "video/x-dirac")) {
     res = g_list_append (res, pad->buffer);
     pad->buffer = NULL;
+  } else if (pad->have_type
+      && (header = gst_ogg_stream_get_headers (&pad->map))) {
+    res = g_list_append (res, header);
   } else {
     GST_LOG_OBJECT (thepad, "caps don't have streamheader");
   }
@@ -1242,9 +1286,13 @@ gst_ogg_mux_add_fisbone_message_header_from_tags (GstOggMux * mux,
     gchar *tmp;
     if (n)
       g_string_append (s, ", ");
-    gst_tag_list_get_string_index (tags, tag, n, &tmp);
-    g_string_append (s, tmp);
-    g_free (tmp);
+    if (gst_tag_list_get_string_index (tags, tag, n, &tmp)) {
+      g_string_append (s, tmp);
+      g_free (tmp);
+    } else {
+      GST_WARNING_OBJECT (mux, "Tag %s index %u was not found (%u total)", tag,
+          n, size);
+    }
   }
   gst_ogg_mux_add_fisbone_message_header (mux, bw, header, s->str);
   g_string_free (s, TRUE);
@@ -1980,20 +2028,27 @@ gst_ogg_mux_collected (GstCollectPads * pads, GstOggMux * ogg_mux)
   if (popped)
     return GST_FLOW_OK;
 
-  if (best == NULL || best->buffer == NULL) {
-    /* This is not supposed to happen */
-    return GST_FLOW_ERROR;
+  if (best == NULL) {
+    /* No data, assume EOS */
+    goto eos;
   }
+
+  /* This is not supposed to happen */
+  g_return_val_if_fail (best->buffer != NULL, GST_FLOW_ERROR);
 
   ret = gst_ogg_mux_process_best_pad (ogg_mux, best);
 
-  if (best->eos && all_pads_eos (pads)) {
-    GST_LOG_OBJECT (ogg_mux->srcpad, "sending EOS");
+  if (best->eos && all_pads_eos (pads))
+    goto eos;
+
+  return ret;
+
+eos:
+  {
+    GST_DEBUG_OBJECT (ogg_mux, "no data available, must be EOS");
     gst_pad_push_event (ogg_mux->srcpad, gst_event_new_eos ());
     return GST_FLOW_EOS;
   }
-
-  return ret;
 }
 
 static void
@@ -2060,6 +2115,7 @@ gst_ogg_mux_init_collectpads (GstCollectPads * collect)
   while (walk) {
     GstOggPadData *oggpad = (GstOggPadData *) walk->data;
 
+    ogg_stream_clear (&oggpad->map.stream);
     ogg_stream_init (&oggpad->map.stream, oggpad->map.serialno);
     oggpad->packetno = 0;
     oggpad->pageno = 0;

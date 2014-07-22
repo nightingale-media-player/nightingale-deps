@@ -373,13 +373,6 @@ GST_AUDIO_FILTER_RATE
 </SECTION>
 
 <SECTION>
-<FILE>gstaudiomixerutils</FILE>
-<INCLUDE>gst/audio/mixerutils.h</INCLUDE>
-GstAudioMixerFilterFunc
-gst_audio_default_registry_mixer_filter
-</SECTION>
-
-<SECTION>
 <FILE>gstaudiosink</FILE>
 <INCLUDE>gst/audio/gstaudiosink.h</INCLUDE>
 GstAudioSink
@@ -1497,6 +1490,7 @@ gst_rtsp_watch_send_message
 gst_rtsp_watch_write_data
 gst_rtsp_watch_get_send_backlog
 gst_rtsp_watch_set_send_backlog
+gst_rtsp_watch_wait_backlog
 </SECTION>
 
 <SECTION>
@@ -1734,6 +1728,90 @@ gst_sdp_media_insert_attribute
 gst_sdp_media_replace_attribute
 gst_sdp_media_remove_attribute
 gst_sdp_media_add_attribute
+</SECTION>
+
+<SECTION>
+<FILE>gstmikey</FILE>
+<INCLUDE>gst/sdp/gstmikey.h</INCLUDE>
+<SUBSECTION Messages>
+GST_MIKEY_VERSION
+GstMIKEYType
+GstMIKEYMessage
+
+gst_mikey_message_new
+gst_mikey_message_new_from_bytes
+gst_mikey_message_new_from_data
+gst_mikey_message_free
+gst_mikey_message_to_bytes
+
+<SUBSECTION MessageInfo>
+GstMIKEYPRFFunc
+GstMIKEYMapType
+gst_mikey_message_set_info
+gst_mikey_message_get_n_cs
+
+<SUBSECTION MessageCSSRTP>
+GstMIKEYMapSRTP
+gst_mikey_message_get_cs_srtp
+gst_mikey_message_insert_cs_srtp
+gst_mikey_message_remove_cs_srtp
+gst_mikey_message_replace_cs_srtp
+gst_mikey_message_add_cs_srtp
+
+<SUBSECTION Payloads>
+gst_mikey_message_get_n_payloads
+gst_mikey_message_get_payload
+gst_mikey_message_find_payload
+gst_mikey_message_insert_payload
+gst_mikey_message_remove_payload
+gst_mikey_message_replace_payload
+gst_mikey_message_add_payload
+
+GstMIKEYPayloadType
+GstMIKEYPayloadClearFunc
+GstMIKEYPayloadCopyFunc
+GstMIKEYPayload
+gst_mikey_payload_new
+gst_mikey_payload_copy
+gst_mikey_payload_free
+
+<SUBSECTION PayloadKEMAC>
+GstMIKEYEncAlg
+GstMIKEYMacAlg
+GstMIKEYPayloadKEMAC
+gst_mikey_payload_kemac_set
+gst_mikey_message_add_kemac
+
+<SUBSECTION PayloadPKE>
+GstMIKEYCacheType
+GstMIKEYPayloadPKE
+gst_mikey_payload_pke_set
+gst_mikey_message_add_pke
+
+<SUBSECTION PayloadT>
+GstMIKEYTSType
+GstMIKEYPayloadT
+gst_mikey_payload_t_set
+gst_mikey_message_add_t
+gst_mikey_message_add_t_now_ntp_utc
+
+<SUBSECTION PayloadRAND>
+GstMIKEYPayloadRAND
+gst_mikey_payload_rand_set
+gst_mikey_message_add_rand
+gst_mikey_message_add_rand_len
+
+<SUBSECTION PayloadSP>
+GstMIKEYSecProto
+GstMIKEYSecSRTP
+GstMIKEYPayloadSP
+GstMIKEYPayloadSPParam
+gst_mikey_payload_sp_set
+gst_mikey_payload_sp_get_n_params
+gst_mikey_payload_sp_get_param
+gst_mikey_payload_sp_add_param
+gst_mikey_payload_sp_remove_param
+<SUBSECTION Standard>
 </SECTION>
 
 # tag
@@ -2011,6 +2089,12 @@ gst_codec_utils_h264_get_level
 gst_codec_utils_h264_caps_set_level_and_profile
 gst_codec_utils_h264_get_level_idc
 <SUBSECTION>
+gst_codec_utils_h265_get_profile
+gst_codec_utils_h265_get_tier
+gst_codec_utils_h265_get_level
+gst_codec_utils_h265_get_level_idc
+gst_codec_utils_h265_caps_set_level_tier_and_profile
+<SUBSECTION>
 gst_codec_utils_mpeg4video_get_profile
 gst_codec_utils_mpeg4video_get_level
 gst_codec_utils_mpeg4video_caps_set_level_and_profile
@@ -2179,6 +2263,9 @@ GST_VIDEO_FORMAT_INFO_SCALE_HEIGHT
 GST_VIDEO_FORMAT_INFO_DATA
 GST_VIDEO_FORMAT_INFO_STRIDE
 GST_VIDEO_FORMAT_INFO_OFFSET
+GST_VIDEO_FORMAT_INFO_TILE_MODE
+GST_VIDEO_FORMAT_INFO_TILE_WS
+GST_VIDEO_FORMAT_INFO_TILE_HS
 gst_video_format_from_masks
 gst_video_format_from_fourcc
 gst_video_format_to_fourcc
@@ -2306,6 +2393,18 @@ GST_VIDEO_FRAME_COMP_PSTRIDE
 GST_VIDEO_FRAME_COMP_POFFSET
 GstVideoBufferFlags
 
+#video-tile.h
+<SUBSECTION>
+GstVideoTileType
+GstVideoTileMode
+gst_video_tile_get_index
+GST_VIDEO_TILE_MAKE_MODE
+GST_VIDEO_TILE_MODE_TYPE
+GST_VIDEO_TILE_MODE_IS_INDEXED
+GST_VIDEO_TILE_MAKE_STRIDE
+GST_VIDEO_TILE_X_TILES
+GST_VIDEO_TILE_Y_TILES
+
 #video-enumtypes.h
 <SUBSECTION Standard>
 gst_color_balance_type_get_type
@@ -2323,6 +2422,7 @@ GST_TYPE_NAVIGATION_EVENT_TYPE
 
 <SECTION>
 <FILE>gstvideopool</FILE>
+<TITLE>GstVideoPool</TITLE>
 <INCLUDE>gst/video/gstvideopool.h</INCLUDE>
 GstVideoBufferPool
 GstVideoBufferPoolClass
@@ -2360,6 +2460,7 @@ gst_buffer_add_video_region_of_interest_meta
 gst_buffer_add_video_region_of_interest_meta_id
 gst_buffer_get_video_region_of_interest_meta
 gst_buffer_get_video_region_of_interest_meta_id
+GST_BUFFER_POOL_OPTION_VIDEO_GL_TEXTURE_UPLOAD_META
 GstVideoGLTextureUpload
 GstVideoGLTextureUploadMeta
 gst_buffer_add_video_gl_texture_upload_meta
@@ -2519,6 +2620,7 @@ gst_video_decoder_get_max_decode_time
 gst_video_decoder_get_max_errors
 gst_video_decoder_get_oldest_frame
 gst_video_decoder_get_packetized
+gst_video_decoder_get_pending_frame_size
 gst_video_decoder_get_qos_proportion
 gst_video_decoder_have_frame
 gst_video_decoder_get_latency
@@ -2529,6 +2631,8 @@ gst_video_decoder_set_estimate_rate
 gst_video_decoder_set_output_state
 gst_video_decoder_set_max_errors
 gst_video_decoder_set_packetized
+gst_video_decoder_get_needs_format
+gst_video_decoder_set_needs_format
 gst_video_decoder_merge_tags
 <SUBSECTION Standard>
 GST_IS_VIDEO_DECODER
@@ -2568,8 +2672,6 @@ gst_video_encoder_get_oldest_frame
 gst_video_encoder_set_headers
 gst_video_encoder_get_latency
 gst_video_encoder_set_latency
-gst_video_encoder_get_discont
-gst_video_encoder_set_discont
 gst_video_encoder_set_output_state
 gst_video_encoder_get_output_state
 gst_video_encoder_proxy_getcaps
@@ -2659,6 +2761,7 @@ gst_discoverer_stream_info_ref
 gst_discoverer_stream_info_unref
 gst_discoverer_stream_info_list_free
 gst_discoverer_stream_info_get_stream_type_nick
+gst_discoverer_info_get_missing_elements_installer_details
 gst_discoverer_info_get_audio_streams
 gst_discoverer_info_get_container_streams
 gst_discoverer_info_get_streams

@@ -2,30 +2,27 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>GstVideoDecoder</title>
+<title>GStreamer Base Plugins 1.0 Library Reference Manual: GstVideoDecoder</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
 <link rel="up" href="gstreamer-video.html" title="Video Library">
 <link rel="prev" href="gst-plugins-base-libs-gstvideooverlay.html" title="gstvideooverlay">
 <link rel="next" href="gst-plugins-base-libs-GstVideoEncoder.html" title="GstVideoEncoder">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-libs-gstvideooverlay.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="gstreamer-video.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 1.0 Library Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-libs-GstVideoEncoder.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-base-libs-GstVideoDecoder.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-GstVideoDecoder.description" class="shortcut">Description</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-GstVideoDecoder.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-GstVideoDecoder.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-video.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-gstvideooverlay.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-libs-GstVideoEncoder.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-base-libs-GstVideoDecoder"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -33,92 +30,338 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-base-libs-GstVideoDecoder.top_of_page"></a>GstVideoDecoder</span></h2>
 <p>GstVideoDecoder — Base class for video decoders</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-base-libs-GstVideoDecoder.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">#define             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-ERROR:CAPS" title="GST_VIDEO_DECODER_ERROR()">GST_VIDEO_DECODER_ERROR</a>             (el,
-                                                         w,
-                                                         domain,
-                                                         code,
-                                                         text,
-                                                         debug,
-                                                         ret)
-#define             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-FLOW-NEED-DATA:CAPS" title="GST_VIDEO_DECODER_FLOW_NEED_DATA">GST_VIDEO_DECODER_FLOW_NEED_DATA</a>
-#define             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-MAX-ERRORS:CAPS" title="GST_VIDEO_DECODER_MAX_ERRORS">GST_VIDEO_DECODER_MAX_ERRORS</a>
-#define             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-SINK-NAME:CAPS" title="GST_VIDEO_DECODER_SINK_NAME">GST_VIDEO_DECODER_SINK_NAME</a>
-#define             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-SINK-PAD:CAPS" title="GST_VIDEO_DECODER_SINK_PAD()">GST_VIDEO_DECODER_SINK_PAD</a>          (obj)
-#define             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-SRC-NAME:CAPS" title="GST_VIDEO_DECODER_SRC_NAME">GST_VIDEO_DECODER_SRC_NAME</a>
-#define             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-SRC-PAD:CAPS" title="GST_VIDEO_DECODER_SRC_PAD()">GST_VIDEO_DECODER_SRC_PAD</a>           (obj)
-#define             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-STREAM-LOCK:CAPS" title="GST_VIDEO_DECODER_STREAM_LOCK()">GST_VIDEO_DECODER_STREAM_LOCK</a>       (decoder)
-#define             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-STREAM-UNLOCK:CAPS" title="GST_VIDEO_DECODER_STREAM_UNLOCK()">GST_VIDEO_DECODER_STREAM_UNLOCK</a>     (decoder)
-#define             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-INPUT-SEGMENT:CAPS" title="GST_VIDEO_DECODER_INPUT_SEGMENT()">GST_VIDEO_DECODER_INPUT_SEGMENT</a>     (obj)
-#define             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-OUTPUT-SEGMENT:CAPS" title="GST_VIDEO_DECODER_OUTPUT_SEGMENT()">GST_VIDEO_DECODER_OUTPUT_SEGMENT</a>    (obj)
-struct              <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder">GstVideoDecoder</a>;
-struct              <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoderClass" title="struct GstVideoDecoderClass">GstVideoDecoderClass</a>;
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-add-to-frame" title="gst_video_decoder_add_to_frame ()">gst_video_decoder_add_to_frame</a>      (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><span class="type">int</span> n_bytes</code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="returnvalue">GstBuffer</span></a> *         <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-allocate-output-buffer" title="gst_video_decoder_allocate_output_buffer ()">gst_video_decoder_allocate_output_buffer</a>
-                                                        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>       <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-allocate-output-frame" title="gst_video_decoder_allocate_output_frame ()">gst_video_decoder_allocate_output_frame</a>
-                                                        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-allocator" title="gst_video_decoder_get_allocator ()">gst_video_decoder_get_allocator</a>     (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstAllocator.html"><span class="type">GstAllocator</span></a> **allocator</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstAllocator.html#GstAllocationParams"><span class="type">GstAllocationParams</span></a> *params</code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBufferPool.html#GstBufferPool"><span class="returnvalue">GstBufferPool</span></a> *     <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-buffer-pool" title="gst_video_decoder_get_buffer_pool ()">gst_video_decoder_get_buffer_pool</a>   (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>       <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-drop-frame" title="gst_video_decoder_drop_frame ()">gst_video_decoder_drop_frame</a>        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>       <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-finish-frame" title="gst_video_decoder_finish_frame ()">gst_video_decoder_finish_frame</a>      (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-release-frame" title="gst_video_decoder_release_frame ()">gst_video_decoder_release_frame</a>     (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-negotiate" title="gst_video_decoder_negotiate ()">gst_video_decoder_negotiate</a>         (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);
-<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="returnvalue">GstVideoCodecFrame</span></a> * <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-frame" title="gst_video_decoder_get_frame ()">gst_video_decoder_get_frame</a>        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><span class="type">int</span> frame_number</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-frames" title="gst_video_decoder_get_frames ()">gst_video_decoder_get_frames</a>        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTimeDiff"><span class="returnvalue">GstClockTimeDiff</span></a>    <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-max-decode-time" title="gst_video_decoder_get_max_decode_time ()">gst_video_decoder_get_max_decode_time</a>
-                                                        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-max-errors" title="gst_video_decoder_get_max_errors ()">gst_video_decoder_get_max_errors</a>    (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>);
-<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="returnvalue">GstVideoCodecFrame</span></a> * <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-oldest-frame" title="gst_video_decoder_get_oldest_frame ()">gst_video_decoder_get_oldest_frame</a> (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-packetized" title="gst_video_decoder_get_packetized ()">gst_video_decoder_get_packetized</a>    (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="returnvalue">gdouble</span></a>             <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-qos-proportion" title="gst_video_decoder_get_qos_proportion ()">gst_video_decoder_get_qos_proportion</a>
-                                                        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>       <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-have-frame" title="gst_video_decoder_have_frame ()">gst_video_decoder_have_frame</a>        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-latency" title="gst_video_decoder_get_latency ()">gst_video_decoder_get_latency</a>       (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> *min_latency</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> *max_latency</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-set-latency" title="gst_video_decoder_set_latency ()">gst_video_decoder_set_latency</a>       (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> min_latency</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> max_latency</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-estimate-rate" title="gst_video_decoder_get_estimate_rate ()">gst_video_decoder_get_estimate_rate</a> (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>);
-<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="returnvalue">GstVideoCodecState</span></a> * <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-output-state" title="gst_video_decoder_get_output_state ()">gst_video_decoder_get_output_state</a> (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-set-estimate-rate" title="gst_video_decoder_set_estimate_rate ()">gst_video_decoder_set_estimate_rate</a> (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enabled</code></em>);
-<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="returnvalue">GstVideoCodecState</span></a> * <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-set-output-state" title="gst_video_decoder_set_output_state ()">gst_video_decoder_set_output_state</a> (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a> fmt</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> width</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> height</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a> *reference</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-set-max-errors" title="gst_video_decoder_set_max_errors ()">gst_video_decoder_set_max_errors</a>    (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> num</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-set-packetized" title="gst_video_decoder_set_packetized ()">gst_video_decoder_set_packetized</a>    (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> packetized</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-merge-tags" title="gst_video_decoder_merge_tags ()">gst_video_decoder_merge_tags</a>        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTagList.html#GstTagList"><span class="type">GstTagList</span></a> *tags</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTagList.html#GstTagMergeMode"><span class="type">GstTagMergeMode</span></a> mode</code></em>);
+<div class="refsect1">
+<a name="gst-plugins-base-libs-GstVideoDecoder.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-ERROR:CAPS" title="GST_VIDEO_DECODER_ERROR()">GST_VIDEO_DECODER_ERROR</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-SINK-PAD:CAPS" title="GST_VIDEO_DECODER_SINK_PAD()">GST_VIDEO_DECODER_SINK_PAD</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-SRC-PAD:CAPS" title="GST_VIDEO_DECODER_SRC_PAD()">GST_VIDEO_DECODER_SRC_PAD</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-STREAM-LOCK:CAPS" title="GST_VIDEO_DECODER_STREAM_LOCK()">GST_VIDEO_DECODER_STREAM_LOCK</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-STREAM-UNLOCK:CAPS" title="GST_VIDEO_DECODER_STREAM_UNLOCK()">GST_VIDEO_DECODER_STREAM_UNLOCK</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-INPUT-SEGMENT:CAPS" title="GST_VIDEO_DECODER_INPUT_SEGMENT()">GST_VIDEO_DECODER_INPUT_SEGMENT</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-OUTPUT-SEGMENT:CAPS" title="GST_VIDEO_DECODER_OUTPUT_SEGMENT()">GST_VIDEO_DECODER_OUTPUT_SEGMENT</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-add-to-frame" title="gst_video_decoder_add_to_frame ()">gst_video_decoder_add_to_frame</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="returnvalue">GstBuffer</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-allocate-output-buffer" title="gst_video_decoder_allocate_output_buffer ()">gst_video_decoder_allocate_output_buffer</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-allocate-output-frame" title="gst_video_decoder_allocate_output_frame ()">gst_video_decoder_allocate_output_frame</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-allocator" title="gst_video_decoder_get_allocator ()">gst_video_decoder_get_allocator</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBufferPool.html"><span class="returnvalue">GstBufferPool</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-buffer-pool" title="gst_video_decoder_get_buffer_pool ()">gst_video_decoder_get_buffer_pool</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-drop-frame" title="gst_video_decoder_drop_frame ()">gst_video_decoder_drop_frame</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-finish-frame" title="gst_video_decoder_finish_frame ()">gst_video_decoder_finish_frame</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-release-frame" title="gst_video_decoder_release_frame ()">gst_video_decoder_release_frame</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-negotiate" title="gst_video_decoder_negotiate ()">gst_video_decoder_negotiate</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="returnvalue">GstVideoCodecFrame</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-frame" title="gst_video_decoder_get_frame ()">gst_video_decoder_get_frame</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-frames" title="gst_video_decoder_get_frames ()">gst_video_decoder_get_frames</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTimeDiff"><span class="returnvalue">GstClockTimeDiff</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-max-decode-time" title="gst_video_decoder_get_max_decode_time ()">gst_video_decoder_get_max_decode_time</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-max-errors" title="gst_video_decoder_get_max_errors ()">gst_video_decoder_get_max_errors</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="returnvalue">GstVideoCodecFrame</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-oldest-frame" title="gst_video_decoder_get_oldest_frame ()">gst_video_decoder_get_oldest_frame</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-packetized" title="gst_video_decoder_get_packetized ()">gst_video_decoder_get_packetized</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">gsize</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-pending-frame-size" title="gst_video_decoder_get_pending_frame_size ()">gst_video_decoder_get_pending_frame_size</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="returnvalue">gdouble</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-qos-proportion" title="gst_video_decoder_get_qos_proportion ()">gst_video_decoder_get_qos_proportion</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-have-frame" title="gst_video_decoder_have_frame ()">gst_video_decoder_have_frame</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-latency" title="gst_video_decoder_get_latency ()">gst_video_decoder_get_latency</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-set-latency" title="gst_video_decoder_set_latency ()">gst_video_decoder_set_latency</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-estimate-rate" title="gst_video_decoder_get_estimate_rate ()">gst_video_decoder_get_estimate_rate</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="returnvalue">GstVideoCodecState</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-output-state" title="gst_video_decoder_get_output_state ()">gst_video_decoder_get_output_state</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-set-estimate-rate" title="gst_video_decoder_set_estimate_rate ()">gst_video_decoder_set_estimate_rate</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="returnvalue">GstVideoCodecState</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-set-output-state" title="gst_video_decoder_set_output_state ()">gst_video_decoder_set_output_state</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-set-max-errors" title="gst_video_decoder_set_max_errors ()">gst_video_decoder_set_max_errors</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-set-packetized" title="gst_video_decoder_set_packetized ()">gst_video_decoder_set_packetized</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-get-needs-format" title="gst_video_decoder_get_needs_format ()">gst_video_decoder_get_needs_format</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-set-needs-format" title="gst_video_decoder_set_needs_format ()">gst_video_decoder_set_needs_format</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-merge-tags" title="gst_video_decoder_merge_tags ()">gst_video_decoder_merge_tags</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-GstVideoDecoder.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-FLOW-NEED-DATA:CAPS" title="GST_VIDEO_DECODER_FLOW_NEED_DATA">GST_VIDEO_DECODER_FLOW_NEED_DATA</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-MAX-ERRORS:CAPS" title="GST_VIDEO_DECODER_MAX_ERRORS">GST_VIDEO_DECODER_MAX_ERRORS</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-SINK-NAME:CAPS" title="GST_VIDEO_DECODER_SINK_NAME">GST_VIDEO_DECODER_SINK_NAME</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GST-VIDEO-DECODER-SRC-NAME:CAPS" title="GST_VIDEO_DECODER_SRC_NAME">GST_VIDEO_DECODER_SRC_NAME</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder">GstVideoDecoder</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoderClass" title="struct GstVideoDecoderClass">GstVideoDecoderClass</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-GstVideoDecoder.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">
 </pre>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-base-libs-GstVideoDecoder.description"></a><h2>Description</h2>
-<p>
-This base class is for video decoders turning encoded data into raw video
-frames.
-</p>
-<p>
-The GstVideoDecoder base class and derived subclasses should cooperate as follows:
-</p>
+<p>This base class is for video decoders turning encoded data into raw video
+frames.</p>
+<p>The GstVideoDecoder base class and derived subclasses should cooperate as follows:</p>
 <div class="orderedlist"><ol class="orderedlist" type="1">
 <li class="listitem"><div class="itemizedlist">
 <p class="title"><b>Configuration</b></p>
@@ -188,48 +431,40 @@ The GstVideoDecoder base class and derived subclasses should cooperate as follow
   At end-of-stream, the subclass <em class="parameter"><code>parse</code></em> function may be called some final times with the 
   at_eos parameter set to true, indicating that the element should not expect any more data
   to be arriving, and it should parse and remaining frames and call
-  <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-have-frame" title="gst_video_decoder_have_frame ()"><code class="function">gst_video_decoder_have_frame()</code></a> if possible.
+  <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-have-frame" title="gst_video_decoder_have_frame ()"><code class="function">gst_video_decoder_have_frame()</code></a> if possible.
     </p></li></ul>
 </div></li>
 </ul>
 </div></li>
 </ol></div>
-<p>
-</p>
-<p>
-The subclass is responsible for providing pad template caps for
+<p>The subclass is responsible for providing pad template caps for
 source and sink pads. The pads need to be named "sink" and "src". It also
 needs to provide information about the ouptput caps, when they are known.
-This may be when the base class calls the subclass' <em class="parameter"><code>set_format</code></em> function,
+This may be when the base class calls the subclass' <em class="parameter"><code>set_format</code></em>
+ function,
 though it might be during decoding, before calling
-<em class="parameter"><code>gst_video_decoder_finish_frame</code></em>. This is done via
+<em class="parameter"><code>gst_video_decoder_finish_frame</code></em>
+. This is done via
 <em class="parameter"><code>gst_video_decoder_set_output_state</code></em>
 </p>
-<p>
-The subclass is also responsible for providing (presentation) timestamps
+<p>The subclass is also responsible for providing (presentation) timestamps
 (likely based on corresponding input ones).  If that is not applicable
-or possible, the base class provides limited framerate based interpolation.
-</p>
-<p>
-Similarly, the base class provides some limited (legacy) seeking support
+or possible, the base class provides limited framerate based interpolation.</p>
+<p>Similarly, the base class provides some limited (legacy) seeking support
 if specifically requested by the subclass, as full-fledged support
 should rather be left to upstream demuxer, parser or alike.  This simple
 approach caters for seeking and duration reporting using estimated input
 bitrates. To enable it, a subclass should call
-<em class="parameter"><code>gst_video_decoder_set_estimate_rate</code></em> to enable handling of incoming byte-streams.
-</p>
-<p>
-The base class provides some support for reverse playback, in particular
+<em class="parameter"><code>gst_video_decoder_set_estimate_rate</code></em>
+ to enable handling of incoming byte-streams.</p>
+<p>The base class provides some support for reverse playback, in particular
 in case incoming data is not packetized or upstream does not provide
 fragments on keyframe boundaries.  However, the subclass should then be prepared
 for the parsing and frame processing stage to occur separately (in normal
 forward processing, the latter immediately follows the former),
 The subclass also needs to ensure the parsing stage properly marks keyframes,
-unless it knows the upstream elements will do so properly for incoming data.
-</p>
-<p>
-The bare minimum that a functional subclass needs to implement is:
-</p>
+unless it knows the upstream elements will do so properly for incoming data.</p>
+<p>The bare minimum that a functional subclass needs to implement is:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>Provide pad templates</p></li>
 <li class="listitem"><p>
@@ -245,214 +480,1222 @@ The bare minimum that a functional subclass needs to implement is:
      <em class="parameter"><code>gst_video_decoder_finish_frame</code></em>, or call <em class="parameter"><code>gst_video_decoder_drop_frame</code></em>.
   </p></li>
 </ul></div>
-<p>
-</p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-base-libs-GstVideoDecoder.details"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-GstVideoDecoder.functions_details"></a><h2>Functions</h2>
 <div class="refsect2">
 <a name="GST-VIDEO-DECODER-ERROR:CAPS"></a><h3>GST_VIDEO_DECODER_ERROR()</h3>
 <pre class="programlisting">#define             GST_VIDEO_DECODER_ERROR(el, w, domain, code, text, debug, ret)</pre>
-<p>
-Utility function that video decoder elements can use in case they encountered
+<p>Utility function that video decoder elements can use in case they encountered
 a data processing error that may be fatal for the current "data unit" but
 need not prevent subsequent decoding.  Such errors are counted and if there
 are too many, as configured in the context's max_errors, the pipeline will
 post an error message and the application will be requested to stop further
 media processing.  Otherwise, it is considered a "glitch" and only a warning
-is logged. In either case, <em class="parameter"><code>ret</code></em> is set to the proper value to
-return to upstream/caller (indicating either GST_FLOW_ERROR or GST_FLOW_OK).
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+is logged. In either case, <em class="parameter"><code>ret</code></em>
+ is set to the proper value to
+return to upstream/caller (indicating either GST_FLOW_ERROR or GST_FLOW_OK).</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>el</code></em> :</span></p></td>
-<td>the base video decoder element that generates the error</td>
+<td class="parameter_name"><p>el</p></td>
+<td class="parameter_description"><p>the base video decoder element that generates the error</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>w</code></em> :</span></p></td>
-<td>element defined weight of the error, added to error count</td>
+<td class="parameter_name"><p>w</p></td>
+<td class="parameter_description"><p>element defined weight of the error, added to error count</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>domain</code></em> :</span></p></td>
-<td>like CORE, LIBRARY, RESOURCE or STREAM (see <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstGError.html"><span class="type">gstreamer-GstGError</span></a>)</td>
+<td class="parameter_name"><p>domain</p></td>
+<td class="parameter_description"><p>like CORE, LIBRARY, RESOURCE or STREAM (see <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstGError.html"><span class="type">gstreamer-GstGError</span></a>)</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>code</code></em> :</span></p></td>
-<td>error code defined for that domain (see <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstGError.html"><span class="type">gstreamer-GstGError</span></a>)</td>
+<td class="parameter_name"><p>code</p></td>
+<td class="parameter_description"><p>error code defined for that domain (see <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstGError.html"><span class="type">gstreamer-GstGError</span></a>)</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>text</code></em> :</span></p></td>
-<td>the message to display (format string and args enclosed in
-parentheses)</td>
+<td class="parameter_name"><p>text</p></td>
+<td class="parameter_description"><p>the message to display (format string and args enclosed in
+parentheses)</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>debug</code></em> :</span></p></td>
-<td>debugging information for the message (format string and args
-enclosed in parentheses)</td>
+<td class="parameter_name"><p>debug</p></td>
+<td class="parameter_description"><p>debugging information for the message (format string and args
+enclosed in parentheses)</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>ret</code></em> :</span></p></td>
-<td>variable to receive return value</td>
+<td class="parameter_name"><p>ret</p></td>
+<td class="parameter_description"><p>variable to receive return value</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="GST-VIDEO-DECODER-FLOW-NEED-DATA:CAPS"></a><h3>GST_VIDEO_DECODER_FLOW_NEED_DATA</h3>
-<pre class="programlisting">#define GST_VIDEO_DECODER_FLOW_NEED_DATA GST_FLOW_CUSTOM_SUCCESS
-</pre>
-<p>
-Returned while parsing to indicate more data is needed.
-</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GST-VIDEO-DECODER-MAX-ERRORS:CAPS"></a><h3>GST_VIDEO_DECODER_MAX_ERRORS</h3>
-<pre class="programlisting">#define GST_VIDEO_DECODER_MAX_ERRORS     10
-</pre>
-<p>
-Default maximum number of errors tolerated before signaling error.
-</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GST-VIDEO-DECODER-SINK-NAME:CAPS"></a><h3>GST_VIDEO_DECODER_SINK_NAME</h3>
-<pre class="programlisting">#define GST_VIDEO_DECODER_SINK_NAME    "sink"
-</pre>
-<p>
-The name of the templates for the sink pad.
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GST-VIDEO-DECODER-SINK-PAD:CAPS"></a><h3>GST_VIDEO_DECODER_SINK_PAD()</h3>
 <pre class="programlisting">#define GST_VIDEO_DECODER_SINK_PAD(obj)        (((GstVideoDecoder *) (obj))-&gt;sinkpad)
 </pre>
-<p>
-Gives the pointer to the sink <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a> object of the element.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p>Gives the pointer to the sink <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a> object of the element.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
+<td class="parameter_name"><p>obj</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="GST-VIDEO-DECODER-SRC-NAME:CAPS"></a><h3>GST_VIDEO_DECODER_SRC_NAME</h3>
-<pre class="programlisting">#define GST_VIDEO_DECODER_SRC_NAME     "src"
-</pre>
-<p>
-The name of the templates for the source pad.
-</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GST-VIDEO-DECODER-SRC-PAD:CAPS"></a><h3>GST_VIDEO_DECODER_SRC_PAD()</h3>
 <pre class="programlisting">#define GST_VIDEO_DECODER_SRC_PAD(obj)         (((GstVideoDecoder *) (obj))-&gt;srcpad)
 </pre>
-<p>
-Gives the pointer to the source <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a> object of the element.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p>Gives the pointer to the source <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html"><span class="type">GstPad</span></a> object of the element.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
+<td class="parameter_name"><p>obj</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
+</div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GST-VIDEO-DECODER-STREAM-LOCK:CAPS"></a><h3>GST_VIDEO_DECODER_STREAM_LOCK()</h3>
 <pre class="programlisting">#define GST_VIDEO_DECODER_STREAM_LOCK(decoder) g_rec_mutex_lock (&amp;GST_VIDEO_DECODER (decoder)-&gt;stream_lock)
 </pre>
-<p>
-Obtain a lock to protect the decoder function from concurrent access.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p>Obtain a lock to protect the decoder function from concurrent access.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>video decoder instance</td>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>video decoder instance</p></td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
+</div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GST-VIDEO-DECODER-STREAM-UNLOCK:CAPS"></a><h3>GST_VIDEO_DECODER_STREAM_UNLOCK()</h3>
 <pre class="programlisting">#define GST_VIDEO_DECODER_STREAM_UNLOCK(decoder) g_rec_mutex_unlock (&amp;GST_VIDEO_DECODER (decoder)-&gt;stream_lock)
 </pre>
-<p>
-Release the lock that protects the decoder function from concurrent access.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p>Release the lock that protects the decoder function from concurrent access.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>video decoder instance</td>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>video decoder instance</p></td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
+</div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GST-VIDEO-DECODER-INPUT-SEGMENT:CAPS"></a><h3>GST_VIDEO_DECODER_INPUT_SEGMENT()</h3>
 <pre class="programlisting">#define GST_VIDEO_DECODER_INPUT_SEGMENT(obj)     (GST_VIDEO_DECODER_CAST (obj)-&gt;input_segment)
 </pre>
-<p>
-Gives the segment of the element.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p>Gives the segment of the element.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>base decoder instance</td>
+<td class="parameter_name"><p>obj</p></td>
+<td class="parameter_description"><p>base decoder instance</p></td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
+</div>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GST-VIDEO-DECODER-OUTPUT-SEGMENT:CAPS"></a><h3>GST_VIDEO_DECODER_OUTPUT_SEGMENT()</h3>
 <pre class="programlisting">#define GST_VIDEO_DECODER_OUTPUT_SEGMENT(obj)     (GST_VIDEO_DECODER_CAST (obj)-&gt;output_segment)
 </pre>
-<p>
-Gives the segment of the element.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p>Gives the segment of the element.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.8.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>obj</code></em> :</span></p></td>
-<td>base decoder instance</td>
+<td class="parameter_name"><p>obj</p></td>
+<td class="parameter_description"><p>base decoder instance</p></td>
+<td class="parameter_annotations"> </td>
 </tr></tbody>
 </table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-add-to-frame"></a><h3>gst_video_decoder_add_to_frame ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_decoder_add_to_frame (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
+                                <em class="parameter"><code><span class="type">int</span> n_bytes</code></em>);</pre>
+<p>Removes next <em class="parameter"><code>n_bytes</code></em>
+ of input data and adds it to currently parsed frame.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.9.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>n_bytes</p></td>
+<td class="parameter_description"><p>the number of bytes to add</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-allocate-output-buffer"></a><h3>gst_video_decoder_allocate_output_buffer ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="returnvalue">GstBuffer</span></a> *
+gst_video_decoder_allocate_output_buffer
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
+<p>Helper function that allocates a buffer to hold a video frame for <em class="parameter"><code>decoder</code></em>
+'s
+current <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a>.</p>
+<p>You should use <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-allocate-output-frame" title="gst_video_decoder_allocate_output_frame ()"><code class="function">gst_video_decoder_allocate_output_frame()</code></a> instead of this
+function, if possible at all.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.10.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.10.7"></a><h4>Returns</h4>
+<p> allocated buffer, or NULL if no buffer could be
+allocated (e.g. when downstream is flushing or shutting down). </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-allocate-output-frame"></a><h3>gst_video_decoder_allocate_output_frame ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+gst_video_decoder_allocate_output_frame
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
+                                <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
+<p>Helper function that allocates a buffer to hold a video frame for <em class="parameter"><code>decoder</code></em>
+'s
+current <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a>.  Subclass should already have configured video
+state and set src pad caps.</p>
+<p>The buffer allocated here is owned by the frame and you should only
+keep references to the frame, not the buffer.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.11.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.11.7"></a><h4>Returns</h4>
+<p> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GST-FLOW-OK:CAPS"><code class="literal">GST_FLOW_OK</code></a> if an output buffer could be allocated</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-allocator"></a><h3>gst_video_decoder_get_allocator ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_decoder_get_allocator (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
+                                 <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstAllocator.html"><span class="type">GstAllocator</span></a> **allocator</code></em>,
+                                 <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstAllocator.html#GstAllocationParams"><span class="type">GstAllocationParams</span></a> *params</code></em>);</pre>
+<p>Lets <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> sub-classes to know the memory <em class="parameter"><code>allocator</code></em>
+
+used by the base class and its <em class="parameter"><code>params</code></em>
+.</p>
+<p>Unref the <em class="parameter"><code>allocator</code></em>
+ after use it.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.12.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>allocator</p></td>
+<td class="parameter_description"><p> the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstAllocator.html"><span class="type">GstAllocator</span></a>
+used. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>params</p></td>
+<td class="parameter_description"><p> the
+<span class="type">GstAllocatorParams</span> of <em class="parameter"><code>allocator</code></em>
+. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-buffer-pool"></a><h3>gst_video_decoder_get_buffer_pool ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBufferPool.html"><span class="returnvalue">GstBufferPool</span></a> *
+gst_video_decoder_get_buffer_pool (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.13.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.13.5"></a><h4>Returns</h4>
+<p> the instance of the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstBufferPool.html"><span class="type">GstBufferPool</span></a> used
+by the decoder; free it after use it. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-drop-frame"></a><h3>gst_video_decoder_drop_frame ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+gst_video_decoder_drop_frame (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
+                              <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
+<p>Similar to <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-finish-frame" title="gst_video_decoder_finish_frame ()"><code class="function">gst_video_decoder_finish_frame()</code></a>, but drops <em class="parameter"><code>frame</code></em>
+ in any
+case and posts a QoS message with the frame's details on the bus.
+In any case, the frame is considered finished and released.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.14.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>dec</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p> the <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> to drop. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.14.6"></a><h4>Returns</h4>
+<p> a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="type">GstFlowReturn</span></a>, usually GST_FLOW_OK.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-finish-frame"></a><h3>gst_video_decoder_finish_frame ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+gst_video_decoder_finish_frame (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
+                                <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
+<p><em class="parameter"><code>frame</code></em>
+ should have a valid decoded data buffer, whose metadata fields
+are then appropriately set according to frame data and pushed downstream.
+If no output data is provided, <em class="parameter"><code>frame</code></em>
+ is considered skipped.
+In any case, the frame is considered finished and released.</p>
+<p>After calling this function the output buffer of the frame is to be
+considered read-only. This function will also change the metadata
+of the buffer.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.15.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p> a decoded <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.15.7"></a><h4>Returns</h4>
+<p> a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="type">GstFlowReturn</span></a> resulting from sending data downstream</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-release-frame"></a><h3>gst_video_decoder_release_frame ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_decoder_release_frame (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
+                                 <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
+<p>Similar to <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-drop-frame" title="gst_video_decoder_drop_frame ()"><code class="function">gst_video_decoder_drop_frame()</code></a>, but simply releases <em class="parameter"><code>frame</code></em>
+
+without any processing other than removing it from list of pending frames,
+after which it is considered finished and released.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.16.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>dec</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p> the <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> to release. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since 1.2.2</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-negotiate"></a><h3>gst_video_decoder_negotiate ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_video_decoder_negotiate (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
+<p>Negotiate with downstream elements to currently configured <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a>.
+Unmark GST_PAD_FLAG_NEED_RECONFIGURE in any case. But mark it again if
+negotiate fails.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.17.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.17.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if the negotiation succeeded, else <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><span class="type">FALSE</span></a>.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-frame"></a><h3>gst_video_decoder_get_frame ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="returnvalue">GstVideoCodecFrame</span></a> *
+gst_video_decoder_get_frame (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
+                             <em class="parameter"><code><span class="type">int</span> frame_number</code></em>);</pre>
+<p>Get a pending unfinished <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.18.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>frame_number</p></td>
+<td class="parameter_description"><p>system_frame_number of a frame</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.18.6"></a><h4>Returns</h4>
+<p> pending unfinished <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> identified by <em class="parameter"><code>frame_number</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-frames"></a><h3>gst_video_decoder_get_frames ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *
+gst_video_decoder_get_frames (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
+<p>Get all pending unfinished <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.19.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.19.6"></a><h4>Returns</h4>
+<p> pending unfinished <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstVideoCodecFrame]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-max-decode-time"></a><h3>gst_video_decoder_get_max_decode_time ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTimeDiff"><span class="returnvalue">GstClockTimeDiff</span></a>
+gst_video_decoder_get_max_decode_time (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
+                                       <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
+<p>Determines maximum possible decoding time for <em class="parameter"><code>frame</code></em>
+ that will
+allow it to decode and arrive in time (as determined by QoS events).
+In particular, a negative result means decoding in time is no longer possible
+and should therefore occur as soon/skippy as possible.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.20.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>frame</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.20.6"></a><h4>Returns</h4>
+<p> max decoding time.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-max-errors"></a><h3>gst_video_decoder_get_max_errors ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>
+gst_video_decoder_get_max_errors (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.21.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>dec</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.21.5"></a><h4>Returns</h4>
+<p> currently configured decoder tolerated error count.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-oldest-frame"></a><h3>gst_video_decoder_get_oldest_frame ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="returnvalue">GstVideoCodecFrame</span></a> *
+gst_video_decoder_get_oldest_frame (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
+<p>Get the oldest pending unfinished <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a></p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.22.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.22.6"></a><h4>Returns</h4>
+<p> oldest pending unfinished <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a>. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-packetized"></a><h3>gst_video_decoder_get_packetized ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_video_decoder_get_packetized (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
+<p>Queries whether input data is considered packetized or not by the
+base class.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.23.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.23.6"></a><h4>Returns</h4>
+<p> TRUE if input data is considered packetized.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-pending-frame-size"></a><h3>gst_video_decoder_get_pending_frame_size ()</h3>
+<pre class="programlisting"><span class="returnvalue">gsize</span>
+gst_video_decoder_get_pending_frame_size
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
+<p>Returns the number of bytes previously added to the current frame
+by calling <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-add-to-frame" title="gst_video_decoder_add_to_frame ()"><code class="function">gst_video_decoder_add_to_frame()</code></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.24.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.24.6"></a><h4>Returns</h4>
+<p> The number of bytes pending for the current frame</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-qos-proportion"></a><h3>gst_video_decoder_get_qos_proportion ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="returnvalue">gdouble</span></a>
+gst_video_decoder_get_qos_proportion (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.25.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
+current QoS proportion, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.25.5"></a><h4>Returns</h4>
+<p> The current QoS proportion.</p>
+<p></p>
+</div>
+<p class="since">Since 1.0.3</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-have-frame"></a><h3>gst_video_decoder_have_frame ()</h3>
+<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>
+gst_video_decoder_have_frame (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
+<p>Gathers all data collected for currently parsed frame, gathers corresponding
+metadata and passes it along for further processing, i.e. <em class="parameter"><code>handle_frame</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.26.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.26.6"></a><h4>Returns</h4>
+<p> a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="type">GstFlowReturn</span></a></p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-latency"></a><h3>gst_video_decoder_get_latency ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_decoder_get_latency (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
+                               <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> *min_latency</code></em>,
+                               <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> *max_latency</code></em>);</pre>
+<p>Query the configured decoder latency. Results will be returned via
+<em class="parameter"><code>min_latency</code></em>
+ and <em class="parameter"><code>max_latency</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.27.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>min_latency</p></td>
+<td class="parameter_description"><p> address of variable in which to store the
+configured minimum latency, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>max_latency</p></td>
+<td class="parameter_description"><p> address of variable in which to store the
+configured mximum latency, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-set-latency"></a><h3>gst_video_decoder_set_latency ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_decoder_set_latency (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
+                               <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> min_latency</code></em>,
+                               <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> max_latency</code></em>);</pre>
+<p>Lets <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> sub-classes tell the baseclass what the decoder
+latency is. Will also post a LATENCY message on the bus so the pipeline
+can reconfigure its global latency.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.28.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>min_latency</p></td>
+<td class="parameter_description"><p>minimum latency</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>max_latency</p></td>
+<td class="parameter_description"><p>maximum latency</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-estimate-rate"></a><h3>gst_video_decoder_get_estimate_rate ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>
+gst_video_decoder_get_estimate_rate (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>);</pre>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.29.4"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>dec</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.29.5"></a><h4>Returns</h4>
+<p> currently configured byte to time conversion setting</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-output-state"></a><h3>gst_video_decoder_get_output_state ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="returnvalue">GstVideoCodecState</span></a> *
+gst_video_decoder_get_output_state (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
+<p>Get the <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a> currently describing the output stream.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.30.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.30.6"></a><h4>Returns</h4>
+<p> <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a> describing format of video data. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-set-estimate-rate"></a><h3>gst_video_decoder_set_estimate_rate ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_decoder_set_estimate_rate (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
+                                     <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enabled</code></em>);</pre>
+<p>Allows baseclass to perform byte to time estimated conversion.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.31.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>dec</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>enabled</p></td>
+<td class="parameter_description"><p>whether to enable byte to time conversion</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-set-output-state"></a><h3>gst_video_decoder_set_output_state ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="returnvalue">GstVideoCodecState</span></a> *
+gst_video_decoder_set_output_state (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
+                                    <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a> fmt</code></em>,
+                                    <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> width</code></em>,
+                                    <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> height</code></em>,
+                                    <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a> *reference</code></em>);</pre>
+<p>Creates a new <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a> with the specified <em class="parameter"><code>fmt</code></em>
+, <em class="parameter"><code>width</code></em>
+ and <em class="parameter"><code>height</code></em>
+
+as the output state for the decoder.
+Any previously set output state on <em class="parameter"><code>decoder</code></em>
+ will be replaced by the newly
+created one.</p>
+<p>If the subclass wishes to copy over existing fields (like pixel aspec ratio,
+or framerate) from an existing <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a>, it can be provided as a
+<em class="parameter"><code>reference</code></em>
+.</p>
+<p>If the subclass wishes to override some fields from the output state (like
+pixel-aspect-ratio or framerate) it can do so on the returned <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a>.</p>
+<p>The new output state will only take effect (set on pads and buffers) starting
+from the next call to <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-finish-frame" title="gst_video_decoder_finish_frame ()"><code class="function">gst_video_decoder_finish_frame()</code></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.32.8"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>fmt</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>width</p></td>
+<td class="parameter_description"><p>The width in pixels</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>height</p></td>
+<td class="parameter_description"><p>The height in pixels</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>reference</p></td>
+<td class="parameter_description"><p> An optional reference <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.32.9"></a><h4>Returns</h4>
+<p> the newly configured output state. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-set-max-errors"></a><h3>gst_video_decoder_set_max_errors ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_decoder_set_max_errors (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
+                                  <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> num</code></em>);</pre>
+<p>Sets numbers of tolerated decoder errors, where a tolerated one is then only
+warned about, but more than tolerated will lead to fatal error.  You can set
+-1 for never returning fatal errors. Default is set to
+GST_VIDEO_DECODER_MAX_ERRORS.</p>
+<p>The '-1' option was added in 1.4</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.33.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>dec</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>num</p></td>
+<td class="parameter_description"><p>max tolerated errors</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-set-packetized"></a><h3>gst_video_decoder_set_packetized ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_decoder_set_packetized (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
+                                  <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> packetized</code></em>);</pre>
+<p>Allows baseclass to consider input data as packetized or not. If the
+input is packetized, then the <em class="parameter"><code>parse</code></em>
+ method will not be called.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.34.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>packetized</p></td>
+<td class="parameter_description"><p>whether the input data should be considered as packetized.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-get-needs-format"></a><h3>gst_video_decoder_get_needs_format ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_video_decoder_get_needs_format (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>);</pre>
+<p>Queries decoder required format handling.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.35.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>dec</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.35.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if required format handling is enabled.</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-set-needs-format"></a><h3>gst_video_decoder_set_needs_format ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_decoder_set_needs_format (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
+                                    <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enabled</code></em>);</pre>
+<p>Configures decoder format needs.  If enabled, subclass needs to be
+negotiated with format caps before it can process any data.  It will then
+never be handed any data before it has been configured.
+Otherwise, it might be handed data without having been configured and
+is then expected being able to do so either by default
+or based on the input data.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.36.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>dec</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>enabled</p></td>
+<td class="parameter_description"><p>new state</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-decoder-merge-tags"></a><h3>gst_video_decoder_merge_tags ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_decoder_merge_tags (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
+                              <em class="parameter"><code>const <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTagList.html#GstTagList"><span class="type">GstTagList</span></a> *tags</code></em>,
+                              <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTagList.html#GstTagMergeMode"><span class="type">GstTagMergeMode</span></a> mode</code></em>);</pre>
+<p>Adds tags to so-called pending tags, which will be processed
+before pushing out data downstream.</p>
+<p>Note that this is provided for convenience, and the subclass is
+not required to use this and can still do tag handling on its own.</p>
+<p>MT safe.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.7.37.7"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>decoder</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>tags</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTagList.html#GstTagList"><span class="type">GstTagList</span></a> to merge</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>mode</p></td>
+<td class="parameter_description"><p>the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTagList.html#GstTagMergeMode"><span class="type">GstTagMergeMode</span></a> to use</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-GstVideoDecoder.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GST-VIDEO-DECODER-FLOW-NEED-DATA:CAPS"></a><h3>GST_VIDEO_DECODER_FLOW_NEED_DATA</h3>
+<pre class="programlisting">#define GST_VIDEO_DECODER_FLOW_NEED_DATA GST_FLOW_CUSTOM_SUCCESS
+</pre>
+<p>Returned while parsing to indicate more data is needed.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-DECODER-MAX-ERRORS:CAPS"></a><h3>GST_VIDEO_DECODER_MAX_ERRORS</h3>
+<pre class="programlisting">#define GST_VIDEO_DECODER_MAX_ERRORS     10
+</pre>
+<p>Default maximum number of errors tolerated before signaling error.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-DECODER-SINK-NAME:CAPS"></a><h3>GST_VIDEO_DECODER_SINK_NAME</h3>
+<pre class="programlisting">#define GST_VIDEO_DECODER_SINK_NAME    "sink"
+</pre>
+<p>The name of the templates for the sink pad.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GST-VIDEO-DECODER-SRC-NAME:CAPS"></a><h3>GST_VIDEO_DECODER_SRC_NAME</h3>
+<pre class="programlisting">#define GST_VIDEO_DECODER_SRC_NAME     "src"
+</pre>
+<p>The name of the templates for the source pad.</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -460,9 +1703,7 @@ Gives the segment of the element.
 <pre class="programlisting">struct GstVideoDecoder {
 };
 </pre>
-<p>
-The opaque <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> data structure.
-</p>
+<p>The opaque <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> data structure.</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -505,935 +1746,168 @@ The opaque <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstV
   gboolean      (*propose_allocation) (GstVideoDecoder *decoder, GstQuery * query);
 
   gboolean      (*flush)              (GstVideoDecoder *decoder);
+
+  gboolean      (*sink_query)     (GstVideoDecoder *decoder,
+				   GstQuery *query);
+
+  gboolean      (*src_query)      (GstVideoDecoder *decoder,
+				   GstQuery *query);
 };
 </pre>
-<p>
-Subclasses can override any of the available virtual methods or not, as
-needed. At minimum <em class="parameter"><code>handle_frame</code></em> needs to be overridden, and <em class="parameter"><code>set_format</code></em>
+<p>Subclasses can override any of the available virtual methods or not, as
+needed. At minimum <em class="parameter"><code>handle_frame</code></em>
+ needs to be overridden, and <em class="parameter"><code>set_format</code></em>
+
 and likely as well.  If non-packetized input is supported or expected,
-<em class="parameter"><code>parse</code></em> needs to be overridden as well.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<em class="parameter"><code>parse</code></em>
+ needs to be overridden as well.</p>
+<div class="refsect3">
+<a name="id-1.2.15.12.8.7.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.open"></a>open</code></em> ()</span></p></td>
-<td>Optional.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.open"></a>open</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
 Called when the element changes to GST_STATE_READY.
-Allows opening external resources.</td>
+Allows opening external resources.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.close"></a>close</code></em> ()</span></p></td>
-<td>Optional.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.close"></a>close</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
 Called when the element changes to GST_STATE_NULL.
-Allows closing external resources.</td>
+Allows closing external resources.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.start"></a>start</code></em> ()</span></p></td>
-<td>Optional.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.start"></a>start</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
 Called when the element starts processing.
-Allows opening external resources.</td>
+Allows opening external resources.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.stop"></a>stop</code></em> ()</span></p></td>
-<td>Optional.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.stop"></a>stop</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
 Called when the element stops processing.
-Allows closing external resources.</td>
+Allows closing external resources.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.parse"></a>parse</code></em> ()</span></p></td>
-<td>Required for non-packetized input.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.parse"></a>parse</code></em> ()</p></td>
+<td class="struct_member_description"><p>Required for non-packetized input.
 Allows chopping incoming data into manageable units (frames)
-for subsequent decoding.</td>
+for subsequent decoding.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.set-format"></a>set_format</code></em> ()</span></p></td>
-<td>Notifies subclass of incoming data format (caps).</td>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.set-format"></a>set_format</code></em> ()</p></td>
+<td class="struct_member_description"><p>Notifies subclass of incoming data format (caps).</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.reset"></a>reset</code></em> ()</span></p></td>
-<td>Optional.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.reset"></a>reset</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
 Allows subclass (decoder) to perform post-seek semantics reset.
-Deprecated.</td>
+Deprecated.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.finish"></a>finish</code></em> ()</span></p></td>
-<td>Optional.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.finish"></a>finish</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
 Called to request subclass to dispatch any pending remaining
-data (e.g. at EOS).</td>
+data (e.g. at EOS).</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.handle-frame"></a>handle_frame</code></em> ()</span></p></td>
-<td>Provides input data frame to subclass.</td>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.handle-frame"></a>handle_frame</code></em> ()</p></td>
+<td class="struct_member_description"><p>Provides input data frame to subclass.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.sink-event"></a>sink_event</code></em> ()</span></p></td>
-<td>Optional.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.sink-event"></a>sink_event</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
 Event handler on the sink pad. This function should return
 TRUE if the event was handled and should be discarded
 (i.e. not unref'ed).
 Subclasses should chain up to the parent implementation to
-invoke the default handler.</td>
+invoke the default handler.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.src-event"></a>src_event</code></em> ()</span></p></td>
-<td>Optional.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.src-event"></a>src_event</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
 Event handler on the source pad. This function should return
 TRUE if the event was handled and should be discarded
 (i.e. not unref'ed).
 Subclasses should chain up to the parent implementation to
-invoke the default handler.</td>
+invoke the default handler.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.negotiate"></a>negotiate</code></em> ()</span></p></td>
-<td>Optional.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.negotiate"></a>negotiate</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
 Negotiate with downstream and configure buffer pools, etc.
 Subclasses should chain up to the parent implementation to
-invoke the default handler.</td>
+invoke the default handler.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.decide-allocation"></a>decide_allocation</code></em> ()</span></p></td>
-<td>Optional.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.decide-allocation"></a>decide_allocation</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
 Setup the allocation parameters for allocating output
 buffers. The passed in query contains the result of the
 downstream allocation query.
 Subclasses should chain up to the parent implementation to
-invoke the default handler.</td>
+invoke the default handler.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.propose-allocation"></a>propose_allocation</code></em> ()</span></p></td>
-<td>Optional.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.propose-allocation"></a>propose_allocation</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
 Propose buffer allocation parameters for upstream elements.
 Subclasses should chain up to the parent implementation to
-invoke the default handler.</td>
+invoke the default handler.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoDecoderClass.flush"></a>flush</code></em> ()</span></p></td>
-<td>Optional.
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.flush"></a>flush</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
 Flush all remaining data from the decoder without
-pushing it downstream. Since: 1.2</td>
+pushing it downstream. Since: 1.2</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.sink-query"></a>sink_query</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
+Query handler on the sink pad. This function should
+return TRUE if the query could be performed. Subclasses
+should chain up to the parent implementation to invoke the
+default handler. Since 1.4</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoDecoderClass.src-query"></a>src_query</code></em> ()</p></td>
+<td class="struct_member_description"><p>Optional.
+Query handler on the source pad. This function should
+return TRUE if the query could be performed. Subclasses
+should chain up to the parent implementation to invoke the
+default handler. Since 1.4</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-add-to-frame"></a><h3>gst_video_decoder_add_to_frame ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_decoder_add_to_frame      (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><span class="type">int</span> n_bytes</code></em>);</pre>
-<p>
-Removes next <em class="parameter"><code>n_bytes</code></em> of input data and adds it to currently parsed frame.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>n_bytes</code></em> :</span></p></td>
-<td>the number of bytes to add</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-allocate-output-buffer"></a><h3>gst_video_decoder_allocate_output_buffer ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBuffer.html#GstBuffer"><span class="returnvalue">GstBuffer</span></a> *         gst_video_decoder_allocate_output_buffer
-                                                        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
-<p>
-Helper function that allocates a buffer to hold a video frame for <em class="parameter"><code>decoder</code></em>'s
-current <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a>.
-</p>
-<p>
-You should use <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-allocate-output-frame" title="gst_video_decoder_allocate_output_frame ()"><code class="function">gst_video_decoder_allocate_output_frame()</code></a> instead of this
-function, if possible at all.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>allocated buffer, or NULL if no buffer could be
-allocated (e.g. when downstream is flushing or shutting down). <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-allocate-output-frame"></a><h3>gst_video_decoder_allocate_output_frame ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>       gst_video_decoder_allocate_output_frame
-                                                        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
-<p>
-Helper function that allocates a buffer to hold a video frame for <em class="parameter"><code>decoder</code></em>'s
-current <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a>.  Subclass should already have configured video
-state and set src pad caps.
-</p>
-<p>
-The buffer allocated here is owned by the frame and you should only
-keep references to the frame, not the buffer.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>frame</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GST-FLOW-OK:CAPS"><code class="literal">GST_FLOW_OK</code></a> if an output buffer could be allocated</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-get-allocator"></a><h3>gst_video_decoder_get_allocator ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_decoder_get_allocator     (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstAllocator.html"><span class="type">GstAllocator</span></a> **allocator</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstAllocator.html#GstAllocationParams"><span class="type">GstAllocationParams</span></a> *params</code></em>);</pre>
-<p>
-Lets <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> sub-classes to know the memory <em class="parameter"><code>allocator</code></em>
-used by the base class and its <em class="parameter"><code>params</code></em>.
-</p>
-<p>
-Unref the <em class="parameter"><code>allocator</code></em> after use it.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>allocator</code></em> :</span></p></td>
-<td>the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstAllocator.html"><span class="type">GstAllocator</span></a>
-used. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>params</code></em> :</span></p></td>
-<td>the
-<span class="type">GstAllocatorParams</span> of <em class="parameter"><code>allocator</code></em>. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-get-buffer-pool"></a><h3>gst_video_decoder_get_buffer_pool ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBufferPool.html#GstBufferPool"><span class="returnvalue">GstBufferPool</span></a> *     gst_video_decoder_get_buffer_pool   (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the instance of the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstBufferPool.html#GstBufferPool"><span class="type">GstBufferPool</span></a> used
-by the decoder; free it after use it. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-drop-frame"></a><h3>gst_video_decoder_drop_frame ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>       gst_video_decoder_drop_frame        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
-<p>
-Similar to <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-finish-frame" title="gst_video_decoder_finish_frame ()"><code class="function">gst_video_decoder_finish_frame()</code></a>, but drops <em class="parameter"><code>frame</code></em> in any
-case and posts a QoS message with the frame's details on the bus.
-In any case, the frame is considered finished and released.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>dec</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>frame</code></em> :</span></p></td>
-<td>the <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> to drop. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="type">GstFlowReturn</span></a>, usually GST_FLOW_OK.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-finish-frame"></a><h3>gst_video_decoder_finish_frame ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>       gst_video_decoder_finish_frame      (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
-<p>
-<em class="parameter"><code>frame</code></em> should have a valid decoded data buffer, whose metadata fields
-are then appropriately set according to frame data and pushed downstream.
-If no output data is provided, <em class="parameter"><code>frame</code></em> is considered skipped.
-In any case, the frame is considered finished and released.
-</p>
-<p>
-After calling this function the output buffer of the frame is to be
-considered read-only. This function will also change the metadata
-of the buffer.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>frame</code></em> :</span></p></td>
-<td>a decoded <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a>. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="type">GstFlowReturn</span></a> resulting from sending data downstream</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-release-frame"></a><h3>gst_video_decoder_release_frame ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_decoder_release_frame     (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
-<p>
-Similar to <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-drop-frame" title="gst_video_decoder_drop_frame ()"><code class="function">gst_video_decoder_drop_frame()</code></a>, but simply releases <em class="parameter"><code>frame</code></em>
-without any processing other than removing it from list of pending frames,
-after which it is considered finished and released.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>dec</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>frame</code></em> :</span></p></td>
-<td>the <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> to release. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 1.2.2</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-negotiate"></a><h3>gst_video_decoder_negotiate ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_video_decoder_negotiate         (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
-<p>
-Negotiate with downstream elements to currently configured <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a>.
-Unmark GST_PAD_FLAG_NEED_RECONFIGURE in any case. But mark it again if
-negotiate fails.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><span class="type">TRUE</span></a> if the negotiation succeeded, else <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><span class="type">FALSE</span></a>.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-get-frame"></a><h3>gst_video_decoder_get_frame ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="returnvalue">GstVideoCodecFrame</span></a> * gst_video_decoder_get_frame        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><span class="type">int</span> frame_number</code></em>);</pre>
-<p>
-Get a pending unfinished <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>frame_number</code></em> :</span></p></td>
-<td>system_frame_number of a frame</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>pending unfinished <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> identified by <em class="parameter"><code>frame_number</code></em>. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-get-frames"></a><h3>gst_video_decoder_get_frames ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Doubly-Linked-Lists.html#GList"><span class="returnvalue">GList</span></a> *             gst_video_decoder_get_frames        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
-<p>
-Get all pending unfinished <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>pending unfinished <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a>. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> GstVideoCodecFrame]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-get-max-decode-time"></a><h3>gst_video_decoder_get_max_decode_time ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTimeDiff"><span class="returnvalue">GstClockTimeDiff</span></a>    gst_video_decoder_get_max_decode_time
-                                                        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a> *frame</code></em>);</pre>
-<p>
-Determines maximum possible decoding time for <em class="parameter"><code>frame</code></em> that will
-allow it to decode and arrive in time (as determined by QoS events).
-In particular, a negative result means decoding in time is no longer possible
-and should therefore occur as soon/skippy as possible.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>frame</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>max decoding time.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-get-max-errors"></a><h3>gst_video_decoder_get_max_errors ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                gst_video_decoder_get_max_errors    (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>);</pre>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>dec</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>currently configured decoder tolerated error count.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-get-oldest-frame"></a><h3>gst_video_decoder_get_oldest_frame ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="returnvalue">GstVideoCodecFrame</span></a> * gst_video_decoder_get_oldest_frame (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
-<p>
-Get the oldest pending unfinished <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a>
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>oldest pending unfinished <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecFrame" title="struct GstVideoCodecFrame"><span class="type">GstVideoCodecFrame</span></a>. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-get-packetized"></a><h3>gst_video_decoder_get_packetized ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_video_decoder_get_packetized    (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
-<p>
-Queries whether input data is considered packetized or not by the
-base class.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>TRUE if input data is considered packetized.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-get-qos-proportion"></a><h3>gst_video_decoder_get_qos_proportion ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="returnvalue">gdouble</span></a>             gst_video_decoder_get_qos_proportion
-                                                        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-current QoS proportion, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>The current QoS proportion.</td>
-</tr>
-</tbody>
-</table></div>
-<p class="since">Since 1.0.3</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-have-frame"></a><h3>gst_video_decoder_have_frame ()</h3>
-<pre class="programlisting"><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="returnvalue">GstFlowReturn</span></a>       gst_video_decoder_have_frame        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
-<p>
-Gathers all data collected for currently parsed frame, gathers corresponding
-metadata and passes it along for further processing, i.e. <em class="parameter"><code>handle_frame</code></em>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPad.html#GstFlowReturn"><span class="type">GstFlowReturn</span></a>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-get-latency"></a><h3>gst_video_decoder_get_latency ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_decoder_get_latency       (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> *min_latency</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> *max_latency</code></em>);</pre>
-<p>
-Query the configured decoder latency. Results will be returned via
-<em class="parameter"><code>min_latency</code></em> and <em class="parameter"><code>max_latency</code></em>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>min_latency</code></em> :</span></p></td>
-<td>address of variable in which to store the
-configured minimum latency, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>max_latency</code></em> :</span></p></td>
-<td>address of variable in which to store the
-configured mximum latency, or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a>. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>][<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-set-latency"></a><h3>gst_video_decoder_set_latency ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_decoder_set_latency       (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> min_latency</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstClock.html#GstClockTime"><span class="type">GstClockTime</span></a> max_latency</code></em>);</pre>
-<p>
-Lets <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> sub-classes tell the baseclass what the decoder
-latency is. Will also post a LATENCY message on the bus so the pipeline
-can reconfigure its global latency.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>min_latency</code></em> :</span></p></td>
-<td>minimum latency</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>max_latency</code></em> :</span></p></td>
-<td>maximum latency</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-get-estimate-rate"></a><h3>gst_video_decoder_get_estimate_rate ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                gst_video_decoder_get_estimate_rate (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>);</pre>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>dec</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>currently configured byte to time conversion setting</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-get-output-state"></a><h3>gst_video_decoder_get_output_state ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="returnvalue">GstVideoCodecState</span></a> * gst_video_decoder_get_output_state (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>);</pre>
-<p>
-Get the <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a> currently describing the output stream.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a> describing format of video data. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-set-estimate-rate"></a><h3>gst_video_decoder_set_estimate_rate ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_decoder_set_estimate_rate (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> enabled</code></em>);</pre>
-<p>
-Allows baseclass to perform byte to time estimated conversion.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>dec</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>enabled</code></em> :</span></p></td>
-<td>whether to enable byte to time conversion</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-set-output-state"></a><h3>gst_video_decoder_set_output_state ()</h3>
-<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="returnvalue">GstVideoCodecState</span></a> * gst_video_decoder_set_output_state (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a> fmt</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> width</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> height</code></em>,
-                                                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a> *reference</code></em>);</pre>
-<p>
-Creates a new <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a> with the specified <em class="parameter"><code>fmt</code></em>, <em class="parameter"><code>width</code></em> and <em class="parameter"><code>height</code></em>
-as the output state for the decoder.
-Any previously set output state on <em class="parameter"><code>decoder</code></em> will be replaced by the newly
-created one.
-</p>
-<p>
-If the subclass wishes to copy over existing fields (like pixel aspec ratio,
-or framerate) from an existing <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a>, it can be provided as a
-<em class="parameter"><code>reference</code></em>.
-</p>
-<p>
-If the subclass wishes to override some fields from the output state (like
-pixel-aspect-ratio or framerate) it can do so on the returned <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a>.
-</p>
-<p>
-The new output state will only take effect (set on pads and buffers) starting
-from the next call to #<a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#gst-video-decoder-finish-frame" title="gst_video_decoder_finish_frame ()"><code class="function">gst_video_decoder_finish_frame()</code></a>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>fmt</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-gstvideo.html#GstVideoFormat" title="enum GstVideoFormat"><span class="type">GstVideoFormat</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
-<td>The width in pixels</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
-<td>The height in pixels</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>reference</code></em> :</span></p></td>
-<td>An optional reference <a class="link" href="gst-plugins-base-libs-gstvideoutils.html#GstVideoCodecState" title="struct GstVideoCodecState"><span class="type">GstVideoCodecState</span></a>. <span class="annotation">[<acronym title="NULL is ok, both for passing and for returning."><span class="acronym">allow-none</span></acronym>][<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>the newly configured output state. <span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
-</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-set-max-errors"></a><h3>gst_video_decoder_set_max_errors ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_decoder_set_max_errors    (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> num</code></em>);</pre>
-<p>
-Sets numbers of tolerated decoder errors, where a tolerated one is then only
-warned about, but more than tolerated will lead to fatal error.  Default
-is set to GST_VIDEO_DECODER_MAX_ERRORS.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>dec</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>num</code></em> :</span></p></td>
-<td>max tolerated errors</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-set-packetized"></a><h3>gst_video_decoder_set_packetized ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_decoder_set_packetized    (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *decoder</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> packetized</code></em>);</pre>
-<p>
-Allows baseclass to consider input data as packetized or not. If the
-input is packetized, then the <em class="parameter"><code>parse</code></em> method will not be called.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>packetized</code></em> :</span></p></td>
-<td>whether the input data should be considered as packetized.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-decoder-merge-tags"></a><h3>gst_video_decoder_merge_tags ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_decoder_merge_tags        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a> *dec</code></em>,
-                                                         <em class="parameter"><code>const <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTagList.html#GstTagList"><span class="type">GstTagList</span></a> *tags</code></em>,
-                                                         <em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTagList.html#GstTagMergeMode"><span class="type">GstTagMergeMode</span></a> mode</code></em>);</pre>
-<p>
-Adds tags to so-called pending tags, which will be processed
-before pushing out data downstream.
-</p>
-<p>
-Note that this is provided for convenience, and the subclass is
-not required to use this and can still do tag handling on its own.
-</p>
-<p>
-MT safe.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>decoder</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-GstVideoDecoder.html#GstVideoDecoder" title="struct GstVideoDecoder"><span class="type">GstVideoDecoder</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>tags</code></em> :</span></p></td>
-<td>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTagList.html#GstTagList"><span class="type">GstTagList</span></a> to merge</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>mode</code></em> :</span></p></td>
-<td>the <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstTagList.html#GstTagMergeMode"><span class="type">GstTagMergeMode</span></a> to use</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

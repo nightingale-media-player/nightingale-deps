@@ -36,8 +36,6 @@
  * ]| This example pipeline will decode an ogg stream and decodes the theora video. Refer to
  * the theoraenc example to create the ogg file.
  * </refsect2>
- *
- * Last reviewed on 2006-03-01 (0.10.4)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -207,6 +205,7 @@ gst_theora_dec_init (GstTheoraDec * dec)
   /* input is packetized,
    * but is not marked that way so data gets parsed and keyframes marked */
   gst_video_decoder_set_packetized (GST_VIDEO_DECODER (dec), FALSE);
+  gst_video_decoder_set_needs_format (GST_VIDEO_DECODER (dec), TRUE);
 }
 
 static gboolean
@@ -397,9 +396,6 @@ theora_handle_type_packet (GstTheoraDec * dec)
   GstVideoCodecState *state;
   GstVideoFormat fmt;
   GstVideoInfo *info;
-
-  if (!dec->input_state)
-    return GST_FLOW_NOT_NEGOTIATED;
 
   info = &dec->input_state->info;
 

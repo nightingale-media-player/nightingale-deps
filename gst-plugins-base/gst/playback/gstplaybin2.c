@@ -149,8 +149,7 @@
  * value that shows the progress of the buffering process. Applications need
  * to set playbin to PLAYING or PAUSED state in response to these messages.
  * They may also want to convey the buffering progress to the user in some
- * way. Here is how to extract the percentage information from the message
- * (requires GStreamer >= 0.10.11):
+ * way. Here is how to extract the percentage information from the message:
  * |[
  * switch (GST_MESSAGE_TYPE (msg)) {
  *   case GST_MESSAGE_BUFFERING: {
@@ -566,6 +565,8 @@ enum
   PROP_AV_OFFSET,
   PROP_RING_BUFFER_MAX_SIZE,
   PROP_FORCE_ASPECT_RATIO,
+  PROP_AUDIO_FILTER,
+  PROP_VIDEO_FILTER,
   PROP_LAST
 };
 
@@ -590,8 +591,8 @@ enum
   LAST_SIGNAL
 };
 
-static GstStaticCaps raw_audio_caps = GST_STATIC_CAPS ("audio/x-raw");
-static GstStaticCaps raw_video_caps = GST_STATIC_CAPS ("video/x-raw");
+static GstStaticCaps raw_audio_caps = GST_STATIC_CAPS ("audio/x-raw(ANY)");
+static GstStaticCaps raw_video_caps = GST_STATIC_CAPS ("video/x-raw(ANY)");
 
 static void gst_play_bin_class_init (GstPlayBinClass * klass);
 static void gst_play_bin_init (GstPlayBin * playbin);
@@ -838,6 +839,14 @@ gst_play_bin_class_init (GstPlayBinClass * klass)
           "ISO-8859-15 will be assumed.", NULL,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (gobject_klass, PROP_VIDEO_FILTER,
+      g_param_spec_object ("video-filter", "Video filter",
+          "the video filter(s) to apply, if possible",
+          GST_TYPE_ELEMENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (gobject_klass, PROP_AUDIO_FILTER,
+      g_param_spec_object ("audio-filter", "Audio filter",
+          "the audio filter(s) to apply, if possible",
+          GST_TYPE_ELEMENT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_klass, PROP_VIDEO_SINK,
       g_param_spec_object ("video-sink", "Video Sink",
           "the video output element to use (NULL = default sink)",
@@ -942,8 +951,6 @@ gst_play_bin_class_init (GstPlayBinClass * klass)
    * Control the synchronisation offset between the audio and video streams.
    * Positive values make the audio ahead of the video and negative values make
    * the audio go behind the video.
-   *
-   * Since: 0.10.30
    */
   g_object_class_install_property (gobject_klass, PROP_AV_OFFSET,
       g_param_spec_int64 ("av-offset", "AV Offset",
@@ -956,8 +963,6 @@ gst_play_bin_class_init (GstPlayBinClass * klass)
    *
    * The maximum size of the ring buffer in bytes. If set to 0, the ring
    * buffer is disabled. Default 0.
-   *
-   * Since: 0.10.31
    */
   g_object_class_install_property (gobject_klass, PROP_RING_BUFFER_MAX_SIZE,
       g_param_spec_uint64 ("ring-buffer-max-size",
@@ -970,8 +975,6 @@ gst_play_bin_class_init (GstPlayBinClass * klass)
    * GstPlayBin::force-aspect-ratio:
    *
    * Requests the video sink to enforce the video display aspect ratio.
-   *
-   * Since: 0.10.37
    */
   g_object_class_install_property (gobject_klass, PROP_FORCE_ASPECT_RATIO,
       g_param_spec_boolean ("force-aspect-ratio", "Force Aspect Ratio",
@@ -1059,8 +1062,6 @@ gst_play_bin_class_init (GstPlayBinClass * klass)
    * This signal may be emitted from the context of a GStreamer streaming thread.
    * You can use gst_message_new_application() and gst_element_post_message()
    * to notify your application's main thread.
-   *
-   * Since: 0.10.24
    */
   gst_play_bin_signals[SIGNAL_VIDEO_TAGS_CHANGED] =
       g_signal_new ("video-tags-changed", G_TYPE_FROM_CLASS (klass),
@@ -1079,8 +1080,6 @@ gst_play_bin_class_init (GstPlayBinClass * klass)
    * This signal may be emitted from the context of a GStreamer streaming thread.
    * You can use gst_message_new_application() and gst_element_post_message()
    * to notify your application's main thread.
-   *
-   * Since: 0.10.24
    */
   gst_play_bin_signals[SIGNAL_AUDIO_TAGS_CHANGED] =
       g_signal_new ("audio-tags-changed", G_TYPE_FROM_CLASS (klass),
@@ -1099,8 +1098,6 @@ gst_play_bin_class_init (GstPlayBinClass * klass)
    * This signal may be emitted from the context of a GStreamer streaming thread.
    * You can use gst_message_new_application() and gst_element_post_message()
    * to notify your application's main thread.
-   *
-   * Since: 0.10.24
    */
   gst_play_bin_signals[SIGNAL_TEXT_TAGS_CHANGED] =
       g_signal_new ("text-tags-changed", G_TYPE_FROM_CLASS (klass),
@@ -1121,8 +1118,6 @@ gst_play_bin_class_init (GstPlayBinClass * klass)
    *
    * This signal is usually emitted from the context of a GStreamer streaming
    * thread.
-   *
-   * Since: 0.10.33
    */
   gst_play_bin_signals[SIGNAL_SOURCE_SETUP] =
       g_signal_new ("source-setup", G_TYPE_FROM_CLASS (klass),
@@ -2023,6 +2018,20 @@ gst_play_bin_suburidecodebin_seek_to_start (GstSourceGroup * group)
     gst_iterator_free (it);
 }
 
+
+static GstPadProbeReturn
+block_serialized_data_cb (GstPad * pad, GstPadProbeInfo * info,
+    gpointer user_data)
+{
+  if (GST_IS_EVENT (info->data) && !GST_EVENT_IS_SERIALIZED (info->data)) {
+    GST_DEBUG_OBJECT (pad, "Letting non-serialized event %s pass",
+        GST_EVENT_TYPE_NAME (info->data));
+    return GST_PAD_PROBE_PASS;
+  }
+
+  return GST_PAD_PROBE_OK;
+}
+
 static void
 gst_play_bin_suburidecodebin_block (GstSourceGroup * group,
     GstElement * suburidecodebin, gboolean block)
@@ -2044,7 +2053,7 @@ gst_play_bin_suburidecodebin_block (GstSourceGroup * group,
         if (block) {
           group->block_id =
               gst_pad_add_probe (sinkpad, GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM,
-              NULL, NULL, NULL);
+              block_serialized_data_cb, NULL, NULL);
         } else if (group->block_id) {
           gst_pad_remove_probe (sinkpad, group->block_id);
           group->block_id = 0;
@@ -2267,6 +2276,14 @@ gst_play_bin_set_property (GObject * object, guint prop_id,
     case PROP_SUBTITLE_ENCODING:
       gst_play_bin_set_encoding (playbin, g_value_get_string (value));
       break;
+    case PROP_VIDEO_FILTER:
+      gst_play_sink_set_filter (playbin->playsink, GST_PLAY_SINK_TYPE_VIDEO,
+          GST_ELEMENT (g_value_get_object (value)));
+      break;
+    case PROP_AUDIO_FILTER:
+      gst_play_sink_set_filter (playbin->playsink, GST_PLAY_SINK_TYPE_AUDIO,
+          GST_ELEMENT (g_value_get_object (value)));
+      break;
     case PROP_VIDEO_SINK:
       gst_play_bin_set_sink (playbin, GST_PLAY_SINK_TYPE_VIDEO, "video",
           &playbin->video_sink, g_value_get_object (value));
@@ -2483,6 +2500,16 @@ gst_play_bin_get_property (GObject * object, guint prop_id, GValue * value,
       g_value_take_string (value,
           gst_play_sink_get_subtitle_encoding (playbin->playsink));
       GST_PLAY_BIN_UNLOCK (playbin);
+      break;
+    case PROP_VIDEO_FILTER:
+      g_value_take_object (value,
+          gst_play_sink_get_filter (playbin->playsink,
+              GST_PLAY_SINK_TYPE_VIDEO));
+      break;
+    case PROP_AUDIO_FILTER:
+      g_value_take_object (value,
+          gst_play_sink_get_filter (playbin->playsink,
+              GST_PLAY_SINK_TYPE_AUDIO));
       break;
     case PROP_VIDEO_SINK:
       g_value_take_object (value,
@@ -2702,7 +2729,7 @@ gst_play_bin_handle_message (GstBin * bin, GstMessage * msg)
     /* Ignore async state changes from the uridecodebin children,
      * see bug #602000. */
     group = playbin->curr_group;
-    if (src && (group = playbin->curr_group) &&
+    if (src && group &&
         ((group->uridecodebin && src == GST_OBJECT_CAST (group->uridecodebin))
             || (group->suburidecodebin
                 && src == GST_OBJECT_CAST (group->suburidecodebin)))) {
@@ -3009,7 +3036,9 @@ pad_added_cb (GstElement * decodebin, GstPad * pad, GstSourceGroup * group)
 
   playbin = group->playbin;
 
-  caps = gst_pad_query_caps (pad, NULL);
+  caps = gst_pad_get_current_caps (pad);
+  if (!caps)
+    caps = gst_pad_query_caps (pad, NULL);
   s = gst_caps_get_structure (caps, 0);
   name = gst_structure_get_name (s);
 
@@ -3111,7 +3140,7 @@ pad_added_cb (GstElement * decodebin, GstPad * pad, GstSourceGroup * group)
     GST_DEBUG_OBJECT (playbin, "blocking %" GST_PTR_FORMAT, combine->srcpad);
     combine->block_id =
         gst_pad_add_probe (combine->srcpad, GST_PAD_PROBE_TYPE_BLOCK_DOWNSTREAM,
-        NULL, NULL, NULL);
+        block_serialized_data_cb, NULL, NULL);
   }
 
   /* get sinkpad for the new stream */
@@ -3284,6 +3313,13 @@ pad_removed_cb (GstElement * decodebin, GstPad * pad, GstSourceGroup * group)
   if (!(peer = g_object_get_data (G_OBJECT (pad), "playbin.sinkpad")))
     goto not_linked;
 
+  /* unlink the pad now (can fail, the pad is unlinked before it's removed) */
+  gst_pad_unlink (pad, peer);
+
+  /* get combiner */
+  combiner = GST_ELEMENT_CAST (gst_pad_get_parent (peer));
+  g_assert (combiner != NULL);
+
   if ((combine = g_object_get_data (G_OBJECT (peer), "playbin.combine"))) {
     if (combine->has_tags) {
       gulong notify_tags_handler;
@@ -3328,17 +3364,6 @@ pad_removed_cb (GstElement * decodebin, GstPad * pad, GstSourceGroup * group)
     }
   }
 
-  /* unlink the pad now (can fail, the pad is unlinked before it's removed) */
-  gst_pad_unlink (pad, peer);
-
-  /* get combiner, this can be NULL when the element is removing the pads
-   * because it's being disposed. */
-  combiner = GST_ELEMENT_CAST (gst_pad_get_parent (peer));
-  if (!combiner) {
-    gst_object_unref (peer);
-    goto no_combiner;
-  }
-
   /* release the pad to the combiner, this will make the combiner choose a new
    * pad. */
   gst_element_release_request_pad (combiner, peer);
@@ -3357,11 +3382,6 @@ exit:
 not_linked:
   {
     GST_DEBUG_OBJECT (playbin, "pad not linked");
-    goto exit;
-  }
-no_combiner:
-  {
-    GST_DEBUG_OBJECT (playbin, "combiner not found");
     goto exit;
   }
 }
@@ -3784,7 +3804,7 @@ avelements_create (GstPlayBin * playbin, gboolean isaudioelement)
   }
 
   /* create a list of audio/video elements. Each element in the list
-   * is holding an audio/video decoder and an auido/video sink in which
+   * is holding an audio/video decoder and an audio/video sink in which
    * the decoders srcpad template caps and sink element's sinkpad template
    * caps are compatible */
   dl = dec_list;
@@ -3839,6 +3859,7 @@ create_decoders_list (GList * factory_list, GSequence * avelements)
 {
   GList *dec_list = NULL, *tmp;
   GList *ave_list = NULL;
+  GList *ave_free_list = NULL;
   GstAVElement *ave, *best_ave;
 
   g_return_val_if_fail (factory_list != NULL, NULL);
@@ -3848,9 +3869,11 @@ create_decoders_list (GList * factory_list, GSequence * avelements)
     GstElementFactory *factory = (GstElementFactory *) tmp->data;
 
     /* if there are parsers or sink elements, add them first */
-    if (!gst_element_factory_list_is_type (factory,
-            GST_ELEMENT_FACTORY_TYPE_DECODER)) {
-      dec_list = g_list_prepend (dec_list, factory);
+    if (gst_element_factory_list_is_type (factory,
+            GST_ELEMENT_FACTORY_TYPE_PARSER) ||
+        gst_element_factory_list_is_type (factory,
+            GST_ELEMENT_FACTORY_TYPE_SINK)) {
+      dec_list = g_list_prepend (dec_list, gst_object_ref (factory));
     } else {
       GSequenceIter *seq_iter;
 
@@ -3865,7 +3888,10 @@ create_decoders_list (GList * factory_list, GSequence * avelements)
         /* There's at least raw */
         ave->n_comm_cf = 1;
 
-        dec_list = g_list_prepend (dec_list, factory);
+        ave_list = g_list_prepend (ave_list, ave);
+
+        /* We need to free these later */
+        ave_free_list = g_list_prepend (ave_free_list, ave);
         continue;
       }
 
@@ -3899,9 +3925,14 @@ create_decoders_list (GList * factory_list, GSequence * avelements)
   ave_list = g_list_sort (ave_list, (GCompareFunc) avelement_compare);
   for (tmp = ave_list; tmp; tmp = tmp->next) {
     ave = (GstAVElement *) tmp->data;
-    dec_list = g_list_prepend (dec_list, ave->dec);
+    dec_list = g_list_prepend (dec_list, gst_object_ref (ave->dec));
   }
   g_list_free (ave_list);
+  gst_plugin_feature_list_free (factory_list);
+
+  for (tmp = ave_free_list; tmp; tmp = tmp->next)
+    g_slice_free (GstAVElement, tmp->data);
+  g_list_free (ave_free_list);
 
   dec_list = g_list_reverse (dec_list);
 
@@ -4576,6 +4607,15 @@ autoplug_select_cb (GstElement * decodebin, GstPad * pad,
   return GST_AUTOPLUG_SELECT_EXPOSE;
 }
 
+#define GST_PLAY_BIN_FILTER_CAPS(filter,caps) G_STMT_START {                  \
+  if ((filter)) {                                                             \
+    GstCaps *intersection =                                                   \
+        gst_caps_intersect_full ((filter), (caps), GST_CAPS_INTERSECT_FIRST); \
+    gst_caps_unref ((caps));                                                  \
+    (caps) = intersection;                                                    \
+  }                                                                           \
+} G_STMT_END
+
 static gboolean
 autoplug_query_caps (GstElement * uridecodebin, GstPad * pad,
     GstElement * element, GstQuery * query, GstSourceGroup * group)
@@ -4680,6 +4720,7 @@ autoplug_query_caps (GstElement * uridecodebin, GstPad * pad,
       have_sink = TRUE;
     } else {
       GstCaps *subcaps = gst_subtitle_overlay_create_factory_caps ();
+      GST_PLAY_BIN_FILTER_CAPS (filter, subcaps);
       if (!result)
         result = subcaps;
       else
@@ -4711,6 +4752,7 @@ autoplug_query_caps (GstElement * uridecodebin, GstPad * pad,
         templ_caps = gst_static_pad_template_get_caps (l->data);
 
         if (!gst_caps_is_any (templ_caps)) {
+          GST_PLAY_BIN_FILTER_CAPS (filter, templ_caps);
           if (!result)
             result = templ_caps;
           else
@@ -4738,17 +4780,13 @@ done:
     GstPad *target = gst_ghost_pad_get_target (GST_GHOST_PAD (pad));
 
     if (target) {
-      result = gst_caps_merge (result, gst_pad_get_pad_template_caps (target));
+      GstCaps *target_caps = gst_pad_get_pad_template_caps (target);
+      GST_PLAY_BIN_FILTER_CAPS (filter, target_caps);
+      result = gst_caps_merge (result, target_caps);
       gst_object_unref (target);
     }
   }
 
-  if (filter) {
-    GstCaps *intersection =
-        gst_caps_intersect_full (filter, result, GST_CAPS_INTERSECT_FIRST);
-    gst_caps_unref (result);
-    result = intersection;
-  }
 
   gst_query_set_caps_result (query, result);
   gst_caps_unref (result);
@@ -5523,6 +5561,12 @@ gst_play_bin_change_state (GstElement * element, GstStateChange transition)
           l = l->next;
         }
       }
+
+      if (playbin->source) {
+        gst_object_unref (playbin->source);
+        playbin->source = NULL;
+      }
+
       GST_OBJECT_UNLOCK (playbin);
       break;
     }

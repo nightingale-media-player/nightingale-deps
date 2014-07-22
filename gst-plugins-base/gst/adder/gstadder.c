@@ -35,8 +35,6 @@
  * gst-launch audiotestsrc freq=100 ! adder name=mix ! audioconvert ! alsasink audiotestsrc freq=500 ! mix.
  * ]| This pipeline produces two sine waves mixed together.
  * </refsect2>
- *
- * Last reviewed on 2006-05-09 (0.10.7)
  */
 /* Element-Checklist-Version: 5 */
 
@@ -223,6 +221,8 @@ gst_adder_sink_getcaps (GstPad * pad, GstCaps * filter)
 {
   GstAdder *adder;
   GstCaps *result, *peercaps, *current_caps, *filter_caps;
+  GstStructure *s;
+  gint i, n;
 
   adder = GST_ADDER (GST_PAD_PARENT (pad));
 
@@ -283,6 +283,22 @@ gst_adder_sink_getcaps (GstPad * pad, GstCaps * filter)
     }
   }
 
+  result = gst_caps_make_writable (result);
+
+  n = gst_caps_get_size (result);
+  for (i = 0; i < n; i++) {
+    GstStructure *sref;
+
+    s = gst_caps_get_structure (result, i);
+    sref = gst_structure_copy (s);
+    gst_structure_set (sref, "channels", GST_TYPE_INT_RANGE, 0, 2, NULL);
+    if (gst_structure_is_subset (s, sref)) {
+      /* This field is irrelevant when in mono or stereo */
+      gst_structure_remove_field (s, "channel-mask");
+    }
+    gst_structure_free (sref);
+  }
+
   if (filter_caps)
     gst_caps_unref (filter_caps);
 
@@ -322,9 +338,19 @@ gst_adder_sink_query (GstCollectPads * pads, GstCollectData * pad,
  * the other sinkpads because we can only mix streams with the same caps.
  */
 static gboolean
-gst_adder_setcaps (GstAdder * adder, GstPad * pad, GstCaps * caps)
+gst_adder_setcaps (GstAdder * adder, GstPad * pad, GstCaps * orig_caps)
 {
+  GstCaps *caps;
   GstAudioInfo info;
+  GstStructure *s;
+  gint channels;
+
+  caps = gst_caps_copy (orig_caps);
+
+  s = gst_caps_get_structure (caps, 0);
+  if (gst_structure_get_int (s, "channels", &channels))
+    if (channels <= 2)
+      gst_structure_remove_field (s, "channel-mask");
 
   if (!gst_audio_info_from_caps (&info, caps))
     goto invalid_format;
@@ -337,12 +363,14 @@ gst_adder_setcaps (GstAdder * adder, GstPad * pad, GstCaps * caps)
   if (adder->current_caps != NULL) {
     if (gst_audio_info_is_equal (&info, &adder->info)) {
       GST_OBJECT_UNLOCK (adder);
+      gst_caps_unref (caps);
       return TRUE;
     } else {
       GST_DEBUG_OBJECT (pad, "got input caps %" GST_PTR_FORMAT ", but "
           "current caps are %" GST_PTR_FORMAT, caps, adder->current_caps);
       GST_OBJECT_UNLOCK (adder);
       gst_pad_push_event (pad, gst_event_new_reconfigure ());
+      gst_caps_unref (caps);
       return FALSE;
     }
   }
@@ -356,11 +384,14 @@ gst_adder_setcaps (GstAdder * adder, GstPad * pad, GstCaps * caps)
 
   GST_INFO_OBJECT (pad, "handle caps change to %" GST_PTR_FORMAT, caps);
 
+  gst_caps_unref (caps);
+
   return TRUE;
 
   /* ERRORS */
 invalid_format:
   {
+    gst_caps_unref (caps);
     GST_WARNING_OBJECT (adder, "invalid format set as caps");
     return FALSE;
   }
@@ -1143,6 +1174,7 @@ gst_adder_collected (GstCollectPads * pads, gpointer user_data)
   gint64 next_timestamp;
   gint rate, bps, bpf;
   gboolean had_mute = FALSE;
+  gboolean is_eos = TRUE;
 
   adder = GST_ADDER (user_data);
 
@@ -1161,11 +1193,17 @@ gst_adder_collected (GstCollectPads * pads, gpointer user_data)
 
   if (adder->send_stream_start) {
     gchar s_id[32];
+    GstEvent *event;
 
     GST_INFO_OBJECT (adder->srcpad, "send pending stream start event");
-    /* stream-start (FIXME: create id based on input ids) */
+    /* FIXME: create id based on input ids, we can't use 
+     * gst_pad_create_stream_id() though as that only handles 0..1 sink-pad
+     */
     g_snprintf (s_id, sizeof (s_id), "adder-%08x", g_random_int ());
-    if (!gst_pad_push_event (adder->srcpad, gst_event_new_stream_start (s_id))) {
+    event = gst_event_new_stream_start (s_id);
+    gst_event_set_group_id (event, gst_util_group_id_next ());
+
+    if (!gst_pad_push_event (adder->srcpad, event)) {
       GST_WARNING_OBJECT (adder->srcpad, "Sending stream start event failed");
     }
     adder->send_stream_start = FALSE;
@@ -1221,9 +1259,6 @@ gst_adder_collected (GstCollectPads * pads, gpointer user_data)
   /* get available bytes for reading, this can be 0 which could mean empty
    * buffers or EOS, which we will catch when we loop over the pads. */
   outsize = gst_collect_pads_available (pads);
-  /* can only happen when no pads to collect or all EOS */
-  if (outsize == 0)
-    goto eos;
 
   GST_LOG_OBJECT (adder,
       "starting to cycle through channels, %d bytes available (bps = %d, bpf = %d)",
@@ -1245,6 +1280,11 @@ gst_adder_collected (GstCollectPads * pads, gpointer user_data)
     /* get a buffer of size bytes, if we get a buffer, it is at least outsize
      * bytes big. */
     inbuf = gst_collect_pads_take_buffer (pads, collect_data, outsize);
+
+    if (!GST_COLLECT_PADS_STATE_IS_SET (collect_data,
+                    GST_COLLECT_PADS_STATE_EOS))
+      is_eos = FALSE;
+
     /* NULL means EOS or an empty buffer so we still need to flush in
      * case of an empty buffer. */
     if (inbuf == NULL) {
@@ -1438,8 +1478,12 @@ gst_adder_collected (GstCollectPads * pads, gpointer user_data)
     }
     GST_OBJECT_UNLOCK (pad);
   }
+
   if (outbuf)
     gst_buffer_unmap (outbuf, &outmap);
+
+  if (is_eos)
+    goto eos;
 
   if (outbuf == NULL) {
     /* no output buffer, reuse one of the GAP buffers then if we have one */

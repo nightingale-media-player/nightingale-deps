@@ -2,34 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>audioconvert</title>
+<title>GStreamer Base Plugins 1.0 Plugins Reference Manual: audioconvert</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-alsasrc.html" title="alsasrc">
 <link rel="next" href="gst-plugins-base-plugins-audiorate.html" title="audiorate">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-plugins-alsasrc.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-plugins-audiorate.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-base-plugins-audioconvert.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-audioconvert.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-audioconvert.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-audioconvert.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-audioconvert.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-audioconvert.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-audioconvert.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-alsasrc.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-plugins-audiorate.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-base-plugins-audioconvert"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -37,44 +31,70 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-audioconvert.top_of_page"></a>audioconvert</span></h2>
 <p>audioconvert — Convert audio to different formats</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-base-plugins-audioconvert.synopsis"></a><h2>Synopsis</h2>
-<a name="GstAudioConvert"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvert-struct" title="struct GstAudioConvert">GstAudioConvert</a>;
-enum                <a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvertDithering" title="enum GstAudioConvertDithering">GstAudioConvertDithering</a>;
-enum                <a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvertNoiseShaping" title="enum GstAudioConvertNoiseShaping">GstAudioConvertNoiseShaping</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-audioconvert.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvertDithering" title="enum GstAudioConvertDithering"><span class="type">GstAudioConvertDithering</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvert--dithering" title="The “dithering” property">dithering</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvertNoiseShaping" title="enum GstAudioConvertNoiseShaping"><span class="type">GstAudioConvertNoiseShaping</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvert--noise-shaping" title="The “noise-shaping” property">noise-shaping</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstAudioConvert"></a><div class="refsect1">
+<a name="gst-plugins-base-plugins-audioconvert.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvert-struct" title="struct GstAudioConvert">GstAudioConvert</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvertDithering" title="enum GstAudioConvertDithering">GstAudioConvertDithering</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvertNoiseShaping" title="enum GstAudioConvertNoiseShaping">GstAudioConvertNoiseShaping</a></td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-base-plugins-audioconvert.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
-                           +----GstAudioConvert
-</pre>
-</div>
-<div class="refsect1">
-<a name="gst-plugins-base-plugins-audioconvert.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvert--dithering" title='The "dithering" property'>dithering</a>"                <a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvertDithering" title="enum GstAudioConvertDithering"><span class="type">GstAudioConvertDithering</span></a>  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvert--noise-shaping" title='The "noise-shaping" property'>noise-shaping</a>"            <a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvertNoiseShaping" title="enum GstAudioConvertNoiseShaping"><span class="type">GstAudioConvertNoiseShaping</span></a>  : Read / Write
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-libs/html/GstBaseTransform.html">GstBaseTransform</a>
+                    <span class="lineart">╰──</span> GstAudioConvert
 </pre>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-base-plugins-audioconvert.description"></a><h2>Description</h2>
-<p>
-Audioconvert converts raw audio buffers between various possible formats.
+<p>Audioconvert converts raw audio buffers between various possible formats.
 It supports integer to float conversion, width/depth conversion,
-signedness and endianness conversion and channel transformations.
-</p>
-<p>
-</p>
+signedness and endianness conversion and channel transformations.</p>
 <div class="refsect2">
-<a name="id-1.2.7.6.3.1"></a><h3>Example launch line</h3>
+<a name="id-1.2.7.7.3"></a><h3>Example launch line</h3>
 <div class="informalexample">
   <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
     <tbody>
@@ -100,15 +120,10 @@ the output levels still match the one for a sine wave.
  The vorbis encoder takes float audio data instead of the integer data
 generated by audiotestsrc.
 </div>
-<p>
-</p>
-<p>
-Last reviewed on 2006-03-02 (0.10.4)
-</p>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.7.6.5.1"></a><h3>Element Information</h3>
+<a name="id-1.2.7.7.4.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -134,7 +149,7 @@ Last reviewed on 2006-03-02 (0.10.4)
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.7.6.5.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.7.7.4.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -189,124 +204,134 @@ Last reviewed on 2006-03-02 (0.10.4)
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-base-plugins-audioconvert.details"></a><h2>Details</h2>
+<a name="gst-plugins-base-plugins-audioconvert.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-audioconvert.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstAudioConvert-struct"></a><h3>struct GstAudioConvert</h3>
 <pre class="programlisting">struct GstAudioConvert;</pre>
-<p>
-The audioconvert object structure.
-</p>
+<p>The audioconvert object structure.</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="GstAudioConvertDithering"></a><h3>enum GstAudioConvertDithering</h3>
-<pre class="programlisting">typedef enum {
-  DITHER_NONE = 0,
-  DITHER_RPDF,
-  DITHER_TPDF,
-  DITHER_TPDF_HF
-} GstAudioConvertDithering;
-</pre>
-<p>
-Set of available dithering methods when converting audio.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p>Set of available dithering methods when converting audio.</p>
+<div class="refsect3">
+<a name="id-1.2.7.9.3.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><a name="DITHER-NONE:CAPS"></a><span class="term"><code class="literal">DITHER_NONE</code></span></p></td>
-<td>No dithering
+<td class="enum_member_name"><p><a name="DITHER-NONE:CAPS"></a>DITHER_NONE</p></td>
+<td class="enum_member_description">
+<p>No dithering</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="DITHER-RPDF:CAPS"></a><span class="term"><code class="literal">DITHER_RPDF</code></span></p></td>
-<td>Rectangular dithering
+<td class="enum_member_name"><p><a name="DITHER-RPDF:CAPS"></a>DITHER_RPDF</p></td>
+<td class="enum_member_description">
+<p>Rectangular dithering</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="DITHER-TPDF:CAPS"></a><span class="term"><code class="literal">DITHER_TPDF</code></span></p></td>
-<td>Triangular dithering (default)
+<td class="enum_member_name"><p><a name="DITHER-TPDF:CAPS"></a>DITHER_TPDF</p></td>
+<td class="enum_member_description">
+<p>Triangular dithering (default)</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="DITHER-TPDF-HF:CAPS"></a><span class="term"><code class="literal">DITHER_TPDF_HF</code></span></p></td>
-<td>High frequency triangular dithering
+<td class="enum_member_name"><p><a name="DITHER-TPDF-HF:CAPS"></a>DITHER_TPDF_HF</p></td>
+<td class="enum_member_description">
+<p>High frequency triangular dithering</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+</div>
 <hr>
 <div class="refsect2">
 <a name="GstAudioConvertNoiseShaping"></a><h3>enum GstAudioConvertNoiseShaping</h3>
-<pre class="programlisting">typedef enum {
-  NOISE_SHAPING_NONE = 0,
-  NOISE_SHAPING_ERROR_FEEDBACK,
-  NOISE_SHAPING_SIMPLE,
-  NOISE_SHAPING_MEDIUM,
-  NOISE_SHAPING_HIGH
-} GstAudioConvertNoiseShaping;
-</pre>
-<p>
-Set of available noise shaping methods
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p>Set of available noise shaping methods</p>
+<div class="refsect3">
+<a name="id-1.2.7.9.4.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><a name="NOISE-SHAPING-NONE:CAPS"></a><span class="term"><code class="literal">NOISE_SHAPING_NONE</code></span></p></td>
-<td>No noise shaping (default)
+<td class="enum_member_name"><p><a name="NOISE-SHAPING-NONE:CAPS"></a>NOISE_SHAPING_NONE</p></td>
+<td class="enum_member_description">
+<p>No noise shaping (default)</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="NOISE-SHAPING-ERROR-FEEDBACK:CAPS"></a><span class="term"><code class="literal">NOISE_SHAPING_ERROR_FEEDBACK</code></span></p></td>
-<td>Error feedback
+<td class="enum_member_name"><p><a name="NOISE-SHAPING-ERROR-FEEDBACK:CAPS"></a>NOISE_SHAPING_ERROR_FEEDBACK</p></td>
+<td class="enum_member_description">
+<p>Error feedback</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="NOISE-SHAPING-SIMPLE:CAPS"></a><span class="term"><code class="literal">NOISE_SHAPING_SIMPLE</code></span></p></td>
-<td>Simple 2-pole noise shaping
+<td class="enum_member_name"><p><a name="NOISE-SHAPING-SIMPLE:CAPS"></a>NOISE_SHAPING_SIMPLE</p></td>
+<td class="enum_member_description">
+<p>Simple 2-pole noise shaping</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="NOISE-SHAPING-MEDIUM:CAPS"></a><span class="term"><code class="literal">NOISE_SHAPING_MEDIUM</code></span></p></td>
-<td>Medium 5-pole noise shaping
+<td class="enum_member_name"><p><a name="NOISE-SHAPING-MEDIUM:CAPS"></a>NOISE_SHAPING_MEDIUM</p></td>
+<td class="enum_member_description">
+<p>Medium 5-pole noise shaping</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><a name="NOISE-SHAPING-HIGH:CAPS"></a><span class="term"><code class="literal">NOISE_SHAPING_HIGH</code></span></p></td>
-<td>High 8-pole noise shaping
+<td class="enum_member_name"><p><a name="NOISE-SHAPING-HIGH:CAPS"></a>NOISE_SHAPING_HIGH</p></td>
+<td class="enum_member_description">
+<p>High 8-pole noise shaping</p>
 </td>
+<td class="enum_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
+</div>
 </div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-base-plugins-audioconvert.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstAudioConvert--dithering"></a><h3>The <code class="literal">"dithering"</code> property</h3>
-<pre class="programlisting">  "dithering"                <a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvertDithering" title="enum GstAudioConvertDithering"><span class="type">GstAudioConvertDithering</span></a>  : Read / Write</pre>
+<a name="GstAudioConvert--dithering"></a><h3>The <code class="literal">“dithering”</code> property</h3>
+<pre class="programlisting">  “dithering”                <a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvertDithering" title="enum GstAudioConvertDithering"><span class="type">GstAudioConvertDithering</span></a></pre>
 <p>Selects between different dithering methods.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: Triangular dithering (default)</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstAudioConvert--noise-shaping"></a><h3>The <code class="literal">"noise-shaping"</code> property</h3>
-<pre class="programlisting">  "noise-shaping"            <a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvertNoiseShaping" title="enum GstAudioConvertNoiseShaping"><span class="type">GstAudioConvertNoiseShaping</span></a>  : Read / Write</pre>
+<a name="GstAudioConvert--noise-shaping"></a><h3>The <code class="literal">“noise-shaping”</code> property</h3>
+<pre class="programlisting">  “noise-shaping”            <a class="link" href="gst-plugins-base-plugins-audioconvert.html#GstAudioConvertNoiseShaping" title="enum GstAudioConvertNoiseShaping"><span class="type">GstAudioConvertNoiseShaping</span></a></pre>
 <p>Selects between different noise shaping methods.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: No noise shaping (default)</p>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

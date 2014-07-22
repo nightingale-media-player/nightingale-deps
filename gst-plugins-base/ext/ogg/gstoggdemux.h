@@ -25,6 +25,7 @@
 #include <ogg/ogg.h>
 
 #include <gst/gst.h>
+#include <gst/base/gstflowcombiner.h>
 
 #include "gstoggstream.h"
 
@@ -127,6 +128,8 @@ struct _GstOggDemux
 
   GstPad *sinkpad;
 
+  GstFlowCombiner *flowcombiner;
+
   gint64 length;
   gint64 read_offset;
   gint64 offset;
@@ -157,7 +160,6 @@ struct _GstOggDemux
   GstSegment segment;
   guint32  seqnum;
 
-  GstEvent *event;
   GstEvent *newsegment;         /* pending newsegment to be sent from _loop */
 
   /* annodex stuff */

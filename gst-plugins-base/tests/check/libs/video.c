@@ -537,7 +537,7 @@ GST_START_TEST (test_video_formats)
         fail_unless_equals_int (GST_VIDEO_INFO_COMP_STRIDE (&vinfo, 0),
             paintinfo.ystride);
         if (!gst_video_format_is_packed (fmt)
-            && !GST_VIDEO_INFO_N_PLANES (&vinfo) > 2) {
+            && GST_VIDEO_INFO_N_PLANES (&vinfo) <= 2) {
           /* planar */
           fail_unless_equals_int (GST_VIDEO_INFO_COMP_STRIDE (&vinfo, 1),
               paintinfo.ustride);
@@ -635,6 +635,43 @@ GST_START_TEST (test_video_formats_rgb)
   fail_unless (framerate_d == 1);
   fail_unless (par_n == 1);
   fail_unless (par_d == 1);
+
+  gst_caps_unref (caps);
+}
+
+GST_END_TEST;
+
+
+GST_START_TEST (test_video_formats_rgba_large_dimension)
+{
+  GstVideoInfo vinfo;
+  gint width, height, framerate_n, framerate_d, par_n, par_d;
+  GstCaps *caps;
+  GstStructure *structure;
+
+  gst_video_info_init (&vinfo);
+  gst_video_info_set_format (&vinfo, GST_VIDEO_FORMAT_RGBA, 29700, 21000);
+  vinfo.par_n = 1;
+  vinfo.par_d = 1;
+  vinfo.fps_n = 0;
+  vinfo.fps_d = 1;
+  caps = gst_video_info_to_caps (&vinfo);
+  structure = gst_caps_get_structure (caps, 0);
+
+  fail_unless (gst_structure_get_int (structure, "width", &width));
+  fail_unless (gst_structure_get_int (structure, "height", &height));
+  fail_unless (gst_structure_get_fraction (structure, "framerate", &framerate_n,
+          &framerate_d));
+  fail_unless (gst_structure_get_fraction (structure, "pixel-aspect-ratio",
+          &par_n, &par_d));
+
+  fail_unless (width == 29700);
+  fail_unless (height == 21000);
+  fail_unless (framerate_n == 0);
+  fail_unless (framerate_d == 1);
+  fail_unless (par_n == 1);
+  fail_unless (par_d == 1);
+  fail_unless (vinfo.size == (gsize) 29700 * 21000 * 4);
 
   gst_caps_unref (caps);
 }
@@ -1665,6 +1702,7 @@ video_suite (void)
   suite_add_tcase (s, tc_chain);
   tcase_add_test (tc_chain, test_video_formats);
   tcase_add_test (tc_chain, test_video_formats_rgb);
+  tcase_add_test (tc_chain, test_video_formats_rgba_large_dimension);
   tcase_add_test (tc_chain, test_video_formats_all);
   tcase_add_test (tc_chain, test_video_formats_pack_unpack);
   tcase_add_test (tc_chain, test_dar_calc);

@@ -131,6 +131,9 @@ GST_START_TEST (test_rtp_buffer)
   fail_unless_equals_int (gst_rtp_buffer_get_csrc (&rtp, 0), 0);
   fail_unless_equals_int (gst_rtp_buffer_get_csrc (&rtp, 1), 0);
   fail_unless_equals_int (gst_rtp_buffer_get_csrc (&rtp, 2), 0);
+  fail_unless_equals_int (gst_rtp_buffer_get_header_len (&rtp),
+      RTP_HEADER_LEN + 4 * 3);
+  fail_unless_equals_int (gst_rtp_buffer_get_payload_len (&rtp), 16);
 
   data += RTP_HEADER_LEN;       /* skip the other header stuff */
   gst_rtp_buffer_set_csrc (&rtp, 0, 0xf7c0);
@@ -931,6 +934,7 @@ GST_START_TEST (test_rtp_buffer_get_payload_bytes)
   gst_rtp_buffer_unmap (&rtp);
   gst_buffer_unmap (buf, &map);
   gst_buffer_unref (buf);
+  g_bytes_unref (gb);
 
   /* create RTP buffer containing RTP packet */
   buf = gst_buffer_new_and_alloc (sizeof (rtppacket));
@@ -947,10 +951,29 @@ GST_START_TEST (test_rtp_buffer_get_payload_bytes)
   fail_unless (data != NULL);
   fail_unless (size == (sizeof (rtppacket) - RTP_HEADER_LEN));
   fail_unless_equals_string ("Hello", data);
+  g_bytes_unref (gb);
 
   gst_rtp_buffer_unmap (&rtp);
   gst_buffer_unmap (buf, &map);
   gst_buffer_unref (buf);
+}
+
+GST_END_TEST;
+
+
+GST_START_TEST (test_rtp_buffer_empty_payload)
+{
+  GstRTPBuffer rtp = { NULL };
+  GstBuffer *paybuf, *outbuf;
+
+  paybuf = gst_rtp_buffer_new_allocate (0, 0, 0);
+
+  gst_rtp_buffer_map (paybuf, GST_MAP_READ, &rtp);
+  outbuf = gst_rtp_buffer_get_payload_buffer (&rtp);
+  gst_rtp_buffer_unmap (&rtp);
+
+  gst_buffer_unref (paybuf);
+  gst_buffer_unref (outbuf);
 }
 
 GST_END_TEST;
@@ -974,6 +997,7 @@ rtp_suite (void)
 
   tcase_add_test (tc_chain, test_rtp_buffer_get_payload_bytes);
   tcase_add_test (tc_chain, test_rtp_buffer_get_extension_bytes);
+  tcase_add_test (tc_chain, test_rtp_buffer_empty_payload);
 
   //tcase_add_test (tc_chain, test_rtp_buffer_list);
 

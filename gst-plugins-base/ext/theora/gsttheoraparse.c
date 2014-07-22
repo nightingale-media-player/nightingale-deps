@@ -52,8 +52,6 @@
  * ]| This pipeline shows remuxing. video-remuxed.ogg might not be exactly the same
  * as video.ogg, but they should produce exactly the same decoded data.
  * </refsect2>
- *
- * Last reviewed on 2008-05-28 (0.10.20)
  */
 
 /* FIXME 0.11: suppress warnings for deprecated API such as GValueArray
@@ -126,8 +124,6 @@ gst_theora_parse_class_init (GstTheoraParseClass * klass)
    * GstTheoraParse:sychronization-points
    *
    * An array of (granuletime, buffertime) pairs
-   *
-   * Since: 0.10.10
    */
   g_object_class_install_property (gobject_class, PROP_SYNCHRONIZATION_POINTS,
       g_param_spec_value_array ("synchronization-points",

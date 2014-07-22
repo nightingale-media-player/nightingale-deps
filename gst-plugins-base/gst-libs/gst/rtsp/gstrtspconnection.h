@@ -76,7 +76,8 @@ GstRTSPResult      gst_rtsp_connection_free           (GstRTSPConnection *conn);
 GTlsConnection *     gst_rtsp_connection_get_tls                  (GstRTSPConnection * conn, GError ** error);
 gboolean             gst_rtsp_connection_set_tls_validation_flags (GstRTSPConnection * conn, GTlsCertificateFlags flags);
 GTlsCertificateFlags gst_rtsp_connection_get_tls_validation_flags (GstRTSPConnection * conn);
-
+void                 gst_rtsp_connection_set_tls_database (GstRTSPConnection * conn, GTlsDatabase * database);
+GTlsDatabase *       gst_rtsp_connection_get_tls_database (GstRTSPConnection * conn);
 
 /* sending/receiving raw bytes */
 GstRTSPResult      gst_rtsp_connection_read           (GstRTSPConnection * conn, guint8 * data,
@@ -163,6 +164,9 @@ typedef struct _GstRTSPWatch GstRTSPWatch;
  * @error_full: callback when an error occured with more information than
  *   the @error callback.
  * @tunnel_lost: callback when the post connection of a tunnel is closed.
+ * @tunnel_http_response: callback when an HTTP response to the GET request
+ *   is about to be sent for a tunneled connection. The response can be
+ *   modified in the callback. Since 1.4.
  *
  * Callback functions from a #GstRTSPWatch.
  */
@@ -180,9 +184,13 @@ typedef struct {
                                          GstRTSPMessage *message, guint id,
                                          gpointer user_data);
   GstRTSPResult     (*tunnel_lost)      (GstRTSPWatch *watch, gpointer user_data);
+  GstRTSPResult     (*tunnel_http_response) (GstRTSPWatch *watch,
+                                             GstRTSPMessage *request,
+                                             GstRTSPMessage *response,
+                                             gpointer user_data);
 
   /*< private >*/
-  gpointer _gst_reserved[GST_PADDING];
+  gpointer _gst_reserved[GST_PADDING-1];
 } GstRTSPWatchFuncs;
 
 GstRTSPWatch *     gst_rtsp_watch_new                (GstRTSPConnection *conn,
@@ -206,7 +214,11 @@ GstRTSPResult      gst_rtsp_watch_write_data         (GstRTSPWatch *watch,
 GstRTSPResult      gst_rtsp_watch_send_message       (GstRTSPWatch *watch,
                                                       GstRTSPMessage *message,
                                                       guint *id);
+GstRTSPResult      gst_rtsp_watch_wait_backlog       (GstRTSPWatch * watch,
+                                                      GTimeVal *timeout);
 
+void               gst_rtsp_watch_set_flushing       (GstRTSPWatch * watch,
+                                                      gboolean flush);
 G_END_DECLS
 
 #endif /* __GST_RTSP_CONNECTION_H__ */

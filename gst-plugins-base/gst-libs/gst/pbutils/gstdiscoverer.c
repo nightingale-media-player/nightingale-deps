@@ -30,10 +30,12 @@
  * The blocking mode just requires calling gst_discoverer_discover_uri()
  * with the URI one wishes to discover.
  *
- * The non-blocking mode requires a running #GMainLoop in the default
+ * The non-blocking mode requires a running #GMainLoop iterating a
  * #GMainContext, where one connects to the various signals, appends the
  * URIs to be processed (through gst_discoverer_discover_uri_async()) and then
  * asks for the discovery to begin (through gst_discoverer_start()).
+ * By default this will use the GLib default main context unless you have
+ * set a custom context using g_main_context_push_thread_default().
  *
  * All the information is returned in a #GstDiscovererInfo structure.
  */
@@ -136,8 +138,8 @@ _do_init (void)
 
   _CAPS_QUARK = g_quark_from_static_string ("caps");
   _TAGS_QUARK = g_quark_from_static_string ("tags");
-  _TOC_QUARK = g_quark_from_static_string ("stream-id");
-  _STREAM_ID_QUARK = g_quark_from_static_string ("toc");
+  _TOC_QUARK = g_quark_from_static_string ("toc");
+  _STREAM_ID_QUARK = g_quark_from_static_string ("stream-id");
   _MISSING_PLUGIN_QUARK = g_quark_from_static_string ("missing-plugin");
   _STREAM_TOPOLOGY_QUARK = g_quark_from_static_string ("stream-topology");
   _TOPOLOGY_PAD_QUARK = g_quark_from_static_string ("pad");
@@ -729,9 +731,8 @@ collect_stream_information (GstDiscoverer * dc, PrivateStream * ps, guint idx)
     caps = gst_pad_query_caps (ps->pad, NULL);
   }
   if (caps) {
-    GST_DEBUG ("Got caps %" GST_PTR_FORMAT, caps);
+    GST_DEBUG ("stream-%02d, got caps %" GST_PTR_FORMAT, idx, caps);
     gst_structure_id_set (st, _CAPS_QUARK, GST_TYPE_CAPS, caps, NULL);
-
     gst_caps_unref (caps);
   }
   if (ps->tags)
@@ -762,6 +763,35 @@ gst_discoverer_merge_and_replace_tags (GstTagList ** taglist,
   gst_tag_list_unref (new_tags);
 }
 
+static void
+collect_common_information (GstDiscovererStreamInfo * info,
+    const GstStructure * st)
+{
+  if (gst_structure_id_has_field (st, _TOC_QUARK)) {
+    gst_structure_id_get (st, _TOC_QUARK, GST_TYPE_TOC, &info->toc, NULL);
+  }
+
+  if (gst_structure_id_has_field (st, _STREAM_ID_QUARK)) {
+    gst_structure_id_get (st, _STREAM_ID_QUARK, G_TYPE_STRING, &info->stream_id,
+        NULL);
+  }
+}
+
+static GstDiscovererStreamInfo *
+make_info (GstDiscovererStreamInfo * parent, GType type, GstCaps * caps)
+{
+  GstDiscovererStreamInfo *info;
+
+  if (parent)
+    info = gst_discoverer_stream_info_ref (parent);
+  else {
+    info = g_object_new (type, NULL);
+    if (caps)
+      info->caps = gst_caps_ref (caps);
+  }
+  return info;
+}
+
 /* Parses a set of caps and tags in st and populates a GstDiscovererStreamInfo
  * structure (parent, if !NULL, otherwise it allocates one)
  */
@@ -772,19 +802,13 @@ collect_information (GstDiscoverer * dc, const GstStructure * st,
   GstCaps *caps;
   GstStructure *caps_st;
   GstTagList *tags_st;
-  GstToc *toc_st;
   const gchar *name;
-  gchar *stream_id;
   int tmp;
   guint utmp;
 
   if (!st || !gst_structure_id_has_field (st, _CAPS_QUARK)) {
     GST_WARNING ("Couldn't find caps !");
-    if (parent)
-      return gst_discoverer_stream_info_ref (parent);
-    else
-      return (GstDiscovererStreamInfo *)
-          g_object_new (GST_TYPE_DISCOVERER_STREAM_INFO, NULL);
+    return make_info (parent, GST_TYPE_DISCOVERER_STREAM_INFO, NULL);
   }
 
   gst_structure_id_get (st, _CAPS_QUARK, GST_TYPE_CAPS, &caps, NULL);
@@ -795,13 +819,8 @@ collect_information (GstDiscoverer * dc, const GstStructure * st,
     GstDiscovererAudioInfo *info;
     const gchar *format_str;
 
-    if (parent)
-      info = (GstDiscovererAudioInfo *) gst_discoverer_stream_info_ref (parent);
-    else {
-      info = (GstDiscovererAudioInfo *)
-          g_object_new (GST_TYPE_DISCOVERER_AUDIO_INFO, NULL);
-      info->parent.caps = gst_caps_ref (caps);
-    }
+    info = (GstDiscovererAudioInfo *) make_info (parent,
+        GST_TYPE_DISCOVERER_AUDIO_INFO, caps);
 
     if (gst_structure_get_int (caps_st, "rate", &tmp))
       info->sample_rate = (guint) tmp;
@@ -834,16 +853,7 @@ collect_information (GstDiscoverer * dc, const GstStructure * st,
       gst_discoverer_merge_and_replace_tags (&info->parent.tags, tags_st);
     }
 
-    if (gst_structure_id_has_field (st, _TOC_QUARK)) {
-      gst_structure_id_get (st, _TOC_QUARK, GST_TYPE_TOC, &toc_st, NULL);
-      info->parent.toc = toc_st;
-    }
-
-    if (gst_structure_id_has_field (st, _STREAM_ID_QUARK)) {
-      gst_structure_id_get (st, _STREAM_ID_QUARK, G_TYPE_STRING, &stream_id,
-          NULL);
-      info->parent.stream_id = stream_id;
-    }
+    collect_common_information (&info->parent, st);
 
     if (!info->language && ((GstDiscovererStreamInfo *) info)->tags) {
       gchar *language;
@@ -861,19 +871,14 @@ collect_information (GstDiscoverer * dc, const GstStructure * st,
     GstDiscovererVideoInfo *info;
     GstVideoInfo vinfo;
 
-    if (parent)
-      info = (GstDiscovererVideoInfo *) gst_discoverer_stream_info_ref (parent);
-    else {
-      info = (GstDiscovererVideoInfo *)
-          g_object_new (GST_TYPE_DISCOVERER_VIDEO_INFO, NULL);
-      info->parent.caps = gst_caps_ref (caps);
-    }
+    info = (GstDiscovererVideoInfo *) make_info (parent,
+        GST_TYPE_DISCOVERER_VIDEO_INFO, caps);
 
     if (gst_video_info_from_caps (&vinfo, caps)) {
       info->width = (guint) vinfo.width;
       info->height = (guint) vinfo.height;
 
-      info->depth = (guint) 0;
+      info->depth = vinfo.finfo->bits * vinfo.finfo->n_components;
 
       info->par_num = vinfo.par_n;
       info->par_denom = vinfo.par_d;
@@ -895,20 +900,10 @@ collect_information (GstDiscoverer * dc, const GstStructure * st,
         info->max_bitrate = utmp;
 
       /* FIXME: Is it worth it to remove the tags we've parsed? */
-      gst_discoverer_merge_and_replace_tags (&info->parent.tags,
-          (GstTagList *) tags_st);
+      gst_discoverer_merge_and_replace_tags (&info->parent.tags, tags_st);
     }
 
-    if (gst_structure_id_has_field (st, _TOC_QUARK)) {
-      gst_structure_id_get (st, _TOC_QUARK, GST_TYPE_TOC, &toc_st, NULL);
-      info->parent.toc = toc_st;
-    }
-
-    if (gst_structure_id_has_field (st, _STREAM_ID_QUARK)) {
-      gst_structure_id_get (st, _STREAM_ID_QUARK, G_TYPE_STRING, &stream_id,
-          NULL);
-      info->parent.stream_id = stream_id;
-    }
+    collect_common_information (&info->parent, st);
 
     gst_caps_unref (caps);
     return (GstDiscovererStreamInfo *) info;
@@ -916,14 +911,8 @@ collect_information (GstDiscoverer * dc, const GstStructure * st,
   } else if (is_subtitle_caps (caps)) {
     GstDiscovererSubtitleInfo *info;
 
-    if (parent)
-      info =
-          (GstDiscovererSubtitleInfo *) gst_discoverer_stream_info_ref (parent);
-    else {
-      info = (GstDiscovererSubtitleInfo *)
-          g_object_new (GST_TYPE_DISCOVERER_SUBTITLE_INFO, NULL);
-      info->parent.caps = gst_caps_ref (caps);
-    }
+    info = (GstDiscovererSubtitleInfo *) make_info (parent,
+        GST_TYPE_DISCOVERER_SUBTITLE_INFO, caps);
 
     if (gst_structure_id_has_field (st, _TAGS_QUARK)) {
       const gchar *language;
@@ -938,16 +927,7 @@ collect_information (GstDiscoverer * dc, const GstStructure * st,
       gst_discoverer_merge_and_replace_tags (&info->parent.tags, tags_st);
     }
 
-    if (gst_structure_id_has_field (st, _TOC_QUARK)) {
-      gst_structure_id_get (st, _TOC_QUARK, GST_TYPE_TOC, &toc_st, NULL);
-      info->parent.toc = toc_st;
-    }
-
-    if (gst_structure_id_has_field (st, _STREAM_ID_QUARK)) {
-      gst_structure_id_get (st, _STREAM_ID_QUARK, G_TYPE_STRING, &stream_id,
-          NULL);
-      info->parent.stream_id = stream_id;
-    }
+    collect_common_information (&info->parent, st);
 
     if (!info->language && ((GstDiscovererStreamInfo *) info)->tags) {
       gchar *language;
@@ -964,27 +944,14 @@ collect_information (GstDiscoverer * dc, const GstStructure * st,
     /* None of the above - populate what information we can */
     GstDiscovererStreamInfo *info;
 
-    if (parent)
-      info = gst_discoverer_stream_info_ref (parent);
-    else {
-      info = (GstDiscovererStreamInfo *)
-          g_object_new (GST_TYPE_DISCOVERER_STREAM_INFO, NULL);
-      info->caps = gst_caps_ref (caps);
-    }
+    info = make_info (parent, GST_TYPE_DISCOVERER_STREAM_INFO, caps);
 
     if (gst_structure_id_get (st, _TAGS_QUARK, GST_TYPE_TAG_LIST, &tags_st,
             NULL)) {
       gst_discoverer_merge_and_replace_tags (&info->tags, tags_st);
     }
 
-    if (gst_structure_id_get (st, _TOC_QUARK, GST_TYPE_TOC, &toc_st, NULL)) {
-      info->toc = toc_st;
-    }
-
-    if (gst_structure_id_get (st, _STREAM_ID_QUARK, G_TYPE_STRING, &stream_id,
-            NULL)) {
-      info->stream_id = stream_id;
-    }
+    collect_common_information (info, st);
 
     gst_caps_unref (caps);
     return info;
@@ -1416,9 +1383,13 @@ handle_message (GstDiscoverer * dc, GstMessage * msg)
         GST_DEBUG_OBJECT (GST_MESSAGE_SRC (msg),
             "Setting result to MISSING_PLUGINS");
         dc->priv->current_info->result = GST_DISCOVERER_MISSING_PLUGINS;
+        /* FIXME 2.0 Remove completely the ->misc
+         * Keep the old behaviour for now.
+         */
         if (dc->priv->current_info->misc)
           gst_structure_free (dc->priv->current_info->misc);
-        dc->priv->current_info->misc = gst_structure_copy (structure);
+        g_ptr_array_add (dc->priv->current_info->missing_elements_details,
+            gst_missing_plugin_message_get_installer_detail (msg));
       } else if (sttype == _STREAM_TOPOLOGY_QUARK) {
         if (dc->priv->current_topology)
           gst_structure_free (dc->priv->current_topology);

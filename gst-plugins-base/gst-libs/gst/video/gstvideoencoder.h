@@ -214,6 +214,16 @@ struct _GstVideoEncoder
  * @flush:              Optional.
  *                      Flush all remaining data from the encoder without
  *                      pushing it downstream. Since: 1.2
+ * @sink_query:     Optional.
+ *                  Query handler on the sink pad. This function should
+ *                  return TRUE if the query could be performed. Subclasses
+ *                  should chain up to the parent implementation to invoke the
+ *                  default handler. Since 1.4
+ * @src_query:      Optional.
+ *                  Query handler on the source pad. This function should
+ *                  return TRUE if the query could be performed. Subclasses
+ *                  should chain up to the parent implementation to invoke the
+ *                  default handler. Since 1.4
  *
  * Subclasses can override any of the available virtual methods or not, as
  * needed. At minimum @handle_frame needs to be overridden, and @set_format
@@ -265,8 +275,14 @@ struct _GstVideoEncoderClass
                                        GstQuery * query);
   gboolean      (*flush)              (GstVideoEncoder *encoder);
 
+  gboolean      (*sink_query)     (GstVideoEncoder *encoder,
+				   GstQuery *query);
+
+  gboolean      (*src_query)      (GstVideoEncoder *encoder,
+				   GstQuery *query);
+
   /*< private >*/
-  gpointer       _gst_reserved[GST_PADDING_LARGE-1];
+  gpointer       _gst_reserved[GST_PADDING_LARGE-3];
 };
 
 GType                gst_video_encoder_get_type (void);
@@ -298,8 +314,6 @@ GstFlowReturn        gst_video_encoder_finish_frame (GstVideoEncoder *encoder,
 GstCaps *            gst_video_encoder_proxy_getcaps (GstVideoEncoder * enc,
 						      GstCaps         * caps,
                                                       GstCaps         * filter);
-void                 gst_video_encoder_set_discont (GstVideoEncoder *encoder);
-gboolean             gst_video_encoder_get_discont (GstVideoEncoder *encoder);
 
 void                 gst_video_encoder_set_latency (GstVideoEncoder *encoder,
 						    GstClockTime min_latency,

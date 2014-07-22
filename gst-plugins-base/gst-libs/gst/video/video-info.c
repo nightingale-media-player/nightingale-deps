@@ -27,6 +27,7 @@
 #include <stdio.h>
 
 #include "video-info.h"
+#include "video-tile.h"
 
 static int fill_planes (GstVideoInfo * info);
 
@@ -79,6 +80,8 @@ static const GstVideoColorimetry default_color[] = {
  * @height: a height
  *
  * Set the default info for a video frame of @format and @width and @height.
+ *
+ * Note: This initializes @info first, no values are preserved.
  */
 void
 gst_video_info_set_format (GstVideoInfo * info, GstVideoFormat format,
@@ -88,6 +91,8 @@ gst_video_info_set_format (GstVideoInfo * info, GstVideoFormat format,
 
   g_return_if_fail (info != NULL);
   g_return_if_fail (format != GST_VIDEO_FORMAT_UNKNOWN);
+
+  gst_video_info_init (info);
 
   finfo = gst_video_format_get_info (format);
 
@@ -275,6 +280,8 @@ no_height:
 gboolean
 gst_video_info_is_equal (const GstVideoInfo * info, const GstVideoInfo * other)
 {
+  gint i;
+
   if (GST_VIDEO_INFO_FORMAT (info) != GST_VIDEO_INFO_FORMAT (other))
     return FALSE;
   if (GST_VIDEO_INFO_INTERLACE_MODE (info) !=
@@ -296,6 +303,14 @@ gst_video_info_is_equal (const GstVideoInfo * info, const GstVideoInfo * other)
     return FALSE;
   if (GST_VIDEO_INFO_FPS_D (info) != GST_VIDEO_INFO_FPS_D (other))
     return FALSE;
+
+  for (i = 0; i < info->finfo->n_planes; i++) {
+    if (info->stride[i] != other->stride[i])
+      return FALSE;
+    if (info->offset[i] != other->offset[i])
+      return FALSE;
+  }
+
   return TRUE;
 }
 
@@ -358,10 +373,10 @@ gst_video_info_to_caps (GstVideoInfo * info)
 static int
 fill_planes (GstVideoInfo * info)
 {
-  gint width, height;
+  gsize width, height;
 
-  width = info->width;
-  height = info->height;
+  width = (gsize) info->width;
+  height = (gsize) info->height;
 
   switch (info->finfo->format) {
     case GST_VIDEO_FORMAT_YUY2:
@@ -569,6 +584,18 @@ fill_planes (GstVideoInfo * info)
       info->offset[2] = info->offset[1] * 2;
       info->size = info->stride[0] * height * 3;
       break;
+    case GST_VIDEO_FORMAT_NV12_64Z32:
+      info->stride[0] =
+          GST_VIDEO_TILE_MAKE_STRIDE (GST_ROUND_UP_128 (width) / 64,
+          GST_ROUND_UP_32 (height) / 32);
+      info->stride[1] =
+          GST_VIDEO_TILE_MAKE_STRIDE (GST_ROUND_UP_128 (width) / 64,
+          GST_ROUND_UP_64 (height) / 64);
+      info->offset[0] = 0;
+      info->offset[1] = GST_ROUND_UP_128 (width) * GST_ROUND_UP_32 (height);
+      info->size = info->offset[1] +
+          GST_ROUND_UP_128 (width) * GST_ROUND_UP_64 (height) / 2;
+      break;
     case GST_VIDEO_FORMAT_ENCODED:
       break;
     case GST_VIDEO_FORMAT_UNKNOWN:
@@ -600,7 +627,8 @@ gst_video_info_convert (GstVideoInfo * info,
     GstFormat dest_format, gint64 * dest_value)
 {
   gboolean ret = FALSE;
-  int size, fps_n, fps_d;
+  int fps_n, fps_d;
+  gsize size;
 
   g_return_val_if_fail (info != NULL, 0);
   g_return_val_if_fail (info->finfo != NULL, 0);
@@ -630,7 +658,7 @@ gst_video_info_convert (GstVideoInfo * info,
   /* bytes to frames */
   if (src_format == GST_FORMAT_BYTES && dest_format == GST_FORMAT_DEFAULT) {
     if (size != 0) {
-      *dest_value = gst_util_uint64_scale_int (src_value, 1, size);
+      *dest_value = gst_util_uint64_scale (src_value, 1, size);
     } else {
       GST_ERROR ("blocksize is 0");
       *dest_value = 0;
@@ -641,7 +669,7 @@ gst_video_info_convert (GstVideoInfo * info,
 
   /* frames to bytes */
   if (src_format == GST_FORMAT_DEFAULT && dest_format == GST_FORMAT_BYTES) {
-    *dest_value = gst_util_uint64_scale_int (src_value, size, 1);
+    *dest_value = gst_util_uint64_scale (src_value, size, 1);
     ret = TRUE;
     goto done;
   }
@@ -765,8 +793,9 @@ gst_video_info_align (GstVideoInfo * info, GstVideoAlignment * align)
   do {
     GST_LOG ("padded dimension %u-%u", padded_width, padded_height);
 
-    gst_video_info_set_format (info, GST_VIDEO_INFO_FORMAT (info),
-        padded_width, padded_height);
+    info->width = padded_width;
+    info->height = padded_height;
+    fill_planes (info);
 
     /* check alignment */
     aligned = TRUE;

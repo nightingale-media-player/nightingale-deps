@@ -50,8 +50,6 @@
  * ogg container. Refer to the theoradec documentation to decode the create
  * stream.
  * </refsect2>
- *
- * Last reviewed on 2006-03-01 (0.10.4)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -363,6 +361,13 @@ theora_enc_flush (GstVideoEncoder * encoder)
   GstTheoraEnc *enc = GST_THEORA_ENC (encoder);
   ogg_uint32_t keyframe_force;
   int rate_flags;
+
+
+  if (enc->input_state == NULL) {
+    GST_INFO_OBJECT (enc, "Not configured yet, returning FALSE");
+
+    return FALSE;
+  }
 
   GST_OBJECT_LOCK (enc);
   enc->info.target_bitrate = enc->video_bitrate;
@@ -881,7 +886,6 @@ theora_enc_handle_frame (GstVideoEncoder * benc, GstVideoCodecFrame * frame)
   running_time =
       gst_segment_to_running_time (&GST_VIDEO_ENCODER_INPUT_SEGMENT (enc),
       GST_FORMAT_TIME, timestamp);
-  g_return_val_if_fail (running_time >= 0 || timestamp < 0, GST_FLOW_ERROR);
 
   GST_OBJECT_LOCK (enc);
   if (enc->bitrate_changed) {

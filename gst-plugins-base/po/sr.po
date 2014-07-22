@@ -1,14 +1,14 @@
 # Serbian translation of gst-plugins
-# Copyright (C) 2004 Free Software Foundation, Inc.
+# Copyright (C) 2014 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gst-plugins-base package.
 # Danilo Segan <dsegan@gmx.net>, 2004.
-# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2011, 2012, 2013, 2014.
+# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2011-2014.
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-base-1.2.1\n"
+"Project-Id-Version: gst-plugins-base-1.3.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 11:40+0100\n"
-"PO-Revision-Date: 2014-01-13 20:16+0200\n"
+"POT-Creation-Date: 2014-07-19 16:23+0200\n"
+"PO-Revision-Date: 2014-06-18 19:35+0200\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <(nothing)>\n"
 "Language: sr\n"
@@ -17,7 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Project-Style: gnome\n"
 
 msgid "Could not open device for playback in mono mode."
 msgstr "Не могу да отворим уређај ради пуштања у моно режиму."
@@ -508,11 +507,19 @@ msgstr "музички-кључ"
 msgid "Initial key in which the sound starts"
 msgstr "Почетни кључ у коме почиње звук"
 
+msgid "Print version information and exit"
+msgstr "Исписује податке о издању и излази"
+
+msgid ""
+"Don't exit after showing the initial device list, but wait for devices to "
+"added/removed."
+msgstr ""
+
 msgid "Buffering..."
 msgstr "Смештам у међумеморију..."
 
-msgid "Print version information and exit"
-msgstr "Исписује податке о издању и излази"
+msgid "Clock lost, selecting a new one\n"
+msgstr "Сат је изгубљен, бирам нови\n"
 
 msgid "Video sink to use (default is autovideosink)"
 msgstr "Усаглашавање снимка за коришћење (основно је „autovideosink“)"
@@ -522,6 +529,18 @@ msgstr "Усаглашавање звука за коришћење (основ�
 
 msgid "Enable gapless playback"
 msgstr "Укључује пуштање без застоја"
+
+msgid "Shuffle playlist"
+msgstr "Меша списак нумера"
+
+msgid "Interactive control via keyboard"
+msgstr "Међудејствено управљање путем тастатуре"
+
+msgid "Volume"
+msgstr "Јачина звука"
+
+msgid "Playlist file containing input media files"
+msgstr "Датотека списка нумера садржи датотеке улазних медија"
 
 #, c-format
 msgid "Usage: %s FILE1|URI1 [FILE2|URI2] [FILE3|URI3] ..."

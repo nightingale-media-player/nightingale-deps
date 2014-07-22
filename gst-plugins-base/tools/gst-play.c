@@ -1,6 +1,6 @@
 /* GStreamer command line playback testing utility
  *
- * Copyright (C) 2013 Tim-Philipp Müller <tim centricular net>
+ * Copyright (C) 2013-2014 Tim-Philipp Müller <tim centricular net>
  * Copyright (C) 2013 Collabora Ltd.
  *
  * This library is free software; you can redistribute it and/or
@@ -23,10 +23,20 @@
 #include "config.h"
 #endif
 
+#include <locale.h>
+
 #include <gst/gst.h>
 #include <gst/gst-i18n-app.h>
+#include <gst/audio/audio.h>
 #include <gst/pbutils/pbutils.h>
+#include <gst/math-compat.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "gst-play-kb.h"
+
+#define VOLUME_STEPS 20
 
 GST_DEBUG_CATEGORY (play_debug);
 #define GST_CAT_DEFAULT play_debug
@@ -49,19 +59,23 @@ typedef struct
   gboolean buffering;
   gboolean is_live;
 
+  GstState desired_state;       /* as per user interaction, PAUSED or PLAYING */
+
   /* configuration */
   gboolean gapless;
 } GstPlay;
 
 static gboolean play_bus_msg (GstBus * bus, GstMessage * msg, gpointer data);
 static gboolean play_next (GstPlay * play);
+static gboolean play_prev (GstPlay * play);
 static gboolean play_timeout (gpointer user_data);
 static void play_about_to_finish (GstElement * playbin, gpointer user_data);
 static void play_reset (GstPlay * play);
+static void play_set_relative_volume (GstPlay * play, gdouble volume_step);
 
 static GstPlay *
 play_new (gchar ** uris, const gchar * audio_sink, const gchar * video_sink,
-    gboolean gapless)
+    gboolean gapless, gdouble initial_volume)
 {
   GstElement *sink;
   GstPlay *play;
@@ -75,14 +89,22 @@ play_new (gchar ** uris, const gchar * audio_sink, const gchar * video_sink,
   play->playbin = gst_element_factory_make ("playbin", "playbin");
 
   if (audio_sink != NULL) {
-    sink = gst_element_factory_make (audio_sink, NULL);
+    if (strchr (audio_sink, ' ') != NULL)
+      sink = gst_parse_bin_from_description (audio_sink, TRUE, NULL);
+    else
+      sink = gst_element_factory_make (audio_sink, NULL);
+
     if (sink != NULL)
       g_object_set (play->playbin, "audio-sink", sink, NULL);
     else
       g_warning ("Couldn't create specified audio sink '%s'", audio_sink);
   }
   if (video_sink != NULL) {
-    sink = gst_element_factory_make (video_sink, NULL);
+    if (strchr (video_sink, ' ') != NULL)
+      sink = gst_parse_bin_from_description (video_sink, TRUE, NULL);
+    else
+      sink = gst_element_factory_make (video_sink, NULL);
+
     if (sink != NULL)
       g_object_set (play->playbin, "video-sink", sink, NULL);
     else
@@ -101,11 +123,15 @@ play_new (gchar ** uris, const gchar * audio_sink, const gchar * video_sink,
   play->buffering = FALSE;
   play->is_live = FALSE;
 
+  play->desired_state = GST_STATE_PLAYING;
+
   play->gapless = gapless;
   if (gapless) {
     g_signal_connect (play->playbin, "about-to-finish",
         G_CALLBACK (play_about_to_finish), play);
   }
+
+  play_set_relative_volume (play, initial_volume - 1.0);
 
   return play;
 }
@@ -137,6 +163,23 @@ play_reset (GstPlay * play)
   play->is_live = FALSE;
 }
 
+static void
+play_set_relative_volume (GstPlay * play, gdouble volume_step)
+{
+  gdouble volume;
+
+  volume = gst_stream_volume_get_volume (GST_STREAM_VOLUME (play->playbin),
+      GST_STREAM_VOLUME_FORMAT_CUBIC);
+
+  volume = round ((volume + volume_step) * VOLUME_STEPS) / VOLUME_STEPS;
+  volume = CLAMP (volume, 0.0, 10.0);
+
+  gst_stream_volume_set_volume (GST_STREAM_VOLUME (play->playbin),
+      GST_STREAM_VOLUME_FORMAT_CUBIC, volume);
+
+  g_print ("Volume: %.0f%%                  \n", volume * 100);
+}
+
 /* returns TRUE if something was installed and we should restart playback */
 static gboolean
 play_install_missing_plugins (GstPlay * play)
@@ -153,6 +196,11 @@ play_bus_msg (GstBus * bus, GstMessage * msg, gpointer user_data)
 
   switch (GST_MESSAGE_TYPE (msg)) {
     case GST_MESSAGE_ASYNC_DONE:
+
+      /* dump graph on preroll */
+      GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS (GST_BIN (play->playbin),
+          GST_DEBUG_GRAPH_SHOW_ALL, "gst-play.async-done");
+
       g_print ("Prerolled.\r");
       if (play->missing != NULL && play_install_missing_plugins (play)) {
         g_print ("New plugins installed, trying again...\n");
@@ -169,23 +217,28 @@ play_bus_msg (GstBus * bus, GstMessage * msg, gpointer user_data)
       gst_message_parse_buffering (msg, &percent);
       g_print ("%s %d%%  \r", _("Buffering..."), percent);
 
-      /* no state management needed for live pipelines */
-      if (play->is_live)
-        break;
-
       if (percent == 100) {
         /* a 100% message means buffering is done */
         if (play->buffering) {
           play->buffering = FALSE;
-          gst_element_set_state (play->playbin, GST_STATE_PLAYING);
+          /* no state management needed for live pipelines */
+          if (!play->is_live)
+            gst_element_set_state (play->playbin, play->desired_state);
         }
       } else {
         /* buffering... */
         if (!play->buffering) {
-          gst_element_set_state (play->playbin, GST_STATE_PAUSED);
+          if (!play->is_live)
+            gst_element_set_state (play->playbin, GST_STATE_PAUSED);
           play->buffering = TRUE;
         }
       }
+      break;
+    }
+    case GST_MESSAGE_CLOCK_LOST:{
+      g_print (_("Clock lost, selecting a new one\n"));
+      gst_element_set_state (play->playbin, GST_STATE_PAUSED);
+      gst_element_set_state (play->playbin, GST_STATE_PLAYING);
       break;
     }
     case GST_MESSAGE_LATENCY:
@@ -221,6 +274,10 @@ play_bus_msg (GstBus * bus, GstMessage * msg, gpointer user_data)
       GError *err;
       gchar *dbg = NULL;
 
+      /* dump graph on warning */
+      GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS (GST_BIN (play->playbin),
+          GST_DEBUG_GRAPH_SHOW_ALL, "gst-play.warning");
+
       gst_message_parse_warning (msg, &err, &dbg);
       g_printerr ("WARNING %s\n", err->message);
       if (dbg != NULL)
@@ -232,6 +289,10 @@ play_bus_msg (GstBus * bus, GstMessage * msg, gpointer user_data)
     case GST_MESSAGE_ERROR:{
       GError *err;
       gchar *dbg;
+
+      /* dump graph on error */
+      GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS (GST_BIN (play->playbin),
+          GST_DEBUG_GRAPH_SHOW_ALL, "gst-play.error");
 
       gst_message_parse_error (msg, &err, &dbg);
       g_printerr ("ERROR %s for %s\n", err->message, play->uris[play->cur_idx]);
@@ -276,12 +337,18 @@ play_timeout (gpointer user_data)
 {
   GstPlay *play = user_data;
   gint64 pos = -1, dur = -1;
+  gchar status[64] = { 0, };
 
   if (play->buffering)
     return TRUE;
 
   gst_element_query_position (play->playbin, GST_FORMAT_TIME, &pos);
   gst_element_query_duration (play->playbin, GST_FORMAT_TIME, &dur);
+
+  if (play->desired_state == GST_STATE_PAUSED)
+    g_snprintf (status, sizeof (status), "Paused");
+  else
+    memset (status, ' ', sizeof (status) - 1);
 
   if (pos >= 0 && dur > 0) {
     gchar dstr[32], pstr[32];
@@ -291,7 +358,7 @@ play_timeout (gpointer user_data)
     pstr[9] = '\0';
     g_snprintf (dstr, 32, "%" GST_TIME_FORMAT, GST_TIME_ARGS (dur));
     dstr[9] = '\0';
-    g_print ("%s / %s\r", pstr, dstr);
+    g_print ("%s / %s %s\r", pstr, dstr, status);
   }
 
   return TRUE;
@@ -314,28 +381,22 @@ play_uri_get_display_name (GstPlay * play, const gchar * uri)
   return loc;
 }
 
-/* returns FALSE if we have reached the end of the playlist */
-static gboolean
-play_next (GstPlay * play)
+static void
+play_uri (GstPlay * play, const gchar * next_uri)
 {
   GstStateChangeReturn sret;
-  const gchar *next_uri;
   gchar *loc;
-
-  if (++play->cur_idx >= play->num_uris)
-    return FALSE;
 
   gst_element_set_state (play->playbin, GST_STATE_READY);
   play_reset (play);
 
-  next_uri = play->uris[play->cur_idx];
   loc = play_uri_get_display_name (play, next_uri);
   g_print ("Now playing %s\n", loc);
   g_free (loc);
 
   g_object_set (play->playbin, "uri", next_uri, NULL);
 
-  sret = gst_element_set_state (play->playbin, GST_STATE_PLAYING);
+  sret = gst_element_set_state (play->playbin, GST_STATE_PAUSED);
   switch (sret) {
     case GST_STATE_CHANGE_FAILURE:
       /* ignore, we should get an error message posted on the bus */
@@ -350,7 +411,29 @@ play_next (GstPlay * play)
     default:
       break;
   }
+  if (play->desired_state != GST_STATE_PAUSED)
+    sret = gst_element_set_state (play->playbin, play->desired_state);
+}
 
+/* returns FALSE if we have reached the end of the playlist */
+static gboolean
+play_next (GstPlay * play)
+{
+  if ((play->cur_idx + 1) >= play->num_uris)
+    return FALSE;
+
+  play_uri (play, play->uris[++play->cur_idx]);
+  return TRUE;
+}
+
+/* returns FALSE if we have reached the beginning of the playlist */
+static gboolean
+play_prev (GstPlay * play)
+{
+  if (play->cur_idx == 0 || play->num_uris <= 1)
+    return FALSE;
+
+  play_uri (play, play->uris[--play->cur_idx]);
   return TRUE;
 }
 
@@ -427,13 +510,147 @@ add_to_playlist (GPtrArray * playlist, const gchar * filename)
     g_warning ("Could not make URI out of filename '%s'", filename);
 }
 
+static void
+shuffle_uris (gchar ** uris, guint num)
+{
+  gchar *tmp;
+  guint i, j;
+
+  if (num < 2)
+    return;
+
+  for (i = 0; i < num; i++) {
+    /* gets equally distributed random number in 0..num-1 [0;num[ */
+    j = g_random_int_range (0, num);
+    tmp = uris[j];
+    uris[j] = uris[i];
+    uris[i] = tmp;
+  }
+}
+
+static void
+restore_terminal (void)
+{
+  gst_play_kb_set_key_handler (NULL, NULL);
+}
+
+static void
+toggle_paused (GstPlay * play)
+{
+  if (play->desired_state == GST_STATE_PLAYING)
+    play->desired_state = GST_STATE_PAUSED;
+  else
+    play->desired_state = GST_STATE_PLAYING;
+
+  if (!play->buffering) {
+    gst_element_set_state (play->playbin, play->desired_state);
+  } else if (play->desired_state == GST_STATE_PLAYING) {
+    g_print ("\nWill play as soon as buffering finishes)\n");
+  }
+}
+
+static void
+relative_seek (GstPlay * play, gdouble percent)
+{
+  GstQuery *query;
+  gboolean seekable = FALSE;
+  gint64 dur = -1, pos = -1;
+
+  g_return_if_fail (percent >= -1.0 && percent <= 1.0);
+
+  if (!gst_element_query_position (play->playbin, GST_FORMAT_TIME, &pos))
+    goto seek_failed;
+
+  query = gst_query_new_seeking (GST_FORMAT_TIME);
+  if (!gst_element_query (play->playbin, query)) {
+    gst_query_unref (query);
+    goto seek_failed;
+  }
+
+  gst_query_parse_seeking (query, NULL, &seekable, NULL, &dur);
+  gst_query_unref (query);
+
+  if (!seekable || dur <= 0)
+    goto seek_failed;
+
+  pos = pos + dur * percent;
+  if (pos > dur) {
+    if (!play_next (play)) {
+      g_print ("\nReached end of play list.\n");
+      g_main_loop_quit (play->loop);
+    }
+  } else {
+    if (pos < 0)
+      pos = 0;
+    if (!gst_element_seek_simple (play->playbin, GST_FORMAT_TIME,
+            GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT, pos))
+      goto seek_failed;
+  }
+
+  return;
+
+seek_failed:
+  {
+    g_print ("\nCould not seek.\n");
+  }
+}
+
+static void
+keyboard_cb (const gchar * key_input, gpointer user_data)
+{
+  GstPlay *play = (GstPlay *) user_data;
+
+  switch (g_ascii_tolower (key_input[0])) {
+    case ' ':
+      toggle_paused (play);
+      break;
+    case 'q':
+    case 'Q':
+      g_main_loop_quit (play->loop);
+      break;
+    case '>':
+      if (!play_next (play)) {
+        g_print ("\nReached end of play list.\n");
+        g_main_loop_quit (play->loop);
+      }
+      break;
+    case '<':
+      play_prev (play);
+      break;
+    case 27:                   /* ESC */
+      if (key_input[1] == '\0') {
+        g_main_loop_quit (play->loop);
+        break;
+      }
+      /* fall through */
+    default:
+      if (strcmp (key_input, GST_PLAY_KB_ARROW_RIGHT) == 0) {
+        relative_seek (play, +0.08);
+      } else if (strcmp (key_input, GST_PLAY_KB_ARROW_LEFT) == 0) {
+        relative_seek (play, -0.01);
+      } else if (strcmp (key_input, GST_PLAY_KB_ARROW_UP) == 0) {
+        play_set_relative_volume (play, +1.0 / VOLUME_STEPS);
+      } else if (strcmp (key_input, GST_PLAY_KB_ARROW_DOWN) == 0) {
+        play_set_relative_volume (play, -1.0 / VOLUME_STEPS);
+      } else {
+        GST_INFO ("keyboard input:");
+        for (; *key_input != '\0'; ++key_input)
+          GST_INFO ("  code %3d", *key_input);
+      }
+      break;
+  }
+}
+
 int
 main (int argc, char **argv)
 {
   GstPlay *play;
   GPtrArray *playlist;
   gboolean print_version = FALSE;
+  gboolean interactive = FALSE; /* FIXME: maybe enable by default? */
   gboolean gapless = FALSE;
+  gboolean shuffle = FALSE;
+  gdouble volume = 1.0;
   gchar **filenames = NULL;
   gchar *audio_sink = NULL;
   gchar *video_sink = NULL;
@@ -441,6 +658,7 @@ main (int argc, char **argv)
   guint num, i;
   GError *err = NULL;
   GOptionContext *ctx;
+  gchar *playlist_file = NULL;
   GOptionEntry options[] = {
     {"version", 0, 0, G_OPTION_ARG_NONE, &print_version,
         N_("Print version information and exit"), NULL},
@@ -450,9 +668,19 @@ main (int argc, char **argv)
         N_("Audio sink to use (default is autoaudiosink)"), NULL},
     {"gapless", 0, 0, G_OPTION_ARG_NONE, &gapless,
         N_("Enable gapless playback"), NULL},
+    {"shuffle", 0, 0, G_OPTION_ARG_NONE, &shuffle,
+        N_("Shuffle playlist"), NULL},
+    {"interactive", 0, 0, G_OPTION_ARG_NONE, &interactive,
+        N_("Interactive control via keyboard"), NULL},
+    {"volume", 0, 0, G_OPTION_ARG_DOUBLE, &volume,
+        N_("Volume"), NULL},
+    {"playlist", 0, 0, G_OPTION_ARG_FILENAME, &playlist_file,
+        N_("Playlist file containing input media files"), NULL},
     {G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY, &filenames, NULL},
     {NULL}
   };
+
+  setlocale (LC_ALL, "");
 
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
@@ -481,38 +709,93 @@ main (int argc, char **argv)
     g_print ("%s\n", version_str);
     g_print ("%s\n", GST_PACKAGE_ORIGIN);
     g_free (version_str);
+
+    g_free (audio_sink);
+    g_free (video_sink);
+    g_free (playlist_file);
+
     return 0;
   }
 
-  if (filenames == NULL || *filenames == NULL) {
+  playlist = g_ptr_array_new ();
+
+  if (playlist_file != NULL) {
+    gchar *playlist_contents = NULL;
+    gchar **lines = NULL;
+
+    if (g_file_get_contents (playlist_file, &playlist_contents, NULL, &err)) {
+      lines = g_strsplit (playlist_contents, "\n", 0);
+      num = g_strv_length (lines);
+
+      for (i = 0; i < num; i++) {
+        if (lines[i][0] != '\0') {
+          GST_LOG ("Playlist[%d]: %s", i + 1, lines[i]);
+          add_to_playlist (playlist, lines[i]);
+        }
+      }
+      g_strfreev (lines);
+      g_free (playlist_contents);
+    } else {
+      g_printerr ("Could not read playlist: %s\n", err->message);
+      g_clear_error (&err);
+    }
+    g_free (playlist_file);
+    playlist_file = NULL;
+  }
+
+  if (playlist->len == 0 && (filenames == NULL || *filenames == NULL)) {
     g_printerr (_("Usage: %s FILE1|URI1 [FILE2|URI2] [FILE3|URI3] ..."),
         "gst-play-" GST_API_VERSION);
     g_printerr ("\n\n"),
         g_printerr ("%s\n\n",
         _("You must provide at least one filename or URI to play."));
+    /* No input provided. Free array */
+    g_ptr_array_free (playlist, TRUE);
+
+    g_free (audio_sink);
+    g_free (video_sink);
+
     return 1;
   }
 
-  playlist = g_ptr_array_new ();
-
   /* fill playlist */
-  num = g_strv_length (filenames);
-  for (i = 0; i < num; ++i) {
-    GST_LOG ("command line argument: %s", filenames[i]);
-    add_to_playlist (playlist, filenames[i]);
+  if (filenames != NULL && *filenames != NULL) {
+    num = g_strv_length (filenames);
+    for (i = 0; i < num; ++i) {
+      GST_LOG ("command line argument: %s", filenames[i]);
+      add_to_playlist (playlist, filenames[i]);
+    }
+    g_strfreev (filenames);
   }
-  g_strfreev (filenames);
 
+  num = playlist->len;
   g_ptr_array_add (playlist, NULL);
 
-  /* play */
   uris = (gchar **) g_ptr_array_free (playlist, FALSE);
-  play = play_new (uris, audio_sink, video_sink, gapless);
 
+  if (shuffle)
+    shuffle_uris (uris, num);
+
+  /* prepare */
+  play = play_new (uris, audio_sink, video_sink, gapless, volume);
+
+  if (interactive) {
+    if (gst_play_kb_set_key_handler (keyboard_cb, play)) {
+      atexit (restore_terminal);
+    } else {
+      g_print ("Interactive keyboard handling in terminal not available.\n");
+    }
+  }
+
+  /* play */
   do_play (play);
 
   /* clean up */
   play_free (play);
 
+  g_free (audio_sink);
+  g_free (video_sink);
+
+  g_print ("\n");
   return 0;
 }

@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the gst-plugins-base package.
 #
 # Maxim V. Dziumanenko <dziumanenko@gmail.com>, 2004-2007.
-# Yuri Chornoivan <yurchor@ukr.net>, 2010, 2011, 2012, 2013.
+# Yuri Chornoivan <yurchor@ukr.net>, 2010, 2011, 2012, 2013, 2014.
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-base 1.2.1\n"
+"Project-Id-Version: gst-plugins-base 1.3.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 11:40+0100\n"
-"PO-Revision-Date: 2013-12-07 22:59+0200\n"
+"POT-Creation-Date: 2014-07-19 16:23+0200\n"
+"PO-Revision-Date: 2014-05-22 07:40+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <translation-team-uk@lists.sourceforge.net>\n"
 "Language: uk\n"
@@ -525,11 +525,19 @@ msgstr "музична-тональність"
 msgid "Initial key in which the sound starts"
 msgstr "Початкова тональність, якою розпочинається звук"
 
+msgid "Print version information and exit"
+msgstr "Показати дані щодо версії і завершити роботу"
+
+msgid ""
+"Don't exit after showing the initial device list, but wait for devices to "
+"added/removed."
+msgstr ""
+
 msgid "Buffering..."
 msgstr "Буферизація…"
 
-msgid "Print version information and exit"
-msgstr "Показати дані щодо версії і завершити роботу"
+msgid "Clock lost, selecting a new one\n"
+msgstr "Доступ до годинника втрачено, вибираємо новий\n"
 
 msgid "Video sink to use (default is autovideosink)"
 msgstr "Приймач відеоданих, яким слід скористатися (типовим є autovideosink)"
@@ -539,6 +547,18 @@ msgstr "Приймач аудіоданих, яким слід скориста�
 
 msgid "Enable gapless playback"
 msgstr "Увімкнути неперервне відтворення"
+
+msgid "Shuffle playlist"
+msgstr "Перемішати список відтворення"
+
+msgid "Interactive control via keyboard"
+msgstr "Інтерактивне керування за допомогою клавіатури"
+
+msgid "Volume"
+msgstr "Гучність"
+
+msgid "Playlist file containing input media files"
+msgstr "Файл списку відтворення, що містить мультимедійні файли вхідних даних"
 
 #, c-format
 msgid "Usage: %s FILE1|URI1 [FILE2|URI2] [FILE3|URI3] ..."

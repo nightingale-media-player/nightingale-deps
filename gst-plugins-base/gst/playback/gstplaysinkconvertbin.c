@@ -188,6 +188,12 @@ pad_blocked_cb (GstPad * pad, GstPadProbeInfo * info, gpointer user_data)
   GstCaps *caps;
   gboolean raw;
 
+  if (GST_IS_EVENT (info->data) && !GST_EVENT_IS_SERIALIZED (info->data)) {
+    GST_DEBUG_OBJECT (self, "Letting non-serialized event %s pass",
+        GST_EVENT_TYPE_NAME (info->data));
+    return GST_PAD_PROBE_PASS;
+  }
+
   GST_PLAY_SINK_CONVERT_BIN_LOCK (self);
   GST_DEBUG_OBJECT (self, "Pad blocked");
 
@@ -338,6 +344,15 @@ gst_play_sink_convert_bin_sink_setcaps (GstPlaySinkConvertBin * self,
   return TRUE;
 }
 
+#define GST_PLAY_SINK_CONVERT_BIN_FILTER_CAPS(filter,caps) G_STMT_START {     \
+  if ((filter)) {                                                             \
+    GstCaps *intersection =                                                   \
+        gst_caps_intersect_full ((filter), (caps), GST_CAPS_INTERSECT_FIRST); \
+    gst_caps_unref ((caps));                                                  \
+    (caps) = intersection;                                                    \
+  }                                                                           \
+} G_STMT_END
+
 static GstCaps *
 gst_play_sink_convert_bin_getcaps (GstPad * pad, GstCaps * filter)
 {
@@ -378,26 +393,46 @@ gst_play_sink_convert_bin_getcaps (GstPad * pad, GstCaps * filter)
         gst_caps_unref (downstream_filter);
       gst_object_unref (peer);
       if (self->converter_caps && is_raw_caps (peer_caps, self->audio)) {
-        ret = gst_caps_merge (peer_caps, gst_caps_ref (self->converter_caps));
+        GstCaps *converter_caps = gst_caps_ref (self->converter_caps);
+        GstCapsFeatures *cf;
+        GstStructure *s;
+        guint i, n;
+
+        GST_PLAY_SINK_CONVERT_BIN_FILTER_CAPS (filter, converter_caps);
+
+        ret = gst_caps_make_writable (peer_caps);
+
+        /* Filter out ANY capsfeatures from the converter caps. We can't
+         * convert to ANY capsfeatures, they are only there so that we
+         * can passthrough whatever downstream can support... but we
+         * definitely don't want to return them here
+         */
+        n = gst_caps_get_size (converter_caps);
+        for (i = 0; i < n; i++) {
+          s = gst_caps_get_structure (converter_caps, i);
+          cf = gst_caps_get_features (converter_caps, i);
+
+          if (cf && gst_caps_features_is_any (cf))
+            continue;
+          ret =
+              gst_caps_merge_structure_full (ret, gst_structure_copy (s),
+              (cf ? gst_caps_features_copy (cf) : NULL));
+        }
+        gst_caps_unref (converter_caps);
       } else {
         ret = peer_caps;
+        GST_PLAY_SINK_CONVERT_BIN_FILTER_CAPS (filter, ret);
       }
     } else {
       ret = gst_caps_ref (self->converter_caps);
+      GST_PLAY_SINK_CONVERT_BIN_FILTER_CAPS (filter, ret);
     }
   } else {
-    ret = gst_caps_new_any ();
+    ret = filter ? gst_caps_ref (filter) : gst_caps_new_any ();
   }
   GST_PLAY_SINK_CONVERT_BIN_UNLOCK (self);
 
   gst_object_unref (self);
-
-  if (filter) {
-    GstCaps *intersection =
-        gst_caps_intersect_full (filter, ret, GST_CAPS_INTERSECT_FIRST);
-    gst_caps_unref (ret);
-    ret = intersection;
-  }
 
   GST_DEBUG_OBJECT (pad, "Returning caps %" GST_PTR_FORMAT, ret);
 

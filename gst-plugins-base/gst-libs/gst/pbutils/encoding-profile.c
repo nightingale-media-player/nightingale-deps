@@ -85,6 +85,51 @@
  * </para>
  * </refsect2>
  * <refsect2>
+ * <title>Example: Using an encoder preset with a profile</title>
+ * <para>
+ * |[
+ * #include <gst/pbutils/encoding-profile.h>
+ * ...
+ * GstEncodingProfile *
+ * create_ogg_theora_profile(void)
+ *{
+ *  GstEncodingVideoProfile *v;
+ *  GstEncodingAudioProfile *a;
+ *  GstEncodingContainerProfile *prof;
+ *  GstCaps *caps;
+ *  GstPreset *preset;
+ *
+ *  caps = gst_caps_from_string ("application/ogg");
+ *  prof = gst_encoding_container_profile_new ("Ogg audio/video",
+ *     "Standard OGG/THEORA/VORBIS",
+ *     caps, NULL);
+ *  gst_caps_unref (caps);
+ *
+ *  preset = GST_PRESET (gst_element_factory_make ("theoraenc", "theorapreset"));
+ *  g_object_set (preset, "bitrate", 1000, NULL);
+ *  // The preset will be saved on the filesystem,
+ *  // so try to use a descriptive name
+ *  gst_preset_save_preset (preset, "theora_bitrate_preset");
+ *  gst_object_unref (preset);
+ *
+ *  caps = gst_caps_from_string ("video/x-theora");
+ *  v = gst_encoding_video_profile_new (caps, "theorapreset", NULL, 0);
+ *  gst_encoding_container_profile_add_profile (prof, (GstEncodingProfile*) v);
+ *  gst_caps_unref (caps);
+ *
+ *  caps = gst_caps_from_string ("audio/x-vorbis");
+ *  a = gst_encoding_audio_profile_new (caps, NULL, NULL, 0);
+ *  gst_encoding_container_profile_add_profile (prof, (GstEncodingProfile*) a);
+ *  gst_caps_unref (caps);
+ *
+ *  return (GstEncodingProfile*) prof;
+ *}
+ *
+ *
+ * ]|
+ * </para>
+ * </refsect2>
+ * <refsect2>
  * <title>Example: Listing categories, targets and profiles</title>
  * <para>
  * |[
@@ -94,7 +139,7 @@
  * GList *categories, *tmpc;
  * GList *targets, *tmpt;
  * ...
- * categories = gst_encoding_target_list_available_categories();
+ * categories = gst_encoding_list_available_categories ();
  *
  * ... Show available categories to user ...
  *
@@ -103,7 +148,7 @@
  *
  *   ... and we can list all targets within that category ...
  *
- *   targets = gst_encoding_target_list_all (category);
+ *   targets = gst_encoding_list_all_targets (category);
  *
  *   ... and show a list to our users ...
  *
@@ -149,6 +194,15 @@ struct _GstEncodingProfileClass
 {
   GObjectClass parent_class;
 };
+
+enum
+{
+  FIRST_PROPERTY,
+  PROP_RESTRICTION_CAPS,
+  LAST_PROPERTY
+};
+
+static GParamSpec *_properties[LAST_PROPERTY];
 
 static void string_to_profile_transform (const GValue * src_value,
     GValue * dest_value);
@@ -198,6 +252,40 @@ gst_encoding_profile_get_type (void)
   return g_define_type_id__volatile;
 }
 
+
+static void
+_encoding_profile_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec)
+{
+  GstEncodingProfile *prof = (GstEncodingProfile *) object;
+
+  switch (prop_id) {
+    case PROP_RESTRICTION_CAPS:
+      gst_value_set_caps (value, prof->restriction);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
+}
+
+static void
+_encoding_profile_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec)
+{
+  GstEncodingProfile *prof = (GstEncodingProfile *) object;
+
+  switch (prop_id) {
+    case PROP_RESTRICTION_CAPS:
+      gst_encoding_profile_set_restriction (prof, gst_caps_copy
+          (gst_value_get_caps (value)));
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
+}
+
 static void
 gst_encoding_profile_finalize (GObject * object)
 {
@@ -212,6 +300,8 @@ gst_encoding_profile_finalize (GObject * object)
     g_free (prof->description);
   if (prof->restriction)
     gst_caps_unref (prof->restriction);
+  if (prof->preset_name)
+    g_free (prof->preset_name);
 }
 
 static void
@@ -220,6 +310,18 @@ gst_encoding_profile_class_init (GstEncodingProfileClass * klass)
   GObjectClass *gobject_class = (GObjectClass *) klass;
 
   gobject_class->finalize = gst_encoding_profile_finalize;
+
+  gobject_class->set_property = _encoding_profile_set_property;
+  gobject_class->get_property = _encoding_profile_get_property;
+
+  _properties[PROP_RESTRICTION_CAPS] =
+      g_param_spec_boxed ("restriction-caps", "Restriction caps",
+      "The restriction caps to use", GST_TYPE_CAPS,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+  g_object_class_install_property (gobject_class,
+      PROP_RESTRICTION_CAPS, _properties[PROP_RESTRICTION_CAPS]);
+
 }
 
 /**
@@ -416,7 +518,7 @@ gst_encoding_profile_set_presence (GstEncodingProfile * profile, guint presence)
  * @restriction: (transfer full): the restriction to apply
  *
  * Set the restriction #GstCaps to apply before the encoder
- * that will be used in the profile. See gst_encoding_profile_set_restriction()
+ * that will be used in the profile. See gst_encoding_profile_get_restriction()
  * for more about restrictions. Does not apply to #GstEncodingContainerProfile.
  */
 void
@@ -426,6 +528,9 @@ gst_encoding_profile_set_restriction (GstEncodingProfile * profile,
   if (profile->restriction)
     gst_caps_unref (profile->restriction);
   profile->restriction = restriction;
+
+  g_object_notify_by_pspec (G_OBJECT (profile),
+      _properties[PROP_RESTRICTION_CAPS]);
 }
 
 /* Container profiles */
@@ -1127,7 +1232,7 @@ gst_encoding_profile_deserialize_valfunc (GValue * value, const gchar * s)
  * @info: (transfer none): The #GstDiscovererInfo to read from
  *
  * Creates a #GstEncodingProfile matching the formats from the given
- * #GstEncodingProfile. Streams other than audio or video (eg,
+ * #GstDiscovererInfo. Streams other than audio or video (eg,
  * subtitles), are currently ignored.
  *
  * Returns: (transfer full): The new #GstEncodingProfile or %NULL.

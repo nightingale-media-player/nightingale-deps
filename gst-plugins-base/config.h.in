@@ -275,6 +275,9 @@
 /* Defined if compiling for Windows */
 #undef HAVE_WIN32
 
+/* Define to 1 if you have the <winsock2.h> header file. */
+#undef HAVE_WINSOCK2_H
+
 /* Define to enable X libraries and plugins (used by ximagesink). */
 #undef HAVE_X
 

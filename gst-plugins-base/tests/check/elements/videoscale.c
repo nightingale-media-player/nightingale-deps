@@ -34,7 +34,7 @@ get_num_formats (void)
 {
   guint i = 2;
 
-  while (gst_video_format_to_string ((GstFormat) i) != NULL)
+  while (gst_video_format_to_string ((GstVideoFormat) i) != NULL)
     ++i;
 
   return i;
@@ -120,6 +120,7 @@ check_pad_template (GstPadTemplate * tmpl)
         case GST_VIDEO_FORMAT_GBR:
         case GST_VIDEO_FORMAT_GBR_10BE:
         case GST_VIDEO_FORMAT_GBR_10LE:
+        case GST_VIDEO_FORMAT_NV12_64Z32:
           GST_LOG ("Ignoring lack of support for format %s", fmt_str);
           break;
         default:

@@ -235,6 +235,11 @@ static gboolean gst_video_encoder_negotiate_default (GstVideoEncoder * encoder);
 static gboolean gst_video_encoder_negotiate_unlocked (GstVideoEncoder *
     encoder);
 
+static gboolean gst_video_encoder_sink_query_default (GstVideoEncoder * encoder,
+    GstQuery * query);
+static gboolean gst_video_encoder_src_query_default (GstVideoEncoder * encoder,
+    GstQuery * query);
+
 /* we can't use G_DEFINE_ABSTRACT_TYPE because we need the klass in the _init
  * method to get to the padtemplates */
 GType
@@ -296,6 +301,27 @@ gst_video_encoder_class_init (GstVideoEncoderClass * klass)
   klass->propose_allocation = gst_video_encoder_propose_allocation_default;
   klass->decide_allocation = gst_video_encoder_decide_allocation_default;
   klass->negotiate = gst_video_encoder_negotiate_default;
+  klass->sink_query = gst_video_encoder_sink_query_default;
+  klass->src_query = gst_video_encoder_src_query_default;
+}
+
+static GList *
+_flush_events (GstPad * pad, GList * events)
+{
+  GList *tmp;
+
+  for (tmp = events; tmp; tmp = tmp->next) {
+    if (GST_EVENT_TYPE (tmp->data) == GST_EVENT_EOS ||
+        GST_EVENT_TYPE (tmp->data) == GST_EVENT_SEGMENT ||
+        !GST_EVENT_IS_STICKY (tmp->data)) {
+      gst_event_unref (tmp->data);
+    } else {
+      gst_pad_store_sticky_event (pad, GST_EVENT_CAST (tmp->data));
+    }
+  }
+  g_list_free (events);
+
+  return NULL;
 }
 
 static gboolean
@@ -315,10 +341,6 @@ gst_video_encoder_reset (GstVideoEncoder * encoder, gboolean hard)
   priv->force_key_unit = NULL;
 
   priv->drained = TRUE;
-
-  g_list_foreach (priv->current_frame_events, (GFunc) gst_event_unref, NULL);
-  g_list_free (priv->current_frame_events);
-  priv->current_frame_events = NULL;
 
   g_list_foreach (priv->frames, (GFunc) gst_video_codec_frame_unref, NULL);
   g_list_free (priv->frames);
@@ -350,6 +372,26 @@ gst_video_encoder_reset (GstVideoEncoder * encoder, gboolean hard)
     g_list_free (priv->headers);
     priv->headers = NULL;
     priv->new_headers = FALSE;
+
+    if (priv->allocator) {
+      gst_object_unref (priv->allocator);
+      priv->allocator = NULL;
+    }
+
+    g_list_foreach (priv->current_frame_events, (GFunc) gst_event_unref, NULL);
+    g_list_free (priv->current_frame_events);
+    priv->current_frame_events = NULL;
+
+  } else {
+    GList *l;
+
+    for (l = priv->frames; l; l = l->next) {
+      GstVideoCodecFrame *frame = l->data;
+
+      frame->events = _flush_events (encoder->srcpad, frame->events);
+    }
+    priv->current_frame_events = _flush_events (encoder->srcpad,
+        encoder->priv->current_frame_events);
   }
 
   GST_VIDEO_ENCODER_STREAM_UNLOCK (encoder);
@@ -812,13 +854,11 @@ config_failed:
 }
 
 static gboolean
-gst_video_encoder_sink_query (GstPad * pad, GstObject * parent,
+gst_video_encoder_sink_query_default (GstVideoEncoder * encoder,
     GstQuery * query)
 {
-  GstVideoEncoder *encoder;
+  GstPad *pad = GST_VIDEO_ENCODER_SINK_PAD (encoder);
   gboolean res = FALSE;
-
-  encoder = GST_VIDEO_ENCODER (parent);
 
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_CAPS:
@@ -841,10 +881,30 @@ gst_video_encoder_sink_query (GstPad * pad, GstObject * parent,
       break;
     }
     default:
-      res = gst_pad_query_default (pad, parent, query);
+      res = gst_pad_query_default (pad, GST_OBJECT (encoder), query);
       break;
   }
   return res;
+}
+
+static gboolean
+gst_video_encoder_sink_query (GstPad * pad, GstObject * parent,
+    GstQuery * query)
+{
+  GstVideoEncoder *encoder;
+  GstVideoEncoderClass *encoder_class;
+  gboolean ret = FALSE;
+
+  encoder = GST_VIDEO_ENCODER (parent);
+  encoder_class = GST_VIDEO_ENCODER_GET_CLASS (encoder);
+
+  GST_DEBUG_OBJECT (encoder, "received query %d, %s", GST_QUERY_TYPE (query),
+      GST_QUERY_TYPE_NAME (query));
+
+  if (encoder_class->sink_query)
+    ret = encoder_class->sink_query (encoder, query);
+
+  return ret;
 }
 
 static void
@@ -896,6 +956,16 @@ gst_video_encoder_push_event (GstVideoEncoder * encoder, GstEvent * event)
   return gst_pad_push_event (encoder->srcpad, event);
 }
 
+static inline void
+gst_video_encoder_check_and_push_tags (GstVideoEncoder * encoder)
+{
+  if (encoder->priv->tags && encoder->priv->tags_changed) {
+    gst_video_encoder_push_event (encoder,
+        gst_event_new_tag (gst_tag_list_ref (encoder->priv->tags)));
+    encoder->priv->tags_changed = FALSE;
+  }
+}
+
 static gboolean
 gst_video_encoder_sink_event_default (GstVideoEncoder * encoder,
     GstEvent * event)
@@ -929,6 +999,21 @@ gst_video_encoder_sink_event_default (GstVideoEncoder * encoder,
       } else {
         flow_ret = GST_FLOW_OK;
       }
+
+      if (encoder->priv->current_frame_events) {
+        GList *l;
+
+        for (l = g_list_last (encoder->priv->current_frame_events); l;
+            l = g_list_previous (l)) {
+          GstEvent *event = GST_EVENT (l->data);
+
+          gst_video_encoder_push_event (encoder, event);
+        }
+      }
+      g_list_free (encoder->priv->current_frame_events);
+      encoder->priv->current_frame_events = NULL;
+
+      gst_video_encoder_check_and_push_tags (encoder);
 
       ret = (flow_ret == GST_FLOW_OK);
       GST_VIDEO_ENCODER_STREAM_UNLOCK (encoder);
@@ -1141,13 +1226,12 @@ gst_video_encoder_src_event (GstPad * pad, GstObject * parent, GstEvent * event)
 }
 
 static gboolean
-gst_video_encoder_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
+gst_video_encoder_src_query_default (GstVideoEncoder * enc, GstQuery * query)
 {
+  GstPad *pad = GST_VIDEO_ENCODER_SRC_PAD (enc);
   GstVideoEncoderPrivate *priv;
-  GstVideoEncoder *enc;
   gboolean res;
 
-  enc = GST_VIDEO_ENCODER (parent);
   priv = enc->priv;
 
   GST_LOG_OBJECT (enc, "handling query: %" GST_PTR_FORMAT, query);
@@ -1193,13 +1277,32 @@ gst_video_encoder_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
     }
       break;
     default:
-      res = gst_pad_query_default (pad, parent, query);
+      res = gst_pad_query_default (pad, GST_OBJECT (enc), query);
   }
   return res;
 
 error:
   GST_DEBUG_OBJECT (enc, "query failed");
   return res;
+}
+
+static gboolean
+gst_video_encoder_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
+{
+  GstVideoEncoder *encoder;
+  GstVideoEncoderClass *encoder_class;
+  gboolean ret = FALSE;
+
+  encoder = GST_VIDEO_ENCODER (parent);
+  encoder_class = GST_VIDEO_ENCODER_GET_CLASS (encoder);
+
+  GST_DEBUG_OBJECT (encoder, "received query %d, %s", GST_QUERY_TYPE (query),
+      GST_QUERY_TYPE_NAME (query));
+
+  if (encoder_class->src_query)
+    ret = encoder_class->src_query (encoder, query);
+
+  return ret;
 }
 
 static GstVideoCodecFrame *
@@ -1261,6 +1364,9 @@ gst_video_encoder_chain (GstPad * pad, GstObject * parent, GstBuffer * buf)
     gst_caps_unref (caps);
     encoder->priv->do_caps = FALSE;
   }
+
+  if (!encoder->priv->input_state)
+    goto not_negotiated;
 
   GST_VIDEO_ENCODER_STREAM_LOCK (encoder);
 
@@ -1459,15 +1565,12 @@ gst_video_encoder_negotiate_default (GstVideoEncoder * encoder)
   GstAllocationParams params;
   gboolean ret = TRUE;
   GstVideoCodecState *state = encoder->priv->output_state;
-  GstVideoInfo *info = NULL;
+  GstVideoInfo *info = &state->info;
   GstQuery *query = NULL;
   GstVideoCodecFrame *frame;
   GstCaps *prevcaps;
 
-  g_return_val_if_fail (state, FALSE);
   g_return_val_if_fail (state->caps != NULL, FALSE);
-
-  info = &state->info;
 
   if (encoder->priv->output_state_changed) {
     state->caps = gst_caps_make_writable (state->caps);
@@ -1601,6 +1704,7 @@ gst_video_encoder_negotiate (GstVideoEncoder * encoder)
   gboolean ret = TRUE;
 
   g_return_val_if_fail (GST_IS_VIDEO_ENCODER (encoder), FALSE);
+  g_return_val_if_fail (encoder->priv->output_state, FALSE);
 
   klass = GST_VIDEO_ENCODER_GET_CLASS (encoder);
 
@@ -1801,11 +1905,7 @@ gst_video_encoder_finish_frame (GstVideoEncoder * encoder,
       break;
   }
 
-  if (priv->tags && priv->tags_changed) {
-    gst_video_encoder_push_event (encoder,
-        gst_event_new_tag (gst_tag_list_ref (priv->tags)));
-    priv->tags_changed = FALSE;
-  }
+  gst_video_encoder_check_and_push_tags (encoder);
 
   /* no buffer data means this frame is skipped/dropped */
   if (!frame->output_buffer) {

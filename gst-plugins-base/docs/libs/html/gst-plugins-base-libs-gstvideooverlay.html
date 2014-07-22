@@ -2,32 +2,27 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>gstvideooverlay</title>
+<title>GStreamer Base Plugins 1.0 Library Reference Manual: gstvideooverlay</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
 <link rel="up" href="gstreamer-video.html" title="Video Library">
 <link rel="prev" href="gst-plugins-base-libs-gstvideoorientation.html" title="gstvideoorientation">
 <link rel="next" href="gst-plugins-base-libs-GstVideoDecoder.html" title="GstVideoDecoder">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-libs-gstvideoorientation.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="gstreamer-video.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 1.0 Library Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-libs-GstVideoDecoder.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-base-libs-gstvideooverlay.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstvideooverlay.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstvideooverlay.object-hierarchy" class="shortcut">Object Hierarchy</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstvideooverlay.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstvideooverlay.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-video.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-gstvideoorientation.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-libs-GstVideoDecoder.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-base-libs-gstvideooverlay"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -37,47 +32,109 @@
    on elements supporting it to configure a window into which to render a
    video.</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-base-libs-gstvideooverlay.synopsis"></a><h2>Synopsis</h2>
-<a name="GstVideoOverlay"></a><pre class="synopsis">
-#include &lt;gst/video/videooverlay.h&gt;
-
-                    <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay-struct" title="GstVideoOverlay">GstVideoOverlay</a>;
-struct              <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlayInterface" title="struct GstVideoOverlayInterface">GstVideoOverlayInterface</a>;
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-got-window-handle" title="gst_video_overlay_got_window_handle ()">gst_video_overlay_got_window_handle</a> (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>,
-                                                         <em class="parameter"><code><span class="type">guintptr</span> handle</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-set-window-handle" title="gst_video_overlay_set_window_handle ()">gst_video_overlay_set_window_handle</a> (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>,
-                                                         <em class="parameter"><code><span class="type">guintptr</span> handle</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-prepare-window-handle" title="gst_video_overlay_prepare_window_handle ()">gst_video_overlay_prepare_window_handle</a>
-                                                        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-expose" title="gst_video_overlay_expose ()">gst_video_overlay_expose</a>            (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-handle-events" title="gst_video_overlay_handle_events ()">gst_video_overlay_handle_events</a>     (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> handle_events</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-set-render-rectangle" title="gst_video_overlay_set_render_rectangle ()">gst_video_overlay_set_render_rectangle</a>
-                                                        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> x</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> y</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> width</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> height</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-is-video-overlay-prepare-window-handle-message" title="gst_is_video_overlay_prepare_window_handle_message ()">gst_is_video_overlay_prepare_window_handle_message</a>
-                                                        (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> *msg</code></em>);
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstvideooverlay.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-got-window-handle" title="gst_video_overlay_got_window_handle ()">gst_video_overlay_got_window_handle</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-set-window-handle" title="gst_video_overlay_set_window_handle ()">gst_video_overlay_set_window_handle</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-prepare-window-handle" title="gst_video_overlay_prepare_window_handle ()">gst_video_overlay_prepare_window_handle</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-expose" title="gst_video_overlay_expose ()">gst_video_overlay_expose</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-handle-events" title="gst_video_overlay_handle_events ()">gst_video_overlay_handle_events</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-set-render-rectangle" title="gst_video_overlay_set_render_rectangle ()">gst_video_overlay_set_render_rectangle</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-is-video-overlay-prepare-window-handle-message" title="gst_is_video_overlay_prepare_window_handle_message ()">gst_is_video_overlay_prepare_window_handle_message</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstVideoOverlay"></a><div class="refsect1">
+<a name="gst-plugins-base-libs-gstvideooverlay.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay-struct" title="GstVideoOverlay">GstVideoOverlay</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlayInterface" title="struct GstVideoOverlayInterface">GstVideoOverlayInterface</a></td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-base-libs-gstvideooverlay.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  GInterface
-   +----GstVideoOverlay
+<pre class="screen">    GInterface
+    <span class="lineart">╰──</span> GstVideoOverlay
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstvideooverlay.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/video/videooverlay.h&gt;
 </pre>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-base-libs-gstvideooverlay.description"></a><h2>Description</h2>
-<p>
-</p>
 <div class="refsect2">
-<a name="id-1.2.14.11.5.2.1"></a><p>
+<a name="id-1.2.15.11.8.2"></a><p>
 The <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> interface is used for 2 main purposes :
 </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
@@ -187,25 +244,27 @@ immediately. Here is an example on how to do that correctly:
 <p>
 </p>
 </div>
-<p>
-</p>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.14.11.5.2.2"></a><h3>Two basic usage scenarios</h3>
+<a name="id-1.2.15.11.8.3"></a><h3>Two basic usage scenarios</h3>
 <p>
 There are two basic usage scenarios: in the simplest case, the application
-knows exactly what particular element is used for video output, which is
-usually the case when the application creates the videosink to use
-(e.g. <span class="type">xvimagesink</span>, <span class="type">ximagesink</span>, etc.) itself; in this case, the application
-can just create the videosink element, create and realize the window to
-render the video on and then call <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-set-window-handle" title="gst_video_overlay_set_window_handle ()"><code class="function">gst_video_overlay_set_window_handle()</code></a> directly
-with the XID or native window handle, before starting up the pipeline.
+uses <span class="type">playbin</span> or <span class="type">plasink</span> or knows exactly what particular element is used
+for video output, which is usually the case when the application creates
+the videosink to use (e.g. <span class="type">xvimagesink</span>, <span class="type">ximagesink</span>, etc.) itself; in this
+case, the application can just create the videosink element, create and
+realize the window to render the video on and then
+call <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-set-window-handle" title="gst_video_overlay_set_window_handle ()"><code class="function">gst_video_overlay_set_window_handle()</code></a> directly with the XID or native
+window handle, before starting up the pipeline.
+As <span class="type">playbin</span> and <span class="type">playsink</span> implement the video overlay interface and proxy
+it transparently to the actual video sink even if it is created later, this
+case also applies when using these elements.
 </p>
 <p>
 In the other and more common case, the application does not know in advance
 what GStreamer video sink element will be used for video output. This is
-usually the case when an element such as <span class="type">autovideosink</span> or <span class="type">gconfvideosink</span>
-is used. In this case, the video sink element itself is created
+usually the case when an element such as <span class="type">autovideosink</span> is used.
+In this case, the video sink element itself is created
 asynchronously from a GStreamer streaming thread some time after the
 pipeline has been started up. When that happens, however, the video sink
 will need to know right then whether to render onto an already existing
@@ -216,7 +275,7 @@ thread directly (because the video sink will need an answer right then).
 </p>
 <p>
 As response to the prepare-window-handle element message in the bus sync
-handler, the application may use <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-set-window-handle" title="gst_video_overlay_set_window_handle ()"><code class="function">gst_video_overlay_set_window_handle()</code></a> to tell
+handler, the application may use <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-set-window-handle" title="gst_video_overlay_set_window_handle ()"><code class="function">gst_video_overlay_set_window_handle()</code></a> to tell
 the video sink to render onto an existing window surface. At this point the
 application should already have obtained the window handle / XID, so it
 just needs to set it. It is generally not advisable to call any GUI toolkit
@@ -232,11 +291,9 @@ sync handler; see below for a better approach without <a href="http://library.gn
 used in the callback).
 </p>
 </div>
-<p>
-</p>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.14.11.5.2.3"></a><h3>GstVideoOverlay and Gtk+</h3>
+<a name="id-1.2.15.11.8.4"></a><h3>GstVideoOverlay and Gtk+</h3>
 <p>
 </p>
 <div class="informalexample">
@@ -443,11 +500,9 @@ used in the callback).
 <p>
 </p>
 </div>
-<p>
-</p>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.14.11.5.2.4"></a><h3>GstVideoOverlay and Qt</h3>
+<a name="id-1.2.15.11.8.5"></a><h3>GstVideoOverlay and Qt</h3>
 <p>
 </p>
 <div class="informalexample">
@@ -568,17 +623,258 @@ used in the callback).
 <p>
 </p>
 </div>
-<p>
-</p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-base-libs-gstvideooverlay.details"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstvideooverlay.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-video-overlay-got-window-handle"></a><h3>gst_video_overlay_got_window_handle ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_overlay_got_window_handle (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>,
+                                     <em class="parameter"><code><span class="type">guintptr</span> handle</code></em>);</pre>
+<p>This will post a "have-window-handle" element message on the bus.</p>
+<p>This function should only be used by video overlay plugin developers.</p>
+<div class="refsect3">
+<a name="id-1.2.15.11.9.2.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>overlay</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> which got a window</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>handle</p></td>
+<td class="parameter_description"><p>a platform-specific handle referencing the window</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-overlay-set-window-handle"></a><h3>gst_video_overlay_set_window_handle ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_overlay_set_window_handle (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>,
+                                     <em class="parameter"><code><span class="type">guintptr</span> handle</code></em>);</pre>
+<p>This will call the video overlay's set_window_handle method. You
+should use this method to tell to an overlay to display video output to a
+specific window (e.g. an XWindow on X11). Passing 0 as the  <em class="parameter"><code>handle</code></em>
+ will
+tell the overlay to stop using that window and create an internal one.</p>
+<div class="refsect3">
+<a name="id-1.2.15.11.9.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>overlay</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> to set the window on.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>handle</p></td>
+<td class="parameter_description"><p>a handle referencing the window.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-overlay-prepare-window-handle"></a><h3>gst_video_overlay_prepare_window_handle ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_overlay_prepare_window_handle
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>);</pre>
+<p>This will post a "prepare-window-handle" element message on the bus
+to give applications an opportunity to call
+<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-set-window-handle" title="gst_video_overlay_set_window_handle ()"><code class="function">gst_video_overlay_set_window_handle()</code></a> before a plugin creates its own
+window.</p>
+<p>This function should only be used by video overlay plugin developers.</p>
+<div class="refsect3">
+<a name="id-1.2.15.11.9.4.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>overlay</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> which does not yet have an Window handle set</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-overlay-expose"></a><h3>gst_video_overlay_expose ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_overlay_expose (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>);</pre>
+<p>Tell an overlay that it has been exposed. This will redraw the current frame
+in the drawable even if the pipeline is PAUSED.</p>
+<div class="refsect3">
+<a name="id-1.2.15.11.9.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>overlay</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> to expose.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-overlay-handle-events"></a><h3>gst_video_overlay_handle_events ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+gst_video_overlay_handle_events (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>,
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> handle_events</code></em>);</pre>
+<p>Tell an overlay that it should handle events from the window system. These
+events are forwarded upstream as navigation events. In some window system,
+events are not propagated in the window hierarchy if a client is listening
+for them. This method allows you to disable events handling completely
+from the <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.15.11.9.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>overlay</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> to expose.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>handle_events</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> indicating if events should be handled or not.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-video-overlay-set-render-rectangle"></a><h3>gst_video_overlay_set_render_rectangle ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_video_overlay_set_render_rectangle
+                               (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> x</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> y</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> width</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> height</code></em>);</pre>
+<p>Configure a subregion as a video target within the window set by
+<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-set-window-handle" title="gst_video_overlay_set_window_handle ()"><code class="function">gst_video_overlay_set_window_handle()</code></a>. If this is not used or not supported
+the video will fill the area of the window set as the overlay to 100%.
+By specifying the rectangle, the video can be overlayed to a specific region
+of that window only. After setting the new rectangle one should call
+<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-expose" title="gst_video_overlay_expose ()"><code class="function">gst_video_overlay_expose()</code></a> to force a redraw. To unset the region pass -1 for
+the <em class="parameter"><code>width</code></em>
+ and <em class="parameter"><code>height</code></em>
+ parameters.</p>
+<p>This method is needed for non fullscreen video overlay in UI toolkits that
+do not support subwindows.</p>
+<div class="refsect3">
+<a name="id-1.2.15.11.9.7.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>overlay</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>x</p></td>
+<td class="parameter_description"><p>the horizontal offset of the render area inside the window</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>y</p></td>
+<td class="parameter_description"><p>the vertical offset of the render area inside the window</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>width</p></td>
+<td class="parameter_description"><p>the width of the render area inside the window</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>height</p></td>
+<td class="parameter_description"><p>the height of the render area inside the window</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.11.9.7.7"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not supported by the sink.</p>
+<p></p>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-is-video-overlay-prepare-window-handle-message"></a><h3>gst_is_video_overlay_prepare_window_handle_message ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_is_video_overlay_prepare_window_handle_message
+                               (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> *msg</code></em>);</pre>
+<p>Convenience function to check if the given message is a
+"prepare-window-handle" message from a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.15.11.9.8.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.15.11.9.8.6"></a><h4>Returns</h4>
+<p> whether <em class="parameter"><code>msg</code></em>
+is a "prepare-window-handle" message</p>
+<p></p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstvideooverlay.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstVideoOverlay-struct"></a><h3>GstVideoOverlay</h3>
 <pre class="programlisting">typedef struct _GstVideoOverlay GstVideoOverlay;</pre>
-<p>
-Opaque <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> interface structure
-</p>
+<p>Opaque <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> interface structure</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -598,255 +894,49 @@ Opaque <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideo
   void (*set_window_handle)    (GstVideoOverlay *overlay, guintptr handle);
 };
 </pre>
-<p>
-<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> interface
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<p><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> interface</p>
+<div class="refsect3">
+<a name="id-1.2.15.11.10.3.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GstVideoOverlayInterface.iface"></a>iface</code></em>;</span></p></td>
-<td>parent interface type.</td>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Type-Information.html#GTypeInterface"><span class="type">GTypeInterface</span></a> <em class="structfield"><code><a name="GstVideoOverlayInterface.iface"></a>iface</code></em>;</p></td>
+<td class="struct_member_description"><p>parent interface type.</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoOverlayInterface.expose"></a>expose</code></em> ()</span></p></td>
-<td>virtual method to handle expose events</td>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoOverlayInterface.expose"></a>expose</code></em> ()</p></td>
+<td class="struct_member_description"><p>virtual method to handle expose events</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoOverlayInterface.handle-events"></a>handle_events</code></em> ()</span></p></td>
-<td>virtual method to handle events</td>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoOverlayInterface.handle-events"></a>handle_events</code></em> ()</p></td>
+<td class="struct_member_description"><p>virtual method to handle events</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoOverlayInterface.set-render-rectangle"></a>set_render_rectangle</code></em> ()</span></p></td>
-<td>virtual method to set the render rectangle</td>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoOverlayInterface.set-render-rectangle"></a>set_render_rectangle</code></em> ()</p></td>
+<td class="struct_member_description"><p>virtual method to set the render rectangle</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="structfield"><code><a name="GstVideoOverlayInterface.set-window-handle"></a>set_window_handle</code></em> ()</span></p></td>
-<td>virtual method to configure the window handle</td>
+<td class="struct_member_name"><p><em class="structfield"><code><a name="GstVideoOverlayInterface.set-window-handle"></a>set_window_handle</code></em> ()</p></td>
+<td class="struct_member_description"><p>virtual method to configure the window handle</p></td>
+<td class="struct_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-overlay-got-window-handle"></a><h3>gst_video_overlay_got_window_handle ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_overlay_got_window_handle (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>,
-                                                         <em class="parameter"><code><span class="type">guintptr</span> handle</code></em>);</pre>
-<p>
-This will post a "have-window-handle" element message on the bus.
-</p>
-<p>
-This function should only be used by video overlay plugin developers.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>overlay</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> which got a window</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>handle</code></em> :</span></p></td>
-<td>a platform-specific handle referencing the window</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-overlay-set-window-handle"></a><h3>gst_video_overlay_set_window_handle ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_overlay_set_window_handle (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>,
-                                                         <em class="parameter"><code><span class="type">guintptr</span> handle</code></em>);</pre>
-<p>
-This will call the video overlay's set_window_handle method. You
-should use this method to tell to an overlay to display video output to a
-specific window (e.g. an XWindow on X11). Passing 0 as the  <em class="parameter"><code>handle</code></em> will
-tell the overlay to stop using that window and create an internal one.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>overlay</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> to set the window on.</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>handle</code></em> :</span></p></td>
-<td>a handle referencing the window.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-overlay-prepare-window-handle"></a><h3>gst_video_overlay_prepare_window_handle ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_overlay_prepare_window_handle
-                                                        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>);</pre>
-<p>
-This will post a "prepare-window-handle" element message on the bus
-to give applications an opportunity to call
-<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-set-window-handle" title="gst_video_overlay_set_window_handle ()"><code class="function">gst_video_overlay_set_window_handle()</code></a> before a plugin creates its own
-window.
-</p>
-<p>
-This function should only be used by video overlay plugin developers.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>overlay</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> which does not yet have an Window handle set</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-overlay-expose"></a><h3>gst_video_overlay_expose ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_overlay_expose            (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>);</pre>
-<p>
-Tell an overlay that it has been exposed. This will redraw the current frame
-in the drawable even if the pipeline is PAUSED.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody><tr>
-<td><p><span class="term"><em class="parameter"><code>overlay</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> to expose.</td>
-</tr></tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-overlay-handle-events"></a><h3>gst_video_overlay_handle_events ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                gst_video_overlay_handle_events     (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> handle_events</code></em>);</pre>
-<p>
-Tell an overlay that it should handle events from the window system. These
-events are forwarded upstream as navigation events. In some window system,
-events are not propagated in the window hierarchy if a client is listening
-for them. This method allows you to disable events handling completely
-from the <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>overlay</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> to expose.</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>handle_events</code></em> :</span></p></td>
-<td>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> indicating if events should be handled or not.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-video-overlay-set-render-rectangle"></a><h3>gst_video_overlay_set_render_rectangle ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_video_overlay_set_render_rectangle
-                                                        (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a> *overlay</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> x</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> y</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> width</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> height</code></em>);</pre>
-<p>
-Configure a subregion as a video target within the window set by
-<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-set-window-handle" title="gst_video_overlay_set_window_handle ()"><code class="function">gst_video_overlay_set_window_handle()</code></a>. If this is not used or not supported
-the video will fill the area of the window set as the overlay to 100%.
-By specifying the rectangle, the video can be overlayed to a specific region
-of that window only. After setting the new rectangle one should call
-<a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#gst-video-overlay-expose" title="gst_video_overlay_expose ()"><code class="function">gst_video_overlay_expose()</code></a> to force a redraw. To unset the region pass -1 for
-the <em class="parameter"><code>width</code></em> and <em class="parameter"><code>height</code></em> parameters.
-</p>
-<p>
-This method is needed for non fullscreen video overlay in UI toolkits that
-do not support subwindows.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>overlay</code></em> :</span></p></td>
-<td>a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>x</code></em> :</span></p></td>
-<td>the horizontal offset of the render area inside the window</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>y</code></em> :</span></p></td>
-<td>the vertical offset of the render area inside the window</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>width</code></em> :</span></p></td>
-<td>the width of the render area inside the window</td>
-</tr>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>height</code></em> :</span></p></td>
-<td>the height of the render area inside the window</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#FALSE:CAPS"><code class="literal">FALSE</code></a> if not supported by the sink.</td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="gst-is-video-overlay-prepare-window-handle-message"></a><h3>gst_is_video_overlay_prepare_window_handle_message ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_is_video_overlay_prepare_window_handle_message
-                                                        (<em class="parameter"><code><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a> *msg</code></em>);</pre>
-<p>
-Convenience function to check if the given message is a
-"prepare-window-handle" message from a <a class="link" href="gst-plugins-base-libs-gstvideooverlay.html#GstVideoOverlay"><span class="type">GstVideoOverlay</span></a>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
-<colgroup>
-<col align="left" valign="top">
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td><p><span class="term"><em class="parameter"><code>msg</code></em> :</span></p></td>
-<td>a <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstMessage.html#GstMessage"><span class="type">GstMessage</span></a>
-</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>whether <em class="parameter"><code>msg</code></em> is a "prepare-window-handle" message</td>
-</tr>
-</tbody>
-</table></div>
 </div>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

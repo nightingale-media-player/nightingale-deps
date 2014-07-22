@@ -195,6 +195,12 @@ gst_tcp_server_src_create (GstPushSrc * psrc, GstBuffer ** outbuf)
         g_socket_accept (src->server_socket, src->cancellable, &err);
     if (!src->client_socket)
       goto accept_error;
+    GST_DEBUG_OBJECT (src, "closing server socket");
+
+    if (!g_socket_close (src->server_socket, &err)) {
+      GST_ERROR_OBJECT (src, "Failed to close socket: %s", err->message);
+      g_clear_error (&err);
+    }
     /* now read from the socket. */
   }
 
@@ -295,19 +301,27 @@ accept_error:
   {
     if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
       GST_DEBUG_OBJECT (src, "Cancelled accepting of client");
+      ret = GST_FLOW_FLUSHING;
     } else {
       GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL),
           ("Failed to accept client: %s", err->message));
+      ret = GST_FLOW_ERROR;
     }
     g_clear_error (&err);
-    return GST_FLOW_ERROR;
+    return ret;
   }
 select_error:
   {
-    GST_ELEMENT_ERROR (src, RESOURCE, READ, (NULL),
-        ("Select failed: %s", err->message));
+    if (g_error_matches (err, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+      GST_DEBUG_OBJECT (src, "Cancelled select");
+      ret = GST_FLOW_FLUSHING;
+    } else {
+      GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ, (NULL),
+          ("Select failed: %s", err->message));
+      ret = GST_FLOW_ERROR;
+    }
     g_clear_error (&err);
-    return GST_FLOW_ERROR;
+    return ret;
   }
 get_available_error:
   {

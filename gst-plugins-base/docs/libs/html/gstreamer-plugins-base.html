@@ -2,22 +2,22 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Part I. GStreamer Base Plugins Libraries</title>
+<title>GStreamer Base Plugins 1.0 Library Reference Manual: Part I. GStreamer Base Plugins Libraries</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
 <link rel="up" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
 <link rel="prev" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
 <link rel="next" href="compiling.html" title="Compiling">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
-<td><a accesskey="p" href="index.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td> </td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 1.0 Library Reference Manual</th>
-<td><a accesskey="n" href="compiling.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts"></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><img src="up-insensitive.png" width="16" height="16" border="0"></td>
+<td><a accesskey="p" href="index.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="compiling.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="part">
 <div class="titlepage"><div><div><h1 class="title">
@@ -51,7 +51,7 @@ How to compile against the base plugins libraries
 <span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudio.html">gstaudio</a></span><span class="refpurpose"> — Support library for audio elements</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiometa.html">gstaudiometa</a></span><span class="refpurpose"></span>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiometa.html">gstaudiometa</a></span><span class="refpurpose"> — Buffer metadata for audio downmix matrix handling</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiocdsrc.html">gstaudiocdsrc</a></span><span class="refpurpose"> — Base class for Audio CD sources</span>
@@ -69,9 +69,6 @@ How to compile against the base plugins libraries
 <span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiofilter.html">gstaudiofilter</a></span><span class="refpurpose"> — Base class for simple audio filters</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiomixerutils.html">gstaudiomixerutils</a></span><span class="refpurpose"></span>
-</dt>
-<dt>
 <span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiosink.html">gstaudiosink</a></span><span class="refpurpose"> — Simple base class for audio sinks</span>
 </dt>
 <dt>
@@ -84,7 +81,7 @@ How to compile against the base plugins libraries
 <span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiobasesrc.html">gstaudiobasesrc</a></span><span class="refpurpose"> — Base class for audio sources</span>
 </dt>
 <dt>
-<span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiochannels.html">gstaudiochannels</a></span><span class="refpurpose"></span>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudiochannels.html">gstaudiochannels</a></span><span class="refpurpose"> — Support library for audio channel handling</span>
 </dt>
 <dt>
 <span class="refentrytitle"><a href="gst-plugins-base-libs-gstaudioringbuffer.html">gstaudioringbuffer</a></span><span class="refpurpose"> — Base class for audio ringbuffer implementations</span>
@@ -169,6 +166,10 @@ How to compile against the base plugins libraries
 <dt><span class="chapter"><a href="gstreamer-sdp.html">SDP Library</a></span></dt>
 <dd><dl><dt>
 <span class="refentrytitle"><a href="gst-plugins-base-libs-gstsdpmessage.html">gstsdpmessage</a></span><span class="refpurpose"> — Helper methods for dealing with SDP messages</span>
+</dt></dl></dd>
+<dt><span class="chapter"><a href="gstreamer-mikey.html">MIKEY Library</a></span></dt>
+<dd><dl><dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstmikey.html">gstmikey</a></span><span class="refpurpose"> — Helper methods for dealing with MIKEY messages</span>
 </dt></dl></dd>
 <dt><span class="chapter"><a href="gstreamer-tag.html">Tag Support Library</a></span></dt>
 <dd><dl>
@@ -277,7 +278,14 @@ controls</span>
 <span class="refentrytitle"><a href="gst-plugins-base-libs-GstVideoEncoder.html">GstVideoEncoder</a></span><span class="refpurpose"> — Base class for video encoders</span>
 </dt>
 <dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-GstVideoPool.html">GstVideoPool</a></span><span class="refpurpose"> — GstBufferPool for raw video buffers</span>
+</dt>
+<dt>
 <span class="refentrytitle"><a href="gst-plugins-base-libs-gstvideoutils.html">gstvideoutils</a></span><span class="refpurpose"></span>
+</dt>
+<dt>
+<span class="refentrytitle"><a href="gst-plugins-base-libs-gstnavigation.html">gstnavigation</a></span><span class="refpurpose"> — Interface for creating, sending and parsing navigation
+events.</span>
 </dt>
 </dl></dd>
 </dl>
@@ -289,6 +297,6 @@ controls</span>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

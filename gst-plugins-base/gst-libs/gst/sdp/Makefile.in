@@ -89,7 +89,6 @@ am__aclocal_m4_deps = $(top_srcdir)/common/m4/as-ac-expand.m4 \
 	$(top_srcdir)/common/m4/as-auto-alt.m4 \
 	$(top_srcdir)/common/m4/as-compiler-flag.m4 \
 	$(top_srcdir)/common/m4/as-libtool.m4 \
-	$(top_srcdir)/common/m4/as-scrub-include.m4 \
 	$(top_srcdir)/common/m4/as-version.m4 \
 	$(top_srcdir)/common/m4/ax_create_stdint_h.m4 \
 	$(top_srcdir)/common/m4/gst-arch.m4 \
@@ -160,7 +159,8 @@ am__DEPENDENCIES_1 =
 libgstsdp_@GST_API_VERSION@_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_libgstsdp_@GST_API_VERSION@_la_OBJECTS =  \
-	libgstsdp_@GST_API_VERSION@_la-gstsdpmessage.lo
+	libgstsdp_@GST_API_VERSION@_la-gstsdpmessage.lo \
+	libgstsdp_@GST_API_VERSION@_la-gstmikey.lo
 libgstsdp_@GST_API_VERSION@_la_OBJECTS =  \
 	$(am_libgstsdp_@GST_API_VERSION@_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -429,9 +429,10 @@ PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
 PYTHON_VERSION = @PYTHON_VERSION@
-QT4_MOC = @QT4_MOC@
+QTCHOOSER = @QTCHOOSER@
 QT_CFLAGS = @QT_CFLAGS@
 QT_LIBS = @QT_LIBS@
+QT_MOC = @QT_MOC@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -448,6 +449,7 @@ VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
 WARNING_CFLAGS = @WARNING_CFLAGS@
 WARNING_CXXFLAGS = @WARNING_CXXFLAGS@
+WIN32_LIBS = @WIN32_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XGETTEXT_EXTRA_OPTIONS = @XGETTEXT_EXTRA_OPTIONS@
@@ -525,10 +527,11 @@ top_srcdir = @top_srcdir@
 libgstsdpincludedir = $(includedir)/gstreamer-@GST_API_VERSION@/gst/sdp
 libgstsdpinclude_HEADERS = sdp.h \
 			   gstsdp.h \
+			   gstmikey.h \
 			   gstsdpmessage.h
 
 lib_LTLIBRARIES = libgstsdp-@GST_API_VERSION@.la
-libgstsdp_@GST_API_VERSION@_la_SOURCES = gstsdpmessage.c
+libgstsdp_@GST_API_VERSION@_la_SOURCES = gstsdpmessage.c gstmikey.c
 libgstsdp_@GST_API_VERSION@_la_CFLAGS = $(GST_PLUGINS_BASE_CFLAGS) $(GST_BASE_CFLAGS) $(GST_CFLAGS) $(GIO_CFLAGS)
 libgstsdp_@GST_API_VERSION@_la_LIBADD = $(GST_LIBS) $(GIO_LIBS)
 libgstsdp_@GST_API_VERSION@_la_LDFLAGS = $(GST_LIB_LDFLAGS) $(GST_ALL_LDFLAGS) $(GST_LT_LDFLAGS)
@@ -622,6 +625,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstsdp_@GST_API_VERSION@_la-gstmikey.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstsdp_@GST_API_VERSION@_la-gstsdpmessage.Plo@am__quote@
 
 .c.o:
@@ -654,6 +658,13 @@ libgstsdp_@GST_API_VERSION@_la-gstsdpmessage.lo: gstsdpmessage.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstsdpmessage.c' object='libgstsdp_@GST_API_VERSION@_la-gstsdpmessage.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstsdp_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -c -o libgstsdp_@GST_API_VERSION@_la-gstsdpmessage.lo `test -f 'gstsdpmessage.c' || echo '$(srcdir)/'`gstsdpmessage.c
+
+libgstsdp_@GST_API_VERSION@_la-gstmikey.lo: gstmikey.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstsdp_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -MT libgstsdp_@GST_API_VERSION@_la-gstmikey.lo -MD -MP -MF $(DEPDIR)/libgstsdp_@GST_API_VERSION@_la-gstmikey.Tpo -c -o libgstsdp_@GST_API_VERSION@_la-gstmikey.lo `test -f 'gstmikey.c' || echo '$(srcdir)/'`gstmikey.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libgstsdp_@GST_API_VERSION@_la-gstmikey.Tpo $(DEPDIR)/libgstsdp_@GST_API_VERSION@_la-gstmikey.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstmikey.c' object='libgstsdp_@GST_API_VERSION@_la-gstmikey.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstsdp_@GST_API_VERSION@_la_CFLAGS) $(CFLAGS) -c -o libgstsdp_@GST_API_VERSION@_la-gstmikey.lo `test -f 'gstmikey.c' || echo '$(srcdir)/'`gstmikey.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

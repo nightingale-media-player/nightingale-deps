@@ -25,11 +25,15 @@
 G_BEGIN_DECLS
 
 #include <gst/video/video-enumtypes.h>
+#include <gst/video/video-tile.h>
 
 /**
  * GstVideoFormat:
  * @GST_VIDEO_FORMAT_UNKNOWN: Unknown or unset video format id
- * @GST_VIDEO_FORMAT_ENCODED: Encoded video format
+ * @GST_VIDEO_FORMAT_ENCODED: Encoded video format. Only ever use that in caps for
+ *                            special video formats in combination with non-system
+ *                            memory GstCapsFeatures where it does not make sense
+ *                            to specify a real video format.
  * @GST_VIDEO_FORMAT_I420: planar 4:2:0 YUV
  * @GST_VIDEO_FORMAT_YV12: planar 4:2:0 YVU (like I420 but UV planes swapped)
  * @GST_VIDEO_FORMAT_YUY2: packed 4:2:2 YUV (Y0-U0-Y1-V0 Y2-U2-Y3-V2 Y4 ...)
@@ -81,6 +85,7 @@ G_BEGIN_DECLS
  * @GST_VIDEO_FORMAT_GBR_10LE: planar 4:4:4 RGB, 10 bits per channel
  * @GST_VIDEO_FORMAT_NV16: planar 4:2:2 YUV with interleaved UV plane
  * @GST_VIDEO_FORMAT_NV24: planar 4:4:4 YUV with interleaved UV plane
+ * @GST_VIDEO_FORMAT_NV12_64Z32: NV12 with 64x32 tiling in zigzag pattern
  *
  * Enum value describing the most common video formats.
  */
@@ -138,6 +143,7 @@ typedef enum {
   GST_VIDEO_FORMAT_GBR_10LE,
   GST_VIDEO_FORMAT_NV16,
   GST_VIDEO_FORMAT_NV24,
+  GST_VIDEO_FORMAT_NV12_64Z32,
 } GstVideoFormat;
 
 #define GST_VIDEO_MAX_PLANES 4
@@ -163,6 +169,8 @@ typedef struct _GstVideoFormatInfo GstVideoFormatInfo;
  *   can't be described with the usual information in the #GstVideoFormatInfo.
  * @GST_VIDEO_FORMAT_FLAG_UNPACK: This format can be used in a
  *   #GstVideoFormatUnpack and #GstVideoFormatPack function.
+ * @GST_VIDEO_FORMAT_FLAG_TILED: The format is tiled, there is tiling information
+ *   in the last plane.
  *
  * The different video flags that a format info can have.
  */
@@ -175,7 +183,8 @@ typedef enum
   GST_VIDEO_FORMAT_FLAG_LE       = (1 << 4),
   GST_VIDEO_FORMAT_FLAG_PALETTE  = (1 << 5),
   GST_VIDEO_FORMAT_FLAG_COMPLEX  = (1 << 6),
-  GST_VIDEO_FORMAT_FLAG_UNPACK   = (1 << 7)
+  GST_VIDEO_FORMAT_FLAG_UNPACK   = (1 << 7),
+  GST_VIDEO_FORMAT_FLAG_TILED    = (1 << 8)
 } GstVideoFormatFlags;
 
 /* YUV components */
@@ -265,6 +274,11 @@ typedef void (*GstVideoFormatUnpack)         (const GstVideoFormatInfo *info,
  *
  * Subsampled formats will use the horizontally cosited component in the
  * destination. Subsampling should be performed before packing.
+ *
+ * Because tis function does not have a x coordinate, it is not possible to
+ * pack pixels starting from an unaligned position. For tiled images this
+ * means that packing should start from a tile coordinate. For subsampled
+ * formats this means that a complete pixel need to be packed.
  */
 typedef void (*GstVideoFormatPack)           (const GstVideoFormatInfo *info,
                                               GstVideoPackFlags flags,
@@ -306,6 +320,9 @@ typedef void (*GstVideoFormatPack)           (const GstVideoFormatInfo *info,
  * @unpack_func: an unpack function for this format
  * @pack_lines: the amount of lines that will be packed
  * @pack_func: an pack function for this format
+ * @tile_mode: The tiling mode
+ * @tile_ws The width of a tile, in bytes, represented as a shift
+ * @tile_hs The height of a tile, in bytes, represented as a shift
  *
  * Information for a video format.
  */
@@ -330,6 +347,10 @@ struct _GstVideoFormatInfo {
   gint pack_lines;
   GstVideoFormatPack pack_func;
 
+  GstVideoTileMode tile_mode;
+  guint tile_ws;
+  guint tile_hs;
+
   gpointer _gst_reserved[GST_PADDING];
 };
 
@@ -344,6 +365,7 @@ struct _GstVideoFormatInfo {
 #define GST_VIDEO_FORMAT_INFO_IS_LE(info)        ((info)->flags & GST_VIDEO_FORMAT_FLAG_LE)
 #define GST_VIDEO_FORMAT_INFO_HAS_PALETTE(info)  ((info)->flags & GST_VIDEO_FORMAT_FLAG_PALETTE)
 #define GST_VIDEO_FORMAT_INFO_IS_COMPLEX(info)   ((info)->flags & GST_VIDEO_FORMAT_FLAG_COMPLEX)
+#define GST_VIDEO_FORMAT_INFO_IS_TILED(info)     ((info)->flags & GST_VIDEO_FORMAT_FLAG_TILED)
 
 #define GST_VIDEO_FORMAT_INFO_BITS(info)         ((info)->bits)
 #define GST_VIDEO_FORMAT_INFO_N_COMPONENTS(info) ((info)->n_components)
@@ -405,6 +427,10 @@ struct _GstVideoFormatInfo {
 #define GST_VIDEO_FORMAT_INFO_OFFSET(info,offsets,comp) \
   (((offsets)[(info)->plane[comp]]) + (info)->poffset[comp])
 
+#define GST_VIDEO_FORMAT_INFO_TILE_MODE(info) ((info)->tile_mode)
+#define GST_VIDEO_FORMAT_INFO_TILE_WS(info) ((info)->tile_ws)
+#define GST_VIDEO_FORMAT_INFO_TILE_HS(info) ((info)->tile_hs)
+
 /* format properties */
 GstVideoFormat gst_video_format_from_masks           (gint depth, gint bpp, gint endianness,
                                                       guint red_mask, guint green_mask,
@@ -437,7 +463,7 @@ gconstpointer  gst_video_format_get_palette          (GstVideoFormat format, gsi
     "YVYU, Y444, v210, v216, NV12, NV21, NV16, NV24, GRAY8, GRAY16_BE, GRAY16_LE, " \
     "v308, RGB16, BGR16, RGB15, BGR15, UYVP, A420, RGB8P, YUV9, YVU9, " \
     "IYU1, ARGB64, AYUV64, r210, I420_10LE, I420_10BE, I422_10LE, I422_10BE, " \
-    " Y444_10LE, Y444_10BE, GBR, GBR_10LE, GBR_10BE }"
+    " Y444_10LE, Y444_10BE, GBR, GBR_10LE, GBR_10BE, NV12_64Z32 }"
 
 /**
  * GST_VIDEO_CAPS_MAKE:

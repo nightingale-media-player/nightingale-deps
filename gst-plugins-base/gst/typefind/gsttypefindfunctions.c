@@ -517,7 +517,7 @@ xml_check_first_element_from_data (const guint8 * data, guint length,
 
   /* look for the first element, it has to be the requested element. Bail
    * out if it is not within the first 4kB. */
-  while (data && pos < MIN (4096, length)) {
+  while (pos < MIN (4096, length)) {
     while (*data != '<' && pos < MIN (4096, length)) {
       XML_INC_BUFFER_DATA;
     }
@@ -533,7 +533,7 @@ xml_check_first_element_from_data (const guint8 * data, guint length,
     /* the first normal element, check if it's the one asked for */
     if (pos + elen + 1 >= length)
       return FALSE;
-    return (data && element && strncmp ((char *) data, element, elen) == 0);
+    return (element && strncmp ((const char *) data, element, elen) == 0);
   }
 
   return FALSE;
@@ -2587,9 +2587,9 @@ h263_video_type_find (GstTypeFind * tf, gpointer unused)
     data_scan_ctx_advance (tf, &c, 1);
   }
 
-  if (good > 0 && bad == 0)
-    gst_type_find_suggest (tf, GST_TYPE_FIND_LIKELY, H263_VIDEO_CAPS);
-  else if (good > 2 * bad)
+  GST_LOG ("good: %d, bad: %d", good, bad);
+
+  if (good > 2 * bad)
     gst_type_find_suggest (tf, GST_TYPE_FIND_POSSIBLE, H263_VIDEO_CAPS);
 
   return;
@@ -2685,6 +2685,99 @@ h264_video_type_find (GstTypeFind * tf, gpointer unused)
 
   if (good >= 2 && bad == 0) {
     gst_type_find_suggest (tf, GST_TYPE_FIND_POSSIBLE, H264_VIDEO_CAPS);
+  }
+}
+
+/*** video/x-h265 H265 elementary video stream ***/
+
+static GstStaticCaps h265_video_caps =
+GST_STATIC_CAPS ("video/x-h265,stream-format=byte-stream");
+
+#define H265_VIDEO_CAPS gst_static_caps_get(&h265_video_caps)
+
+#define H265_MAX_PROBE_LENGTH (128 * 1024)      /* 128kB for HD should be enough. */
+
+static void
+h265_video_type_find (GstTypeFind * tf, gpointer unused)
+{
+  DataScanCtx c = { 0, NULL, 0 };
+
+  /* Stream consists of: a series of sync codes (00 00 00 01) followed
+   * by NALs
+   */
+  gboolean seen_irap = FALSE;
+  gboolean seen_vps = FALSE;
+  gboolean seen_sps = FALSE;
+  gboolean seen_pps = FALSE;
+  int nut;
+  int good = 0;
+  int bad = 0;
+
+  while (c.offset < H265_MAX_PROBE_LENGTH) {
+    if (G_UNLIKELY (!data_scan_ctx_ensure_data (tf, &c, 5)))
+      break;
+
+    if (IS_MPEG_HEADER (c.data)) {
+      /* forbiden_zero_bit | nal_unit_type */
+      nut = c.data[3] & 0xfe;
+
+      /* if forbidden bit is different to 0 won't be h265 */
+      if (nut > 0x7e) {
+        bad++;
+        break;
+      }
+      nut = nut >> 1;
+
+      /* if nuh_layer_id is not zero or nuh_temporal_id_plus1 is zero then
+       * it won't be h265 */
+      if ((c.data[3] & 0x01) || (c.data[4] & 0xf8) || !(c.data[4] & 0x07)) {
+        bad++;
+        break;
+      }
+
+      /* collect statistics about the NAL types */
+      if ((nut >= 0 && nut <= 9) || (nut >= 16 && nut <= 21) || (nut >= 32
+              && nut <= 40)) {
+        if (nut == 32)
+          seen_vps = TRUE;
+        else if (nut == 33)
+          seen_sps = TRUE;
+        else if (nut == 34)
+          seen_pps = TRUE;
+        else if (nut >= 16 || nut <= 21) {
+          /* BLA, IDR and CRA pictures are belongs to be IRAP picture */
+          /* we are not counting the reserved IRAP pictures (22 and 23) to good */
+          seen_irap = TRUE;
+        }
+
+        good++;
+      } else if ((nut >= 10 && nut <= 15) || (nut >= 22 && nut <= 31)
+          || (nut >= 41 && nut <= 47)) {
+        /* reserved values are counting as bad */
+        bad++;
+      } else {
+        /* unspecified (48..63), application specific */
+        /* don't consider these as bad */
+      }
+
+      GST_LOG ("good:%d, bad:%d, pps:%d, sps:%d, vps:%d, irap:%d", good, bad,
+          seen_pps, seen_sps, seen_vps, seen_irap);
+
+      if (seen_sps && seen_pps && seen_irap && good >= 10 && bad < 4) {
+        gst_type_find_suggest (tf, GST_TYPE_FIND_LIKELY, H265_VIDEO_CAPS);
+        return;
+      }
+
+      data_scan_ctx_advance (tf, &c, 5);
+    }
+    data_scan_ctx_advance (tf, &c, 1);
+  }
+
+  GST_LOG ("good:%d, bad:%d, pps:%d, sps:%d, vps:%d, irap:%d", good, bad,
+      seen_pps, seen_sps, seen_vps, seen_irap);
+
+  if (good >= 2 && bad == 0) {
+    gst_type_find_suggest (tf, GST_TYPE_FIND_POSSIBLE, H265_VIDEO_CAPS);
   }
 }
 
@@ -3712,6 +3805,33 @@ tiff_type_find (GstTypeFind * tf, gpointer ununsed)
     }
   }
 }
+
+/*** image/x-exr ***/
+static GstStaticCaps exr_caps = GST_STATIC_CAPS ("image/x-exr");
+#define EXR_CAPS (gst_static_caps_get(&exr_caps))
+static void
+exr_type_find (GstTypeFind * tf, gpointer ununsed)
+{
+  const guint8 *data = gst_type_find_peek (tf, 0, 8);
+
+  if (data) {
+    guint32 flags;
+
+    if (GST_READ_UINT32_LE (data) != 0x01312f76)
+      return;
+
+    flags = GST_READ_UINT32_LE (data + 4);
+    if ((flags & 0xff) != 1 && (flags & 0xff) != 2)
+      return;
+
+    /* If bit 9 is set, bit 11 and 12 must be 0 */
+    if ((flags & 0x200) && (flags & 0x1800))
+      return;
+
+    gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM, EXR_CAPS);
+  }
+}
+
 
 /*** PNM ***/
 
@@ -5368,6 +5488,8 @@ plugin_init (GstPlugin * plugin)
       h263_video_type_find, "h263,263", H263_VIDEO_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "video/x-h264", GST_RANK_PRIMARY,
       h264_video_type_find, "h264,x264,264", H264_VIDEO_CAPS, NULL, NULL);
+  TYPE_FIND_REGISTER (plugin, "video/x-h265", GST_RANK_PRIMARY,
+      h265_video_type_find, "h265,x265,265", H265_VIDEO_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "video/x-nuv", GST_RANK_SECONDARY, nuv_type_find,
       "nuv", NUV_CAPS, NULL, NULL);
 
@@ -5376,8 +5498,8 @@ plugin_init (GstPlugin * plugin)
       "m4a", M4A_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "application/x-3gp", GST_RANK_PRIMARY,
       q3gp_type_find, "3gp", Q3GP_CAPS, NULL, NULL);
-  TYPE_FIND_REGISTER (plugin, "video/quicktime", GST_RANK_SECONDARY,
-      qt_type_find, "mov", QT_CAPS, NULL, NULL);
+  TYPE_FIND_REGISTER (plugin, "video/quicktime", GST_RANK_PRIMARY,
+      qt_type_find, "mov,mp4", QT_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "image/x-quicktime", GST_RANK_SECONDARY,
       qtif_type_find, "qif,qtif,qti", QTIF_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "image/jp2", GST_RANK_PRIMARY,
@@ -5433,6 +5555,8 @@ plugin_init (GstPlugin * plugin)
       ircam_type_find, "sf", IRCAM_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER_START_WITH (plugin, "audio/x-w64", GST_RANK_SECONDARY,
       "w64", "riff", 4, GST_TYPE_FIND_MAXIMUM);
+  TYPE_FIND_REGISTER_START_WITH (plugin, "audio/x-rf64", GST_RANK_PRIMARY,
+      "rf64", "RF64", 4, GST_TYPE_FIND_MAXIMUM);
   TYPE_FIND_REGISTER (plugin, "audio/x-shorten", GST_RANK_SECONDARY,
       shn_type_find, "shn", SHN_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "application/x-ape", GST_RANK_SECONDARY,
@@ -5449,6 +5573,8 @@ plugin_init (GstPlugin * plugin)
       "tif,tiff", TIFF_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER_RIFF (plugin, "image/webp", GST_RANK_PRIMARY,
       "webp", "WEBP");
+  TYPE_FIND_REGISTER (plugin, "image/x-exr", GST_RANK_PRIMARY, exr_type_find,
+      "exr", EXR_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "image/x-portable-pixmap", GST_RANK_SECONDARY,
       pnm_type_find, "pnm,ppm,pgm,pbm", PNM_CAPS, NULL, NULL);
   TYPE_FIND_REGISTER (plugin, "video/x-matroska", GST_RANK_PRIMARY,
@@ -5591,6 +5717,9 @@ plugin_init (GstPlugin * plugin)
 
   TYPE_FIND_REGISTER (plugin, "video/x-pva", GST_RANK_SECONDARY,
       pva_type_find, "pva", PVA_CAPS, NULL, NULL);
+
+  TYPE_FIND_REGISTER_START_WITH (plugin, "audio/x-xi", GST_RANK_SECONDARY,
+      "xi", "Extended Instrument: ", 21, GST_TYPE_FIND_MAXIMUM);
 
   return TRUE;
 }

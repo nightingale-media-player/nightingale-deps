@@ -771,6 +771,51 @@ GST_START_TEST (test_sami_bad_entities)
 
 GST_END_TEST;
 
+GST_START_TEST (test_sami_comment)
+{
+  SubParseInputChunk sami_input[] = {
+    {"<SAMI>\n"
+          "<!--\n"
+          "=======\n"
+          "foo bar\n"
+          "=======\n"
+          "-->\n"
+          "<BODY>\n"
+          "    <SYNC Start=1000>\n"
+          "        <P Class=\"C====\">\n" "            &nbsp &\n",
+          1000 * GST_MSECOND, 2000 * GST_MSECOND,
+        "\xc2\xa0 &amp;"},
+    {"    <SYNC Start=2000>\n"
+          "        <P Class=CC>\n"
+          "            &#xa0 &#177 &#180;\n" "</BODY>\n" "</SAMI>\n",
+          2000 * GST_MSECOND, GST_CLOCK_TIME_NONE,
+        "\xc2\xa0 \xc2\xb1 \xc2\xb4"}
+  };
+
+  do_test (sami_input, G_N_ELEMENTS (sami_input), "pango-markup");
+}
+
+GST_END_TEST;
+
+GST_START_TEST (test_lrc)
+{
+  SubParseInputChunk lrc_input[] = {
+    {"[ar:123]\n" "[ti:Title]\n" "[al:Album]\n" "[00:02.23]Line 1\n",
+          2230 * GST_MSECOND, GST_CLOCK_TIME_NONE,
+        "Line 1"},
+    {"[00:05.10]Line 2\n",
+          5100 * GST_MSECOND, GST_CLOCK_TIME_NONE,
+        "Line 2"},
+    {"[00:06.123]Line 3\n",
+          6123 * GST_MSECOND, GST_CLOCK_TIME_NONE,
+        "Line 3"}
+  };
+
+  do_test (lrc_input, G_N_ELEMENTS (lrc_input), "utf8");
+}
+
+GST_END_TEST;
+
 /* TODO:
  *  - add/modify tests so that lines aren't dogfed to the parsers in complete
  *    lines or sets of complete lines, but rather in random chunks
@@ -803,6 +848,8 @@ subparse_suite (void)
   tcase_add_test (tc_chain, test_sami_xml_entities);
   tcase_add_test (tc_chain, test_sami_html_entities);
   tcase_add_test (tc_chain, test_sami_bad_entities);
+  tcase_add_test (tc_chain, test_sami_comment);
+  tcase_add_test (tc_chain, test_lrc);
   return s;
 }
 

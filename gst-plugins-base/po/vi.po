@@ -1,16 +1,16 @@
 # Vietnamese Translation for GST Plugins Base.
 # Bản dịch tiếng Việt dành cho GST Plugins Base.
-# Copyright © 2013 Free Software Foundation, Inc.
+# Copyright © 2014 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gst-plugins-base package.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2010.
-# Trần Ngọc Quân <vnwildman@gmail.com>, 2012-20013.
+# Trần Ngọc Quân <vnwildman@gmail.com>, 2012-2014.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-base-1.2.1\n"
+"Project-Id-Version: gst-plugins-base 1.3.90\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 11:40+0100\n"
-"PO-Revision-Date: 2013-12-11 07:50+0700\n"
+"POT-Creation-Date: 2014-07-19 16:23+0200\n"
+"PO-Revision-Date: 2014-06-30 09:27+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <translation-team-vi@lists.sourceforge.net>\n"
 "Language: vi\n"
@@ -38,7 +38,8 @@ msgid ""
 "Could not open audio device for playback. Device is being used by another "
 "application."
 msgstr ""
-"Không thể mở thiết bị âm thanh để phát lại, vì ứng dụng khác đang sử dụng nó."
+"Không thể mở thiết bị âm thanh để phát lại, vì có ứng dụng khác đang sử dụng "
+"nó."
 
 msgid "Could not open audio device for playback."
 msgstr "Không thể mở thiết bị âm thanh để phát lại."
@@ -391,7 +392,7 @@ msgid "Shutter speed used when capturing an image, in seconds"
 msgstr "Tốc độ màn chập sử dụng khi chụp ảnh, tính bằng giây"
 
 msgid "capturing focal ratio"
-msgstr "tỷ lệ tiêu điểm khi chụp"
+msgstr "tỷ lệ lấy nét khi chụp"
 
 msgid "Focal ratio (f-number) used when capturing the image"
 msgstr "Độ mở ống kính (số-f) được sử dụng khi chụp ảnh"
@@ -519,11 +520,19 @@ msgstr "phím-âm-nhạc"
 msgid "Initial key in which the sound starts"
 msgstr "Khóa khởi tạo trong cái mà âm thanh khởi chạy"
 
+msgid "Print version information and exit"
+msgstr "In ra thông tin phiên bản và thoát"
+
+msgid ""
+"Don't exit after showing the initial device list, but wait for devices to "
+"added/removed."
+msgstr ""
+
 msgid "Buffering..."
 msgstr "Đang đệm..."
 
-msgid "Print version information and exit"
-msgstr "In ra thông tin phiên bản và thoát"
+msgid "Clock lost, selecting a new one\n"
+msgstr "Mất đồng hồ, chọn một cái mới\n"
 
 msgid "Video sink to use (default is autovideosink)"
 msgstr "Bộ chứa video được dùng (mặc định là autovideosink)"
@@ -533,6 +542,18 @@ msgstr "Bộ chứa âm thanh được dùng (mặc định là autoaudiosink)"
 
 msgid "Enable gapless playback"
 msgstr "Bật phát lại không khe"
+
+msgid "Shuffle playlist"
+msgstr "Xáo trộn danh sách phát"
+
+msgid "Interactive control via keyboard"
+msgstr "Điều khiển tương tác thông qua bàn phím"
+
+msgid "Volume"
+msgstr "Âm lượng"
+
+msgid "Playlist file containing input media files"
+msgstr "Tập tin danh sách phát có chứa các tập tin đa phương tiện đầu vào"
 
 #, c-format
 msgid "Usage: %s FILE1|URI1 [FILE2|URI2] [FILE3|URI3] ..."

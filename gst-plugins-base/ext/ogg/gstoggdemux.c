@@ -31,8 +31,6 @@
  * gst-launch -v filesrc location=test.ogg ! oggdemux ! vorbisdec ! audioconvert ! alsasink
  * ]| Decodes the vorbis audio stored inside an ogg container.
  * </refsect2>
- *
- * Last reviewed on 2006-12-30 (0.10.5)
  */
 
 
@@ -146,7 +144,6 @@ static GstOggPad *gst_ogg_chain_get_stream (GstOggChain * chain,
 static GstFlowReturn gst_ogg_demux_combine_flows (GstOggDemux * ogg,
     GstOggPad * pad, GstFlowReturn ret);
 static void gst_ogg_demux_sync_streams (GstOggDemux * ogg);
-static gboolean gst_ogg_demux_check_eos (GstOggDemux * ogg);
 
 static GstCaps *gst_ogg_demux_set_header_on_caps (GstOggDemux * ogg,
     GstCaps * caps, GList * headers);
@@ -259,7 +256,7 @@ gst_ogg_pad_src_query (GstPad * pad, GstObject * parent, GstQuery * query)
       gint64 total_time = -1;
 
       gst_query_parse_duration (query, &format, NULL);
-      /* can only get position in time */
+      /* can only get duration in time */
       if (format != GST_FORMAT_TIME)
         goto wrong_format;
 
@@ -500,11 +497,17 @@ gst_ogg_demux_chain_peer (GstOggPad * pad, ogg_packet * packet,
   gboolean delta_unit = FALSE;
   gboolean is_header;
 
-  cret = GST_FLOW_OK;
-
+  ret = cret = GST_FLOW_OK;
   GST_DEBUG_OBJECT (pad, "Chaining %d %d %" GST_TIME_FORMAT " %d %p",
       ogg->pullmode, ogg->push_state, GST_TIME_ARGS (ogg->push_time_length),
       ogg->push_disable_seeking, ogg->building_chain);
+
+  if (G_UNLIKELY (pad->is_eos)) {
+    GST_DEBUG_OBJECT (pad, "Skipping packet on pad that is eos");
+    ret = GST_FLOW_EOS;
+    goto combine;
+  }
+
   GST_PUSH_LOCK (ogg);
   if (!ogg->pullmode && ogg->push_state == PUSH_PLAYING
       && ogg->push_time_length == GST_CLOCK_TIME_NONE
@@ -523,6 +526,8 @@ gst_ogg_demux_chain_peer (GstOggPad * pad, ogg_packet * packet,
 
   GST_DEBUG_OBJECT (ogg,
       "%p streaming to peer serial %08x", pad, pad->map.serialno);
+
+  gst_ogg_stream_update_stats (&pad->map, packet);
 
   if (pad->map.is_ogm) {
     const guint8 *data;
@@ -697,21 +702,18 @@ gst_ogg_demux_chain_peer (GstOggPad * pad, ogg_packet * packet,
       gst_buffer_unref (buf);
     }
     buf = NULL;
-
-    /* combine flows */
-    cret = gst_ogg_demux_combine_flows (ogg, pad, ret);
   }
 
   /* we're done with skeleton stuff */
   if (pad->map.is_skeleton)
-    goto done;
+    goto combine;
 
   /* check if valid granulepos, then we can calculate the current
    * position. We know the granule for each packet but we only want to update
    * the position when we have a valid granulepos on the packet because else
    * our time jumps around for the different streams. */
   if (packet->granulepos < 0)
-    goto done;
+    goto combine;
 
   /* convert to time */
   current_time = gst_ogg_stream_get_end_time_for_granulepos (&pad->map,
@@ -734,7 +736,7 @@ gst_ogg_demux_chain_peer (GstOggPad * pad, ogg_packet * packet,
       GST_TIME_ARGS (current_time));
 
   /* check stream eos */
-  if (!delta_unit &&
+  if (!pad->is_eos && !delta_unit &&
       ((ogg->segment.rate > 0.0 &&
               ogg->segment.stop != GST_CLOCK_TIME_NONE &&
               current_time >= ogg->segment.stop) ||
@@ -742,10 +744,14 @@ gst_ogg_demux_chain_peer (GstOggPad * pad, ogg_packet * packet,
     GST_DEBUG_OBJECT (ogg, "marking pad %p EOS", pad);
     pad->is_eos = TRUE;
 
-    if (cret == GST_FLOW_OK && gst_ogg_demux_check_eos (ogg)) {
-      cret = GST_FLOW_EOS;
+    if (ret == GST_FLOW_OK) {
+      ret = GST_FLOW_EOS;
     }
   }
+
+combine:
+  /* combine flows */
+  cret = gst_ogg_demux_combine_flows (ogg, pad, ret);
 
 done:
   if (buf)
@@ -1373,7 +1379,7 @@ gst_ogg_demux_seek_back_after_push_duration_check_unlock (GstOggDemux * ogg)
     GST_INFO_OBJECT (ogg, "Seeking back to 0 after duration check");
     event = gst_event_new_seek (1.0, GST_FORMAT_BYTES,
         GST_SEEK_FLAG_ACCURATE | GST_SEEK_FLAG_FLUSH,
-        GST_SEEK_TYPE_SET, 1, GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
+        GST_SEEK_TYPE_SET, 1, GST_SEEK_TYPE_SET, GST_CLOCK_TIME_NONE);
     if (!gst_pad_push_event (ogg->sinkpad, event)) {
       GST_WARNING_OBJECT (ogg, "Failed seeking back to start");
       return GST_FLOW_ERROR;
@@ -2072,6 +2078,7 @@ gst_ogg_demux_init (GstOggDemux * ogg)
   ogg->newsegment = NULL;
 
   ogg->chunk_size = CHUNKSIZE;
+  ogg->flowcombiner = gst_flow_combiner_new ();
 }
 
 static void
@@ -2088,6 +2095,8 @@ gst_ogg_demux_finalize (GObject * object)
 
   if (ogg->newsegment)
     gst_event_unref (ogg->newsegment);
+
+  gst_flow_combiner_free (ogg->flowcombiner);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -2152,11 +2161,15 @@ gst_ogg_demux_sink_event (GstPad * pad, GstObject * parent, GstEvent * event)
           ogg->push_byte_offset = segment.start;
           ogg->push_last_seek_offset = segment.start;
 
-          if (gst_event_get_seqnum (event) == ogg->push_seek_seqnum)
+          if (gst_event_get_seqnum (event) == ogg->push_seek_seqnum) {
+            GstSeekType stop_type = GST_SEEK_TYPE_NONE;
+            if (ogg->push_seek_time_original_stop != -1)
+              stop_type = GST_SEEK_TYPE_SET;
             gst_segment_do_seek (&ogg->segment, ogg->push_seek_rate,
                 GST_FORMAT_TIME, ogg->push_seek_flags, GST_SEEK_TYPE_SET,
-                ogg->push_seek_time_original_target, GST_SEEK_TYPE_SET,
+                ogg->push_seek_time_original_target, stop_type,
                 ogg->push_seek_time_original_stop, &update);
+          }
 
           GST_PUSH_UNLOCK (ogg);
         } else {
@@ -2540,6 +2553,8 @@ gst_ogg_demux_deactivate_current_chain (GstOggDemux * ogg)
     /* deactivate first */
     gst_pad_set_active (GST_PAD_CAST (pad), FALSE);
 
+    gst_flow_combiner_remove_pad (ogg->flowcombiner, GST_PAD_CAST (pad));
+
     gst_element_remove_pad (GST_ELEMENT (ogg), GST_PAD_CAST (pad));
 
     pad->added = FALSE;
@@ -2692,6 +2707,7 @@ gst_ogg_demux_activate_chain (GstOggDemux * ogg, GstOggChain * chain,
 
     gst_element_add_pad (GST_ELEMENT (ogg), GST_PAD_CAST (pad));
     pad->added = TRUE;
+    gst_flow_combiner_add_pad (ogg->flowcombiner, GST_PAD_CAST (pad));
   }
   /* prefer the index bitrate over the ones encoded in the streams */
   ogg->bitrate = (idx_bitrate ? idx_bitrate : bitrate);
@@ -2996,7 +3012,7 @@ gst_ogg_demux_do_seek (GstOggDemux * ogg, GstSegment * segment,
   for (i = 0; i < chain->streams->len; i++) {
     GstOggPad *pad = g_array_index (chain->streams, GstOggPad *, i);
     if (!pad) {
-      GST_WARNING_OBJECT (ogg, "No pad for serialno %08x", pad->map.serialno);
+      GST_WARNING_OBJECT (ogg, "No pad at index %d", i);
       pending--;
       continue;
     }
@@ -3473,10 +3489,15 @@ gst_ogg_demux_perform_seek_push (GstOggDemux * ogg, GstEvent * event)
     goto error;
   }
 
-  if (start_type != GST_SEEK_TYPE_SET || stop_type != GST_SEEK_TYPE_SET) {
+  if (start_type != GST_SEEK_TYPE_SET) {
     GST_DEBUG_OBJECT (ogg, "can only seek to a SET target");
     goto error;
   }
+
+  /* If stop is unset, make sure it is -1, as this value will be tested
+     later to check whether stop is set or not */
+  if (stop_type == GST_SEEK_TYPE_NONE)
+    stop = -1;
 
   if (!(flags & GST_SEEK_FLAG_FLUSH)) {
     GST_DEBUG_OBJECT (ogg, "can only do flushing seeks");
@@ -4322,58 +4343,11 @@ static GstFlowReturn
 gst_ogg_demux_combine_flows (GstOggDemux * ogg, GstOggPad * pad,
     GstFlowReturn ret)
 {
-  GstOggChain *chain;
-
   /* store the value */
   pad->last_ret = ret;
+  pad->is_eos = (ret == GST_FLOW_EOS);
 
-  /* any other error that is not-linked can be returned right
-   * away */
-  if (ret != GST_FLOW_NOT_LINKED)
-    goto done;
-
-  /* only return NOT_LINKED if all other pads returned NOT_LINKED */
-  chain = ogg->current_chain;
-  if (chain) {
-    gint i;
-
-    for (i = 0; i < chain->streams->len; i++) {
-      GstOggPad *opad = g_array_index (chain->streams, GstOggPad *, i);
-
-      ret = opad->last_ret;
-      /* some other return value (must be SUCCESS but we can return
-       * other values as well) */
-      if (ret != GST_FLOW_NOT_LINKED)
-        goto done;
-    }
-    /* if we get here, all other pads were unlinked and we return
-     * NOT_LINKED then */
-  }
-done:
-  return ret;
-}
-
-/* returns TRUE if all streams in current chain reached EOS, FALSE otherwise */
-static gboolean
-gst_ogg_demux_check_eos (GstOggDemux * ogg)
-{
-  GstOggChain *chain;
-  gboolean eos = TRUE;
-
-  chain = ogg->current_chain;
-  if (G_LIKELY (chain)) {
-    gint i;
-
-    for (i = 0; i < chain->streams->len; i++) {
-      GstOggPad *opad = g_array_index (chain->streams, GstOggPad *, i);
-
-      eos = eos && opad->is_eos;
-    }
-  } else {
-    eos = FALSE;
-  }
-
-  return eos;
+  return gst_flow_combiner_update_flow (ogg->flowcombiner, ret);
 }
 
 static GstFlowReturn
@@ -4405,17 +4379,10 @@ gst_ogg_demux_loop_forward (GstOggDemux * ogg)
   }
 
   ret = gst_ogg_demux_chain (ogg->sinkpad, GST_OBJECT_CAST (ogg), buffer);
-  if (ret != GST_FLOW_OK) {
+  if (ret != GST_FLOW_OK && ret != GST_FLOW_EOS) {
     GST_LOG_OBJECT (ogg, "Failed demux_chain");
-    goto done;
   }
 
-  /* check for the end of the segment */
-  if (gst_ogg_demux_check_eos (ogg)) {
-    GST_LOG_OBJECT (ogg, "got EOS");
-    ret = GST_FLOW_EOS;
-    goto done;
-  }
 done:
   return ret;
 }
@@ -4455,15 +4422,7 @@ gst_ogg_demux_loop_reverse (GstOggDemux * ogg)
   }
 
   ret = gst_ogg_demux_handle_page (ogg, &page);
-  if (ret != GST_FLOW_OK)
-    goto done;
 
-  /* check for the end of the segment */
-  if (gst_ogg_demux_check_eos (ogg)) {
-    GST_LOG_OBJECT (ogg, "got EOS");
-    ret = GST_FLOW_EOS;
-    goto done;
-  }
 done:
   return ret;
 }
@@ -4514,7 +4473,6 @@ gst_ogg_demux_loop (GstOggPad * pad)
 {
   GstOggDemux *ogg;
   GstFlowReturn ret;
-  GstEvent *event;
 
   ogg = GST_OGG_DEMUX (GST_OBJECT_PARENT (pad));
 
@@ -4532,14 +4490,10 @@ gst_ogg_demux_loop (GstOggPad * pad)
 
     GST_OBJECT_LOCK (ogg);
     ogg->running = TRUE;
-    event = ogg->event;
-    ogg->event = NULL;
     GST_OBJECT_UNLOCK (ogg);
 
     /* and seek to configured positions without FLUSH */
-    res = gst_ogg_demux_perform_seek_pull (ogg, event);
-    if (event)
-      gst_event_unref (event);
+    res = gst_ogg_demux_perform_seek_pull (ogg, NULL);
 
     if (!res)
       goto seek_failed;

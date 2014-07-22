@@ -906,9 +906,12 @@ gst_ximagesink_xcontext_get (GstXImageSink * ximagesink)
   }
 
   /* extrapolate alpha mask */
-  alpha_mask = ~(xcontext->visual->red_mask
-      | xcontext->visual->green_mask | xcontext->visual->blue_mask);
-  alpha_mask &= 0xffffffff;
+  if (xcontext->depth == 32) {
+    alpha_mask = ~(xcontext->visual->red_mask
+        | xcontext->visual->green_mask | xcontext->visual->blue_mask);
+  } else {
+    alpha_mask = 0;
+  }
 
   vformat =
       gst_video_format_from_masks (xcontext->depth, xcontext->bpp, endianness,
@@ -1952,8 +1955,6 @@ gst_ximagesink_class_init (GstXImageSinkClass * klass)
    * GstXImageSink:window-width
    *
    * Actual width of the video window.
-   *
-   * Since: 0.10.32
    */
   g_object_class_install_property (gobject_class, PROP_WINDOW_WIDTH,
       g_param_spec_uint64 ("window-width", "window-width",
@@ -1964,8 +1965,6 @@ gst_ximagesink_class_init (GstXImageSinkClass * klass)
    * GstXImageSink:window-height
    *
    * Actual height of the video window.
-   *
-   * Since: 0.10.32
    */
   g_object_class_install_property (gobject_class, PROP_WINDOW_HEIGHT,
       g_param_spec_uint64 ("window-height", "window-height",

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gst-plugins 0.8.1\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 11:40+0100\n"
+"POT-Creation-Date: 2014-07-19 16:23+0200\n"
 "PO-Revision-Date: 2004-04-26 10:41-0400\n"
 "Last-Translator: Gareth Owen <gowen72@yahoo.com>\n"
 "Language-Team: English (British) <en_gb@li.org>\n"
@@ -511,10 +511,18 @@ msgstr ""
 msgid "Initial key in which the sound starts"
 msgstr ""
 
+msgid "Print version information and exit"
+msgstr ""
+
+msgid ""
+"Don't exit after showing the initial device list, but wait for devices to "
+"added/removed."
+msgstr ""
+
 msgid "Buffering..."
 msgstr ""
 
-msgid "Print version information and exit"
+msgid "Clock lost, selecting a new one\n"
 msgstr ""
 
 msgid "Video sink to use (default is autovideosink)"
@@ -524,6 +532,18 @@ msgid "Audio sink to use (default is autoaudiosink)"
 msgstr ""
 
 msgid "Enable gapless playback"
+msgstr ""
+
+msgid "Shuffle playlist"
+msgstr ""
+
+msgid "Interactive control via keyboard"
+msgstr ""
+
+msgid "Volume"
+msgstr "Volume"
+
+msgid "Playlist file containing input media files"
 msgstr ""
 
 #, c-format
@@ -659,9 +679,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Your OSS device could not be probed correctly"
 #~ msgstr "Your oss device could not be probed correctly"
-
-#~ msgid "Volume"
-#~ msgstr "Volume"
 
 #~ msgid "Speaker"
 #~ msgstr "Speaker"

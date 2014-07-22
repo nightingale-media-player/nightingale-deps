@@ -160,8 +160,9 @@ static const FormatInfo formats[] = {
   {"audio/x-qdm", "QDesign Music (QDM)", FLAG_AUDIO, ""},
   {"audio/x-qdm2", "QDesign Music (QDM) 2", FLAG_AUDIO, ""},
   {"audio/x-ralf-mpeg4-generic", "Real Audio Lossless (RALF)", FLAG_AUDIO, ""},
-  {"audio/x-sbc", "SBC", FLAG_AUDIO, "sbc"},
-  {"audio/x-sds", "SDS", FLAG_AUDIO, ""},
+  {"audio/x-rf64", "Broadcast Wave Format", AUDIO_CONTAINER, "rf64"},
+  {"audio/x-sbc", "Low Complexity Subband Coding", FLAG_AUDIO, "sbc"},
+  {"audio/x-sds", "Midi Sample Dump Standard", FLAG_AUDIO, ""},
   {"audio/x-shorten", "Shorten Lossless", FLAG_AUDIO, "shn"},
   {"audio/x-sid", "Sid", FLAG_AUDIO, "sid"},
   {"audio/x-sipro", "Sipro/ACELP.NET Voice", FLAG_AUDIO, ""},
@@ -181,6 +182,7 @@ static const FormatInfo formats[] = {
   {"audio/x-wavpack-correction", "Wavpack", 0, "wpc"},
   {"audio/x-wms", N_("Windows Media Speech"), FLAG_AUDIO, ""},
   {"audio/x-voxware", "Voxware", FLAG_AUDIO, ""},
+  {"audio/x-xi", "Fasttracker 2 Extended Instrument", FLAG_AUDIO, "xi"},
 
 
   /* video formats with static descriptions */
@@ -307,6 +309,7 @@ static const FormatInfo formats[] = {
   {"video/x-dv", "Digital Video (DV)", FLAG_VIDEO, ""},
   {"video/x-h263", NULL, FLAG_VIDEO, "h263"},
   {"video/x-h264", NULL, FLAG_VIDEO, "h264"},
+  {"video/x-h265", NULL, FLAG_VIDEO, "h265"},
   {"video/x-indeo", NULL, FLAG_VIDEO, ""},
   {"video/x-msmpeg", NULL, FLAG_VIDEO, ""},
   {"video/x-pn-realvideo", NULL, FLAG_VIDEO, ""},
@@ -442,6 +445,9 @@ format_info_get_desc (const FormatInfo * info, const GstCaps * caps)
       ret = "H.264";
     }
     return g_strdup (ret);
+  } else if (strcmp (info->type, "video/x-h265") == 0) {
+    /* TODO: Any variants? */
+    return g_strdup ("H.265");
   } else if (strcmp (info->type, "video/x-divx") == 0) {
     gint ver = 0;
 
@@ -658,16 +664,21 @@ format_info_get_desc (const FormatInfo * info, const GstCaps * caps)
     gboolean sysstream;
     gint ver = 0;
 
-    if (!gst_structure_get_boolean (s, "systemstream", &sysstream) ||
-        !gst_structure_get_int (s, "mpegversion", &ver) || ver < 1 || ver > 4) {
-      GST_WARNING ("Missing fields in mpeg video caps %" GST_PTR_FORMAT, caps);
-    } else {
+    if (!gst_structure_get_boolean (s, "systemstream", &sysstream)) {
+      GST_WARNING ("Missing systemstream field in mpeg video caps "
+          "%" GST_PTR_FORMAT, caps);
+      sysstream = FALSE;
+    }
+
+    if (gst_structure_get_int (s, "mpegversion", &ver) && ver > 0 && ver <= 4) {
       if (sysstream) {
         return g_strdup_printf ("MPEG-%d System Stream", ver);
       } else {
         return g_strdup_printf ("MPEG-%d Video", ver);
       }
     }
+    GST_WARNING ("Missing mpegversion field in mpeg video caps "
+        "%" GST_PTR_FORMAT, caps);
     return g_strdup ("MPEG Video");
   } else if (strcmp (info->type, "audio/x-raw") == 0) {
     gint depth = 0;

@@ -30,7 +30,7 @@
  * The multifdsink element needs to be set into READY, PAUSED or PLAYING state
  * before operations such as adding clients are possible.
  *
- * As of version 0.10.8, a client can also be added with the #GstMultiFdSink::add-full signal
+ * A client can also be added with the #GstMultiFdSink::add-full signal
  * that allows for more control over what and how much data a client 
  * initially receives.
  *
@@ -62,7 +62,7 @@
  * Multifdsink will always keep at least one keyframe in its internal buffers
  * when the sync-mode is set to latest-keyframe.
  *
- * As of version 0.10.8, there are additional values for the #GstMultiFdSink:sync-method 
+ * There are additional values for the #GstMultiFdSink:sync-method
  * property to allow finer control over burst-on-connect behaviour. By selecting
  * the 'burst' method a minimum burst size can be chosen, 'burst-keyframe'
  * additionally requires that the burst begin with a keyframe, and 
@@ -97,8 +97,6 @@
  * buffers to the clients. This behaviour can be disabled by setting the sync 
  * property to FALSE. Multifdsink will by default not do QoS and will never
  * drop late buffers.
- *
- * Last reviewed on 2006-09-12 (0.10.10)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -221,8 +219,6 @@ gst_multi_fd_sink_class_init (GstMultiFdSinkClass * klass)
    * GstMultiFdSink::handle-read
    *
    * Handle read requests from clients and discard the data.
-   *
-   * Since: 0.10.23
    */
   g_object_class_install_property (gobject_class, PROP_HANDLE_READ,
       g_param_spec_boolean ("handle-read", "Handle Read",
@@ -354,8 +350,6 @@ gst_multi_fd_sink_class_init (GstMultiFdSinkClass * klass)
    * In this callback, @gstmultifdsink has removed all the information
    * associated with @fd and it is therefore not possible to call get-stats
    * with @fd. It is however safe to close() and reuse @fd in the callback.
-   *
-   * Since: 0.10.7
    */
   gst_multi_fd_sink_signals[SIGNAL_CLIENT_FD_REMOVED] =
       g_signal_new ("client-fd-removed", G_TYPE_FROM_CLASS (klass),

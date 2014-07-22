@@ -2,34 +2,27 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>textoverlay</title>
+<title>GStreamer Base Plugins 1.0 Plugins Reference Manual: textoverlay</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-tcpserversink.html" title="tcpserversink">
 <link rel="next" href="gst-plugins-base-plugins-textrender.html" title="textrender">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-plugins-tcpserversink.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-plugins-textrender.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-base-plugins-textoverlay.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-textoverlay.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-textoverlay.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-textoverlay.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-textoverlay.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-textoverlay.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-tcpserversink.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-plugins-textrender.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-base-plugins-textoverlay"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -37,47 +30,29 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-textoverlay.top_of_page"></a>textoverlay</span></h2>
 <p>textoverlay — Adds text strings on top of a video buffer</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-base-plugins-textoverlay.synopsis"></a><h2>Synopsis</h2>
-<a name="GstTextOverlay"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay-struct" title="struct GstTextOverlay">GstTextOverlay</a>;
-</pre>
+<a name="GstTextOverlay"></a><div class="refsect1">
+<a name="gst-plugins-base-plugins-textoverlay.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay-struct" title="struct GstTextOverlay">GstTextOverlay</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-base-plugins-textoverlay.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----GstBaseTextOverlay
-                           +----GstTextOverlay
-</pre>
-</div>
-<div class="refsect1">
-<a name="gst-plugins-base-plugins-textoverlay.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--deltax" title='The "deltax" property'>deltax</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--deltay" title='The "deltay" property'>deltay</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--font-desc" title='The "font-desc" property'>font-desc</a>"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--halign" title='The "halign" property'>halign</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--shaded-background" title='The "shaded-background" property'>shaded-background</a>"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--text" title='The "text" property'>text</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--valign" title='The "valign" property'>valign</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--wrap-mode" title='The "wrap-mode" property'>wrap-mode</a>"                <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base/html/gst-plugins-base-plugins-textoverlay.html#GstTextOverlayWrapMode"><span class="type">GstTextOverlayWrapMode</span></a>  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--xpad" title='The "xpad" property'>xpad</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--ypad" title='The "ypad" property'>ypad</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--halignment" title='The "halignment" property'>halignment</a>"               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base/html/gst-plugins-base-plugins-textoverlay.html#GstTextOverlayHAlign"><span class="type">GstTextOverlayHAlign</span></a>  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--valignment" title='The "valignment" property'>valignment</a>"               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base/html/gst-plugins-base-plugins-textoverlay.html#GstTextOverlayVAlign"><span class="type">GstTextOverlayVAlign</span></a>  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--line-alignment" title='The "line-alignment" property'>line-alignment</a>"           <span class="type">GstTextOverlayLineAlign</span>  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--silent" title='The "silent" property'>silent</a>"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--wait-text" title='The "wait-text" property'>wait-text</a>"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--auto-resize" title='The "auto-resize" property'>auto-resize</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--vertical-render" title='The "vertical-render" property'>vertical-render</a>"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--color" title='The "color" property'>color</a>"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--xpos" title='The "xpos" property'>xpos</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-textoverlay.html#GstTextOverlay--ypos" title='The "ypos" property'>ypos</a>"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> GstBaseTextOverlay
+                    <span class="lineart">╰──</span> GstTextOverlay
 </pre>
 </div>
 <div class="refsect1">
@@ -85,7 +60,7 @@
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.30.6.2.1"></a><h3>Element Information</h3>
+<a name="id-1.2.32.6.2.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -111,7 +86,7 @@
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.30.6.2.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.32.6.2.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -158,6 +133,10 @@
 <td><p><span class="term">details</span></p></td>
 <td>video/x-raw, format=(string){ BGRx, RGBx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, I420, YV12, AYUV, YUY2, UYVY, v308, Y41B, Y42B, Y444, NV12, NV21, A420, YUV9, YVU9, IYU1, GRAY8 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw(ANY), format=(string){ I420, YV12, YUY2, UYVY, AYUV, RGBx, BGRx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, NV16, NV24, GRAY8, GRAY16_BE, GRAY16_LE, v308, RGB16, BGR16, RGB15, BGR15, UYVP, A420, RGB8P, YUV9, YVU9, IYU1, ARGB64, AYUV64, r210, I420_10LE, I420_10BE, I422_10LE, I422_10BE, Y444_10LE, Y444_10BE, GBR, GBR_10LE, GBR_10BE, NV12_64Z32 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
 </tbody>
 </table></div>
 <div class="variablelist"><table border="0" class="variablelist">
@@ -182,6 +161,10 @@
 <td><p><span class="term">details</span></p></td>
 <td>video/x-raw, format=(string){ BGRx, RGBx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, I420, YV12, AYUV, YUY2, UYVY, v308, Y41B, Y42B, Y444, NV12, NV21, A420, YUV9, YVU9, IYU1, GRAY8 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
 </tr>
+<tr>
+<td><p><span class="term"></span></p></td>
+<td> video/x-raw(ANY), format=(string){ I420, YV12, YUY2, UYVY, AYUV, RGBx, BGRx, xRGB, xBGR, RGBA, BGRA, ARGB, ABGR, RGB, BGR, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, NV16, NV24, GRAY8, GRAY16_BE, GRAY16_LE, v308, RGB16, BGR16, RGB15, BGR15, UYVP, A420, RGB8P, YUV9, YVU9, IYU1, ARGB64, AYUV64, r210, I420_10LE, I420_10BE, I422_10LE, I422_10BE, Y444_10LE, Y444_10BE, GBR, GBR_10LE, GBR_10BE, NV12_64Z32 }, width=(int)[ 1, 2147483647 ], height=(int)[ 1, 2147483647 ], framerate=(fraction)[ 0/1, 2147483647/1 ]</td>
+</tr>
 </tbody>
 </table></div>
 </div>
@@ -190,7 +173,10 @@
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-base-plugins-textoverlay.details"></a><h2>Details</h2>
+<a name="gst-plugins-base-plugins-textoverlay.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-textoverlay.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstTextOverlay-struct"></a><h3>struct GstTextOverlay</h3>
 <pre class="programlisting">struct GstTextOverlay;</pre>
@@ -198,155 +184,9 @@
 </p>
 </div>
 </div>
-<div class="refsect1">
-<a name="gst-plugins-base-plugins-textoverlay.property-details"></a><h2>Property Details</h2>
-<div class="refsect2">
-<a name="GstTextOverlay--deltax"></a><h3>The <code class="literal">"deltax"</code> property</h3>
-<pre class="programlisting">  "deltax"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
-<p>Shift X position to the left or to the right. Unit is pixels.</p>
-<p>Default value: 0</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--deltay"></a><h3>The <code class="literal">"deltay"</code> property</h3>
-<pre class="programlisting">  "deltay"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
-<p>Shift Y position up or down. Unit is pixels.</p>
-<p>Default value: 0</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--font-desc"></a><h3>The <code class="literal">"font-desc"</code> property</h3>
-<pre class="programlisting">  "font-desc"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write</pre>
-<p>Pango font description of font to be used for rendering. See documentation of pango_font_description_from_string for syntax.</p>
-<p>Default value: ""</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--halign"></a><h3>The <code class="literal">"halign"</code> property</h3>
-<pre class="programlisting">  "halign"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write</pre>
-<p>Horizontal alignment of the text (deprecated; use halignment).</p>
-<p>Default value: "center"</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--shaded-background"></a><h3>The <code class="literal">"shaded-background"</code> property</h3>
-<pre class="programlisting">  "shaded-background"        <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
-<p>Whether to shade the background under the text area.</p>
-<p>Default value: FALSE</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--text"></a><h3>The <code class="literal">"text"</code> property</h3>
-<pre class="programlisting">  "text"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read / Write</pre>
-<p>Text to be display.</p>
-<p>Default value: ""</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--valign"></a><h3>The <code class="literal">"valign"</code> property</h3>
-<pre class="programlisting">  "valign"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Write</pre>
-<p>Vertical alignment of the text (deprecated; use valignment).</p>
-<p>Default value: "baseline"</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--wrap-mode"></a><h3>The <code class="literal">"wrap-mode"</code> property</h3>
-<pre class="programlisting">  "wrap-mode"                <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base/html/gst-plugins-base-plugins-textoverlay.html#GstTextOverlayWrapMode"><span class="type">GstTextOverlayWrapMode</span></a>  : Read / Write</pre>
-<p>Whether to wrap the text and if so how.</p>
-<p>Default value: wordchar</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--xpad"></a><h3>The <code class="literal">"xpad"</code> property</h3>
-<pre class="programlisting">  "xpad"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
-<p>Horizontal paddding when using left/right alignment.</p>
-<p>Allowed values: &gt;= 0</p>
-<p>Default value: 25</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--ypad"></a><h3>The <code class="literal">"ypad"</code> property</h3>
-<pre class="programlisting">  "ypad"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
-<p>Vertical padding when using top/bottom alignment.</p>
-<p>Allowed values: &gt;= 0</p>
-<p>Default value: 25</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--halignment"></a><h3>The <code class="literal">"halignment"</code> property</h3>
-<pre class="programlisting">  "halignment"               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base/html/gst-plugins-base-plugins-textoverlay.html#GstTextOverlayHAlign"><span class="type">GstTextOverlayHAlign</span></a>  : Read / Write</pre>
-<p>Horizontal alignment of the text.</p>
-<p>Default value: center</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--valignment"></a><h3>The <code class="literal">"valignment"</code> property</h3>
-<pre class="programlisting">  "valignment"               <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base/html/gst-plugins-base-plugins-textoverlay.html#GstTextOverlayVAlign"><span class="type">GstTextOverlayVAlign</span></a>  : Read / Write</pre>
-<p>Vertical alignment of the text.</p>
-<p>Default value: baseline</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--line-alignment"></a><h3>The <code class="literal">"line-alignment"</code> property</h3>
-<pre class="programlisting">  "line-alignment"           <span class="type">GstTextOverlayLineAlign</span>  : Read / Write</pre>
-<p>Alignment of text lines relative to each other.</p>
-<p>Default value: center</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--silent"></a><h3>The <code class="literal">"silent"</code> property</h3>
-<pre class="programlisting">  "silent"                   <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
-<p>Whether to render the text string.</p>
-<p>Default value: FALSE</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--wait-text"></a><h3>The <code class="literal">"wait-text"</code> property</h3>
-<pre class="programlisting">  "wait-text"                <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
-<p>Whether to wait for subtitles.</p>
-<p>Default value: TRUE</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--auto-resize"></a><h3>The <code class="literal">"auto-resize"</code> property</h3>
-<pre class="programlisting">  "auto-resize"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
-<p>Automatically adjust font size to screen-size.</p>
-<p>Default value: TRUE</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--vertical-render"></a><h3>The <code class="literal">"vertical-render"</code> property</h3>
-<pre class="programlisting">  "vertical-render"          <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
-<p>Vertical Render.</p>
-<p>Default value: FALSE</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--color"></a><h3>The <code class="literal">"color"</code> property</h3>
-<pre class="programlisting">  "color"                    <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a>                 : Read / Write</pre>
-<p>Color to use for text (big-endian ARGB).</p>
-<p>Default value: 4294967295</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--xpos"></a><h3>The <code class="literal">"xpos"</code> property</h3>
-<pre class="programlisting">  "xpos"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write</pre>
-<p>Horizontal position when using position alignment.</p>
-<p>Allowed values: [0,1]</p>
-<p>Default value: 0.5</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="GstTextOverlay--ypos"></a><h3>The <code class="literal">"ypos"</code> property</h3>
-<pre class="programlisting">  "ypos"                     <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gdouble"><span class="type">gdouble</span></a>               : Read / Write</pre>
-<p>Vertical position when using position alignment.</p>
-<p>Allowed values: [0,1]</p>
-<p>Default value: 0.5</p>
-</div>
-</div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

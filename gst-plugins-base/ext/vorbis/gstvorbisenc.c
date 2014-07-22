@@ -36,8 +36,6 @@
  * gst-launch -v alsasrc ! audioconvert ! vorbisenc ! oggmux ! filesink location=alsasrc.ogg
  * ]| Record from a sound card using ALSA and encode to Ogg/Vorbis.
  * </refsect2>
- *
- * Last reviewed on 2006-03-01 (0.10.4)
  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -657,6 +655,7 @@ _gst_caps_set_buffer_array (GstCaps * caps, const gchar * field,
 
     buf = va_arg (va, GstBuffer *);
   }
+  va_end (va);
 
   gst_structure_take_value (structure, field, &array);
 

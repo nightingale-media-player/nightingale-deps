@@ -46,8 +46,6 @@
  * @see_also: gstrtspurl, gstrtspconnection
  *  
  * Provides common defines for the RTSP library. 
- *  
- * Last reviewed on 2007-07-24 (0.10.14)
  */
 
 #include <errno.h>
@@ -133,14 +131,12 @@ static struct rtsp_header rtsp_headers[] = {
   {"Language", FALSE},
   {"PlayerStarttime", FALSE},
 
-  /* Since 0.10.16 */
   {"Location", FALSE},
 
-  /* Since 0.10.23 */
   {"ETag", FALSE},
   {"If-Match", TRUE},
 
-  /* WM extensions [MS-RTSP] Since 0.10.23 */
+  /* WM extensions [MS-RTSP] */
   {"Accept-Charset", TRUE},
   {"Supported", TRUE},
   {"Vary", TRUE},
@@ -161,18 +157,18 @@ static struct rtsp_header rtsp_headers[] = {
   {"X-RTP-Info", FALSE},
   {"X-StartupProfile", FALSE},
 
-  /* Since 0.10.24 */
   {"Timestamp", FALSE},
 
-  /* Since 0.10.25 */
   {"Authentication-Info", FALSE},
   {"Host", FALSE},
   {"Pragma", TRUE},
   {"X-Server-IP-Address", FALSE},
   {"X-Sessioncookie", FALSE},
 
-  /* Since 0.10.36 */
   {"RTCP-Interval", FALSE},
+
+  /* Since 1.4 */
+  {"KeyMgmt", FALSE},
 
   {NULL, FALSE}
 };
@@ -229,6 +225,7 @@ rtsp_init_status (void)
       "Only aggregate operation allowed");
   DEF_STATUS (GST_RTSP_STS_UNSUPPORTED_TRANSPORT, "Unsupported transport");
   DEF_STATUS (GST_RTSP_STS_DESTINATION_UNREACHABLE, "Destination unreachable");
+  DEF_STATUS (GST_RTSP_STS_KEY_MANAGEMENT_FAILURE, "Key management failure");
   DEF_STATUS (GST_RTSP_STS_INTERNAL_SERVER_ERROR, "Internal Server Error");
   DEF_STATUS (GST_RTSP_STS_NOT_IMPLEMENTED, "Not Implemented");
   DEF_STATUS (GST_RTSP_STS_BAD_GATEWAY, "Bad Gateway");
@@ -474,7 +471,7 @@ gst_rtsp_options_as_text (GstRTSPMethod options)
  *
  * Returns: a #GstRTSPMethod
  *
- * Since: 1.1.1
+ * Since: 1.2
  */
 GstRTSPMethod
 gst_rtsp_options_from_text (const gchar * options)

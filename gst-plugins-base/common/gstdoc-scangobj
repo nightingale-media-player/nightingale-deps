@@ -150,7 +150,18 @@ print OUTPUT <<EOT;
 #include <stdio.h>
 #include <errno.h>
 
-$includes
+#include <gst/gst.h>
+EOT
+
+if ($includes) {
+    print OUTPUT $includes;
+} else {
+    for (@types) {
+        print OUTPUT "extern GType $_ (void);\n";
+    }
+}
+
+print OUTPUT <<EOT;
 
 #ifdef GTK_IS_WIDGET_CLASS
 #include <gtk/gtkversion.h>
@@ -453,11 +464,8 @@ static void output_args (void);
 static void output_object_args (FILE *fp, GType object_type);
 
 int
-main (int argc, char *argv[])
+main (G_GNUC_UNUSED int argc, G_GNUC_UNUSED char *argv[])
 {
-  /* Silence the compiler: */
-  if (argv != argv) argc = argc;
-
   $TYPE_INIT_FUNC;
 
   get_object_types ();

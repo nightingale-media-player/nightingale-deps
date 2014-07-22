@@ -624,6 +624,7 @@ gst_video_test_src_decide_allocation (GstBaseSrc * bsrc, GstQuery * query)
   gboolean update;
   guint size, min, max;
   GstStructure *config;
+  GstCaps *caps = NULL;
 
   videotestsrc = GST_VIDEO_TEST_SRC (bsrc);
 
@@ -649,6 +650,11 @@ gst_video_test_src_decide_allocation (GstBaseSrc * bsrc, GstQuery * query)
   }
 
   config = gst_buffer_pool_get_config (pool);
+
+  gst_query_parse_allocation (query, &caps, NULL);
+  if (caps)
+    gst_buffer_pool_config_set_params (config, caps, size, min, max);
+
   if (gst_query_find_allocation_meta (query, GST_VIDEO_META_API_TYPE, NULL)) {
     gst_buffer_pool_config_add_option (config,
         GST_BUFFER_POOL_OPTION_VIDEO_META);
@@ -702,6 +708,8 @@ gst_video_test_src_setcaps (GstBaseSrc * bsrc, GstCaps * caps)
     videotestsrc->bayer = TRUE;
     videotestsrc->x_invert = x_inv;
     videotestsrc->y_invert = y_inv;
+  } else {
+    goto unsupported_caps;
   }
 
   /* create chroma subsampler */
@@ -758,6 +766,11 @@ parse_failed:
     GST_DEBUG_OBJECT (bsrc, "failed to parse caps");
     return FALSE;
   }
+unsupported_caps:
+  {
+    GST_DEBUG_OBJECT (bsrc, "unsupported caps: %" GST_PTR_FORMAT, caps);
+    return FALSE;
+  }
 }
 
 static gboolean
@@ -781,10 +794,35 @@ gst_video_test_src_query (GstBaseSrc * bsrc, GstQuery * query)
       gst_query_set_convert (query, src_fmt, src_val, dest_fmt, dest_val);
       break;
     }
+    case GST_QUERY_DURATION:{
+      if (bsrc->num_buffers != -1) {
+        GstFormat format;
+
+        gst_query_parse_duration (query, &format, NULL);
+        switch (format) {
+          case GST_FORMAT_TIME:{
+            gint64 dur = gst_util_uint64_scale_int_round (bsrc->num_buffers
+                * GST_SECOND, src->info.fps_d, src->info.fps_n);
+            res = TRUE;
+            gst_query_set_duration (query, GST_FORMAT_TIME, dur);
+            goto done;
+          }
+          case GST_FORMAT_BYTES:
+            res = TRUE;
+            gst_query_set_duration (query, GST_FORMAT_BYTES,
+                bsrc->num_buffers * src->info.size);
+            goto done;
+          default:
+            break;
+        }
+      }
+      /* fall through */
+    }
     default:
       res = GST_BASE_SRC_CLASS (parent_class)->query (bsrc, query);
       break;
   }
+done:
   return res;
 }
 

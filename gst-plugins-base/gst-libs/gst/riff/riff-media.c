@@ -1133,7 +1133,7 @@ gst_riff_wave_add_default_channel_mask (GstCaps * caps,
   }
 
   if (channel_reorder_map)
-    memcpy (channel_reorder_map, reorder_maps[nchannels],
+    memcpy (channel_reorder_map, reorder_maps[nchannels - 1],
         sizeof (gint) * nchannels);
 
   gst_caps_set_simple (caps, "channel-mask", GST_TYPE_BITMASK, channel_mask,
@@ -1388,6 +1388,37 @@ gst_riff_create_audio_caps (guint16 codec_id,
           "layout", G_TYPE_STRING, "dvi", NULL);
       if (codec_name)
         *codec_name = g_strdup ("DVI ADPCM audio");
+      block_align = TRUE;
+      break;
+
+    case GST_RIFF_WAVE_FORMAT_ITU_G726_ADPCM:
+      rate_min = 8000;
+      rate_max = 8000;
+      channels_max = 1;
+      if (strf != NULL) {
+        gint bitrate;
+        bitrate = 0;
+        if (strf->av_bps == 2000 || strf->av_bps == 3000 || strf->av_bps == 4000
+            || strf->av_bps == 5000) {
+          strf->blockalign = strf->av_bps / 1000;
+          bitrate = strf->av_bps * 8;
+        } else if (strf->blockalign >= 2 && strf->blockalign <= 5) {
+          bitrate = strf->blockalign * 8000;
+        }
+        if (bitrate > 0) {
+          caps = gst_caps_new_simple ("audio/x-adpcm",
+              "layout", G_TYPE_STRING, "g726", "bitrate", G_TYPE_INT, bitrate,
+              NULL);
+        } else {
+          caps = gst_caps_new_simple ("audio/x-adpcm",
+              "layout", G_TYPE_STRING, "g726", NULL);
+        }
+      } else {
+        caps = gst_caps_new_simple ("audio/x-adpcm",
+            "layout", G_TYPE_STRING, "g726", NULL);
+      }
+      if (codec_name)
+        *codec_name = g_strdup ("G726 ADPCM audio");
       block_align = TRUE;
       break;
 

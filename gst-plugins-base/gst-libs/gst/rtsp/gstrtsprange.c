@@ -45,8 +45,6 @@
  * @short_description: dealing with time ranges
  *  
  * Provides helper functions to deal with time ranges.
- *  
- * Last reviewed on 2007-07-25 (0.10.14)
  */
 
 #include <math.h>
@@ -576,7 +574,7 @@ get_time (GstRTSPRangeUnit unit, const GstRTSPTime * t1,
  *
  * Returns: %TRUE on success.
  *
- * Since: 1.1.1
+ * Since: 1.2
  */
 gboolean
 gst_rtsp_range_get_times (const GstRTSPTimeRange * range,

@@ -1,0 +1,2772 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GStreamer Base Plugins 1.0 Library Reference Manual: gstmikey</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
+<link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
+<link rel="up" href="gstreamer-mikey.html" title="MIKEY Library">
+<link rel="prev" href="gstreamer-mikey.html" title="MIKEY Library">
+<link rel="next" href="gstreamer-tag.html" title="Tag Support Library">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstmikey.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstmikey.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-mikey.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gstreamer-mikey.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gstreamer-tag.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
+<div class="refentry">
+<a name="gst-plugins-base-libs-gstmikey"></a><div class="titlepage"></div>
+<div class="refnamediv"><table width="100%"><tr>
+<td valign="top">
+<h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstmikey.top_of_page"></a>gstmikey</span></h2>
+<p>gstmikey — Helper methods for dealing with MIKEY messages</p>
+</td>
+<td class="gallery_image" valign="top" align="right"></td>
+</tr></table></div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstmikey.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="returnvalue">GstMIKEYMessage</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-new" title="gst_mikey_message_new ()">gst_mikey_message_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="returnvalue">GstMIKEYMessage</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-new-from-bytes" title="gst_mikey_message_new_from_bytes ()">gst_mikey_message_new_from_bytes</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="returnvalue">GstMIKEYMessage</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-new-from-data" title="gst_mikey_message_new_from_data ()">gst_mikey_message_new_from_data</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="returnvalue">GBytes</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-to-bytes" title="gst_mikey_message_to_bytes ()">gst_mikey_message_to_bytes</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-set-info" title="gst_mikey_message_set_info ()">gst_mikey_message_set_info</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-get-n-cs" title="gst_mikey_message_get_n_cs ()">gst_mikey_message_get_n_cs</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMapSRTP" title="GstMIKEYMapSRTP"><span class="returnvalue">GstMIKEYMapSRTP</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-get-cs-srtp" title="gst_mikey_message_get_cs_srtp ()">gst_mikey_message_get_cs_srtp</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-insert-cs-srtp" title="gst_mikey_message_insert_cs_srtp ()">gst_mikey_message_insert_cs_srtp</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-remove-cs-srtp" title="gst_mikey_message_remove_cs_srtp ()">gst_mikey_message_remove_cs_srtp</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-replace-cs-srtp" title="gst_mikey_message_replace_cs_srtp ()">gst_mikey_message_replace_cs_srtp</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-add-cs-srtp" title="gst_mikey_message_add_cs_srtp ()">gst_mikey_message_add_cs_srtp</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-get-n-payloads" title="gst_mikey_message_get_n_payloads ()">gst_mikey_message_get_n_payloads</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="returnvalue">GstMIKEYPayload</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-get-payload" title="gst_mikey_message_get_payload ()">gst_mikey_message_get_payload</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="returnvalue">GstMIKEYPayload</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-find-payload" title="gst_mikey_message_find_payload ()">gst_mikey_message_find_payload</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-insert-payload" title="gst_mikey_message_insert_payload ()">gst_mikey_message_insert_payload</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-remove-payload" title="gst_mikey_message_remove_payload ()">gst_mikey_message_remove_payload</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-replace-payload" title="gst_mikey_message_replace_payload ()">gst_mikey_message_replace_payload</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-add-payload" title="gst_mikey_message_add_payload ()">gst_mikey_message_add_payload</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="returnvalue">GstMIKEYPayload</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-payload-new" title="gst_mikey_payload_new ()">gst_mikey_payload_new</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="returnvalue">GstMIKEYPayload</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-payload-copy" title="gst_mikey_payload_copy ()">gst_mikey_payload_copy</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-payload-kemac-set" title="gst_mikey_payload_kemac_set ()">gst_mikey_payload_kemac_set</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-payload-pke-set" title="gst_mikey_payload_pke_set ()">gst_mikey_payload_pke_set</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-add-pke" title="gst_mikey_message_add_pke ()">gst_mikey_message_add_pke</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-payload-t-set" title="gst_mikey_payload_t_set ()">gst_mikey_payload_t_set</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-add-t" title="gst_mikey_message_add_t ()">gst_mikey_message_add_t</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-add-t-now-ntp-utc" title="gst_mikey_message_add_t_now_ntp_utc ()">gst_mikey_message_add_t_now_ntp_utc</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-payload-rand-set" title="gst_mikey_payload_rand_set ()">gst_mikey_payload_rand_set</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-add-rand" title="gst_mikey_message_add_rand ()">gst_mikey_message_add_rand</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-message-add-rand-len" title="gst_mikey_message_add_rand_len ()">gst_mikey_message_add_rand_len</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-payload-sp-set" title="gst_mikey_payload_sp_set ()">gst_mikey_payload_sp_set</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-payload-sp-get-n-params" title="gst_mikey_payload_sp_get_n_params ()">gst_mikey_payload_sp_get_n_params</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadSPParam" title="GstMIKEYPayloadSPParam"><span class="returnvalue">GstMIKEYPayloadSPParam</span></a> *
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-payload-sp-get-param" title="gst_mikey_payload_sp_get_param ()">gst_mikey_payload_sp_get_param</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-payload-sp-add-param" title="gst_mikey_payload_sp_add_param ()">gst_mikey_payload_sp_add_param</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#gst-mikey-payload-sp-remove-param" title="gst_mikey_payload_sp_remove_param ()">gst_mikey_payload_sp_remove_param</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstmikey.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GST-MIKEY-VERSION:CAPS" title="GST_MIKEY_VERSION">GST_MIKEY_VERSION</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYType" title="enum GstMIKEYType">GstMIKEYType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage">GstMIKEYMessage</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPRFFunc" title="enum GstMIKEYPRFFunc">GstMIKEYPRFFunc</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMapType" title="enum GstMIKEYMapType">GstMIKEYMapType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMapSRTP" title="GstMIKEYMapSRTP">GstMIKEYMapSRTP</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadType" title="enum GstMIKEYPayloadType">GstMIKEYPayloadType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload">GstMIKEYPayload</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYEncAlg" title="enum GstMIKEYEncAlg">GstMIKEYEncAlg</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMacAlg" title="enum GstMIKEYMacAlg">GstMIKEYMacAlg</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadKEMAC" title="GstMIKEYPayloadKEMAC">GstMIKEYPayloadKEMAC</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYCacheType" title="enum GstMIKEYCacheType">GstMIKEYCacheType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadPKE" title="GstMIKEYPayloadPKE">GstMIKEYPayloadPKE</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYTSType" title="enum GstMIKEYTSType">GstMIKEYTSType</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadT" title="GstMIKEYPayloadT">GstMIKEYPayloadT</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadRAND" title="GstMIKEYPayloadRAND">GstMIKEYPayloadRAND</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYSecProto" title="enum GstMIKEYSecProto">GstMIKEYSecProto</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword">enum</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYSecSRTP" title="enum GstMIKEYSecSRTP">GstMIKEYSecSRTP</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadSP" title="GstMIKEYPayloadSP">GstMIKEYPayloadSP</a></td>
+</tr>
+<tr>
+<td class="datatype_keyword"> </td>
+<td class="function_name"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadSPParam" title="GstMIKEYPayloadSPParam">GstMIKEYPayloadSPParam</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstmikey.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstmikey.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/sdp/gstmikey.h&gt;
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstmikey.description"></a><h2>Description</h2>
+<div class="refsect2">
+<a name="id-1.2.12.3.7.2"></a><p>
+The GstMIKEY helper functions makes it easy to parse and create MIKEY
+messages.
+</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstmikey.functions_details"></a><h2>Functions</h2>
+<div class="refsect2">
+<a name="gst-mikey-message-new"></a><h3>gst_mikey_message_new ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="returnvalue">GstMIKEYMessage</span></a> *
+gst_mikey_message_new (<em class="parameter"><code><span class="type">void</span></code></em>);</pre>
+<p>Make a new MIKEY message.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.2.5"></a><h4>Returns</h4>
+<p> a new <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-new-from-bytes"></a><h3>gst_mikey_message_new_from_bytes ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="returnvalue">GstMIKEYMessage</span></a> *
+gst_mikey_message_new_from_bytes (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> *bytes</code></em>,
+                                  <em class="parameter"><code><span class="type">GstMIKEYDecryptInfo</span> *info</code></em>,
+                                  <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>Make a new <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> from <em class="parameter"><code>bytes</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>bytes</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>info</p></td>
+<td class="parameter_description"><p>a <span class="type">GstMIKEYDecryptInfo</span></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.3.6"></a><h4>Returns</h4>
+<p> a new <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-new-from-data"></a><h3>gst_mikey_message_new_from_data ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="returnvalue">GstMIKEYMessage</span></a> *
+gst_mikey_message_new_from_data (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gconstpointer"><span class="type">gconstpointer</span></a> data</code></em>,
+                                 <em class="parameter"><code><span class="type">gsize</span> size</code></em>,
+                                 <em class="parameter"><code><span class="type">GstMIKEYDecryptInfo</span> *info</code></em>,
+                                 <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>Parse <em class="parameter"><code>size</code></em>
+ bytes from <em class="parameter"><code>data</code></em>
+ into a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a>. <em class="parameter"><code>info</code></em>
+ contains the
+parameters to decrypt and verify the data.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p> bytes to read. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=size][<acronym title="Generics and defining elements of containers and arrays."><span class="acronym">element-type</span></acronym> guint8]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>length of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>info</p></td>
+<td class="parameter_description"><p><span class="type">GstMIKEYDecryptInfo</span></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.4.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> on success or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> when parsing failed and
+<em class="parameter"><code>error</code></em>
+will be set.</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-to-bytes"></a><h3>gst_mikey_message_to_bytes ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="returnvalue">GBytes</span></a> *
+gst_mikey_message_to_bytes (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                            <em class="parameter"><code><span class="type">GstMIKEYEncryptInfo</span> *info</code></em>,
+                            <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
+<p>Convert <em class="parameter"><code>msg</code></em>
+ to a <a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>info</p></td>
+<td class="parameter_description"><p>a <span class="type">GstMIKEYEncryptInfo</span></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>error</p></td>
+<td class="parameter_description"><p>a <a href="http://library.gnome.org/devel/glib/unstable/glib-Error-Reporting.html#GError"><span class="type">GError</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.5.6"></a><h4>Returns</h4>
+<p> a new <a href="http://library.gnome.org/devel/glib/unstable/glib-Byte-Arrays.html#GBytes"><span class="type">GBytes</span></a> for <em class="parameter"><code>msg</code></em>
+.</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-set-info"></a><h3>gst_mikey_message_set_info ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_set_info (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                            <em class="parameter"><code><span class="type">guint8</span> version</code></em>,
+                            <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYType" title="enum GstMIKEYType"><span class="type">GstMIKEYType</span></a> type</code></em>,
+                            <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> V</code></em>,
+                            <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPRFFunc" title="enum GstMIKEYPRFFunc"><span class="type">GstMIKEYPRFFunc</span></a> prf_func</code></em>,
+                            <em class="parameter"><code><span class="type">guint32</span> CSB_id</code></em>,
+                            <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMapType" title="enum GstMIKEYMapType"><span class="type">GstMIKEYMapType</span></a> map_type</code></em>);</pre>
+<p>Set the information in <em class="parameter"><code>msg</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.6.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>version</p></td>
+<td class="parameter_description"><p>a version</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>type</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYType" title="enum GstMIKEYType"><span class="type">GstMIKEYType</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>V</p></td>
+<td class="parameter_description"><p>verify flag</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>prf_func</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPRFFunc" title="enum GstMIKEYPRFFunc"><span class="type">GstMIKEYPRFFunc</span></a> function to use</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>CSB_id</p></td>
+<td class="parameter_description"><p>the Crypto Session Bundle id</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>map_type</p></td>
+<td class="parameter_description"><p>the <span class="type">GstMIKEYCSIDMapType</span></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.6.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-get-n-cs"></a><h3>gst_mikey_message_get_n_cs ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+gst_mikey_message_get_n_cs (<em class="parameter"><code>const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>);</pre>
+<p>Get the number of crypto sessions in <em class="parameter"><code>msg</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.7.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.7.6"></a><h4>Returns</h4>
+<p> the number of crypto sessions</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-get-cs-srtp"></a><h3>gst_mikey_message_get_cs_srtp ()</h3>
+<pre class="programlisting">const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMapSRTP" title="GstMIKEYMapSRTP"><span class="returnvalue">GstMIKEYMapSRTP</span></a> *
+gst_mikey_message_get_cs_srtp (<em class="parameter"><code>const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                               <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> idx</code></em>);</pre>
+<p>Get the policy information of <em class="parameter"><code>msg</code></em>
+ at <em class="parameter"><code>idx</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.8.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>idx</p></td>
+<td class="parameter_description"><p>an index</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.8.6"></a><h4>Returns</h4>
+<p> a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMapSRTP" title="GstMIKEYMapSRTP"><span class="type">GstMIKEYMapSRTP</span></a></p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-insert-cs-srtp"></a><h3>gst_mikey_message_insert_cs_srtp ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_insert_cs_srtp (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                                  <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> idx</code></em>,
+                                  <em class="parameter"><code>const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMapSRTP" title="GstMIKEYMapSRTP"><span class="type">GstMIKEYMapSRTP</span></a> *map</code></em>);</pre>
+<p>Insert a Crypto Session map for SRTP in <em class="parameter"><code>msg</code></em>
+ at <em class="parameter"><code>idx</code></em>
+</p>
+<p>When <em class="parameter"><code>idx</code></em>
+ is -1, the policy will be appended.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.9.6"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>idx</p></td>
+<td class="parameter_description"><p>the index to insert at</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>map</p></td>
+<td class="parameter_description"><p>the map info</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.9.7"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-remove-cs-srtp"></a><h3>gst_mikey_message_remove_cs_srtp ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_remove_cs_srtp (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                                  <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> idx</code></em>);</pre>
+<p>Remove the SRTP policy at <em class="parameter"><code>idx</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.10.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>idx</p></td>
+<td class="parameter_description"><p>the index to remove</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.10.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-replace-cs-srtp"></a><h3>gst_mikey_message_replace_cs_srtp ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_replace_cs_srtp (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                                   <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> idx</code></em>,
+                                   <em class="parameter"><code>const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMapSRTP" title="GstMIKEYMapSRTP"><span class="type">GstMIKEYMapSRTP</span></a> *map</code></em>);</pre>
+<p>Replace a Crypto Session map for SRTP in <em class="parameter"><code>msg</code></em>
+ at <em class="parameter"><code>idx</code></em>
+ with <em class="parameter"><code>map</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.11.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>idx</p></td>
+<td class="parameter_description"><p>the index to insert at</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>map</p></td>
+<td class="parameter_description"><p>the map info</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.11.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-add-cs-srtp"></a><h3>gst_mikey_message_add_cs_srtp ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_add_cs_srtp (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                               <em class="parameter"><code><span class="type">guint8</span> policy</code></em>,
+                               <em class="parameter"><code><span class="type">guint32</span> ssrc</code></em>,
+                               <em class="parameter"><code><span class="type">guint32</span> roc</code></em>);</pre>
+<p>Add a Crypto policy for SRTP to <em class="parameter"><code>msg</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.12.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>policy</p></td>
+<td class="parameter_description"><p>The security policy applied for the stream with <em class="parameter"><code>ssrc</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>ssrc</p></td>
+<td class="parameter_description"><p>the SSRC that must be used for the stream</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>roc</p></td>
+<td class="parameter_description"><p>current rollover counter</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.12.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-get-n-payloads"></a><h3>gst_mikey_message_get_n_payloads ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+gst_mikey_message_get_n_payloads (<em class="parameter"><code>const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>);</pre>
+<p>Get the number of payloads in <em class="parameter"><code>msg</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.13.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.13.6"></a><h4>Returns</h4>
+<p> the number of payloads in <em class="parameter"><code>msg</code></em>
+</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-get-payload"></a><h3>gst_mikey_message_get_payload ()</h3>
+<pre class="programlisting">const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="returnvalue">GstMIKEYPayload</span></a> *
+gst_mikey_message_get_payload (<em class="parameter"><code>const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                               <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> idx</code></em>);</pre>
+<p>Get the <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> at <em class="parameter"><code>idx</code></em>
+ in <em class="parameter"><code>msg</code></em>
+</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.14.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>idx</p></td>
+<td class="parameter_description"><p>an index</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.14.6"></a><h4>Returns</h4>
+<p> the <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> at <em class="parameter"><code>idx</code></em>
+. The payload
+remains valid for as long as it is part of <em class="parameter"><code>msg</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-find-payload"></a><h3>gst_mikey_message_find_payload ()</h3>
+<pre class="programlisting">const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="returnvalue">GstMIKEYPayload</span></a> *
+gst_mikey_message_find_payload (<em class="parameter"><code>const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                                <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadType" title="enum GstMIKEYPayloadType"><span class="type">GstMIKEYPayloadType</span></a> type</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> nth</code></em>);</pre>
+<p>Find the <em class="parameter"><code>nth</code></em>
+ occurence of the payload with <em class="parameter"><code>type</code></em>
+ in <em class="parameter"><code>msg</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.15.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>type</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadType" title="enum GstMIKEYPayloadType"><span class="type">GstMIKEYPayloadType</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>nth</p></td>
+<td class="parameter_description"><p>payload to find</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.15.6"></a><h4>Returns</h4>
+<p> the <em class="parameter"><code>nth</code></em>
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> of <em class="parameter"><code>type</code></em>
+.</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-insert-payload"></a><h3>gst_mikey_message_insert_payload ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_insert_payload (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                                  <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> idx</code></em>,
+                                  <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *payload</code></em>);</pre>
+<p>Insert the <em class="parameter"><code>payload</code></em>
+ at index <em class="parameter"><code>idx</code></em>
+ in <em class="parameter"><code>msg</code></em>
+. If <em class="parameter"><code>idx</code></em>
+ is -1, the payload
+will be appended to <em class="parameter"><code>msg</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.16.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>idx</p></td>
+<td class="parameter_description"><p>an index</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p> a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.16.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-remove-payload"></a><h3>gst_mikey_message_remove_payload ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_remove_payload (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                                  <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> idx</code></em>);</pre>
+<p>Remove the payload in <em class="parameter"><code>msg</code></em>
+ at <em class="parameter"><code>idx</code></em>
+</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.17.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>idx</p></td>
+<td class="parameter_description"><p>an index</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.17.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-replace-payload"></a><h3>gst_mikey_message_replace_payload ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_replace_payload (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                                   <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> idx</code></em>,
+                                   <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *payload</code></em>);</pre>
+<p>Replace the payload at <em class="parameter"><code>idx</code></em>
+ in <em class="parameter"><code>msg</code></em>
+ with <em class="parameter"><code>payload</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.18.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>idx</p></td>
+<td class="parameter_description"><p>an index</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p> a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.18.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-add-payload"></a><h3>gst_mikey_message_add_payload ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_add_payload (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                               <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *payload</code></em>);</pre>
+<p>Add a new payload to <em class="parameter"><code>msg</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.19.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p> a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a>. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.19.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-payload-new"></a><h3>gst_mikey_payload_new ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="returnvalue">GstMIKEYPayload</span></a> *
+gst_mikey_payload_new (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadType" title="enum GstMIKEYPayloadType"><span class="type">GstMIKEYPayloadType</span></a> type</code></em>);</pre>
+<p>Make a new <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> with <em class="parameter"><code>type</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.20.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>type</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadType" title="enum GstMIKEYPayloadType"><span class="type">GstMIKEYPayloadType</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.20.6"></a><h4>Returns</h4>
+<p> a new <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> or <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS"><code class="literal">NULL</code></a> on failure. </p>
+<p><span class="annotation">[nullable]</span></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-payload-copy"></a><h3>gst_mikey_payload_copy ()</h3>
+<pre class="programlisting"><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="returnvalue">GstMIKEYPayload</span></a> *
+gst_mikey_payload_copy (<em class="parameter"><code>const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *buf</code></em>);</pre>
+<p>Create a copy of the given payload.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.21.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a>.</p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.21.6"></a><h4>Returns</h4>
+<p> a new copy of <em class="parameter"><code>payload</code></em>
+. </p>
+<p><span class="annotation">[<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-payload-kemac-set"></a><h3>gst_mikey_payload_kemac_set ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_payload_kemac_set (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *payload</code></em>,
+                             <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYEncAlg" title="enum GstMIKEYEncAlg"><span class="type">GstMIKEYEncAlg</span></a> enc_alg</code></em>,
+                             <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMacAlg" title="enum GstMIKEYMacAlg"><span class="type">GstMIKEYMacAlg</span></a> mac_alg</code></em>);</pre>
+<p>Set the KEMAC parameters. <em class="parameter"><code>payload</code></em>
+ should point to a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GST-MIKEY-PT-KEMAC:CAPS"><code class="literal">GST_MIKEY_PT_KEMAC</code></a>
+payload.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.22.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>enc_alg</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYEncAlg" title="enum GstMIKEYEncAlg"><span class="type">GstMIKEYEncAlg</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>mac_alg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMacAlg" title="enum GstMIKEYMacAlg"><span class="type">GstMIKEYMacAlg</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.22.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-payload-pke-set"></a><h3>gst_mikey_payload_pke_set ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_payload_pke_set (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *payload</code></em>,
+                           <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYCacheType" title="enum GstMIKEYCacheType"><span class="type">GstMIKEYCacheType</span></a> C</code></em>,
+                           <em class="parameter"><code><span class="type">guint16</span> data_len</code></em>,
+                           <em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>);</pre>
+<p>Set the PKE values in <em class="parameter"><code>payload</code></em>
+. <em class="parameter"><code>payload</code></em>
+ must be of type
+<a class="link" href="gst-plugins-base-libs-gstmikey.html#GST-MIKEY-PT-PKE:CAPS"><code class="literal">GST_MIKEY_PT_PKE</code></a>.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.23.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>C</p></td>
+<td class="parameter_description"><p>envelope key cache indicator</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data_len</p></td>
+<td class="parameter_description"><p>the length of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p> the encrypted envelope key. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=data_len]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.23.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-add-pke"></a><h3>gst_mikey_message_add_pke ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_add_pke (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                           <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYCacheType" title="enum GstMIKEYCacheType"><span class="type">GstMIKEYCacheType</span></a> C</code></em>,
+                           <em class="parameter"><code><span class="type">guint16</span> data_len</code></em>,
+                           <em class="parameter"><code>const <span class="type">guint8</span> *data</code></em>);</pre>
+<p>Add a new PKE payload to <em class="parameter"><code>msg</code></em>
+ with the given parameters.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.24.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>C</p></td>
+<td class="parameter_description"><p>envelope key cache indicator</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data_len</p></td>
+<td class="parameter_description"><p>the length of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p> the encrypted envelope key. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=data_len]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.24.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-payload-t-set"></a><h3>gst_mikey_payload_t_set ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_payload_t_set (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *payload</code></em>,
+                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYTSType" title="enum GstMIKEYTSType"><span class="type">GstMIKEYTSType</span></a> type</code></em>,
+                         <em class="parameter"><code>const <span class="type">guint8</span> *ts_value</code></em>);</pre>
+<p>Set the timestamp in a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GST-MIKEY-PT-T:CAPS"><code class="literal">GST_MIKEY_PT_T</code></a> <em class="parameter"><code>payload</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.25.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>type</p></td>
+<td class="parameter_description"><p>the <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYTSType" title="enum GstMIKEYTSType"><span class="type">GstMIKEYTSType</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>ts_value</p></td>
+<td class="parameter_description"><p> the timestamp value. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.25.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-add-t"></a><h3>gst_mikey_message_add_t ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_add_t (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                         <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYTSType" title="enum GstMIKEYTSType"><span class="type">GstMIKEYTSType</span></a> type</code></em>,
+                         <em class="parameter"><code>const <span class="type">guint8</span> *ts_value</code></em>);</pre>
+<p>Add a new T payload to <em class="parameter"><code>msg</code></em>
+ with the given parameters.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.26.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>type</p></td>
+<td class="parameter_description"><p>specifies the timestamp type used</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>ts_value</p></td>
+<td class="parameter_description"><p> The timestamp value of the specified <em class="parameter"><code>type</code></em>
+. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.26.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-add-t-now-ntp-utc"></a><h3>gst_mikey_message_add_t_now_ntp_utc ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_add_t_now_ntp_utc (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>);</pre>
+<p>Add a new T payload to <em class="parameter"><code>msg</code></em>
+ that contains the current time
+in NTP-UTC format.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.27.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.27.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-payload-rand-set"></a><h3>gst_mikey_payload_rand_set ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_payload_rand_set (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *payload</code></em>,
+                            <em class="parameter"><code><span class="type">guint8</span> len</code></em>,
+                            <em class="parameter"><code>const <span class="type">guint8</span> *rand</code></em>);</pre>
+<p>Set the random values in a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GST-MIKEY-PT-RAND:CAPS"><code class="literal">GST_MIKEY_PT_RAND</code></a> <em class="parameter"><code>payload</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.28.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>len</p></td>
+<td class="parameter_description"><p>the length of <em class="parameter"><code>rand</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>rand</p></td>
+<td class="parameter_description"><p> random values. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=len]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.28.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-add-rand"></a><h3>gst_mikey_message_add_rand ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_add_rand (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                            <em class="parameter"><code><span class="type">guint8</span> len</code></em>,
+                            <em class="parameter"><code>const <span class="type">guint8</span> *rand</code></em>);</pre>
+<p>Add a new RAND payload to <em class="parameter"><code>msg</code></em>
+ with the given parameters.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.29.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>len</p></td>
+<td class="parameter_description"><p>the length of <em class="parameter"><code>rand</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>rand</p></td>
+<td class="parameter_description"><p> random data. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=len]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.29.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-message-add-rand-len"></a><h3>gst_mikey_message_add_rand_len ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_message_add_rand_len (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a> *msg</code></em>,
+                                <em class="parameter"><code><span class="type">guint8</span> len</code></em>);</pre>
+<p>Add a new RAND payload to <em class="parameter"><code>msg</code></em>
+ with <em class="parameter"><code>len</code></em>
+ random bytes.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.30.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>msg</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMessage" title="struct GstMIKEYMessage"><span class="type">GstMIKEYMessage</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>len</p></td>
+<td class="parameter_description"><p>length</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.30.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-payload-sp-set"></a><h3>gst_mikey_payload_sp_set ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_payload_sp_set (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *payload</code></em>,
+                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> policy</code></em>,
+                          <em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYSecProto" title="enum GstMIKEYSecProto"><span class="type">GstMIKEYSecProto</span></a> proto</code></em>);</pre>
+<p>Set the Security Policy parameters for <em class="parameter"><code>payload</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.31.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>policy</p></td>
+<td class="parameter_description"><p>the policy number</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>proto</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYSecProto" title="enum GstMIKEYSecProto"><span class="type">GstMIKEYSecProto</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.31.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-payload-sp-get-n-params"></a><h3>gst_mikey_payload_sp_get_n_params ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+gst_mikey_payload_sp_get_n_params (<em class="parameter"><code>const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *payload</code></em>);</pre>
+<p>Get the number of security policy parameters in a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GST-MIKEY-PT-SP:CAPS"><code class="literal">GST_MIKEY_PT_SP</code></a>
+<em class="parameter"><code>payload</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.32.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.32.6"></a><h4>Returns</h4>
+<p> the number of parameters in <em class="parameter"><code>payload</code></em>
+</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-payload-sp-get-param"></a><h3>gst_mikey_payload_sp_get_param ()</h3>
+<pre class="programlisting">const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadSPParam" title="GstMIKEYPayloadSPParam"><span class="returnvalue">GstMIKEYPayloadSPParam</span></a> *
+gst_mikey_payload_sp_get_param (<em class="parameter"><code>const <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *payload</code></em>,
+                                <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> idx</code></em>);</pre>
+<p>Get the Security Policy parameter in a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GST-MIKEY-PT-SP:CAPS"><code class="literal">GST_MIKEY_PT_SP</code></a> <em class="parameter"><code>payload</code></em>
+
+at <em class="parameter"><code>idx</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.33.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>idx</p></td>
+<td class="parameter_description"><p>an index</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.33.6"></a><h4>Returns</h4>
+<p> the <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadSPParam" title="GstMIKEYPayloadSPParam"><span class="type">GstMIKEYPayloadSPParam</span></a> at <em class="parameter"><code>idx</code></em>
+in <em class="parameter"><code>payload</code></em>
+</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-payload-sp-add-param"></a><h3>gst_mikey_payload_sp_add_param ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_payload_sp_add_param (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *payload</code></em>,
+                                <em class="parameter"><code><span class="type">guint8</span> type</code></em>,
+                                <em class="parameter"><code><span class="type">guint8</span> len</code></em>,
+                                <em class="parameter"><code>const <span class="type">guint8</span> *val</code></em>);</pre>
+<p>Add a new parameter to the <a class="link" href="gst-plugins-base-libs-gstmikey.html#GST-MIKEY-PT-SP:CAPS"><code class="literal">GST_MIKEY_PT_SP</code></a> <em class="parameter"><code>payload</code></em>
+ with <em class="parameter"><code>type</code></em>
+, <em class="parameter"><code>len</code></em>
+
+and <em class="parameter"><code>val</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.34.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>type</p></td>
+<td class="parameter_description"><p>a type</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>len</p></td>
+<td class="parameter_description"><p>a length</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>val</p></td>
+<td class="parameter_description"><p> <em class="parameter"><code>len</code></em>
+bytes of data. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=len]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.34.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="gst-mikey-payload-sp-remove-param"></a><h3>gst_mikey_payload_sp_remove_param ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_mikey_payload_sp_remove_param (<em class="parameter"><code><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> *payload</code></em>,
+                                   <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> idx</code></em>);</pre>
+<p>Remove the Security Policy parameters from a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GST-MIKEY-PT-SP:CAPS"><code class="literal">GST_MIKEY_PT_SP</code></a>
+<em class="parameter"><code>payload</code></em>
+ at <em class="parameter"><code>idx</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.35.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>payload</p></td>
+<td class="parameter_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>idx</p></td>
+<td class="parameter_description"><p>an index</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.12.3.8.35.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success</p>
+<p></p>
+</div>
+<p class="since">Since 1.4</p>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstmikey.other_details"></a><h2>Types and Values</h2>
+<div class="refsect2">
+<a name="GST-MIKEY-VERSION:CAPS"></a><h3>GST_MIKEY_VERSION</h3>
+<pre class="programlisting">#define GST_MIKEY_VERSION 1
+</pre>
+<p>The supported MIKEY version 1.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYType"></a><h3>enum GstMIKEYType</h3>
+<p>Different MIKEY data types.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.3.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-TYPE-INVALID:CAPS"></a>GST_MIKEY_TYPE_INVALID</p></td>
+<td class="enum_member_description">
+<p>Invalid type</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-TYPE-PSK-INIT:CAPS"></a>GST_MIKEY_TYPE_PSK_INIT</p></td>
+<td class="enum_member_description">
+<p>Initiator's pre-shared key message</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-TYPE-PSK-VERIFY:CAPS"></a>GST_MIKEY_TYPE_PSK_VERIFY</p></td>
+<td class="enum_member_description">
+<p>Verification message of a Pre-shared key message</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-TYPE-PK-INIT:CAPS"></a>GST_MIKEY_TYPE_PK_INIT</p></td>
+<td class="enum_member_description">
+<p>Initiator's public-key transport message</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-TYPE-PK-VERIFY:CAPS"></a>GST_MIKEY_TYPE_PK_VERIFY</p></td>
+<td class="enum_member_description">
+<p>Verification message of a public-key message</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-TYPE-DH-INIT:CAPS"></a>GST_MIKEY_TYPE_DH_INIT</p></td>
+<td class="enum_member_description">
+<p>Initiator's DH exchange message</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-TYPE-DH-RESP:CAPS"></a>GST_MIKEY_TYPE_DH_RESP</p></td>
+<td class="enum_member_description">
+<p>Responder's DH exchange message</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-TYPE-ERROR:CAPS"></a>GST_MIKEY_TYPE_ERROR</p></td>
+<td class="enum_member_description">
+<p>Error message</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYMessage"></a><h3>struct GstMIKEYMessage</h3>
+<pre class="programlisting">struct GstMIKEYMessage {
+  GstMiniObject mini_object;
+
+  guint8 version;
+  GstMIKEYType type;
+  gboolean V;
+  GstMIKEYPRFFunc prf_func;
+  guint32 CSB_id;
+  GstMIKEYMapType map_type;
+  GArray *map_info;
+  GArray *payloads;
+};
+</pre>
+<p>Structure holding the information of the MIKEY message</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.4.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstMiniObject.html#GstMiniObject"><span class="type">GstMiniObject</span></a> <em class="structfield"><code><a name="GstMIKEYMessage.mini-object"></a>mini_object</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstMIKEYMessage.version"></a>version</code></em>;</p></td>
+<td class="struct_member_description"><p>the version</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYType" title="enum GstMIKEYType"><span class="type">GstMIKEYType</span></a> <em class="structfield"><code><a name="GstMIKEYMessage.type"></a>type</code></em>;</p></td>
+<td class="struct_member_description"><p>the <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYType" title="enum GstMIKEYType"><span class="type">GstMIKEYType</span></a> message type</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a> <em class="structfield"><code><a name="GstMIKEYMessage.V"></a>V</code></em>;</p></td>
+<td class="struct_member_description"><p>verify flag</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPRFFunc" title="enum GstMIKEYPRFFunc"><span class="type">GstMIKEYPRFFunc</span></a> <em class="structfield"><code><a name="GstMIKEYMessage.prf-func"></a>prf_func</code></em>;</p></td>
+<td class="struct_member_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPRFFunc" title="enum GstMIKEYPRFFunc"><span class="type">GstMIKEYPRFFunc</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstMIKEYMessage.CSB-id"></a>CSB_id</code></em>;</p></td>
+<td class="struct_member_description"><p>Identifies the Crypto Session Bundle</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMapType" title="enum GstMIKEYMapType"><span class="type">GstMIKEYMapType</span></a> <em class="structfield"><code><a name="GstMIKEYMessage.map-type"></a>map_type</code></em>;</p></td>
+<td class="struct_member_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMapType" title="enum GstMIKEYMapType"><span class="type">GstMIKEYMapType</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#GArray"><span class="type">GArray</span></a> *<em class="structfield"><code><a name="GstMIKEYMessage.map-info"></a>map_info</code></em>;</p></td>
+<td class="struct_member_description"><p>map info array of type depending on <em class="parameter"><code>map_type</code></em>
+</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#GArray"><span class="type">GArray</span></a> *<em class="structfield"><code><a name="GstMIKEYMessage.payloads"></a>payloads</code></em>;</p></td>
+<td class="struct_member_description"><p>the payload array of <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYPRFFunc"></a><h3>enum GstMIKEYPRFFunc</h3>
+<p>The PRF function that has been/will be used for key derivation</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.5.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody><tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PRF-MIKEY-1:CAPS"></a>GST_MIKEY_PRF_MIKEY_1</p></td>
+<td class="enum_member_description">
+<p>MIKEY-1 PRF function</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYMapType"></a><h3>enum GstMIKEYMapType</h3>
+<p>Specifies the method of uniquely mapping Crypto Sessions to the security
+protocol sessions.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.6.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody><tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-MAP-TYPE-SRTP:CAPS"></a>GST_MIKEY_MAP_TYPE_SRTP</p></td>
+<td class="enum_member_description"> </td>
+<td class="enum_member_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYMapSRTP"></a><h3>GstMIKEYMapSRTP</h3>
+<pre class="programlisting">typedef struct {
+  guint8  policy;
+  guint32 ssrc;
+  guint32 roc;
+} GstMIKEYMapSRTP;
+</pre>
+<p>The Security policy Map item for SRTP</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.7.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstMIKEYMapSRTP.policy"></a>policy</code></em>;</p></td>
+<td class="struct_member_description"><p>The security policy applied for the stream with <em class="parameter"><code>ssrc</code></em>
+</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstMIKEYMapSRTP.ssrc"></a>ssrc</code></em>;</p></td>
+<td class="struct_member_description"><p>the SSRC that must be used for the stream</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint32</span> <em class="structfield"><code><a name="GstMIKEYMapSRTP.roc"></a>roc</code></em>;</p></td>
+<td class="struct_member_description"><p>current rollover counter</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYPayloadType"></a><h3>enum GstMIKEYPayloadType</h3>
+<p>Different MIKEY Payload types.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.8.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-LAST:CAPS"></a>GST_MIKEY_PT_LAST</p></td>
+<td class="enum_member_description">
+<p>Last payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-KEMAC:CAPS"></a>GST_MIKEY_PT_KEMAC</p></td>
+<td class="enum_member_description">
+<p>Key data transport payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-PKE:CAPS"></a>GST_MIKEY_PT_PKE</p></td>
+<td class="enum_member_description">
+<p>Envelope data payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-DH:CAPS"></a>GST_MIKEY_PT_DH</p></td>
+<td class="enum_member_description">
+<p>DH data payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-SIGN:CAPS"></a>GST_MIKEY_PT_SIGN</p></td>
+<td class="enum_member_description">
+<p>Signature payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-T:CAPS"></a>GST_MIKEY_PT_T</p></td>
+<td class="enum_member_description">
+<p>Timestamp payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-ID:CAPS"></a>GST_MIKEY_PT_ID</p></td>
+<td class="enum_member_description">
+<p>ID payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-CERT:CAPS"></a>GST_MIKEY_PT_CERT</p></td>
+<td class="enum_member_description">
+<p>Certificate Payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-CHASH:CAPS"></a>GST_MIKEY_PT_CHASH</p></td>
+<td class="enum_member_description">
+<p>Cert hash payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-V:CAPS"></a>GST_MIKEY_PT_V</p></td>
+<td class="enum_member_description">
+<p>Verfication message payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-SP:CAPS"></a>GST_MIKEY_PT_SP</p></td>
+<td class="enum_member_description">
+<p>Security Policy payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-RAND:CAPS"></a>GST_MIKEY_PT_RAND</p></td>
+<td class="enum_member_description">
+<p>RAND payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-ERR:CAPS"></a>GST_MIKEY_PT_ERR</p></td>
+<td class="enum_member_description">
+<p>Error payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-KEY-DATA:CAPS"></a>GST_MIKEY_PT_KEY_DATA</p></td>
+<td class="enum_member_description">
+<p>Key data sub-payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-PT-GEN-EXT:CAPS"></a>GST_MIKEY_PT_GEN_EXT</p></td>
+<td class="enum_member_description">
+<p>General Extension Payload</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYPayload"></a><h3>struct GstMIKEYPayload</h3>
+<pre class="programlisting">struct GstMIKEYPayload {
+  GstMiniObject mini_object;
+
+  GstMIKEYPayloadType type;
+  guint len;
+};
+</pre>
+<p>Hold the common fields for all payloads</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.9.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/gstreamer-GstMiniObject.html#GstMiniObject"><span class="type">GstMiniObject</span></a> <em class="structfield"><code><a name="GstMIKEYPayload.mini-object"></a>mini_object</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayloadType" title="enum GstMIKEYPayloadType"><span class="type">GstMIKEYPayloadType</span></a> <em class="structfield"><code><a name="GstMIKEYPayload.type"></a>type</code></em>;</p></td>
+<td class="struct_member_description"><p>the payload type</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="GstMIKEYPayload.len"></a>len</code></em>;</p></td>
+<td class="struct_member_description"><p>length of the payload</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYEncAlg"></a><h3>enum GstMIKEYEncAlg</h3>
+<p>The encryption algorithm used to encrypt the Encr data field</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.10.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-ENC-NULL:CAPS"></a>GST_MIKEY_ENC_NULL</p></td>
+<td class="enum_member_description">
+<p>no encryption</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-ENC-AES-CM-128:CAPS"></a>GST_MIKEY_ENC_AES_CM_128</p></td>
+<td class="enum_member_description">
+<p>AES-CM using a 128-bit key</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-ENC-AES-KW-128:CAPS"></a>GST_MIKEY_ENC_AES_KW_128</p></td>
+<td class="enum_member_description">
+<p>AES Key Wrap using a 128-bit key</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYMacAlg"></a><h3>enum GstMIKEYMacAlg</h3>
+<p>Specifies the authentication algorithm used</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.11.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-MAC-NULL:CAPS"></a>GST_MIKEY_MAC_NULL</p></td>
+<td class="enum_member_description">
+<p>no authentication</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-MAC-HMAC-SHA-1-160:CAPS"></a>GST_MIKEY_MAC_HMAC_SHA_1_160</p></td>
+<td class="enum_member_description">
+<p>HMAC-SHA-1-160</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYPayloadKEMAC"></a><h3>GstMIKEYPayloadKEMAC</h3>
+<pre class="programlisting">typedef struct {
+  GstMIKEYPayload pt;
+
+  GstMIKEYEncAlg  enc_alg;
+  GstMIKEYMacAlg  mac_alg;
+  GArray *subpayloads;
+} GstMIKEYPayloadKEMAC;
+</pre>
+<p>A structure holding the KEMAC payload</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.12.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> <em class="structfield"><code><a name="GstMIKEYPayloadKEMAC.pt"></a>pt</code></em>;</p></td>
+<td class="struct_member_description"><p>the common <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYEncAlg" title="enum GstMIKEYEncAlg"><span class="type">GstMIKEYEncAlg</span></a> <em class="structfield"><code><a name="GstMIKEYPayloadKEMAC.enc-alg"></a>enc_alg</code></em>;</p></td>
+<td class="struct_member_description"><p>the <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYEncAlg" title="enum GstMIKEYEncAlg"><span class="type">GstMIKEYEncAlg</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMacAlg" title="enum GstMIKEYMacAlg"><span class="type">GstMIKEYMacAlg</span></a> <em class="structfield"><code><a name="GstMIKEYPayloadKEMAC.mac-alg"></a>mac_alg</code></em>;</p></td>
+<td class="struct_member_description"><p>the <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYMacAlg" title="enum GstMIKEYMacAlg"><span class="type">GstMIKEYMacAlg</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#GArray"><span class="type">GArray</span></a> *<em class="structfield"><code><a name="GstMIKEYPayloadKEMAC.subpayloads"></a>subpayloads</code></em>;</p></td>
+<td> </td>
+<td> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYCacheType"></a><h3>enum GstMIKEYCacheType</h3>
+<p>The different cache types</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.13.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-CACHE-NONE:CAPS"></a>GST_MIKEY_CACHE_NONE</p></td>
+<td class="enum_member_description">
+<p>The envelope key MUST NOT be cached</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-CACHE-ALWAYS:CAPS"></a>GST_MIKEY_CACHE_ALWAYS</p></td>
+<td class="enum_member_description">
+<p>The envelope key MUST be cached</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-CACHE-FOR-CSB:CAPS"></a>GST_MIKEY_CACHE_FOR_CSB</p></td>
+<td class="enum_member_description">
+<p>The envelope key MUST be cached, but only
+                          to be used for the specific CSB.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYPayloadPKE"></a><h3>GstMIKEYPayloadPKE</h3>
+<pre class="programlisting">typedef struct {
+  GstMIKEYPayload pt;
+
+  GstMIKEYCacheType C;
+  guint16           data_len;
+  guint8           *data;
+} GstMIKEYPayloadPKE;
+</pre>
+<p>The Envelope data payload contains the encrypted envelope key that is
+used in the public-key transport to protect the data in the Key data
+transport payload.  The encryption algorithm used is implicit from
+the certificate/public key used.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.14.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> <em class="structfield"><code><a name="GstMIKEYPayloadPKE.pt"></a>pt</code></em>;</p></td>
+<td class="struct_member_description"><p>the common <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYCacheType" title="enum GstMIKEYCacheType"><span class="type">GstMIKEYCacheType</span></a> <em class="structfield"><code><a name="GstMIKEYPayloadPKE.C"></a>C</code></em>;</p></td>
+<td class="struct_member_description"><p>envelope key cache indicator</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint16</span> <em class="structfield"><code><a name="GstMIKEYPayloadPKE.data-len"></a>data_len</code></em>;</p></td>
+<td class="struct_member_description"><p>length of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> *<em class="structfield"><code><a name="GstMIKEYPayloadPKE.data"></a>data</code></em>;</p></td>
+<td class="struct_member_description"><p>the encrypted envelope key</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYTSType"></a><h3>enum GstMIKEYTSType</h3>
+<p>Specifies the timestamp type.</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.15.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-TS-TYPE-NTP-UTC:CAPS"></a>GST_MIKEY_TS_TYPE_NTP_UTC</p></td>
+<td class="enum_member_description">
+<p>an NTP time in UTC timezone</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-TS-TYPE-NTP:CAPS"></a>GST_MIKEY_TS_TYPE_NTP</p></td>
+<td class="enum_member_description">
+<p>an NTP time</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-TS-TYPE-COUNTER:CAPS"></a>GST_MIKEY_TS_TYPE_COUNTER</p></td>
+<td class="enum_member_description">
+<p>a counter</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYPayloadT"></a><h3>GstMIKEYPayloadT</h3>
+<pre class="programlisting">typedef struct {
+  GstMIKEYPayload pt;
+
+  GstMIKEYTSType  type;
+  guint8         *ts_value;
+} GstMIKEYPayloadT;
+</pre>
+<p>The timestamp payload carries the timestamp information</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.16.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> <em class="structfield"><code><a name="GstMIKEYPayloadT.pt"></a>pt</code></em>;</p></td>
+<td class="struct_member_description"><p>the payload header</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYTSType" title="enum GstMIKEYTSType"><span class="type">GstMIKEYTSType</span></a> <em class="structfield"><code><a name="GstMIKEYPayloadT.type"></a>type</code></em>;</p></td>
+<td class="struct_member_description"><p>a <a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYTSType" title="enum GstMIKEYTSType"><span class="type">GstMIKEYTSType</span></a></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> *<em class="structfield"><code><a name="GstMIKEYPayloadT.ts-value"></a>ts_value</code></em>;</p></td>
+<td class="struct_member_description"><p>the timestamp value</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYPayloadRAND"></a><h3>GstMIKEYPayloadRAND</h3>
+<pre class="programlisting">typedef struct {
+  GstMIKEYPayload pt;
+
+  guint8  len;
+  guint8 *rand;
+} GstMIKEYPayloadRAND;
+</pre>
+<p>The RAND payload consists of a (pseudo-)random bit-string</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.17.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> <em class="structfield"><code><a name="GstMIKEYPayloadRAND.pt"></a>pt</code></em>;</p></td>
+<td class="struct_member_description"><p>the payload header</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstMIKEYPayloadRAND.len"></a>len</code></em>;</p></td>
+<td class="struct_member_description"><p>the length of <em class="parameter"><code>rand</code></em>
+</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> *<em class="structfield"><code><a name="GstMIKEYPayloadRAND.rand"></a>rand</code></em>;</p></td>
+<td class="struct_member_description"><p>random values</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYSecProto"></a><h3>enum GstMIKEYSecProto</h3>
+<p>Specifies the security protocol</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.18.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody><tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SEC-PROTO-SRTP:CAPS"></a>GST_MIKEY_SEC_PROTO_SRTP</p></td>
+<td class="enum_member_description"> </td>
+<td class="enum_member_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYSecSRTP"></a><h3>enum GstMIKEYSecSRTP</h3>
+<p>This policy specifies the parameters for SRTP and SRTCP</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.19.4"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="enum_members_name">
+<col class="enum_members_description">
+<col width="200px" class="enum_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-ENC-ALG:CAPS"></a>GST_MIKEY_SP_SRTP_ENC_ALG</p></td>
+<td class="enum_member_description">
+<p>Encryption algorithm</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-ENC-KEY-LEN:CAPS"></a>GST_MIKEY_SP_SRTP_ENC_KEY_LEN</p></td>
+<td class="enum_member_description">
+<p>Session Encr. key length</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-AUTH-ALG:CAPS"></a>GST_MIKEY_SP_SRTP_AUTH_ALG</p></td>
+<td class="enum_member_description">
+<p>Authentication algorithm</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-AUTH-KEY-LEN:CAPS"></a>GST_MIKEY_SP_SRTP_AUTH_KEY_LEN</p></td>
+<td class="enum_member_description">
+<p>Session Auth. key length</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-SALT-KEY-LEN:CAPS"></a>GST_MIKEY_SP_SRTP_SALT_KEY_LEN</p></td>
+<td class="enum_member_description">
+<p>Session Salt key length</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-PRF:CAPS"></a>GST_MIKEY_SP_SRTP_PRF</p></td>
+<td class="enum_member_description">
+<p>SRTP Pseudo Random Function</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-KEY-DERIV-RATE:CAPS"></a>GST_MIKEY_SP_SRTP_KEY_DERIV_RATE</p></td>
+<td class="enum_member_description">
+<p>Key derivation rate</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-SRTP-ENC:CAPS"></a>GST_MIKEY_SP_SRTP_SRTP_ENC</p></td>
+<td class="enum_member_description">
+<p>SRTP encryption off/on, 0 if off, 1 if on</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-SRTCP-ENC:CAPS"></a>GST_MIKEY_SP_SRTP_SRTCP_ENC</p></td>
+<td class="enum_member_description">
+<p>SRTCP encryption off/on, 0 if off, 1 if on</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-FEC-ORDER:CAPS"></a>GST_MIKEY_SP_SRTP_FEC_ORDER</p></td>
+<td class="enum_member_description">
+<p>sender's FEC order</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-SRTP-AUTH:CAPS"></a>GST_MIKEY_SP_SRTP_SRTP_AUTH</p></td>
+<td class="enum_member_description">
+<p>SRTP authentication off/on, 0 if off, 1 if on</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-AUTH-TAG-LEN:CAPS"></a>GST_MIKEY_SP_SRTP_AUTH_TAG_LEN</p></td>
+<td class="enum_member_description">
+<p>Authentication tag length</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="GST-MIKEY-SP-SRTP-SRTP-PREFIX-LEN:CAPS"></a>GST_MIKEY_SP_SRTP_SRTP_PREFIX_LEN</p></td>
+<td class="enum_member_description">
+<p>SRTP prefix length</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYPayloadSP"></a><h3>GstMIKEYPayloadSP</h3>
+<pre class="programlisting">typedef struct {
+  GstMIKEYPayload pt;
+
+  guint policy;
+  GstMIKEYSecProto proto;
+  GArray *params;
+} GstMIKEYPayloadSP;
+</pre>
+<p>The Security Policy payload defines a set of policies that apply to a
+specific security protocol</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.20.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYPayload" title="struct GstMIKEYPayload"><span class="type">GstMIKEYPayload</span></a> <em class="structfield"><code><a name="GstMIKEYPayloadSP.pt"></a>pt</code></em>;</p></td>
+<td class="struct_member_description"><p>the payload header</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> <em class="structfield"><code><a name="GstMIKEYPayloadSP.policy"></a>policy</code></em>;</p></td>
+<td class="struct_member_description"><p>the policy number</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a class="link" href="gst-plugins-base-libs-gstmikey.html#GstMIKEYSecProto" title="enum GstMIKEYSecProto"><span class="type">GstMIKEYSecProto</span></a> <em class="structfield"><code><a name="GstMIKEYPayloadSP.proto"></a>proto</code></em>;</p></td>
+<td class="struct_member_description"><p>the security protocol</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><a href="http://library.gnome.org/devel/glib/unstable/glib-Arrays.html#GArray"><span class="type">GArray</span></a> *<em class="structfield"><code><a name="GstMIKEYPayloadSP.params"></a>params</code></em>;</p></td>
+<td class="struct_member_description"><p>array of <span class="type">GstMIKEYPayloadPSParam</span></p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="GstMIKEYPayloadSPParam"></a><h3>GstMIKEYPayloadSPParam</h3>
+<pre class="programlisting">typedef struct {
+  guint8  type;
+  guint8  len;
+  guint8 *val;
+} GstMIKEYPayloadSPParam;
+</pre>
+<p>A Type/Length/Value field for security paramaters</p>
+<div class="refsect3">
+<a name="id-1.2.12.3.9.21.5"></a><h4>Members</h4>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="300px" class="struct_members_name">
+<col class="struct_members_description">
+<col width="200px" class="struct_members_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstMIKEYPayloadSPParam.type"></a>type</code></em>;</p></td>
+<td class="struct_member_description"><p>specifies the type of the parameter</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> <em class="structfield"><code><a name="GstMIKEYPayloadSPParam.len"></a>len</code></em>;</p></td>
+<td class="struct_member_description"><p>specifies the length of <em class="parameter"><code>val</code></em>
+</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+<tr>
+<td class="struct_member_name"><p><span class="type">guint8</span> *<em class="structfield"><code><a name="GstMIKEYPayloadSPParam.val"></a>val</code></em>;</p></td>
+<td class="struct_member_description"><p>specifies the value of the parameter</p></td>
+<td class="struct_member_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr>
+          Generated by GTK-Doc V1.20</div>
+</body>
+</html>

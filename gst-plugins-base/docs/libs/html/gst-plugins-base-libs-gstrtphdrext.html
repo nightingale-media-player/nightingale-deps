@@ -2,30 +2,27 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>gstrtphdrext</title>
+<title>GStreamer Base Plugins 1.0 Library Reference Manual: gstrtphdrext</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Library Reference Manual">
 <link rel="up" href="gstreamer-rtp.html" title="RTP Library">
 <link rel="prev" href="gst-plugins-base-libs-gstrtppayloads.html" title="gstrtppayloads">
 <link rel="next" href="gstreamer-rtsp.html" title="RTSP Library">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-libs-gstrtppayloads.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="gstreamer-rtp.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 1.0 Library Reference Manual</th>
-<td><a accesskey="n" href="gstreamer-rtsp.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-base-libs-gstrtphdrext.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-libs-gstrtphdrext.description" class="shortcut">Description</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstrtphdrext.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-libs-gstrtphdrext.object-hierarchy" class="shortcut">Object Hierarchy</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="gstreamer-rtp.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-libs-gstrtppayloads.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gstreamer-rtsp.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-base-libs-gstrtphdrext"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -33,183 +30,254 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-base-libs-gstrtphdrext.top_of_page"></a>gstrtphdrext</span></h2>
 <p>gstrtphdrext</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-base-libs-gstrtphdrext.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis">
-#include &lt;gst/rtp/gstrtphdrext.h&gt;
-
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstrtphdrext.html#gst-rtp-hdrext-get-ntp-56" title="gst_rtp_hdrext_get_ntp_56 ()">gst_rtp_hdrext_get_ntp_56</a>           (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint64</span> *ntptime</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstrtphdrext.html#gst-rtp-hdrext-get-ntp-64" title="gst_rtp_hdrext_get_ntp_64 ()">gst_rtp_hdrext_get_ntp_64</a>           (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint64</span> *ntptime</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstrtphdrext.html#gst-rtp-hdrext-set-ntp-56" title="gst_rtp_hdrext_set_ntp_56 ()">gst_rtp_hdrext_set_ntp_56</a>           (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint64</span> ntptime</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="gst-plugins-base-libs-gstrtphdrext.html#gst-rtp-hdrext-set-ntp-64" title="gst_rtp_hdrext_set_ntp_64 ()">gst_rtp_hdrext_set_ntp_64</a>           (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint64</span> ntptime</code></em>);
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtphdrext.functions"></a><h2>Functions</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="functions_return">
+<col class="functions_name">
+</colgroup>
+<tbody>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstrtphdrext.html#gst-rtp-hdrext-get-ntp-56" title="gst_rtp_hdrext_get_ntp_56 ()">gst_rtp_hdrext_get_ntp_56</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstrtphdrext.html#gst-rtp-hdrext-get-ntp-64" title="gst_rtp_hdrext_get_ntp_64 ()">gst_rtp_hdrext_get_ntp_64</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstrtphdrext.html#gst-rtp-hdrext-set-ntp-56" title="gst_rtp_hdrext_set_ntp_56 ()">gst_rtp_hdrext_set_ntp_56</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="gst-plugins-base-libs-gstrtphdrext.html#gst-rtp-hdrext-set-ntp-64" title="gst_rtp_hdrext_set_ntp_64 ()">gst_rtp_hdrext_set_ntp_64</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtphdrext.object-hierarchy"></a><h2>Object Hierarchy</h2>
+<pre class="screen">
+</pre>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtphdrext.includes"></a><h2>Includes</h2>
+<pre class="synopsis">#include &lt;gst/rtp/gstrtphdrext.h&gt;
 </pre>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-base-libs-gstrtphdrext.description"></a><h2>Description</h2>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-base-libs-gstrtphdrext.details"></a><h2>Details</h2>
+<a name="gst-plugins-base-libs-gstrtphdrext.functions_details"></a><h2>Functions</h2>
 <div class="refsect2">
-<a name="gst-rtp-hdrext-get-ntp-56"></a><h3>gst_rtp_hdrext_get_ntp_56 ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_rtp_hdrext_get_ntp_56           (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint64</span> *ntptime</code></em>);</pre>
-<p>
-Reads the NTP time from the <em class="parameter"><code>size</code></em> NTP-56 extension bytes in <em class="parameter"><code>data</code></em> and store the
-result in <em class="parameter"><code>ntptime</code></em>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="gst-rtp-hdrext-get-ntp-56"></a><h3>gst_rtp_hdrext_get_ntp_56 ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_rtp_hdrext_get_ntp_56 (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
+                           <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
+                           <em class="parameter"><code><span class="type">guint64</span> *ntptime</code></em>);</pre>
+<p>Reads the NTP time from the <em class="parameter"><code>size</code></em>
+ NTP-56 extension bytes in <em class="parameter"><code>data</code></em>
+ and store the
+result in <em class="parameter"><code>ntptime</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.9.9.7.2.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td>the data to read from</td>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>the data to read from</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
-<td>the size of <em class="parameter"><code>data</code></em>
-</td>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>ntptime</code></em> :</span></p></td>
-<td>the result NTP time</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success.</td>
+<td class="parameter_name"><p>ntptime</p></td>
+<td class="parameter_description"><p>the result NTP time</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.9.9.7.2.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success.</p>
+<p></p>
+</div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="gst-rtp-hdrext-get-ntp-64"></a><h3>gst_rtp_hdrext_get_ntp_64 ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_rtp_hdrext_get_ntp_64           (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint64</span> *ntptime</code></em>);</pre>
-<p>
-Reads the NTP time from the <em class="parameter"><code>size</code></em> NTP-64 extension bytes in <em class="parameter"><code>data</code></em> and store the
-result in <em class="parameter"><code>ntptime</code></em>.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="gst-rtp-hdrext-get-ntp-64"></a><h3>gst_rtp_hdrext_get_ntp_64 ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_rtp_hdrext_get_ntp_64 (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
+                           <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
+                           <em class="parameter"><code><span class="type">guint64</span> *ntptime</code></em>);</pre>
+<p>Reads the NTP time from the <em class="parameter"><code>size</code></em>
+ NTP-64 extension bytes in <em class="parameter"><code>data</code></em>
+ and store the
+result in <em class="parameter"><code>ntptime</code></em>
+.</p>
+<div class="refsect3">
+<a name="id-1.2.9.9.7.3.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td>the data to read from</td>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>the data to read from</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
-<td>the size of <em class="parameter"><code>data</code></em>
-</td>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>ntptime</code></em> :</span></p></td>
-<td>the result NTP time</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success.</td>
+<td class="parameter_name"><p>ntptime</p></td>
+<td class="parameter_description"><p>the result NTP time</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.9.9.7.3.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success.</p>
+<p></p>
+</div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="gst-rtp-hdrext-set-ntp-56"></a><h3>gst_rtp_hdrext_set_ntp_56 ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_rtp_hdrext_set_ntp_56           (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint64</span> ntptime</code></em>);</pre>
-<p>
-Writes the NTP time in <em class="parameter"><code>ntptime</code></em> to the format required for the NTP-56 header
-extension. <em class="parameter"><code>data</code></em> must hold at least <span class="type">GST_RTP_HDREXT_NTP_56_SIZE</span> bytes.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="gst-rtp-hdrext-set-ntp-56"></a><h3>gst_rtp_hdrext_set_ntp_56 ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_rtp_hdrext_set_ntp_56 (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
+                           <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
+                           <em class="parameter"><code><span class="type">guint64</span> ntptime</code></em>);</pre>
+<p>Writes the NTP time in <em class="parameter"><code>ntptime</code></em>
+ to the format required for the NTP-56 header
+extension. <em class="parameter"><code>data</code></em>
+ must hold at least <span class="type">GST_RTP_HDREXT_NTP_56_SIZE</span> bytes.</p>
+<div class="refsect3">
+<a name="id-1.2.9.9.7.4.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td>the data to write to</td>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>the data to write to</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
-<td>the size of <em class="parameter"><code>data</code></em>
-</td>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>ntptime</code></em> :</span></p></td>
-<td>the NTP time</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success.</td>
+<td class="parameter_name"><p>ntptime</p></td>
+<td class="parameter_description"><p>the NTP time</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
+</div>
+<div class="refsect3">
+<a name="id-1.2.9.9.7.4.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success.</p>
+<p></p>
+</div>
 </div>
 <hr>
 <div class="refsect2">
-<a name="gst-rtp-hdrext-set-ntp-64"></a><h3>gst_rtp_hdrext_set_ntp_64 ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            gst_rtp_hdrext_set_ntp_64           (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
-                                                         <em class="parameter"><code><span class="type">guint64</span> ntptime</code></em>);</pre>
-<p>
-Writes the NTP time in <em class="parameter"><code>ntptime</code></em> to the format required for the NTP-64 header
-extension. <em class="parameter"><code>data</code></em> must hold at least <span class="type">GST_RTP_HDREXT_NTP_64_SIZE</span> bytes.
-</p>
-<div class="variablelist"><table border="0" class="variablelist">
+<a name="gst-rtp-hdrext-set-ntp-64"></a><h3>gst_rtp_hdrext_set_ntp_64 ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+gst_rtp_hdrext_set_ntp_64 (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gpointer"><span class="type">gpointer</span></a> data</code></em>,
+                           <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> size</code></em>,
+                           <em class="parameter"><code><span class="type">guint64</span> ntptime</code></em>);</pre>
+<p>Writes the NTP time in <em class="parameter"><code>ntptime</code></em>
+ to the format required for the NTP-64 header
+extension. <em class="parameter"><code>data</code></em>
+ must hold at least <span class="type">GST_RTP_HDREXT_NTP_64_SIZE</span> bytes.</p>
+<div class="refsect3">
+<a name="id-1.2.9.9.7.5.5"></a><h4>Parameters</h4>
+<div class="informaltable"><table width="100%" border="0">
 <colgroup>
-<col align="left" valign="top">
-<col>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
 </colgroup>
 <tbody>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>data</code></em> :</span></p></td>
-<td>the data to write to</td>
+<td class="parameter_name"><p>data</p></td>
+<td class="parameter_description"><p>the data to write to</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>size</code></em> :</span></p></td>
-<td>the size of <em class="parameter"><code>data</code></em>
-</td>
+<td class="parameter_name"><p>size</p></td>
+<td class="parameter_description"><p>the size of <em class="parameter"><code>data</code></em>
+</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 <tr>
-<td><p><span class="term"><em class="parameter"><code>ntptime</code></em> :</span></p></td>
-<td>the NTP time</td>
-</tr>
-<tr>
-<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success.</td>
+<td class="parameter_name"><p>ntptime</p></td>
+<td class="parameter_description"><p>the NTP time</p></td>
+<td class="parameter_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
 </div>
+<div class="refsect3">
+<a name="id-1.2.9.9.7.5.6"></a><h4>Returns</h4>
+<p> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> on success.</p>
+<p></p>
+</div>
+</div>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-libs-gstrtphdrext.other_details"></a><h2>Types and Values</h2>
 </div>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

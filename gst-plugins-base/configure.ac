@@ -5,7 +5,7 @@ dnl please read gstreamer/docs/random/autotools before changing this file
 dnl initialize autoconf
 dnl releases only do -Wall, git and prerelease does -Werror too
 dnl use a three digit version number for releases, and four for git/prerelease
-AC_INIT([GStreamer Base Plug-ins],[1.2.3],[http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer],[gst-plugins-base])
+AC_INIT([GStreamer Base Plug-ins],[1.4.0],[http://bugzilla.gnome.org/enter_bug.cgi?product=GStreamer],[gst-plugins-base])
 
 AG_GST_INIT
 
@@ -56,10 +56,10 @@ dnl      1.2.5 => 205
 dnl      1.10.9 (who knows) => 1009
 dnl
 dnl sets GST_LT_LDFLAGS
-AS_LIBTOOL(GST, 203, 0, 203)
+AS_LIBTOOL(GST, 400, 0, 400)
 
 dnl *** required versions of GStreamer stuff ***
-GST_REQ=1.2.0
+GST_REQ=1.4.0
 
 dnl *** autotools stuff ****
 
@@ -180,6 +180,14 @@ AC_CHECK_HEADERS([sys/socket.h],
   [HAVE_SYS_SOCKET_H="yes"], [HAVE_SYS_SOCKET_H="no"], [AC_INCLUDES_DEFAULT])
 AM_CONDITIONAL(HAVE_SYS_SOCKET_H, test "x$HAVE_SYS_SOCKET_H" = "xyes")
 
+dnl used in gst-libs/gst/rtsp
+AC_CHECK_HEADERS([winsock2.h], [HAVE_WINSOCK2_H=yes], [HAVE_WINSOCK2_H=no], [AC_INCLUDES_DEFAULT])
+AM_CONDITIONAL(HAVE_WINSOCK2_H, test "x$HAVE_WINSOCK2_H" = "xyes")
+if test "x$HAVE_WINSOCK2_H" = "xyes"; then
+  WIN32_LIBS="-lws2_32"
+  AC_SUBST(WIN32_LIBS)
+fi
+
 dnl used in gst-libs/gst/pbutils and associated unit test
 AC_CHECK_HEADERS([process.h sys/types.h sys/wait.h sys/stat.h], [], [], [AC_INCLUDES_DEFAULT])
 
@@ -274,22 +282,47 @@ AM_CONDITIONAL(HAVE_GTK, test "x$HAVE_GTK" = "xyes")
 AM_CONDITIONAL(HAVE_GTK_X11, test "x$HAVE_GTK_X11" = "xyes")
 AM_CONDITIONAL(HAVE_GTK_QUARTZ, test "x$HAVE_GTK_QUARTZ" = "xyes")
 
+HAVE_QT=no
+HAVE_QT_MOC=no
 dnl QT is optional and only used in examples
-PKG_CHECK_MODULES(QT, QtGui >= 4.6, [
-  HAVE_QT_GV=yes
+PKG_CHECK_MODULES(QT, Qt5Gui Qt5Widgets, [
   HAVE_QT=yes
 ], [
-  HAVE_QT_GV=no
-  PKG_CHECK_MODULES(QT, QtGui >= 4.0, HAVE_QT=yes, HAVE_QT=no)
+  HAVE_QT=no
 ])
 if test "x$HAVE_QT" = "xyes"; then
-  AC_MSG_CHECKING([Qt moc])
-  QT4_MOC=`$PKG_CONFIG --variable=moc_location QtGui`
-  AC_MSG_RESULT($QT4_MOC)
-  AC_SUBST(QT4_MOC)
+  AC_CHECK_TOOL(QT_MOC, moc)
+  AC_MSG_CHECKING([for Qt5 moc])
+  mocversion=`$QT_MOC -v 2>&1`
+  mocversiongrep=`echo $mocversion | grep "Qt 5\|moc 5"`
+  if test x"$mocversiongrep" != x"$mocversion"; then
+    AC_MSG_RESULT([no])
+    # moc was not the qt5 one, try with moc-qt5
+    AC_CHECK_TOOL(QT_MOC, moc-qt5)
+    AC_MSG_CHECKING([for Qt5 moc-qt5])
+    mocversion=`$QT_MOC -v 2>&1`
+    mocversiongrep=`echo $mocversion | grep "Qt 5\|moc 5"`
+    if test x"$mocversiongrep" != x"$mocversion"; then
+      AC_CHECK_TOOL(QTCHOOSER, qtchooser)
+      AC_MSG_CHECKING([for qtchooser])
+      qt5tooldir=`QT_SELECT=qt5 qtchooser -print-env | grep QTTOOLDIR | cut -d '=' -f 2 | cut -d \" -f 2`
+      mocversion=`$qt5tooldir/moc -v 2>&1`
+      mocversiongrep=`echo $mocversion | grep "Qt 5\|moc 5"`
+      if test x"$mocversiongrep" != x"$mocversion"; then
+        # no valid moc found
+        QT_MOC="no"
+      else
+        QT_MOC=$qt5tooldir/moc
+      fi
+    else
+      QT_MOC=$QT_MOC
+    fi
+  fi
+  AC_SUBST(QT_MOC)
+  AC_MSG_RESULT([$QT_MOC])
 fi
 AM_CONDITIONAL(HAVE_QT, test "x$HAVE_QT" = "xyes")
-AM_CONDITIONAL(HAVE_QT_GV, test "x$HAVE_QT_GV" = "xyes")
+AM_CONDITIONAL(HAVE_QT_MOC, test "x$HAVE_QT_MOC" != "xno")
 
 dnl chck for linux headers needed by the joystick seek example
 AC_COMPILE_IFELSE(
@@ -509,30 +542,7 @@ dnl *** X11 ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_X, true)
 AG_GST_CHECK_FEATURE(X, [X libraries and plugins],
                   [ximagesink], [
-  AC_PATH_XTRA
-  ac_cflags_save="$CFLAGS"
-  ac_cppflags_save="$CPPFLAGS"
-  CFLAGS="$CFLAGS $X_CFLAGS"
-  CPPFLAGS="$CPPFLAGS $X_CFLAGS"
-
-  dnl now try to find the HEADER
-  AC_CHECK_HEADER([X11/Xlib.h], [HAVE_X="yes"], [HAVE_X="no"], [AC_INCLUDES_DEFAULT])
-
-  if test "x$HAVE_X" = "xno"
-  then
-    AC_MSG_NOTICE([cannot find X11 development files])
-  else
-    dnl this is much more than we want
-    X_LIBS="$X_LIBS $X_PRE_LIBS $X_EXTRA_LIBS"
-    dnl AC_PATH_XTRA only defines the path needed to find the X libs,
-    dnl it does not add the libs; therefore we add them here
-    X_LIBS="$X_LIBS -lX11"
-    AC_SUBST(X_CFLAGS)
-    AC_SUBST(X_LIBS)
-  fi
-  AC_SUBST(HAVE_X)
-  CFLAGS="$ac_cflags_save"
-  CPPFLAGS="$ac_cppflags_save"
+  AG_GST_CHECK_X
 ])
 
 dnl Check for Xv extension
@@ -661,16 +671,8 @@ dnl *** libvisual ***
 translit(dnm, m, l) AM_CONDITIONAL(USE_LIBVISUAL, true)
 AG_GST_CHECK_FEATURE(LIBVISUAL, [libvisual visualization library], libvisual, [
   AG_GST_PKG_CHECK_MODULES(LIBVISUAL, libvisual-0.4 >= 0.4.0)
-  if test $HAVE_LIBVISUAL = no
-  then
-    AG_GST_PKG_CHECK_MODULES(LIBVISUAL, libvisual = 0.2.0)
-    if test x$HAVE_LIBVISUAL = xyes; then
-      LIBVIS_PLUGINSDIR="`$PKG_CONFIG --variable=pluginsbasedir libvisual-0.2`"
-    fi
-  else
-    if test x$HAVE_LIBVISUAL = xyes; then
-      LIBVIS_PLUGINSDIR="`$PKG_CONFIG --variable=pluginsbasedir libvisual-0.4`"
-    fi
+  if test x$HAVE_LIBVISUAL = xyes; then
+    LIBVIS_PLUGINSDIR="`$PKG_CONFIG --variable=pluginsbasedir libvisual-0.4`"
   fi
   AC_MSG_NOTICE([libvisual pluginsdir: $LIBVIS_PLUGINSDIR])
   if test x$LIBVIS_PLUGINSDIR != x; then

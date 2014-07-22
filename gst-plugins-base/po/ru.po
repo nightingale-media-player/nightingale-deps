@@ -3,20 +3,20 @@
 #
 # Артём Попов <artfwo@gmail.com>, 2009.
 # Pavel Maryanov <acid_jack@ukr.net>, 2009.
-# Yuri Kozlov <yuray@komyakino.ru>, 2010, 2011, 2012, 2013.
+# Yuri Kozlov <yuray@komyakino.ru>, 2010, 2011, 2012, 2013, 2014.
 msgid ""
 msgstr ""
-"Project-Id-Version: gst-plugins-base 1.2.1\n"
+"Project-Id-Version: gst-plugins-base 1.3.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/\n"
-"POT-Creation-Date: 2014-02-08 11:40+0100\n"
-"PO-Revision-Date: 2013-12-08 12:52+0400\n"
+"POT-Creation-Date: 2014-07-19 16:23+0200\n"
+"PO-Revision-Date: 2014-05-22 20:01+0400\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <gnu@mx.ru>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: Lokalize 1.5\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
@@ -514,11 +514,19 @@ msgstr "музыкальный ключ"
 msgid "Initial key in which the sound starts"
 msgstr "Начальный ключ, с которого начинается звук"
 
+msgid "Print version information and exit"
+msgstr "Вывод информации о версии и выход из программы"
+
+msgid ""
+"Don't exit after showing the initial device list, but wait for devices to "
+"added/removed."
+msgstr ""
+
 msgid "Buffering..."
 msgstr "Буферизация…"
 
-msgid "Print version information and exit"
-msgstr "Вывод информации о версии и выход из программы"
+msgid "Clock lost, selecting a new one\n"
+msgstr "Часы потеряны, выбираем новые\n"
 
 msgid "Video sink to use (default is autovideosink)"
 msgstr "Используемый приёмник видео (по умолчанию autovideosink)"
@@ -528,6 +536,18 @@ msgstr "Используемый приёмник аудио (по умолча�
 
 msgid "Enable gapless playback"
 msgstr "Включить непрерывное воспроизведение"
+
+msgid "Shuffle playlist"
+msgstr "Перемешать список воспроизведения"
+
+msgid "Interactive control via keyboard"
+msgstr "Интерактивное управление с клавиатуры"
+
+msgid "Volume"
+msgstr "Громкость"
+
+msgid "Playlist file containing input media files"
+msgstr "Файл списка воспроизведения с входными медиа-файлами"
 
 #, c-format
 msgid "Usage: %s FILE1|URI1 [FILE2|URI2] [FILE3|URI3] ..."

@@ -90,7 +90,7 @@ struct _GstURIDecodeBin
   gchar *encoding;
 
   gboolean is_stream;
-  gboolean is_download;
+  gboolean is_adaptive;
   gboolean need_queue;
   guint64 buffer_duration;      /* When buffering, buffer duration (ns) */
   guint buffer_size;            /* When buffering, buffer size (bytes) */
@@ -272,6 +272,13 @@ _gst_select_accumulator (GSignalInvocationHint * ihint,
   res = g_value_get_enum (handler_return);
   if (!(ihint->run_type & G_SIGNAL_RUN_CLEANUP))
     g_value_set_enum (return_accu, res);
+
+  /* Call the next handler in the chain (if any) when the current callback
+   * returns TRY. This makes it possible to register separate autoplug-select
+   * handlers that implement different TRY/EXPOSE/SKIP strategies.
+   */
+  if (res == GST_AUTOPLUG_SELECT_TRY)
+    return TRUE;
 
   return FALSE;
 }
@@ -623,9 +630,11 @@ gst_uri_decode_bin_class_init (GstURIDecodeBinClass * klass)
    * next factory.
    *
    * <note>
-   *   Only the signal handler that is connected first will ever by invoked.
-   *   Don't connect signal handlers with the #G_CONNECT_AFTER flag to this
-   *   signal, they will never be invoked!
+   *   The signal handler will not be invoked if any of the previously
+   *   registered signal handlers (if any) return a value other than
+   *   GST_AUTOPLUG_SELECT_TRY. Which also means that if you return
+   *   GST_AUTOPLUG_SELECT_TRY from one signal handler, handlers that get
+   *   registered next (again, if any) can override that decision.
    * </note>
    *
    * Returns: a #GST_TYPE_AUTOPLUG_SELECT_RESULT that indicates the required
@@ -972,8 +981,17 @@ no_more_pads_full (GstElement * element, gboolean subs,
 done:
   GST_URI_DECODE_BIN_UNLOCK (decoder);
 
-  if (final)
-    gst_element_no_more_pads (GST_ELEMENT_CAST (decoder));
+  if (final) {
+    /* If we got not a single stream yet, that means that all
+     * decodebins had missing plugins for all of their streams!
+     */
+    if (!decoder->streams || g_hash_table_size (decoder->streams) == 0) {
+      GST_ELEMENT_ERROR (decoder, CORE, MISSING_PLUGIN, (NULL),
+          ("no suitable plugins found"));
+    } else {
+      gst_element_no_more_pads (GST_ELEMENT_CAST (decoder));
+    }
+  }
 
   return;
 }
@@ -1246,16 +1264,16 @@ static const gchar *queue_uris[] = { "cdda://", NULL };
 /* blacklisted URIs, we know they will always fail. */
 static const gchar *blacklisted_uris[] = { NULL };
 
-/* media types we can download */
-static const gchar *download_media[] = {
-  "video/quicktime", "video/mj2", "audio/x-m4a", "application/x-3gp",
-  "video/x-flv", "video/x-msvideo", "video/webm", NULL
+/* media types that use adaptive streaming */
+static const gchar *adaptive_media[] = {
+  "application/x-hls", "application/x-smoothstreaming-manifest",
+  "application/dash+xml", NULL
 };
 
 #define IS_STREAM_URI(uri)          (array_has_uri_value (stream_uris, uri))
 #define IS_QUEUE_URI(uri)           (array_has_uri_value (queue_uris, uri))
 #define IS_BLACKLISTED_URI(uri)     (array_has_uri_value (blacklisted_uris, uri))
-#define IS_DOWNLOAD_MEDIA(media)    (array_has_value (download_media, media))
+#define IS_ADAPTIVE_MEDIA(media)    (array_has_value (adaptive_media, media))
 
 /*
  * Generate and configure a source element.
@@ -1519,12 +1537,13 @@ analyse_source (GstURIDecodeBin * decoder, gboolean * is_raw,
         gst_iterator_resync (pads_iter);
         break;
       case GST_ITERATOR_OK:
-        pad = g_value_get_object (&item);
+        pad = g_value_dup_object (&item);
         /* we now officially have an ouput pad */
         *have_out = TRUE;
 
         /* if FALSE, this pad has no caps and we continue with the next pad. */
         if (!has_all_raw_caps (pad, rawcaps, is_raw)) {
+          gst_object_unref (pad);
           g_value_reset (&item);
           break;
         }
@@ -1551,12 +1570,14 @@ analyse_source (GstURIDecodeBin * decoder, gboolean * is_raw,
             decoder->queue = outelem;
 
             /* get the new raw srcpad */
+            gst_object_unref (pad);
             pad = gst_element_get_static_pad (outelem, "src");
           } else {
             outelem = decoder->source;
           }
           expose_decoded_pad (outelem, pad, decoder);
         }
+        gst_object_unref (pad);
         g_value_reset (&item);
         break;
     }
@@ -1592,6 +1613,7 @@ no_queue2:
   {
     post_missing_plugin_error (GST_ELEMENT_CAST (decoder), "queue2");
 
+    gst_object_unref (pad);
     g_value_unset (&item);
     gst_iterator_free (pads_iter);
     gst_caps_unref (rawcaps);
@@ -1809,13 +1831,14 @@ make_decoder (GstURIDecodeBin * decoder)
   g_object_set (decodebin, "expose-all-streams", decoder->expose_allstreams,
       "connection-speed", decoder->connection_speed / 1000, NULL);
 
-  if (!decoder->is_stream) {
+  if (!decoder->is_stream || decoder->is_adaptive) {
     /* propagate the use-buffering property but only when we are not already
      * doing stream buffering with queue2. FIXME, we might want to do stream
      * buffering with the multiqueue buffering instead of queue2. */
-    g_object_set (decodebin, "use-buffering", decoder->use_buffering, NULL);
+    g_object_set (decodebin, "use-buffering", decoder->use_buffering
+        || decoder->is_adaptive, NULL);
 
-    if (decoder->use_buffering) {
+    if (decoder->use_buffering || decoder->is_adaptive) {
       guint max_bytes;
       guint64 max_time;
 
@@ -1823,7 +1846,7 @@ make_decoder (GstURIDecodeBin * decoder)
       if ((max_bytes = decoder->buffer_size) == -1)
         max_bytes = 2 * 1024 * 1024;
       if ((max_time = decoder->buffer_duration) == -1)
-        max_time = 2 * GST_SECOND;
+        max_time = 5 * GST_SECOND;
 
       g_object_set (decodebin, "max-size-bytes", max_bytes, "max-size-buffers",
           (guint) 0, "max-size-time", max_time, NULL);
@@ -1864,23 +1887,23 @@ static void
 type_found (GstElement * typefind, guint probability,
     GstCaps * caps, GstURIDecodeBin * decoder)
 {
-  GstElement *dec_elem, *queue;
+  GstElement *src_elem, *dec_elem, *queue = NULL;
   GstStructure *s;
-  const gchar *media_type;
+  const gchar *media_type, *elem_name;
+  gboolean do_download = FALSE;
 
   GST_DEBUG_OBJECT (decoder, "typefind found caps %" GST_PTR_FORMAT, caps);
 
   s = gst_caps_get_structure (caps, 0);
   media_type = gst_structure_get_name (s);
 
-  /* remember if we need download buffering */
-  decoder->is_download = IS_DOWNLOAD_MEDIA (media_type) && decoder->download;
+  decoder->is_adaptive = IS_ADAPTIVE_MEDIA (media_type);
+
   /* only enable download buffering if the upstream duration is known */
-  if (decoder->is_download) {
+  if (decoder->download) {
     gint64 dur;
 
-    decoder->is_download =
-        (gst_element_query_duration (typefind, GST_FORMAT_BYTES, &dur)
+    do_download = (gst_element_query_duration (typefind, GST_FORMAT_BYTES, &dur)
         && dur != -1);
   }
 
@@ -1888,68 +1911,79 @@ type_found (GstElement * typefind, guint probability,
   if (!dec_elem)
     goto no_decodebin;
 
-  queue = gst_element_factory_make ("queue2", NULL);
-  if (!queue)
-    goto no_queue2;
+  if (decoder->is_adaptive) {
+    src_elem = typefind;
+  } else {
+    if (do_download) {
+      elem_name = "downloadbuffer";
+    } else {
+      elem_name = "queue2";
+    }
+    queue = gst_element_factory_make (elem_name, NULL);
+    if (!queue)
+      goto no_buffer_element;
 
-  g_object_set (queue, "use-buffering", TRUE, NULL);
-  g_object_set (queue, "ring-buffer-max-size", decoder->ring_buffer_max_size,
-      NULL);
-  decoder->queue = queue;
+    decoder->queue = queue;
 
-  GST_DEBUG_OBJECT (decoder, "check media-type %s, %d", media_type,
-      decoder->download);
+    GST_DEBUG_OBJECT (decoder, "check media-type %s, %d", media_type,
+        do_download);
 
-  if (decoder->is_download) {
-    gchar *temp_template, *filename;
-    const gchar *tmp_dir, *prgname;
+    if (do_download) {
+      gchar *temp_template, *filename;
+      const gchar *tmp_dir, *prgname;
 
-    tmp_dir = g_get_user_cache_dir ();
-    prgname = g_get_prgname ();
-    if (prgname == NULL)
-      prgname = "GStreamer";
+      tmp_dir = g_get_user_cache_dir ();
+      prgname = g_get_prgname ();
+      if (prgname == NULL)
+        prgname = "GStreamer";
 
-    filename = g_strdup_printf ("%s-XXXXXX", prgname);
+      filename = g_strdup_printf ("%s-XXXXXX", prgname);
 
-    /* build our filename */
-    temp_template = g_build_filename (tmp_dir, filename, NULL);
+      /* build our filename */
+      temp_template = g_build_filename (tmp_dir, filename, NULL);
 
-    GST_DEBUG_OBJECT (decoder, "enable download buffering in %s (%s, %s, %s)",
-        temp_template, tmp_dir, prgname, filename);
+      GST_DEBUG_OBJECT (decoder, "enable download buffering in %s (%s, %s, %s)",
+          temp_template, tmp_dir, prgname, filename);
 
-    /* configure progressive download for selected media types */
-    g_object_set (queue, "temp-template", temp_template, NULL);
+      /* configure progressive download for selected media types */
+      g_object_set (queue, "temp-template", temp_template, NULL);
 
-    g_free (filename);
-    g_free (temp_template);
+      g_free (filename);
+      g_free (temp_template);
+    } else {
+      g_object_set (queue, "use-buffering", TRUE, NULL);
+      g_object_set (queue, "ring-buffer-max-size",
+          decoder->ring_buffer_max_size, NULL);
+      /* Disable max-size-buffers */
+      g_object_set (queue, "max-size-buffers", 0, NULL);
+    }
+
+    /* If buffer size or duration are set, set them on the element */
+    if (decoder->buffer_size != -1)
+      g_object_set (queue, "max-size-bytes", decoder->buffer_size, NULL);
+    if (decoder->buffer_duration != -1)
+      g_object_set (queue, "max-size-time", decoder->buffer_duration, NULL);
+
+    gst_bin_add (GST_BIN_CAST (decoder), queue);
+
+    if (!gst_element_link_pads (typefind, "src", queue, "sink"))
+      goto could_not_link;
+    src_elem = queue;
   }
-
-  /* Disable max-size-buffers */
-  g_object_set (queue, "max-size-buffers", 0, NULL);
-
-  /* If buffer size or duration are set, set them on the queue2 element */
-  if (decoder->buffer_size != -1)
-    g_object_set (queue, "max-size-bytes", decoder->buffer_size, NULL);
-  if (decoder->buffer_duration != -1)
-    g_object_set (queue, "max-size-time", decoder->buffer_duration, NULL);
-
-  gst_bin_add (GST_BIN_CAST (decoder), queue);
-
-  if (!gst_element_link_pads (typefind, "src", queue, "sink"))
-    goto could_not_link;
 
   /* to force caps on the decodebin element and avoid reparsing stuff by
    * typefind. It also avoids a deadlock in the way typefind activates pads in
    * the state change */
   g_object_set (dec_elem, "sink-caps", caps, NULL);
 
-  if (!gst_element_link_pads (queue, "src", dec_elem, "sink"))
+  if (!gst_element_link_pads (src_elem, "src", dec_elem, "sink"))
     goto could_not_link;
 
   /* PLAYING in one go might fail (see bug #632782) */
   gst_element_set_state (dec_elem, GST_STATE_PAUSED);
   gst_element_set_state (dec_elem, GST_STATE_PLAYING);
-  gst_element_set_state (queue, GST_STATE_PLAYING);
+  if (queue)
+    gst_element_set_state (queue, GST_STATE_PLAYING);
 
   do_async_done (decoder);
 
@@ -1967,9 +2001,9 @@ could_not_link:
         (NULL), ("Can't link typefind to decodebin element"));
     return;
   }
-no_queue2:
+no_buffer_element:
   {
-    post_missing_plugin_error (GST_ELEMENT_CAST (decoder), "queue2");
+    post_missing_plugin_error (GST_ELEMENT_CAST (decoder), elem_name);
     return;
   }
 }
@@ -2361,15 +2395,42 @@ handle_redirect_message (GstURIDecodeBin * dec, GstMessage * msg)
 static void
 handle_message (GstBin * bin, GstMessage * msg)
 {
-  if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ELEMENT
-      && gst_message_has_name (msg, "redirect")) {
-    /* sort redirect messages based on the connection speed. This simplifies
-     * the user of this element as it can in most cases just pick the first item
-     * of the sorted list as a good redirection candidate. It can of course
-     * choose something else from the list if it has a better way. */
-    msg = handle_redirect_message (GST_URI_DECODE_BIN (bin), msg);
+  switch (GST_MESSAGE_TYPE (msg)) {
+    case GST_MESSAGE_ELEMENT:{
+      if (gst_message_has_name (msg, "redirect")) {
+        /* sort redirect messages based on the connection speed. This simplifies
+         * the user of this element as it can in most cases just pick the first item
+         * of the sorted list as a good redirection candidate. It can of course
+         * choose something else from the list if it has a better way. */
+        msg = handle_redirect_message (GST_URI_DECODE_BIN (bin), msg);
+      }
+      break;
+    }
+    case GST_MESSAGE_ERROR:{
+      GError *err = NULL;
+
+      /* Filter out missing plugin error messages from the decodebins. Only if
+       * all decodebins exposed no streams we will report a missing plugin
+       * error from no_more_pads_full()
+       */
+      gst_message_parse_error (msg, &err, NULL);
+      if (g_error_matches (err, GST_CORE_ERROR, GST_CORE_ERROR_MISSING_PLUGIN)
+          || g_error_matches (err, GST_STREAM_ERROR,
+              GST_STREAM_ERROR_CODEC_NOT_FOUND)) {
+        no_more_pads_full (GST_ELEMENT (GST_MESSAGE_SRC (msg)), FALSE,
+            GST_URI_DECODE_BIN (bin));
+        gst_message_unref (msg);
+        msg = NULL;
+      }
+      g_clear_error (&err);
+      break;
+    }
+    default:
+      break;
   }
-  GST_BIN_CLASS (parent_class)->handle_message (bin, msg);
+
+  if (msg)
+    GST_BIN_CLASS (parent_class)->handle_message (bin, msg);
 }
 
 /* generic struct passed to all query fold methods

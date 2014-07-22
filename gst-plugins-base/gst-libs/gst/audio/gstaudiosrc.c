@@ -63,8 +63,6 @@
  * All scheduling of samples and timestamps is done in this base class
  * together with #GstAudioBaseSrc using a default implementation of a
  * #GstAudioRingBuffer that uses threads.
- *
- * Last reviewed on 2006-09-27 (0.10.12)
  */
 
 #include <string.h>
@@ -196,7 +194,7 @@ typedef guint (*ReadFunc)
 
 /* this internal thread does nothing else but read samples from the audio device.
  * It will read each segment in the ringbuffer and will update the play
- * pointer. 
+ * pointer.
  * The start/stop methods control the thread.
  */
 static void

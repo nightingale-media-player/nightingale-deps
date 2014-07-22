@@ -2,36 +2,29 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>vorbisenc</title>
+<title>GStreamer Base Plugins 1.0 Plugins Reference Manual: vorbisenc</title>
 <meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GStreamer Base Plugins 1.0 Plugins Reference Manual">
 <link rel="up" href="ch01.html" title="gst-plugins-base Elements">
 <link rel="prev" href="gst-plugins-base-plugins-vorbisdec.html" title="vorbisdec">
 <link rel="next" href="gst-plugins-base-plugins-vorbisparse.html" title="vorbisparse">
-<meta name="generator" content="GTK-Doc V1.19 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
-<tr valign="middle">
-<td><a accesskey="p" href="gst-plugins-base-plugins-vorbisdec.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GStreamer Base Plugins 1.0 Plugins Reference Manual</th>
-<td><a accesskey="n" href="gst-plugins-base-plugins-vorbisparse.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
-</tr>
-<tr><td colspan="5" class="shortcuts">
-<a href="#gst-plugins-base-plugins-vorbisenc.synopsis" class="shortcut">Top</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-vorbisenc.description" class="shortcut">Description</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-vorbisenc.object-hierarchy" class="shortcut">Object Hierarchy</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-vorbisenc.implemented-interfaces" class="shortcut">Implemented Interfaces</a>
-                   | 
-                  <a href="#gst-plugins-base-plugins-vorbisenc.properties" class="shortcut">Properties</a>
-</td></tr>
-</table>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="10"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts">
+<a href="#" class="shortcut">Top</a><span id="nav_description"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-vorbisenc.description" class="shortcut">Description</a></span><span id="nav_hierarchy"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-vorbisenc.object-hierarchy" class="shortcut">Object Hierarchy</a></span><span id="nav_interfaces"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-vorbisenc.implemented-interfaces" class="shortcut">Implemented Interfaces</a></span><span id="nav_properties"> <span class="dim">|</span> 
+                  <a href="#gst-plugins-base-plugins-vorbisenc.properties" class="shortcut">Properties</a></span>
+</td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="ch01.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gst-plugins-base-plugins-vorbisdec.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="gst-plugins-base-plugins-vorbisparse.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
+</tr></table>
 <div class="refentry">
 <a name="gst-plugins-base-plugins-vorbisenc"></a><div class="titlepage"></div>
 <div class="refnamediv"><table width="100%"><tr>
@@ -39,22 +32,72 @@
 <h2><span class="refentrytitle"><a name="gst-plugins-base-plugins-vorbisenc.top_of_page"></a>vorbisenc</span></h2>
 <p>vorbisenc — Encodes audio in Vorbis format</p>
 </td>
-<td valign="top" align="right"></td>
+<td class="gallery_image" valign="top" align="right"></td>
 </tr></table></div>
-<div class="refsynopsisdiv">
-<a name="gst-plugins-base-plugins-vorbisenc.synopsis"></a><h2>Synopsis</h2>
-<a name="GstVorbisEnc"></a><pre class="synopsis">struct              <a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc-struct" title="struct GstVorbisEnc">GstVorbisEnc</a>;
-</pre>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-vorbisenc.properties"></a><h2>Properties</h2>
+<div class="informaltable"><table border="0">
+<colgroup>
+<col width="150px" class="properties_type">
+<col width="300px" class="properties_name">
+<col width="200px" class="properties_flags">
+</colgroup>
+<tbody>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--bitrate" title="The “bitrate” property">bitrate</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type">
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--last-message" title="The “last-message” property">last-message</a></td>
+<td class="property_flags">Read</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--managed" title="The “managed” property">managed</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--max-bitrate" title="The “max-bitrate” property">max-bitrate</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--min-bitrate" title="The “min-bitrate” property">min-bitrate</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+<tr>
+<td class="property_type"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></td>
+<td class="property_name"><a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--quality" title="The “quality” property">quality</a></td>
+<td class="property_flags">Read / Write</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<a name="GstVorbisEnc"></a><div class="refsect1">
+<a name="gst-plugins-base-plugins-vorbisenc.other"></a><h2>Types and Values</h2>
+<div class="informaltable"><table width="100%" border="0">
+<colgroup>
+<col width="150px" class="name">
+<col class="description">
+</colgroup>
+<tbody><tr>
+<td class="datatype_keyword">struct</td>
+<td class="function_name"><a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc-struct" title="struct GstVorbisEnc">GstVorbisEnc</a></td>
+</tr></tbody>
+</table></div>
 </div>
 <div class="refsect1">
 <a name="gst-plugins-base-plugins-vorbisenc.object-hierarchy"></a><h2>Object Hierarchy</h2>
-<pre class="synopsis">
-  <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
-   +----<a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
-         +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
-               +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
-                     +----<a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudioencoder.html#GstAudioEncoder">GstAudioEncoder</a>
-                           +----GstVorbisEnc
+<pre class="screen">    <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
+    <span class="lineart">╰──</span> <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GInitiallyUnowned">GInitiallyUnowned</a>
+        <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstObject.html">GstObject</a>
+            <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstElement.html">GstElement</a>
+                <span class="lineart">╰──</span> <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-libs/html/gst-plugins-base-libs-gstaudioencoder.html#GstAudioEncoder">GstAudioEncoder</a>
+                    <span class="lineart">╰──</span> GstVorbisEnc
 </pre>
 </div>
 <div class="refsect1">
@@ -64,22 +107,11 @@ GstVorbisEnc implements
  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstPreset.html">GstPreset</a> and  <a href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer/html/GstTagSetter.html">GstTagSetter</a>.</p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-base-plugins-vorbisenc.properties"></a><h2>Properties</h2>
-<pre class="synopsis">
-  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--bitrate" title='The "bitrate" property'>bitrate</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--last-message" title='The "last-message" property'>last-message</a>"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read
-  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--managed" title='The "managed" property'>managed</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--max-bitrate" title='The "max-bitrate" property'>max-bitrate</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--min-bitrate" title='The "min-bitrate" property'>min-bitrate</a>"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write
-  "<a class="link" href="gst-plugins-base-plugins-vorbisenc.html#GstVorbisEnc--quality" title='The "quality" property'>quality</a>"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write
-</pre>
-</div>
-<div class="refsect1">
 <a name="gst-plugins-base-plugins-vorbisenc.description"></a><h2>Description</h2>
 <div class="refsynopsisdiv">
 <h2>Synopsis</h2>
 <div class="refsect2">
-<a name="id-1.2.42.7.2.1"></a><h3>Element Information</h3>
+<a name="id-1.2.44.8.2.1"></a><h3>Element Information</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -105,7 +137,7 @@ GstVorbisEnc implements
 </div>
 <hr>
 <div class="refsect2">
-<a name="id-1.2.42.7.2.2"></a><h3>Element Pads</h3>
+<a name="id-1.2.44.8.2.2"></a><h3>Element Pads</h3>
 <div class="variablelist"><table border="0" class="variablelist">
 <colgroup>
 <col align="left" valign="top">
@@ -160,7 +192,10 @@ GstVorbisEnc implements
 </p>
 </div>
 <div class="refsect1">
-<a name="gst-plugins-base-plugins-vorbisenc.details"></a><h2>Details</h2>
+<a name="gst-plugins-base-plugins-vorbisenc.functions_details"></a><h2>Functions</h2>
+</div>
+<div class="refsect1">
+<a name="gst-plugins-base-plugins-vorbisenc.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="GstVorbisEnc-struct"></a><h3>struct GstVorbisEnc</h3>
 <pre class="programlisting">struct GstVorbisEnc;</pre>
@@ -171,47 +206,53 @@ GstVorbisEnc implements
 <div class="refsect1">
 <a name="gst-plugins-base-plugins-vorbisenc.property-details"></a><h2>Property Details</h2>
 <div class="refsect2">
-<a name="GstVorbisEnc--bitrate"></a><h3>The <code class="literal">"bitrate"</code> property</h3>
-<pre class="programlisting">  "bitrate"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<a name="GstVorbisEnc--bitrate"></a><h3>The <code class="literal">“bitrate”</code> property</h3>
+<pre class="programlisting">  “bitrate”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Attempt to encode at a bitrate averaging this (in bps). This uses the bitrate management engine, and is not recommended for most users. Quality is a better alternative. (-1 == disabled).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [G_MAXULONG,250001]</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstVorbisEnc--last-message"></a><h3>The <code class="literal">"last-message"</code> property</h3>
-<pre class="programlisting">  "last-message"             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a>*                : Read</pre>
+<a name="GstVorbisEnc--last-message"></a><h3>The <code class="literal">“last-message”</code> property</h3>
+<pre class="programlisting">  “last-message”             <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gchar"><span class="type">gchar</span></a> *</pre>
 <p>The last status message.</p>
+<p>Flags: Read</p>
 <p>Default value: NULL</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstVorbisEnc--managed"></a><h3>The <code class="literal">"managed"</code> property</h3>
-<pre class="programlisting">  "managed"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a>              : Read / Write</pre>
+<a name="GstVorbisEnc--managed"></a><h3>The <code class="literal">“managed”</code> property</h3>
+<pre class="programlisting">  “managed”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="type">gboolean</span></a></pre>
 <p>Enable bitrate management engine.</p>
+<p>Flags: Read / Write</p>
 <p>Default value: FALSE</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstVorbisEnc--max-bitrate"></a><h3>The <code class="literal">"max-bitrate"</code> property</h3>
-<pre class="programlisting">  "max-bitrate"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<a name="GstVorbisEnc--max-bitrate"></a><h3>The <code class="literal">“max-bitrate”</code> property</h3>
+<pre class="programlisting">  “max-bitrate”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Specify a maximum bitrate (in bps). Useful for streaming applications. (-1 == disabled).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [G_MAXULONG,250001]</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstVorbisEnc--min-bitrate"></a><h3>The <code class="literal">"min-bitrate"</code> property</h3>
-<pre class="programlisting">  "min-bitrate"              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a>                  : Read / Write</pre>
+<a name="GstVorbisEnc--min-bitrate"></a><h3>The <code class="literal">“min-bitrate”</code> property</h3>
+<pre class="programlisting">  “min-bitrate”              <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a></pre>
 <p>Specify a minimum bitrate (in bps). Useful for encoding for a fixed-size channel. (-1 == disabled).</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [G_MAXULONG,250001]</p>
 <p>Default value: -1</p>
 </div>
 <hr>
 <div class="refsect2">
-<a name="GstVorbisEnc--quality"></a><h3>The <code class="literal">"quality"</code> property</h3>
-<pre class="programlisting">  "quality"                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a>                : Read / Write</pre>
+<a name="GstVorbisEnc--quality"></a><h3>The <code class="literal">“quality”</code> property</h3>
+<pre class="programlisting">  “quality”                  <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gfloat"><span class="type">gfloat</span></a></pre>
 <p>Specify quality instead of specifying a particular bitrate.</p>
+<p>Flags: Read / Write</p>
 <p>Allowed values: [-0.1,1]</p>
 <p>Default value: 0.3</p>
 </div>
@@ -219,6 +260,6 @@ GstVorbisEnc implements
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.19</div>
+          Generated by GTK-Doc V1.20</div>
 </body>
 </html>

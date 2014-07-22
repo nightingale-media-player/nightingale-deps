@@ -46,8 +46,8 @@ find_video_sink (void)
       return sink;
   
     gst_element_set_state (sink, GST_STATE_NULL);
+    gst_object_unref (sink);
   }
-  gst_object_unref (sink);
 
   if ((sink = gst_element_factory_make ("ximagesink", NULL))) {
     sret = gst_element_set_state (sink, GST_STATE_READY);
@@ -55,8 +55,8 @@ find_video_sink (void)
       return sink;
   
     gst_element_set_state (sink, GST_STATE_NULL);
+    gst_object_unref (sink);
   }
-  gst_object_unref (sink);
 
   if (strcmp (DEFAULT_VIDEOSINK, "xvimagesink") == 0 ||
       strcmp (DEFAULT_VIDEOSINK, "ximagesink") == 0)
@@ -73,8 +73,9 @@ find_video_sink (void)
       return sink;
   
     gst_element_set_state (sink, GST_STATE_NULL);
+    gst_object_unref (sink);
   }
-  gst_object_unref (sink);
+
   return NULL;
 }
 
@@ -82,7 +83,7 @@ int main(int argc, char *argv[])
 {
   gst_init (&argc, &argv);
   QApplication app(argc, argv);
-  app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit ()));
+  app.setQuitOnLastWindowClosed(true);
 
   /* prepare the pipeline */
 

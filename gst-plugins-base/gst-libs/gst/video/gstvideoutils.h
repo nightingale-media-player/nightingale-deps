@@ -42,8 +42,8 @@ typedef struct _GstVideoCodecFrame GstVideoCodecFrame;
  * GstVideoCodecState:
  * @info: The #GstVideoInfo describing the stream
  * @caps: The #GstCaps
- * @codec_data: (optional) a #GstBuffer corresponding to the
- *     'codec_data' field of a stream.
+ * @codec_data: a #GstBuffer corresponding to the
+ *     'codec_data' field of a stream, or NULL.
  *
  * Structure representing the state of an incoming or outgoing video
  * stream for encoders and decoders.
@@ -207,10 +207,11 @@ typedef enum
  * @input_buffer: the input #GstBuffer that created this frame. The buffer is owned
  *           by the frame and references to the frame instead of the buffer should
  * @output_buffer: the output #GstBuffer. Implementations should set this either
- *           directly, or by using the @gst_video_decoder_alloc_output_frame() or
- *           @gst_video_decoder_alloc_output_buffer() methods. The buffer is owned
- *           by the frame and references to the frame instead of the buffer should
- *           be kept.
+ *           directly, or by using the
+ *           @gst_video_decoder_allocate_output_frame() or
+ *           @gst_video_decoder_allocate_output_buffer() methods. The buffer is
+ *           owned by the frame and references to the frame instead of the
+ *           buffer should be kept.
  * @deadline: Running time when the frame will be used.
  * @events: Events that will be pushed downstream before this frame is pushed.
  *

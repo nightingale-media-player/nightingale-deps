@@ -84,8 +84,6 @@
  * gst_app_src_end_of_stream() or emit the end-of-stream action signal. After
  * this call, no more buffers can be pushed into appsrc until a flushing seek
  * happened or the state of the appsrc has gone through READY.
- *
- * Last reviewed on 2008-12-17 (0.10.10)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -215,6 +213,8 @@ static void gst_app_src_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
 static void gst_app_src_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec);
+
+static gboolean gst_app_src_send_event (GstElement * element, GstEvent * event);
 
 static void gst_app_src_set_latencies (GstAppSrc * appsrc,
     gboolean do_min, guint64 min, gboolean do_max, guint64 max);
@@ -481,6 +481,8 @@ gst_app_src_class_init (GstAppSrcClass * klass)
   gst_element_class_add_pad_template (element_class,
       gst_static_pad_template_get (&gst_app_src_template));
 
+  element_class->send_event = gst_app_src_send_event;
+
   basesrc_class->negotiate = gst_app_src_negotiate;
   basesrc_class->get_caps = gst_app_src_internal_get_caps;
   basesrc_class->create = gst_app_src_create;
@@ -542,10 +544,18 @@ gst_app_src_dispose (GObject * obj)
   GstAppSrc *appsrc = GST_APP_SRC_CAST (obj);
   GstAppSrcPrivate *priv = appsrc->priv;
 
+  GST_OBJECT_LOCK (appsrc);
   if (priv->caps) {
     gst_caps_unref (priv->caps);
     priv->caps = NULL;
   }
+  if (priv->notify) {
+    priv->notify (priv->user_data);
+  }
+  priv->user_data = NULL;
+  priv->notify = NULL;
+
+  GST_OBJECT_UNLOCK (appsrc);
   gst_app_src_flush_queued (appsrc);
 
   G_OBJECT_CLASS (parent_class)->dispose (obj);
@@ -700,6 +710,23 @@ gst_app_src_get_property (GObject * object, guint prop_id, GValue * value,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
+}
+
+static gboolean
+gst_app_src_send_event (GstElement * element, GstEvent * event)
+{
+  GstAppSrc *appsrc = GST_APP_SRC_CAST (element);
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_FLUSH_STOP:
+      gst_app_src_flush_queued (appsrc);
+      break;
+    default:
+      break;
+  }
+
+  return GST_CALL_PARENT_WITH_DEFAULT (GST_ELEMENT_CLASS, send_event, (element,
+          event), FALSE);
 }
 
 static gboolean

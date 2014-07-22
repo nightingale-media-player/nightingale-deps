@@ -65,15 +65,19 @@ typedef enum {
 /**
  * GstRTSPProfile:
  * @GST_RTSP_PROFILE_UNKNOWN: invalid profile
- * @GST_RTSP_PROFILE_AVP: the Audio/Visual profile
- * @GST_RTSP_PROFILE_SAVP: the secure Audio/Visual profile
+ * @GST_RTSP_PROFILE_AVP: the Audio/Visual profile (RFC 3551)
+ * @GST_RTSP_PROFILE_SAVP: the secure Audio/Visual profile (RFC 3711)
+ * @GST_RTSP_PROFILE_AVPF: the Audio/Visual profile with feedback (RFC 4585)
+ * @GST_RTSP_PROFILE_SAVPF: the secure Audio/Visual profile with feedback (RFC 5124)
  *
  * The transfer profile to use.
  */
 typedef enum {
   GST_RTSP_PROFILE_UNKNOWN =  0,
   GST_RTSP_PROFILE_AVP     = (1 << 0),
-  GST_RTSP_PROFILE_SAVP    = (1 << 1)
+  GST_RTSP_PROFILE_SAVP    = (1 << 1),
+  GST_RTSP_PROFILE_AVPF    = (1 << 2),
+  GST_RTSP_PROFILE_SAVPF   = (1 << 3),
 } GstRTSPProfile;
 
 #define GST_TYPE_RTSP_PROFILE (gst_rtsp_profile_get_type())
@@ -132,8 +136,12 @@ struct _GstRTSPRange {
  * @interleaved: the interleave range
  * @ttl: the time to live for multicast UDP
  * @port: the port pair for multicast sessions
- * @client_port: the client port pair for receiving data
- * @server_port: the server port pair for receiving data
+ * @client_port: the client port pair for receiving data. For TCP
+ *   based transports, applications can use this field to store the
+ *   sender and receiver ports of the client.
+ * @server_port: the server port pair for receiving data. For TCP
+ *   based transports, applications can use this field to store the
+ *   sender and receiver ports of the server.
  * @ssrc: the ssrc that the sender/receiver will use
  *
  * A structure holding the RTSP transport values.
@@ -154,9 +162,9 @@ struct _GstRTSPTransport {
 
   /* multicast specific */
   guint  ttl;
-
-  /* UDP specific */
   GstRTSPRange   port;
+
+  /* UDP/TCP specific */
   GstRTSPRange   client_port;
   GstRTSPRange   server_port;
   /* RTP specific */
@@ -174,6 +182,9 @@ gchar*             gst_rtsp_transport_as_text      (GstRTSPTransport *transport)
 
 GstRTSPResult      gst_rtsp_transport_get_mime     (GstRTSPTransMode trans, const gchar **mime);
 GstRTSPResult      gst_rtsp_transport_get_manager  (GstRTSPTransMode trans, const gchar **manager, guint option);
+
+GstRTSPResult      gst_rtsp_transport_get_media_type (GstRTSPTransport *transport,
+                                                      const gchar **media_type);
 
 GstRTSPResult      gst_rtsp_transport_free         (GstRTSPTransport *transport);
 

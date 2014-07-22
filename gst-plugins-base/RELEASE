@@ -1,16 +1,23 @@
 
-Release notes for GStreamer Base Plugins 1.2.3
+Release notes for GStreamer Base Plugins 1.4.0
 
 
-The GStreamer team is proud to announce a new bug-fix release
-in the 1.x stable series of the
-core of the GStreamer streaming media framework.
+The GStreamer team is pleased to announce the first release of
+the stable 1.4 release series. The 1.4 release series is adding new
+features on top of the 1.0 and 1.2 series and is part of the API and
+ABI-stable 1.x release series of the GStreamer multimedia framework.
 
 
-The 1.x series is a stable series targeted at end users.
-It is not API or ABI compatible with the stable 0.10.x series.
-It is, however, parallel installable with the 0.10.x series and
-will not affect an existing 0.10.x installation.
+
+Binaries for Android, iOS, Mac OS X and Windows are provided together
+with this release.
+
+
+
+The stable 1.4 release series is API and ABI compatible with 1.0.x,
+1.2.x and any other 1.x release series in the future. Compared to 1.2.x
+it contains some new features and more intrusive changes that were
+considered too risky as a bugfix.
 
 
 
@@ -60,20 +67,10 @@ contains a set of codecs plugins based on libav (formerly gst-ffmpeg)
 
 Bugs fixed in this release
      
-      * 603921 : resindvd: DVD menus not working
-      * 697665 : Add format=WMV3 for WMV 3 video
-      * 711816 : audiobasesrc: Avoid unnecessary configuration if caps don't change
-      * 712367 : Prevent the NEON check in configure from passing under aarch64.
-      * 715138 : xvimagesink 1.2 ignores resize events when used on a QWidget
-      * 719615 : oggdemux: slow seeking on some ogg files
-      * 719684 : videodecoder: Allocation query is always at least sent twice
-      * 720015 : docs: add missing files for distribution
-      * 720661 : audiobasesink: Fix locking bug accessing ring buffer time
-      * 721078 : videodecoder: cannot call gst_video_decoder_negotiate without output_state
-      * 721666 : videodecoder: push newsegment earlier for reverse playback
-      * 721835 : videodecoder: do not drop events when releasing frames
-      * 722144 : audiodecoder: do not negotiate caps with rate=1 and channels=1 for gap
-      * 722656 : videoconvert: scoring system ranks colour loss very low
+      * 733012 : playbin: *-filter properties are settable, but not gettable
+      * 733207 : POTFILES.in is out of date
+      * 733349 : encodebin: Documentation fixes and updates for GstEncodingProfile
+      * 733386 : appsrc: Leaking callback user data
 
 ==== Download ====
 
@@ -110,15 +107,10 @@ subscribe to the gstreamer-devel list.
         
 Contributors to this release
     
-      * Holger Kaelberer
-      * Jan Schmidt
-      * Julien Isorce
+      * Arun Raghavan
+      * Nirbheek Chauhan
+      * Piotr Drąg
       * Sebastian Dröge
-      * Sebastian Rasmussen
-      * Stéphane Cerveau
-      * Thiago Santos
       * Tim-Philipp Müller
-      * Vincent Penquerc'h
-      * William Grant
-      * Wim Taymans
+      * Youness Alaoui
  

@@ -31,8 +31,6 @@
  * gst-launch -v alsasrc ! audioconvert ! vorbisenc ! oggmux ! filesink location=alsasrc.ogg
  * ]| Record from a sound card using ALSA and encode to Ogg/Vorbis.
  * </refsect2>
- *
- * Last reviewed on 2006-03-01 (0.10.4)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -782,6 +780,18 @@ gst_alsasrc_prepare (GstAudioSrc * asrc, GstAudioRingBufferSpec * spec)
     GST_DEBUG_OBJECT (alsa, "Software setup: \n%s", msg);
     snd_output_close (out_buf);
   }
+
+#ifdef SND_CHMAP_API_VERSION
+  if (spec->type == GST_AUDIO_RING_BUFFER_FORMAT_TYPE_RAW && alsa->channels < 9) {
+    snd_pcm_chmap_t *chmap = snd_pcm_get_chmap (alsa->handle);
+    if (chmap && chmap->channels == alsa->channels) {
+      GstAudioChannelPosition pos[8];
+      if (alsa_chmap_to_channel_positions (chmap, pos))
+	gst_audio_ring_buffer_set_channel_positions (GST_AUDIO_BASE_SRC (alsa)->ringbuffer, pos);
+    }
+    free (chmap);
+  }
+#endif /* SND_CHMAP_API_VERSION */
 
   return TRUE;
 

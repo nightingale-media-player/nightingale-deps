@@ -60,7 +60,8 @@ static GstStaticPadTemplate sink_templ = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS ("application/x-subtitle; application/x-subtitle-sami; "
         "application/x-subtitle-tmplayer; application/x-subtitle-mpl2; "
-        "application/x-subtitle-dks; application/x-subtitle-qttext")
+        "application/x-subtitle-dks; application/x-subtitle-qttext;"
+        "application/x-subtitle-lrc;")
     );
 
 static GstStaticPadTemplate src_templ = GST_STATIC_PAD_TEMPLATE ("src",
@@ -373,6 +374,8 @@ gst_sub_parse_get_format_description (GstSubParseFormat format)
       return "DKS";
     case GST_SUB_PARSE_FORMAT_QTTEXT:
       return "QTtext";
+    case GST_SUB_PARSE_FORMAT_LRC:
+      return "LRC";
     default:
     case GST_SUB_PARSE_FORMAT_UNKNOWN:
       break;
@@ -917,6 +920,34 @@ parse_subrip (ParserState * state, const gchar * line)
   }
 }
 
+static gchar *
+parse_lrc (ParserState * state, const gchar * line)
+{
+  gint m, s, c;
+  const gchar *start;
+  gint milli;
+
+  if (line[0] != '[')
+    return NULL;
+
+  if (sscanf (line, "[%u:%02u.%03u]", &m, &s, &c) != 3 &&
+      sscanf (line, "[%u:%02u.%02u]", &m, &s, &c) != 3)
+    return NULL;
+
+  start = strchr (line, ']');
+  if (start - line == 9)
+    milli = 10;
+  else
+    milli = 1;
+
+  state->start_time = gst_util_uint64_scale (m, 60 * GST_SECOND, 1)
+      + gst_util_uint64_scale (s, GST_SECOND, 1)
+      + gst_util_uint64_scale (c, milli * GST_MSECOND, 1);
+  state->duration = GST_CLOCK_TIME_NONE;
+
+  return g_strdup (start + 1);
+}
+
 static void
 unescape_newlines_br (gchar * read)
 {
@@ -1287,6 +1318,34 @@ gst_sub_parse_data_format_autodetect (gchar * match_str)
     GST_LOG ("QTtext (time based) format detected");
     return GST_SUB_PARSE_FORMAT_QTTEXT;
   }
+  /* We assume the LRC file starts immediately */
+  if (match_str[0] == '[') {
+    gboolean all_lines_good = TRUE;
+    gchar **split;
+    gchar **ptr;
+
+    ptr = split = g_strsplit (match_str, "\n", -1);
+    while (*ptr && *(ptr + 1)) {
+      gchar *str = *ptr;
+      gint len = strlen (str);
+
+      if (sscanf (str, "[%u:%02u.%02u]", &n1, &n2, &n3) == 3 ||
+          sscanf (str, "[%u:%02u.%03u]", &n1, &n2, &n3) == 3) {
+        all_lines_good = TRUE;
+      } else if (str[len - 1] == ']' && strchr (str, ':') != NULL) {
+        all_lines_good = TRUE;
+      } else {
+        all_lines_good = FALSE;
+        break;
+      }
+
+      ptr++;
+    }
+    g_strfreev (split);
+
+    if (all_lines_good)
+      return GST_SUB_PARSE_FORMAT_LRC;
+  }
 
   GST_DEBUG ("no subtitle format detected");
   return GST_SUB_PARSE_FORMAT_UNKNOWN;
@@ -1351,6 +1410,10 @@ gst_sub_parse_format_autodetect (GstSubParse * self)
       qttext_context_init (&self->state);
       return gst_caps_new_simple ("text/x-raw",
           "format", G_TYPE_STRING, "pango-markup", NULL);
+    case GST_SUB_PARSE_FORMAT_LRC:
+      self->parse_line = parse_lrc;
+      return gst_caps_new_simple ("text/x-raw",
+          "format", G_TYPE_STRING, "utf8", NULL);
     case GST_SUB_PARSE_FORMAT_UNKNOWN:
     default:
       GST_DEBUG ("no subtitle format detected");
@@ -1672,6 +1735,9 @@ static GstStaticCaps qttext_caps =
 GST_STATIC_CAPS ("application/x-subtitle-qttext");
 #define QTTEXT_CAPS (gst_static_caps_get (&qttext_caps))
 
+static GstStaticCaps lrc_caps = GST_STATIC_CAPS ("application/x-subtitle-lrc");
+#define LRC_CAPS (gst_static_caps_get (&lrc_caps))
+
 static void
 gst_subparse_type_find (GstTypeFind * tf, gpointer private)
 {
@@ -1771,6 +1837,10 @@ gst_subparse_type_find (GstTypeFind * tf, gpointer private)
     case GST_SUB_PARSE_FORMAT_QTTEXT:
       GST_DEBUG ("QTtext format detected");
       caps = QTTEXT_CAPS;
+      break;
+    case GST_SUB_PARSE_FORMAT_LRC:
+      GST_DEBUG ("LRC format detected");
+      caps = LRC_CAPS;
       break;
     default:
     case GST_SUB_PARSE_FORMAT_UNKNOWN:

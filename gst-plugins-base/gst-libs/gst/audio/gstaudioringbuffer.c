@@ -35,8 +35,6 @@
  * implementations.
  * </para>
  * </refsect2>
- *
- * Last reviewed on 2006-02-02 (0.10.4)
  */
 
 #include <string.h>
@@ -242,6 +240,7 @@ gst_audio_ring_buffer_parse_caps (GstAudioRingBufferSpec * spec, GstCaps * caps)
     if (!(gst_structure_get_int (structure, "rate", &info.rate)))
       goto parse_error;
 
+    gst_structure_get_int (structure, "channels", &info.channels);
     spec->type = GST_AUDIO_RING_BUFFER_FORMAT_TYPE_AC3;
     info.bpf = 4;
   } else if (g_str_equal (mimetype, "audio/x-eac3")) {
@@ -249,6 +248,7 @@ gst_audio_ring_buffer_parse_caps (GstAudioRingBufferSpec * spec, GstCaps * caps)
     if (!(gst_structure_get_int (structure, "rate", &info.rate)))
       goto parse_error;
 
+    gst_structure_get_int (structure, "channels", &info.channels);
     spec->type = GST_AUDIO_RING_BUFFER_FORMAT_TYPE_EAC3;
     info.bpf = 16;
   } else if (g_str_equal (mimetype, "audio/x-dts")) {
@@ -256,6 +256,7 @@ gst_audio_ring_buffer_parse_caps (GstAudioRingBufferSpec * spec, GstCaps * caps)
     if (!(gst_structure_get_int (structure, "rate", &info.rate)))
       goto parse_error;
 
+    gst_structure_get_int (structure, "channels", &info.channels);
     spec->type = GST_AUDIO_RING_BUFFER_FORMAT_TYPE_DTS;
     info.bpf = 4;
   } else if (g_str_equal (mimetype, "audio/mpeg") &&
@@ -266,6 +267,7 @@ gst_audio_ring_buffer_parse_caps (GstAudioRingBufferSpec * spec, GstCaps * caps)
     if (!(gst_structure_get_int (structure, "rate", &info.rate)))
       goto parse_error;
 
+    gst_structure_get_int (structure, "channels", &info.channels);
     spec->type = GST_AUDIO_RING_BUFFER_FORMAT_TYPE_MPEG;
     info.bpf = 4;
   } else if (g_str_equal (mimetype, "audio/mpeg") &&
@@ -276,6 +278,8 @@ gst_audio_ring_buffer_parse_caps (GstAudioRingBufferSpec * spec, GstCaps * caps)
     /* MPEG-2 AAC or MPEG-4 AAC */
     if (!(gst_structure_get_int (structure, "rate", &info.rate)))
       goto parse_error;
+
+    gst_structure_get_int (structure, "channels", &info.channels);
     spec->type = (i == 2) ? GST_AUDIO_RING_BUFFER_FORMAT_TYPE_MPEG2_AAC :
         GST_AUDIO_RING_BUFFER_FORMAT_TYPE_MPEG4_AAC;
     info.bpf = 4;
@@ -1214,7 +1218,7 @@ gst_audio_ring_buffer_set_sample (GstAudioRingBuffer * buf, guint64 sample)
   if (G_UNLIKELY (buf->samples_per_seg == 0))
     return;
 
-  /* FIXME, we assume the ringbuffer can restart at a random 
+  /* FIXME, we assume the ringbuffer can restart at a random
    * position, round down to the beginning and keep track of
    * offset when calculating the processed samples. */
   buf->segbase = buf->segdone - sample / buf->samples_per_seg;
@@ -1661,7 +1665,7 @@ gst_audio_ring_buffer_commit (GstAudioRingBuffer * buf, guint64 * sample,
  * @len: the number of samples in data to read
  * @timestamp: where the timestamp is returned
  *
- * Read @len samples from the ringbuffer into the memory pointed 
+ * Read @len samples from the ringbuffer into the memory pointed
  * to by @data.
  * The first sample should be read from position @sample in
  * the ringbuffer.
@@ -1850,7 +1854,7 @@ gst_audio_ring_buffer_prepare_read (GstAudioRingBuffer * buf, gint * segment,
  * @buf: the #GstAudioRingBuffer to advance
  * @advance: the number of segments written
  *
- * Subclasses should call this function to notify the fact that 
+ * Subclasses should call this function to notify the fact that
  * @advance segments are now processed by the device.
  *
  * MT safe.
@@ -1915,7 +1919,7 @@ gst_audio_ring_buffer_clear (GstAudioRingBuffer * buf, gint segment)
  * @allowed: the new value
  *
  * Tell the ringbuffer that it is allowed to start playback when
- * the ringbuffer is filled with samples. 
+ * the ringbuffer is filled with samples.
  *
  * MT safe.
  */
@@ -1984,9 +1988,20 @@ gst_audio_ring_buffer_set_timestamp (GstAudioRingBuffer * buf, gint readseg,
 
   GST_INFO_OBJECT (buf, "Storing timestamp %" GST_TIME_FORMAT
       " @ %d", GST_TIME_ARGS (timestamp), readseg);
-  if (buf->timestamps) {
-    buf->timestamps[readseg] = timestamp;
-  } else {
-    GST_ERROR_OBJECT (buf, "Could not store timestamp, no timestamps buffer");
+
+  GST_OBJECT_LOCK (buf);
+  if (G_UNLIKELY (!buf->acquired))
+    goto not_acquired;
+
+  buf->timestamps[readseg] = timestamp;
+
+done:
+  GST_OBJECT_UNLOCK (buf);
+  return;
+
+not_acquired:
+  {
+    GST_DEBUG_OBJECT (buf, "we are not acquired");
+    goto done;
   }
 }

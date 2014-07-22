@@ -89,7 +89,7 @@
  * </orderedlist>
  *
  * Subclass is responsible for providing pad template caps for
- * source and sink pads. The pads need to be named "sink" and "src". It also 
+ * source and sink pads. The pads need to be named "sink" and "src". It also
  * needs to set the fixed caps on srcpad, when the format is ensured.  This
  * is typically when base class calls subclass' @set_format function, though
  * it might be delayed until calling @gst_audio_encoder_finish_frame.
@@ -579,6 +579,50 @@ gst_audio_encoder_push_event (GstAudioEncoder * enc, GstEvent * event)
   return gst_pad_push_event (enc->srcpad, event);
 }
 
+static inline void
+gst_audio_encoder_push_pending_events (GstAudioEncoder * enc)
+{
+  GstAudioEncoderPrivate *priv = enc->priv;
+
+  if (priv->pending_events) {
+    GList *pending_events, *l;
+
+    pending_events = priv->pending_events;
+    priv->pending_events = NULL;
+
+    GST_DEBUG_OBJECT (enc, "Pushing pending events");
+    for (l = pending_events; l; l = l->next)
+      gst_audio_encoder_push_event (enc, l->data);
+    g_list_free (pending_events);
+  }
+}
+
+static inline void
+gst_audio_encoder_check_and_push_ending_tags (GstAudioEncoder * enc)
+{
+  if (G_UNLIKELY (enc->priv->tags && enc->priv->tags_changed)) {
+#if 0
+    GstCaps *caps;
+#endif
+
+    /* add codec info to pending tags */
+#if 0
+    if (!enc->priv->tags)
+      enc->priv->tags = gst_tag_list_new ();
+    enc->priv->tags = gst_tag_list_make_writable (enc->priv->tags);
+    caps = gst_pad_get_current_caps (enc->srcpad);
+    gst_pb_utils_add_codec_description_to_tag_list (enc->priv->tags,
+        GST_TAG_CODEC, caps);
+    gst_pb_utils_add_codec_description_to_tag_list (enc->priv->tags,
+        GST_TAG_AUDIO_CODEC, caps);
+#endif
+    GST_DEBUG_OBJECT (enc, "sending tags %" GST_PTR_FORMAT, enc->priv->tags);
+    gst_audio_encoder_push_event (enc,
+        gst_event_new_tag (gst_tag_list_ref (enc->priv->tags)));
+    enc->priv->tags_changed = FALSE;
+  }
+}
+
 /**
  * gst_audio_encoder_finish_frame:
  * @enc: a #GstAudioEncoder
@@ -642,40 +686,10 @@ gst_audio_encoder_finish_frame (GstAudioEncoder * enc, GstBuffer * buf,
   if (G_LIKELY (buf))
     priv->got_data = TRUE;
 
-  if (priv->pending_events) {
-    GList *pending_events, *l;
-
-    pending_events = priv->pending_events;
-    priv->pending_events = NULL;
-
-    GST_DEBUG_OBJECT (enc, "Pushing pending events");
-    for (l = pending_events; l; l = l->next)
-      gst_audio_encoder_push_event (enc, l->data);
-    g_list_free (pending_events);
-  }
+  gst_audio_encoder_push_pending_events (enc);
 
   /* send after pending events, which likely includes newsegment event */
-  if (G_UNLIKELY (enc->priv->tags && enc->priv->tags_changed)) {
-#if 0
-    GstCaps *caps;
-#endif
-
-    /* add codec info to pending tags */
-#if 0
-    if (!enc->priv->tags)
-      enc->priv->tags = gst_tag_list_new ();
-    enc->priv->tags = gst_tag_list_make_writable (enc->priv->tags);
-    caps = gst_pad_get_current_caps (enc->srcpad);
-    gst_pb_utils_add_codec_description_to_tag_list (enc->priv->tags,
-        GST_TAG_CODEC, caps);
-    gst_pb_utils_add_codec_description_to_tag_list (enc->priv->tags,
-        GST_TAG_AUDIO_CODEC, caps);
-#endif
-    GST_DEBUG_OBJECT (enc, "sending tags %" GST_PTR_FORMAT, enc->priv->tags);
-    gst_audio_encoder_push_event (enc,
-        gst_event_new_tag (gst_tag_list_ref (enc->priv->tags)));
-    enc->priv->tags_changed = FALSE;
-  }
+  gst_audio_encoder_check_and_push_ending_tags (enc);
 
   /* remove corresponding samples from input */
   if (samples < 0)
@@ -800,6 +814,7 @@ gst_audio_encoder_finish_frame (GstAudioEncoder * enc, GstBuffer * buf,
       GST_BUFFER_TIMESTAMP (buf) = priv->base_ts +
           gst_util_uint64_scale (priv->samples - ctx->lookahead, GST_SECOND,
           ctx->info.rate);
+      GST_BUFFER_DTS (buf) = GST_BUFFER_TIMESTAMP (buf);
       GST_DEBUG_OBJECT (enc, "out samples %d", samples);
       if (G_LIKELY (samples > 0)) {
         priv->samples += samples;
@@ -1420,6 +1435,25 @@ gst_audio_encoder_getcaps_default (GstAudioEncoder * enc, GstCaps * filter)
   return caps;
 }
 
+static GList *
+_flush_events (GstPad * pad, GList * events)
+{
+  GList *tmp;
+
+  for (tmp = events; tmp; tmp = tmp->next) {
+    if (GST_EVENT_TYPE (tmp->data) == GST_EVENT_EOS ||
+        GST_EVENT_TYPE (tmp->data) == GST_EVENT_SEGMENT ||
+        !GST_EVENT_IS_STICKY (tmp->data)) {
+      gst_event_unref (tmp->data);
+    } else {
+      gst_pad_store_sticky_event (pad, GST_EVENT_CAST (tmp->data));
+    }
+  }
+  g_list_free (events);
+
+  return NULL;
+}
+
 static gboolean
 gst_audio_encoder_sink_event_default (GstAudioEncoder * enc, GstEvent * event)
 {
@@ -1474,9 +1508,8 @@ gst_audio_encoder_sink_event_default (GstAudioEncoder * enc, GstEvent * event)
       /* and get (re)set for the sequel */
       gst_audio_encoder_reset (enc, FALSE);
 
-      g_list_foreach (enc->priv->pending_events, (GFunc) gst_event_unref, NULL);
-      g_list_free (enc->priv->pending_events);
-      enc->priv->pending_events = NULL;
+      enc->priv->pending_events = _flush_events (enc->srcpad,
+          enc->priv->pending_events);
       GST_AUDIO_ENCODER_STREAM_UNLOCK (enc);
 
       res = gst_audio_encoder_push_event (enc, event);
@@ -1485,6 +1518,11 @@ gst_audio_encoder_sink_event_default (GstAudioEncoder * enc, GstEvent * event)
     case GST_EVENT_EOS:
       GST_AUDIO_ENCODER_STREAM_LOCK (enc);
       gst_audio_encoder_drain (enc);
+
+      /* check for pending events and tags */
+      gst_audio_encoder_push_pending_events (enc);
+      gst_audio_encoder_check_and_push_ending_tags (enc);
+
       GST_AUDIO_ENCODER_STREAM_UNLOCK (enc);
 
       /* forward immediately because no buffer or serialized event
@@ -2639,7 +2677,7 @@ gst_audio_encoder_negotiate_unlocked (GstAudioEncoder * enc)
  * Negotiate with downstream elements to currently configured #GstCaps.
  * Unmark GST_PAD_FLAG_NEED_RECONFIGURE in any case. But mark it again if
  * negotiate fails.
- * 
+ *
  * Returns: #TRUE if the negotiation succeeded, else #FALSE.
  */
 gboolean
