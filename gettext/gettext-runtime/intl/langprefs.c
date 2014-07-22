@@ -159,7 +159,6 @@ _nl_language_preferences_win32_ME (HMODULE kernel32)
   return NULL;
 }
 
-#if 0
 /* Get a preference.  This works on Windows 95 and newer.  */
 static const char *
 _nl_language_preferences_win32_95 ()
@@ -203,7 +202,6 @@ _nl_language_preferences_win32_95 ()
     }
   return NULL;
 }
-#endif
 
 /* Get the system's preference.  This can be used as a fallback.  */
 static BOOL CALLBACK
@@ -336,10 +334,9 @@ _nl_language_preferences_default (void)
 
         if (languages == NULL && kernel32 != NULL)
           languages = _nl_language_preferences_win32_ME (kernel32);
-#if 0
+
         if (languages == NULL)
           languages = _nl_language_preferences_win32_95 ();
-#endif
 
         if (languages == NULL && kernel32 != NULL)
           languages = _nl_language_preferences_win32_system (kernel32);

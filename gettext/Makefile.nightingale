@@ -33,7 +33,7 @@
 SB_VENDOR_TARGET_DEP_MODULES :=
 
 SB_VENDOR_TARGET = gettext
-SB_VENDOR_TARGET_VERSION = 0.18.3.2
+SB_VENDOR_TARGET_VERSION = 0.19.2
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 

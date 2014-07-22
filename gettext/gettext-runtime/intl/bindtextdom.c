@@ -22,7 +22,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "gettextP.h"
 #ifdef _LIBC
@@ -65,12 +64,6 @@ gl_rwlock_define (extern, _nl_state_lock attribute_hidden)
 #else
 # define BINDTEXTDOMAIN libintl_bindtextdomain
 # define BIND_TEXTDOMAIN_CODESET libintl_bind_textdomain_codeset
-#endif
-
-#if ENABLE_RELOCATABLE
-# include "relocatex.h"
-#else
-# define relocate(pathname) (pathname)
 #endif
 
 /* Specifies the directory name *DIRNAMEP and the output codeset *CODESETP
@@ -325,23 +318,8 @@ set_binding_values (const char *domainname,
 char *
 BINDTEXTDOMAIN (const char *domainname, const char *dirname)
 {
-/*
   set_binding_values (domainname, &dirname, NULL);
   return (char *) dirname;
-*/
-  if (!access (dirname, R_OK)) {
-	  set_binding_values (domainname, &dirname, NULL);
-	  return (char *) dirname;
-  } else {
-	  char *locale_dirname, *installdir = strdup (dirname), *s;
-	  if ((s = strrchr (installdir, '/'))) *s = '\0';
-	  if ((s = strrchr (installdir, '/'))) *s = '\0';
-	  locale_dirname = relocatex (installdir, dirname);
-	  set_binding_values (domainname, (const char **) &locale_dirname, NULL);
-	  if (installdir)
-	  	free (installdir);
-	  return (char *) locale_dirname;
-  }	  
 }
 
 /* Specify the character encoding in which the messages from the
