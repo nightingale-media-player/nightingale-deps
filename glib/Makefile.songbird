@@ -1,12 +1,15 @@
 ################################################################################
 ################################################################################
 #
-# BEGIN SONGBIRD GPL
+# BEGIN NIGHTINGALE GPL
 # 
-# This file is part of the Songbird web player.
+# This file is part of the Nightingale Media Player.
 #
 # Copyright(c) 2007 POTI, Inc.
 # http://www.songbirdnest.com
+#
+# Copyright(c) 2014
+# http://www.getnightingale.com
 # 
 # This file may be licensed under the terms of of the
 # GNU General Public License Version 2 (the "GPL").
@@ -21,11 +24,11 @@
 # or write to the Free Software Foundation, Inc., 
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # 
-# END SONGBIRD GPL
+# END NIGHTINGALE GPL
 #
 ################################################################################
 #
-# Makefile for building Songbird vendor: glib
+# Makefile for building Nightingale vendor: glib
 #
 ################################################################################
 ################################################################################
@@ -38,12 +41,11 @@ ifneq (,$(filter Linux,$(SB_VENDOR_ARCH)))
 endif
 
 SB_VENDOR_TARGET = glib
-SB_VENDOR_TARGET_VERSION = 2.16.6
+SB_VENDOR_TARGET_VERSION = 2.41.2
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
-SB_VENDOR_TARGET_CONFIGURE_OPTS := --disable-libsuffix \
-                                   --enable-cxx-warnings=no
+SB_VENDOR_TARGET_CONFIGURE_OPTS := 
 
 ifneq (,$(filter Msys Darwin,$(SB_VENDOR_ARCH)))
   SB_VENDOR_TARGET_CONFIGURE_OPTS += --with-libiconv=gnu
