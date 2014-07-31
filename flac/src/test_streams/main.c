@@ -1,5 +1,6 @@
 /* test_streams - Simple test pattern generator
- * Copyright (C) 2000,2001,2002,2003,2004,2005,2006,2007  Josh Coalson
+ * Copyright (C) 2000-2009  Josh Coalson
+ * Copyright (C) 2011-2013  Xiph.Org Foundation
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -11,9 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 #if HAVE_CONFIG_H
@@ -23,6 +24,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "share/compat.h"
 #if defined _MSC_VER || defined __MINGW32__
 #include <time.h>
 #else
@@ -30,6 +32,7 @@
 #endif
 #include "FLAC/assert.h"
 #include "FLAC/ordinals.h"
+#include "share/compat.h"
 
 #ifndef M_PI
 /* math.h in VC++ doesn't seem to have this (how Microsoft is that?) */
@@ -100,6 +103,20 @@ static FLAC__bool write_little_endian_int32(FILE *f, FLAC__int32 x)
 	return write_little_endian_uint32(f, (FLAC__uint32)x);
 }
 #endif
+
+static FLAC__bool write_little_endian_uint64(FILE *f, FLAC__uint64 x)
+{
+	return
+		fputc(x, f) != EOF &&
+		fputc(x >> 8, f) != EOF &&
+		fputc(x >> 16, f) != EOF &&
+		fputc(x >> 24, f) != EOF &&
+		fputc(x >> 32, f) != EOF &&
+		fputc(x >> 40, f) != EOF &&
+		fputc(x >> 48, f) != EOF &&
+		fputc(x >> 56, f) != EOF
+	;
+}
 
 static FLAC__bool write_big_endian(FILE *f, FLAC__int32 x, size_t bytes)
 {
@@ -205,7 +222,7 @@ static FLAC__bool generate_01(void)
 	FILE *f;
 	FLAC__int16 x = -32768;
 
-	if(0 == (f = fopen("test01.raw", "wb")))
+	if(0 == (f = flac_fopen("test01.raw", "wb")))
 		return false;
 
 	if(!write_little_endian_int16(f, x))
@@ -224,7 +241,7 @@ static FLAC__bool generate_02(void)
 	FILE *f;
 	FLAC__int16 xl = -32768, xr = 32767;
 
-	if(0 == (f = fopen("test02.raw", "wb")))
+	if(0 == (f = flac_fopen("test02.raw", "wb")))
 		return false;
 
 	if(!write_little_endian_int16(f, xl))
@@ -246,7 +263,7 @@ static FLAC__bool generate_03(void)
 	FLAC__int16 x[] = { -25, 0, 25, 50, 100 };
 	unsigned i;
 
-	if(0 == (f = fopen("test03.raw", "wb")))
+	if(0 == (f = flac_fopen("test03.raw", "wb")))
 		return false;
 
 	for(i = 0; i < 5; i++)
@@ -267,7 +284,7 @@ static FLAC__bool generate_04(void)
 	FLAC__int16 x[] = { -25, 500, 0, 400, 25, 300, 50, 200, 100, 100 };
 	unsigned i;
 
-	if(0 == (f = fopen("test04.raw", "wb")))
+	if(0 == (f = flac_fopen("test04.raw", "wb")))
 		return false;
 
 	for(i = 0; i < 10; i++)
@@ -289,7 +306,7 @@ static FLAC__bool generate_fsd8(const char *fn, const int pattern[], unsigned re
 
 	FLAC__ASSERT(pattern != 0);
 
-	if(0 == (f = fopen(fn, "wb")))
+	if(0 == (f = flac_fopen(fn, "wb")))
 		return false;
 
 	for(rep = 0; rep < reps; rep++) {
@@ -315,7 +332,7 @@ static FLAC__bool generate_fsd16(const char *fn, const int pattern[], unsigned r
 
 	FLAC__ASSERT(pattern != 0);
 
-	if(0 == (f = fopen(fn, "wb")))
+	if(0 == (f = flac_fopen(fn, "wb")))
 		return false;
 
 	for(rep = 0; rep < reps; rep++) {
@@ -339,7 +356,7 @@ static FLAC__bool generate_wbps16(const char *fn, unsigned samples)
 	FILE *f;
 	unsigned sample;
 
-	if(0 == (f = fopen(fn, "wb")))
+	if(0 == (f = flac_fopen(fn, "wb")))
 		return false;
 
 	for(sample = 0; sample < samples; sample++) {
@@ -366,7 +383,7 @@ static FLAC__bool generate_fsd24(const char *fn, const int pattern[], unsigned r
 
 	FLAC__ASSERT(pattern != 0);
 
-	if(0 == (f = fopen(fn, "wb")))
+	if(0 == (f = flac_fopen(fn, "wb")))
 		return false;
 
 	for(rep = 0; rep < reps; rep++) {
@@ -394,7 +411,7 @@ static FLAC__bool generate_sine8_1(const char *fn, const double sample_rate, con
 	double theta1, theta2;
 	unsigned i;
 
-	if(0 == (f = fopen(fn, "wb")))
+	if(0 == (f = flac_fopen(fn, "wb")))
 		return false;
 
 	for(i = 0, theta1 = theta2 = 0.0; i < samples; i++, theta1 += delta1, theta2 += delta2) {
@@ -421,7 +438,7 @@ static FLAC__bool generate_sine8_2(const char *fn, const double sample_rate, con
 	double theta1, theta2;
 	unsigned i;
 
-	if(0 == (f = fopen(fn, "wb")))
+	if(0 == (f = flac_fopen(fn, "wb")))
 		return false;
 
 	for(i = 0, theta1 = theta2 = 0.0; i < samples; i++, theta1 += delta1, theta2 += delta2) {
@@ -452,7 +469,7 @@ static FLAC__bool generate_sine16_1(const char *fn, const double sample_rate, co
 	double theta1, theta2;
 	unsigned i;
 
-	if(0 == (f = fopen(fn, "wb")))
+	if(0 == (f = flac_fopen(fn, "wb")))
 		return false;
 
 	for(i = 0, theta1 = theta2 = 0.0; i < samples; i++, theta1 += delta1, theta2 += delta2) {
@@ -479,7 +496,7 @@ static FLAC__bool generate_sine16_2(const char *fn, const double sample_rate, co
 	double theta1, theta2;
 	unsigned i;
 
-	if(0 == (f = fopen(fn, "wb")))
+	if(0 == (f = flac_fopen(fn, "wb")))
 		return false;
 
 	for(i = 0, theta1 = theta2 = 0.0; i < samples; i++, theta1 += delta1, theta2 += delta2) {
@@ -510,7 +527,7 @@ static FLAC__bool generate_sine24_1(const char *fn, const double sample_rate, co
 	double theta1, theta2;
 	unsigned i;
 
-	if(0 == (f = fopen(fn, "wb")))
+	if(0 == (f = flac_fopen(fn, "wb")))
 		return false;
 
 	for(i = 0, theta1 = theta2 = 0.0; i < samples; i++, theta1 += delta1, theta2 += delta2) {
@@ -537,7 +554,7 @@ static FLAC__bool generate_sine24_2(const char *fn, const double sample_rate, co
 	double theta1, theta2;
 	unsigned i;
 
-	if(0 == (f = fopen(fn, "wb")))
+	if(0 == (f = flac_fopen(fn, "wb")))
 		return false;
 
 	for(i = 0, theta1 = theta2 = 0.0; i < samples; i++, theta1 += delta1, theta2 += delta2) {
@@ -563,7 +580,7 @@ static FLAC__bool generate_noise(const char *fn, unsigned bytes)
 	FILE *f;
 	unsigned b;
 
-	if(0 == (f = fopen(fn, "wb")))
+	if(0 == (f = flac_fopen(fn, "wb")))
 		return false;
 
 	for(b = 0; b < bytes; b++) {
@@ -593,7 +610,7 @@ static FLAC__bool generate_raw(const char *filename, unsigned channels, unsigned
 	FILE *f;
 	unsigned i, j;
 
-	if(0 == (f = fopen(filename, "wb")))
+	if(0 == (f = flac_fopen(filename, "wb")))
 		return false;
 
 	for(i = 0, theta1 = theta2 = 0.0; i < samples; i++, theta1 += delta1, theta2 += delta2) {
@@ -626,7 +643,7 @@ static FLAC__bool generate_aiff(const char *filename, unsigned sample_rate, unsi
 	FILE *f;
 	unsigned i, j;
 
-	if(0 == (f = fopen(filename, "wb")))
+	if(0 == (f = flac_fopen(filename, "wb")))
 		return false;
 	if(fwrite("FORM", 1, 4, f) < 4)
 		goto foo;
@@ -668,17 +685,20 @@ foo:
 	return false;
 }
 
-static FLAC__bool generate_wav(const char *filename, unsigned sample_rate, unsigned channels, unsigned bps, unsigned samples, FLAC__bool strict)
+/* flavor is: 0:WAVE, 1:RF64, 2:WAVE64 */
+static FLAC__bool generate_wav(const char *filename, unsigned sample_rate, unsigned channels, unsigned bps, unsigned samples, FLAC__bool strict, int flavor)
 {
 	const FLAC__bool waveformatextensible = strict && (channels > 2 || (bps%8));
 	/*                                                                 ^^^^^^^
 	 * (bps%8) allows 24 bps which is technically supposed to be WAVEFORMATEXTENSIBLE but we
 	 * write 24bps as WAVEFORMATEX since it's unambiguous and matches how flac writes it
 	 */
+
 	const unsigned bytes_per_sample = (bps+7)/8;
-	const unsigned true_size = channels * bytes_per_sample * samples;
-	const unsigned padded_size = (true_size + 1) & (~1u);
 	const unsigned shift = (bps%8)? 8 - (bps%8) : 0;
+	/* this rig is not going over 4G so we're ok with 32-bit sizes here */
+	const FLAC__uint32 true_size = channels * bytes_per_sample * samples;
+	const FLAC__uint32 padded_size = flavor<2? (true_size + 1) & (~1u) : (true_size + 7) & (~7u);
 	const FLAC__int32 full_scale = (1 << (bps-1)) - 1;
 	const double f1 = 441.0, a1 = 0.61, f2 = 661.5, a2 = 0.37;
 	const double delta1 = 2.0 * M_PI / ( sample_rate / f1);
@@ -687,16 +707,76 @@ static FLAC__bool generate_wav(const char *filename, unsigned sample_rate, unsig
 	FILE *f;
 	unsigned i, j;
 
-	if(0 == (f = fopen(filename, "wb")))
+	if(0 == (f = flac_fopen(filename, "wb")))
 		return false;
-	if(fwrite("RIFF", 1, 4, f) < 4)
-		goto foo;
-	if(!write_little_endian_uint32(f, padded_size + (waveformatextensible?60:36)))
-		goto foo;
-	if(fwrite("WAVEfmt ", 1, 8, f) < 8)
-		goto foo;
-	if(!write_little_endian_uint32(f, waveformatextensible?40:16))
-		goto foo;
+	/* RIFFxxxxWAVE or equivalent: */
+	switch(flavor) {
+		case 0:
+			if(fwrite("RIFF", 1, 4, f) < 4)
+				goto foo;
+			/* +4 for WAVE */
+			/* +8+{40,16} for fmt chunk */
+			/* +8 for data chunk header */
+			if(!write_little_endian_uint32(f, 4 + 8+(waveformatextensible?40:16) + 8 + padded_size))
+				goto foo;
+			if(fwrite("WAVE", 1, 4, f) < 4)
+				goto foo;
+			break;
+		case 1:
+			if(fwrite("RF64", 1, 4, f) < 4)
+				goto foo;
+			if(!write_little_endian_uint32(f, 0xffffffff))
+				goto foo;
+			if(fwrite("WAVE", 1, 4, f) < 4)
+				goto foo;
+			break;
+		case 2:
+			/* RIFF GUID 66666972-912E-11CF-A5D6-28DB04C10000 */
+			if(fwrite("\x72\x69\x66\x66\x2E\x91\xCF\x11\xA5\xD6\x28\xDB\x04\xC1\x00\x00", 1, 16, f) < 16)
+				goto foo;
+			/* +(16+8) for RIFF GUID + size */
+			/* +16 for WAVE GUID */
+			/* +16+8+{40,16} for fmt chunk */
+			/* +16+8 for data chunk header */
+			if(!write_little_endian_uint64(f, (16+8) + 16 + 16+8+(waveformatextensible?40:16) + (16+8) + padded_size))
+				goto foo;
+			/* WAVE GUID 65766177-ACF3-11D3-8CD1-00C04F8EDB8A */
+			if(fwrite("\x77\x61\x76\x65\xF3\xAC\xD3\x11\x8C\xD1\x00\xC0\x4F\x8E\xDB\x8A", 1, 16, f) < 16)
+				goto foo;
+			break;
+		default:
+			goto foo;
+	}
+	if(flavor == 1) { /* rf64 */
+		if(fwrite("ds64", 1, 4, f) < 4)
+			goto foo;
+		if(!write_little_endian_uint32(f, 28)) /* ds64 chunk size */
+			goto foo;
+		if(!write_little_endian_uint64(f, 36 + padded_size + (waveformatextensible?60:36)))
+			goto foo;
+		if(!write_little_endian_uint64(f, true_size))
+			goto foo;
+		if(!write_little_endian_uint64(f, samples))
+			goto foo;
+		if(!write_little_endian_uint32(f, 0)) /* table size */
+			goto foo;
+	}
+	/* fmt chunk */
+	if(flavor < 2) {
+		if(fwrite("fmt ", 1, 4, f) < 4)
+			goto foo;
+		/* chunk size */
+		if(!write_little_endian_uint32(f, waveformatextensible?40:16))
+			goto foo;
+	}
+	else { /* wave64 */
+		/* fmt GUID 20746D66-ACF3-11D3-8CD1-00C04F8EDB8A */
+		if(fwrite("\x66\x6D\x74\x20\xF3\xAC\xD3\x11\x8C\xD1\x00\xC0\x4F\x8E\xDB\x8A", 1, 16, f) < 16)
+			goto foo;
+		/* chunk size (+16+8 for GUID and size fields) */
+		if(!write_little_endian_uint64(f, 16+8+(waveformatextensible?40:16)))
+			goto foo;
+	}
 	if(!write_little_endian_uint16(f, (FLAC__uint16)(waveformatextensible?65534:1)))
 		goto foo;
 	if(!write_little_endian_uint16(f, (FLAC__uint16)channels))
@@ -720,10 +800,21 @@ static FLAC__bool generate_wav(const char *filename, unsigned sample_rate, unsig
 		if(fwrite("\x01\x00\x00\x00\x00\x00\x10\x00\x80\x00\x00\xaa\x00\x38\x9b\x71", 1, 16, f) != 16)
 			goto foo;
 	}
-	if(fwrite("data", 1, 4, f) < 4)
-		goto foo;
-	if(!write_little_endian_uint32(f, true_size))
-		goto foo;
+	/* data chunk */
+	if(flavor < 2) {
+		if(fwrite("data", 1, 4, f) < 4)
+			goto foo;
+		if(!write_little_endian_uint32(f, flavor==1? 0xffffffff : true_size))
+			goto foo;
+	}
+	else { /* wave64 */
+		/* data GUID 61746164-ACF3-11D3-8CD1-00C04F8EDB8A */
+		if(fwrite("\x64\x61\x74\x61\xF3\xAC\xD3\x11\x8C\xD1\x00\xC0\x4F\x8E\xDB\x8A", 1, 16, f) != 16)
+			goto foo;
+		/* +16+8 for GUID and size fields */
+		if(!write_little_endian_uint64(f, 16+8 + true_size))
+			goto foo;
+	}
 
 	for(i = 0, theta1 = theta2 = 0.0; i < samples; i++, theta1 += delta1, theta2 += delta2) {
 		for(j = 0; j < channels; j++) {
@@ -749,12 +840,12 @@ static FLAC__bool generate_wackywavs(void)
 	FILE *f;
 	FLAC__byte wav[] = {
 		'R', 'I', 'F', 'F',  76,   0,   0,   0,
-		'W', 'A', 'V', 'E', 'f', 'a', 'c', 't',
+		'W', 'A', 'V', 'E', 'j', 'u', 'n', 'k',
 		  4,   0,   0,  0 , 'b', 'l', 'a', 'h',
 		'p', 'a', 'd', ' ',   4,   0,   0,   0,
 		'B', 'L', 'A', 'H', 'f', 'm', 't', ' ',
 		 16,   0,   0,   0,   1,   0,   1,   0,
-		0x44,0xAC,  0,   0,   0,   0,   0,   0,
+		0x44,0xAC,  0,   0,0x88,0x58,0x01,   0,
 		  2,   0,  16,   0, 'd', 'a', 't', 'a',
 		 16,   0,   0,   0,   0,   0,   1,   0,
 		  4,   0,   9,   0,  16,   0,  25,   0,
@@ -762,16 +853,154 @@ static FLAC__bool generate_wackywavs(void)
 		  4,   0,   0,   0, 'b', 'l', 'a', 'h'
 	};
 
-	if(0 == (f = fopen("wacky1.wav", "wb")))
+	if(0 == (f = flac_fopen("wacky1.wav", "wb")))
 		return false;
 	if(fwrite(wav, 1, 84, f) < 84)
 		goto foo;
 	fclose(f);
 
 	wav[4] += 12;
-	if(0 == (f = fopen("wacky2.wav", "wb")))
+	if(0 == (f = flac_fopen("wacky2.wav", "wb")))
 		return false;
 	if(fwrite(wav, 1, 96, f) < 96)
+		goto foo;
+	fclose(f);
+
+	return true;
+foo:
+	fclose(f);
+	return false;
+}
+
+static FLAC__bool generate_noisy_sine(void)
+{
+	FILE *f;
+	FLAC__byte wav[] = {
+		'R', 'I', 'F', 'F',  76,   0,   0,   0,
+		'W', 'A', 'V', 'E', 'f', 'm', 't', ' ',
+		 16,   0,   0,   0,   1,   0,   1,   0,
+		0x44,0xAC,  0,   0,0x88,0x58,0x01,   0,
+		  2,   0,  16,   0, 'd', 'a', 't', 'a',
+		0xa8,   0xba,   0x6,   0
+	};
+	int32_t randstate = 0x1243456;
+	double sample, last_val = 0.0;
+	int k;
+
+	if(0 == (f = flac_fopen("noisy-sine.wav", "wb")))
+		return false;
+	if(fwrite(wav, 1, sizeof (wav), f) < sizeof (wav))
+		goto foo;
+
+	for (k = 0 ; k < 5 * 44100 ; k++) {
+		/* Obvioulsy not a crypto quality RNG. */
+		randstate = 11117 * randstate + 211231;
+		randstate = 11117 * randstate + 211231;
+		randstate = 11117 * randstate + 211231;
+
+		sample = randstate / (0x7fffffff * 1.000001);
+		sample = 0.2 * sample - 0.9 * last_val;
+
+		last_val = sample;
+
+		sample += sin (2.0 * k * M_PI * 1.0 / 32.0);
+		sample *= 0.4;
+#if !defined _MSC_VER
+		write_little_endian_int16(f, lrintf(sample * 32700.0));
+#else
+		write_little_endian_int16(f, (FLAC__int16)(sample * 32700.0));
+#endif
+	};
+
+	fclose(f);
+
+	return true;
+foo:
+	fclose(f);
+	return false;
+}
+
+static FLAC__bool generate_wackywav64s(void)
+{
+	FILE *f;
+	FLAC__byte wav[] = {
+		0x72,0x69,0x66,0x66,0x2E,0x91,0xCF,0x11, /* RIFF GUID */
+		0xA5,0xD6,0x28,0xDB,0x04,0xC1,0x00,0x00,
+		 152,   0,   0,   0,   0,   0,   0,   0,
+		0x77,0x61,0x76,0x65,0xF3,0xAC,0xD3,0x11, /* WAVE GUID */
+		0x8C,0xD1,0x00,0xC0,0x4F,0x8E,0xDB,0x8A,
+		0x6A,0x75,0x6E,0x6B,0xF3,0xAC,0xD3,0x11, /* junk GUID */
+		0x8C,0xD1,0x00,0xC0,0x4F,0x8E,0xDB,0x8A,
+		  32,   0,   0,  0 ,   0,   0,   0,   0,
+		 'b', 'l', 'a', 'h', 'b', 'l', 'a', 'h',
+		0x66,0x6D,0x74,0x20,0xF3,0xAC,0xD3,0x11, /* fmt GUID */
+		0x8C,0xD1,0x00,0xC0,0x4F,0x8E,0xDB,0x8A,
+		  40,   0,   0,  0 ,   0,   0,   0,   0,
+		   1,   0,   1,   0,0x44,0xAC,   0,   0,
+		0x88,0x58,0x01,   0,   2,   0,  16,   0,
+		0x64,0x61,0x74,0x61,0xF3,0xAC,0xD3,0x11, /* data GUID */
+		0x8C,0xD1,0x00,0xC0,0x4F,0x8E,0xDB,0x8A,
+		  40,   0,   0,  0 ,   0,   0,   0,   0,
+		   0,   0,   1,   0,   4,   0,   9,   0,
+		  16,   0,  25,   0,  36,   0,  49,   0,
+		0x6A,0x75,0x6E,0x6B,0xF3,0xAC,0xD3,0x11, /* junk GUID */
+		0x8C,0xD1,0x00,0xC0,0x4F,0x8E,0xDB,0x8A,
+		  32,   0,   0,  0 ,   0,   0,   0,   0,
+		 'b', 'l', 'a', 'h', 'b', 'l', 'a', 'h'
+	};
+
+	if(0 == (f = flac_fopen("wacky1.w64", "wb")))
+		return false;
+	if(fwrite(wav, 1, wav[16], f) < wav[16])
+		goto foo;
+	fclose(f);
+
+	wav[16] += 32;
+	if(0 == (f = flac_fopen("wacky2.w64", "wb")))
+		return false;
+	if(fwrite(wav, 1, wav[16], f) < wav[16])
+		goto foo;
+	fclose(f);
+
+	return true;
+foo:
+	fclose(f);
+	return false;
+}
+
+static FLAC__bool generate_wackyrf64s(void)
+{
+	FILE *f;
+	FLAC__byte wav[] = {
+		'R', 'F', '6', '4', 255, 255, 255, 255,
+		'W', 'A', 'V', 'E', 'd', 's', '6', '4',
+		 28,   0,   0,   0, 112,   0,   0,   0,
+		  0,   0,   0,   0,  16,   0,   0,   0,
+		  0,   0,   0,   0,   8,   0,   0,   0,
+		  0,   0,   0,   0,   0,   0,   0,   0,
+		                    'j', 'u', 'n', 'k',
+		  4,   0,   0,   0, 'b', 'l', 'a', 'h',
+		'p', 'a', 'd', ' ',   4,   0,   0,   0,
+		'B', 'L', 'A', 'H', 'f', 'm', 't', ' ',
+		 16,   0,   0,   0,   1,   0,   1,   0,
+		0x44,0xAC,  0,   0,0x88,0x58,0x01,   0,
+		  2,   0,  16,   0, 'd', 'a', 't', 'a',
+		255, 255, 255, 255,   0,   0,   1,   0,
+		  4,   0,   9,   0,  16,   0,  25,   0,
+		 36,   0,  49,   0, 'p', 'a', 'd', ' ',
+		  4,   0,   0,   0, 'b', 'l', 'a', 'h'
+	};
+
+	if(0 == (f = flac_fopen("wacky1.rf64", "wb")))
+		return false;
+	if(fwrite(wav, 1, 120, f) < 120)
+		goto foo;
+	fclose(f);
+
+	wav[20] += 12;
+	if(0 == (f = flac_fopen("wacky2.rf64", "wb")))
+		return false;
+	if(fwrite(wav, 1, 132, f) < 132)
 		goto foo;
 	fclose(f);
 
@@ -898,24 +1127,35 @@ int main(int argc, char *argv[])
 	if(!generate_noise("noise.raw", 65536 * 8 * 3)) return 1;
 	if(!generate_noise("noise8m32.raw", 32)) return 1;
 	if(!generate_wackywavs()) return 1;
-	for(channels = 1; channels <= 8; channels++) {
+	if(!generate_wackywav64s()) return 1;
+	if(!generate_wackyrf64s()) return 1;
+	if(!generate_noisy_sine()) return 1;
+	for(channels = 1; channels <= 8; channels *= 2) {
 		unsigned bits_per_sample;
-		for(bits_per_sample = 4; bits_per_sample <= 24; bits_per_sample++) {
+		for(bits_per_sample = 8; bits_per_sample <= 24; bits_per_sample += 4) {
 			static const unsigned nsamples[] = { 1, 111, 4777 } ;
 			unsigned samples;
 			for(samples = 0; samples < sizeof(nsamples)/sizeof(nsamples[0]); samples++) {
 				char fn[64];
 
-				sprintf(fn, "rt-%u-%u-%u.aiff", channels, bits_per_sample, nsamples[samples]);
+				flac_snprintf(fn, sizeof (fn), "rt-%u-%u-%u.aiff", channels, bits_per_sample, nsamples[samples]);
 				if(!generate_aiff(fn, 44100, channels, bits_per_sample, nsamples[samples]))
 					return 1;
 
-				sprintf(fn, "rt-%u-%u-%u.wav", channels, bits_per_sample, nsamples[samples]);
-				if(!generate_wav(fn, 44100, channels, bits_per_sample, nsamples[samples], /*strict=*/true))
+				flac_snprintf(fn, sizeof (fn), "rt-%u-%u-%u.wav", channels, bits_per_sample, nsamples[samples]);
+				if(!generate_wav(fn, 44100, channels, bits_per_sample, nsamples[samples], /*strict=*/true, /*flavor=*/0))
+					return 1;
+
+				flac_snprintf(fn, sizeof (fn), "rt-%u-%u-%u.rf64", channels, bits_per_sample, nsamples[samples]);
+				if(!generate_wav(fn, 44100, channels, bits_per_sample, nsamples[samples], /*strict=*/true, /*flavor=*/1))
+					return 1;
+
+				flac_snprintf(fn, sizeof (fn), "rt-%u-%u-%u.w64", channels, bits_per_sample, nsamples[samples]);
+				if(!generate_wav(fn, 44100, channels, bits_per_sample, nsamples[samples], /*strict=*/true, /*flavor=*/2))
 					return 1;
 
 				if(bits_per_sample % 8 == 0) {
-					sprintf(fn, "rt-%u-%u-%u.raw", channels, bits_per_sample, nsamples[samples]);
+					flac_snprintf(fn, sizeof (fn), "rt-%u-%u-%u.raw", channels, bits_per_sample, nsamples[samples]);
 					if(!generate_raw(fn, channels, bits_per_sample/8, nsamples[samples]))
 						return 1;
 				}

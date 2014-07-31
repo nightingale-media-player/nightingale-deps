@@ -1,5 +1,6 @@
 /* flac_mac - wedge utility to add FLAC support to Monkey's Audio
- * Copyright (C) 2000,2001,2002,2003,2004,2005,2006,2007  Josh Coalson
+ * Copyright (C) 2000-2009  Josh Coalson
+ * Copyright (C) 2011-2013  Xiph.Org Foundation
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -11,9 +12,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 /*
@@ -33,6 +34,9 @@
 #include<process.h>
 #include<winbase.h>
 
+#include "share/compat.h"
+#include "share/safe_str.h"
+
 static int execit(char *prog, char *args);
 static int forkit(char *prog, char *args);
 
@@ -44,11 +48,11 @@ int main(int argc, char *argv[])
 
 	/* get the directory where MAC external codecs reside */
 	if(0 != (p = strrchr(argv[0],'\\'))) {
-		strcpy(macdir, argv[0]);
+		safe_strncpy(macdir, argv[0], sizeof(macdir));
 		*(strrchr(macdir,'\\')+1) = '\0';
 	}
 	else {
-		strcpy(macdir, "");
+		safe_strncpy(macdir, "", sizeof(macdir));
 	}
 
 	/* determine which codec we were called as and parse the options */
@@ -100,14 +104,14 @@ int main(int argc, char *argv[])
 		return -4;
 
 	/* build the command to call flac with */
-	sprintf(prog, "%sflac.exe", macdir);
-	sprintf(options, "-%d", flac_level);
+	flac_snprintf(prog, sizeof (prog), "%sflac.exe", macdir);
+	flac_snprintf(options, sizeof (options), "-%d", flac_level);
 	for(i = opt_arg; i < argc; i++)
 		if(argv[i][0] == '-') {
-			strcat(options, " ");
-			strcat(options, argv[i]);
+			safe_strncat(options, " ", sizeof(options));
+			safe_strncat(options, argv[i], sizeof(options));
 		}
-	sprintf(cmdline, "\"%s\" %s -o \"%s\" \"%s\"", prog, options, argv[to_arg], argv[from_arg]);
+	flac_snprintf(cmdline, sizeof (cmdline), "\"%s\" %s -o \"%s\" \"%s\"", prog, options, argv[to_arg], argv[from_arg]);
 
 	flac_return_val = execit(prog, cmdline);
 
@@ -117,30 +121,49 @@ int main(int argc, char *argv[])
 	 * it's final resting place.
 	 */
 	if(0 == flac_return_val) {
+		char *cptr;
 		/* get the destination directory, if any */
 		if(0 != (p = strchr(argv[to_arg],'\\'))) {
-			strcpy(from, argv[to_arg]);
+			safe_strncpy(from, argv[to_arg], sizeof(from));
 			*(strrchr(from,'\\')+1) = '\0';
 		}
 		else {
-			strcpy(from, "");
+			safe_strncpy(from, "", sizeof(from));
 		}
 
 		/* for the full 'from' and 'to' paths for the renamer process */
 		p = strrchr(argv[from_arg],'\\');
-		strcat(from, p? p+1 : argv[from_arg]);
-		strcpy(to, from);
-		if(0 == strchr(from,'.'))
-			return -3;
-		switch(codec) {
-			case SHORTEN: strcpy(strrchr(from,'.'), ".shn"); break;
-			case WAVPACK: strcpy(strrchr(from,'.'), ".wv"); break;
-			case RKAU: strcpy(strrchr(from,'.'), ".rka"); break;
-		}
-		strcpy(strrchr(to,'.'), ".flac");
+		safe_strncat(from, p? p+1 : argv[from_arg], sizeof(from));
+		safe_strncpy(to, from, sizeof(to));
 
-		sprintf(prog, "%sflac_ren.exe", macdir);
-		sprintf(cmdline, "\"%s\" \"%s\" \"%s\"", prog, from, to);
+		cptr = strrchr(from,'.');
+		if(cptr == NULL)
+			return -3;
+		cptr [0] = 0;
+
+		switch(codec) {
+			case SHORTEN:
+				safe_strncat(from, ".shn", sizeof (from));
+				break;
+			case WAVPACK:
+				safe_strncat(from, ".wv", sizeof (from));
+				break;
+			case RKAU:
+				safe_strncpy(from, ".rka", sizeof (from));
+				break;
+			default:
+				return -4;
+		}
+
+		cptr = strrchr(to,'.');
+		if(cptr == NULL)
+			return -3;
+		cptr [0] = 0;
+
+		safe_strncat(to, ".flac", sizeof(to));
+
+		flac_snprintf(prog, sizeof (prog), "%sflac_ren.exe", macdir);
+		flac_snprintf(cmdline, sizeof (cmdline), "\"%s\" \"%s\" \"%s\"", prog, from, to);
 
 		flac_return_val = forkit(prog, cmdline);
 	}
