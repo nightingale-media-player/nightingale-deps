@@ -12,20 +12,22 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
 #ifndef __G_QUARK_H__
 #define __G_QUARK_H__
+
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #include <glib/gtypes.h>
 
@@ -35,16 +37,32 @@ typedef guint32 GQuark;
 
 /* Quarks (string<->id association)
  */
+GLIB_AVAILABLE_IN_ALL
 GQuark                g_quark_try_string         (const gchar *string);
+GLIB_AVAILABLE_IN_ALL
 GQuark                g_quark_from_static_string (const gchar *string);
+GLIB_AVAILABLE_IN_ALL
 GQuark                g_quark_from_string        (const gchar *string);
-G_CONST_RETURN gchar* g_quark_to_string          (GQuark       quark) G_GNUC_CONST;
+GLIB_AVAILABLE_IN_ALL
+const gchar *         g_quark_to_string          (GQuark       quark) G_GNUC_CONST;
 
-G_CONST_RETURN gchar* g_intern_string            (const gchar *string);
-G_CONST_RETURN gchar* g_intern_static_string     (const gchar *string);
+#define G_DEFINE_QUARK(QN, q_n)                                         \
+GQuark                                                                  \
+q_n##_quark (void)                                                      \
+{                                                                       \
+  static GQuark q;                                                      \
+                                                                        \
+  if G_UNLIKELY (q == 0)                                                \
+    q = g_quark_from_static_string (#QN);                               \
+                                                                        \
+  return q;                                                             \
+}
 
+GLIB_AVAILABLE_IN_ALL
+const gchar *         g_intern_string            (const gchar *string);
+GLIB_AVAILABLE_IN_ALL
+const gchar *         g_intern_static_string     (const gchar *string);
 
 G_END_DECLS
 
 #endif /* __G_QUARK_H__ */
-

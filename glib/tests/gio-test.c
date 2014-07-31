@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 /* A test program for the main loop and IO channel code.
@@ -40,10 +38,10 @@
   #define STRICT
   #include <windows.h>
   #define pipe(fds) _pipe(fds, 4096, _O_BINARY)
-#else
-  #ifdef HAVE_UNISTD_H
-    #include <unistd.h>
-  #endif
+#endif
+
+#ifdef G_OS_UNIX
+  #include <unistd.h>
 #endif
 
 static int nrunning;
@@ -82,10 +80,7 @@ read_all (int         fd,
       
       if (error != G_IO_ERROR_NONE)
 	{
-	  g_print ("gio-test: ...from %d: G_IO_ERROR_%s\n", fd,
-		   (error == G_IO_ERROR_AGAIN ? "AGAIN" :
-		    (error == G_IO_ERROR_INVAL ? "INVAL" :
-		     (error == G_IO_ERROR_UNKNOWN ? "UNKNOWN" : "???"))));
+	  g_print ("gio-test: ...from %d: %d\n", fd, error);
 	  if (error == G_IO_ERROR_AGAIN)
 	    continue;
 	  break;
@@ -157,12 +152,7 @@ recv_message (GIOChannel  *channel,
 	  for (i = 0; i < nkiddies; i++)
 	    if (seqtab[i].fd == fd)
 	      {
-		if (seq != seqtab[i].seq)
-		  {
-		    g_print ("gio-test: ...from %d: invalid sequence number %d, expected %d\n",
-			     fd, seq, seqtab[i].seq);
-		    g_assert_not_reached ();
-		  }
+                g_assert_cmpint (seq, ==, seqtab[i].seq);
 		seqtab[i].seq++;
 		break;
 	      }
@@ -184,11 +174,7 @@ recv_message (GIOChannel  *channel,
       
       g_assert (nb == sizeof (nbytes));
 
-      if (nbytes >= BUFSIZE)
-	{
-	  g_print ("gio-test: ...from %d: nbytes = %d (%#x)!\n", fd, nbytes, nbytes);
-	  g_assert_not_reached ();
-	}
+      g_assert_cmpint (nbytes, <, BUFSIZE);
       g_assert (nbytes >= 0 && nbytes < BUFSIZE);
 #ifdef VERBOSE      
       g_print ("gio-test: ...from %d: %d bytes\n", fd, nbytes);
@@ -210,12 +196,7 @@ recv_message (GIOChannel  *channel,
 	    }
       
 	  for (j = 0; j < nbytes; j++)
-	    if (buf[j] != ' ' + ((nbytes + j) % 95))
-	      {
-		g_print ("gio-test: ...from %d: buf[%d] == '%c', should be '%c'\n",
-			 fd, j, buf[j], 'a' + ((nbytes + j) % 32));
-		g_assert_not_reached ();
-	      }
+            g_assert (buf[j] == ' ' + ((nbytes + j) % 95));
 #ifdef VERBOSE
 	  g_print ("gio-test: ...from %d: OK\n", fd);
 #endif
@@ -360,6 +341,7 @@ main (int    argc,
 				     pipe_to_sub[0], pipe_from_sub[1]);
 	  
 	  system (cmdline);
+          g_free (cmdline);
 #endif
 	  close (pipe_to_sub[0]);
 	  close (pipe_from_sub [1]);
@@ -376,11 +358,16 @@ main (int    argc,
 		   (end.tv_usec - start.tv_usec) / 1000,
 		   pollresult);
 #endif
+          g_io_channel_unref (my_read_channel);
 	}
       
       main_loop = g_main_loop_new (NULL, FALSE);
       
       g_main_loop_run (main_loop);
+
+      g_main_loop_unref (main_loop);
+      g_free (seqtab);
+      g_free (id);
     }
   else if (argc == 3)
     {

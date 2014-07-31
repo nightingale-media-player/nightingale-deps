@@ -14,19 +14,17 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Authors: Alexander Larsson <alexl@redhat.com>
  *          John McCutchan <john@johnmccutchan.com> 
  *          Sebastian Dröge <slomo@circular-chaos.org>
  */
 
-#include <config.h>
+#include "config.h"
 
 #include "gfamfilemonitor.h"
-#include "giomodule.h"
+#include <gio/giomodule.h>
 
 #include "fam-helper.h"
 
@@ -144,6 +142,10 @@ g_fam_file_monitor_register (GIOModule *module)
 {
   g_fam_file_monitor_register_type (G_TYPE_MODULE (module));
   g_io_extension_point_implement (G_LOCAL_FILE_MONITOR_EXTENSION_POINT_NAME,
+				  G_TYPE_FAM_FILE_MONITOR,
+				  "fam",
+				  10);
+  g_io_extension_point_implement (G_NFS_FILE_MONITOR_EXTENSION_POINT_NAME,
 				  G_TYPE_FAM_FILE_MONITOR,
 				  "fam",
 				  10);

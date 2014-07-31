@@ -1,266 +1,164 @@
-include $(top_srcdir)/Makefile.decl
+include $(top_srcdir)/glib.mk
 
-SUBDIRS=gobject refcount
+SUBDIRS = gobject refcount
 
-if ENABLE_REGEX
-enable_regex = -DENABLE_REGEX
-else
-enable_regex =
-endif
-
-AM_CPPFLAGS = 				\
-	-I$(top_srcdir) 		\
-	-I$(top_srcdir)/glib 		\
-	-I$(top_srcdir)/gmodule 	\
-	$(GLIB_DEBUG_FLAGS) 		\
-	$(enable_regex)
-
+LDADD = $(top_builddir)/glib/libglib-2.0.la
+AM_CPPFLAGS = $(gmodule_INCLUDES) $(GLIB_DEBUG_FLAGS)
+DEFS = -DGLIB_DISABLE_DEPRECATION_WARNINGS -DG_LOG_DOMAIN=\"GLib\"
 AM_CFLAGS = -g
 
-EFENCE=
+# Some random programs that appear not to be testcases and not used from any testcases
+check_PROGRAMS += \
+	testgdateparser				\
+	unicode-normalize			\
+	$(NULL)
 
-libglib = $(top_builddir)/glib/libglib-2.0.la
-libgthread = $(top_builddir)/gthread/libgthread-2.0.la
-libgmodule = $(top_builddir)/gmodule/libgmodule-2.0.la
-libgobject = $(top_builddir)/gobject/libgobject-2.0.la
+# So far, this is the only gtester-ified testcase here
+test_programs = \
+	testglib				\
+	$(NULL)
 
-libadd_libgmodule = $(libgmodule)
-libadd_libglib = $(libglib)
+# These are not yet gtester-ified, so mark them as for 'installed' only so we
+# don't run them under the framework.  We will handle them manually below.
+installed_test_programs = \
+	testgdate				\
+	datetime				\
+	atomic-test				\
+	bit-test				\
+	child-test				\
+	completion-test				\
+	dirname-test				\
+	file-test				\
+	env-test				\
+	gio-test				\
+	mainloop-test				\
+	mapping-test				\
+	onceinit				\
+	asyncqueue-test				\
+	qsort-test				\
+	relation-test				\
+	slice-concurrent			\
+	slice-threadinit			\
+	sources					\
+	thread-test				\
+	threadpool-test				\
+	type-test				\
+	unicode-caseconv			\
+	unicode-encoding			\
+	$(NULL)
+
+test_extra_programs = \
+	slice-test				\
+	slice-color				\
+	assert-msg-test				\
+	unicode-collate				\
+	$(NULL)
+
+if OS_UNIX
+test_programs += \
+	spawn-test				\
+	iochannel-test				\
+	$(NULL)
+
+# These don't appear to work installed and we don't want to run them under gtester either...
+dist_uninstalled_test_extra_scripts = \
+	run-collate-tests.sh			\
+	run-assert-msg-test.sh			\
+	$(NULL)
+endif
+
+dist_test_data = \
+	iochannel-test-infile			\
+	casemap.txt				\
+	casefold.txt				\
+	utf8.txt				\
+	$(NULL)
+
+# Run the 'installed' tests manually in-tree.
+# This will cause them to be built even if installed tests are disabled.
+check_PROGRAMS += $(installed_test_programs) $(installed_test_extra_programs)
+check_SCRIPTS += $(installed_test_scripts)
+TESTS += $(installed_test_programs) $(dist_uninstalled_test_extra_scripts)
+TESTS_ENVIRONMENT = \
+	G_TEST_SRCDIR=$(abs_srcdir)				\
+	G_TEST_BUILDDIR=$(abs_builddir)				\
+	LIBCHARSET_ALIAS_DIR=$(top_builddir)/glib/libcharset	\
+	MALLOC_CHECK_=2						\
+	MALLOC_PERTURB_=$$(($${RANDOM:-256} % 256))
+
+test_programs += module-test
+module_test_DEPENDENCIES = libmoduletestplugin_a.la libmoduletestplugin_b.la
+module_test_LDADD = $(top_builddir)/gmodule/libgmodule-2.0.la $(LDADD)
+module_test_LDFLAGS = $(G_MODULE_LDFLAGS)
+slice_test_SOURCES = slice-test.c memchunks.c
+slice_color_SOURCES = slice-color.c memchunks.c
+slice_threadinit_LDADD = $(top_builddir)/gthread/libgthread-2.0.la $(LDADD)
+
+test_ltlibraries = libmoduletestplugin_a.la libmoduletestplugin_b.la
+
+libmoduletestplugin_a_la_SOURCES = libmoduletestplugin_a.c
+libmoduletestplugin_a_la_LDFLAGS = $(G_MODULE_LDFLAGS) -avoid-version -module $(no_undefined)
+libmoduletestplugin_a_la_LIBADD = $(G_MODULE_LIBS) ../gmodule/libgmodule-2.0.la ../glib/libglib-2.0.la
+
+libmoduletestplugin_b_la_SOURCES = libmoduletestplugin_b.c
+libmoduletestplugin_b_la_LDFLAGS = $(G_MODULE_LDFLAGS) -avoid-version -module $(no_undefined)
+libmoduletestplugin_b_la_LIBADD = $(G_MODULE_LIBS) ../gmodule/libgmodule-2.0.la ../glib/libglib-2.0.la
+
+if !ENABLE_INSTALLED_TESTS
+# see http://lists.gnu.org/archive/html/bug-libtool/2013-05/msg00009.html and gio/tests/Makefile.am
+libmoduletestplugin_a_la_LDFLAGS += -rpath /
+libmoduletestplugin_b_la_LDFLAGS += -rpath /
+endif
+
+dist-hook: $(BUILT_EXTRA_DIST)
+	files='$(BUILT_EXTRA_DIST)';				\
+	for f in $$files; do					\
+	  if test -f $$f; then d=.; else d=$(srcdir); fi;	\
+	  cp $$d/$$f $(distdir) || exit 1;			\
+	done
+	mkdir $(distdir)/collate;				\
+	for f in $(srcdir)/collate/* ; do			\
+	  if test -f $$f; then cp $$f $(distdir)/collate; fi;	\
+	done
+
+if HAVE_CXX
+installed_test_programs += cxx-test
+cxx_test_SOURCES = cxx-test.C
+endif
+
+if ENABLE_TIMELOOP
+installed_test_programs += timeloop
+endif
+
 if PLATFORM_WIN32
 no_undefined = -no-undefined
 
 module_test_exp = module-test.exp
 
 module-test.exp: module-test.o
-	dlltool --output-exp module-test.exp module-test.o
+	$(DLLTOOL) --output-exp module-test.exp module-test.o
 
-spawn_test_win32_gui = spawn-test-win32-gui
+installed_test_extra_programs = spawn-test-win32-gui
 
 spawn_test_win32_gui_LDFLAGS = -mwindows
 
 endif
 
-EXTRA_DIST +=					\
+EXTRA_DIST += \
 	$(test_scripts)				\
 	makefile.msc.in				\
-	casefold.txt				\
-	casemap.txt				\
 	gen-casefold-txt.pl			\
 	gen-casemap-txt.pl			\
 	iochannel-test-infile			\
-	utf8.txt				\
-	timeloop-basic.c		
+	timeloop-basic.c			\
+	assert-msg-test.gdb
 
-BUILT_EXTRA_DIST =				\
+BUILT_EXTRA_DIST +=				\
 	makefile.msc
 
-if HAVE_CXX
-CXX_TEST = cxx-test
-cxx_test_LDADD = $(progs_ldadd)
-cxx_test_SOURCES = cxx-test.C
-else
-CXX_TEST =
-endif
-
-if ENABLE_TIMELOOP
-timeloop = timeloop timeloop-closure
-endif
-noinst_PROGRAMS = $(TEST_PROGS)	\
-	testgdate 		\
-	testgdateparser 	\
-	unicode-normalize 	\
-	unicode-collate 	\
-	$(timeloop) 		\
-	errorcheck-mutex-test
-
-TEST_PROGS              += scannerapi
-scannerapi_SOURCES       = scannerapi.c
-scannerapi_LDADD         = $(progs_ldadd)
-TEST_PROGS		+= testglib
-testglib_LDADD		 = $(libglib)
-TEST_PROGS              += testingbase64
-testingbase64_SOURCES    = testingbase64.c
-testingbase64_LDADD      = $(progs_ldadd)
-
-
-patterntest_LDADD = $(libglib)
-testgdate_LDADD = $(libglib)
-testgdateparser_LDADD = $(libglib)
-unicode_normalize_LDADD = $(libglib)
-errorcheck_mutex_test_LDADD = $(libglib) $(libgthread) $(G_THREAD_LIBS) 
-if ENABLE_TIMELOOP
-timeloop_LDADD = $(libglib)
-timeloop_closure_LDADD = $(libglib) $(libgobject)
-endif
-
-test_programs =					\
-	atomic-test				\
-	array-test				\
-	base64-test				\
-	bit-test				\
-	$(CXX_TEST)				\
-	checksum-test				\
-	child-test				\
-	completion-test				\
-	convert-test				\
-	date-test				\
-	dirname-test				\
-	file-test				\
-	env-test				\
-	gio-test				\
-	hash-test				\
-	iochannel-test				\
-	keyfile-test				\
-	list-test				\
-	mainloop-test				\
-	mapping-test				\
-	markup-collect				\
-	markup-escape-test			\
-	module-test				\
-	node-test				\
-	onceinit				\
-	option-test				\
-	patterntest				\
-	printf-test				\
-	queue-test				\
-	asyncqueue-test				\
-	qsort-test				\
-	rand-test				\
-	relation-test				\
-	sequence-test				\
-	shell-test				\
-	slist-test				\
-	slice-test				\
-	slice-color				\
-	slice-concurrent			\
-	slice-threadinit			\
-	spawn-test				\
-	$(spawn_test_win32_gui)			\
-	strfunc-test				\
-	string-test				\
-	strtod-test				\
-	strtoll-test				\
-	thread-test				\
-	threadpool-test				\
-	tree-test				\
-	type-test				\
-	unicode-caseconv			\
-	unicode-encoding			\
-	utf8-validate				\
-	utf8-pointer				\
-	uri-test				\
-	regex-test
-
-test_scripts = run-markup-tests.sh run-collate-tests.sh run-bookmark-test.sh
-
-test_script_support_programs = markup-test unicode-collate bookmarkfile-test
-
-check_PROGRAMS = $(test_programs) $(test_script_support_programs)
-
-TESTS = $(test_programs) $(test_scripts)
-TESTS_ENVIRONMENT = srcdir=$(srcdir) \
-	LIBCHARSET_ALIAS_DIR=$(top_builddir)/glib/libcharset \
-	MALLOC_CHECK_=2	\
-        MALLOC_PERTURB_=$$(($${RANDOM:-256} % 256))
-
-progs_ldadd = $(EFENCE) $(libglib) $(EFENCE)
-thread_ldadd = $(libgthread) $(G_THREAD_LIBS) $(progs_ldadd)
-module_ldadd = $(libgmodule) $(G_MODULE_LIBS) $(progs_ldadd)
-
-atomic_test_LDADD = $(progs_ldadd)
-array_test_LDADD = $(progs_ldadd)
-base64_test_LDADD = $(progs_ldadd)
-bit_test_LDADD = $(progs_ldadd)
-bookmarkfile_test_LDADD = $(progs_ldadd)
-checksum_test_LDADD = $(progs_ldadd)
-child_test_LDADD = $(thread_ldadd)
-completion_test_LDADD = $(progs_ldadd)
-convert_test_LDADD = $(progs_ldadd)
-date_test_LDADD = $(progs_ldadd)
-dirname_test_LDADD = $(progs_ldadd)
-file_test_LDADD = $(progs_ldadd)
-env_test_LDADD = $(progs_ldadd)
-gio_test_LDADD = $(progs_ldadd)
-hash_test_LDADD = $(progs_ldadd)
-iochannel_test_LDADD = $(progs_ldadd)
-keyfile_test_LDADD = $(progs_ldadd)
-list_test_LDADD = $(progs_ldadd)
-mainloop_test_LDADD = $(thread_ldadd)
-markup_test_LDADD = $(progs_ldadd)
-mapping_test_LDADD = $(progs_ldadd)
-markup_escape_test_LDADD = $(progs_ldadd)
-module_test_LDADD = $(module_ldadd) $(module_test_exp)
-module_test_LDFLAGS = $(G_MODULE_LDFLAGS)
-node_test_LDADD = $(progs_ldadd)
-onceinit_LDADD = $(thread_ldadd)
-option_test_LDADD = $(progs_ldadd)
-printf_test_LDADD = $(progs_ldadd)
-queue_test_LDADD = $(progs_ldadd)
-asyncqueue_test_LDADD = $(thread_ldadd)
-qsort_test_LDADD = $(progs_ldadd)
-rand_test_LDADD = $(progs_ldadd)
-relation_test_LDADD = $(progs_ldadd)
-sequence_test_LDADD = $(progs_ldadd)
-shell_test_LDADD = $(progs_ldadd)
-slist_test_LDADD = $(progs_ldadd)
-slice_test_SOURCES = slice-test.c memchunks.c
-slice_test_LDADD = $(thread_ldadd)
-slice_color_SOURCES = slice-color.c memchunks.c
-slice_color_LDADD = $(thread_ldadd)
-slice_concurrent_SOURCES = slice-concurrent.c
-slice_concurrent_LDADD = $(thread_ldadd)
-slice_threadinit_SOURCES = slice-threadinit.c
-slice_threadinit_LDADD = $(thread_ldadd)
-spawn_test_LDADD = $(progs_ldadd)
-strfunc_test_LDADD = $(progs_ldadd)
-string_test_LDADD = $(progs_ldadd)
-strtod_test_LDADD = $(progs_ldadd) -lm
-strtoll_test_LDADD = $(progs_ldadd) -lm
-thread_test_LDADD = $(thread_ldadd)
-threadpool_test_LDADD = $(thread_ldadd)
-tree_test_LDADD = $(progs_ldadd)
-type_test_LDADD = $(progs_ldadd)
-unicode_encoding_LDADD = $(progs_ldadd)
-unicode_caseconv_LDADD = $(progs_ldadd)
-unicode_collate_LDADD = $(progs_ldadd)
-utf8_validate_LDADD = $(progs_ldadd)
-utf8_pointer_LDADD = $(progs_ldadd)
-uri_test_LDADD = $(progs_ldadd)
-regex_test_LDADD = $(progs_ldadd)
-markup_collect_LDADD = $(progs_ldadd)
-
-lib_LTLIBRARIES = libmoduletestplugin_a.la libmoduletestplugin_b.la
-
-# Prevent those libs from being installed
-install-libLTLIBRARIES:
-	:
-
-libmoduletestplugin_a_la_SOURCES = libmoduletestplugin_a.c
-libmoduletestplugin_a_la_LDFLAGS = $(G_MODULE_LDFLAGS) -avoid-version -module $(no_undefined) -rpath $(libdir)
-libmoduletestplugin_a_la_LIBADD = $(G_MODULE_LIBS) $(libadd_libgmodule) $(libadd_libglib)
-
-libmoduletestplugin_b_la_SOURCES = libmoduletestplugin_b.c
-libmoduletestplugin_b_la_LDFLAGS = $(G_MODULE_LDFLAGS) -avoid-version -module $(no_undefined) -rpath $(libdir)
-libmoduletestplugin_b_la_LIBADD = $(G_MODULE_LIBS) $(libadd_libgmodule) $(libadd_libglib)
-
-dist-hook: $(BUILT_EXTRA_DIST)
-	files='$(BUILT_EXTRA_DIST)'; 				\
-	for f in $$files; do 					\
-	  if test -f $$f; then d=.; else d=$(srcdir); fi; 	\
-	  cp $$d/$$f $(distdir) || exit 1; done
-	mkdir $(distdir)/markups;          			\
-	for f in $(srcdir)/markups/* ; do  			\
-	  cp $$f $(distdir)/markups; done 
-	mkdir $(distdir)/collate;          			\
-	for f in $(srcdir)/collate/* ; do  			\
-          if test -f $$f; then cp $$f $(distdir)/collate; fi; done
-	mkdir $(distdir)/bookmarks;          			\
-	for f in $(srcdir)/bookmarks/* ; do  			\
-	  cp $$f $(distdir)/bookmarks; done 
-
-DISTCLEANFILES =		\
-	iochannel-test-outfile 	\
-	file-test-get-contents 	\
-	maptest 		\
-	mapchild 		\
+DISTCLEANFILES +=		\
+	iochannel-test-outfile	\
+	file-test-get-contents	\
+	maptest		\
+	mapchild		\
 	collate.out

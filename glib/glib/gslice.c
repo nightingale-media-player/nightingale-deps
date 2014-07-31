@@ -12,29 +12,25 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 /* MT safe */
 
 #include "config.h"
+#include "glibconfig.h"
 
 #if     defined HAVE_POSIX_MEMALIGN && defined POSIX_MEMALIGN_WITH_COMPLIANT_ALLOCS
 #  define HAVE_COMPLIANT_POSIX_MEMALIGN 1
 #endif
 
-#ifdef HAVE_COMPLIANT_POSIX_MEMALIGN
+#if defined(HAVE_COMPLIANT_POSIX_MEMALIGN) && !defined(_XOPEN_SOURCE)
 #define _XOPEN_SOURCE 600       /* posix_memalign() */
 #endif
 #include <stdlib.h>             /* posix_memalign() */
 #include <string.h>
 #include <errno.h>
-#include "gmem.h"               /* gslice.h */
-#include "gthreadprivate.h"
-#include "glib.h"
-#include "galias.h"
-#ifdef HAVE_UNISTD_H
+
+#ifdef G_OS_UNIX
 #include <unistd.h>             /* sysconf() */
 #endif
 #ifdef G_OS_WIN32
@@ -44,6 +40,97 @@
 
 #include <stdio.h>              /* fputs/fprintf */
 
+#include "gslice.h"
+
+#include "gmain.h"
+#include "gmem.h"               /* gslice.h */
+#include "gstrfuncs.h"
+#include "gutils.h"
+#include "gtrashstack.h"
+#include "gtestutils.h"
+#include "gthread.h"
+#include "glib_trace.h"
+
+#include "valgrind.h"
+
+/**
+ * SECTION:memory_slices
+ * @title: Memory Slices
+ * @short_description: efficient way to allocate groups of equal-sized
+ *     chunks of memory
+ *
+ * Memory slices provide a space-efficient and multi-processing scalable
+ * way to allocate equal-sized pieces of memory, just like the original
+ * #GMemChunks (from GLib 2.8), while avoiding their excessive
+ * memory-waste, scalability and performance problems.
+ *
+ * To achieve these goals, the slice allocator uses a sophisticated,
+ * layered design that has been inspired by Bonwick's slab allocator
+ * ([Bonwick94](http://citeseer.ist.psu.edu/bonwick94slab.html)
+ * Jeff Bonwick, The slab allocator: An object-caching kernel
+ * memory allocator. USENIX 1994, and
+ * [Bonwick01](http://citeseer.ist.psu.edu/bonwick01magazines.html)
+ * Bonwick and Jonathan Adams, Magazines and vmem: Extending the
+ * slab allocator to many cpu's and arbitrary resources. USENIX 2001)
+ *
+ * It uses posix_memalign() to optimize allocations of many equally-sized
+ * chunks, and has per-thread free lists (the so-called magazine layer)
+ * to quickly satisfy allocation requests of already known structure sizes.
+ * This is accompanied by extra caching logic to keep freed memory around
+ * for some time before returning it to the system. Memory that is unused
+ * due to alignment constraints is used for cache colorization (random
+ * distribution of chunk addresses) to improve CPU cache utilization. The
+ * caching layer of the slice allocator adapts itself to high lock contention
+ * to improve scalability.
+ *
+ * The slice allocator can allocate blocks as small as two pointers, and
+ * unlike malloc(), it does not reserve extra space per block. For large block
+ * sizes, g_slice_new() and g_slice_alloc() will automatically delegate to the
+ * system malloc() implementation. For newly written code it is recommended
+ * to use the new `g_slice` API instead of g_malloc() and
+ * friends, as long as objects are not resized during their lifetime and the
+ * object size used at allocation time is still available when freeing.
+ *
+ * Here is an example for using the slice allocator:
+ * |[<!-- language="C" --> 
+ * gchar *mem[10000];
+ * gint i;
+ *
+ * // Allocate 10000 blocks.
+ * for (i = 0; i < 10000; i++)
+ *   {
+ *     mem[i] = g_slice_alloc (50);
+ *
+ *     // Fill in the memory with some junk.
+ *     for (j = 0; j < 50; j++)
+ *       mem[i][j] = i * j;
+ *   }
+ *
+ * // Now free all of the blocks.
+ * for (i = 0; i < 10000; i++)
+ *   g_slice_free1 (50, mem[i]);
+ * ]|
+ *
+ * And here is an example for using the using the slice allocator
+ * with data structures:
+ * |[<!-- language="C" --> 
+ * GRealArray *array;
+ *
+ * // Allocate one block, using the g_slice_new() macro.
+ * array = g_slice_new (GRealArray);
+
+ * // We can now use array just like a normal pointer to a structure.
+ * array->data            = NULL;
+ * array->len             = 0;
+ * array->alloc           = 0;
+ * array->zero_terminated = (zero_terminated ? 1 : 0);
+ * array->clear           = (clear ? 1 : 0);
+ * array->elt_size        = elt_size;
+ *
+ * // We can free the block, so it can be reused.
+ * g_slice_free (GRealArray, array);
+ * ]|
+ */
 
 /* the GSlice allocator is split up into 4 layers, roughly modelled after the slab
  * allocator and magazine extensions as outlined in:
@@ -162,14 +249,14 @@ typedef struct {
   SliceConfig   config;
   gsize         max_slab_chunk_size_for_magazine_cache;
   /* magazine cache */
-  GMutex       *magazine_mutex;
+  GMutex        magazine_mutex;
   ChunkLink   **magazines;                /* array of MAX_SLAB_INDEX (allocator) */
   guint        *contention_counters;      /* array of MAX_SLAB_INDEX (allocator) */
   gint          mutex_counter;
   guint         stamp_counter;
   guint         last_stamp;
   /* slab allocator */
-  GMutex       *slab_mutex;
+  GMutex        slab_mutex;
   SlabInfo    **slab_stack;                /* array of MAX_SLAB_INDEX (allocator) */
   guint        color_accu;
 } Allocator;
@@ -194,7 +281,7 @@ static int      smc_notify_free   (void   *pointer,
                                    size_t  size);
 
 /* --- variables --- */
-static GPrivate   *private_thread_memory = NULL;
+static GPrivate    private_thread_memory = G_PRIVATE_INIT (private_thread_memory_cleanup);
 static gsize       sys_page_size = 0;
 static Allocator   allocator[1] = { { 0, }, };
 static SliceConfig slice_config = {
@@ -204,9 +291,9 @@ static SliceConfig slice_config = {
   15 * 1000,    /* working_set_msecs */
   1,            /* color increment, alt: 0x7fffffff */
 };
-static GMutex     *smc_tree_mutex = NULL; /* mutex for G_SLICE=debug-blocks */
+static GMutex      smc_tree_mutex; /* mutex for G_SLICE=debug-blocks */
 
-/* --- auxillary funcitons --- */
+/* --- auxiliary funcitons --- */
 void
 g_slice_set_config (GSliceConfig ckey,
                     gint64       value)
@@ -274,19 +361,36 @@ g_slice_get_config_state (GSliceConfig ckey,
 static void
 slice_config_init (SliceConfig *config)
 {
-  /* don't use g_malloc/g_message here */
-  gchar buffer[1024];
-  const gchar *val = _g_getenv_nomalloc ("G_SLICE", buffer);
-  const GDebugKey keys[] = {
-    { "always-malloc", 1 << 0 },
-    { "debug-blocks",  1 << 1 },
-  };
-  gint flags = !val ? 0 : g_parse_debug_string (val, keys, G_N_ELEMENTS (keys));
+  const gchar *val;
+
   *config = slice_config;
-  if (flags & (1 << 0))         /* always-malloc */
-    config->always_malloc = TRUE;
-  if (flags & (1 << 1))         /* debug-blocks */
-    config->debug_blocks = TRUE;
+
+  val = getenv ("G_SLICE");
+  if (val != NULL)
+    {
+      gint flags;
+      const GDebugKey keys[] = {
+        { "always-malloc", 1 << 0 },
+        { "debug-blocks",  1 << 1 },
+      };
+
+      flags = g_parse_debug_string (val, keys, G_N_ELEMENTS (keys));
+      if (flags & (1 << 0))
+        config->always_malloc = TRUE;
+      if (flags & (1 << 1))
+        config->debug_blocks = TRUE;
+    }
+  else
+    {
+      /* G_SLICE was not specified, so check if valgrind is running and
+       * disable ourselves if it is.
+       *
+       * This way it's possible to force gslice to be enabled under
+       * valgrind just by setting G_SLICE to the empty string.
+       */
+      if (RUNNING_ON_VALGRIND)
+        config->always_malloc = TRUE;
+    }
 }
 
 static void
@@ -315,7 +419,7 @@ g_slice_init_nomessage (void)
    * fit less than 8 times (see [4]) into 4KB pages.
    * we allow very small page sizes here, to reduce wastage in
    * threads if only small allocations are required (this does
-   * bear the risk of incresing allocation times and fragmentation
+   * bear the risk of increasing allocation times and fragmentation
    * though).
    */
   allocator->min_page_size = MAX (allocator->min_page_size, 4096);
@@ -325,23 +429,28 @@ g_slice_init_nomessage (void)
   /* we can only align to system page size */
   allocator->max_page_size = sys_page_size;
 #endif
-  allocator->magazine_mutex = NULL;     /* _g_slice_thread_init_nomessage() */
-  allocator->magazines = g_new0 (ChunkLink*, MAX_SLAB_INDEX (allocator));
-  allocator->contention_counters = g_new0 (guint, MAX_SLAB_INDEX (allocator));
+  if (allocator->config.always_malloc)
+    {
+      allocator->contention_counters = NULL;
+      allocator->magazines = NULL;
+      allocator->slab_stack = NULL;
+    }
+  else
+    {
+      allocator->contention_counters = g_new0 (guint, MAX_SLAB_INDEX (allocator));
+      allocator->magazines = g_new0 (ChunkLink*, MAX_SLAB_INDEX (allocator));
+      allocator->slab_stack = g_new0 (SlabInfo*, MAX_SLAB_INDEX (allocator));
+    }
+
   allocator->mutex_counter = 0;
   allocator->stamp_counter = MAX_STAMP_COUNTER; /* force initial update */
   allocator->last_stamp = 0;
-  allocator->slab_mutex = NULL;         /* _g_slice_thread_init_nomessage() */
-  allocator->slab_stack = g_new0 (SlabInfo*, MAX_SLAB_INDEX (allocator));
   allocator->color_accu = 0;
   magazine_cache_update_stamp();
   /* values cached for performance reasons */
   allocator->max_slab_chunk_size_for_magazine_cache = MAX_SLAB_CHUNK_SIZE (allocator);
   if (allocator->config.always_malloc || allocator->config.bypass_magazines)
     allocator->max_slab_chunk_size_for_magazine_cache = 0;      /* non-optimized cases */
-  /* at this point, g_mem_gc_friendly() should be initialized, this
-   * should have been accomplished by the above g_malloc/g_new calls
-   */
 }
 
 static inline guint
@@ -351,12 +460,6 @@ allocator_categorize (gsize aligned_chunk_size)
   if (G_LIKELY (aligned_chunk_size && aligned_chunk_size <= allocator->max_slab_chunk_size_for_magazine_cache))
     return 1;           /* use magazine cache */
 
-  /* the above will fail (max_slab_chunk_size_for_magazine_cache == 0) if the
-   * allocator is still uninitialized, or if we are not configured to use the
-   * magazine cache.
-   */
-  if (!sys_page_size)
-    g_slice_init_nomessage ();
   if (!allocator->config.always_malloc &&
       aligned_chunk_size &&
       aligned_chunk_size <= MAX_SLAB_CHUNK_SIZE (allocator))
@@ -366,25 +469,6 @@ allocator_categorize (gsize aligned_chunk_size)
       return 1;         /* use magazine cache */
     }
   return 0;             /* use malloc() */
-}
-
-void
-_g_slice_thread_init_nomessage (void)
-{
-  /* we may not use g_error() or friends here */
-  if (!sys_page_size)
-    g_slice_init_nomessage();
-  else
-    {
-      /* g_slice_init_nomessage() has been called already, probably due
-       * to a g_slice_alloc1() before g_thread_init().
-       */
-    }
-  private_thread_memory = g_private_new (private_thread_memory_cleanup);
-  allocator->magazine_mutex = g_mutex_new();
-  allocator->slab_mutex = g_mutex_new();
-  if (allocator->config.debug_blocks)
-    smc_tree_mutex = g_mutex_new();
 }
 
 static inline void
@@ -420,41 +504,22 @@ g_mutex_lock_a (GMutex *mutex,
 static inline ThreadMemory*
 thread_memory_from_self (void)
 {
-  ThreadMemory *tmem = g_private_get (private_thread_memory);
+  ThreadMemory *tmem = g_private_get (&private_thread_memory);
   if (G_UNLIKELY (!tmem))
     {
-      static ThreadMemory *single_thread_memory = NULL;   /* remember single-thread info for multi-threaded case */
-      if (single_thread_memory && g_thread_supported ())
-        {
-          g_mutex_lock (allocator->slab_mutex);
-          if (single_thread_memory)
-            {
-              /* GSlice has been used before g_thread_init(), and now
-               * we are running threaded. to cope with it, use the saved
-               * thread memory structure from when we weren't threaded.
-               */
-              tmem = single_thread_memory;
-              single_thread_memory = NULL;      /* slab_mutex protected when multi-threaded */
-            }
-          g_mutex_unlock (allocator->slab_mutex);
-        }
-      if (!tmem)
-	{
-          const guint n_magazines = MAX_SLAB_INDEX (allocator);
-	  tmem = g_malloc0 (sizeof (ThreadMemory) + sizeof (Magazine) * 2 * n_magazines);
-	  tmem->magazine1 = (Magazine*) (tmem + 1);
-	  tmem->magazine2 = &tmem->magazine1[n_magazines];
-	}
-      /* g_private_get/g_private_set works in the single-threaded xor the multi-
-       * threaded case. but not *across* g_thread_init(), after multi-thread
-       * initialization it returns NULL for previously set single-thread data.
-       */
-      g_private_set (private_thread_memory, tmem);
-      /* save single-thread thread memory structure, in case we need to
-       * pick it up again after multi-thread initialization happened.
-       */
-      if (!single_thread_memory && !g_thread_supported ())
-        single_thread_memory = tmem;            /* no slab_mutex created yet */
+      static GMutex init_mutex;
+      guint n_magazines;
+
+      g_mutex_lock (&init_mutex);
+      if G_UNLIKELY (sys_page_size == 0)
+        g_slice_init_nomessage ();
+      g_mutex_unlock (&init_mutex);
+
+      n_magazines = MAX_SLAB_INDEX (allocator);
+      tmem = g_malloc0 (sizeof (ThreadMemory) + sizeof (Magazine) * 2 * n_magazines);
+      tmem->magazine1 = (Magazine*) (tmem + 1);
+      tmem->magazine2 = &tmem->magazine1[n_magazines];
+      g_private_set (&private_thread_memory, tmem);
     }
   return tmem;
 }
@@ -597,12 +662,12 @@ magazine_cache_trim (Allocator *allocator,
         }
       current = prev;
     }
-  g_mutex_unlock (allocator->magazine_mutex);
+  g_mutex_unlock (&allocator->magazine_mutex);
   /* free trash */
   if (trash)
     {
       const gsize chunk_size = SLAB_CHUNK_SIZE (allocator, ix);
-      g_mutex_lock (allocator->slab_mutex);
+      g_mutex_lock (&allocator->slab_mutex);
       while (trash)
         {
           current = trash;
@@ -614,7 +679,7 @@ magazine_cache_trim (Allocator *allocator,
               slab_allocator_free_chunk (chunk_size, chunk);
             }
         }
-      g_mutex_unlock (allocator->slab_mutex);
+      g_mutex_unlock (&allocator->slab_mutex);
     }
 }
 
@@ -625,7 +690,7 @@ magazine_cache_push_magazine (guint      ix,
 {
   ChunkLink *current = magazine_chain_prepare_fields (magazine_chunks);
   ChunkLink *next, *prev;
-  g_mutex_lock (allocator->magazine_mutex);
+  g_mutex_lock (&allocator->magazine_mutex);
   /* add magazine at head */
   next = allocator->magazines[ix];
   if (next)
@@ -650,14 +715,14 @@ static ChunkLink*
 magazine_cache_pop_magazine (guint  ix,
                              gsize *countp)
 {
-  g_mutex_lock_a (allocator->magazine_mutex, &allocator->contention_counters[ix]);
+  g_mutex_lock_a (&allocator->magazine_mutex, &allocator->contention_counters[ix]);
   if (!allocator->magazines[ix])
     {
       guint magazine_threshold = allocator_get_magazine_threshold (allocator, ix);
       gsize i, chunk_size = SLAB_CHUNK_SIZE (allocator, ix);
       ChunkLink *chunk, *head;
-      g_mutex_unlock (allocator->magazine_mutex);
-      g_mutex_lock (allocator->slab_mutex);
+      g_mutex_unlock (&allocator->magazine_mutex);
+      g_mutex_lock (&allocator->slab_mutex);
       head = slab_allocator_alloc_chunk (chunk_size);
       head->data = NULL;
       chunk = head;
@@ -668,7 +733,7 @@ magazine_cache_pop_magazine (guint  ix,
           chunk->data = NULL;
         }
       chunk->next = NULL;
-      g_mutex_unlock (allocator->slab_mutex);
+      g_mutex_unlock (&allocator->slab_mutex);
       *countp = i;
       return head;
     }
@@ -681,7 +746,7 @@ magazine_cache_pop_magazine (guint  ix,
       magazine_chain_next (prev) = next;
       magazine_chain_prev (next) = prev;
       allocator->magazines[ix] = next == current ? NULL : next;
-      g_mutex_unlock (allocator->magazine_mutex);
+      g_mutex_unlock (&allocator->magazine_mutex);
       /* clear special fields and hand out */
       *countp = (gsize) magazine_chain_count (current);
       magazine_chain_prev (current) = NULL;
@@ -713,13 +778,13 @@ private_thread_memory_cleanup (gpointer data)
           else
             {
               const gsize chunk_size = SLAB_CHUNK_SIZE (allocator, ix);
-              g_mutex_lock (allocator->slab_mutex);
+              g_mutex_lock (&allocator->slab_mutex);
               while (mag->chunks)
                 {
                   ChunkLink *chunk = magazine_chain_pop_head (&mag->chunks);
                   slab_allocator_free_chunk (chunk_size, chunk);
                 }
-              g_mutex_unlock (allocator->slab_mutex);
+              g_mutex_unlock (&allocator->slab_mutex);
             }
         }
     }
@@ -794,17 +859,135 @@ thread_memory_magazine2_free (ThreadMemory *tmem,
 }
 
 /* --- API functions --- */
+
+/**
+ * g_slice_new:
+ * @type: the type to allocate, typically a structure name
+ *
+ * A convenience macro to allocate a block of memory from the
+ * slice allocator.
+ *
+ * It calls g_slice_alloc() with `sizeof (@type)` and casts the
+ * returned pointer to a pointer of the given type, avoiding a type
+ * cast in the source code. Note that the underlying slice allocation
+ * mechanism can be changed with the [`G_SLICE=always-malloc`][G_SLICE]
+ * environment variable.
+ *
+ * Returns: a pointer to the allocated block, cast to a pointer to @type
+ *
+ * Since: 2.10
+ */
+
+/**
+ * g_slice_new0:
+ * @type: the type to allocate, typically a structure name
+ *
+ * A convenience macro to allocate a block of memory from the
+ * slice allocator and set the memory to 0.
+ *
+ * It calls g_slice_alloc0() with `sizeof (@type)`
+ * and casts the returned pointer to a pointer of the given type,
+ * avoiding a type cast in the source code.
+ * Note that the underlying slice allocation mechanism can
+ * be changed with the [`G_SLICE=always-malloc`][G_SLICE]
+ * environment variable.
+ *
+ * Since: 2.10
+ */
+
+/**
+ * g_slice_dup:
+ * @type: the type to duplicate, typically a structure name
+ * @mem: the memory to copy into the allocated block
+ *
+ * A convenience macro to duplicate a block of memory using
+ * the slice allocator.
+ *
+ * It calls g_slice_copy() with `sizeof (@type)`
+ * and casts the returned pointer to a pointer of the given type,
+ * avoiding a type cast in the source code.
+ * Note that the underlying slice allocation mechanism can
+ * be changed with the [`G_SLICE=always-malloc`][G_SLICE]
+ * environment variable.
+ *
+ * Returns: a pointer to the allocated block, cast to a pointer to @type
+ *
+ * Since: 2.14
+ */
+
+/**
+ * g_slice_free:
+ * @type: the type of the block to free, typically a structure name
+ * @mem: a pointer to the block to free
+ *
+ * A convenience macro to free a block of memory that has
+ * been allocated from the slice allocator.
+ *
+ * It calls g_slice_free1() using `sizeof (type)`
+ * as the block size.
+ * Note that the exact release behaviour can be changed with the
+ * [`G_DEBUG=gc-friendly`][G_DEBUG] environment variable, also see
+ * [`G_SLICE`][G_SLICE] for related debugging options.
+ *
+ * Since: 2.10
+ */
+
+/**
+ * g_slice_free_chain:
+ * @type: the type of the @mem_chain blocks
+ * @mem_chain: a pointer to the first block of the chain
+ * @next: the field name of the next pointer in @type
+ *
+ * Frees a linked list of memory blocks of structure type @type.
+ * The memory blocks must be equal-sized, allocated via
+ * g_slice_alloc() or g_slice_alloc0() and linked together by
+ * a @next pointer (similar to #GSList). The name of the
+ * @next field in @type is passed as third argument.
+ * Note that the exact release behaviour can be changed with the
+ * [`G_DEBUG=gc-friendly`][G_DEBUG] environment variable, also see
+ * [`G_SLICE`][G_SLICE] for related debugging options.
+ *
+ * Since: 2.10
+ */
+
+/**
+ * g_slice_alloc:
+ * @block_size: the number of bytes to allocate
+ *
+ * Allocates a block of memory from the slice allocator.
+ * The block adress handed out can be expected to be aligned
+ * to at least 1 * sizeof (void*),
+ * though in general slices are 2 * sizeof (void*) bytes aligned,
+ * if a malloc() fallback implementation is used instead,
+ * the alignment may be reduced in a libc dependent fashion.
+ * Note that the underlying slice allocation mechanism can
+ * be changed with the [`G_SLICE=always-malloc`][G_SLICE]
+ * environment variable.
+ *
+ * Returns: a pointer to the allocated memory block
+ *
+ * Since: 2.10
+ */
 gpointer
 g_slice_alloc (gsize mem_size)
 {
+  ThreadMemory *tmem;
   gsize chunk_size;
   gpointer mem;
   guint acat;
+
+  /* This gets the private structure for this thread.  If the private
+   * structure does not yet exist, it is created.
+   *
+   * This has a side effect of causing GSlice to be initialised, so it
+   * must come first.
+   */
+  tmem = thread_memory_from_self ();
+
   chunk_size = P2ALIGN (mem_size);
   acat = allocator_categorize (chunk_size);
   if (G_LIKELY (acat == 1))     /* allocate through magazine layer */
     {
-      ThreadMemory *tmem = thread_memory_from_self();
       guint ix = SLAB_INDEX (allocator, chunk_size);
       if (G_UNLIKELY (thread_memory_magazine1_is_empty (tmem, ix)))
         {
@@ -816,17 +999,33 @@ g_slice_alloc (gsize mem_size)
     }
   else if (acat == 2)           /* allocate through slab allocator */
     {
-      g_mutex_lock (allocator->slab_mutex);
+      g_mutex_lock (&allocator->slab_mutex);
       mem = slab_allocator_alloc_chunk (chunk_size);
-      g_mutex_unlock (allocator->slab_mutex);
+      g_mutex_unlock (&allocator->slab_mutex);
     }
   else                          /* delegate to system malloc */
     mem = g_malloc (mem_size);
   if (G_UNLIKELY (allocator->config.debug_blocks))
     smc_notify_alloc (mem, mem_size);
+
+  TRACE (GLIB_SLICE_ALLOC((void*)mem, mem_size));
+
   return mem;
 }
 
+/**
+ * g_slice_alloc0:
+ * @block_size: the number of bytes to allocate
+ *
+ * Allocates a block of memory via g_slice_alloc() and initializes
+ * the returned memory to 0. Note that the underlying slice allocation
+ * mechanism can be changed with the [`G_SLICE=always-malloc`][G_SLICE]
+ * environment variable.
+ *
+ * Returns: a pointer to the allocated block
+ *
+ * Since: 2.10
+ */
 gpointer
 g_slice_alloc0 (gsize mem_size)
 {
@@ -836,6 +1035,18 @@ g_slice_alloc0 (gsize mem_size)
   return mem;
 }
 
+/**
+ * g_slice_copy:
+ * @block_size: the number of bytes to allocate
+ * @mem_block: the memory to copy
+ *
+ * Allocates a block of memory from the slice allocator
+ * and copies @block_size bytes into it from @mem_block.
+ *
+ * Returns: a pointer to the allocated memory block
+ *
+ * Since: 2.14
+ */
 gpointer
 g_slice_copy (gsize         mem_size,
               gconstpointer mem_block)
@@ -846,6 +1057,21 @@ g_slice_copy (gsize         mem_size,
   return mem;
 }
 
+/**
+ * g_slice_free1:
+ * @block_size: the size of the block
+ * @mem_block: a pointer to the block to free
+ *
+ * Frees a block of memory.
+ *
+ * The memory must have been allocated via g_slice_alloc() or
+ * g_slice_alloc0() and the @block_size has to match the size
+ * specified upon allocation. Note that the exact release behaviour
+ * can be changed with the [`G_DEBUG=gc-friendly`][G_DEBUG] environment
+ * variable, also see [`G_SLICE`][G_SLICE] for related debugging options.
+ *
+ * Since: 2.10
+ */
 void
 g_slice_free1 (gsize    mem_size,
                gpointer mem_block)
@@ -875,9 +1101,9 @@ g_slice_free1 (gsize    mem_size,
     {
       if (G_UNLIKELY (g_mem_gc_friendly))
         memset (mem_block, 0, chunk_size);
-      g_mutex_lock (allocator->slab_mutex);
+      g_mutex_lock (&allocator->slab_mutex);
       slab_allocator_free_chunk (chunk_size, mem_block);
-      g_mutex_unlock (allocator->slab_mutex);
+      g_mutex_unlock (&allocator->slab_mutex);
     }
   else                                  /* delegate to system malloc */
     {
@@ -885,8 +1111,27 @@ g_slice_free1 (gsize    mem_size,
         memset (mem_block, 0, mem_size);
       g_free (mem_block);
     }
+  TRACE (GLIB_SLICE_FREE((void*)mem_block, mem_size));
 }
 
+/**
+ * g_slice_free_chain_with_offset:
+ * @block_size: the size of the blocks
+ * @mem_chain:  a pointer to the first block of the chain
+ * @next_offset: the offset of the @next field in the blocks
+ *
+ * Frees a linked list of memory blocks of structure type @type.
+ *
+ * The memory blocks must be equal-sized, allocated via
+ * g_slice_alloc() or g_slice_alloc0() and linked together by a
+ * @next pointer (similar to #GSList). The offset of the @next
+ * field in each block is passed as third argument.
+ * Note that the exact release behaviour can be changed with the
+ * [`G_DEBUG=gc-friendly`][G_DEBUG] environment variable, also see
+ * [`G_SLICE`][G_SLICE] for related debugging options.
+ *
+ * Since: 2.10
+ */
 void
 g_slice_free_chain_with_offset (gsize    mem_size,
                                 gpointer mem_chain,
@@ -934,7 +1179,7 @@ g_slice_free_chain_with_offset (gsize    mem_size,
     }
   else if (acat == 2)                   /* allocate through slab allocator */
     {
-      g_mutex_lock (allocator->slab_mutex);
+      g_mutex_lock (&allocator->slab_mutex);
       while (slice)
         {
           guint8 *current = slice;
@@ -946,7 +1191,7 @@ g_slice_free_chain_with_offset (gsize    mem_size,
             memset (current, 0, chunk_size);
           slab_allocator_free_chunk (chunk_size, current);
         }
-      g_mutex_unlock (allocator->slab_mutex);
+      g_mutex_unlock (&allocator->slab_mutex);
     }
   else                                  /* delegate to system malloc */
     while (slice)
@@ -1009,14 +1254,11 @@ allocator_add_slab (Allocator *allocator,
   guint i;
   if (!mem)
     {
-      const gchar *syserr = "unknown error";
-#if HAVE_STRERROR
-      syserr = strerror (errno);
-#endif
+      const gchar *syserr = strerror (errno);
       mem_error ("failed to allocate %u bytes (alignment: %u): %s\n",
                  (guint) (page_size - NATIVE_MALLOC_PADDING), (guint) page_size, syserr);
     }
-  /* mask page adress */
+  /* mask page address */
   addr = ((gsize) mem / page_size) * page_size;
   /* assert alignment */
   mem_assert (aligned_memory == (gpointer) addr);
@@ -1072,7 +1314,7 @@ slab_allocator_free_chunk (gsize    chunk_size,
   guint ix = SLAB_INDEX (allocator, chunk_size);
   gsize page_size = allocator_aligned_page_size (allocator, SLAB_BPAGE_SIZE (allocator, chunk_size));
   gsize addr = ((gsize) mem / page_size) * page_size;
-  /* mask page adress */
+  /* mask page address */
   guint8 *page = (guint8*) addr;
   SlabInfo *sinfo = (SlabInfo*) (page + page_size - SLAB_INFO_SIZE);
   /* assert valid chunk count */
@@ -1189,7 +1431,7 @@ mem_error (const char *format,
   /* at least, put out "MEMORY-ERROR", in case we segfault during the rest of the function */
   fputs ("\n***MEMORY-ERROR***: ", stderr);
   pname = g_get_prgname();
-  fprintf (stderr, "%s[%u]: GSlice: ", pname ? pname : "", getpid());
+  fprintf (stderr, "%s[%ld]: GSlice: ", pname ? pname : "", (long)getpid());
   va_start (args, format);
   vfprintf (stderr, format, args);
   va_end (args);
@@ -1245,17 +1487,17 @@ smc_notify_free (void   *pointer,
   found_one = smc_tree_lookup (adress, &real_size);
   if (!found_one)
     {
-      fprintf (stderr, "GSlice: MemChecker: attempt to release non-allocated block: %p size=%zu\n", pointer, size);
+      fprintf (stderr, "GSlice: MemChecker: attempt to release non-allocated block: %p size=%" G_GSIZE_FORMAT "\n", pointer, size);
       return 0;
     }
   if (real_size != size && (real_size || size))
     {
-      fprintf (stderr, "GSlice: MemChecker: attempt to release block with invalid size: %p size=%zu invalid-size=%zu\n", pointer, real_size, size);
+      fprintf (stderr, "GSlice: MemChecker: attempt to release block with invalid size: %p size=%" G_GSIZE_FORMAT " invalid-size=%" G_GSIZE_FORMAT "\n", pointer, real_size, size);
       return 0;
     }
   if (!smc_tree_remove (adress))
     {
-      fprintf (stderr, "GSlice: MemChecker: attempt to release non-allocated block: %p size=%zu\n", pointer, size);
+      fprintf (stderr, "GSlice: MemChecker: attempt to release non-allocated block: %p size=%" G_GSIZE_FORMAT "\n", pointer, size);
       return 0;
     }
   return 1; /* all fine */
@@ -1264,7 +1506,7 @@ smc_notify_free (void   *pointer,
 /* --- g-slice memory checker tree implementation --- */
 #define SMC_TRUNK_COUNT     (4093 /* 16381 */)          /* prime, to distribute trunk collisions (big, allocated just once) */
 #define SMC_BRANCH_COUNT    (511)                       /* prime, to distribute branch collisions */
-#define SMC_TRUNK_EXTENT    (SMC_BRANCH_COUNT * 2039)   /* key adress space per trunk, should distribute uniformly across BRANCH_COUNT */
+#define SMC_TRUNK_EXTENT    (SMC_BRANCH_COUNT * 2039)   /* key address space per trunk, should distribute uniformly across BRANCH_COUNT */
 #define SMC_TRUNK_HASH(k)   ((k / SMC_TRUNK_EXTENT) % SMC_TRUNK_COUNT)  /* generate new trunk hash per megabyte (roughly) */
 #define SMC_BRANCH_HASH(k)  (k % SMC_BRANCH_COUNT)
 
@@ -1278,10 +1520,7 @@ static SmcBranch     **smc_tree_root = NULL;
 static void
 smc_tree_abort (int errval)
 {
-  const char *syserr = "unknown error";
-#if HAVE_STRERROR
-  syserr = strerror (errval);
-#endif
+  const char *syserr = strerror (errval);
   mem_error ("MemChecker: failure in debugging tree: %s", syserr);
 }
 
@@ -1297,7 +1536,7 @@ smc_tree_branch_grow_L (SmcBranch   *branch,
   if (!branch->entries)
     smc_tree_abort (errno);
   entry = branch->entries + index;
-  g_memmove (entry + 1, entry, (branch->n_entries - index) * sizeof (entry[0]));
+  memmove (entry + 1, entry, (branch->n_entries - index) * sizeof (entry[0]));
   branch->n_entries += 1;
   return entry;
 }
@@ -1332,7 +1571,7 @@ smc_tree_insert (SmcKType key,
   unsigned int ix0, ix1;
   SmcEntry *entry;
 
-  g_mutex_lock (smc_tree_mutex);
+  g_mutex_lock (&smc_tree_mutex);
   ix0 = SMC_TRUNK_HASH (key);
   ix1 = SMC_BRANCH_HASH (key);
   if (!smc_tree_root)
@@ -1354,7 +1593,7 @@ smc_tree_insert (SmcKType key,
     entry = smc_tree_branch_grow_L (&smc_tree_root[ix0][ix1], entry - smc_tree_root[ix0][ix1].entries);
   entry->key = key;
   entry->value = value;
-  g_mutex_unlock (smc_tree_mutex);
+  g_mutex_unlock (&smc_tree_mutex);
 }
 
 static gboolean
@@ -1365,7 +1604,7 @@ smc_tree_lookup (SmcKType  key,
   unsigned int ix0 = SMC_TRUNK_HASH (key), ix1 = SMC_BRANCH_HASH (key);
   gboolean found_one = FALSE;
   *value_p = 0;
-  g_mutex_lock (smc_tree_mutex);
+  g_mutex_lock (&smc_tree_mutex);
   if (smc_tree_root && smc_tree_root[ix0])
     {
       entry = smc_tree_branch_lookup_nearest_L (&smc_tree_root[ix0][ix1], key);
@@ -1377,7 +1616,7 @@ smc_tree_lookup (SmcKType  key,
           *value_p = entry->value;
         }
     }
-  g_mutex_unlock (smc_tree_mutex);
+  g_mutex_unlock (&smc_tree_mutex);
   return found_one;
 }
 
@@ -1386,7 +1625,7 @@ smc_tree_remove (SmcKType key)
 {
   unsigned int ix0 = SMC_TRUNK_HASH (key), ix1 = SMC_BRANCH_HASH (key);
   gboolean found_one = FALSE;
-  g_mutex_lock (smc_tree_mutex);
+  g_mutex_lock (&smc_tree_mutex);
   if (smc_tree_root && smc_tree_root[ix0])
     {
       SmcEntry *entry = smc_tree_branch_lookup_nearest_L (&smc_tree_root[ix0][ix1], key);
@@ -1396,7 +1635,7 @@ smc_tree_remove (SmcKType key)
         {
           unsigned int i = entry - smc_tree_root[ix0][ix1].entries;
           smc_tree_root[ix0][ix1].n_entries -= 1;
-          g_memmove (entry, entry + 1, (smc_tree_root[ix0][ix1].n_entries - i) * sizeof (entry[0]));
+          memmove (entry, entry + 1, (smc_tree_root[ix0][ix1].n_entries - i) * sizeof (entry[0]));
           if (!smc_tree_root[ix0][ix1].n_entries)
             {
               /* avoid useless pressure on the memory system */
@@ -1406,7 +1645,7 @@ smc_tree_remove (SmcKType key)
           found_one = TRUE;
         }
     }
-  g_mutex_unlock (smc_tree_mutex);
+  g_mutex_unlock (&smc_tree_mutex);
   return found_one;
 }
 
@@ -1414,7 +1653,7 @@ smc_tree_remove (SmcKType key)
 void
 g_slice_debug_tree_statistics (void)
 {
-  g_mutex_lock (smc_tree_mutex);
+  g_mutex_lock (&smc_tree_mutex);
   if (smc_tree_root)
     {
       unsigned int i, j, t = 0, o = 0, b = 0, su = 0, ex = 0, en = 4294967295u;
@@ -1446,7 +1685,7 @@ g_slice_debug_tree_statistics (void)
     }
   else
     fprintf (stderr, "GSlice: MemChecker: root=NULL\n");
-  g_mutex_unlock (smc_tree_mutex);
+  g_mutex_unlock (&smc_tree_mutex);
   
   /* sample statistics (beast + GSLice + 24h scripted core & GUI activity):
    *  PID %CPU %MEM   VSZ  RSS      COMMAND
@@ -1471,6 +1710,3 @@ g_slice_debug_tree_statistics (void)
    */
 }
 #endif /* G_ENABLE_DEBUG */
-
-#define __G_SLICE_C__
-#include "galiasdef.c"

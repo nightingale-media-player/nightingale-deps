@@ -12,22 +12,27 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
 #ifndef __G_TYPES_H__
 #define __G_TYPES_H__
 
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
+
 #include <glibconfig.h>
+#include <glib/gmacros.h>
+#include <glib/gversionmacros.h>
+#include <time.h>
 
 G_BEGIN_DECLS
 
@@ -86,7 +91,29 @@ typedef guint           (*GHashFunc)            (gconstpointer  key);
 typedef void            (*GHFunc)               (gpointer       key,
                                                  gpointer       value,
                                                  gpointer       user_data);
+
+/**
+ * GFreeFunc:
+ * @data: a data pointer
+ *
+ * Declares a type of function which takes an arbitrary
+ * data pointer argument and has no return value. It is
+ * not currently used in GLib or GTK+.
+ */
 typedef void            (*GFreeFunc)            (gpointer       data);
+
+/**
+ * GTranslateFunc:
+ * @str: the untranslated string
+ * @data: user data specified when installing the function, e.g.
+ *  in g_option_group_set_translate_func()
+ * 
+ * The type of functions which are used to translate user-visible
+ * strings, for <option>--help</option> output.
+ * 
+ * Returns: a translation of the string for the current locale.
+ *  The returned string is owned by GLib and must not be freed.
+ */
 typedef const gchar *   (*GTranslateFunc)       (const gchar   *str,
 						 gpointer       data);
 
@@ -152,10 +179,16 @@ typedef const gchar *   (*GTranslateFunc)       (const gchar   *str,
 /* Arch specific stuff for speed
  */
 #if defined (__GNUC__) && (__GNUC__ >= 2) && defined (__OPTIMIZE__)
+
+#  if __GNUC__ >= 4 && defined (__GNUC_MINOR__) && __GNUC_MINOR__ >= 3
+#    define GUINT32_SWAP_LE_BE(val) ((guint32) __builtin_bswap32 ((gint32) (val)))
+#    define GUINT64_SWAP_LE_BE(val) ((guint64) __builtin_bswap64 ((gint64) (val)))
+#  endif
+
 #  if defined (__i386__)
 #    define GUINT16_SWAP_LE_BE_IA32(val) \
-       (__extension__						\
-	({ register guint16 __v, __x = ((guint16) (val));	\
+       (G_GNUC_EXTENSION					\
+	({ guint16 __v, __x = ((guint16) (val));		\
 	   if (__builtin_constant_p (__x))			\
 	     __v = GUINT16_SWAP_LE_BE_CONSTANT (__x);		\
 	   else							\
@@ -168,8 +201,8 @@ typedef const gchar *   (*GTranslateFunc)       (const gchar   *str,
 	&& !defined (__pentium__) && !defined (__i686__) \
 	&& !defined (__pentiumpro__) && !defined (__pentium4__)
 #       define GUINT32_SWAP_LE_BE_IA32(val) \
-	  (__extension__					\
-	   ({ register guint32 __v, __x = ((guint32) (val));	\
+	  (G_GNUC_EXTENSION					\
+	   ({ guint32 __v, __x = ((guint32) (val));		\
 	      if (__builtin_constant_p (__x))			\
 		__v = GUINT32_SWAP_LE_BE_CONSTANT (__x);	\
 	      else						\
@@ -182,8 +215,8 @@ typedef const gchar *   (*GTranslateFunc)       (const gchar   *str,
 	      __v; }))
 #    else /* 486 and higher has bswap */
 #       define GUINT32_SWAP_LE_BE_IA32(val) \
-	  (__extension__					\
-	   ({ register guint32 __v, __x = ((guint32) (val));	\
+	  (G_GNUC_EXTENSION					\
+	   ({ guint32 __v, __x = ((guint32) (val));		\
 	      if (__builtin_constant_p (__x))			\
 		__v = GUINT32_SWAP_LE_BE_CONSTANT (__x);	\
 	      else						\
@@ -193,7 +226,7 @@ typedef const gchar *   (*GTranslateFunc)       (const gchar   *str,
 	      __v; }))
 #    endif /* processor specific 32-bit stuff */
 #    define GUINT64_SWAP_LE_BE_IA32(val) \
-       (__extension__							\
+       (G_GNUC_EXTENSION						\
 	({ union { guint64 __ll;					\
 		   guint32 __l[2]; } __w, __r;				\
 	   __w.__ll = ((guint64) (val));				\
@@ -207,12 +240,16 @@ typedef const gchar *   (*GTranslateFunc)       (const gchar   *str,
 	   __r.__ll; }))
      /* Possibly just use the constant version and let gcc figure it out? */
 #    define GUINT16_SWAP_LE_BE(val) (GUINT16_SWAP_LE_BE_IA32 (val))
-#    define GUINT32_SWAP_LE_BE(val) (GUINT32_SWAP_LE_BE_IA32 (val))
-#    define GUINT64_SWAP_LE_BE(val) (GUINT64_SWAP_LE_BE_IA32 (val))
+#    ifndef GUINT32_SWAP_LE_BE
+#      define GUINT32_SWAP_LE_BE(val) (GUINT32_SWAP_LE_BE_IA32 (val))
+#    endif
+#    ifndef GUINT64_SWAP_LE_BE
+#      define GUINT64_SWAP_LE_BE(val) (GUINT64_SWAP_LE_BE_IA32 (val))
+#    endif
 #  elif defined (__ia64__)
 #    define GUINT16_SWAP_LE_BE_IA64(val) \
-       (__extension__						\
-	({ register guint16 __v, __x = ((guint16) (val));	\
+       (G_GNUC_EXTENSION					\
+	({ guint16 __v, __x = ((guint16) (val));		\
 	   if (__builtin_constant_p (__x))			\
 	     __v = GUINT16_SWAP_LE_BE_CONSTANT (__x);		\
 	   else							\
@@ -222,8 +259,8 @@ typedef const gchar *   (*GTranslateFunc)       (const gchar   *str,
 				    : "r" (__x));		\
 	    __v; }))
 #    define GUINT32_SWAP_LE_BE_IA64(val) \
-       (__extension__						\
-	 ({ register guint32 __v, __x = ((guint32) (val));	\
+       (G_GNUC_EXTENSION					\
+	 ({ guint32 __v, __x = ((guint32) (val));		\
 	    if (__builtin_constant_p (__x))			\
 	      __v = GUINT32_SWAP_LE_BE_CONSTANT (__x);		\
 	    else						\
@@ -233,8 +270,8 @@ typedef const gchar *   (*GTranslateFunc)       (const gchar   *str,
 				    : "r" (__x));		\
 	    __v; }))
 #    define GUINT64_SWAP_LE_BE_IA64(val) \
-       (__extension__						\
-	({ register guint64 __v, __x = ((guint64) (val));	\
+       (G_GNUC_EXTENSION					\
+	({ guint64 __v, __x = ((guint64) (val));		\
 	   if (__builtin_constant_p (__x))			\
 	     __v = GUINT64_SWAP_LE_BE_CONSTANT (__x);		\
 	   else							\
@@ -243,12 +280,16 @@ typedef const gchar *   (*GTranslateFunc)       (const gchar   *str,
 				   : "r" (__x));		\
 	   __v; }))
 #    define GUINT16_SWAP_LE_BE(val) (GUINT16_SWAP_LE_BE_IA64 (val))
-#    define GUINT32_SWAP_LE_BE(val) (GUINT32_SWAP_LE_BE_IA64 (val))
-#    define GUINT64_SWAP_LE_BE(val) (GUINT64_SWAP_LE_BE_IA64 (val))
+#    ifndef GUINT32_SWAP_LE_BE
+#      define GUINT32_SWAP_LE_BE(val) (GUINT32_SWAP_LE_BE_IA64 (val))
+#    endif
+#    ifndef GUINT64_SWAP_LE_BE
+#      define GUINT64_SWAP_LE_BE(val) (GUINT64_SWAP_LE_BE_IA64 (val))
+#    endif
 #  elif defined (__x86_64__)
 #    define GUINT32_SWAP_LE_BE_X86_64(val) \
-       (__extension__						\
-	 ({ register guint32 __v, __x = ((guint32) (val));	\
+       (G_GNUC_EXTENSION					\
+	 ({ guint32 __v, __x = ((guint32) (val));		\
 	    if (__builtin_constant_p (__x))			\
 	      __v = GUINT32_SWAP_LE_BE_CONSTANT (__x);		\
 	    else						\
@@ -257,8 +298,8 @@ typedef const gchar *   (*GTranslateFunc)       (const gchar   *str,
 		      : "0" (__x));				\
 	    __v; }))
 #    define GUINT64_SWAP_LE_BE_X86_64(val) \
-       (__extension__						\
-	({ register guint64 __v, __x = ((guint64) (val));	\
+       (G_GNUC_EXTENSION					\
+	({ guint64 __v, __x = ((guint64) (val));		\
 	   if (__builtin_constant_p (__x))			\
 	     __v = GUINT64_SWAP_LE_BE_CONSTANT (__x);		\
 	   else							\
@@ -268,12 +309,20 @@ typedef const gchar *   (*GTranslateFunc)       (const gchar   *str,
 	   __v; }))
      /* gcc seems to figure out optimal code for this on its own */
 #    define GUINT16_SWAP_LE_BE(val) (GUINT16_SWAP_LE_BE_CONSTANT (val))
-#    define GUINT32_SWAP_LE_BE(val) (GUINT32_SWAP_LE_BE_X86_64 (val))
-#    define GUINT64_SWAP_LE_BE(val) (GUINT64_SWAP_LE_BE_X86_64 (val))
+#    ifndef GUINT32_SWAP_LE_BE
+#      define GUINT32_SWAP_LE_BE(val) (GUINT32_SWAP_LE_BE_X86_64 (val))
+#    endif
+#    ifndef GUINT64_SWAP_LE_BE
+#      define GUINT64_SWAP_LE_BE(val) (GUINT64_SWAP_LE_BE_X86_64 (val))
+#    endif
 #  else /* generic gcc */
 #    define GUINT16_SWAP_LE_BE(val) (GUINT16_SWAP_LE_BE_CONSTANT (val))
-#    define GUINT32_SWAP_LE_BE(val) (GUINT32_SWAP_LE_BE_CONSTANT (val))
-#    define GUINT64_SWAP_LE_BE(val) (GUINT64_SWAP_LE_BE_CONSTANT (val))
+#    ifndef GUINT32_SWAP_LE_BE
+#      define GUINT32_SWAP_LE_BE(val) (GUINT32_SWAP_LE_BE_CONSTANT (val))
+#    endif
+#    ifndef GUINT64_SWAP_LE_BE
+#      define GUINT64_SWAP_LE_BE(val) (GUINT64_SWAP_LE_BE_CONSTANT (val))
+#    endif
 #  endif
 #else /* generic */
 #  define GUINT16_SWAP_LE_BE(val) (GUINT16_SWAP_LE_BE_CONSTANT (val))
@@ -316,6 +365,11 @@ typedef const gchar *   (*GTranslateFunc)       (const gchar   *str,
 #define GUINT_FROM_LE(val)	(GUINT_TO_LE (val))
 #define GINT_FROM_BE(val)	(GINT_TO_BE (val))
 #define GUINT_FROM_BE(val)	(GUINT_TO_BE (val))
+
+#define GSIZE_FROM_LE(val)	(GSIZE_TO_LE (val))
+#define GSSIZE_FROM_LE(val)	(GSSIZE_TO_LE (val))
+#define GSIZE_FROM_BE(val)	(GSIZE_TO_BE (val))
+#define GSSIZE_FROM_BE(val)	(GSSIZE_TO_BE (val))
 
 
 /* Portable versions of host-network order stuff
@@ -403,7 +457,7 @@ struct _GTimeVal
 G_END_DECLS
 
 /* We prefix variable declarations so they can
- * properly get exported in windows dlls.
+ * properly get exported in Windows DLLs.
  */
 #ifndef GLIB_VAR
 #  ifdef G_PLATFORM_WIN32
@@ -421,9 +475,8 @@ G_END_DECLS
 #      endif /* !GLIB_COMPILATION */
 #    endif /* !GLIB_STATIC_COMPILATION */
 #  else /* !G_PLATFORM_WIN32 */
-#    define GLIB_VAR extern
+#    define GLIB_VAR _GLIB_EXTERN
 #  endif /* !G_PLATFORM_WIN32 */
 #endif /* GLIB_VAR */
 
 #endif /* __G_TYPES_H__ */
-

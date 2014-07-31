@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  *         David Zeuthen <davidz@redhat.com>
@@ -24,10 +22,9 @@
 #ifndef __G_UNIX_VOLUME_H__
 #define __G_UNIX_VOLUME_H__
 
-#include <glib-object.h>
-#include <gio/gvolume.h>
-#include <gio/gunixmounts.h>
+#include <gio/giotypes.h>
 #include <gio/gunixvolumemonitor.h>
+#include <gio/gunixmounts.h>
 
 G_BEGIN_DECLS
 
@@ -39,21 +36,22 @@ G_BEGIN_DECLS
 
 typedef struct _GUnixVolumeClass GUnixVolumeClass;
 
-struct _GUnixVolumeClass {
-   GObjectClass parent_class;
+struct _GUnixVolumeClass
+{
+  GObjectClass parent_class;
 };
 
-GType _g_unix_volume_get_type (void) G_GNUC_CONST;
+GType         _g_unix_volume_get_type       (void) G_GNUC_CONST;
 
-GUnixVolume *_g_unix_volume_new           (GVolumeMonitor    *volume_monitor,
-                                           GUnixMountPoint   *mountpoint);
-gboolean    _g_unix_volume_has_mount_path (GUnixVolume       *volume,
-                                           const char        *mount_path);
-void        _g_unix_volume_set_mount      (GUnixVolume       *volume,
-                                           GUnixMount        *mount);
-void        _g_unix_volume_unset_mount    (GUnixVolume       *volume,
-                                           GUnixMount        *mount);
-void        _g_unix_volume_disconnected   (GUnixVolume       *volume);
+GUnixVolume * _g_unix_volume_new            (GVolumeMonitor  *volume_monitor,
+                                             GUnixMountPoint *mountpoint);
+gboolean      _g_unix_volume_has_mount_path (GUnixVolume     *volume,
+                                             const char      *mount_path);
+void          _g_unix_volume_set_mount      (GUnixVolume     *volume,
+                                             GUnixMount      *mount);
+void          _g_unix_volume_unset_mount    (GUnixVolume     *volume,
+                                             GUnixMount      *mount);
+void          _g_unix_volume_disconnected   (GUnixVolume     *volume);
 
 G_END_DECLS
 

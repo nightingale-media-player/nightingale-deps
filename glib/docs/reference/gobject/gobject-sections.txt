@@ -30,9 +30,11 @@ G_TYPE_FROM_INTERFACE
 G_TYPE_INSTANCE_GET_CLASS
 G_TYPE_INSTANCE_GET_INTERFACE
 G_TYPE_INSTANCE_GET_PRIVATE
+G_TYPE_CLASS_GET_PRIVATE
 G_TYPE_CHECK_INSTANCE
 G_TYPE_CHECK_INSTANCE_CAST
 G_TYPE_CHECK_INSTANCE_TYPE
+G_TYPE_CHECK_INSTANCE_FUNDAMENTAL_TYPE
 G_TYPE_CHECK_CLASS_CAST
 G_TYPE_CHECK_CLASS_TYPE
 G_TYPE_CHECK_VALUE
@@ -54,6 +56,7 @@ g_type_class_peek_static
 g_type_class_unref
 g_type_class_peek_parent
 g_type_class_add_private
+g_type_add_class_private
 g_type_interface_peek
 g_type_interface_peek_parent
 g_type_default_interface_ref
@@ -96,25 +99,44 @@ g_type_add_interface_check
 g_type_remove_interface_check
 GTypeInterfaceCheckFunc
 g_type_value_table_peek
+g_type_ensure
+g_type_get_type_registration_serial
 
 G_DEFINE_TYPE
+G_DEFINE_TYPE_WITH_PRIVATE
 G_DEFINE_TYPE_WITH_CODE
 G_DEFINE_ABSTRACT_TYPE
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE
+G_ADD_PRIVATE
+G_PRIVATE_OFFSET
+G_PRIVATE_FIELD
+G_PRIVATE_FIELD_P
+G_DEFINE_INTERFACE
+G_DEFINE_INTERFACE_WITH_CODE
 G_IMPLEMENT_INTERFACE
 G_DEFINE_TYPE_EXTENDED
+G_DEFINE_BOXED_TYPE
+G_DEFINE_BOXED_TYPE_WITH_CODE
+G_DEFINE_POINTER_TYPE
+G_DEFINE_POINTER_TYPE_WITH_CODE
 
 <SUBSECTION Private>
 G_TYPE_FUNDAMENTAL_SHIFT
 g_type_check_instance
 g_type_check_instance_cast
 g_type_check_instance_is_a
+g_type_check_instance_is_fundamentally_a
 g_type_check_class_cast
 g_type_check_class_is_a
 g_type_check_is_value_type
 g_type_check_value
 g_type_check_value_holds
+g_type_class_adjust_private_offset
+g_type_add_instance_private
 g_type_instance_get_private
+g_type_class_get_instance_private_offset
+g_type_class_get_private
 g_type_test_flags
 g_type_name_from_instance
 g_type_name_from_class
@@ -142,6 +164,8 @@ G_TYPE_BOXED
 G_TYPE_PARAM
 G_TYPE_OBJECT
 G_TYPE_GTYPE
+G_TYPE_VARIANT
+G_TYPE_CHECKSUM
 
 <SUBSECTION>
 G_TYPE_RESERVED_GLIB_FIRST
@@ -152,16 +176,6 @@ G_TYPE_RESERVED_USER_FIRST
 
 <SUBSECTION Private>
 GOBJECT_VAR
-g_value_c_init
-g_value_types_init
-g_enum_types_init
-g_param_type_init
-g_boxed_type_init
-g_object_type_init
-g_param_spec_types_init
-g_value_transforms_init
-g_signal_init
-g_gtype_get_type
 </SECTION>
 
 <SECTION>
@@ -202,6 +216,7 @@ g_type_module_register_flags
 
 G_DEFINE_DYNAMIC_TYPE
 G_DEFINE_DYNAMIC_TYPE_EXTENDED
+G_IMPLEMENT_INTERFACE_DYNAMIC
 
 <SUBSECTION Standard>
 G_TYPE_MODULE
@@ -233,6 +248,7 @@ G_OBJECT_TYPE_NAME
 G_OBJECT_CLASS_TYPE
 G_OBJECT_CLASS_NAME
 g_object_class_install_property
+g_object_class_install_properties
 g_object_class_find_property
 g_object_class_list_properties
 g_object_class_override_property
@@ -245,6 +261,7 @@ GParameter
 g_object_ref
 g_object_unref
 g_object_ref_sink
+g_clear_object
 GInitiallyUnowned
 GInitiallyUnownedClass
 G_TYPE_INITIALLY_UNOWNED
@@ -263,16 +280,21 @@ g_object_disconnect
 g_object_set
 g_object_get
 g_object_notify
+g_object_notify_by_pspec
 g_object_freeze_notify
 g_object_thaw_notify
 g_object_get_data
 g_object_set_data
 g_object_set_data_full
 g_object_steal_data
+g_object_dup_data
+g_object_replace_data
 g_object_get_qdata
 g_object_set_qdata
 g_object_set_qdata_full
 g_object_steal_qdata
+g_object_dup_qdata
+g_object_replace_qdata
 g_object_set_property
 g_object_get_property
 g_object_new_valist
@@ -281,6 +303,13 @@ g_object_get_valist
 g_object_watch_closure
 g_object_run_dispose
 G_OBJECT_WARN_INVALID_PROPERTY_ID
+
+<SUBSECTION Weak references>
+GWeakRef
+g_weak_ref_init
+g_weak_ref_clear
+g_weak_ref_get
+g_weak_ref_set
 
 <SUBSECTION Standard>
 G_INITIALLY_UNOWNED
@@ -293,6 +322,7 @@ G_IS_INITIALLY_UNOWNED_CLASS
 G_OBJECT_WARN_INVALID_PSPEC
 g_initially_unowned_get_type
 g_object_compat_control
+g_object_get_type
 </SECTION>
 
 <SECTION>
@@ -340,6 +370,26 @@ G_TYPE_DATE
 G_TYPE_GSTRING
 G_TYPE_STRV
 G_TYPE_REGEX
+G_TYPE_MATCH_INFO
+G_TYPE_ARRAY
+G_TYPE_BYTE_ARRAY
+G_TYPE_PTR_ARRAY
+G_TYPE_BYTES
+G_TYPE_VARIANT_TYPE
+G_TYPE_ERROR
+G_TYPE_DATE_TIME
+G_TYPE_TIME_ZONE
+G_TYPE_IO_CHANNEL
+G_TYPE_IO_CONDITION
+G_TYPE_VARIANT_BUILDER
+G_TYPE_VARIANT_DICT
+G_TYPE_KEY_FILE
+G_TYPE_MAIN_CONTEXT
+G_TYPE_MAIN_LOOP
+G_TYPE_MARKUP_PARSE_CONTEXT
+G_TYPE_SOURCE
+G_TYPE_POLLFD
+G_TYPE_THREAD
 GStrv
 
 <SUBSECTION Standard>
@@ -351,11 +401,30 @@ g_strv_get_type
 g_date_get_type
 g_hash_table_get_type
 g_regex_get_type
+g_match_info_get_type
+g_array_get_type
+g_byte_array_get_type
+g_ptr_array_get_type
+g_error_get_type
+g_date_time_get_type
+g_time_zone_get_type
+g_variant_get_gtype
+g_variant_type_get_gtype
+g_variant_builder_get_type
+g_variant_dict_get_type
+g_gtype_get_type
+g_main_context_get_type
+g_main_loop_get_type
+g_source_get_type
+g_pollfd_get_type
+g_bytes_get_type
+g_key_file_get_type
 </SECTION>
 
 <SECTION>
 <TITLE>Generic values</TITLE>
 <FILE>generic_values</FILE>
+G_VALUE_INIT
 G_VALUE_HOLDS
 G_VALUE_TYPE
 G_VALUE_TYPE_NAME
@@ -369,6 +438,7 @@ g_value_init
 g_value_copy
 g_value_reset
 g_value_unset
+g_value_init_from_instance
 g_value_set_instance
 g_value_fits_pointer
 g_value_peek_pointer
@@ -424,6 +494,7 @@ g_param_spec_ref
 g_param_spec_unref
 g_param_spec_sink
 g_param_spec_ref_sink
+g_param_spec_get_default_value
 g_param_value_set_default
 g_param_value_defaults
 g_param_value_validate
@@ -472,6 +543,8 @@ GParamSpecChar
 g_param_spec_char
 g_value_set_char
 g_value_get_char
+g_value_get_schar
+g_value_set_schar
 
 <SUBSECTION guchar>
 G_IS_PARAM_SPEC_UCHAR
@@ -679,6 +752,18 @@ g_param_spec_gtype
 g_value_get_gtype
 g_value_set_gtype
 
+<SUBSECTION GVariant>
+G_IS_PARAM_SPEC_VARIANT
+G_PARAM_SPEC_VARIANT
+G_VALUE_HOLDS_VARIANT
+G_TYPE_PARAM_VARIANT
+GParamSpecVariant
+g_param_spec_variant
+g_value_get_variant
+g_value_dup_variant
+g_value_set_variant
+g_value_take_variant
+
 <SUBSECTION Private>
 g_value_set_instance
 g_param_spec_types
@@ -689,7 +774,9 @@ g_param_spec_types
 <FILE>value_collection</FILE>
 <INCLUDE>glib-object.h,gobject/gvaluecollector.h</INCLUDE>
 GTypeCValue
+G_VALUE_COLLECT_INIT
 G_VALUE_COLLECT
+G_VALUE_COLLECT_SKIP
 G_VALUE_LCOPY
 G_VALUE_COLLECT_FORMAT_MAX_LENGTH
 </SECTION>
@@ -700,6 +787,7 @@ G_VALUE_COLLECT_FORMAT_MAX_LENGTH
 GSignalInvocationHint
 GSignalAccumulator
 GSignalCMarshaller
+GSignalCVaMarshaller
 GSignalEmissionHook
 GSignalFlags
 GSignalMatchType
@@ -710,6 +798,7 @@ G_SIGNAL_FLAGS_MASK
 g_signal_new
 g_signal_newv
 g_signal_new_valist
+g_signal_set_va_marshaller
 g_signal_query
 g_signal_lookup
 g_signal_name
@@ -737,16 +826,21 @@ g_signal_handler_is_connected
 g_signal_handlers_block_by_func
 g_signal_handlers_unblock_by_func
 g_signal_handlers_disconnect_by_func
+g_signal_handlers_disconnect_by_data
 g_signal_has_handler_pending
 g_signal_stop_emission
 g_signal_stop_emission_by_name
 g_signal_override_class_closure
 g_signal_chain_from_overridden
+g_signal_new_class_handler
+g_signal_override_class_handler
+g_signal_chain_from_overridden_handler
 g_signal_add_emission_hook
 g_signal_remove_emission_hook
 g_signal_parse_name
 g_signal_get_invocation_hint
 g_signal_type_cclosure_new
+g_signal_accumulator_first_wins
 g_signal_accumulator_true_handled
 <SUBSECTION Private>
 g_signal_handlers_destroy
@@ -764,11 +858,13 @@ GClosure
 G_TYPE_CLOSURE
 GCClosure
 GClosureMarshal
+GVaClosureMarshal
 GClosureNotify
 g_cclosure_new
 g_cclosure_new_swap
 g_cclosure_new_object
 g_cclosure_new_object_swap
+g_cclosure_marshal_generic
 g_closure_new_object
 g_closure_ref
 g_closure_sink
@@ -784,8 +880,7 @@ g_closure_set_marshal
 g_closure_add_marshal_guards
 g_closure_set_meta_marshal
 g_source_set_closure
-G_TYPE_IO_CHANNEL
-G_TYPE_IO_CONDITION
+g_source_set_dummy_callback
 
 <SUBSECTION>
 g_cclosure_marshal_VOID__VOID
@@ -805,35 +900,67 @@ g_cclosure_marshal_VOID__PARAM
 g_cclosure_marshal_VOID__BOXED
 g_cclosure_marshal_VOID__POINTER
 g_cclosure_marshal_VOID__OBJECT
+g_cclosure_marshal_VOID__VARIANT
 g_cclosure_marshal_STRING__OBJECT_POINTER
 g_cclosure_marshal_VOID__UINT_POINTER
 g_cclosure_marshal_BOOLEAN__FLAGS
 g_cclosure_marshal_BOOL__FLAGS
+g_cclosure_marshal_BOOLEAN__BOXED_BOXED
+g_cclosure_marshal_BOOL__BOXED_BOXED
+
+<SUBSECTION>
+g_cclosure_marshal_generic_va
+g_cclosure_marshal_VOID__VOIDv
+g_cclosure_marshal_VOID__BOOLEANv
+g_cclosure_marshal_VOID__CHARv
+g_cclosure_marshal_VOID__UCHARv
+g_cclosure_marshal_VOID__INTv
+g_cclosure_marshal_VOID__UINTv
+g_cclosure_marshal_VOID__LONGv
+g_cclosure_marshal_VOID__ULONGv
+g_cclosure_marshal_VOID__ENUMv
+g_cclosure_marshal_VOID__FLAGSv
+g_cclosure_marshal_VOID__FLOATv
+g_cclosure_marshal_VOID__DOUBLEv
+g_cclosure_marshal_VOID__STRINGv
+g_cclosure_marshal_VOID__PARAMv
+g_cclosure_marshal_VOID__BOXEDv
+g_cclosure_marshal_VOID__POINTERv
+g_cclosure_marshal_VOID__OBJECTv
+g_cclosure_marshal_VOID__VARIANTv
+g_cclosure_marshal_STRING__OBJECT_POINTERv
+g_cclosure_marshal_VOID__UINT_POINTERv
+g_cclosure_marshal_BOOLEAN__FLAGSv
+g_cclosure_marshal_BOOLEAN__BOXED_BOXEDv
 
 <SUBSECTION Private>
 GClosureNotifyData
 g_closure_get_type
-g_cclosure_marshal_VOID__VOID
-g_cclosure_marshal_VOID__BOOLEAN
-g_cclosure_marshal_VOID__CHAR
-g_cclosure_marshal_VOID__UCHAR
-g_cclosure_marshal_VOID__INT
-g_cclosure_marshal_VOID__UINT
-g_cclosure_marshal_VOID__LONG
-g_cclosure_marshal_VOID__ULONG
-g_cclosure_marshal_VOID__ENUM
-g_cclosure_marshal_VOID__FLAGS
-g_cclosure_marshal_VOID__FLOAT
-g_cclosure_marshal_VOID__DOUBLE
-g_cclosure_marshal_VOID__STRING
-g_cclosure_marshal_VOID__PARAM
-g_cclosure_marshal_VOID__BOXED
-g_cclosure_marshal_VOID__POINTER
-g_cclosure_marshal_VOID__OBJECT
-g_cclosure_marshal_STRING__OBJECT_POINTER
-g_cclosure_marshal_VOID__UINT_POINTER
-g_cclosure_marshal_BOOLEAN__FLAGS
-g_cclosure_marshal_BOOL__FLAGS
 g_io_channel_get_type
 g_io_condition_get_type
+</SECTION>
+
+<SECTION>
+<FILE>gbinding</FILE>
+GBinding
+GBindingFlags
+g_binding_get_source
+g_binding_get_source_property
+g_binding_get_target
+g_binding_get_target_property
+g_binding_get_flags
+g_binding_unbind
+<SUBSECTION>
+g_object_bind_property
+GBindingTransformFunc
+g_object_bind_property_full
+g_object_bind_property_with_closures
+<SUBSECTION Standard>
+G_TYPE_BINDING
+G_TYPE_BINDING_FLAGS
+G_BINDING
+G_IS_BINDING
+<SUBSECTION Private>
+g_binding_flags_get_type
+g_binding_get_type
 </SECTION>

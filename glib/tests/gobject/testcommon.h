@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef __TEST_COMMON_H__
@@ -32,7 +30,7 @@ prefix ## _get_type (void)					\
 								\
   if (!object_type)						\
     {								\
-      static const GTypeInfo object_info =			\
+      const GTypeInfo object_info =			\
 	{							\
 	  sizeof (name ## Class),				\
 	  (GBaseInitFunc) base_init,				\
@@ -68,7 +66,7 @@ prefix ## _get_type (void)					\
 								\
   if (!iface_type)						\
     {								\
-      static const GTypeInfo iface_info =			\
+      const GTypeInfo iface_info =			\
       {								\
 	sizeof (name ## Class),					\
 	(GBaseInitFunc)	base_init,				\
@@ -85,7 +83,7 @@ prefix ## _get_type (void)					\
 
 #define INTERFACE_FULL(type, init_func, iface_type)		\
 {								\
-  static GInterfaceInfo const iface =				\
+  GInterfaceInfo const iface =				\
     {								\
       (GInterfaceInitFunc) init_func, NULL, NULL		\
     };								\

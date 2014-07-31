@@ -12,22 +12,19 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
-#include	"../config.h"
 
-#include        <glib-object.h>
+#include "config.h"
 
-#include	<glib/gprintf.h>
-#include	<stdlib.h>
-#include	<string.h>
-#ifdef HAVE_UNISTD_H
-#include	<unistd.h>
-#endif
-#include	<sys/stat.h>
-#include	<fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+#include <glib-object.h>
+#include <glib/gprintf.h>
+
 
 static gchar *indent_inc = NULL;
 static guint spacing = 1;
@@ -101,7 +98,7 @@ show_nodes (GType        type,
 static gint
 help (gchar *arg)
 {
-  g_fprintf (stderr, "usage: query <qualifier> [-r <type>] [-{i|b} \"\"] [-s #] [-{h|x|y}]\n");
+  g_fprintf (stderr, "usage: gobject-query <qualifier> [-r <type>] [-{i|b} \"\"] [-s #] [-{h|x|y}]\n");
   g_fprintf (stderr, "       -r       specifiy root type\n");
   g_fprintf (stderr, "       -n       don't descend type tree\n");
   g_fprintf (stderr, "       -h       guess what ;)\n");
@@ -133,8 +130,6 @@ main (gint   argc,
   
   root = G_TYPE_OBJECT;
 
-  g_type_init ();
-  
   for (i = 1; i < argc; i++)
     {
       if (strcmp ("-s", argv[i]) == 0)

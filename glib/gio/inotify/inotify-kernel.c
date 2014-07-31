@@ -13,8 +13,7 @@
 
    You should have received a copy of the GNU Library General Public
    License along with the Gnome Library; see the file COPYING.LIB.  If not,
-   write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-   Boston, MA 02111-1307, USA.
+   see <http://www.gnu.org/licenses/>.
 
    Authors:.
 		John McCutchan <john@johnmccutchan.com>
@@ -31,10 +30,12 @@
 #include "inotify-kernel.h"
 #include <sys/inotify.h>
 
+#include "glib-private.h"
+
 /* Timings for pairing MOVED_TO / MOVED_FROM events */
-#define PROCESS_EVENTS_TIME 1000 /* milliseconds (1 hz) */
+#define PROCESS_EVENTS_TIME 1000 /* 1000 milliseconds (1 hz) */
 #define DEFAULT_HOLD_UNTIL_TIME 0 /* 0 millisecond */
-#define MOVE_HOLD_UNTIL_TIME 0 /* 0 milliseconds */
+#define MOVE_HOLD_UNTIL_TIME 500 /* 500 microseconds or 0.5 milliseconds */
 
 static int inotify_instance_fd = -1;
 static GQueue *events_to_process = NULL;
@@ -116,6 +117,7 @@ ik_source_check (GSource *source)
 
   if (pending_count < MAX_PENDING_COUNT)
     {
+      GSource *timeout_source;
       unsigned int pending;
       
       if (ioctl (inotify_instance_fd, FIONREAD, &pending) == -1)
@@ -146,8 +148,12 @@ ik_source_check (GSource *source)
       ik_poll_fd_enabled = FALSE;
       /* Set a timeout to re-add the PollFD to the source */
       g_source_ref (source);
-      g_timeout_add (TIMEOUT_MILLISECONDS, ik_source_timeout, source);
-      
+
+      timeout_source = g_timeout_source_new (TIMEOUT_MILLISECONDS);
+      g_source_set_callback (timeout_source, ik_source_timeout, source, NULL);
+      g_source_attach (timeout_source, GLIB_PRIVATE_CALL (g_get_worker_context) ());
+      g_source_unref (timeout_source);
+
       return FALSE;
     }
 
@@ -187,10 +193,14 @@ gboolean _ik_startup (void (*cb)(ik_event_t *event))
   /* Ignore multi-calls */
   if (initialized) 
     return inotify_instance_fd >= 0;
-  
+
   initialized = TRUE;
-  inotify_instance_fd = inotify_init ();
-  
+
+  inotify_instance_fd = inotify_init1 (IN_CLOEXEC);
+
+  if (inotify_instance_fd < 0)
+    inotify_instance_fd = inotify_init ();
+
   if (inotify_instance_fd < 0)
     return FALSE;
 
@@ -201,9 +211,10 @@ gboolean _ik_startup (void (*cb)(ik_event_t *event))
   g_io_channel_set_flags (inotify_read_ioc, G_IO_FLAG_NONBLOCK, NULL);
 
   source = g_source_new (&ik_source_funcs, sizeof (GSource));
+  g_source_set_name (source, "GIO Inotify");
   g_source_add_poll (source, &ik_poll_fd);
   g_source_set_callback (source, ik_read_callback, NULL, NULL);
-  g_source_attach (source, NULL);
+  g_source_attach (source, GLIB_PRIVATE_CALL (g_get_worker_context) ());
   g_source_unref (source);
 
   cookie_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
@@ -245,25 +256,6 @@ ik_event_new (char *buffer)
     event->name = g_strdup (kevent->name);
   else
     event->name = g_strdup ("");
-  
-  return event;
-}
-
-ik_event_t *
-_ik_event_new_dummy (const char *name, 
-                     gint32      wd, 
-                     guint32     mask)
-{
-  ik_event_t *event = g_new0 (ik_event_t, 1);
-  event->wd = wd;
-  event->mask = mask;
-  event->cookie = 0;
-  if (name)
-    event->name = g_strdup (name);
-  else
-    event->name = g_strdup("");
-  
-  event->len = strlen (event->name);
   
   return event;
 }
@@ -319,98 +311,6 @@ _ik_ignore (const char *path,
   return 0;
 }
 
-void
-_ik_move_stats (guint32 *matches, 
-                guint32 *misses)
-{
-  if (matches)
-    *matches = ik_move_matches;
-  
-  if (misses)
-    *misses = ik_move_misses;
-}
-
-const char *
-_ik_mask_to_string (guint32 mask)
-{
-  gboolean is_dir = mask & IN_ISDIR;
-  mask &= ~IN_ISDIR;
-  
-  if (is_dir)
-    {
-      switch (mask)
-	{
-	case IN_ACCESS:
-	  return "ACCESS (dir)";
-	case IN_MODIFY:
-	  return "MODIFY (dir)";
-	case IN_ATTRIB:
-	  return "ATTRIB (dir)";
-	case IN_CLOSE_WRITE:
-	  return "CLOSE_WRITE (dir)";
-	case IN_CLOSE_NOWRITE:
-	  return "CLOSE_NOWRITE (dir)"; 
-	case IN_OPEN:
-	  return "OPEN (dir)";
-	case IN_MOVED_FROM:
-	  return "MOVED_FROM (dir)";
-	case IN_MOVED_TO:
-	  return "MOVED_TO (dir)";
-	case IN_DELETE:
-	  return "DELETE (dir)";
-	case IN_CREATE:
-	  return "CREATE (dir)";
-	case IN_DELETE_SELF:
-	  return "DELETE_SELF (dir)";
-	case IN_UNMOUNT:
-	  return "UNMOUNT (dir)";
-	case IN_Q_OVERFLOW:
-	  return "Q_OVERFLOW (dir)";
-	case IN_IGNORED:
-	  return "IGNORED (dir)";
-	default:
-	  return "UNKNOWN_EVENT (dir)";
-	}
-    }
-  else
-    {
-      switch (mask)
-	{
-	case IN_ACCESS:
-	  return "ACCESS";
-	case IN_MODIFY:
-	  return "MODIFY";
-	case IN_ATTRIB:
-	  return "ATTRIB";
-	case IN_CLOSE_WRITE:
-	  return "CLOSE_WRITE";
-	case IN_CLOSE_NOWRITE:
-	  return "CLOSE_NOWRITE";
-	case IN_OPEN:
-	  return "OPEN";
-	case IN_MOVED_FROM:
-	  return "MOVED_FROM";
-	case IN_MOVED_TO:
-	  return "MOVED_TO";
-	case IN_DELETE:
-	  return "DELETE";
-	case IN_CREATE:
-	  return "CREATE";
-	case IN_DELETE_SELF:
-	  return "DELETE_SELF";
-	case IN_UNMOUNT:
-	  return "UNMOUNT";
-	case IN_Q_OVERFLOW:
-	  return "Q_OVERFLOW";
-	case IN_IGNORED:
-	  return "IGNORED";
-	default:
-	  return "UNKNOWN_EVENT";
-	}
-    }
-}
-
-
 static void
 ik_read_events (gsize  *buffer_size_out, 
                 gchar **buffer_out)
@@ -462,8 +362,13 @@ ik_read_callback (gpointer user_data)
   /* If the event process callback is off, turn it back on */
   if (!process_eq_running && events)
     {
+      GSource *timeout_source;
+
       process_eq_running = TRUE;
-      g_timeout_add (PROCESS_EVENTS_TIME, ik_process_eq_callback, NULL);
+      timeout_source = g_timeout_source_new (PROCESS_EVENTS_TIME);
+      g_source_set_callback (timeout_source, ik_process_eq_callback, NULL, NULL);
+      g_source_attach (timeout_source, GLIB_PRIVATE_CALL (g_get_worker_context ()));
+      g_source_unref (timeout_source);
     }
   
   G_UNLOCK (inotify_lock);
@@ -472,27 +377,37 @@ ik_read_callback (gpointer user_data)
 }
 
 static gboolean
-g_timeval_lt (GTimeVal *val1, 
+g_timeval_lt (GTimeVal *val1,
               GTimeVal *val2)
 {
   if (val1->tv_sec < val2->tv_sec)
     return TRUE;
-  
+
   if (val1->tv_sec > val2->tv_sec)
     return FALSE;
-  
+
   /* val1->tv_sec == val2->tv_sec */
   if (val1->tv_usec < val2->tv_usec)
     return TRUE;
-  
+
   return FALSE;
 }
 
 static gboolean
-g_timeval_eq (GTimeVal *val1, 
+g_timeval_le (GTimeVal *val1,
               GTimeVal *val2)
 {
-  return (val1->tv_sec == val2->tv_sec) && (val1->tv_usec == val2->tv_usec);
+  if (val1->tv_sec < val2->tv_sec)
+    return TRUE;
+
+  if (val1->tv_sec > val2->tv_sec)
+    return FALSE;
+
+  /* val1->tv_sec == val2->tv_sec */
+  if (val1->tv_usec <= val2->tv_usec)
+    return TRUE;
+
+  return FALSE;
 }
 
 static void
@@ -504,14 +419,15 @@ ik_pair_events (ik_event_internal_t *event1,
   g_assert (event1->event->cookie == event2->event->cookie);
   /* We shouldn't pair an event that already is paired */
   g_assert (event1->pair == NULL && event2->pair == NULL);
-  
+
   /* Pair the internal structures and the ik_event_t structures */
   event1->pair = event2;
   event1->event->pair = event2->event;
-  
+  event2->event->is_second_in_pair = TRUE;
+
   if (g_timeval_lt (&event1->hold_until, &event2->hold_until))
     event1->hold_until = event2->hold_until;
-  
+
   event2->hold_until = event1->hold_until;
 }
 
@@ -540,8 +456,7 @@ ik_event_ready (ik_event_internal_t *event)
   return
     event->event->cookie == 0 ||
     event->pair != NULL ||
-    g_timeval_lt (&event->hold_until, &tv) ||
-    g_timeval_eq (&event->hold_until, &tv);
+    g_timeval_le (&event->hold_until, &tv);
 }
 
 static void
@@ -626,7 +541,8 @@ ik_process_events (void)
 	   * the event masks */
 	  /* Changeing MOVED_FROM to DELETE and MOVED_TO to create lets us make
 	   * the gaurantee that you will never see a non-matched MOVE event */
-	  
+	  event->event->original_mask = event->event->mask;
+
 	  if (event->event->mask & IN_MOVED_FROM)
 	    {
 	      event->event->mask = IN_DELETE|(event->event->mask & IN_ISDIR);

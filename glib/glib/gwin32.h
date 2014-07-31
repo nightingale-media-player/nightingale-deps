@@ -12,20 +12,22 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
 #ifndef __G_WIN32_H__
 #define __G_WIN32_H__
+
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #include <glib/gtypes.h>
 
@@ -61,6 +63,7 @@ G_BEGIN_DECLS
  * g_win32_. Or that was the idea at some time, but there is just one
  * of those:
  */
+GLIB_AVAILABLE_IN_ALL
 gint		g_win32_ftruncate	(gint		 f,
 					 guint		 size);
 #endif /* G_OS_WIN32 */
@@ -71,29 +74,38 @@ gint		g_win32_ftruncate	(gint		 f,
  * returns it as a string of the above form for use in forming file
  * names etc. The returned string should be deallocated with g_free().
  */
+GLIB_AVAILABLE_IN_ALL
 gchar* 		g_win32_getlocale  (void);
 
 /* Translate a Win32 error code (as returned by GetLastError()) into
  * the corresponding message. The returned string should be deallocated
  * with g_free().
  */
+GLIB_AVAILABLE_IN_ALL
 gchar*          g_win32_error_message (gint error);
 
-#define g_win32_get_package_installation_directory g_win32_get_package_installation_directory_utf8
-#define g_win32_get_package_installation_subdirectory g_win32_get_package_installation_subdirectory_utf8
-
+#ifndef _WIN64
+GLIB_DEPRECATED
 gchar*          g_win32_get_package_installation_directory (const gchar *package,
 							    const gchar *dll_name);
 
+GLIB_DEPRECATED
 gchar*          g_win32_get_package_installation_subdirectory (const gchar *package,
 							       const gchar *dll_name,
 							       const gchar *subdir);
+#endif
 
+GLIB_AVAILABLE_IN_ALL
 gchar*          g_win32_get_package_installation_directory_of_module (gpointer hmodule);
 
+GLIB_AVAILABLE_IN_ALL
 guint		g_win32_get_windows_version (void);
 
+GLIB_AVAILABLE_IN_ALL
 gchar*          g_win32_locale_filename_from_utf8 (const gchar *utf8filename);
+
+GLIB_AVAILABLE_IN_2_40
+gchar **        g_win32_get_command_line (void);
 
 /* As of GLib 2.14 we only support NT-based Windows */
 #define G_WIN32_IS_NT_BASED() TRUE
@@ -102,5 +114,21 @@ gchar*          g_win32_locale_filename_from_utf8 (const gchar *utf8filename);
 G_END_DECLS
 
 #endif	 /* G_PLATFORM_WIN32 */
+
+#ifdef G_OS_WIN32
+#ifdef _WIN64
+#define g_win32_get_package_installation_directory g_win32_get_package_installation_directory_utf8
+#define g_win32_get_package_installation_subdirectory g_win32_get_package_installation_subdirectory_utf8
+#endif
+
+GLIB_AVAILABLE_IN_ALL
+gchar *g_win32_get_package_installation_directory_utf8    (const gchar *package,
+                                                           const gchar *dll_name);
+GLIB_AVAILABLE_IN_ALL
+gchar *g_win32_get_package_installation_subdirectory_utf8 (const gchar *package,
+                                                           const gchar *dll_name,
+                                                           const gchar *subdir);
+
+#endif /* G_OS_WIN32 */
 
 #endif /* __G_WIN32_H__ */

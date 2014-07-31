@@ -13,19 +13,18 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#include <config.h>
-#include "gsimpleasyncresult.h"
+#include "config.h"
+#include "gicon.h"
 #include "gloadableicon.h"
+#include "gasyncresult.h"
+#include "gtask.h"
 #include "glibintl.h"
 
-#include "gioalias.h"
 
 /**
  * SECTION:gloadableicon
@@ -46,69 +45,32 @@ static GInputStream *g_loadable_icon_real_load_finish (GLoadableIcon        *ico
 						       GAsyncResult         *res,
 						       char                **type,
 						       GError              **error);
-static void          g_loadable_icon_base_init        (gpointer              g_class);
-static void          g_loadable_icon_class_init       (gpointer              g_class,
-						       gpointer              class_data);
 
-GType
-g_loadable_icon_get_type (void)
-{
-  static volatile gsize g_define_type_id__volatile = 0;
-
-  if (g_once_init_enter (&g_define_type_id__volatile))
-    {
-      const GTypeInfo loadable_icon_info =
-	{
-        sizeof (GLoadableIconIface), /* class_size */
-	g_loadable_icon_base_init,   /* base_init */
-	NULL,		/* base_finalize */
-	g_loadable_icon_class_init,
-	NULL,		/* class_finalize */
-	NULL,		/* class_data */
-	0,
-	0,              /* n_preallocs */
-	NULL
-      };
-      GType g_define_type_id =
-	g_type_register_static (G_TYPE_INTERFACE, I_("GLoadableIcon"),
-				&loadable_icon_info, 0);
-
-      g_type_interface_add_prerequisite (g_define_type_id, G_TYPE_ICON);
-
-      g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
-    }
-
-  return g_define_type_id__volatile;
-}
+typedef GLoadableIconIface GLoadableIconInterface;
+G_DEFINE_INTERFACE(GLoadableIcon, g_loadable_icon, G_TYPE_ICON)
 
 static void
-g_loadable_icon_class_init (gpointer g_class,
-			    gpointer class_data)
+g_loadable_icon_default_init (GLoadableIconIface *iface)
 {
-  GLoadableIconIface *iface = g_class;
-
   iface->load_async = g_loadable_icon_real_load_async;
   iface->load_finish = g_loadable_icon_real_load_finish;
-}
-
-static void
-g_loadable_icon_base_init (gpointer g_class)
-{
 }
 
 /**
  * g_loadable_icon_load:
  * @icon: a #GLoadableIcon.
  * @size: an integer.
- * @type:  a location to store the type of the loaded icon, %NULL to ignore.
- * @cancellable: optional #GCancellable object, %NULL to ignore. 
- * @error: a #GError location to store the error occuring, or %NULL to 
+ * @type: (out) (optional): a location to store the type of the loaded
+ * icon, %NULL to ignore.
+ * @cancellable: (allow-none): optional #GCancellable object, %NULL to
  * ignore.
+ * @error: a #GError location to store the error occurring, or %NULL
+ * to ignore.
  * 
  * Loads a loadable icon. For the asynchronous version of this function, 
  * see g_loadable_icon_load_async().
  * 
- * Returns: a #GInputStream to read the icon from.
+ * Returns: (transfer full): a #GInputStream to read the icon from.
  **/
 GInputStream *
 g_loadable_icon_load (GLoadableIcon  *icon,
@@ -130,9 +92,10 @@ g_loadable_icon_load (GLoadableIcon  *icon,
  * g_loadable_icon_load_async:
  * @icon: a #GLoadableIcon.
  * @size: an integer.
- * @cancellable: optional #GCancellable object, %NULL to ignore. 
- * @callback: a #GAsyncReadyCallback to call when the request is satisfied
- * @user_data: the data to pass to callback function
+ * @cancellable: (allow-none): optional #GCancellable object, %NULL to ignore. 
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the
+ *            request is satisfied
+ * @user_data: (closure): the data to pass to callback function
  * 
  * Loads an icon asynchronously. To finish this function, see 
  * g_loadable_icon_load_finish(). For the synchronous, blocking 
@@ -158,13 +121,14 @@ g_loadable_icon_load_async (GLoadableIcon       *icon,
  * g_loadable_icon_load_finish:
  * @icon: a #GLoadableIcon.
  * @res: a #GAsyncResult.
- * @type: a location to store the type of the loaded icon, %NULL to ignore.
- * @error: a #GError location to store the error occuring, or %NULL to 
+ * @type: (out) (optional): a location to store the type of the loaded
+ *        icon, %NULL to ignore.
+ * @error: a #GError location to store the error occurring, or %NULL to 
  * ignore.
  * 
  * Finishes an asynchronous icon load started in g_loadable_icon_load_async().
  * 
- * Returns: a #GInputStream to read the icon from.
+ * Returns: (transfer full): a #GInputStream to read the icon from.
  **/
 GInputStream *
 g_loadable_icon_load_finish (GLoadableIcon  *icon,
@@ -177,13 +141,9 @@ g_loadable_icon_load_finish (GLoadableIcon  *icon,
   g_return_val_if_fail (G_IS_LOADABLE_ICON (icon), NULL);
   g_return_val_if_fail (G_IS_ASYNC_RESULT (res), NULL);
 
-  if (G_IS_SIMPLE_ASYNC_RESULT (res))
-    {
-      GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
-      if (g_simple_async_result_propagate_error (simple, error))
-	return NULL;
-    }
-  
+  if (g_async_result_legacy_propagate_error (res, error))
+    return NULL;
+
   iface = G_LOADABLE_ICON_GET_IFACE (icon);
 
   return (* iface->load_finish) (icon, res, type, error);
@@ -196,44 +156,35 @@ g_loadable_icon_load_finish (GLoadableIcon  *icon,
 typedef struct {
   int size;
   char *type;
-  GInputStream *stream;
 } LoadData;
 
 static void
 load_data_free (LoadData *data)
 {
-  if (data->stream)
-    g_object_unref (data->stream);
   g_free (data->type);
   g_free (data);
 }
 
 static void
-load_async_thread (GSimpleAsyncResult *res,
-		   GObject            *object,
-		   GCancellable       *cancellable)
+load_async_thread (GTask        *task,
+                   gpointer      source_object,
+                   gpointer      task_data,
+                   GCancellable *cancellable)
 {
+  GLoadableIcon *icon = source_object;
+  LoadData *data = task_data;
   GLoadableIconIface *iface;
   GInputStream *stream;
-  LoadData *data;
   GError *error = NULL;
-  char *type = NULL;
 
-  data = g_simple_async_result_get_op_res_gpointer (res);
-  
-  iface = G_LOADABLE_ICON_GET_IFACE (object);
-  stream = iface->load (G_LOADABLE_ICON (object), data->size, &type, cancellable, &error);
+  iface = G_LOADABLE_ICON_GET_IFACE (icon);
+  stream = iface->load (icon, data->size, &data->type,
+                        cancellable, &error);
 
-  if (stream == NULL)
-    {
-      g_simple_async_result_set_from_error (res, error);
-      g_error_free (error);
-    }
+  if (stream)
+    g_task_return_pointer (task, stream, g_object_unref);
   else
-    {
-      data->stream = stream;
-      data->type = type;
-    }
+    g_task_return_error (task, error);
 }
 
 
@@ -245,14 +196,14 @@ g_loadable_icon_real_load_async (GLoadableIcon       *icon,
 				 GAsyncReadyCallback  callback,
 				 gpointer             user_data)
 {
-  GSimpleAsyncResult *res;
+  GTask *task;
   LoadData *data;
-  
-  res = g_simple_async_result_new (G_OBJECT (icon), callback, user_data, g_loadable_icon_real_load_async);
+
+  task = g_task_new (icon, cancellable, callback, user_data);
   data = g_new0 (LoadData, 1);
-  g_simple_async_result_set_op_res_gpointer (res, data, (GDestroyNotify) load_data_free);
-  g_simple_async_result_run_in_thread (res, load_async_thread, 0, cancellable);
-  g_object_unref (res);
+  g_task_set_task_data (task, data, (GDestroyNotify) load_data_free);
+  g_task_run_in_thread (task, load_async_thread);
+  g_object_unref (task);
 }
 
 static GInputStream *
@@ -261,21 +212,21 @@ g_loadable_icon_real_load_finish (GLoadableIcon        *icon,
 				  char                **type,
 				  GError              **error)
 {
-  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
+  GTask *task;
   LoadData *data;
+  GInputStream *stream;
 
-  g_warn_if_fail (g_simple_async_result_get_source_tag (simple) == g_loadable_icon_real_load_async);
+  g_return_val_if_fail (g_task_is_valid (res, icon), NULL);
 
-  data = g_simple_async_result_get_op_res_gpointer (simple);
+  task = G_TASK (res);
+  data = g_task_get_task_data (task);
 
-  if (type)
+  stream = g_task_propagate_pointer (task, error);
+  if (stream && type)
     {
       *type = data->type;
       data->type = NULL;
     }
 
-  return g_object_ref (data->stream);
+  return stream;
 }
-
-#define __G_LOADABLE_ICON_C__
-#include "gioaliasdef.c"

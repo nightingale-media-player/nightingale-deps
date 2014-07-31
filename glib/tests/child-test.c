@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -24,15 +22,14 @@
  * GLib at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#include "config.h"
-
 #include <sys/types.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #include <stdlib.h>
 
 #include <glib.h>
+
+#ifdef G_OS_UNIX
+#include <unistd.h>
+#endif
 
 #ifdef G_OS_WIN32
 #include <windows.h>
@@ -51,7 +48,7 @@ gint alive;
 char *argv0;
 #endif
 
-GPid
+static GPid
 get_a_child (gint ttl)
 {
   GPid pid;
@@ -89,7 +86,7 @@ get_a_child (gint ttl)
 #endif /* G_OS_WIN32 */
 }
 
-gboolean
+static gboolean
 child_watch_callback (GPid pid, gint status, gpointer data)
 {
 #ifdef VERBOSE
@@ -163,23 +160,17 @@ main (int argc, char *argv[])
       exit (STILL_ACTIVE);
     }
 #endif
-  /* Only run the test, if threads are enabled and a default thread
-   * implementation is available.
-   */
-#if defined(G_THREADS_ENABLED) && ! defined(G_THREADS_IMPL_NONE)
-#ifdef TEST_THREAD
-  g_thread_init (NULL);
-#endif
+
   main_loop = g_main_loop_new (NULL, FALSE);
 
 #ifdef G_OS_WIN32
   system ("ipconfig /all");
 #else
-  system ("/bin/true");
+  system ("true");
 #endif
 
   alive = 2;
-  g_timeout_add (30000, quit_loop, main_loop);
+  g_timeout_add_seconds (30, quit_loop, main_loop);
 
 #ifdef TEST_THREAD
   g_thread_create (test_thread, GINT_TO_POINTER (10), FALSE, NULL);
@@ -195,12 +186,13 @@ main (int argc, char *argv[])
   
   g_main_loop_run (main_loop);
 
+  g_main_loop_unref (main_loop);
+
   if (alive > 0)
     {
       g_warning ("%d children still alive\n", alive);
       return 1;
     }
     
-#endif
    return 0;
 }

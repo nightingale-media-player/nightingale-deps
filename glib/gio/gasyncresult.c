@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,63 +13,63 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#include <config.h>
+#include "config.h"
 #include "gasyncresult.h"
+#include "gsimpleasyncresult.h"
 #include "glibintl.h"
 
-#include "gioalias.h"
 
 /**
  * SECTION:gasyncresult
  * @short_description: Asynchronous Function Results
  * @include: gio/gio.h
- * @see_also: #GSimpleAsyncResult
- * 
+ * @see_also: #GTask
+ *
  * Provides a base class for implementing asynchronous function results.
- * 
+ *
  * Asynchronous operations are broken up into two separate operations
  * which are chained together by a #GAsyncReadyCallback. To begin
- * an asynchronous operation, provide a #GAsyncReadyCallback to the 
- * asynchronous function. This callback will be triggered when the 
- * operation has completed, and will be passed a #GAsyncResult instance 
- * filled with the details of the operation's success or failure, the 
- * object the asynchronous function was started for and any error codes 
- * returned. The asynchronous callback function is then expected to call 
- * the corresponding "_finish()" function with the object the function 
- * was called for, and the #GAsyncResult instance, and optionally, 
+ * an asynchronous operation, provide a #GAsyncReadyCallback to the
+ * asynchronous function. This callback will be triggered when the
+ * operation has completed, and will be passed a #GAsyncResult instance
+ * filled with the details of the operation's success or failure, the
+ * object the asynchronous function was started for and any error codes
+ * returned. The asynchronous callback function is then expected to call
+ * the corresponding "_finish()" function, passing the object the
+ * function was called for, the #GAsyncResult instance, and (optionally)
  * an @error to grab any error conditions that may have occurred.
- * 
- * The purpose of the "_finish()" function is to take the generic 
- * result of type #GAsyncResult and return the specific result
- * that the operation in question yields (e.g. a #GFileEnumerator for
- * a "enumerate children" operation). If the result or error status
- * of the operation is not needed, there is no need to call the
- * "_finish()" function, GIO will take care of cleaning up the
- * result and error information after the #GAsyncReadyCallback 
- * returns. It is also allowed to take a reference to the #GAsyncResult and
- * call "_finish()" later.
- * 
+ *
+ * The "_finish()" function for an operation takes the generic result
+ * (of type #GAsyncResult) and returns the specific result that the
+ * operation in question yields (e.g. a #GFileEnumerator for a
+ * "enumerate children" operation). If the result or error status of the
+ * operation is not needed, there is no need to call the "_finish()"
+ * function; GIO will take care of cleaning up the result and error
+ * information after the #GAsyncReadyCallback returns. You can pass
+ * %NULL for the #GAsyncReadyCallback if you don't need to take any
+ * action at all after the operation completes. Applications may also
+ * take a reference to the #GAsyncResult and call "_finish()" later;
+ * however, the "_finish()" function may be called at most once.
+ *
  * Example of a typical asynchronous operation flow:
- * |[
- * void _theoretical_frobnitz_async (Theoretical         *t, 
- *                                   GCancellable        *c, 
- *                                   GAsyncReadyCallback *cb,
+ * |[<!-- language="C" -->
+ * void _theoretical_frobnitz_async (Theoretical         *t,
+ *                                   GCancellable        *c,
+ *                                   GAsyncReadyCallback  cb,
  *                                   gpointer             u);
  *
  * gboolean _theoretical_frobnitz_finish (Theoretical   *t,
  *                                        GAsyncResult  *res,
  *                                        GError       **e);
  *
- * static void 
- * frobnitz_result_func (GObject      *source_object, 
- *			 GAsyncResult *res, 
+ * static void
+ * frobnitz_result_func (GObject      *source_object,
+ *			 GAsyncResult *res,
  *			 gpointer      user_data)
  * {
  *   gboolean success = FALSE;
@@ -78,89 +78,56 @@
  *
  *   if (success)
  *     g_printf ("Hurray!\n");
- *   else 
+ *   else
  *     g_printf ("Uh oh!\n");
  *
- *   /<!-- -->* ... *<!-- -->/
+ *   ...
  *
  * }
  *
  * int main (int argc, void *argv[])
  * {
- *    /<!-- -->* ... *<!-- -->/
+ *    ...
  *
- *    _theoretical_frobnitz_async (theoretical_data, 
- *                                 NULL, 
- *                                 frobnitz_result_func, 
+ *    _theoretical_frobnitz_async (theoretical_data,
+ *                                 NULL,
+ *                                 frobnitz_result_func,
  *                                 NULL);
  *
- *    /<!-- -->* ... *<!-- -->/
+ *    ...
  * }
  * ]|
  *
  * The callback for an asynchronous operation is called only once, and is
  * always called, even in the case of a cancelled operation. On cancellation
  * the result is a %G_IO_ERROR_CANCELLED error.
- * 
- * Some ascynchronous operations are implemented using synchronous calls. These
- * are run in a separate thread, if #GThread has been initialized, but otherwise they
- * are sent to the Main Event Loop and processed in an idle function. So, if you
- * truly need asynchronous operations, make sure to initialize #GThread.
- **/
+ *
+ * ## I/O Priority # {#io-priority}
+ *
+ * Many I/O-related asynchronous operations have a priority parameter,
+ * which is used in certain cases to determine the order in which
+ * operations are executed. They are not used to determine system-wide
+ * I/O scheduling. Priorities are integers, with lower numbers indicating
+ * higher priority. It is recommended to choose priorities between
+ * %G_PRIORITY_LOW and %G_PRIORITY_HIGH, with %G_PRIORITY_DEFAULT
+ * as a default.
+ */
 
-static void g_async_result_base_init (gpointer g_class);
-static void g_async_result_class_init (gpointer g_class,
-				       gpointer class_data);
-
-GType
-g_async_result_get_type (void)
-{
-  static volatile gsize g_define_type_id__volatile = 0;
-
-  if (g_once_init_enter (&g_define_type_id__volatile))
-    {
-      const GTypeInfo async_result_info =
-      {
-        sizeof (GAsyncResultIface), /* class_size */
-	g_async_result_base_init,   /* base_init */
-	NULL,		            /* base_finalize */
-	g_async_result_class_init,
-	NULL,		/* class_finalize */
-	NULL,		/* class_data */
-	0,
-	0,              /* n_preallocs */
-	NULL
-      };
-      GType g_define_type_id =
-	g_type_register_static (G_TYPE_INTERFACE, I_("GAsyncResult"),
-				&async_result_info, 0);
-
-      g_type_interface_add_prerequisite (g_define_type_id, G_TYPE_OBJECT);
-
-      g_once_init_leave (&g_define_type_id__volatile, g_define_type_id);
-    }
-
-  return g_define_type_id__volatile;
-}
+typedef GAsyncResultIface GAsyncResultInterface;
+G_DEFINE_INTERFACE (GAsyncResult, g_async_result, G_TYPE_OBJECT)
 
 static void
-g_async_result_class_init (gpointer g_class,
-			   gpointer class_data)
-{
-}
-
-static void
-g_async_result_base_init (gpointer g_class)
+g_async_result_default_init (GAsyncResultInterface *iface)
 {
 }
 
 /**
  * g_async_result_get_user_data:
  * @res: a #GAsyncResult.
- * 
+ *
  * Gets the user data from a #GAsyncResult.
- * 
- * Returns: the user data for @res. 
+ *
+ * Returns: (transfer full): the user data for @res.
  **/
 gpointer
 g_async_result_get_user_data (GAsyncResult *res)
@@ -176,12 +143,13 @@ g_async_result_get_user_data (GAsyncResult *res)
 
 /**
  * g_async_result_get_source_object:
- * @res: a #GAsyncResult.
- * 
+ * @res: a #GAsyncResult
+ *
  * Gets the source object from a #GAsyncResult.
- * 
- * Returns: the source object for the @res.
- **/
+ *
+ * Returns: (transfer full): a new reference to the source object for the @res,
+ *    or %NULL if there is none.
+ */
 GObject *
 g_async_result_get_source_object (GAsyncResult *res)
 {
@@ -194,5 +162,71 @@ g_async_result_get_source_object (GAsyncResult *res)
   return (* iface->get_source_object) (res);
 }
 
-#define __G_ASYNC_RESULT_C__
-#include "gioaliasdef.c"
+/**
+ * g_async_result_legacy_propagate_error:
+ * @res: a #GAsyncResult
+ * @error: (out): a location to propagate the error to.
+ *
+ * If @res is a #GSimpleAsyncResult, this is equivalent to
+ * g_simple_async_result_propagate_error(). Otherwise it returns
+ * %FALSE.
+ *
+ * This can be used for legacy error handling in async *_finish()
+ * wrapper functions that traditionally handled #GSimpleAsyncResult
+ * error returns themselves rather than calling into the virtual method.
+ * This should not be used in new code; #GAsyncResult errors that are
+ * set by virtual methods should also be extracted by virtual methods,
+ * to enable subclasses to chain up correctly.
+ *
+ * Returns: %TRUE if @error is has been filled in with an error from
+ *   @res, %FALSE if not.
+ *
+ * Since: 2.34
+ **/
+gboolean
+g_async_result_legacy_propagate_error (GAsyncResult  *res,
+				       GError       **error)
+{
+  /* This doesn't use a vmethod, because it's only for code that used
+   * to use GSimpleAsyncResult. (But it's a GAsyncResult method so
+   * that callers don't need to worry about GSimpleAsyncResult
+   * deprecation warnings in the future.)
+   */
+
+  if (G_IS_SIMPLE_ASYNC_RESULT (res))
+    {
+      return g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res),
+						    error);
+    }
+  else
+    return FALSE;
+}
+
+/**
+ * g_async_result_is_tagged:
+ * @res: a #GAsyncResult
+ * @source_tag: an application-defined tag
+ *
+ * Checks if @res has the given @source_tag (generally a function
+ * pointer indicating the function @res was created by).
+ *
+ * Returns: %TRUE if @res has the indicated @source_tag, %FALSE if
+ *   not.
+ *
+ * Since: 2.34
+ **/
+gboolean
+g_async_result_is_tagged (GAsyncResult  *res,
+			  gpointer       source_tag)
+{
+  GAsyncResultIface *iface;
+
+  g_return_val_if_fail (G_IS_ASYNC_RESULT (res), FALSE);
+
+  iface = G_ASYNC_RESULT_GET_IFACE (res);
+
+  if (!iface->is_tagged)
+    return FALSE;
+
+  return (* iface->is_tagged) (res, source_tag);
+}

@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
@@ -24,7 +22,6 @@
 #define __G_LOCAL_FILE_OUTPUT_STREAM_H__
 
 #include <gio/gfileoutputstream.h>
-#include <gio/gfile.h>
 
 G_BEGIN_DECLS
 
@@ -52,21 +49,43 @@ struct _GLocalFileOutputStreamClass
   GFileOutputStreamClass parent_class;
 };
 
-GType _g_local_file_output_stream_get_type (void) G_GNUC_CONST;
-GFileOutputStream *_g_local_file_output_stream_create  (const char       *filename,
-							GFileCreateFlags  flags,
-							GCancellable     *cancellable,
-							GError          **error);
-GFileOutputStream *_g_local_file_output_stream_append  (const char       *filename,
-							GFileCreateFlags  flags,
-							GCancellable     *cancellable,
-							GError          **error);
-GFileOutputStream *_g_local_file_output_stream_replace (const char       *filename,
-							const char       *etag,
-							gboolean          create_backup,
-							GFileCreateFlags  flags,
-							GCancellable     *cancellable,
-							GError          **error);
+GType               _g_local_file_output_stream_get_type (void) G_GNUC_CONST;
+
+void     _g_local_file_output_stream_set_do_close (GLocalFileOutputStream *out,
+						   gboolean do_close);
+gboolean _g_local_file_output_stream_really_close (GLocalFileOutputStream *out,
+						   GCancellable   *cancellable,
+						   GError        **error);
+
+GFileOutputStream * _g_local_file_output_stream_new      (int               fd);
+GFileOutputStream * _g_local_file_output_stream_open     (const char       *filename,
+							  gboolean          readable,
+                                                          GCancellable     *cancellable,
+                                                          GError          **error);
+GFileOutputStream * _g_local_file_output_stream_create   (const char       *filename,
+							  gboolean          readable,
+                                                          GFileCreateFlags  flags,
+                                                          GFileInfo        *reference_info,
+                                                          GCancellable     *cancellable,
+                                                          GError          **error);
+GFileOutputStream * _g_local_file_output_stream_append   (const char       *filename,
+                                                          GFileCreateFlags  flags,
+                                                          GCancellable     *cancellable,
+                                                          GError          **error);
+GFileOutputStream * _g_local_file_output_stream_replace  (const char       *filename,
+							  gboolean          readable,
+                                                          const char       *etag,
+                                                          gboolean          create_backup,
+                                                          GFileCreateFlags  flags,
+                                                          GFileInfo        *reference_info,
+                                                          GCancellable     *cancellable,
+                                                          GError          **error);
+
+/* Hack to get the fd since GFileDescriptorBased (which is how you
+ * _should_ get the fd) is only available on UNIX but things like
+ * win32 needs this as well
+ */
+gint _g_local_file_output_stream_get_fd (GLocalFileOutputStream *output_stream);
 
 G_END_DECLS
 

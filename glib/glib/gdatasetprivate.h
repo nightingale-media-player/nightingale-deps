@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -28,7 +26,7 @@
 #ifndef __G_DATASETPRIVATE_H__
 #define __G_DATASETPRIVATE_H__
 
-#include <glib/gdataset.h>
+#include <gatomic.h>
 
 G_BEGIN_DECLS
 
@@ -36,7 +34,7 @@ G_BEGIN_DECLS
  * barriers to take effect without acquiring the global dataset mutex.
  */
 #define G_DATALIST_GET_FLAGS(datalist)				\
-  ((gsize) g_atomic_pointer_get ((gpointer*) datalist) & G_DATALIST_FLAGS_MASK)
+  ((gsize) g_atomic_pointer_get (datalist) & G_DATALIST_FLAGS_MASK)
 
 
 G_END_DECLS

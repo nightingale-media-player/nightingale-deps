@@ -12,16 +12,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 #include <glib-object.h>
 
 /* see http://bugzilla.gnome.org/show_bug.cgi?id=337128 for the purpose of this test */
 
 #define MY_G_IMPLEMENT_INTERFACE(TYPE_IFACE, iface_init)       { \
-  static const GInterfaceInfo g_implement_interface_info = { \
+  const GInterfaceInfo g_implement_interface_info = { \
       (GInterfaceInitFunc) iface_init, \
       NULL, \
       NULL \
@@ -41,6 +39,8 @@ typedef struct _TypeName {
 typedef struct _TypeNameClass {
   GObjectClass parent_parent;
 } TypeNameClass;
+
+GType           type_name_get_type          (void);
 
 MY_DEFINE_TYPE (TypeName, type_name, G_TYPE_OBJECT)
 

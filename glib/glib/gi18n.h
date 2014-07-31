@@ -12,14 +12,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
+
 #ifndef __G_I18N_H__
 #define __G_I18N_H__
 
-#include <glib/gstrfuncs.h>
+#include <glib.h>
+
 #include <libintl.h>
 #include <string.h>
 
@@ -27,8 +27,6 @@
 #define Q_(String) g_dpgettext (NULL, String, 0)
 #define N_(String) (String)
 #define C_(Context,String) g_dpgettext (NULL, Context "\004" String, strlen (Context) + 1)
-
+#define NC_(Context, String) (String)
 
 #endif  /* __G_I18N_H__ */
-
-

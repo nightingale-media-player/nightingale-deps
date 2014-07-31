@@ -12,20 +12,22 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
 #ifndef __G_PRIMES_H__
 #define __G_PRIMES_H__
+
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
 
 #include <glib/gtypes.h>
 
@@ -40,6 +42,7 @@ G_BEGIN_DECLS
  * next largest prime, or the highest it knows about which is about
  * MAXINT/4.
  */
+GLIB_AVAILABLE_IN_ALL
 guint	   g_spaced_primes_closest (guint num) G_GNUC_CONST;
 
 G_END_DECLS

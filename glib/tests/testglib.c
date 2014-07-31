@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -24,8 +22,6 @@
  * GLib at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#include "config.h"
-
 #undef GLIB_COMPILATION
 
 #include <stdio.h>
@@ -33,11 +29,11 @@
 #include <errno.h>
 
 #include "glib.h"
-#include "gstdio.h"
+#include <glib/gstdio.h>
 
 #include <stdlib.h>
 
-#ifdef HAVE_UNISTD_H
+#ifdef G_OS_UNIX
 #include <unistd.h>
 #endif
 
@@ -242,7 +238,7 @@ node_build_string (GNode    *node,
   gchar *string;
   gchar c[2] = "_";
 
-  c[0] = ((gchar) ((long) (node->data)));
+  c[0] = ((gchar) ((gintptr) (node->data)));
 
   string = g_strconcat (*p ? *p : "", c, NULL);
   g_free (*p);
@@ -255,7 +251,7 @@ static void
 gnode_test (void)
 {
 #define	C2P(c)		((gpointer) ((long) (c)))
-#define	P2C(p)		((gchar) ((long) (p)))
+#define	P2C(p)		((gchar) ((gintptr) (p)))
   GNode *root;
   GNode *node;
   GNode *node_B;
@@ -448,6 +444,8 @@ binary_tree_test (void)
       g_tree_foreach (tree, my_traverse, NULL);
       g_print ("\n");
     }
+
+  g_tree_unref (tree);
 }
 
 static gboolean
@@ -506,94 +504,16 @@ find_first_that(gpointer key,
   return (*v == *test);
 }
 
-
-static void
-test_g_mkdir_with_parents_1 (const gchar *base)
-{
-  char *p0 = g_build_filename (base, "fum", NULL);
-  char *p1 = g_build_filename (p0, "tem", NULL);
-  char *p2 = g_build_filename (p1, "zap", NULL);
-  FILE *f;
-
-  g_remove (p2);
-  g_remove (p1);
-  g_remove (p0);
-
-  if (g_file_test (p0, G_FILE_TEST_EXISTS))
-    g_error ("failed, %s exists, cannot test g_mkdir_with_parents\n", p0);
-
-  if (g_file_test (p1, G_FILE_TEST_EXISTS))
-    g_error ("failed, %s exists, cannot test g_mkdir_with_parents\n", p1);
-
-  if (g_file_test (p2, G_FILE_TEST_EXISTS))
-    g_error ("failed, %s exists, cannot test g_mkdir_with_parents\n", p2);
-
-  if (g_mkdir_with_parents (p2, 0777) == -1)
-    g_error ("failed, g_mkdir_with_parents(%s) failed: %s\n", p2, g_strerror (errno));
-
-  if (!g_file_test (p2, G_FILE_TEST_IS_DIR))
-    g_error ("failed, g_mkdir_with_parents(%s) succeeded, but %s is not a directory\n", p2, p2);
-
-  if (!g_file_test (p1, G_FILE_TEST_IS_DIR))
-    g_error ("failed, g_mkdir_with_parents(%s) succeeded, but %s is not a directory\n", p2, p1);
-
-  if (!g_file_test (p0, G_FILE_TEST_IS_DIR))
-    g_error ("failed, g_mkdir_with_parents(%s) succeeded, but %s is not a directory\n", p2, p0);
-
-  g_rmdir (p2);
-  if (g_file_test (p2, G_FILE_TEST_EXISTS))
-    g_error ("failed, did g_rmdir(%s), but %s is still there\n", p2, p2);
-
-  g_rmdir (p1);
-  if (g_file_test (p1, G_FILE_TEST_EXISTS))
-    g_error ("failed, did g_rmdir(%s), but %s is still there\n", p1, p1);
-
-  f = g_fopen (p1, "w");
-  if (f == NULL)
-    g_error ("failed, couldn't create file %s\n", p1);
-  fclose (f);
-
-  if (g_mkdir_with_parents (p1, 0666) == 0)
-    g_error ("failed, g_mkdir_with_parents(%s) succeeded, even if %s is a file\n", p1, p1);
-
-  if (g_mkdir_with_parents (p2, 0666) == 0)
-    g_error("failed, g_mkdir_with_parents(%s) succeeded, even if %s is a file\n", p2, p1);
-
-  g_remove (p2);
-  g_remove (p1);
-  g_remove (p0);
-}
-
-static void
-test_g_mkdir_with_parents (void)
-{
-  gchar *cwd;
-  if (g_test_verbose())
-    g_print ("checking g_mkdir_with_parents() in subdir ./hum/");
-  test_g_mkdir_with_parents_1 ("hum");
-  g_remove ("hum");
-  if (g_test_verbose())
-    g_print ("checking g_mkdir_with_parents() in subdir ./hii///haa/hee/");
-  test_g_mkdir_with_parents_1 ("hii///haa/hee");
-  g_remove ("hii/haa/hee");
-  g_remove ("hii/haa");
-  g_remove ("hii");
-  cwd = g_get_current_dir ();
-  if (g_test_verbose())
-    g_print ("checking g_mkdir_with_parents() in cwd: %s", cwd);
-  test_g_mkdir_with_parents_1 (cwd);
-  g_free (cwd);
-}
-
 static void
 test_g_parse_debug_string (void)
 {
-  GDebugKey keys[3] = { 
+  GDebugKey keys[] = { 
     { "foo", 1 },
     { "bar", 2 },
-    { "baz", 4 }
+    { "baz", 4 },
+    { "weird", 8 },
   };
-  guint n_keys = 3;
+  guint n_keys = G_N_ELEMENTS (keys);
   guint result;
   
   result = g_parse_debug_string ("bar:foo:blubb", keys, n_keys);
@@ -607,37 +527,51 @@ test_g_parse_debug_string (void)
 
   result = g_parse_debug_string (" : ", keys, n_keys);
   g_assert (result == 0);
+
+  result = g_parse_debug_string ("all", keys, n_keys);
+  g_assert_cmpuint (result, ==, (1 << n_keys) - 1);
+
+  /* Test subtracting debug flags from "all" */
+  result = g_parse_debug_string ("all:foo", keys, n_keys);
+  g_assert_cmpuint (result, ==, 2 | 4 | 8);
+
+  result = g_parse_debug_string ("foo baz,all", keys, n_keys);
+  g_assert_cmpuint (result, ==, 2 | 8);
+
+  result = g_parse_debug_string ("all,fooo,baz", keys, n_keys);
+  g_assert_cmpuint (result, ==, 1 | 2 | 8);
+
+  result = g_parse_debug_string ("all:weird", keys, n_keys);
+  g_assert_cmpuint (result, ==, 1 | 2 | 4);
 }
 
 static void
 log_warning_error_tests (void)
 {
-  if (g_test_trap_fork (0, G_TEST_TRAP_SILENCE_STDOUT | G_TEST_TRAP_SILENCE_STDERR))
-    {
-      g_message ("this is a g_message test.");
-      g_message ("non-printable UTF-8: \"\xc3\xa4\xda\x85\"");
-      g_message ("unsafe chars: \"\x10\x11\x12\n\t\x7f\x81\x82\x83\"");
-      exit (0);
-    }
-  g_test_trap_assert_passed();
-  g_test_trap_assert_stderr ("*is a g_message test*");
-  g_test_trap_assert_stderr ("*non-printable UTF-8*");
-  g_test_trap_assert_stderr ("*unsafe chars*");
-  if (g_test_trap_fork (0, G_TEST_TRAP_SILENCE_STDOUT | G_TEST_TRAP_SILENCE_STDERR))
-    {
-      g_warning ("harmless warning with parameters: %d %s %#x", 42, "Boo", 12345);
-      exit (0);
-    }
-  g_test_trap_assert_failed(); /* we have fatal-warnings enabled */
-  g_test_trap_assert_stderr ("*harmless warning*");
-  if (g_test_trap_fork (0, G_TEST_TRAP_SILENCE_STDOUT | G_TEST_TRAP_SILENCE_STDERR))
-    {
-      g_print (NULL);
-      exit (0);
-    }
-  g_test_trap_assert_failed(); /* we have fatal-warnings enabled */
-  g_test_trap_assert_stderr ("*g_print*assertion*failed*");
-  g_test_trap_assert_stderr ("*NULL*");
+  g_test_expect_message (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE,
+                         "*is a g_message test*");
+  g_message ("this is a g_message test.");
+  g_test_assert_expected_messages ();
+
+  g_test_expect_message (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE,
+                         "*non-printable UTF-8*");
+  g_message ("non-printable UTF-8: \"\xc3\xa4\xda\x85\"");
+  g_test_assert_expected_messages ();
+
+  g_test_expect_message (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE,
+                         "*unsafe chars*");
+  g_message ("unsafe chars: \"\x10\x11\x12\n\t\x7f\x81\x82\x83\"");
+  g_test_assert_expected_messages ();
+
+  g_test_expect_message (G_LOG_DOMAIN, G_LOG_LEVEL_WARNING,
+                         "*harmless warning*");
+  g_warning ("harmless warning with parameters: %d %s %#x", 42, "Boo", 12345);
+  g_test_assert_expected_messages ();
+
+  g_test_expect_message (G_LOG_DOMAIN, G_LOG_LEVEL_CRITICAL,
+                         "*g_print*assertion*failed*");
+  g_print (NULL);
+  g_test_assert_expected_messages ();
 }
 
 static void
@@ -751,8 +685,10 @@ test_info (void)
 {
   const gchar *un, *rn, *hn;
   const gchar *tmpdir, *homedir, *userdatadir, *uconfdir, *ucachedir;
-  const gchar *uddesktop, *udddocs, *uddpubshare;
+  const gchar *uddesktop, *udddocs, *uddpubshare, *uruntimedir;
   gchar **sv, *cwd, *sdatadirs, *sconfdirs, *langnames;
+  const gchar *charset;
+  gboolean charset_is_utf8;
   if (g_test_verbose())
     g_print ("TestGLib v%u.%u.%u (i:%u b:%u)\n",
              glib_major_version,
@@ -774,6 +710,10 @@ test_info (void)
     }
   g_free (cwd);
 
+  /* reload, just for fun */
+  g_reload_user_special_dirs_cache ();
+  g_reload_user_special_dirs_cache ();
+
   tmpdir = g_get_tmp_dir();
   g_assert (tmpdir != NULL);
   homedir = g_get_home_dir ();
@@ -789,6 +729,8 @@ test_info (void)
   g_assert (uddesktop != NULL);
   udddocs = g_get_user_special_dir (G_USER_DIRECTORY_DOCUMENTS);
   uddpubshare = g_get_user_special_dir (G_USER_DIRECTORY_PUBLIC_SHARE);
+  uruntimedir = g_get_user_runtime_dir ();
+  g_assert (uruntimedir != NULL);
 
   sv = (gchar **) g_get_system_data_dirs ();
   sdatadirs = g_strjoinv (G_SEARCHPATH_SEPARATOR_S, sv);
@@ -804,6 +746,7 @@ test_info (void)
       g_print ("user_data: %s\n", userdatadir);
       g_print ("user_config: %s\n", uconfdir);
       g_print ("user_cache: %s\n", ucachedir);
+      g_print ("user_runtime: %s\n", uruntimedir);
       g_print ("system_data: %s\n", sdatadirs);
       g_print ("system_config: %s\n", sconfdirs);
       g_print ("languages: %s\n", langnames);
@@ -814,41 +757,21 @@ test_info (void)
   g_free (sdatadirs);
   g_free (sconfdirs);
   g_free (langnames);
-  
+
+  charset_is_utf8 = g_get_charset ((const char**)&charset);
+
   if (g_test_verbose())
     {
-#ifdef G_PLATFORM_WIN32
-      gchar *glib_dll;
-#endif
-      const gchar *charset;
-      if (g_get_charset ((G_CONST_RETURN char**)&charset))
+      if (charset_is_utf8)
         g_print ("current charset is UTF-8: %s\n", charset);
       else
         g_print ("current charset is not UTF-8: %s\n", charset);
+    }
 
+  if (g_test_verbose())
+    {
 #ifdef G_PLATFORM_WIN32
-#ifdef G_OS_WIN32
-      /* Can't calculate GLib DLL name at runtime. */
-      glib_dll = "libglib-2.0-0.dll";
-#endif
-#ifdef G_WITH_CYGWIN
-      glib_dll = "cygglib-2.0-0.dll";
-#endif
-
       g_print ("current locale: %s\n", g_win32_getlocale ());
-      g_print ("GLib DLL name tested for: %s\n", glib_dll);
-
-      g_print ("GLib installation directory, from Registry entry for %s if available: %s\n",
-               GETTEXT_PACKAGE,
-               g_win32_get_package_installation_directory (GETTEXT_PACKAGE, NULL));
-      g_print ("Ditto, or from GLib DLL name: %s\n",
-               g_win32_get_package_installation_directory (GETTEXT_PACKAGE, glib_dll));
-      g_print ("Ditto, only from GLib DLL name: %s\n",
-               g_win32_get_package_installation_directory (NULL, glib_dll));
-      g_print ("locale subdirectory of GLib installation directory: %s\n",
-               g_win32_get_package_installation_subdirectory (NULL, glib_dll, "lib\\locale"));
-      g_print ("GTK+ 2.0 installation directory, if available: %s\n",
-               g_win32_get_package_installation_directory ("gtk20", NULL));
 
       g_print ("found more.com as %s\n", g_find_program_in_path ("more.com"));
       g_print ("found regedit as %s\n", g_find_program_in_path ("regedit"));
@@ -989,7 +912,8 @@ test_file_functions (void)
   fd = g_mkstemp (template);
   if (g_test_verbose() && fd != -1)
     g_print ("g_mkstemp works even if template doesn't end in XXXXXX\n");
-  close (fd);
+  if (fd != -1)
+    close (fd);
   strcpy (template, "fooXXXXXX");
   fd = g_mkstemp (template);
   if (fd == -1)
@@ -1010,11 +934,12 @@ test_file_functions (void)
   chars[n] = 0;
   if (strcmp (chars, hello) != 0)
     g_error ("wrote '%s', but got '%s'\n", hello, chars);
-
-  close (fd);
+  if (fd != -1)
+    close (fd);
   remove (template);
 
   error = NULL;
+  name_used = NULL;
   strcpy (template, "zap" G_DIR_SEPARATOR_S "barXXXXXX");
   fd = g_file_open_tmp (template, &name_used, &error);
   if (g_test_verbose())
@@ -1024,10 +949,13 @@ test_file_functions (void)
       else
         g_print ("g_file_open_tmp correctly returns error: %s\n", error->message);
     }
-  close (fd);
+  if (fd != -1)
+    close (fd);
   g_clear_error (&error);
+  g_free (name_used);
 
 #ifdef G_OS_WIN32
+  name_used = NULL;
   strcpy (template, "zap/barXXXXXX");
   fd = g_file_open_tmp (template, &name_used, &error);
   if (g_test_verbose())
@@ -1037,26 +965,34 @@ test_file_functions (void)
       else
         g_print ("g_file_open_tmp correctly returns error: %s\n", error->message);
     }
-  close (fd);
+  if (fd != -1)
+    close (fd);
   g_clear_error (&error);
+  g_free (name_used);
 #endif
 
   strcpy (template, "zapXXXXXX");
+  name_used = NULL;
   fd = g_file_open_tmp (template, &name_used, &error);
   if (fd == -1)
     g_error ("g_file_open_tmp didn't work for template '%s': %s\n", template, error->message);
   else if (g_test_verbose())
     g_print ("g_file_open_tmp for template '%s' used name '%s'\n", template, name_used);
-  close (fd);
+  if (fd != -1)
+    close (fd);
   g_clear_error (&error);
   remove (name_used);
+  g_free (name_used);
 
+  name_used = NULL;
   fd = g_file_open_tmp (NULL, &name_used, &error);
   if (fd == -1)
     g_error ("g_file_open_tmp didn't work for a NULL template: %s\n", error->message);
-  close (fd);
+  else
+    close (fd);
   g_clear_error (&error);
   remove (name_used);
+  g_free (name_used);
 }
 
 static void
@@ -1140,6 +1076,7 @@ hash_table_tests (void)
   g_hash_table_destroy (hash_table);
 }
 
+#ifndef G_DISABLE_DEPRECATED
 static void
 relation_test (void)
 {
@@ -1212,6 +1149,7 @@ relation_test (void)
 
   relation = NULL;
 }
+#endif
 
 static void
 gstring_tests (void)
@@ -1358,6 +1296,7 @@ various_string_tests (void)
   GTimeVal ref_date, date;
   gchar *tmp_string = NULL, *tmp_string_2, *string, *date_str;
   guint i;
+  const gchar *tz;
 
   if (g_test_verbose())
     g_print ("checking string chunks...");
@@ -1383,41 +1322,123 @@ various_string_tests (void)
   g_free (tmp_string);
   g_free (string);
 
-#define REF_INVALID  "Wed Dec 19 17:20:20 GMT 2007"
-#define REF_SEC_UTC  320063760
-#define REF_STR_UTC  "1980-02-22T10:36:00Z"
-#define REF_STR_CEST "1980-02-22T12:36:00+02:00"
-#define REF_STR_EST  "1980-02-22T05:36:00-05:00"
+#define REF_INVALID1      "Wed Dec 19 17:20:20 GMT 2007"
+#define REF_INVALID2      "1980-02-22T10:36:00Zulu"
+#define REF_INVALID3      "1980-02-22T"
+#define REF_SEC_UTC       320063760
+#define REF_STR_UTC       "1980-02-22T10:36:00Z"
+#define REF_STR_LOCAL     "1980-02-22T13:36:00"
+#define REF_STR_CEST      "1980-02-22T12:36:00+02:00"
+#define REF_STR_EST       "19800222T053600-0500"
+#define REF_STR_NST       "1980-02-22T07:06:00-03:30"
+#define REF_USEC_UTC      50000
+#define REF_STR_USEC_UTC  "1980-02-22T10:36:00.050000Z"
+#define REF_STR_USEC_CEST "19800222T123600.050000000+0200"
+#define REF_STR_USEC_EST  "1980-02-22T05:36:00,05-05:00"
+#define REF_STR_USEC_NST  "19800222T070600,0500-0330"
+#define REF_STR_DATE_ONLY "1980-02-22"
 
   if (g_test_verbose())
     g_print ("checking g_time_val_from_iso8601...\n");
   ref_date.tv_sec = REF_SEC_UTC;
   ref_date.tv_usec = 0;
-  g_assert (g_time_val_from_iso8601 (REF_INVALID, &date) == FALSE);
+  g_assert (g_time_val_from_iso8601 (REF_INVALID1, &date) == FALSE);
+  g_assert (g_time_val_from_iso8601 (REF_INVALID2, &date) == FALSE);
+  g_assert (g_time_val_from_iso8601 (REF_INVALID3, &date) == FALSE);
+  g_assert (g_time_val_from_iso8601 (REF_STR_DATE_ONLY, &date) == FALSE);
   g_assert (g_time_val_from_iso8601 (REF_STR_UTC, &date) != FALSE);
   if (g_test_verbose())
-    g_print ("\t=> UTC stamp = %ld (should be: %ld) (%ld off)\n", date.tv_sec, ref_date.tv_sec, date.tv_sec - ref_date.tv_sec);
-  g_assert (date.tv_sec == ref_date.tv_sec);
+    g_print ("\t=> UTC stamp = %ld.%06ld (should be: %ld.%06ld) (%ld.%06ld off)\n",
+             date.tv_sec, date.tv_usec, ref_date.tv_sec, ref_date.tv_usec,
+             date.tv_sec - ref_date.tv_sec, date.tv_usec - ref_date.tv_usec);
+  g_assert (date.tv_sec == ref_date.tv_sec && date.tv_usec == ref_date.tv_usec);
+
+  /* predefine time zone */
+  tz = g_getenv("TZ");
+  g_setenv("TZ", "UTC-03:00", 1);
+  tzset();
+
+  g_assert (g_time_val_from_iso8601 (REF_STR_LOCAL, &date) != FALSE);
+  if (g_test_verbose())
+    g_print ("\t=> LOCAL stamp = %ld.%06ld (should be: %ld.%06ld) (%ld.%06ld off)\n",
+             date.tv_sec, date.tv_usec, ref_date.tv_sec, ref_date.tv_usec,
+             date.tv_sec - ref_date.tv_sec, date.tv_usec - ref_date.tv_usec);
+  g_assert (date.tv_sec == ref_date.tv_sec && date.tv_usec == ref_date.tv_usec);
+
+  /* revert back user defined time zone */
+  if (tz)
+    g_setenv("TZ", tz, TRUE);
+  else
+    g_unsetenv("TZ");
+  tzset();
 
   g_assert (g_time_val_from_iso8601 (REF_STR_CEST, &date) != FALSE);
   if (g_test_verbose())
-    g_print ("\t=> CEST stamp = %ld (should be: %ld) (%ld off)\n", date.tv_sec, ref_date.tv_sec, date.tv_sec - ref_date.tv_sec);
-  g_assert (date.tv_sec == ref_date.tv_sec);
+    g_print ("\t=> CEST stamp = %ld.%06ld (should be: %ld.%06ld) (%ld.%06ld off)\n",
+             date.tv_sec, date.tv_usec, ref_date.tv_sec, ref_date.tv_usec,
+             date.tv_sec - ref_date.tv_sec, date.tv_usec - ref_date.tv_usec);
+  g_assert (date.tv_sec == ref_date.tv_sec && date.tv_usec == ref_date.tv_usec);
 
   g_assert (g_time_val_from_iso8601 (REF_STR_EST, &date) != FALSE);
   if (g_test_verbose())
-    g_print ("\t=> EST stamp = %ld (should be: %ld) (%ld off)\n", date.tv_sec, ref_date.tv_sec, date.tv_sec - ref_date.tv_sec);
-  g_assert (date.tv_sec == ref_date.tv_sec);
+    g_print ("\t=> EST stamp = %ld.%06ld (should be: %ld.%06ld) (%ld.%06ld off)\n",
+             date.tv_sec, date.tv_usec, ref_date.tv_sec, ref_date.tv_usec,
+             date.tv_sec - ref_date.tv_sec, date.tv_usec - ref_date.tv_usec);
+  g_assert (date.tv_sec == ref_date.tv_sec && date.tv_usec == ref_date.tv_usec);
+
+  g_assert (g_time_val_from_iso8601 (REF_STR_NST, &date) != FALSE);
+  if (g_test_verbose())
+    g_print ("\t=> NST stamp = %ld.%06ld (should be: %ld.%06ld) (%ld.%06ld off)\n",
+             date.tv_sec, date.tv_usec, ref_date.tv_sec, ref_date.tv_usec,
+             date.tv_sec - ref_date.tv_sec, date.tv_usec - ref_date.tv_usec);
+  g_assert (date.tv_sec == ref_date.tv_sec && date.tv_usec == ref_date.tv_usec);
+
+  ref_date.tv_usec = REF_USEC_UTC;
+  g_assert (g_time_val_from_iso8601 (REF_STR_USEC_UTC, &date) != FALSE);
+  if (g_test_verbose())
+    g_print ("\t=> UTC stamp = %ld.%06ld (should be: %ld.%06ld) (%ld.%06ld off)\n",
+             date.tv_sec, date.tv_usec, ref_date.tv_sec, ref_date.tv_usec,
+             date.tv_sec - ref_date.tv_sec, date.tv_usec - ref_date.tv_usec);
+  g_assert (date.tv_sec == ref_date.tv_sec && date.tv_usec == ref_date.tv_usec);
+
+  g_assert (g_time_val_from_iso8601 (REF_STR_USEC_CEST, &date) != FALSE);
+  if (g_test_verbose())
+    g_print ("\t=> CEST stamp = %ld.%06ld (should be: %ld.%06ld) (%ld.%06ld off)\n",
+             date.tv_sec, date.tv_usec, ref_date.tv_sec, ref_date.tv_usec,
+             date.tv_sec - ref_date.tv_sec, date.tv_usec - ref_date.tv_usec);
+  g_assert (date.tv_sec == ref_date.tv_sec && date.tv_usec == ref_date.tv_usec);
+
+  g_assert (g_time_val_from_iso8601 (REF_STR_USEC_EST, &date) != FALSE);
+  if (g_test_verbose())
+    g_print ("\t=> EST stamp = %ld.%06ld (should be: %ld.%06ld) (%ld.%06ld off)\n",
+             date.tv_sec, date.tv_usec, ref_date.tv_sec, ref_date.tv_usec,
+             date.tv_sec - ref_date.tv_sec, date.tv_usec - ref_date.tv_usec);
+  g_assert (date.tv_sec == ref_date.tv_sec && date.tv_usec == ref_date.tv_usec);
+
+  g_assert (g_time_val_from_iso8601 (REF_STR_USEC_NST, &date) != FALSE);
+  if (g_test_verbose())
+    g_print ("\t=> NST stamp = %ld.%06ld (should be: %ld.%06ld) (%ld.%06ld off)\n",
+             date.tv_sec, date.tv_usec, ref_date.tv_sec, ref_date.tv_usec,
+             date.tv_sec - ref_date.tv_sec, date.tv_usec - ref_date.tv_usec);
+  g_assert (date.tv_sec == ref_date.tv_sec && date.tv_usec == ref_date.tv_usec);
 
   if (g_test_verbose())
     g_print ("checking g_time_val_to_iso8601...\n");
   ref_date.tv_sec = REF_SEC_UTC;
-  ref_date.tv_usec = 1;
+  ref_date.tv_usec = 0;
   date_str = g_time_val_to_iso8601 (&ref_date);
   g_assert (date_str != NULL);
   if (g_test_verbose())
     g_print ("\t=> date string = %s (should be: %s)\n", date_str, REF_STR_UTC);
   g_assert (strcmp (date_str, REF_STR_UTC) == 0);
+  g_free (date_str);
+
+  ref_date.tv_usec = REF_USEC_UTC;
+  date_str = g_time_val_to_iso8601 (&ref_date);
+  g_assert (date_str != NULL);
+  if (g_test_verbose())
+    g_print ("\t=> date string = %s (should be: %s)\n", date_str, REF_STR_USEC_UTC);
+  g_assert (strcmp (date_str, REF_STR_USEC_UTC) == 0);
   g_free (date_str);
 
   if (g_test_verbose())
@@ -1523,6 +1544,7 @@ various_string_tests (void)
   /* g_debug (argv[0]); */
 }
 
+#ifndef G_DISABLE_DEPRECATED
 static void
 test_mem_chunks (void)
 {
@@ -1538,7 +1560,10 @@ test_mem_chunks (void)
     }
   for (i = 0; i < 10000; i++)
     g_mem_chunk_free (mem_chunk, mem[i]);
+
+  g_mem_chunk_destroy (mem_chunk);
 }
+#endif
 
 int
 main (int   argc,
@@ -1556,12 +1581,15 @@ main (int   argc,
   g_test_add_func ("/testglib/GTree", binary_tree_test);
   g_test_add_func ("/testglib/Arrays", test_arrays);
   g_test_add_func ("/testglib/GHashTable", hash_table_tests);
-  g_test_add_func ("/testglib/Relation", relation_test);
+#ifndef G_DISABLE_DEPRECATED
+  g_test_add_func ("/testglib/Relation (deprecated)", relation_test);
+#endif
   g_test_add_func ("/testglib/File Paths", test_paths);
   g_test_add_func ("/testglib/File Functions", test_file_functions);
-  g_test_add_func ("/testglib/Mkdir", test_g_mkdir_with_parents);
   g_test_add_func ("/testglib/Parse Debug Strings", test_g_parse_debug_string);
+#ifndef G_DISABLE_DEPRECATED
   g_test_add_func ("/testglib/GMemChunk (deprecated)", test_mem_chunks);
+#endif
   g_test_add_func ("/testglib/Warnings & Errors", log_warning_error_tests);
   g_test_add_func ("/testglib/Timers (slow)", timer_tests);
 

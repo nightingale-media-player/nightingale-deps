@@ -15,19 +15,17 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
-/* 
+/*
  * MT safe
  */
 
@@ -42,9 +40,14 @@
 #include <errno.h>
 #include <string.h>
 #include <fcntl.h>
+#include <glib/gstdio.h>
 
-#include "glib.h"
-#include "galias.h"
+#include "giochannel.h"
+
+#include "gerror.h"
+#include "gfileutils.h"
+#include "gstrfuncs.h"
+#include "gtestutils.h"
 
 /*
  * Unix IO Channels
@@ -190,9 +193,10 @@ g_io_unix_read (GIOChannel *channel,
 
   if (result < 0)
     {
+      int errsv = errno;
       *bytes_read = 0;
 
-      switch (errno)
+      switch (errsv)
         {
 #ifdef EINTR
           case EINTR:
@@ -203,9 +207,9 @@ g_io_unix_read (GIOChannel *channel,
             return G_IO_STATUS_AGAIN;
 #endif
           default:
-            g_set_error (err, G_IO_CHANNEL_ERROR,
-                         g_io_channel_error_from_errno (errno),
-                         g_strerror (errno));
+            g_set_error_literal (err, G_IO_CHANNEL_ERROR,
+                                 g_io_channel_error_from_errno (errsv),
+                                 g_strerror (errsv));
             return G_IO_STATUS_ERROR;
         }
     }
@@ -230,9 +234,10 @@ g_io_unix_write (GIOChannel  *channel,
 
   if (result < 0)
     {
+      int errsv = errno;
       *bytes_written = 0;
 
-      switch (errno)
+      switch (errsv)
         {
 #ifdef EINTR
           case EINTR:
@@ -243,9 +248,9 @@ g_io_unix_write (GIOChannel  *channel,
             return G_IO_STATUS_AGAIN;
 #endif
           default:
-            g_set_error (err, G_IO_CHANNEL_ERROR,
-                         g_io_channel_error_from_errno (errno),
-                         g_strerror (errno));
+            g_set_error_literal (err, G_IO_CHANNEL_ERROR,
+                                 g_io_channel_error_from_errno (errsv),
+                                 g_strerror (errsv));
             return G_IO_STATUS_ERROR;
         }
     }
@@ -285,9 +290,9 @@ g_io_unix_seek (GIOChannel *channel,
   tmp_offset = offset;
   if (tmp_offset != offset)
     {
-      g_set_error (err, G_IO_CHANNEL_ERROR,
-		   g_io_channel_error_from_errno (EINVAL),
-		   g_strerror (EINVAL));
+      g_set_error_literal (err, G_IO_CHANNEL_ERROR,
+                           g_io_channel_error_from_errno (EINVAL),
+                           g_strerror (EINVAL));
       return G_IO_STATUS_ERROR;
     }
   
@@ -295,9 +300,10 @@ g_io_unix_seek (GIOChannel *channel,
 
   if (result < 0)
     {
-      g_set_error (err, G_IO_CHANNEL_ERROR,
-		   g_io_channel_error_from_errno (errno),
-		   g_strerror (errno));
+      int errsv = errno;
+      g_set_error_literal (err, G_IO_CHANNEL_ERROR,
+                           g_io_channel_error_from_errno (errsv),
+                           g_strerror (errsv));
       return G_IO_STATUS_ERROR;
     }
 
@@ -313,9 +319,10 @@ g_io_unix_close (GIOChannel *channel,
 
   if (close (unix_channel->fd) < 0)
     {
-      g_set_error (err, G_IO_CHANNEL_ERROR,
-		   g_io_channel_error_from_errno (errno),
-		   g_strerror (errno));
+      int errsv = errno;
+      g_set_error_literal (err, G_IO_CHANNEL_ERROR,
+                           g_io_channel_error_from_errno (errsv),
+                           g_strerror (errsv));
       return G_IO_STATUS_ERROR;
     }
 
@@ -340,6 +347,7 @@ g_io_unix_create_watch (GIOChannel   *channel,
 
 
   source = g_source_new (&g_io_watch_funcs, sizeof (GIOUnixWatch));
+  g_source_set_name (source, "GIOChannel (Unix)");
   watch = (GIOUnixWatch *)source;
   
   watch->channel = channel;
@@ -376,9 +384,10 @@ g_io_unix_set_flags (GIOChannel *channel,
 
   if (fcntl (unix_channel->fd, F_SETFL, fcntl_flags) == -1)
     {
-      g_set_error (err, G_IO_CHANNEL_ERROR,
-		   g_io_channel_error_from_errno (errno),
-		   g_strerror (errno));
+      int errsv = errno;
+      g_set_error_literal (err, G_IO_CHANNEL_ERROR,
+                           g_io_channel_error_from_errno (errsv),
+                           g_strerror (errsv));
       return G_IO_STATUS_ERROR;
     }
 
@@ -396,8 +405,9 @@ g_io_unix_get_flags (GIOChannel *channel)
 
   if (fcntl_flags == -1)
     {
+      int err = errno;
       g_warning (G_STRLOC "Error while getting flags for FD: %s (%d)\n",
-		 g_strerror (errno), errno);
+		 g_strerror (err), err);
       return 0;
     }
 
@@ -443,7 +453,10 @@ g_io_channel_new_file (const gchar *filename,
     MODE_R = 1 << 0,
     MODE_W = 1 << 1,
     MODE_A = 1 << 2,
-    MODE_PLUS = 1 << 3
+    MODE_PLUS = 1 << 3,
+    MODE_R_PLUS = MODE_R | MODE_PLUS,
+    MODE_W_PLUS = MODE_W | MODE_PLUS,
+    MODE_A_PLUS = MODE_A | MODE_PLUS
   } mode_num;
   struct stat buffer;
 
@@ -494,36 +507,40 @@ g_io_channel_new_file (const gchar *filename,
       case MODE_A:
         flags = O_WRONLY | O_APPEND | O_CREAT;
         break;
-      case MODE_R | MODE_PLUS:
+      case MODE_R_PLUS:
         flags = O_RDWR;
         break;
-      case MODE_W | MODE_PLUS:
+      case MODE_W_PLUS:
         flags = O_RDWR | O_TRUNC | O_CREAT;
         break;
-      case MODE_A | MODE_PLUS:
+      case MODE_A_PLUS:
         flags = O_RDWR | O_APPEND | O_CREAT;
         break;
+      case MODE_PLUS:
       default:
         g_assert_not_reached ();
         flags = 0;
     }
 
   create_mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
-  fid = open (filename, flags, create_mode);
+
+  fid = g_open (filename, flags, create_mode);
   if (fid == -1)
     {
-      g_set_error (error, G_FILE_ERROR,
-                   g_file_error_from_errno (errno),
-                   g_strerror (errno));
+      int err = errno;
+      g_set_error_literal (error, G_FILE_ERROR,
+                           g_file_error_from_errno (err),
+                           g_strerror (err));
       return (GIOChannel *)NULL;
     }
 
   if (fstat (fid, &buffer) == -1) /* In case someone opens a FIFO */
     {
+      int err = errno;
       close (fid);
-      g_set_error (error, G_FILE_ERROR,
-                   g_file_error_from_errno (errno),
-                   g_strerror (errno));
+      g_set_error_literal (error, G_FILE_ERROR,
+                           g_file_error_from_errno (err),
+                           g_strerror (err));
       return (GIOChannel *)NULL;
     }
 
@@ -543,12 +560,13 @@ g_io_channel_new_file (const gchar *filename,
         channel->is_readable = FALSE;
         channel->is_writeable = TRUE;
         break;
-      case MODE_R | MODE_PLUS:
-      case MODE_W | MODE_PLUS:
-      case MODE_A | MODE_PLUS:
+      case MODE_R_PLUS:
+      case MODE_W_PLUS:
+      case MODE_A_PLUS:
         channel->is_readable = TRUE;
         channel->is_writeable = TRUE;
         break;
+      case MODE_PLUS:
       default:
         g_assert_not_reached ();
     }
@@ -561,6 +579,33 @@ g_io_channel_new_file (const gchar *filename,
   return channel;
 }
 
+/**
+ * g_io_channel_unix_new:
+ * @fd: a file descriptor.
+ *
+ * Creates a new #GIOChannel given a file descriptor. On UNIX systems
+ * this works for plain files, pipes, and sockets.
+ *
+ * The returned #GIOChannel has a reference count of 1.
+ *
+ * The default encoding for #GIOChannel is UTF-8. If your application
+ * is reading output from a command using via pipe, you may need to set
+ * the encoding to the encoding of the current locale (see
+ * g_get_charset()) with the g_io_channel_set_encoding() function.
+ *
+ * If you want to read raw binary data without interpretation, then
+ * call the g_io_channel_set_encoding() function with %NULL for the
+ * encoding argument.
+ *
+ * This function is available in GLib on Windows, too, but you should
+ * avoid using it on Windows. The domain of file descriptors and
+ * sockets overlap. There is no way for GLib to know which one you mean
+ * in case the argument you pass to this function happens to be both a
+ * valid file descriptor and socket. If that happens a warning is
+ * issued, and GLib assumes that it is the file descriptor you mean.
+ *
+ * Returns: a new #GIOChannel.
+ **/
 GIOChannel *
 g_io_channel_unix_new (gint fd)
 {
@@ -590,12 +635,20 @@ g_io_channel_unix_new (gint fd)
   return channel;
 }
 
+/**
+ * g_io_channel_unix_get_fd:
+ * @channel: a #GIOChannel, created with g_io_channel_unix_new().
+ *
+ * Returns the file descriptor of the #GIOChannel.
+ *
+ * On Windows this function returns the file descriptor or socket of
+ * the #GIOChannel.
+ *
+ * Returns: the file descriptor of the #GIOChannel.
+ **/
 gint
 g_io_channel_unix_get_fd (GIOChannel *channel)
 {
   GIOUnixChannel *unix_channel = (GIOUnixChannel *)channel;
   return unix_channel->fd;
 }
-
-#define __G_IO_UNIX_C__
-#include "galiasdef.c"

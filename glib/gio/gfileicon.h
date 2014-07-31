@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,22 +13,19 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
+
+#ifndef __G_FILE_ICON_H__
+#define __G_FILE_ICON_H__
 
 #if !defined (__GIO_GIO_H_INSIDE__) && !defined (GIO_COMPILATION)
 #error "Only <gio/gio.h> can be included directly."
 #endif
 
-#ifndef __G_FILE_ICON_H__
-#define __G_FILE_ICON_H__
-
-#include <gio/gloadableicon.h>
-#include <gio/gfile.h>
+#include <gio/giotypes.h>
 
 G_BEGIN_DECLS
 
@@ -41,17 +38,19 @@ G_BEGIN_DECLS
 
 /**
  * GFileIcon:
- * 
+ *
  * Gets an icon for a #GFile. Implements #GLoadableIcon.
  **/
-typedef struct _GFileIcon        GFileIcon;
 typedef struct _GFileIconClass   GFileIconClass;
 
-GType g_file_icon_get_type (void) G_GNUC_CONST;
-  
-GIcon *g_file_icon_new (GFile *file);
+GLIB_AVAILABLE_IN_ALL
+GType   g_file_icon_get_type (void) G_GNUC_CONST;
 
-GFile *g_file_icon_get_file (GFileIcon *icon);
+GLIB_AVAILABLE_IN_ALL
+GIcon * g_file_icon_new      (GFile     *file);
+
+GLIB_AVAILABLE_IN_ALL
+GFile * g_file_icon_get_file (GFileIcon *icon);
 
 G_END_DECLS
 

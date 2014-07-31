@@ -1,15 +1,18 @@
 <?xml version='1.0' encoding="ISO-8859-1"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <chapter id="chapter-gobject">
   <title>The GObject base class</title>
 
   <para>
-    The two previous chapters discussed the details of GLib's Dynamic Type System
-    and its signal control system. The GObject library also contains an implementation
-    for a base fundamental type named <type><link linkend="GObject">GObject</link></type>.
+    The previous chapter discussed the details of GLib's Dynamic Type System.
+    The GObject library also contains an implementation for a base fundamental
+    type named <link linkend="GObject"><type>GObject</type></link>.
   </para>
 
   <para>
-    <type><link linkend="GObject">GObject</link></type> is a fundamental classed instantiable type. It implements:
+    <link linkend="GObject"><type>GObject</type></link> is a fundamental classed instantiable type. It implements:
     <itemizedlist>
       <listitem><para>Memory management with reference counting</para></listitem>
       <listitem><para>Construction/Destruction of instances</para></listitem>
@@ -17,7 +20,7 @@
       <listitem><para>Easy use of signals</para></listitem>
     </itemizedlist>
     All the GNOME libraries which use the GLib type system (like GTK+ and GStreamer)
-    inherit from <type><link linkend="GObject">GObject</link></type> which is why it is important to understand
+    inherit from <link linkend="GObject"><type>GObject</type></link> which is why it is important to understand
     the details of how it works.
   </para>
 
@@ -25,29 +28,33 @@
     <title>Object instantiation</title>
 
     <para>
-      The <function><link linkend="g-object-new">g_object_new</link></function> family of functions can be used to instantiate any
-      GType which inherits from the GObject base type. All these functions make sure the class
-      and instance structures have been correctly initialized by glib's type system and
-      then invoke at one point or another the constructor class method which is used to:
+      The <function><link linkend="g-object-new">g_object_new</link></function>
+      family of functions can be used to instantiate any GType which inherits
+      from the GObject base type. All these functions make sure the class and
+      instance structures have been correctly initialized by GLib's type system
+      and then invoke at one point or another the constructor class method
+      which is used to:
       <itemizedlist>
         <listitem><para>
             Allocate and clear memory through <function><link linkend="g-type-create-instance">g_type_create_instance</link></function>,
           </para></listitem>
         <listitem><para>
-            Initialize the object' instance with the construction properties.
+            Initialize the object's instance with the construction properties.
           </para></listitem>
       </itemizedlist>
      Although one can expect all class and instance members (except the fields
-     pointing to the parents) to be set to zero, some consider it good practice to explicitly set them.
+     pointing to the parents) to be set to zero, some consider it good practice
+     to explicitly set them.
     </para>
 
     <para>
-      Objects which inherit from GObject are allowed to override this constructor class method:
-      they should however chain to their parent constructor method before doing so:
+      Objects which inherit from GObject are allowed to override this
+      constructor class method: they should however chain to their parent
+      constructor method before doing so:
 <programlisting>
-  GObject*   (*constructor)     (GType                  type,
-                                 guint                  n_construct_properties,
-                                 GObjectConstructParam *construct_properties);
+  GObject *(* constructor) (GType                  gtype,
+                            guint                  n_properties,
+                            GObjectConstructParam *properties);
 </programlisting>
     </para>
 
@@ -56,101 +63,76 @@
 <programlisting>
 #define MAMAN_TYPE_BAR                  (maman_bar_get_type ())
 #define MAMAN_BAR(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), MAMAN_TYPE_BAR, MamanBar))
+#define MAMAN_IS_BAR(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), MAMAN_TYPE_BAR))
 #define MAMAN_BAR_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), MAMAN_TYPE_BAR, MamanBarClass))
-#define MAMAN_IS_BAR(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), MAMAN_TYPE_BAR))
-#define MAMAN_IS_BAR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), MAMAN_TYPE_BAR))
-#define MAMAN_BAR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), MAMAN_TYPE_BAR, MamanBarClass))
+#define MAMAN_IS_BAR_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), MAMAN_TYPE_BAR))
+#define MAMAN_BAR_GET_CLASS(obj)        (G_TYPE_INSTANCE_GET_CLASS ((obj), MAMAN_TYPE_BAR, MamanBarClass))
 
-typedef struct _MamanBar MamanBar;
-typedef struct _MamanBarClass MamanBarClass;
+typedef struct _MamanBar        MamanBar;
+typedef struct _MamanBarClass   MamanBarClass;
 
-struct _MamanBar {
-  GObject parent;
+struct _MamanBar
+{
+  GObject parent_instance;
+
   /* instance members */
 };
 
-struct _MamanBarClass {
-  GObjectClass parent;
+struct _MamanBarClass
+{
+  GObjectClass parent_class;
 
   /* class members */
 };
 
-/* used by MAMAN_TYPE_BAR */
-GType maman_bar_get_type (void);
+/* will create maman_bar_get_type and set maman_bar_parent_class */
+G_DEFINE_TYPE (MamanBar, maman_bar, G_TYPE_OBJECT);
 
 static GObject *
-maman_bar_constructor (GType                  type,
-                       guint                  n_construct_properties,
-                       GObjectConstructParam *construct_properties)
+maman_bar_constructor (GType                  gtype,
+                       guint                  n_properties,
+                       GObjectConstructParam *properties)
 {
   GObject *obj;
 
   {
-    /* Invoke parent constructor. */
-    MamanBarClass *klass;
-    GObjectClass *parent_class;  
-    klass = MAMAN_BAR_CLASS (g_type_class_peek (MAMAN_TYPE_BAR));
-    parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
-    obj = parent_class->constructor (type,
-                                     n_construct_properties,
-                                     construct_properties);
+    /* Always chain up to the parent constructor */
+    obj = G_OBJECT_CLASS (maman_bar_parent_class)-&gt;constructor (gtype, n_properties, properties);
   }
   
-  /* do stuff. */
+  /* update the object state depending on constructor properties */
 
   return obj;
 }
 
 static void
-maman_bar_instance_init (GTypeInstance   *instance,
-                         gpointer         g_class)
+maman_bar_class_init (MamanBarClass *klass)
 {
-  MamanBar *self = (MamanBar *)instance;
-  /* do stuff */
+  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+
+  gobject_class-&gt;constructor = maman_bar_constructor;
 }
 
 static void
-maman_bar_class_init (gpointer g_class,
-                      gpointer g_class_data)
+maman_bar_init (MamanBar *self)
 {
-  GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
-  MamanBarClass *klass = MAMAN_BAR_CLASS (g_class);
-
-  gobject_class->constructor = maman_bar_constructor;
+  /* initialize the object */
 }
 
-GType maman_bar_get_type (void)
-{
-  static GType type = 0;
-  if (type == 0) {
-    static const GTypeInfo info = {
-      sizeof (MamanBarClass),
-      NULL,   /* base_init */
-      NULL,   /* base_finalize */
-      maman_bar_class_init,   /* class_init */
-      NULL,   /* class_finalize */
-      NULL,   /* class_data */
-      sizeof (MamanBar),
-      0,      /* n_preallocs */
-      maman_bar_instance_init    /* instance_init */
-    };
-    type = g_type_register_static (G_TYPE_OBJECT,
-                                   "MamanBarType",
-                                   &amp;info, 0);
-  }
-  return type;
-}
 </programlisting>
       If the user instantiates an object <type>MamanBar</type> with:
 <programlisting>
 MamanBar *bar = g_object_new (MAMAN_TYPE_BAR, NULL);
 </programlisting>        
-      If this is the first instantiation of such an object, the <function>maman_b_class_init</function>
-      function will be invoked after any <function>maman_b_base_class_init</function> function. 
-      This will make sure the class structure of this new object is correctly initialized. Here, 
-      <function>maman_bar_class_init</function> is expected to override the object's class methods
-      and setup the class' own methods. In the example above, the constructor method is the only 
-      overridden method: it is set to <function>maman_bar_constructor</function>.
+      If this is the first instantiation of such an object, the
+      <function>maman_bar_class_init</function> function will be invoked
+      after any <function>maman_bar_base_class_init</function> function.
+      This will make sure the class structure of this new object is
+      correctly initialized. Here, <function>maman_bar_class_init</function>
+      is expected to override the object's class methods and setup the
+      class' own methods. In the example above, the constructor method is
+      the only overridden method: it is set to
+      <function>maman_bar_constructor</function>.
     </para>
 
     <para>
@@ -158,12 +140,11 @@ MamanBar *bar = g_object_new (MAMAN_TYPE_BAR, NULL);
       class structure, it invokes its constructor method to create an instance of the new 
       object. Since it has just been overridden by <function>maman_bar_class_init</function> 
       to <function>maman_bar_constructor</function>, the latter is called and, because it
-      was implemented correctly, it chains up to its parent's constructor. The problem here
-      is how we can find the parent constructor. An approach (used in GTK+ source code) would be
-      to save the original constructor in a static variable from <function>maman_bar_class_init</function>
-      and then to re-use it from <function>maman_bar_constructor</function>. This is clearly possible
-      and very simple but I was told it was not nice and the preferred way is to use the 
-      <function><link linkend="g-type-class-peek">g_type_class_peek</link></function> and <function><link linkend="g-type-class-peek-parent">g_type_class_peek_parent</link></function> functions.
+      was implemented correctly, it chains up to its parent's constructor. In
+      order to find the parent class and chain up to the parent class
+      constructor, we can use the <literal>maman_bar_parent_class</literal>
+      pointer that has been set up for us by the
+      <literal>G_DEFINE_TYPE</literal> macro.
     </para>
 
     <para>
@@ -179,16 +160,13 @@ MamanBar *bar = g_object_new (MAMAN_TYPE_BAR, NULL);
     </para>
 
     <para>
-      The process described above might seem a bit complicated (it <emphasis>is</emphasis> actually
-      overly complicated in my opinion..) but it can be summarized easily by the table below which
-      lists the functions invoked by <function><link linkend="g-object-new">g_object_new</link></function> and their order of
-      invocation.
+      The process described above might seem a bit complicated, but it can be
+      summarized easily by the table below which lists the functions invoked
+      by <function><link linkend="g-object-new">g_object_new</link></function>
+      and their order of invocation:
     </para>
 
     <para>
-      The array below lists the functions invoked by <function><link linkend="g-object-new">g_object_new</link></function> and 
-      their order of invocation:
-
       <table id="gobject-construction-table">
         <title><function><link linkend="g-object-new">g_object_new</link></function></title>
         <tgroup cols="3">
@@ -266,16 +244,16 @@ MamanBar *bar = g_object_new (MAMAN_TYPE_BAR, NULL);
     </para>
 
     <para>
-      Readers should feel concerned about one little twist in the order in which functions 
-      are invoked: while, technically, the class' constructor method is called
-      <emphasis>before</emphasis> the GType's instance_init function (since 
-      <function><link linkend="g-type-create-instance">g_type_create_instance</link></function> which calls instance_init is called by
+      Readers should feel concerned about one little twist in the order in
+      which functions are invoked: while, technically, the class' constructor
+      method is called <emphasis>before</emphasis> the GType's instance_init
+      function (since <function><link linkend="g-type-create-instance">g_type_create_instance</link></function> which calls instance_init is called by
       <function>g_object_constructor</function> which is the top-level class 
-      constructor method and to which users are expected to chain to), the user's code
-      which runs in a user-provided constructor will always run <emphasis>after</emphasis>
-      GType's instance_init function since the user-provided constructor 
-      <emphasis>must</emphasis> (you've been warned) chain up <emphasis>before</emphasis>
-      doing anything useful.
+      constructor method and to which users are expected to chain to), the
+      user's code which runs in a user-provided constructor will always
+      run <emphasis>after</emphasis> GType's instance_init function since the
+      user-provided constructor <emphasis>must</emphasis> (you've been warned)
+      chain up <emphasis>before</emphasis> doing anything useful.
     </para>
   </sect1>
 
@@ -286,7 +264,7 @@ MamanBar *bar = g_object_new (MAMAN_TYPE_BAR, NULL);
       The memory-management API for GObjects is a bit complicated but the idea behind it
       is pretty simple: the goal is to provide a flexible model based on reference counting
       which can be integrated in applications which use or require different memory management
-      models (such as garbage collection, aso...). The methods which are used to
+      models (such as garbage collection). The methods which are used to
       manipulate this reference count are described below.
 <programlisting>
 /*
@@ -296,24 +274,25 @@ gpointer    g_object_ref                      (gpointer        object);
 void        g_object_unref                    (gpointer        object);
 
 /*
-  Weak References
-*/
-typedef void (*GWeakNotify)                (gpointer      data,
-                                         GObject      *where_the_object_was);
-void            g_object_weak_ref                      (GObject              *object,
-                                               GWeakNotify     notify,
-                                               gpointer               data);
-void            g_object_weak_unref                      (GObject              *object,
-                                               GWeakNotify     notify,
-                                               gpointer               data);
-void        g_object_add_weak_pointer         (GObject        *object, 
-                                               gpointer       *weak_pointer_location);
-void        g_object_remove_weak_pointer      (GObject        *object, 
-                                               gpointer       *weak_pointer_location);
+ * Weak References
+ */
+typedef void (*GWeakNotify) (gpointer  data,
+                             GObject  *where_the_object_was);
+
+void g_object_weak_ref            (GObject     *object,
+                                   GWeakNotify  notify,
+                                   gpointer     data);
+void g_object_weak_unref          (GObject     *object,
+                                   GWeakNotify  notify,
+                                   gpointer     data);
+void g_object_add_weak_pointer    (GObject     *object, 
+                                   gpointer    *weak_pointer_location);
+void g_object_remove_weak_pointer (GObject     *object, 
+                                   gpointer    *weak_pointer_location);
 /*
-  Cycle handling
-*/
-void        g_object_run_dispose              (GObject              *object);
+ * Cycle handling
+ */
+void g_object_run_dispose         (GObject     *object);
 </programlisting>
     </para>
 
@@ -477,7 +456,7 @@ void        g_object_run_dispose              (GObject              *object);
       <para>
         This two-step destruction process is very useful to break reference counting cycles.
         While the detection of the cycles is up to the external code, once the cycles have been
-        detected, the external code can invoke <function><link linkend="g-object-dispose">g_object_dispose</link></function> which 
+        detected, the external code can invoke <function><link linkend="g-object-run-dispose">g_object_run_dispose</link></function> which 
         will indeed break any existing cycles since it will run the dispose handler associated
         to the object and thus release all references to other objects.
       </para>
@@ -487,7 +466,7 @@ void        g_object_run_dispose              (GObject              *object);
         we stated a bit sooner: the dispose handler can be invoked multiple times. Let's say we
         have a reference count cycle: object A references B which itself references object A.
         Let's say we have detected the cycle and we want to destroy the two objects. One way to 
-        do this would be to invoke <function><link linkend="g-object-dispose">g_object_dispose</link></function> on one of the 
+        do this would be to invoke <function><link linkend="g-object-run-dispose">g_object_run_dispose</link></function> on one of the 
         objects.
       </para>
   
@@ -516,29 +495,29 @@ void        g_object_run_dispose              (GObject              *object);
       One of GObject's nice features is its generic get/set mechanism for object
       properties. When an object
       is instantiated, the object's class_init handler should be used to register
-      the object's properties with <function><link linkend="g-object-class-install-property">g_object_class_install_property</link></function>
+      the object's properties with <function><link linkend="g-object-class-install-properties">g_object_class_install_properties</link></function>
       (implemented in <filename>gobject.c</filename>).
     </para>
   
     <para>
       The best way to understand how object properties work is by looking at a real example
       on how it is used:
-<programlisting>
+<informalexample><programlisting>
 /************************************************/
 /* Implementation                               */
 /************************************************/
 
-enum {
-  MAMAN_BAR_CONSTRUCT_NAME = 1,
-  MAMAN_BAR_PAPA_NUMBER,
+enum
+{
+  PROP_0,
+
+  PROP_MAMAN_NAME,
+  PROP_PAPA_NUMBER,
+
+  N_PROPERTIES
 };
 
-static void
-maman_bar_instance_init (GTypeInstance   *instance,
-                         gpointer         g_class)
-{
-  MamanBar *self = (MamanBar *)instance;
-}
+static GParamSpec *obj_properties[N_PROPERTIES] = { NULL, };
 
 static void
 maman_bar_set_property (GObject      *object,
@@ -546,81 +525,80 @@ maman_bar_set_property (GObject      *object,
                         const GValue *value,
                         GParamSpec   *pspec)
 {
-  MamanBar *self = (MamanBar *) object;
+  MamanBar *self = MAMAN_BAR (object);
 
-  switch (property_id) {
-  case MAMAN_BAR_CONSTRUCT_NAME: {
-    g_free (self->priv->name);
-    self->priv->name = g_value_dup_string (value);
-    g_print ("maman: %s\n",self->priv->name);
-  }
-    break;
-  case MAMAN_BAR_PAPA_NUMBER: {
-    self->priv->papa_number = g_value_get_uchar (value);
-    g_print ("papa: %u\n",self->priv->papa_number);
-  }
-    break;
-  default:
-    /* We don't have any other property... */
-    G_OBJECT_WARN_INVALID_PROPERTY_ID(object,property_id,pspec);
-    break;
-  }
+  switch (property_id)
+    {
+    case PROP_MAMAN_NAME:
+      g_free (self-&gt;priv-&gt;name);
+      self-&gt;priv-&gt;name = g_value_dup_string (value);
+      g_print ("maman: %s\n", self-&gt;priv-&gt;name);
+      break;
+
+    case PROP_PAPA_NUMBER:
+      self-&gt;priv-&gt;papa_number = g_value_get_uchar (value);
+      g_print ("papa: &percnt;u\n", self-&gt;priv-&gt;papa_number);
+      break;
+
+    default:
+      /* We don't have any other property... */
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+      break;
+    }
 }
 
 static void
-maman_bar_get_property (GObject      *object,
-                        guint         property_id,
-                        GValue       *value,
-                        GParamSpec   *pspec)
+maman_bar_get_property (GObject    *object,
+                        guint       property_id,
+                        GValue     *value,
+                        GParamSpec *pspec)
 {
-  MamanBar *self = (MamanBar *) object;
+  MamanBar *self = MAMAN_BAR (object);
 
-  switch (property_id) {
-  case MAMAN_BAR_CONSTRUCT_NAME: {
-    g_value_set_string (value, self->priv->name);
-  }
-    break;
-  case MAMAN_BAR_PAPA_NUMBER: {
-    g_value_set_uchar (value, self->priv->papa_number);
-  }
-    break;
-  default:
-    /* We don't have any other property... */
-    G_OBJECT_WARN_INVALID_PROPERTY_ID(object,property_id,pspec);
-    break;
-  }
+  switch (property_id)
+    {
+    case PROP_MAMAN_NAME:
+      g_value_set_string (value, self-&gt;priv-&gt;name);
+      break;
+
+    case PROP_PAPA_NUMBER:
+      g_value_set_uchar (value, self-&gt;priv-&gt;papa_number);
+      break;
+
+    default:
+      /* We don't have any other property... */
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+      break;
+    }
 }
 
 static void
-maman_bar_class_init (gpointer g_class,
-                      gpointer g_class_data)
+maman_bar_class_init (MamanBarClass *klass)
 {
-  GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
-  MamanBarClass *klass = MAMAN_BAR_CLASS (g_class);
-  GParamSpec *pspec;
+  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
-  gobject_class->set_property = maman_bar_set_property;
-  gobject_class->get_property = maman_bar_get_property;
+  gobject_class-&gt;set_property = maman_bar_set_property;
+  gobject_class-&gt;get_property = maman_bar_get_property;
 
-  pspec = g_param_spec_string ("maman-name",
-                               "Maman construct prop",
-                               "Set maman's name",
-                               "no-name-set" /* default value */,
-                               G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
-  g_object_class_install_property (gobject_class,
-                                   MAMAN_BAR_CONSTRUCT_NAME,
-                                   pspec);
+  obj_properties[PROP_NAME] =
+    g_param_spec_string ("maman-name",
+                         "Maman construct prop",
+                         "Set maman's name",
+                         "no-name-set" /* default value */,
+                         G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
 
-  pspec = g_param_spec_uchar ("papa-number",
-                              "Number of current Papa",
-                              "Set/Get papa's number",
-                              0  /* minimum value */,
-                              10 /* maximum value */,
-                              2  /* default value */,
-                              G_PARAM_READWRITE);
-  g_object_class_install_property (gobject_class,
-                                   MAMAN_BAR_PAPA_NUMBER,
-                                   pspec);
+  obj_properties[PROP_NUMBER] =
+    g_param_spec_uchar ("papa-number",
+                        "Number of current Papa",
+                        "Set/Get papa's number",
+                        0  /* minimum value */,
+                        10 /* maximum value */,
+                        2  /* default value */,
+                        G_PARAM_READWRITE);
+
+  g_object_class_install_properties (gobject_class,
+                                     N_PROPERTIES,
+                                     obj_properties);
 }
 
 /************************************************/
@@ -628,22 +606,26 @@ maman_bar_class_init (gpointer g_class,
 /************************************************/
 
 GObject *bar;
-GValue val = {0,};
+GValue val = G_VALUE_INIT;
+
 bar = g_object_new (MAMAN_TYPE_SUBBAR, NULL);
+
 g_value_init (&amp;val, G_TYPE_CHAR);
 g_value_set_char (&amp;val, 11);
+
 g_object_set_property (G_OBJECT (bar), "papa-number", &amp;val);
-</programlisting>
+
+g_value_unset (&amp;val);
+</programlisting></informalexample>
       The client code just above looks simple but a lot of things happen under the hood:
     </para>
   
     <para>
       <function><link linkend="g-object-set-property">g_object_set_property</link></function> first ensures a property
-      with this name was registered in bar's class_init handler. If so, it calls
-      <function><link linkend="object-set-property">object_set_property</link></function> which first walks the class hierarchy,
+      with this name was registered in bar's class_init handler. If so it walks the class hierarchy,
       from bottom, most derived type, to top, fundamental type to find the class
       which registered that property. It then tries to convert the user-provided GValue
-      into a GValue whose type if that of the associated property.
+      into a GValue whose type is that of the associated property.
     </para>
   
     <para>
@@ -661,13 +643,14 @@ g_object_set_property (G_OBJECT (bar), "papa-number", &amp;val);
     </para>
   
     <para>
-      After transformation, the <type><link linkend="GValue">GValue</link></type> is validated by 
+      After transformation, the <link linkend="GValue"><type>GValue</type></link> is validated by 
       <function><link linkend="g-param-value-validate">g_param_value_validate</link></function> which makes sure the user's
-      data stored in the <type><link linkend="GValue">GValue</link></type> matches the characteristics specified by
-      the property's <type><link linkend="GParamSpec">GParamSpec</link></type>.  Here, the <type><link linkend="GParamSpec">GParamSpec</link></type> we 
+      data stored in the <link linkend="GValue"><type>GValue</type></link> matches the characteristics specified by
+      the property's <link linkend="GParamSpec"><type>GParamSpec</type></link>.
+      Here, the <link linkend="GParamSpec"><type>GParamSpec</type></link> we 
       provided in class_init has a validation function which makes sure that the GValue
       contains a value which respects the minimum and maximum bounds of the 
-      <type><link linkend="GParamSpec">GParamSpec</link></type>. In the example above, the client's GValue does not
+      <link linkend="GParamSpec"><type>GParamSpec</type></link>. In the example above, the client's GValue does not
       respect these constraints (it is set to 11, while the maximum is 10). As such, the
       <function><link linkend="g-object-set-property">g_object_set_property</link></function> function will return with an error.
     </para>
@@ -677,11 +660,11 @@ g_object_set_property (G_OBJECT (bar), "papa-number", &amp;val);
       would have proceeded with calling the object's set_property class method. Here, since our
       implementation of Foo did override this method, the code path would jump to
       <function>foo_set_property</function> after having retrieved from the 
-      <type><link linkend="GParamSpec">GParamSpec</link></type> the <emphasis>param_id</emphasis>
+      <link linkend="GParamSpec"><type>GParamSpec</type></link> the <emphasis>param_id</emphasis>
       <footnote>
         <para>
           It should be noted that the param_id used here need only to uniquely identify each 
-          <type><link linkend="GParamSpec">GParamSpec</link></type> within the <type><link linkend="FooClass">FooClass</link></type> such that the switch
+          <link linkend="GParamSpec"><type>GParamSpec</type></link> within the <type>FooClass</type> such that the switch
           used in the set and get methods actually works. Of course, this locally-unique 
           integer is purely an optimization: it would have been possible to use a set of 
           <emphasis>if (strcmp (a, b) == 0) {} else if (strcmp (a, b) == 0) {}</emphasis> statements.
@@ -693,8 +676,7 @@ g_object_set_property (G_OBJECT (bar), "papa-number", &amp;val);
   
     <para>
       Once the property has been set by the object's set_property class method, the code path
-      returns to <function><link linkend="g-object-set-property">g_object_set_property</link></function> which calls 
-      <function><link linkend="g-object-notify-queue-thaw">g_object_notify_queue_thaw</link></function>. This function makes sure that
+      returns to <function><link linkend="g-object-set-property">g_object_set_property</link></function> which makes sure that
       the "notify" signal is emitted on the object's instance with the changed property as
       parameter unless notifications were frozen by <function><link linkend="g-object-freeze-notify">g_object_freeze_notify</link></function>.
     </para>
@@ -745,7 +727,7 @@ g_object_set (G_OBJECT (foo),
       <para>
         These high level functions have one drawback - they don't provide a return result.
         One should pay attention to the argument types and ranges when using them.
-        A know source of errors is to e.g. pass a gfloat instead of a gdouble and thus
+        A known source of errors is to e.g. pass a gfloat instead of a gdouble and thus
         shifting all subsequent parameters by four bytes. Also forgetting the terminating
         NULL will lead to unexpected behaviour.
       </para>
@@ -765,7 +747,3 @@ g_object_set (G_OBJECT (foo),
   </sect1>
 
 </chapter>
-
-
-
-

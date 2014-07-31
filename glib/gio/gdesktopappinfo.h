@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
@@ -43,14 +41,62 @@ struct _GDesktopAppInfoClass
 };
 
 
-GType g_desktop_app_info_get_type (void) G_GNUC_CONST;
-  
+GLIB_AVAILABLE_IN_ALL
+GType            g_desktop_app_info_get_type          (void) G_GNUC_CONST;
+
+GLIB_AVAILABLE_IN_ALL
 GDesktopAppInfo *g_desktop_app_info_new_from_filename (const char      *filename);
+GLIB_AVAILABLE_IN_ALL
+GDesktopAppInfo *g_desktop_app_info_new_from_keyfile  (GKeyFile        *key_file);
+
+GLIB_AVAILABLE_IN_ALL
+const char *     g_desktop_app_info_get_filename      (GDesktopAppInfo *info);
+
+GLIB_AVAILABLE_IN_2_30
+const char *     g_desktop_app_info_get_generic_name  (GDesktopAppInfo *info);
+GLIB_AVAILABLE_IN_2_30
+const char *     g_desktop_app_info_get_categories    (GDesktopAppInfo *info);
+GLIB_AVAILABLE_IN_2_30
+const char * const *g_desktop_app_info_get_keywords   (GDesktopAppInfo *info);
+GLIB_AVAILABLE_IN_2_30
+gboolean         g_desktop_app_info_get_nodisplay     (GDesktopAppInfo *info);
+GLIB_AVAILABLE_IN_2_30
+gboolean         g_desktop_app_info_get_show_in       (GDesktopAppInfo *info,
+                                                       const gchar     *desktop_env);
+GLIB_AVAILABLE_IN_2_34
+const char *     g_desktop_app_info_get_startup_wm_class (GDesktopAppInfo *info);
+
+GLIB_AVAILABLE_IN_ALL
 GDesktopAppInfo *g_desktop_app_info_new               (const char      *desktop_id);
+GLIB_AVAILABLE_IN_ALL
 gboolean         g_desktop_app_info_get_is_hidden     (GDesktopAppInfo *info);
 
-void             g_desktop_app_info_set_desktop_env   (const char *desktop_env);
+GLIB_DEPRECATED_IN_2_42
+void             g_desktop_app_info_set_desktop_env   (const char      *desktop_env);
 
+GLIB_AVAILABLE_IN_2_36
+gboolean         g_desktop_app_info_has_key           (GDesktopAppInfo *info,
+                                                       const char      *key);
+GLIB_AVAILABLE_IN_2_36
+char *           g_desktop_app_info_get_string        (GDesktopAppInfo *info,
+                                                       const char      *key);
+GLIB_AVAILABLE_IN_2_36
+gboolean         g_desktop_app_info_get_boolean       (GDesktopAppInfo *info,
+                                                       const char      *key);
+
+GLIB_AVAILABLE_IN_2_38
+const gchar * const *   g_desktop_app_info_list_actions                 (GDesktopAppInfo   *info);
+
+GLIB_AVAILABLE_IN_2_38
+void                    g_desktop_app_info_launch_action                (GDesktopAppInfo   *info,
+                                                                         const gchar       *action_name,
+                                                                         GAppLaunchContext *launch_context);
+
+GLIB_AVAILABLE_IN_2_38
+gchar *                 g_desktop_app_info_get_action_name              (GDesktopAppInfo   *info,
+                                                                         const gchar       *action_name);
+
+#ifndef G_DISABLE_DEPRECATED
 
 #define G_TYPE_DESKTOP_APP_INFO_LOOKUP           (g_desktop_app_info_lookup_get_type ())
 #define G_DESKTOP_APP_INFO_LOOKUP(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), G_TYPE_DESKTOP_APP_INFO_LOOKUP, GDesktopAppInfoLookup))
@@ -61,14 +107,16 @@ void             g_desktop_app_info_set_desktop_env   (const char *desktop_env);
  * G_DESKTOP_APP_INFO_LOOKUP_EXTENSION_POINT_NAME:
  *
  * Extension point for default handler to URI association. See
- * <link linkend="gio-extension-points">Extending GIO</link>.
+ * [Extending GIO][extending-gio].
  */
 #define G_DESKTOP_APP_INFO_LOOKUP_EXTENSION_POINT_NAME "gio-desktop-app-info-lookup"
+
+#endif /* G_DISABLE_DEPRECATED */
 
 /**
  * GDesktopAppInfoLookup:
  *
- * Interface that is used by backends to associate default 
+ * Interface that is used by backends to associate default
  * handlers with URI schemes.
  */
 typedef struct _GDesktopAppInfoLookup GDesktopAppInfoLookup;
@@ -78,15 +126,48 @@ struct _GDesktopAppInfoLookupIface
 {
   GTypeInterface g_iface;
 
-  GAppInfo * (*get_default_for_uri_scheme) (GDesktopAppInfoLookup *lookup,
-					    const char  *uri_scheme);
+  GAppInfo * (* get_default_for_uri_scheme) (GDesktopAppInfoLookup *lookup,
+                                             const char            *uri_scheme);
 };
 
-GType     g_desktop_app_info_lookup_get_type (void) G_GNUC_CONST;
+GLIB_DEPRECATED
+GType     g_desktop_app_info_lookup_get_type                   (void) G_GNUC_CONST;
+
+GLIB_DEPRECATED
 GAppInfo *g_desktop_app_info_lookup_get_default_for_uri_scheme (GDesktopAppInfoLookup *lookup,
-								const char  *uri_scheme);
+                                                                const char            *uri_scheme);
+
+/**
+ * GDesktopAppLaunchCallback:
+ * @appinfo: a #GDesktopAppInfo
+ * @pid: Process identifier
+ * @user_data: User data
+ *
+ * During invocation, g_desktop_app_info_launch_uris_as_manager() may
+ * create one or more child processes.  This callback is invoked once
+ * for each, providing the process ID.
+ */
+typedef void (*GDesktopAppLaunchCallback) (GDesktopAppInfo  *appinfo,
+					   GPid              pid,
+					   gpointer          user_data);
+
+GLIB_AVAILABLE_IN_2_28
+gboolean    g_desktop_app_info_launch_uris_as_manager (GDesktopAppInfo            *appinfo,
+						       GList                      *uris,
+						       GAppLaunchContext          *launch_context,
+						       GSpawnFlags                 spawn_flags,
+						       GSpawnChildSetupFunc        user_setup,
+						       gpointer                    user_setup_data,
+						       GDesktopAppLaunchCallback   pid_callback,
+						       gpointer                    pid_callback_data,
+						       GError                    **error);
+
+GLIB_AVAILABLE_IN_2_40
+gchar *** g_desktop_app_info_search (const gchar *search_string);
+
+GLIB_AVAILABLE_IN_2_42
+GList *g_desktop_app_info_get_implementations (const gchar *interface);
 
 G_END_DECLS
-
 
 #endif /* __G_DESKTOP_APP_INFO_H__ */

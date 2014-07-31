@@ -17,6 +17,11 @@ below.
 Owen Taylor
 26 September 2001
 
+Updated to libiconv-1.12.
+
+Behdad Esfahbod
+20 May 2008
+
 ====
 
 /* Determine a canonical name for the current locale's character encoding.
@@ -34,8 +39,6 @@ Owen Taylor
    Library General Public License for more details.
 
    You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-   USA.  */
+   License along with this program; if not, see <http://www.gnu.org/licenses/>.  */
 
 /* Written by Bruno Haible <haible@clisp.cons.org>.  */

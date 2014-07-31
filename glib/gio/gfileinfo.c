@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
@@ -24,43 +22,44 @@
  * SECTION:gfileinfo
  * @short_description: File Information and Attributes
  * @include: gio/gio.h
- * @see_also: #GFile, <link linkend="gio-GFileAttribute">GFileAttribute</link>
- * 
+ * @see_also: #GFile, [GFileAttribute][gio-GFileAttribute]
+ *
  * Functionality for manipulating basic metadata for files. #GFileInfo
- * implements methods for getting information that all files should 
- * contain, and allows for manipulation of extended attributes. 
+ * implements methods for getting information that all files should
+ * contain, and allows for manipulation of extended attributes.
  *
- * See <link linkend="gio-GFileAttribute">GFileAttribute</link> for more
- * information on how GIO handles file attributes.
+ * See [GFileAttribute][gio-GFileAttribute for more information on how
+ * GIO handles file attributes.
  *
- * To obtain a #GFileInfo for a #GFile, use g_file_query_info() (or its 
- * async variant). To obtain a #GFileInfo for a file input or output 
- * stream, use g_file_input_stream_query_info() or 
+ * To obtain a #GFileInfo for a #GFile, use g_file_query_info() (or its
+ * async variant). To obtain a #GFileInfo for a file input or output
+ * stream, use g_file_input_stream_query_info() or
  * g_file_output_stream_query_info() (or their async variants).
  *
- * To change the actual attributes of a file, you should then set the 
- * attribute in the #GFileInfo and call g_file_set_attributes_from_info() 
+ * To change the actual attributes of a file, you should then set the
+ * attribute in the #GFileInfo and call g_file_set_attributes_from_info()
  * or g_file_set_attributes_async() on a GFile.
  *
- * However, not all attributes can be changed in the file. For instance, 
- * the actual size of a file cannot be changed via g_file_info_set_size(). 
- * You may call g_file_query_settable_attributes() and 
- * g_file_query_writable_namespaces() to discover the settable attributes 
+ * However, not all attributes can be changed in the file. For instance,
+ * the actual size of a file cannot be changed via g_file_info_set_size().
+ * You may call g_file_query_settable_attributes() and
+ * g_file_query_writable_namespaces() to discover the settable attributes
  * of a particular file at runtime.
  *
- * #GFileAttributeMatcher allows for searching through a #GFileInfo for 
+ * #GFileAttributeMatcher allows for searching through a #GFileInfo for
  * attributes.
  **/
 
-#include <config.h>
+#include "config.h"
 
 #include <string.h>
 
 #include "gfileinfo.h"
+#include "gfileinfo-priv.h"
 #include "gfileattribute-priv.h"
+#include "gicon.h"
 #include "glibintl.h"
 
-#include "gioalias.h"
 
 /* We use this nasty thing, because NULL is a valid attribute matcher (matches nothing) */
 #define NO_ATTRIBUTE_MASK ((GFileAttributeMatcher *)1)
@@ -84,9 +83,6 @@ struct _GFileInfoClass
 };
 
 
-static gboolean g_file_attribute_matcher_matches_id (GFileAttributeMatcher *matcher,
-						     guint32 id);
-
 G_DEFINE_TYPE (GFileInfo, g_file_info, G_TYPE_OBJECT);
 
 typedef struct {
@@ -102,8 +98,8 @@ static char ***attributes = NULL;
 
 /* Attribute ids are 32bit, we split it up like this:
  * |------------|--------------------|
- *   12 bit          20 bit       
- *   namespace      attribute id    
+ *   12 bit          20 bit
+ *   namespace      attribute id
  *
  * This way the attributes gets sorted in namespace order
  */
@@ -126,7 +122,7 @@ static NSInfo *
 _lookup_namespace (const char *namespace)
 {
   NSInfo *ns_info;
-  
+
   ns_info = g_hash_table_lookup (ns_hash, namespace);
   if (ns_info == NULL)
     {
@@ -134,9 +130,139 @@ _lookup_namespace (const char *namespace)
       ns_info->id = ++namespace_id_counter;
       g_hash_table_insert (ns_hash, g_strdup (namespace), ns_info);
       attributes = g_realloc (attributes, (ns_info->id + 1) * sizeof (char **));
-      attributes[ns_info->id] = NULL;
+      attributes[ns_info->id] = g_new (char *, 1);
+      attributes[ns_info->id][0] = g_strconcat (namespace, "::*", NULL);
     }
   return ns_info;
+}
+
+static guint32
+_lookup_attribute (const char *attribute)
+{
+  guint32 attr_id, id;
+  char *ns;
+  const char *colon;
+  NSInfo *ns_info;
+
+  attr_id = GPOINTER_TO_UINT (g_hash_table_lookup (attribute_hash, attribute));
+
+  if (attr_id != 0)
+    return attr_id;
+
+  colon = strstr (attribute, "::");
+  if (colon)
+    ns = g_strndup (attribute, colon - attribute);
+  else
+    ns = g_strdup ("");
+
+  ns_info = _lookup_namespace (ns);
+  g_free (ns);
+
+  id = ++ns_info->attribute_id_counter;
+  attributes[ns_info->id] = g_realloc (attributes[ns_info->id], (id + 1) * sizeof (char *));
+  attributes[ns_info->id][id] = g_strdup (attribute);
+
+  attr_id = MAKE_ATTR_ID (ns_info->id, id);
+
+  g_hash_table_insert (attribute_hash, attributes[ns_info->id][id], GUINT_TO_POINTER (attr_id));
+
+  return attr_id;
+}
+
+static void
+ensure_attribute_hash (void)
+{
+  if (attribute_hash != NULL)
+    return;
+
+  ns_hash = g_hash_table_new (g_str_hash, g_str_equal);
+  attribute_hash = g_hash_table_new (g_str_hash, g_str_equal);
+
+#define REGISTER_ATTRIBUTE(name) G_STMT_START{\
+  guint _u = _lookup_attribute (G_FILE_ATTRIBUTE_ ## name); \
+  /* use for generating the ID: g_print ("#define G_FILE_ATTRIBUTE_ID_%s (%u + %u)\n", #name + 17, _u & ~ID_MASK, _u & ID_MASK); */ \
+  g_assert (_u == G_FILE_ATTRIBUTE_ID_ ## name); \
+}G_STMT_END
+
+  REGISTER_ATTRIBUTE (STANDARD_TYPE);
+  REGISTER_ATTRIBUTE (STANDARD_IS_HIDDEN);
+  REGISTER_ATTRIBUTE (STANDARD_IS_BACKUP);
+  REGISTER_ATTRIBUTE (STANDARD_IS_SYMLINK);
+  REGISTER_ATTRIBUTE (STANDARD_IS_VIRTUAL);
+  REGISTER_ATTRIBUTE (STANDARD_NAME);
+  REGISTER_ATTRIBUTE (STANDARD_DISPLAY_NAME);
+  REGISTER_ATTRIBUTE (STANDARD_EDIT_NAME);
+  REGISTER_ATTRIBUTE (STANDARD_COPY_NAME);
+  REGISTER_ATTRIBUTE (STANDARD_DESCRIPTION);
+  REGISTER_ATTRIBUTE (STANDARD_ICON);
+  REGISTER_ATTRIBUTE (STANDARD_CONTENT_TYPE);
+  REGISTER_ATTRIBUTE (STANDARD_FAST_CONTENT_TYPE);
+  REGISTER_ATTRIBUTE (STANDARD_SIZE);
+  REGISTER_ATTRIBUTE (STANDARD_ALLOCATED_SIZE);
+  REGISTER_ATTRIBUTE (STANDARD_SYMLINK_TARGET);
+  REGISTER_ATTRIBUTE (STANDARD_TARGET_URI);
+  REGISTER_ATTRIBUTE (STANDARD_SORT_ORDER);
+  REGISTER_ATTRIBUTE (STANDARD_SYMBOLIC_ICON);
+  REGISTER_ATTRIBUTE (ETAG_VALUE);
+  REGISTER_ATTRIBUTE (ID_FILE);
+  REGISTER_ATTRIBUTE (ID_FILESYSTEM);
+  REGISTER_ATTRIBUTE (ACCESS_CAN_READ);
+  REGISTER_ATTRIBUTE (ACCESS_CAN_WRITE);
+  REGISTER_ATTRIBUTE (ACCESS_CAN_EXECUTE);
+  REGISTER_ATTRIBUTE (ACCESS_CAN_DELETE);
+  REGISTER_ATTRIBUTE (ACCESS_CAN_TRASH);
+  REGISTER_ATTRIBUTE (ACCESS_CAN_RENAME);
+  REGISTER_ATTRIBUTE (MOUNTABLE_CAN_MOUNT);
+  REGISTER_ATTRIBUTE (MOUNTABLE_CAN_UNMOUNT);
+  REGISTER_ATTRIBUTE (MOUNTABLE_CAN_EJECT);
+  REGISTER_ATTRIBUTE (MOUNTABLE_UNIX_DEVICE);
+  REGISTER_ATTRIBUTE (MOUNTABLE_UNIX_DEVICE_FILE);
+  REGISTER_ATTRIBUTE (MOUNTABLE_HAL_UDI);
+  REGISTER_ATTRIBUTE (MOUNTABLE_CAN_START);
+  REGISTER_ATTRIBUTE (MOUNTABLE_CAN_START_DEGRADED);
+  REGISTER_ATTRIBUTE (MOUNTABLE_CAN_STOP);
+  REGISTER_ATTRIBUTE (MOUNTABLE_START_STOP_TYPE);
+  REGISTER_ATTRIBUTE (MOUNTABLE_CAN_POLL);
+  REGISTER_ATTRIBUTE (MOUNTABLE_IS_MEDIA_CHECK_AUTOMATIC);
+  REGISTER_ATTRIBUTE (TIME_MODIFIED);
+  REGISTER_ATTRIBUTE (TIME_MODIFIED_USEC);
+  REGISTER_ATTRIBUTE (TIME_ACCESS);
+  REGISTER_ATTRIBUTE (TIME_ACCESS_USEC);
+  REGISTER_ATTRIBUTE (TIME_CHANGED);
+  REGISTER_ATTRIBUTE (TIME_CHANGED_USEC);
+  REGISTER_ATTRIBUTE (TIME_CREATED);
+  REGISTER_ATTRIBUTE (TIME_CREATED_USEC);
+  REGISTER_ATTRIBUTE (UNIX_DEVICE);
+  REGISTER_ATTRIBUTE (UNIX_INODE);
+  REGISTER_ATTRIBUTE (UNIX_MODE);
+  REGISTER_ATTRIBUTE (UNIX_NLINK);
+  REGISTER_ATTRIBUTE (UNIX_UID);
+  REGISTER_ATTRIBUTE (UNIX_GID);
+  REGISTER_ATTRIBUTE (UNIX_RDEV);
+  REGISTER_ATTRIBUTE (UNIX_BLOCK_SIZE);
+  REGISTER_ATTRIBUTE (UNIX_BLOCKS);
+  REGISTER_ATTRIBUTE (UNIX_IS_MOUNTPOINT);
+  REGISTER_ATTRIBUTE (DOS_IS_ARCHIVE);
+  REGISTER_ATTRIBUTE (DOS_IS_SYSTEM);
+  REGISTER_ATTRIBUTE (OWNER_USER);
+  REGISTER_ATTRIBUTE (OWNER_USER_REAL);
+  REGISTER_ATTRIBUTE (OWNER_GROUP);
+  REGISTER_ATTRIBUTE (THUMBNAIL_PATH);
+  REGISTER_ATTRIBUTE (THUMBNAILING_FAILED);
+  REGISTER_ATTRIBUTE (THUMBNAIL_IS_VALID);
+  REGISTER_ATTRIBUTE (PREVIEW_ICON);
+  REGISTER_ATTRIBUTE (FILESYSTEM_SIZE);
+  REGISTER_ATTRIBUTE (FILESYSTEM_FREE);
+  REGISTER_ATTRIBUTE (FILESYSTEM_TYPE);
+  REGISTER_ATTRIBUTE (FILESYSTEM_READONLY);
+  REGISTER_ATTRIBUTE (FILESYSTEM_USE_PREVIEW);
+  REGISTER_ATTRIBUTE (GVFS_BACKEND);
+  REGISTER_ATTRIBUTE (SELINUX_CONTEXT);
+  REGISTER_ATTRIBUTE (TRASH_ITEM_COUNT);
+  REGISTER_ATTRIBUTE (TRASH_ORIG_PATH);
+  REGISTER_ATTRIBUTE (TRASH_DELETION_DATE);
+
+#undef REGISTER_ATTRIBUTE
 }
 
 static guint32
@@ -144,20 +270,16 @@ lookup_namespace (const char *namespace)
 {
   NSInfo *ns_info;
   guint32 id;
-  
+
   G_LOCK (attribute_hash);
-  
-  if (attribute_hash == NULL)
-    {
-      ns_hash = g_hash_table_new (g_str_hash, g_str_equal);
-      attribute_hash = g_hash_table_new (g_str_hash, g_str_equal);
-    }
+
+  ensure_attribute_hash ();
 
   ns_info = _lookup_namespace (namespace);
   id = 0;
   if (ns_info)
     id = ns_info->id;
-  
+
   G_UNLOCK (attribute_hash);
 
   return id;
@@ -176,45 +298,15 @@ get_attribute_for_id (int attribute)
 static guint32
 lookup_attribute (const char *attribute)
 {
-  guint32 attr_id, id;
-  char *ns;
-  const char *colon;
-  NSInfo *ns_info;
-  
+  guint32 attr_id;
+
   G_LOCK (attribute_hash);
-  if (attribute_hash == NULL)
-    {
-      ns_hash = g_hash_table_new (g_str_hash, g_str_equal);
-      attribute_hash = g_hash_table_new (g_str_hash, g_str_equal);
-    }
+  ensure_attribute_hash ();
 
-  attr_id = GPOINTER_TO_UINT (g_hash_table_lookup (attribute_hash, attribute));
+  attr_id = _lookup_attribute (attribute);
 
-  if (attr_id != 0)
-    {
-      G_UNLOCK (attribute_hash);
-      return attr_id;
-    }
-
-  colon = strstr (attribute, "::");
-  if (colon)
-    ns = g_strndup (attribute, colon - attribute);
-  else
-    ns = g_strdup ("");
-
-  ns_info = _lookup_namespace (ns);
-  g_free (ns);
-
-  id = ++ns_info->attribute_id_counter;
-  attributes[ns_info->id] = g_realloc (attributes[ns_info->id], (id + 1) * sizeof (char *));
-  attributes[ns_info->id][id] = g_strdup (attribute);
-  
-  attr_id = MAKE_ATTR_ID (ns_info->id, id);
-
-  g_hash_table_insert (attribute_hash, attributes[ns_info->id][id], GUINT_TO_POINTER (attr_id));
-  
   G_UNLOCK (attribute_hash);
-  
+
   return attr_id;
 }
 
@@ -230,20 +322,19 @@ g_file_info_finalize (GObject *object)
   attrs = (GFileAttribute *)info->attributes->data;
   for (i = 0; i < info->attributes->len; i++)
     _g_file_attribute_value_clear (&attrs[i].value);
-  g_array_free (info->attributes, TRUE);  
+  g_array_free (info->attributes, TRUE);
 
   if (info->mask != NO_ATTRIBUTE_MASK)
     g_file_attribute_matcher_unref (info->mask);
-  
-  if (G_OBJECT_CLASS (g_file_info_parent_class)->finalize)
-    (*G_OBJECT_CLASS (g_file_info_parent_class)->finalize) (object);
+
+  G_OBJECT_CLASS (g_file_info_parent_class)->finalize (object);
 }
 
 static void
 g_file_info_class_init (GFileInfoClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-  
+
   gobject_class->finalize = g_file_info_finalize;
 }
 
@@ -257,9 +348,9 @@ g_file_info_init (GFileInfo *info)
 
 /**
  * g_file_info_new:
- * 
+ *
  * Creates a new file info structure.
- * 
+ *
  * Returns: a #GFileInfo.
  **/
 GFileInfo *
@@ -272,11 +363,12 @@ g_file_info_new (void)
  * g_file_info_copy_into:
  * @src_info: source to copy attributes from.
  * @dest_info: destination to copy attributes to.
- * 
- * Copies all of the #GFileAttribute<!-- -->s from @src_info to @dest_info.
+ *
+ * Copies all of the [GFileAttribute][gio-GFileAttribute]
+ * from @src_info to @dest_info.
  **/
 void
-g_file_info_copy_into (GFileInfo *src_info, 
+g_file_info_copy_into (GFileInfo *src_info,
                        GFileInfo *dest_info)
 {
   GFileAttribute *source, *dest;
@@ -288,19 +380,22 @@ g_file_info_copy_into (GFileInfo *src_info,
   dest = (GFileAttribute *)dest_info->attributes->data;
   for (i = 0; i < dest_info->attributes->len; i++)
     _g_file_attribute_value_clear (&dest[i].value);
-  
+
   g_array_set_size (dest_info->attributes,
 		    src_info->attributes->len);
 
   source = (GFileAttribute *)src_info->attributes->data;
   dest = (GFileAttribute *)dest_info->attributes->data;
-  
+
   for (i = 0; i < src_info->attributes->len; i++)
     {
       dest[i].attribute = source[i].attribute;
       dest[i].value.type = G_FILE_ATTRIBUTE_TYPE_INVALID;
       _g_file_attribute_value_set (&dest[i].value, &source[i].value);
     }
+
+  if (dest_info->mask != NO_ATTRIBUTE_MASK)
+    g_file_attribute_matcher_unref (dest_info->mask);
 
   if (src_info->mask == NO_ATTRIBUTE_MASK)
     dest_info->mask = NO_ATTRIBUTE_MASK;
@@ -311,18 +406,18 @@ g_file_info_copy_into (GFileInfo *src_info,
 /**
  * g_file_info_dup:
  * @other: a #GFileInfo.
- * 
+ *
  * Duplicates a file info structure.
- * 
- * Returns: a duplicate #GFileInfo of @other.
+ *
+ * Returns: (transfer full): a duplicate #GFileInfo of @other.
  **/
 GFileInfo *
 g_file_info_dup (GFileInfo *other)
 {
   GFileInfo *new;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (other), NULL);
-  
+
   new = g_file_info_new ();
   g_file_info_copy_into (other, new);
   return new;
@@ -341,9 +436,9 @@ g_file_info_set_attribute_mask (GFileInfo             *info,
 {
   GFileAttribute *attr;
   int i;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
-  
+
   if (mask != info->mask)
     {
       if (info->mask != NO_ATTRIBUTE_MASK)
@@ -354,7 +449,7 @@ g_file_info_set_attribute_mask (GFileInfo             *info,
       for (i = 0; i < info->attributes->len; i++)
 	{
 	  attr = &g_array_index (info->attributes, GFileAttribute, i);
-	  if (!g_file_attribute_matcher_matches_id (mask,
+	  if (!_g_file_attribute_matcher_matches_id (mask,
 						    attr->attribute))
 	    {
 	      _g_file_attribute_value_clear (&attr->value);
@@ -368,7 +463,7 @@ g_file_info_set_attribute_mask (GFileInfo             *info,
 /**
  * g_file_info_unset_attribute_mask:
  * @info: #GFileInfo.
- * 
+ *
  * Unsets a mask set by g_file_info_set_attribute_mask(), if one
  * is set.
  **/
@@ -393,7 +488,7 @@ g_file_info_clear_status (GFileInfo  *info)
 {
   GFileAttribute *attrs;
   int i;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
 
   attrs = (GFileAttribute *)info->attributes->data;
@@ -407,7 +502,7 @@ g_file_info_find_place (GFileInfo  *info,
 {
   int min, max, med;
   GFileAttribute *attrs;
-  /* Binary search for the place where attribute would be, if its
+  /* Binary search for the place where attribute would be, if it's
      in the array */
 
   min = 0;
@@ -444,7 +539,7 @@ g_file_info_find_value (GFileInfo *info,
   if (i < info->attributes->len &&
       attrs[i].attribute == attr_id)
     return &attrs[i].value;
-  
+
   return NULL;
 }
 
@@ -462,10 +557,10 @@ g_file_info_find_value_by_name (GFileInfo  *info,
  * g_file_info_has_attribute:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * 
+ *
  * Checks if a file info structure has an attribute named @attribute.
- * 
- * Returns: %TRUE if @Ginfo has an attribute named @attribute, 
+ *
+ * Returns: %TRUE if @Ginfo has an attribute named @attribute,
  *     %FALSE otherwise.
  **/
 gboolean
@@ -482,15 +577,51 @@ g_file_info_has_attribute (GFileInfo  *info,
 }
 
 /**
+ * g_file_info_has_namespace:
+ * @info: a #GFileInfo.
+ * @name_space: a file attribute namespace.
+ *
+ * Checks if a file info structure has an attribute in the
+ * specified @name_space.
+ *
+ * Returns: %TRUE if @Ginfo has an attribute in @name_space,
+ *     %FALSE otherwise.
+ *
+ * Since: 2.22
+ **/
+gboolean
+g_file_info_has_namespace (GFileInfo  *info,
+			   const char *name_space)
+{
+  GFileAttribute *attrs;
+  guint32 ns_id;
+  int i;
+
+  g_return_val_if_fail (G_IS_FILE_INFO (info), FALSE);
+  g_return_val_if_fail (name_space != NULL, FALSE);
+
+  ns_id = lookup_namespace (name_space);
+
+  attrs = (GFileAttribute *)info->attributes->data;
+  for (i = 0; i < info->attributes->len; i++)
+    {
+      if (GET_NS (attrs[i].attribute) == ns_id)
+	return TRUE;
+    }
+
+  return FALSE;
+}
+
+/**
  * g_file_info_list_attributes:
  * @info: a #GFileInfo.
  * @name_space: a file attribute key's namespace.
- * 
+ *
  * Lists the file info structure's attributes.
- * 
- * Returns: a null-terminated array of strings of all of the 
- * possible attribute types for the given @name_space, or 
- * %NULL on error.
+ *
+ * Returns: (nullable) (array zero-terminated=1) (transfer full): a
+ * null-terminated array of strings of all of the possible attribute
+ * types for the given @name_space, or %NULL on error.
  **/
 char **
 g_file_info_list_attributes (GFileInfo  *info,
@@ -501,7 +632,7 @@ g_file_info_list_attributes (GFileInfo  *info,
   guint32 attribute;
   guint32 ns_id = (name_space) ? lookup_namespace (name_space) : 0;
   int i;
- 
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
 
   names = g_ptr_array_new ();
@@ -515,7 +646,7 @@ g_file_info_list_attributes (GFileInfo  *info,
 
   /* NULL terminate */
   g_ptr_array_add (names, NULL);
-  
+
   return (char **)g_ptr_array_free (names, FALSE);
 }
 
@@ -523,18 +654,18 @@ g_file_info_list_attributes (GFileInfo  *info,
  * g_file_info_get_attribute_type:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * 
+ *
  * Gets the attribute type for an attribute key.
- * 
- * Returns: a #GFileAttributeType for the given @attribute, or 
- * %G_FILE_ATTRIBUTE_TYPE_INVALID if the key is invalid.
+ *
+ * Returns: a #GFileAttributeType for the given @attribute, or
+ * %G_FILE_ATTRIBUTE_TYPE_INVALID if the key is not set.
  **/
 GFileAttributeType
 g_file_info_get_attribute_type (GFileInfo  *info,
 				const char *attribute)
 {
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), G_FILE_ATTRIBUTE_TYPE_INVALID);
   g_return_val_if_fail (attribute != NULL && *attribute != '\0', G_FILE_ATTRIBUTE_TYPE_INVALID);
 
@@ -549,7 +680,7 @@ g_file_info_get_attribute_type (GFileInfo  *info,
  * g_file_info_remove_attribute:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * 
+ *
  * Removes all cases of @attribute from @info if it exists.
  **/
 void
@@ -564,7 +695,7 @@ g_file_info_remove_attribute (GFileInfo  *info,
   g_return_if_fail (attribute != NULL && *attribute != '\0');
 
   attr_id = lookup_attribute (attribute);
-  
+
   i = g_file_info_find_place (info, attr_id);
   attrs = (GFileAttribute *)info->attributes->data;
   if (i < info->attributes->len &&
@@ -579,13 +710,13 @@ g_file_info_remove_attribute (GFileInfo  *info,
  * g_file_info_get_attribute_data:
  * @info: a #GFileInfo
  * @attribute: a file attribute key
- * @type: return location for the attribute type, or %NULL
- * @value_pp: return location for the attribute value, or %NULL
- * @status: return location for the attribute status, or %NULL
+ * @type: (out) (allow-none): return location for the attribute type, or %NULL
+ * @value_pp: (out) (allow-none): return location for the attribute value, or %NULL
+ * @status: (out) (allow-none): return location for the attribute status, or %NULL
  *
  * Gets the attribute type, value and status for an attribute key.
  *
- * Returns: %TRUE if @info has an attribute named @attribute, 
+ * Returns: (transfer none): %TRUE if @info has an attribute named @attribute,
  *      %FALSE otherwise.
  */
 gboolean
@@ -609,18 +740,18 @@ g_file_info_get_attribute_data (GFileInfo            *info,
 
   if (value_pp)
     *value_pp = _g_file_attribute_value_peek_as_pointer (value);
-  
+
   return TRUE;
 }
 
-/** 
+/**
  * g_file_info_get_attribute_status:
  * @info: a #GFileInfo
  * @attribute: a file attribute key
  *
  * Gets the attribute status for an attribute key.
  *
- * Returns: a #GFileAttributeStatus for the given @attribute, or 
+ * Returns: a #GFileAttributeStatus for the given @attribute, or
  *    %G_FILE_ATTRIBUTE_STATUS_UNSET if the key is invalid.
  *
  */
@@ -629,7 +760,7 @@ g_file_info_get_attribute_status (GFileInfo  *info,
 				  const char *attribute)
 {
   GFileAttributeValue *val;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), 0);
   g_return_val_if_fail (attribute != NULL && *attribute != '\0', 0);
 
@@ -640,11 +771,47 @@ g_file_info_get_attribute_status (GFileInfo  *info,
   return G_FILE_ATTRIBUTE_STATUS_UNSET;
 }
 
+/**
+ * g_file_info_set_attribute_status:
+ * @info: a #GFileInfo
+ * @attribute: a file attribute key
+ * @status: a #GFileAttributeStatus
+ *
+ * Sets the attribute status for an attribute key. This is only
+ * needed by external code that implement g_file_set_attributes_from_info()
+ * or similar functions.
+ *
+ * The attribute must exist in @info for this to work. Otherwise %FALSE
+ * is returned and @info is unchanged.
+ *
+ * Returns: %TRUE if the status was changed, %FALSE if the key was not set.
+ *
+ * Since: 2.22
+ */
+gboolean
+g_file_info_set_attribute_status (GFileInfo  *info,
+				  const char *attribute,
+				  GFileAttributeStatus status)
+{
+  GFileAttributeValue *val;
+
+  g_return_val_if_fail (G_IS_FILE_INFO (info), FALSE);
+  g_return_val_if_fail (attribute != NULL && *attribute != '\0', FALSE);
+
+  val = g_file_info_find_value_by_name (info, attribute);
+  if (val)
+    {
+      val->status = status;
+      return TRUE;
+    }
+
+  return FALSE;
+}
 
 GFileAttributeValue *
 _g_file_info_get_attribute_value (GFileInfo  *info,
 				  const char *attribute)
-  
+
 {
   g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
   g_return_val_if_fail (attribute != NULL && *attribute != '\0', NULL);
@@ -656,11 +823,11 @@ _g_file_info_get_attribute_value (GFileInfo  *info,
  * g_file_info_get_attribute_as_string:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * 
+ *
  * Gets the value of a attribute, formated as a string.
  * This escapes things as needed to make the string valid
  * utf8.
- * 
+ *
  * Returns: a UTF-8 string associated with the given @attribute.
  *    When you're done with the string it must be freed with g_free().
  **/
@@ -670,7 +837,7 @@ g_file_info_get_attribute_as_string (GFileInfo  *info,
 {
   GFileAttributeValue *val;
   val = _g_file_info_get_attribute_value (info, attribute);
-  if (val) 
+  if (val)
     return _g_file_attribute_value_as_string (val);
   return NULL;
 }
@@ -680,11 +847,11 @@ g_file_info_get_attribute_as_string (GFileInfo  *info,
  * g_file_info_get_attribute_object:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * 
- * Gets the value of a #GObject attribute. If the attribute does 
+ *
+ * Gets the value of a #GObject attribute. If the attribute does
  * not contain a #GObject, %NULL will be returned.
- * 
- * Returns: a #GObject associated with the given @attribute, or
+ *
+ * Returns: (transfer none): a #GObject associated with the given @attribute, or
  * %NULL otherwise.
  **/
 GObject *
@@ -692,7 +859,7 @@ g_file_info_get_attribute_object (GFileInfo  *info,
 				  const char *attribute)
 {
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
   g_return_val_if_fail (attribute != NULL && *attribute != '\0', NULL);
 
@@ -704,11 +871,11 @@ g_file_info_get_attribute_object (GFileInfo  *info,
  * g_file_info_get_attribute_string:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * 
- * Gets the value of a string attribute. If the attribute does 
+ *
+ * Gets the value of a string attribute. If the attribute does
  * not contain a string, %NULL will be returned.
- * 
- * Returns: the contents of the @attribute value as a string, or 
+ *
+ * Returns: the contents of the @attribute value as a UTF-8 string, or
  * %NULL otherwise.
  **/
 const char *
@@ -716,7 +883,7 @@ g_file_info_get_attribute_string (GFileInfo  *info,
 				  const char *attribute)
 {
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
   g_return_val_if_fail (attribute != NULL && *attribute != '\0', NULL);
 
@@ -728,11 +895,11 @@ g_file_info_get_attribute_string (GFileInfo  *info,
  * g_file_info_get_attribute_byte_string:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * 
- * Gets the value of a byte string attribute. If the attribute does 
+ *
+ * Gets the value of a byte string attribute. If the attribute does
  * not contain a byte string, %NULL will be returned.
- * 
- * Returns: the contents of the @attribute value as a byte string, or 
+ *
+ * Returns: the contents of the @attribute value as a byte string, or
  * %NULL otherwise.
  **/
 const char *
@@ -740,7 +907,7 @@ g_file_info_get_attribute_byte_string (GFileInfo  *info,
 				       const char *attribute)
 {
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
   g_return_val_if_fail (attribute != NULL && *attribute != '\0', NULL);
 
@@ -749,21 +916,47 @@ g_file_info_get_attribute_byte_string (GFileInfo  *info,
 }
 
 /**
+ * g_file_info_get_attribute_stringv:
+ * @info: a #GFileInfo.
+ * @attribute: a file attribute key.
+ *
+ * Gets the value of a stringv attribute. If the attribute does
+ * not contain a stringv, %NULL will be returned.
+ *
+ * Returns: (transfer none): the contents of the @attribute value as a stringv, or
+ * %NULL otherwise. Do not free. These returned strings are UTF-8.
+ *
+ * Since: 2.22
+ **/
+char **
+g_file_info_get_attribute_stringv (GFileInfo  *info,
+				   const char *attribute)
+{
+  GFileAttributeValue *value;
+
+  g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
+  g_return_val_if_fail (attribute != NULL && *attribute != '\0', NULL);
+
+  value = g_file_info_find_value_by_name (info, attribute);
+  return _g_file_attribute_value_get_stringv (value);
+}
+
+/**
  * g_file_info_get_attribute_boolean:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * 
+ *
  * Gets the value of a boolean attribute. If the attribute does not
  * contain a boolean value, %FALSE will be returned.
- * 
- * Returns: the boolean value contained within the attribute. 
+ *
+ * Returns: the boolean value contained within the attribute.
  **/
 gboolean
 g_file_info_get_attribute_boolean (GFileInfo  *info,
 				   const char *attribute)
 {
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), FALSE);
   g_return_val_if_fail (attribute != NULL && *attribute != '\0', FALSE);
 
@@ -775,19 +968,19 @@ g_file_info_get_attribute_boolean (GFileInfo  *info,
  * g_file_info_get_attribute_uint32:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * 
- * Gets an unsigned 32-bit integer contained within the attribute. If the 
- * attribute does not contain an unsigned 32-bit integer, or is invalid, 
+ *
+ * Gets an unsigned 32-bit integer contained within the attribute. If the
+ * attribute does not contain an unsigned 32-bit integer, or is invalid,
  * 0 will be returned.
- * 
- * Returns: an unsigned 32-bit integer from the attribute. 
+ *
+ * Returns: an unsigned 32-bit integer from the attribute.
  **/
 guint32
 g_file_info_get_attribute_uint32 (GFileInfo  *info,
 				  const char *attribute)
 {
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), 0);
   g_return_val_if_fail (attribute != NULL && *attribute != '\0', 0);
 
@@ -799,11 +992,11 @@ g_file_info_get_attribute_uint32 (GFileInfo  *info,
  * g_file_info_get_attribute_int32:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * 
- * Gets a signed 32-bit integer contained within the attribute. If the 
- * attribute does not contain a signed 32-bit integer, or is invalid, 
+ *
+ * Gets a signed 32-bit integer contained within the attribute. If the
+ * attribute does not contain a signed 32-bit integer, or is invalid,
  * 0 will be returned.
- * 
+ *
  * Returns: a signed 32-bit integer from the attribute.
  **/
 gint32
@@ -823,12 +1016,12 @@ g_file_info_get_attribute_int32 (GFileInfo  *info,
  * g_file_info_get_attribute_uint64:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * 
- * Gets a unsigned 64-bit integer contained within the attribute. If the 
- * attribute does not contain an unsigned 64-bit integer, or is invalid, 
+ *
+ * Gets a unsigned 64-bit integer contained within the attribute. If the
+ * attribute does not contain an unsigned 64-bit integer, or is invalid,
  * 0 will be returned.
- * 
- * Returns: a unsigned 64-bit integer from the attribute. 
+ *
+ * Returns: a unsigned 64-bit integer from the attribute.
  **/
 guint64
 g_file_info_get_attribute_uint64 (GFileInfo  *info,
@@ -847,12 +1040,12 @@ g_file_info_get_attribute_uint64 (GFileInfo  *info,
  * g_file_info_get_attribute_int64:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * 
- * Gets a signed 64-bit integer contained within the attribute. If the 
- * attribute does not contain an signed 64-bit integer, or is invalid, 
+ *
+ * Gets a signed 64-bit integer contained within the attribute. If the
+ * attribute does not contain an signed 64-bit integer, or is invalid,
  * 0 will be returned.
- * 
- * Returns: a signed 64-bit integer from the attribute. 
+ *
+ * Returns: a signed 64-bit integer from the attribute.
  **/
 gint64
 g_file_info_get_attribute_int64  (GFileInfo  *info,
@@ -875,11 +1068,11 @@ g_file_info_create_value (GFileInfo *info,
   int i;
 
   if (info->mask != NO_ATTRIBUTE_MASK &&
-      !g_file_attribute_matcher_matches_id (info->mask, attr_id))
+      !_g_file_attribute_matcher_matches_id (info->mask, attr_id))
     return NULL;
-  
+
   i = g_file_info_find_place (info, attr_id);
-  
+
   attrs = (GFileAttribute *)info->attributes->data;
   if (i < info->attributes->len &&
       attrs[i].attribute == attr_id)
@@ -895,15 +1088,18 @@ g_file_info_create_value (GFileInfo *info,
     }
 }
 
-static GFileAttributeValue *
-g_file_info_create_value_by_name (GFileInfo *info,
-				  const char *attribute)
+void
+_g_file_info_set_attribute_by_id (GFileInfo                 *info,
+                                  guint32                    attribute,
+                                  GFileAttributeType         type,
+                                  gpointer                   value_p)
 {
-  guint32 attr_id;
+  GFileAttributeValue *value;
 
-  attr_id = lookup_attribute (attribute);
+  value = g_file_info_create_value (info, attribute);
 
-  return g_file_info_create_value (info, attr_id);
+  if (value)
+    _g_file_attribute_value_set_from_pointer (value, type, value_p, TRUE);
 }
 
 /**
@@ -912,8 +1108,9 @@ g_file_info_create_value_by_name (GFileInfo *info,
  * @attribute: a file attribute key.
  * @type: a #GFileAttributeType
  * @value_p: pointer to the value
- * 
- * Sets the @attribute to contain the given value, if possible.
+ *
+ * Sets the @attribute to contain the given value, if possible. To unset the
+ * attribute, use %G_ATTRIBUTE_TYPE_INVALID for @type.
  **/
 void
 g_file_info_set_attribute (GFileInfo                 *info,
@@ -921,15 +1118,22 @@ g_file_info_set_attribute (GFileInfo                 *info,
 			   GFileAttributeType         type,
 			   gpointer                   value_p)
 {
-  GFileAttributeValue *value;
-
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (attribute != NULL && *attribute != '\0');
 
-  value = g_file_info_create_value_by_name (info, attribute);
+  _g_file_info_set_attribute_by_id (info, lookup_attribute (attribute), type, value_p);
+}
 
+void
+_g_file_info_set_attribute_object_by_id (GFileInfo *info,
+                                         guint32    attribute,
+				         GObject   *attr_value)
+{
+  GFileAttributeValue *value;
+
+  value = g_file_info_create_value (info, attribute);
   if (value)
-    _g_file_attribute_value_set_from_pointer (value, type, value_p, TRUE);
+    _g_file_attribute_value_set_object (value, attr_value);
 }
 
 /**
@@ -937,8 +1141,8 @@ g_file_info_set_attribute (GFileInfo                 *info,
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
  * @attr_value: a #GObject.
- * 
- * Sets the @attribute to contain the given @attr_value, 
+ *
+ * Sets the @attribute to contain the given @attr_value,
  * if possible.
  **/
 void
@@ -946,24 +1150,71 @@ g_file_info_set_attribute_object (GFileInfo  *info,
 				  const char *attribute,
 				  GObject    *attr_value)
 {
-  GFileAttributeValue *value;
-
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (attribute != NULL && *attribute != '\0');
   g_return_if_fail (G_IS_OBJECT (attr_value));
 
-  value = g_file_info_create_value_by_name (info, attribute);
+  _g_file_info_set_attribute_object_by_id (info,
+                                           lookup_attribute (attribute),
+                                           attr_value);
+}
+
+void
+_g_file_info_set_attribute_stringv_by_id (GFileInfo *info,
+                                          guint32    attribute,
+				          char     **attr_value)
+{
+  GFileAttributeValue *value;
+
+  value = g_file_info_create_value (info, attribute);
   if (value)
-    _g_file_attribute_value_set_object (value, attr_value);
+    _g_file_attribute_value_set_stringv (value, attr_value);
+}
+
+/**
+ * g_file_info_set_attribute_stringv:
+ * @info: a #GFileInfo.
+ * @attribute: a file attribute key
+ * @attr_value: (array) (element-type utf8): a %NULL terminated array of UTF-8 strings.
+ *
+ * Sets the @attribute to contain the given @attr_value,
+ * if possible.
+ *
+ * Sinze: 2.22
+ **/
+void
+g_file_info_set_attribute_stringv (GFileInfo  *info,
+				   const char *attribute,
+				   char      **attr_value)
+{
+  g_return_if_fail (G_IS_FILE_INFO (info));
+  g_return_if_fail (attribute != NULL && *attribute != '\0');
+  g_return_if_fail (attr_value != NULL);
+
+  _g_file_info_set_attribute_stringv_by_id (info,
+                                            lookup_attribute (attribute),
+                                            attr_value);
+}
+
+void
+_g_file_info_set_attribute_string_by_id (GFileInfo  *info,
+                                         guint32     attribute,
+				         const char *attr_value)
+{
+  GFileAttributeValue *value;
+
+  value = g_file_info_create_value (info, attribute);
+  if (value)
+    _g_file_attribute_value_set_string (value, attr_value);
 }
 
 /**
  * g_file_info_set_attribute_string:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
- * @attr_value: a string.
- * 
- * Sets the @attribute to contain the given @attr_value, 
+ * @attr_value: a UTF-8 string.
+ *
+ * Sets the @attribute to contain the given @attr_value,
  * if possible.
  **/
 void
@@ -971,15 +1222,25 @@ g_file_info_set_attribute_string (GFileInfo  *info,
 				  const char *attribute,
 				  const char *attr_value)
 {
-  GFileAttributeValue *value;
-  
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (attribute != NULL && *attribute != '\0');
   g_return_if_fail (attr_value != NULL);
 
-  value = g_file_info_create_value_by_name (info, attribute);
+  _g_file_info_set_attribute_string_by_id (info,
+                                           lookup_attribute (attribute),
+                                           attr_value);
+}
+
+void
+_g_file_info_set_attribute_byte_string_by_id (GFileInfo  *info,
+                                              guint32     attribute,
+				              const char *attr_value)
+{
+  GFileAttributeValue *value;
+
+  value = g_file_info_create_value (info, attribute);
   if (value)
-    _g_file_attribute_value_set_string (value, attr_value);
+    _g_file_attribute_value_set_byte_string (value, attr_value);
 }
 
 /**
@@ -987,8 +1248,8 @@ g_file_info_set_attribute_string (GFileInfo  *info,
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
  * @attr_value: a byte string.
- * 
- * Sets the @attribute to contain the given @attr_value, 
+ *
+ * Sets the @attribute to contain the given @attr_value,
  * if possible.
  **/
 void
@@ -996,15 +1257,25 @@ g_file_info_set_attribute_byte_string (GFileInfo  *info,
 				       const char *attribute,
 				       const char *attr_value)
 {
-  GFileAttributeValue *value;
-
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (attribute != NULL && *attribute != '\0');
   g_return_if_fail (attr_value != NULL);
 
-  value = g_file_info_create_value_by_name (info, attribute);
+  _g_file_info_set_attribute_byte_string_by_id (info,
+                                                lookup_attribute (attribute),
+                                                attr_value);
+}
+
+void
+_g_file_info_set_attribute_boolean_by_id (GFileInfo *info,
+                                          guint32    attribute,
+				          gboolean   attr_value)
+{
+  GFileAttributeValue *value;
+
+  value = g_file_info_create_value (info, attribute);
   if (value)
-    _g_file_attribute_value_set_byte_string (value, attr_value);
+    _g_file_attribute_value_set_boolean (value, attr_value);
 }
 
 /**
@@ -1012,8 +1283,8 @@ g_file_info_set_attribute_byte_string (GFileInfo  *info,
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
  * @attr_value: a boolean value.
- * 
- * Sets the @attribute to contain the given @attr_value, 
+ *
+ * Sets the @attribute to contain the given @attr_value,
  * if possible.
  **/
 void
@@ -1021,14 +1292,24 @@ g_file_info_set_attribute_boolean (GFileInfo  *info,
 				   const char *attribute,
 				   gboolean    attr_value)
 {
-  GFileAttributeValue *value;
-
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (attribute != NULL && *attribute != '\0');
 
-  value = g_file_info_create_value_by_name (info, attribute);
+  _g_file_info_set_attribute_boolean_by_id (info,
+                                            lookup_attribute (attribute),
+                                            attr_value);
+}
+
+void
+_g_file_info_set_attribute_uint32_by_id (GFileInfo *info,
+                                         guint32    attribute,
+				         guint32    attr_value)
+{
+  GFileAttributeValue *value;
+
+  value = g_file_info_create_value (info, attribute);
   if (value)
-    _g_file_attribute_value_set_boolean (value, attr_value);
+    _g_file_attribute_value_set_uint32 (value, attr_value);
 }
 
 /**
@@ -1036,8 +1317,8 @@ g_file_info_set_attribute_boolean (GFileInfo  *info,
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
  * @attr_value: an unsigned 32-bit integer.
- * 
- * Sets the @attribute to contain the given @attr_value, 
+ *
+ * Sets the @attribute to contain the given @attr_value,
  * if possible.
  **/
 void
@@ -1045,24 +1326,33 @@ g_file_info_set_attribute_uint32 (GFileInfo  *info,
 				  const char *attribute,
 				  guint32     attr_value)
 {
-  GFileAttributeValue *value;
-
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (attribute != NULL && *attribute != '\0');
 
-  value = g_file_info_create_value_by_name (info, attribute);
-  if (value)
-    _g_file_attribute_value_set_uint32 (value, attr_value);
+  _g_file_info_set_attribute_uint32_by_id (info,
+                                           lookup_attribute (attribute),
+                                           attr_value);
 }
 
+void
+_g_file_info_set_attribute_int32_by_id (GFileInfo *info,
+                                        guint32    attribute,
+				        gint32     attr_value)
+{
+  GFileAttributeValue *value;
+
+  value = g_file_info_create_value (info, attribute);
+  if (value)
+    _g_file_attribute_value_set_int32 (value, attr_value);
+}
 
 /**
  * g_file_info_set_attribute_int32:
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
  * @attr_value: a signed 32-bit integer
- * 
- * Sets the @attribute to contain the given @attr_value, 
+ *
+ * Sets the @attribute to contain the given @attr_value,
  * if possible.
  **/
 void
@@ -1070,14 +1360,24 @@ g_file_info_set_attribute_int32 (GFileInfo  *info,
                                  const char *attribute,
                                  gint32      attr_value)
 {
-  GFileAttributeValue *value;
- 
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (attribute != NULL && *attribute != '\0');
 
-  value = g_file_info_create_value_by_name (info, attribute);
+  _g_file_info_set_attribute_int32_by_id (info,
+                                          lookup_attribute (attribute),
+                                          attr_value);
+}
+
+void
+_g_file_info_set_attribute_uint64_by_id (GFileInfo *info,
+                                         guint32    attribute,
+				         guint64    attr_value)
+{
+  GFileAttributeValue *value;
+
+  value = g_file_info_create_value (info, attribute);
   if (value)
-    _g_file_attribute_value_set_int32 (value, attr_value);
+    _g_file_attribute_value_set_uint64 (value, attr_value);
 }
 
 /**
@@ -1085,8 +1385,8 @@ g_file_info_set_attribute_int32 (GFileInfo  *info,
  * @info: a #GFileInfo.
  * @attribute: a file attribute key.
  * @attr_value: an unsigned 64-bit integer.
- * 
- * Sets the @attribute to contain the given @attr_value, 
+ *
+ * Sets the @attribute to contain the given @attr_value,
  * if possible.
  **/
 void
@@ -1094,14 +1394,24 @@ g_file_info_set_attribute_uint64 (GFileInfo  *info,
 				  const char *attribute,
 				  guint64     attr_value)
 {
-  GFileAttributeValue *value;
-
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (attribute != NULL && *attribute != '\0');
 
-  value = g_file_info_create_value_by_name (info, attribute);
+  _g_file_info_set_attribute_uint64_by_id (info,
+                                           lookup_attribute (attribute),
+                                           attr_value);
+}
+
+void
+_g_file_info_set_attribute_int64_by_id (GFileInfo *info,
+                                        guint32    attribute,
+				        gint64     attr_value)
+{
+  GFileAttributeValue *value;
+
+  value = g_file_info_create_value (info, attribute);
   if (value)
-    _g_file_attribute_value_set_uint64 (value, attr_value);
+    _g_file_attribute_value_set_int64 (value, attr_value);
 }
 
 /**
@@ -1109,34 +1419,68 @@ g_file_info_set_attribute_uint64 (GFileInfo  *info,
  * @info: a #GFileInfo.
  * @attribute: attribute name to set.
  * @attr_value: int64 value to set attribute to.
- * 
- * Sets the @attribute to contain the given @attr_value, 
+ *
+ * Sets the @attribute to contain the given @attr_value,
  * if possible.
- * 
+ *
  **/
 void
 g_file_info_set_attribute_int64  (GFileInfo  *info,
 				  const char *attribute,
 				  gint64      attr_value)
 {
-  GFileAttributeValue *value;
-
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (attribute != NULL && *attribute != '\0');
 
-  value = g_file_info_create_value_by_name (info, attribute);
-  if (value)
-    _g_file_attribute_value_set_int64 (value, attr_value);
+  _g_file_info_set_attribute_int64_by_id (info,
+                                          lookup_attribute (attribute),
+                                          attr_value);
 }
 
 /* Helper getters */
 /**
+ * g_file_info_get_deletion_date:
+ * @info: a #GFileInfo.
+ *
+ * Returns the #GDateTime representing the deletion date of the file, as
+ * available in G_FILE_ATTRIBUTE_TRASH_DELETION_DATE. If the
+ * G_FILE_ATTRIBUTE_TRASH_DELETION_DATE attribute is unset, %NULL is returned.
+ *
+ * Returns: a #GDateTime, or %NULL.
+ *
+ * Since: 2.36
+ **/
+GDateTime *
+g_file_info_get_deletion_date (GFileInfo *info)
+{
+  static guint32 attr = 0;
+  GFileAttributeValue *value;
+  const char *date_str;
+  GTimeVal tv;
+
+  g_return_val_if_fail (G_IS_FILE_INFO (info), FALSE);
+
+  if (attr == 0)
+    attr = lookup_attribute (G_FILE_ATTRIBUTE_TRASH_DELETION_DATE);
+
+  value = g_file_info_find_value (info, attr);
+  date_str = _g_file_attribute_value_get_string (value);
+  if (!date_str)
+    return NULL;
+
+  if (g_time_val_from_iso8601 (date_str, &tv) == FALSE)
+    return NULL;
+
+  return g_date_time_new_from_timeval_local (&tv);
+}
+
+/**
  * g_file_info_get_file_type:
  * @info: a #GFileInfo.
- * 
- * Gets a file's type (whether it is a regular file, symlink, etc). 
+ *
+ * Gets a file's type (whether it is a regular file, symlink, etc).
  * This is different from the file's content type, see g_file_info_get_content_type().
- * 
+ *
  * Returns: a #GFileType for the given file.
  **/
 GFileType
@@ -1146,10 +1490,10 @@ g_file_info_get_file_type (GFileInfo *info)
   GFileAttributeValue *value;
 
   g_return_val_if_fail (G_IS_FILE_INFO (info), G_FILE_TYPE_UNKNOWN);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_TYPE);
-  
+
   value = g_file_info_find_value (info, attr);
   return (GFileType)_g_file_attribute_value_get_uint32 (value);
 }
@@ -1157,9 +1501,9 @@ g_file_info_get_file_type (GFileInfo *info)
 /**
  * g_file_info_get_is_hidden:
  * @info: a #GFileInfo.
- * 
+ *
  * Checks if a file is hidden.
- * 
+ *
  * Returns: %TRUE if the file is a hidden file, %FALSE otherwise.
  **/
 gboolean
@@ -1167,12 +1511,12 @@ g_file_info_get_is_hidden (GFileInfo *info)
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), FALSE);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN);
-  
+
   value = g_file_info_find_value (info, attr);
   return (GFileType)_g_file_attribute_value_get_boolean (value);
 }
@@ -1180,9 +1524,9 @@ g_file_info_get_is_hidden (GFileInfo *info)
 /**
  * g_file_info_get_is_backup:
  * @info: a #GFileInfo.
- * 
+ *
  * Checks if a file is a backup file.
- * 
+ *
  * Returns: %TRUE if file is a backup file, %FALSE otherwise.
  **/
 gboolean
@@ -1190,12 +1534,12 @@ g_file_info_get_is_backup (GFileInfo *info)
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), FALSE);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP);
-  
+
   value = g_file_info_find_value (info, attr);
   return (GFileType)_g_file_attribute_value_get_boolean (value);
 }
@@ -1203,9 +1547,9 @@ g_file_info_get_is_backup (GFileInfo *info)
 /**
  * g_file_info_get_is_symlink:
  * @info: a #GFileInfo.
- * 
+ *
  * Checks if a file is a symlink.
- * 
+ *
  * Returns: %TRUE if the given @info is a symlink.
  **/
 gboolean
@@ -1213,12 +1557,12 @@ g_file_info_get_is_symlink (GFileInfo *info)
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), FALSE);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK);
-  
+
   value = g_file_info_find_value (info, attr);
   return (GFileType)_g_file_attribute_value_get_boolean (value);
 }
@@ -1226,9 +1570,9 @@ g_file_info_get_is_symlink (GFileInfo *info)
 /**
  * g_file_info_get_name:
  * @info: a #GFileInfo.
- * 
+ *
  * Gets the name for a file.
- * 
+ *
  * Returns: a string containing the file name.
  **/
 const char *
@@ -1236,12 +1580,12 @@ g_file_info_get_name (GFileInfo *info)
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_NAME);
-  
+
   value = g_file_info_find_value (info, attr);
   return _g_file_attribute_value_get_byte_string (value);
 }
@@ -1249,9 +1593,9 @@ g_file_info_get_name (GFileInfo *info)
 /**
  * g_file_info_get_display_name:
  * @info: a #GFileInfo.
- * 
+ *
  * Gets a display name for a file.
- * 
+ *
  * Returns: a string containing the display name.
  **/
 const char *
@@ -1259,12 +1603,12 @@ g_file_info_get_display_name (GFileInfo *info)
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME);
-  
+
   value = g_file_info_find_value (info, attr);
   return _g_file_attribute_value_get_string (value);
 }
@@ -1272,9 +1616,9 @@ g_file_info_get_display_name (GFileInfo *info)
 /**
  * g_file_info_get_edit_name:
  * @info: a #GFileInfo.
- * 
+ *
  * Gets the edit name for a file.
- * 
+ *
  * Returns: a string containing the edit name.
  **/
 const char *
@@ -1282,12 +1626,12 @@ g_file_info_get_edit_name (GFileInfo *info)
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME);
-  
+
   value = g_file_info_find_value (info, attr);
   return _g_file_attribute_value_get_string (value);
 }
@@ -1295,10 +1639,10 @@ g_file_info_get_edit_name (GFileInfo *info)
 /**
  * g_file_info_get_icon:
  * @info: a #GFileInfo.
- * 
+ *
  * Gets the icon for a file.
- * 
- * Returns: #GIcon for the given @info.
+ *
+ * Returns: (transfer none): #GIcon for the given @info.
  **/
 GIcon *
 g_file_info_get_icon (GFileInfo *info)
@@ -1306,12 +1650,41 @@ g_file_info_get_icon (GFileInfo *info)
   static guint32 attr = 0;
   GFileAttributeValue *value;
   GObject *obj;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_ICON);
-  
+
+  value = g_file_info_find_value (info, attr);
+  obj = _g_file_attribute_value_get_object (value);
+  if (G_IS_ICON (obj))
+    return G_ICON (obj);
+  return NULL;
+}
+
+/**
+ * g_file_info_get_symbolic_icon:
+ * @info: a #GFileInfo.
+ *
+ * Gets the symbolic icon for a file.
+ *
+ * Returns: (transfer none): #GIcon for the given @info.
+ *
+ * Since: 2.34
+ **/
+GIcon *
+g_file_info_get_symbolic_icon (GFileInfo *info)
+{
+  static guint32 attr = 0;
+  GFileAttributeValue *value;
+  GObject *obj;
+
+  g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
+
+  if (attr == 0)
+    attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_SYMBOLIC_ICON);
+
   value = g_file_info_find_value (info, attr);
   obj = _g_file_attribute_value_get_object (value);
   if (G_IS_ICON (obj))
@@ -1322,22 +1695,22 @@ g_file_info_get_icon (GFileInfo *info)
 /**
  * g_file_info_get_content_type:
  * @info: a #GFileInfo.
- * 
+ *
  * Gets the file's content type.
- * 
- * Returns: a string containing the file's content type.s
+ *
+ * Returns: a string containing the file's content type.
  **/
 const char *
 g_file_info_get_content_type (GFileInfo *info)
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
-  
+
   value = g_file_info_find_value (info, attr);
   return _g_file_attribute_value_get_string (value);
 }
@@ -1345,22 +1718,22 @@ g_file_info_get_content_type (GFileInfo *info)
 /**
  * g_file_info_get_size:
  * @info: a #GFileInfo.
- * 
+ *
  * Gets the file's size.
- * 
- * Returns: a #goffset containing the file's size. 
+ *
+ * Returns: a #goffset containing the file's size.
  **/
 goffset
 g_file_info_get_size (GFileInfo *info)
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
- 
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), (goffset) 0);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_SIZE);
-  
+
   value = g_file_info_find_value (info, attr);
   return (goffset) _g_file_attribute_value_get_uint64 (value);
 }
@@ -1368,8 +1741,8 @@ g_file_info_get_size (GFileInfo *info)
 /**
  * g_file_info_get_modification_time:
  * @info: a #GFileInfo.
- * @result: a #GTimeVal.
- * 
+ * @result: (out caller-allocates): a #GTimeVal.
+ *
  * Gets the modification time of the current @info and sets it
  * in @result.
  **/
@@ -1382,13 +1755,13 @@ g_file_info_get_modification_time (GFileInfo *info,
 
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (result != NULL);
-  
+
   if (attr_mtime == 0)
     {
       attr_mtime = lookup_attribute (G_FILE_ATTRIBUTE_TIME_MODIFIED);
       attr_mtime_usec = lookup_attribute (G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC);
     }
-  
+
   value = g_file_info_find_value (info, attr_mtime);
   result->tv_sec = _g_file_attribute_value_get_uint64 (value);
   value = g_file_info_find_value (info, attr_mtime_usec);
@@ -1398,9 +1771,9 @@ g_file_info_get_modification_time (GFileInfo *info,
 /**
  * g_file_info_get_symlink_target:
  * @info: a #GFileInfo.
- * 
+ *
  * Gets the symlink target for a given #GFileInfo.
- * 
+ *
  * Returns: a string containing the symlink target.
  **/
 const char *
@@ -1408,12 +1781,12 @@ g_file_info_get_symlink_target (GFileInfo *info)
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET);
-  
+
   value = g_file_info_find_value (info, attr);
   return _g_file_attribute_value_get_byte_string (value);
 }
@@ -1421,10 +1794,10 @@ g_file_info_get_symlink_target (GFileInfo *info)
 /**
  * g_file_info_get_etag:
  * @info: a #GFileInfo.
- * 
- * Gets the <link linkend="gfile-etag">entity tag</link> for a given 
+ *
+ * Gets the [entity tag][gfile-etag] for a given
  * #GFileInfo. See %G_FILE_ATTRIBUTE_ETAG_VALUE.
- * 
+ *
  * Returns: a string containing the value of the "etag:value" attribute.
  **/
 const char *
@@ -1432,12 +1805,12 @@ g_file_info_get_etag (GFileInfo *info)
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), NULL);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_ETAG_VALUE);
-  
+
   value = g_file_info_find_value (info, attr);
   return _g_file_attribute_value_get_string (value);
 }
@@ -1445,10 +1818,10 @@ g_file_info_get_etag (GFileInfo *info)
 /**
  * g_file_info_get_sort_order:
  * @info: a #GFileInfo.
- * 
+ *
  * Gets the value of the sort_order attribute from the #GFileInfo.
  * See %G_FILE_ATTRIBUTE_STANDARD_SORT_ORDER.
- * 
+ *
  * Returns: a #gint32 containing the value of the "standard::sort_order" attribute.
  **/
 gint32
@@ -1456,12 +1829,12 @@ g_file_info_get_sort_order (GFileInfo *info)
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_val_if_fail (G_IS_FILE_INFO (info), 0);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_SORT_ORDER);
-  
+
   value = g_file_info_find_value (info, attr);
   return _g_file_attribute_value_get_int32 (value);
 }
@@ -1471,7 +1844,7 @@ g_file_info_get_sort_order (GFileInfo *info)
  * g_file_info_set_file_type:
  * @info: a #GFileInfo.
  * @type: a #GFileType.
- * 
+ *
  * Sets the file type in a #GFileInfo to @type.
  * See %G_FILE_ATTRIBUTE_STANDARD_TYPE.
  **/
@@ -1481,12 +1854,12 @@ g_file_info_set_file_type (GFileInfo *info,
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_TYPE);
-  
+
   value = g_file_info_create_value (info, attr);
   if (value)
     _g_file_attribute_value_set_uint32 (value, type);
@@ -1496,8 +1869,8 @@ g_file_info_set_file_type (GFileInfo *info,
  * g_file_info_set_is_hidden:
  * @info: a #GFileInfo.
  * @is_hidden: a #gboolean.
- * 
- * Sets the "is_hidden" attribute in a #GFileInfo according to @is_symlink.
+ *
+ * Sets the "is_hidden" attribute in a #GFileInfo according to @is_hidden.
  * See %G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN.
  **/
 void
@@ -1506,12 +1879,12 @@ g_file_info_set_is_hidden (GFileInfo *info,
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN);
-  
+
   value = g_file_info_create_value (info, attr);
   if (value)
     _g_file_attribute_value_set_boolean (value, is_hidden);
@@ -1521,7 +1894,7 @@ g_file_info_set_is_hidden (GFileInfo *info,
  * g_file_info_set_is_symlink:
  * @info: a #GFileInfo.
  * @is_symlink: a #gboolean.
- * 
+ *
  * Sets the "is_symlink" attribute in a #GFileInfo according to @is_symlink.
  * See %G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK.
  **/
@@ -1531,12 +1904,12 @@ g_file_info_set_is_symlink (GFileInfo *info,
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK);
-  
+
   value = g_file_info_create_value (info, attr);
   if (value)
     _g_file_attribute_value_set_boolean (value, is_symlink);
@@ -1546,8 +1919,8 @@ g_file_info_set_is_symlink (GFileInfo *info,
  * g_file_info_set_name:
  * @info: a #GFileInfo.
  * @name: a string containing a name.
- * 
- * Sets the name attribute for the current #GFileInfo. 
+ *
+ * Sets the name attribute for the current #GFileInfo.
  * See %G_FILE_ATTRIBUTE_STANDARD_NAME.
  **/
 void
@@ -1556,13 +1929,13 @@ g_file_info_set_name (GFileInfo  *info,
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (name != NULL);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_NAME);
-  
+
   value = g_file_info_create_value (info, attr);
   if (value)
     _g_file_attribute_value_set_byte_string (value, name);
@@ -1572,7 +1945,7 @@ g_file_info_set_name (GFileInfo  *info,
  * g_file_info_set_display_name:
  * @info: a #GFileInfo.
  * @display_name: a string containing a display name.
- * 
+ *
  * Sets the display name for the current #GFileInfo.
  * See %G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME.
  **/
@@ -1582,13 +1955,13 @@ g_file_info_set_display_name (GFileInfo  *info,
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (display_name != NULL);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME);
-  
+
   value = g_file_info_create_value (info, attr);
   if (value)
     _g_file_attribute_value_set_string (value, display_name);
@@ -1598,7 +1971,7 @@ g_file_info_set_display_name (GFileInfo  *info,
  * g_file_info_set_edit_name:
  * @info: a #GFileInfo.
  * @edit_name: a string containing an edit name.
- * 
+ *
  * Sets the edit name for the current file.
  * See %G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME.
  **/
@@ -1608,13 +1981,13 @@ g_file_info_set_edit_name (GFileInfo  *info,
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (edit_name != NULL);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME);
-  
+
   value = g_file_info_create_value (info, attr);
   if (value)
     _g_file_attribute_value_set_string (value, edit_name);
@@ -1624,8 +1997,8 @@ g_file_info_set_edit_name (GFileInfo  *info,
  * g_file_info_set_icon:
  * @info: a #GFileInfo.
  * @icon: a #GIcon.
- * 
- * Sets the icon for a given #GFileInfo. 
+ *
+ * Sets the icon for a given #GFileInfo.
  * See %G_FILE_ATTRIBUTE_STANDARD_ICON.
  **/
 void
@@ -1634,13 +2007,41 @@ g_file_info_set_icon (GFileInfo *info,
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (G_IS_ICON (icon));
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_ICON);
-  
+
+  value = g_file_info_create_value (info, attr);
+  if (value)
+    _g_file_attribute_value_set_object (value, G_OBJECT (icon));
+}
+
+/**
+ * g_file_info_set_symbolic_icon:
+ * @info: a #GFileInfo.
+ * @icon: a #GIcon.
+ *
+ * Sets the symbolic icon for a given #GFileInfo.
+ * See %G_FILE_ATTRIBUTE_STANDARD_SYMBOLIC_ICON.
+ *
+ * Since: 2.34
+ **/
+void
+g_file_info_set_symbolic_icon (GFileInfo *info,
+                               GIcon     *icon)
+{
+  static guint32 attr = 0;
+  GFileAttributeValue *value;
+
+  g_return_if_fail (G_IS_FILE_INFO (info));
+  g_return_if_fail (G_IS_ICON (icon));
+
+  if (attr == 0)
+    attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_SYMBOLIC_ICON);
+
   value = g_file_info_create_value (info, attr);
   if (value)
     _g_file_attribute_value_set_object (value, G_OBJECT (icon));
@@ -1649,8 +2050,8 @@ g_file_info_set_icon (GFileInfo *info,
 /**
  * g_file_info_set_content_type:
  * @info: a #GFileInfo.
- * @content_type: a content type. See #GContentType.
- * 
+ * @content_type: a content type. See [GContentType][gio-GContentType]
+ *
  * Sets the content type attribute for a given #GFileInfo.
  * See %G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE.
  **/
@@ -1660,13 +2061,13 @@ g_file_info_set_content_type (GFileInfo  *info,
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (content_type != NULL);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
-  
+
   value = g_file_info_create_value (info, attr);
   if (value)
     _g_file_attribute_value_set_string (value, content_type);
@@ -1676,8 +2077,8 @@ g_file_info_set_content_type (GFileInfo  *info,
  * g_file_info_set_size:
  * @info: a #GFileInfo.
  * @size: a #goffset containing the file's size.
- * 
- * Sets the %G_FILE_ATTRIBUTE_STANDARD_SIZE attribute in the file info 
+ *
+ * Sets the %G_FILE_ATTRIBUTE_STANDARD_SIZE attribute in the file info
  * to the given size.
  **/
 void
@@ -1686,22 +2087,22 @@ g_file_info_set_size (GFileInfo *info,
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_SIZE);
-  
+
   value = g_file_info_create_value (info, attr);
   if (value)
     _g_file_attribute_value_set_uint64 (value, size);
 }
 
 /**
- * g_file_info_set_modification_time
+ * g_file_info_set_modification_time:
  * @info: a #GFileInfo.
  * @mtime: a #GTimeVal.
- * 
+ *
  * Sets the %G_FILE_ATTRIBUTE_TIME_MODIFIED attribute in the file
  * info to the given time value.
  **/
@@ -1711,16 +2112,16 @@ g_file_info_set_modification_time (GFileInfo *info,
 {
   static guint32 attr_mtime = 0, attr_mtime_usec;
   GFileAttributeValue *value;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (mtime != NULL);
-  
+
   if (attr_mtime == 0)
     {
       attr_mtime = lookup_attribute (G_FILE_ATTRIBUTE_TIME_MODIFIED);
       attr_mtime_usec = lookup_attribute (G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC);
     }
-  
+
   value = g_file_info_create_value (info, attr_mtime);
   if (value)
     _g_file_attribute_value_set_uint64 (value, mtime->tv_sec);
@@ -1733,8 +2134,8 @@ g_file_info_set_modification_time (GFileInfo *info,
  * g_file_info_set_symlink_target:
  * @info: a #GFileInfo.
  * @symlink_target: a static string containing a path to a symlink target.
- * 
- * Sets the %G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET attribute in the file info 
+ *
+ * Sets the %G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET attribute in the file info
  * to the given symlink target.
  **/
 void
@@ -1743,13 +2144,13 @@ g_file_info_set_symlink_target (GFileInfo  *info,
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
   g_return_if_fail (symlink_target != NULL);
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET);
-  
+
   value = g_file_info_create_value (info, attr);
   if (value)
     _g_file_attribute_value_set_byte_string (value, symlink_target);
@@ -1759,8 +2160,8 @@ g_file_info_set_symlink_target (GFileInfo  *info,
  * g_file_info_set_sort_order:
  * @info: a #GFileInfo.
  * @sort_order: a sort order integer.
- * 
- * Sets the sort order attribute in the file info structure. See 
+ *
+ * Sets the sort order attribute in the file info structure. See
  * %G_FILE_ATTRIBUTE_STANDARD_SORT_ORDER.
  **/
 void
@@ -1769,19 +2170,17 @@ g_file_info_set_sort_order (GFileInfo *info,
 {
   static guint32 attr = 0;
   GFileAttributeValue *value;
-  
+
   g_return_if_fail (G_IS_FILE_INFO (info));
-  
+
   if (attr == 0)
     attr = lookup_attribute (G_FILE_ATTRIBUTE_STANDARD_SORT_ORDER);
-  
+
   value = g_file_info_create_value (info, attr);
   if (value)
     _g_file_attribute_value_set_int32 (value, sort_order);
 }
 
-
-#define ON_STACK_MATCHERS 5
 
 typedef struct {
   guint32 id;
@@ -1790,89 +2189,123 @@ typedef struct {
 
 struct _GFileAttributeMatcher {
   gboolean all;
-  SubMatcher sub_matchers[ON_STACK_MATCHERS];
-  GArray *more_sub_matchers;
+  gint ref;
+
+  GArray *sub_matchers;
 
   /* Interator */
   guint32 iterator_ns;
-  int iterator_pos;
-  int ref;
+  gint iterator_pos;
 };
 
-static void
-matcher_add (GFileAttributeMatcher *matcher,
-	     guint                  id,
-             guint                  mask)
+G_DEFINE_BOXED_TYPE (GFileAttributeMatcher, g_file_attribute_matcher,
+                     g_file_attribute_matcher_ref,
+                     g_file_attribute_matcher_unref)
+
+static gint
+compare_sub_matchers (gconstpointer a,
+                      gconstpointer b)
 {
-  SubMatcher *sub_matchers;
-  int i;
-  SubMatcher s;
+  const SubMatcher *suba = a;
+  const SubMatcher *subb = b;
+  int diff;
 
-  for (i = 0; i < ON_STACK_MATCHERS; i++)
-    {
-      /* First empty spot, not found, use this */
-      if (matcher->sub_matchers[i].id == 0)
-	{
-	  matcher->sub_matchers[i].id = id;
-	  matcher->sub_matchers[i].mask = mask;
-	  return;
-	}
-      
-      /* Already added */
-      if (matcher->sub_matchers[i].id == id &&
-	  matcher->sub_matchers[i].mask == mask)
-	return;
-    }
+  diff = suba->id - subb->id;
 
-  if (matcher->more_sub_matchers == NULL)
-    matcher->more_sub_matchers = g_array_new (FALSE, FALSE, sizeof (SubMatcher));
-      
-  sub_matchers = (SubMatcher *)matcher->more_sub_matchers->data;
-  for (i = 0; i < matcher->more_sub_matchers->len; i++)
-    {
-      /* Already added */
-      if (sub_matchers[i].id == id &&
-	  sub_matchers[i].mask == mask)
-	return;
-    }
+  if (diff)
+    return diff;
 
-  s.id = id;
-  s.mask = mask;
+  return suba->mask - subb->mask;
+}
+
+static gboolean
+sub_matcher_matches (SubMatcher *matcher,
+                     SubMatcher *submatcher)
+{
+  if ((matcher->mask & submatcher->mask) != matcher->mask)
+    return FALSE;
   
-  g_array_append_val (matcher->more_sub_matchers, s);
+  return matcher->id == (submatcher->id & matcher->mask);
+}
+
+/* Call this function after modifying a matcher.
+ * It will ensure all the invariants other functions rely on.
+ */
+static GFileAttributeMatcher *
+matcher_optimize (GFileAttributeMatcher *matcher)
+{
+  SubMatcher *submatcher, *compare;
+  guint i, j;
+
+  /* remove sub_matchers if we match everything anyway */
+  if (matcher->all)
+    {
+      if (matcher->sub_matchers)
+        {
+          g_array_free (matcher->sub_matchers, TRUE);
+          matcher->sub_matchers = NULL;
+        }
+      return matcher;
+    }
+
+  if (matcher->sub_matchers->len == 0)
+    {
+      g_file_attribute_matcher_unref (matcher);
+      return NULL;
+    }
+
+  /* sort sub_matchers by id (and then mask), so we can bsearch
+   * and compare matchers in O(N) instead of O(N²) */
+  g_array_sort (matcher->sub_matchers, compare_sub_matchers);
+
+  /* remove duplicates and specific matches when we match the whole namespace */
+  j = 0;
+  compare = &g_array_index (matcher->sub_matchers, SubMatcher, j);
+
+  for (i = 1; i < matcher->sub_matchers->len; i++)
+    {
+      submatcher = &g_array_index (matcher->sub_matchers, SubMatcher, i);
+      if (sub_matcher_matches (compare, submatcher))
+        continue;
+
+      j++;
+      compare++;
+
+      if (j < i)
+        *compare = *submatcher;
+    }
+
+  g_array_set_size (matcher->sub_matchers, j + 1);
+
+  return matcher;
 }
 
 /**
  * g_file_attribute_matcher_new:
  * @attributes: an attribute string to match.
- * 
- * Creates a new file attribute matcher, which matches attributes 
- * against a given string. #GFileAttributeMatcher<!-- -->s are reference 
- * counted structures, and are created with a reference count of 1. If 
- * the number of references falls to 0, the #GFileAttributeMatcher is 
+ *
+ * Creates a new file attribute matcher, which matches attributes
+ * against a given string. #GFileAttributeMatchers are reference
+ * counted structures, and are created with a reference count of 1. If
+ * the number of references falls to 0, the #GFileAttributeMatcher is
  * automatically destroyed.
- * 
+ *
  * The @attribute string should be formatted with specific keys separated
- * from namespaces with a double colon. Several "namespace::key" strings may be 
- * concatenated with a single comma (e.g. "standard::type,standard::is-hidden"). 
- * The wildcard "*" may be used to match all keys and namespaces, or 
- * "namespace::*" will match all keys in a given namespace. 
- * 
- * Examples of strings to use:
- * <table>
- * <title>File Attribute Matcher strings and results</title>
- * <tgroup cols='2' align='left'><thead>
- * <row><entry> Matcher String </entry><entry> Matches </entry></row></thead>
- * <tbody>
- * <row><entry>"*"</entry><entry>matches all attributes.</entry></row>
- * <row><entry>"standard::is-hidden"</entry><entry>matches only the key is-hidden in the standard namespace.</entry></row>
- * <row><entry>"standard::type,unix::*"</entry><entry>matches the type key in the standard namespace and
- * all keys in the unix namespace.</entry></row>
- * </tbody></tgroup>
- * </table>
- * 
- * Returns: a #GFileAttributeMatcher.
- **/
+ * from namespaces with a double colon. Several "namespace::key" strings may be
+ * concatenated with a single comma (e.g. "standard::type,standard::is-hidden").
+ * The wildcard "*" may be used to match all keys and namespaces, or
+ * "namespace::*" will match all keys in a given namespace.
+ *
+ * ## Examples of file attribute matcher strings and results
+ *
+ * - `"*"`: matches all attributes.
+ * - `"standard::is-hidden"`: matches only the key is-hidden in the
+ *   standard namespace.
+ * - `"standard::type,unix::*"`: matches the type key in the standard
+ *   namespace and all keys in the unix namespace.
+ *
+ * Returns: a #GFileAttributeMatcher
+ */
 GFileAttributeMatcher *
 g_file_attribute_matcher_new (const char *attributes)
 {
@@ -1886,6 +2319,7 @@ g_file_attribute_matcher_new (const char *attributes)
 
   matcher = g_malloc0 (sizeof (GFileAttributeMatcher));
   matcher->ref = 1;
+  matcher->sub_matchers = g_array_new (FALSE, FALSE, sizeof (SubMatcher));
 
   split = g_strsplit (attributes, ",", -1);
 
@@ -1895,41 +2329,114 @@ g_file_attribute_matcher_new (const char *attributes)
 	matcher->all = TRUE;
       else
 	{
-	  guint32 id, mask;
-  
+          SubMatcher s;
+
 	  colon = strstr (split[i], "::");
 	  if (colon != NULL &&
 	      !(colon[2] == 0 ||
 		(colon[2] == '*' &&
 		 colon[3] == 0)))
 	    {
-	      id = lookup_attribute (split[i]);
-	      mask = 0xffffffff;
+	      s.id = lookup_attribute (split[i]);
+	      s.mask = 0xffffffff;
 	    }
 	  else
 	    {
 	      if (colon)
 		*colon = 0;
 
-	      id = lookup_namespace (split[i]) << NS_POS;
-	      mask = NS_MASK << NS_POS;
+	      s.id = lookup_namespace (split[i]) << NS_POS;
+	      s.mask = NS_MASK << NS_POS;
 	    }
-	  
-	  matcher_add (matcher, id, mask);
+
+          g_array_append_val (matcher->sub_matchers, s);
 	}
     }
 
   g_strfreev (split);
 
+  matcher = matcher_optimize (matcher);
+
   return matcher;
+}
+
+/**
+ * g_file_attribute_matcher_subtract:
+ * @matcher: Matcher to subtract from 
+ * @subtract: The matcher to subtract
+ *
+ * Subtracts all attributes of @subtract from @matcher and returns
+ * a matcher that supports those attributes.
+ *
+ * Note that currently it is not possible to remove a single
+ * attribute when the @matcher matches the whole namespace - or remove
+ * a namespace or attribute when the matcher matches everything. This
+ * is a limitation of the current implementation, but may be fixed
+ * in the future.
+ *
+ * Returns: A file attribute matcher matching all attributes of
+ *     @matcher that are not matched by @subtract
+ **/
+GFileAttributeMatcher *
+g_file_attribute_matcher_subtract (GFileAttributeMatcher *matcher,
+                                   GFileAttributeMatcher *subtract)
+{
+  GFileAttributeMatcher *result;
+  guint mi, si;
+  SubMatcher *msub, *ssub;
+
+  if (matcher == NULL)
+    return NULL;
+  if (subtract == NULL)
+    return g_file_attribute_matcher_ref (matcher);
+  if (subtract->all)
+    return NULL;
+  if (matcher->all)
+    return g_file_attribute_matcher_ref (matcher);
+
+  result = g_malloc0 (sizeof (GFileAttributeMatcher));
+  result->ref = 1;
+  result->sub_matchers = g_array_new (FALSE, FALSE, sizeof (SubMatcher));
+
+  si = 0;
+  g_assert (subtract->sub_matchers->len > 0);
+  ssub = &g_array_index (subtract->sub_matchers, SubMatcher, si);
+
+  for (mi = 0; mi < matcher->sub_matchers->len; mi++)
+    {
+      msub = &g_array_index (matcher->sub_matchers, SubMatcher, mi);
+
+retry:
+      if (sub_matcher_matches (ssub, msub))
+        continue;
+
+      si++;
+      if (si >= subtract->sub_matchers->len)
+        break;
+
+      ssub = &g_array_index (subtract->sub_matchers, SubMatcher, si);
+      if (ssub->id <= msub->id)
+        goto retry;
+
+      g_array_append_val (result->sub_matchers, *msub);
+    }
+
+  if (mi < matcher->sub_matchers->len)
+    g_array_append_vals (result->sub_matchers,
+                         &g_array_index (matcher->sub_matchers, SubMatcher, mi),
+                         matcher->sub_matchers->len - mi);
+
+  result = matcher_optimize (result);
+
+  return result;
 }
 
 /**
  * g_file_attribute_matcher_ref:
  * @matcher: a #GFileAttributeMatcher.
- * 
+ *
  * References a file attribute matcher.
- * 
+ *
  * Returns: a #GFileAttributeMatcher.
  **/
 GFileAttributeMatcher *
@@ -1946,10 +2453,10 @@ g_file_attribute_matcher_ref (GFileAttributeMatcher *matcher)
 /**
  * g_file_attribute_matcher_unref:
  * @matcher: a #GFileAttributeMatcher.
- * 
- * Unreferences @matcher. If the reference count falls below 1, 
+ *
+ * Unreferences @matcher. If the reference count falls below 1,
  * the @matcher is automatically freed.
- * 
+ *
  **/
 void
 g_file_attribute_matcher_unref (GFileAttributeMatcher *matcher)
@@ -1957,12 +2464,12 @@ g_file_attribute_matcher_unref (GFileAttributeMatcher *matcher)
   if (matcher)
     {
       g_return_if_fail (matcher->ref > 0);
-      
+
       if (g_atomic_int_dec_and_test (&matcher->ref))
 	{
-	  if (matcher->more_sub_matchers)
-	    g_array_free (matcher->more_sub_matchers, TRUE);
-	  
+	  if (matcher->sub_matchers)
+	    g_array_free (matcher->sub_matchers, TRUE);
+
 	  g_free (matcher);
 	}
     }
@@ -1972,16 +2479,17 @@ g_file_attribute_matcher_unref (GFileAttributeMatcher *matcher)
  * g_file_attribute_matcher_matches_only:
  * @matcher: a #GFileAttributeMatcher.
  * @attribute: a file attribute key.
- * 
+ *
  * Checks if a attribute matcher only matches a given attribute. Always
  * returns %FALSE if "*" was used when creating the matcher.
- * 
+ *
  * Returns: %TRUE if the matcher only matches @attribute. %FALSE otherwise.
  **/
 gboolean
 g_file_attribute_matcher_matches_only (GFileAttributeMatcher *matcher,
 				       const char            *attribute)
 {
+  SubMatcher *sub_matcher;
   guint32 id;
 
   g_return_val_if_fail (attribute != NULL && *attribute != '\0', FALSE);
@@ -1989,16 +2497,16 @@ g_file_attribute_matcher_matches_only (GFileAttributeMatcher *matcher,
   if (matcher == NULL ||
       matcher->all)
     return FALSE;
+
+  if (matcher->sub_matchers->len != 1)
+    return FALSE;
   
   id = lookup_attribute (attribute);
-
-  if (matcher->sub_matchers[0].id != 0 &&
-      matcher->sub_matchers[1].id == 0 &&
-      matcher->sub_matchers[0].mask == 0xffffffff &&
-      matcher->sub_matchers[0].id == id)
-    return TRUE;
   
-  return FALSE;
+  sub_matcher = &g_array_index (matcher->sub_matchers, SubMatcher, 0);
+  
+  return sub_matcher->id == id &&
+         sub_matcher->mask == 0xffffffff;
 }
 
 static gboolean
@@ -2007,40 +2515,31 @@ matcher_matches_id (GFileAttributeMatcher *matcher,
 {
   SubMatcher *sub_matchers;
   int i;
-  
-  for (i = 0; i < ON_STACK_MATCHERS; i++)
-    {
-      if (matcher->sub_matchers[i].id == 0)
-	return FALSE;
-      
-      if (matcher->sub_matchers[i].id == (id & matcher->sub_matchers[i].mask))
-	return TRUE;
-    }
 
-  if (matcher->more_sub_matchers)
+  if (matcher->sub_matchers)
     {
-      sub_matchers = (SubMatcher *)matcher->more_sub_matchers->data;
-      for (i = 0; i < matcher->more_sub_matchers->len; i++)
+      sub_matchers = (SubMatcher *)matcher->sub_matchers->data;
+      for (i = 0; i < matcher->sub_matchers->len; i++)
 	{
 	  if (sub_matchers[i].id == (id & sub_matchers[i].mask))
 	    return TRUE;
 	}
     }
-  
+
   return FALSE;
 }
 
-static gboolean
-g_file_attribute_matcher_matches_id (GFileAttributeMatcher *matcher,
-                                     guint32                id)
+gboolean
+_g_file_attribute_matcher_matches_id (GFileAttributeMatcher *matcher,
+                                      guint32                id)
 {
   /* We return a NULL matcher for an empty match string, so handle this */
   if (matcher == NULL)
     return FALSE;
-  
+
   if (matcher->all)
     return TRUE;
-  
+
   return matcher_matches_id (matcher, id);
 }
 
@@ -2049,10 +2548,10 @@ g_file_attribute_matcher_matches_id (GFileAttributeMatcher *matcher,
  * @matcher: a #GFileAttributeMatcher.
  * @attribute: a file attribute key.
  *
- * Checks if an attribute will be matched by an attribute matcher. If 
+ * Checks if an attribute will be matched by an attribute matcher. If
  * the matcher was created with the "*" matching string, this function
  * will always return %TRUE.
- * 
+ *
  * Returns: %TRUE if @attribute matches @matcher. %FALSE otherwise.
  **/
 gboolean
@@ -2064,10 +2563,10 @@ g_file_attribute_matcher_matches (GFileAttributeMatcher *matcher,
   /* We return a NULL matcher for an empty match string, so handle this */
   if (matcher == NULL)
     return FALSE;
-  
+
   if (matcher->all)
     return TRUE;
-  
+
   return matcher_matches_id (matcher, lookup_attribute (attribute));
 }
 
@@ -2076,14 +2575,14 @@ g_file_attribute_matcher_matches (GFileAttributeMatcher *matcher,
  * g_file_attribute_matcher_enumerate_namespace:
  * @matcher: a #GFileAttributeMatcher.
  * @ns: a string containing a file attribute namespace.
- * 
+ *
  * Checks if the matcher will match all of the keys in a given namespace.
- * This will always return %TRUE if a wildcard character is in use (e.g. if 
+ * This will always return %TRUE if a wildcard character is in use (e.g. if
  * matcher was created with "standard::*" and @ns is "standard", or if matcher was created
- * using "*" and namespace is anything.) 
- * 
+ * using "*" and namespace is anything.)
+ *
  * TODO: this is awkwardly worded.
- * 
+ *
  * Returns: %TRUE if the matcher matches all of the entries
  * in the given @ns, %FALSE otherwise.
  **/
@@ -2094,28 +2593,22 @@ g_file_attribute_matcher_enumerate_namespace (GFileAttributeMatcher *matcher,
   SubMatcher *sub_matchers;
   int ns_id;
   int i;
-  
+
   g_return_val_if_fail (ns != NULL && *ns != '\0', FALSE);
 
   /* We return a NULL matcher for an empty match string, so handle this */
   if (matcher == NULL)
     return FALSE;
-  
+
   if (matcher->all)
     return TRUE;
 
   ns_id = lookup_namespace (ns) << NS_POS;
 
-  for (i = 0; i < ON_STACK_MATCHERS; i++)
+  if (matcher->sub_matchers)
     {
-      if (matcher->sub_matchers[i].id == ns_id)
-	return TRUE;
-    }
-
-  if (matcher->more_sub_matchers)
-    {
-      sub_matchers = (SubMatcher *)matcher->more_sub_matchers->data;
-      for (i = 0; i < matcher->more_sub_matchers->len; i++)
+      sub_matchers = (SubMatcher *)matcher->sub_matchers->data;
+      for (i = 0; i < matcher->sub_matchers->len; i++)
 	{
 	  if (sub_matchers[i].id == ns_id)
 	    return TRUE;
@@ -2124,17 +2617,17 @@ g_file_attribute_matcher_enumerate_namespace (GFileAttributeMatcher *matcher,
 
   matcher->iterator_ns = ns_id;
   matcher->iterator_pos = 0;
-  
+
   return FALSE;
 }
 
 /**
  * g_file_attribute_matcher_enumerate_next:
  * @matcher: a #GFileAttributeMatcher.
- * 
+ *
  * Gets the next matched attribute from a #GFileAttributeMatcher.
- * 
- * Returns: a string containing the next attribute or %NULL if 
+ *
+ * Returns: a string containing the next attribute or %NULL if
  * no more attribute exist.
  **/
 const char *
@@ -2151,24 +2644,13 @@ g_file_attribute_matcher_enumerate_next (GFileAttributeMatcher *matcher)
     {
       i = matcher->iterator_pos++;
 
-      if (i < ON_STACK_MATCHERS)
-	{
-	  if (matcher->sub_matchers[i].id == 0)
-	    return NULL;
+      if (matcher->sub_matchers == NULL)
+        return NULL;
 
-	  sub_matcher = &matcher->sub_matchers[i];
-	}
+      if (i < matcher->sub_matchers->len)
+        sub_matcher = &g_array_index (matcher->sub_matchers, SubMatcher, i);
       else
-	{
-	  if (matcher->more_sub_matchers == NULL)
-	    return NULL;
-      
-	  i -= ON_STACK_MATCHERS;
-	  if (i < matcher->more_sub_matchers->len)
-	    sub_matcher = &g_array_index (matcher->more_sub_matchers, SubMatcher, i);
-	  else
-	    return NULL;
-	}
+        return NULL;
 
       if (sub_matcher->mask == 0xffffffff &&
 	  (sub_matcher->id & (NS_MASK << NS_POS)) == matcher->iterator_ns)
@@ -2176,5 +2658,42 @@ g_file_attribute_matcher_enumerate_next (GFileAttributeMatcher *matcher)
     }
 }
 
-#define __G_FILE_INFO_C__
-#include "gioaliasdef.c"
+/**
+ * g_file_attribute_matcher_to_string:
+ * @matcher: (allow-none): a #GFileAttributeMatcher.
+ *
+ * Prints what the matcher is matching against. The format will be 
+ * equal to the format passed to g_file_attribute_matcher_new().
+ * The output however, might not be identical, as the matcher may
+ * decide to use a different order or omit needless parts.
+ *
+ * Returns: a string describing the attributes the matcher matches
+ *   against or %NULL if @matcher was %NULL.
+ *
+ * Since: 2.32
+ **/
+char *
+g_file_attribute_matcher_to_string (GFileAttributeMatcher *matcher)
+{
+  GString *string;
+  guint i;
+
+  if (matcher == NULL)
+    return NULL;
+
+  if (matcher->all)
+    return g_strdup ("*");
+
+  string = g_string_new ("");
+  for (i = 0; i < matcher->sub_matchers->len; i++)
+    {
+      SubMatcher *submatcher = &g_array_index (matcher->sub_matchers, SubMatcher, i);
+
+      if (i > 0)
+        g_string_append_c (string, ',');
+
+      g_string_append (string, get_attribute_for_id (submatcher->id));
+    }
+
+  return g_string_free (string, FALSE);
+}

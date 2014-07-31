@@ -20,13 +20,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "config.h"
 #endif
 
 #include <assert.h>
@@ -272,7 +270,10 @@ _xdg_mime_magic_parse_header (FILE *magic_file, XdgMimeMagicMatch *match)
 
   buffer = (char *)_xdg_mime_magic_read_to_newline (magic_file, &end_of_file);
   if (end_of_file)
-    return XDG_MIME_MAGIC_EOF;
+    {
+      free (buffer);
+      return XDG_MIME_MAGIC_EOF;
+    }
 
   end_ptr = buffer;
   while (*end_ptr != ']' && *end_ptr != '\000' && *end_ptr != '\n')
@@ -476,7 +477,9 @@ _xdg_mime_magic_parse_magic_line (FILE              *magic_file,
       /* We clean up the matchlet, byte swapping if needed */
       if (matchlet->word_size > 1)
 	{
+#if LITTLE_ENDIAN
 	  int i;
+#endif
 	  if (matchlet->value_length % matchlet->word_size != 0)
 	    {
 	      _xdg_mime_magic_matchlet_free (matchlet);

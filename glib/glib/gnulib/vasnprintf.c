@@ -12,15 +12,15 @@
    Library General Public License for more details.
 
    You should have received a copy of the GNU Library General Public
-   License along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-   USA.  */
+   License along with this program; if not, see <http://www.gnu.org/licenses/>.  */
 
+#ifndef _WIN32
 /* Tell glibc's <stdio.h> to provide a prototype for snprintf().
    This must come before <config.h> because <config.h> may include
    <features.h>, and once <features.h> has been included, it's too late.  */
 #ifndef _GNU_SOURCE
 # define _GNU_SOURCE    1
+#endif
 #endif
 
 #ifdef HAVE_CONFIG_H
@@ -572,11 +572,15 @@ vasnprintf (char *resultbuf, size_t *lengthp, const char *format, va_list args)
 # ifdef HAVE_WCHAR_T
 		      if (type == TYPE_WIDE_STRING)
 			tmp_length =
-			  local_wcslen (a.arg[dp->arg_index].a.a_wide_string)
+			  (a.arg[dp->arg_index].a.a_wide_string == NULL
+			  ? 6 /* wcslen(L"(null)") */
+			   : local_wcslen (a.arg[dp->arg_index].a.a_wide_string)) 
 			  * MB_CUR_MAX;
 		      else
 # endif
-			tmp_length = strlen (a.arg[dp->arg_index].a.a_string);
+			tmp_length = a.arg[dp->arg_index].a.a_string == NULL
+			  ? 6 /* strlen("(null)") */
+			  : strlen (a.arg[dp->arg_index].a.a_string);
 		      break;
 
 		    case 'p':
@@ -723,13 +727,16 @@ vasnprintf (char *resultbuf, size_t *lengthp, const char *format, va_list args)
 		  {
 		    size_t maxlen;
 		    int count;
+#if HAVE_SNPRINTF
 		    int retcount;
+#endif
 
 		    maxlen = allocated - length;
 		    count = -1;
-		    retcount = 0;
 
 #if HAVE_SNPRINTF
+		    retcount = 0;
+
 #define SNPRINTF_BUF(arg) \
 		    switch (prefix_count)				    \
 		      {							    \
@@ -946,14 +953,18 @@ vasnprintf (char *resultbuf, size_t *lengthp, const char *format, va_list args)
 #endif
 		      case TYPE_STRING:
 			{
-			  const char *arg = a.arg[dp->arg_index].a.a_string;
+			  const char *arg = a.arg[dp->arg_index].a.a_string == NULL
+			    ? "(null)"
+			    : a.arg[dp->arg_index].a.a_string;
 			  SNPRINTF_BUF (arg);
 			}
 			break;
 #ifdef HAVE_WCHAR_T
 		      case TYPE_WIDE_STRING:
 			{
-			  const wchar_t *arg = a.arg[dp->arg_index].a.a_wide_string;
+			  const wchar_t *arg = a.arg[dp->arg_index].a.a_wide_string == NULL
+			    ? L"(null)"
+			    : a.arg[dp->arg_index].a.a_wide_string;
 			  SNPRINTF_BUF (arg);
 			}
 			break;

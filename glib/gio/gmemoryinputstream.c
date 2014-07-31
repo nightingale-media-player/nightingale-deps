@@ -13,22 +13,21 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Christian Kellner <gicmo@gnome.org> 
  */
 
-#include <config.h>
+#include "config.h"
 #include "gmemoryinputstream.h"
+#include "gpollableinputstream.h"
 #include "ginputstream.h"
 #include "gseekable.h"
 #include "string.h"
-#include "gsimpleasyncresult.h"
+#include "gtask.h"
+#include "gioerror.h"
 #include "glibintl.h"
 
-#include "gioalias.h"
 
 /**
  * SECTION:gmemoryinputstream
@@ -39,15 +38,9 @@
  * #GMemoryInputStream is a class for using arbitrary
  * memory chunks as input for GIO streaming input operations.
  *
+ * As of GLib 2.34, #GMemoryInputStream implements
+ * #GPollableInputStream.
  */
-
-typedef struct _Chunk Chunk;
-
-struct _Chunk {
-  guint8         *data;
-  gsize           len;
-  GDestroyNotify  destroy;
-};
 
 struct _GMemoryInputStreamPrivate {
   GSList *chunks;
@@ -66,16 +59,6 @@ static gssize   g_memory_input_stream_skip         (GInputStream         *stream
 						    GError              **error);
 static gboolean g_memory_input_stream_close        (GInputStream         *stream,
 						    GCancellable         *cancellable,
-						    GError              **error);
-static void     g_memory_input_stream_read_async   (GInputStream         *stream,
-						    void                 *buffer,
-						    gsize                 count,
-						    int                   io_priority,
-						    GCancellable         *cancellable,
-						    GAsyncReadyCallback   callback,
-						    gpointer              user_data);
-static gssize   g_memory_input_stream_read_finish  (GInputStream         *stream,
-						    GAsyncResult         *result,
 						    GError              **error);
 static void     g_memory_input_stream_skip_async   (GInputStream         *stream,
 						    gsize                 count,
@@ -108,11 +91,21 @@ static gboolean g_memory_input_stream_truncate            (GSeekable       *seek
                                                            goffset          offset,
                                                            GCancellable    *cancellable,
                                                            GError         **error);
+
+static void     g_memory_input_stream_pollable_iface_init (GPollableInputStreamInterface *iface);
+static gboolean g_memory_input_stream_is_readable         (GPollableInputStream *stream);
+static GSource *g_memory_input_stream_create_source       (GPollableInputStream *stream,
+							   GCancellable          *cancellable);
+
 static void     g_memory_input_stream_finalize            (GObject         *object);
 
 G_DEFINE_TYPE_WITH_CODE (GMemoryInputStream, g_memory_input_stream, G_TYPE_INPUT_STREAM,
+                         G_ADD_PRIVATE (GMemoryInputStream)
                          G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE,
-                                                g_memory_input_stream_seekable_iface_init))
+                                                g_memory_input_stream_seekable_iface_init);
+                         G_IMPLEMENT_INTERFACE (G_TYPE_POLLABLE_INPUT_STREAM,
+                                                g_memory_input_stream_pollable_iface_init);
+			 )
 
 
 static void
@@ -120,8 +113,6 @@ g_memory_input_stream_class_init (GMemoryInputStreamClass *klass)
 {
   GObjectClass *object_class;
   GInputStreamClass *istream_class;
-
-  g_type_class_add_private (klass, sizeof (GMemoryInputStreamPrivate));
 
   object_class = G_OBJECT_CLASS (klass);
   object_class->finalize     = g_memory_input_stream_finalize;
@@ -131,24 +122,10 @@ g_memory_input_stream_class_init (GMemoryInputStreamClass *klass)
   istream_class->skip  = g_memory_input_stream_skip;
   istream_class->close_fn = g_memory_input_stream_close;
 
-  istream_class->read_async  = g_memory_input_stream_read_async;
-  istream_class->read_finish  = g_memory_input_stream_read_finish;
   istream_class->skip_async  = g_memory_input_stream_skip_async;
   istream_class->skip_finish  = g_memory_input_stream_skip_finish;
   istream_class->close_async = g_memory_input_stream_close_async;
   istream_class->close_finish = g_memory_input_stream_close_finish;
-}
-
-static void
-free_chunk (gpointer data, 
-            gpointer user_data)
-{
-  Chunk *chunk = data;
-
-  if (chunk->destroy)
-    chunk->destroy (chunk->data);
-
-  g_slice_free (Chunk, chunk);
 }
 
 static void
@@ -160,11 +137,9 @@ g_memory_input_stream_finalize (GObject *object)
   stream = G_MEMORY_INPUT_STREAM (object);
   priv = stream->priv;
 
-  g_slist_foreach (priv->chunks, free_chunk, NULL);
-  g_slist_free (priv->chunks);
+  g_slist_free_full (priv->chunks, (GDestroyNotify)g_bytes_unref);
 
-  if (G_OBJECT_CLASS (g_memory_input_stream_parent_class)->finalize)
-    (*G_OBJECT_CLASS (g_memory_input_stream_parent_class)->finalize) (object);
+  G_OBJECT_CLASS (g_memory_input_stream_parent_class)->finalize (object);
 }
 
 static void
@@ -178,11 +153,16 @@ g_memory_input_stream_seekable_iface_init (GSeekableIface *iface)
 }
 
 static void
+g_memory_input_stream_pollable_iface_init (GPollableInputStreamInterface *iface)
+{
+  iface->is_readable   = g_memory_input_stream_is_readable;
+  iface->create_source = g_memory_input_stream_create_source;
+}
+
+static void
 g_memory_input_stream_init (GMemoryInputStream *stream)
 {
-  stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream,
-                                              G_TYPE_MEMORY_INPUT_STREAM,
-                                              GMemoryInputStreamPrivate);
+  stream->priv = g_memory_input_stream_get_instance_private (stream);
 }
 
 /**
@@ -204,9 +184,9 @@ g_memory_input_stream_new (void)
 
 /**
  * g_memory_input_stream_new_from_data:
- * @data: input data
+ * @data: (array length=len) (element-type guint8) (transfer full): input data
  * @len: length of the data, may be -1 if @data is a nul-terminated string
- * @destroy: function that is called to free @data, or %NULL
+ * @destroy: (allow-none): function that is called to free @data, or %NULL
  *
  * Creates a new #GMemoryInputStream with data in memory of a given size.
  * 
@@ -228,11 +208,35 @@ g_memory_input_stream_new_from_data (const void     *data,
 }
 
 /**
+ * g_memory_input_stream_new_from_bytes:
+ * @bytes: a #GBytes
+ *
+ * Creates a new #GMemoryInputStream with data from the given @bytes.
+ *
+ * Returns: new #GInputStream read from @bytes
+ *
+ * Since: 2.34
+ **/
+GInputStream *
+g_memory_input_stream_new_from_bytes (GBytes  *bytes)
+{
+  
+  GInputStream *stream;
+
+  stream = g_memory_input_stream_new ();
+
+  g_memory_input_stream_add_bytes (G_MEMORY_INPUT_STREAM (stream),
+				   bytes);
+
+  return stream;
+}
+
+/**
  * g_memory_input_stream_add_data:
  * @stream: a #GMemoryInputStream
- * @data: input data
+ * @data: (array length=len) (element-type guint8) (transfer full): input data
  * @len: length of the data, may be -1 if @data is a nul-terminated string
- * @destroy: function that is called to free @data, or %NULL
+ * @destroy: (allow-none): function that is called to free @data, or %NULL
  *
  * Appends @data to data that can be read from the input stream
  */
@@ -242,24 +246,43 @@ g_memory_input_stream_add_data (GMemoryInputStream *stream,
                                 gssize              len,
                                 GDestroyNotify      destroy)
 {
-  GMemoryInputStreamPrivate *priv;
-  Chunk *chunk;
- 
-  g_return_if_fail (G_IS_MEMORY_INPUT_STREAM (stream));
-  g_return_if_fail (data != NULL);
-
-  priv = stream->priv;
+  GBytes *bytes;
 
   if (len == -1)
     len = strlen (data);
-  
-  chunk = g_slice_new (Chunk);
-  chunk->data = (guint8 *)data;
-  chunk->len = len;
-  chunk->destroy = destroy;
 
-  priv->chunks = g_slist_append (priv->chunks, chunk);
-  priv->len += chunk->len;
+  /* It's safe to discard the const here because we're chaining the
+   * destroy callback.
+   */
+  bytes = g_bytes_new_with_free_func (data, len, destroy, (void*)data);
+
+  g_memory_input_stream_add_bytes (stream, bytes);
+  
+  g_bytes_unref (bytes);
+}
+
+/**
+ * g_memory_input_stream_add_bytes:
+ * @stream: a #GMemoryInputStream
+ * @bytes: input data
+ *
+ * Appends @bytes to data that can be read from the input stream.
+ *
+ * Since: 2.34
+ */
+void
+g_memory_input_stream_add_bytes (GMemoryInputStream *stream,
+				 GBytes             *bytes)
+{
+  GMemoryInputStreamPrivate *priv;
+ 
+  g_return_if_fail (G_IS_MEMORY_INPUT_STREAM (stream));
+  g_return_if_fail (bytes != NULL);
+
+  priv = stream->priv;
+
+  priv->chunks = g_slist_append (priv->chunks, g_bytes_ref (bytes));
+  priv->len += g_bytes_get_size (bytes);
 }
 
 static gssize
@@ -272,7 +295,8 @@ g_memory_input_stream_read (GInputStream  *stream,
   GMemoryInputStream *memory_stream;
   GMemoryInputStreamPrivate *priv;
   GSList *l;
-  Chunk *chunk;
+  GBytes *chunk;
+  gsize len;
   gsize offset, start, rest, size;
 
   memory_stream = G_MEMORY_INPUT_STREAM (stream);
@@ -283,12 +307,13 @@ g_memory_input_stream_read (GInputStream  *stream,
   offset = 0;
   for (l = priv->chunks; l; l = l->next) 
     {
-      chunk = (Chunk *)l->data;
+      chunk = (GBytes *)l->data;
+      len = g_bytes_get_size (chunk);
 
-      if (offset + chunk->len > priv->pos)
+      if (offset + len > priv->pos)
         break;
 
-      offset += chunk->len;
+      offset += len;
     }
   
   start = priv->pos - offset;
@@ -296,10 +321,14 @@ g_memory_input_stream_read (GInputStream  *stream,
 
   for (; l && rest > 0; l = l->next)
     {
-      chunk = (Chunk *)l->data;
-      size = MIN (rest, chunk->len - start);
+      const guint8* chunk_data;
+      chunk = (GBytes *)l->data;
 
-      memcpy ((guint8 *)buffer + (count - rest), chunk->data + start, size);
+      chunk_data = g_bytes_get_data (chunk, &len);
+
+      size = MIN (rest, len - start);
+
+      memcpy ((guint8 *)buffer + (count - rest), chunk_data + start, size);
       rest -= size;
 
       start = 0;
@@ -337,43 +366,6 @@ g_memory_input_stream_close (GInputStream  *stream,
 }
 
 static void
-g_memory_input_stream_read_async (GInputStream        *stream,
-                                  void                *buffer,
-                                  gsize                count,
-                                  int                  io_priority,
-                                  GCancellable        *cancellable,
-                                  GAsyncReadyCallback  callback,
-                                  gpointer             user_data)
-{
-  GSimpleAsyncResult *simple;
-  gssize nread;
-
-  nread = g_memory_input_stream_read (stream, buffer, count, cancellable, NULL);
-  simple = g_simple_async_result_new (G_OBJECT (stream),
-				      callback,
-				      user_data,
-				      g_memory_input_stream_read_async);
-  g_simple_async_result_set_op_res_gssize (simple, nread);
-  g_simple_async_result_complete_in_idle (simple);
-  g_object_unref (simple);
-}
-
-static gssize
-g_memory_input_stream_read_finish (GInputStream  *stream,
-                                   GAsyncResult  *result,
-                                   GError       **error)
-{
-  GSimpleAsyncResult *simple;
-  gssize nread;
-
-  simple = G_SIMPLE_ASYNC_RESULT (result);
-  g_warn_if_fail (g_simple_async_result_get_source_tag (simple) == g_memory_input_stream_read_async);
-  
-  nread = g_simple_async_result_get_op_res_gssize (simple);
-  return nread;
-}
-
-static void
 g_memory_input_stream_skip_async (GInputStream        *stream,
                                   gsize                count,
                                   int                  io_priority,
@@ -381,17 +373,17 @@ g_memory_input_stream_skip_async (GInputStream        *stream,
                                   GAsyncReadyCallback  callback,
                                   gpointer             user_data)
 {
-  GSimpleAsyncResult *simple;
+  GTask *task;
   gssize nskipped;
+  GError *error = NULL;
 
-  nskipped = g_memory_input_stream_skip (stream, count, cancellable, NULL);
-  simple = g_simple_async_result_new (G_OBJECT (stream),
-                                      callback,
-                                      user_data,
-                                      g_memory_input_stream_skip_async);
-  g_simple_async_result_set_op_res_gssize (simple, nskipped);
-  g_simple_async_result_complete_in_idle (simple);
-  g_object_unref (simple);
+  nskipped = G_INPUT_STREAM_GET_CLASS (stream)->skip (stream, count, cancellable, &error);
+  task = g_task_new (stream, cancellable, callback, user_data);
+  if (error)
+    g_task_return_error (task, error);
+  else
+    g_task_return_int (task, nskipped);
+  g_object_unref (task);
 }
 
 static gssize
@@ -399,14 +391,9 @@ g_memory_input_stream_skip_finish (GInputStream  *stream,
                                    GAsyncResult  *result,
                                    GError       **error)
 {
-  GSimpleAsyncResult *simple;
-  gssize nskipped;
+  g_return_val_if_fail (g_task_is_valid (result, stream), -1);
 
-  simple = G_SIMPLE_ASYNC_RESULT (result);
-  g_warn_if_fail (g_simple_async_result_get_source_tag (simple) == g_memory_input_stream_skip_async);
-  
-  nskipped = g_simple_async_result_get_op_res_gssize (simple);
-  return nskipped;
+  return g_task_propagate_int (G_TASK (result), error);
 }
 
 static void
@@ -416,14 +403,11 @@ g_memory_input_stream_close_async (GInputStream        *stream,
                                    GAsyncReadyCallback  callback,
                                    gpointer             user_data)
 {
-  GSimpleAsyncResult *simple;
-  
-  simple = g_simple_async_result_new (G_OBJECT (stream),
-				      callback,
-				      user_data,
-				      g_memory_input_stream_close_async);
-  g_simple_async_result_complete_in_idle (simple);
-  g_object_unref (simple);
+  GTask *task;
+
+  task = g_task_new (stream, cancellable, callback, user_data);
+  g_task_return_boolean (task, TRUE);
+  g_object_unref (task);
 }
 
 static gboolean
@@ -481,20 +465,20 @@ g_memory_input_stream_seek (GSeekable     *seekable,
       break;
   
     default:
-      g_set_error (error,
-                   G_IO_ERROR,
-                   G_IO_ERROR_INVALID_ARGUMENT,
-                   _("Invalid GSeekType supplied"));
+      g_set_error_literal (error,
+                           G_IO_ERROR,
+                           G_IO_ERROR_INVALID_ARGUMENT,
+                           _("Invalid GSeekType supplied"));
 
       return FALSE;
     }
 
   if (absolute < 0 || absolute > priv->len)
     {
-      g_set_error (error,
-                   G_IO_ERROR,
-                   G_IO_ERROR_INVALID_ARGUMENT,
-                   _("Invalid seek request"));
+      g_set_error_literal (error,
+                           G_IO_ERROR,
+                           G_IO_ERROR_INVALID_ARGUMENT,
+                           _("Invalid seek request"));
       return FALSE;
     }
 
@@ -515,12 +499,29 @@ g_memory_input_stream_truncate (GSeekable     *seekable,
                                 GCancellable  *cancellable,
                                 GError       **error)
 {
-  g_set_error (error,
-               G_IO_ERROR,
-               G_IO_ERROR_NOT_SUPPORTED,
-               _("Cannot truncate GMemoryInputStream"));
+  g_set_error_literal (error,
+                       G_IO_ERROR,
+                       G_IO_ERROR_NOT_SUPPORTED,
+                       _("Cannot truncate GMemoryInputStream"));
   return FALSE;
 }
 
-#define __G_MEMORY_INPUT_STREAM_C__
-#include "gioaliasdef.c"
+static gboolean
+g_memory_input_stream_is_readable (GPollableInputStream *stream)
+{
+  return TRUE;
+}
+
+static GSource *
+g_memory_input_stream_create_source (GPollableInputStream *stream,
+				     GCancellable         *cancellable)
+{
+  GSource *base_source, *pollable_source;
+
+  base_source = g_timeout_source_new (0);
+  pollable_source = g_pollable_source_new_full (stream, base_source,
+						cancellable);
+  g_source_unref (base_source);
+
+  return pollable_source;
+}

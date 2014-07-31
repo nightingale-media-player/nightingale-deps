@@ -12,60 +12,62 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
-/* 
- * MT safe ; except for g_on_error_stack_trace, but who wants thread safety 
+/*
+ * MT safe ; except for g_on_error_stack_trace, but who wants thread safety
  * then
  */
 
 #include "config.h"
+#include "glibconfig.h"
 
 #include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "glib.h"
-#include "gprintfint.h"
 
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#ifdef HAVE_SYS_TIMES_H
-#include <sys/times.h>
-#endif
 #include <sys/types.h>
-#ifdef HAVE_SYS_WAIT_H
-#include <sys/wait.h>
-#endif
 
 #include <time.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 
+#ifdef G_OS_UNIX
+#include <unistd.h>
+#include <sys/wait.h>
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif /* HAVE_SYS_SELECT_H */
+#endif
 
-#include <string.h> /* for bzero on BSD systems */
+#include <string.h>
 
 #ifdef G_OS_WIN32
-#  define STRICT		/* Strict typing, please */
+#  define STRICT                /* Strict typing, please */
 #  define _WIN32_WINDOWS 0x0401 /* to get IsDebuggerPresent */
 #  include <windows.h>
 #  undef STRICT
+#else
+#  include <fcntl.h>
 #endif
+
+#include "gbacktrace.h"
+
+#include "gtypes.h"
+#include "gmain.h"
+#include "gprintfint.h"
+#include "gutils.h"
+
 
 #ifndef NO_FD_SET
 #  define SELECT_MASK fd_set
@@ -77,15 +79,65 @@
 #  endif
 #endif
 
-#include "galias.h"
 
 #ifndef G_OS_WIN32
 static void stack_trace (char **args);
 #endif
 
-extern volatile gboolean glib_on_error_halt;
+/* People want to hit this from their debugger... */
+GLIB_AVAILABLE_IN_ALL volatile gboolean glib_on_error_halt;
 volatile gboolean glib_on_error_halt = TRUE;
 
+/**
+ * g_on_error_query:
+ * @prg_name: the program name, needed by gdb for the "[S]tack trace"
+ *     option. If @prg_name is %NULL, g_get_prgname() is called to get
+ *     the program name (which will work correctly if gdk_init() or
+ *     gtk_init() has been called)
+ *
+ * Prompts the user with
+ * `[E]xit, [H]alt, show [S]tack trace or [P]roceed`.
+ * This function is intended to be used for debugging use only.
+ * The following example shows how it can be used together with
+ * the g_log() functions.
+ *
+ * |[<!-- language="C" -->
+ * #include <glib.h>
+ *
+ * static void
+ * log_handler (const gchar   *log_domain,
+ *              GLogLevelFlags log_level,
+ *              const gchar   *message,
+ *              gpointer       user_data)
+ * {
+ *   g_log_default_handler (log_domain, log_level, message, user_data);
+ *
+ *   g_on_error_query (MY_PROGRAM_NAME);
+ * }
+ *
+ * int
+ * main (int argc, char *argv[])
+ * {
+ *   g_log_set_handler (MY_LOG_DOMAIN,
+ *                      G_LOG_LEVEL_WARNING |
+ *                      G_LOG_LEVEL_ERROR |
+ *                      G_LOG_LEVEL_CRITICAL,
+ *                      log_handler,
+ *                      NULL);
+ *   ...
+ * ]|
+ *
+ * If "[E]xit" is selected, the application terminates with a call
+ * to _exit(0).
+ *
+ * If "[S]tack" trace is selected, g_on_error_stack_trace() is called.
+ * This invokes gdb, which attaches to the current process and shows
+ * a stack trace. The prompt is then shown again.
+ *
+ * If "[P]roceed" is selected, the function returns.
+ *
+ * This function may cause different actions on non-UNIX platforms.
+ */
 void
 g_on_error_query (const gchar *prg_name)
 {
@@ -97,27 +149,27 @@ g_on_error_query (const gchar *prg_name)
 
   if (!prg_name)
     prg_name = g_get_prgname ();
-  
+
  retry:
-  
+
   if (prg_name)
     _g_fprintf (stdout,
-		"%s (pid:%u): %s%s%s: ",
-		prg_name,
-		(guint) getpid (),
-		query1,
-		query2,
-		query3);
+                "%s (pid:%u): %s%s%s: ",
+                prg_name,
+                (guint) getpid (),
+                query1,
+                query2,
+                query3);
   else
     _g_fprintf (stdout,
-		"(process:%u): %s%s: ",
-		(guint) getpid (),
-		query1,
-		query3);
+                "(process:%u): %s%s: ",
+                (guint) getpid (),
+                query1,
+                query3);
   fflush (stdout);
-  
+
   if (isatty(0) && isatty(1))
-    fgets (buf, 8, stdin); 
+    fgets (buf, 8, stdin);
   else
     strcpy (buf, "E\n");
 
@@ -125,20 +177,20 @@ g_on_error_query (const gchar *prg_name)
       && buf[1] == '\n')
     _exit (0);
   else if ((buf[0] == 'P' || buf[0] == 'p')
-	   && buf[1] == '\n')
+           && buf[1] == '\n')
     return;
   else if (prg_name
-	   && (buf[0] == 'S' || buf[0] == 's')
-	   && buf[1] == '\n')
+           && (buf[0] == 'S' || buf[0] == 's')
+           && buf[1] == '\n')
     {
       g_on_error_stack_trace (prg_name);
       goto retry;
     }
   else if ((buf[0] == 'H' || buf[0] == 'h')
-	   && buf[1] == '\n')
+           && buf[1] == '\n')
     {
       while (glib_on_error_halt)
-	;
+        ;
       glib_on_error_halt = TRUE;
       return;
     }
@@ -147,18 +199,31 @@ g_on_error_query (const gchar *prg_name)
 #else
   if (!prg_name)
     prg_name = g_get_prgname ();
-  
+
   MessageBox (NULL, "g_on_error_query called, program terminating",
-	      (prg_name && *prg_name) ? prg_name : NULL,
-	      MB_OK|MB_ICONERROR);
+              (prg_name && *prg_name) ? prg_name : NULL,
+              MB_OK|MB_ICONERROR);
   _exit(0);
 #endif
 }
 
+/**
+ * g_on_error_stack_trace:
+ * @prg_name: the program name, needed by gdb for the "[S]tack trace"
+ *     option
+ *
+ * Invokes gdb, which attaches to the current process and shows a
+ * stack trace. Called by g_on_error_query() when the "[S]tack trace"
+ * option is selected. You can get the current process's program name
+ * with g_get_prgname(), assuming that you have called gtk_init() or
+ * gdk_init().
+ *
+ * This function may cause different actions on non-UNIX platforms.
+ */
 void
 g_on_error_stack_trace (const gchar *prg_name)
 {
-#if defined(G_OS_UNIX) || defined(G_OS_BEOS)
+#if defined(G_OS_UNIX)
   pid_t pid;
   gchar buf[16];
   gchar *args[4] = { "gdb", NULL, NULL, NULL };
@@ -212,7 +277,7 @@ stack_trace (char **args)
   SELECT_MASK fdset;
   SELECT_MASK readset;
   struct timeval tv;
-  int sel, index, state;
+  int sel, idx, state;
   char buffer[256];
   char c;
 
@@ -228,12 +293,19 @@ stack_trace (char **args)
   pid = fork ();
   if (pid == 0)
     {
+      /* Save stderr for printing failure below */
+      int old_err = dup (2);
+      fcntl (old_err, F_SETFD, fcntl (old_err, F_GETFD) | FD_CLOEXEC);
+
       close (0); dup (in_fd[0]);   /* set the stdin to the in pipe */
       close (1); dup (out_fd[1]);  /* set the stdout to the out pipe */
       close (2); dup (out_fd[1]);  /* set the stderr to the out pipe */
 
       execvp (args[0], args);      /* exec gdb */
-      perror ("exec failed");
+
+      /* Print failure to original stderr */
+      close (2); dup (old_err);
+      perror ("exec gdb failed");
       _exit (0);
     }
   else if (pid == (pid_t) -1)
@@ -249,7 +321,7 @@ stack_trace (char **args)
   write (in_fd[1], "p x = 0\n", 8);
   write (in_fd[1], "quit\n", 5);
 
-  index = 0;
+  idx = 0;
   state = 0;
 
   while (1)
@@ -272,18 +344,18 @@ stack_trace (char **args)
                   if (c == '#')
                     {
                       state = 1;
-                      index = 0;
-                      buffer[index++] = c;
+                      idx = 0;
+                      buffer[idx++] = c;
                     }
                   break;
                 case 1:
-                  buffer[index++] = c;
+                  buffer[idx++] = c;
                   if ((c == '\n') || (c == '\r'))
                     {
-                      buffer[index] = 0;
+                      buffer[idx] = 0;
                       _g_fprintf (stdout, "%s", buffer);
                       state = 0;
-                      index = 0;
+                      idx = 0;
                     }
                   break;
                 default:
@@ -303,6 +375,3 @@ stack_trace (char **args)
 }
 
 #endif /* !G_OS_WIN32 */
-
-#define __G_BACKTRACE_C__
-#include "galiasdef.c"

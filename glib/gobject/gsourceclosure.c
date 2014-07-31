@@ -12,10 +12,10 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
+
+#include "config.h"
 
 #include "gsourceclosure.h"
 #include "gboxed.h"
@@ -23,20 +23,11 @@
 #include "gmarshal.h"
 #include "gvalue.h"
 #include "gvaluetypes.h"
-#include "gobjectalias.h"
+#ifdef G_OS_UNIX
+#include "glib-unix.h"
+#endif
 
-GType
-g_io_channel_get_type (void)
-{
-  static GType our_type = 0;
-  
-  if (our_type == 0)
-    our_type = g_boxed_type_register_static ("GIOChannel",
-					     (GBoxedCopyFunc) g_io_channel_ref,
-					     (GBoxedFreeFunc) g_io_channel_unref);
-
-  return our_type;
-}
+G_DEFINE_BOXED_TYPE (GIOChannel, g_io_channel, g_io_channel_ref, g_io_channel_unref)
 
 GType
 g_io_condition_get_type (void)
@@ -90,8 +81,8 @@ io_watch_closure_callback (GIOChannel   *channel,
 {
   GClosure *closure = data;
 
-  GValue params[2] = { { 0, }, { 0, } };
-  GValue result_value = { 0, };
+  GValue params[2] = { G_VALUE_INIT, G_VALUE_INIT };
+  GValue result_value = G_VALUE_INIT;
   gboolean result;
 
   g_value_init (&result_value, G_TYPE_BOOLEAN);
@@ -112,10 +103,76 @@ io_watch_closure_callback (GIOChannel   *channel,
 }
 
 static gboolean
+g_child_watch_closure_callback (GPid     pid,
+                                gint     status,
+                                gpointer data)
+{
+  GClosure *closure = data;
+
+  GValue params[2] = { G_VALUE_INIT, G_VALUE_INIT };
+  GValue result_value = G_VALUE_INIT;
+  gboolean result;
+
+  g_value_init (&result_value, G_TYPE_BOOLEAN);
+
+#ifdef G_OS_UNIX
+  g_value_init (&params[0], G_TYPE_ULONG);
+  g_value_set_ulong (&params[0], pid);
+#endif
+#ifdef G_OS_WIN32
+  g_value_init (&params[0], G_TYPE_POINTER);
+  g_value_set_pointer (&params[0], pid);
+#endif
+
+  g_value_init (&params[1], G_TYPE_INT);
+  g_value_set_int (&params[1], status);
+
+  g_closure_invoke (closure, &result_value, 2, params, NULL);
+
+  result = g_value_get_boolean (&result_value);
+  g_value_unset (&result_value);
+  g_value_unset (&params[0]);
+  g_value_unset (&params[1]);
+
+  return result;
+}
+
+#ifdef G_OS_UNIX
+static gboolean
+g_unix_fd_source_closure_callback (int           fd,
+                                   GIOCondition  condition,
+                                   gpointer      data)
+{
+  GClosure *closure = data;
+
+  GValue params[2] = { G_VALUE_INIT, G_VALUE_INIT };
+  GValue result_value = G_VALUE_INIT;
+  gboolean result;
+
+  g_value_init (&result_value, G_TYPE_BOOLEAN);
+
+  g_value_init (&params[0], G_TYPE_INT);
+  g_value_set_int (&params[0], fd);
+
+  g_value_init (&params[1], G_TYPE_IO_CONDITION);
+  g_value_set_flags (&params[1], condition);
+
+  g_closure_invoke (closure, &result_value, 2, params, NULL);
+
+  result = g_value_get_boolean (&result_value);
+  g_value_unset (&result_value);
+  g_value_unset (&params[0]);
+  g_value_unset (&params[1]);
+
+  return result;
+}
+#endif
+
+static gboolean
 source_closure_callback (gpointer data)
 {
   GClosure *closure = data;
-  GValue result_value = { 0, };
+  GValue result_value = G_VALUE_INIT;
   gboolean result;
 
   g_value_init (&result_value, G_TYPE_BOOLEAN);
@@ -139,10 +196,19 @@ closure_callback_get (gpointer     cb_data,
   if (!closure_callback)
     {
       if (source->source_funcs == &g_io_watch_funcs)
-	closure_callback = (GSourceFunc)io_watch_closure_callback;
+        closure_callback = (GSourceFunc)io_watch_closure_callback;
+      else if (source->source_funcs == &g_child_watch_funcs)
+        closure_callback = (GSourceFunc)g_child_watch_closure_callback;
+#ifdef G_OS_UNIX
+      else if (source->source_funcs == &g_unix_fd_source_funcs)
+        closure_callback = (GSourceFunc)g_unix_fd_source_closure_callback;
+#endif
       else if (source->source_funcs == &g_timeout_funcs ||
-	       source->source_funcs == &g_idle_funcs)
-	closure_callback = source_closure_callback;
+#ifdef G_OS_UNIX
+               source->source_funcs == &g_unix_signal_funcs ||
+#endif
+               source->source_funcs == &g_idle_funcs)
+        closure_callback = source_closure_callback;
     }
 
   *func = closure_callback;
@@ -155,6 +221,24 @@ static GSourceCallbackFuncs closure_callback_funcs = {
   closure_callback_get
 };
 
+static void
+closure_invalidated (gpointer  user_data,
+                     GClosure *closure)
+{
+  g_source_destroy (user_data);
+}
+
+/**
+ * g_source_set_closure:
+ * @source: the source
+ * @closure: a #GClosure
+ *
+ * Set the callback for a source as a #GClosure.
+ *
+ * If the source is not one of the standard GLib types, the @closure_callback
+ * and @closure_marshal fields of the #GSourceFuncs structure must have been
+ * filled in with pointers to appropriate functions.
+ */
 void
 g_source_set_closure (GSource  *source,
 		      GClosure *closure)
@@ -163,11 +247,16 @@ g_source_set_closure (GSource  *source,
   g_return_if_fail (closure != NULL);
 
   if (!source->source_funcs->closure_callback &&
+#ifdef G_OS_UNIX
+      source->source_funcs != &g_unix_fd_source_funcs &&
+      source->source_funcs != &g_unix_signal_funcs &&
+#endif
+      source->source_funcs != &g_child_watch_funcs &&
       source->source_funcs != &g_io_watch_funcs &&
       source->source_funcs != &g_timeout_funcs &&
       source->source_funcs != &g_idle_funcs)
     {
-      g_critical (G_STRLOC "closure can not be set on closure without GSourceFuncs::closure_callback\n");
+      g_critical (G_STRLOC ": closure can not be set on closure without GSourceFuncs::closure_callback\n");
       return;
     }
 
@@ -175,21 +264,57 @@ g_source_set_closure (GSource  *source,
   g_closure_sink (closure);
   g_source_set_callback_indirect (source, closure, &closure_callback_funcs);
 
+  g_closure_add_invalidate_notifier (closure, source, closure_invalidated);
+
   if (G_CLOSURE_NEEDS_MARSHAL (closure))
     {
       GClosureMarshal marshal = (GClosureMarshal)source->source_funcs->closure_marshal;
-      if (!marshal)
-	{
-	  if (source->source_funcs == &g_idle_funcs ||
-	      source->source_funcs == &g_timeout_funcs)
-	    marshal = source_closure_marshal_BOOLEAN__VOID;
-	  else if (source->source_funcs == &g_io_watch_funcs)
-	    marshal = g_cclosure_marshal_BOOLEAN__FLAGS;
-	}
       if (marshal)
 	g_closure_set_marshal (closure, marshal);
+      else if (source->source_funcs == &g_idle_funcs ||
+#ifdef G_OS_UNIX
+               source->source_funcs == &g_unix_signal_funcs ||
+#endif
+               source->source_funcs == &g_timeout_funcs)
+	g_closure_set_marshal (closure, source_closure_marshal_BOOLEAN__VOID);
+      else
+        g_closure_set_marshal (closure, g_cclosure_marshal_generic);
     }
 }
 
-#define __G_SOURCECLOSURE_C__
-#include "gobjectaliasdef.c"
+static void
+dummy_closure_marshal (GClosure     *closure,
+		       GValue       *return_value,
+		       guint         n_param_values,
+		       const GValue *param_values,
+		       gpointer      invocation_hint,
+		       gpointer      marshal_data)
+{
+  if (G_VALUE_HOLDS_BOOLEAN (return_value))
+    g_value_set_boolean (return_value, TRUE);
+}
+
+/**
+ * g_source_set_dummy_callback:
+ * @source: the source
+ *
+ * Sets a dummy callback for @source. The callback will do nothing, and
+ * if the source expects a #gboolean return value, it will return %TRUE.
+ * (If the source expects any other type of return value, it will return
+ * a 0/%NULL value; whatever g_value_init() initializes a #GValue to for
+ * that type.)
+ *
+ * If the source is not one of the standard GLib types, the
+ * @closure_callback and @closure_marshal fields of the #GSourceFuncs
+ * structure must have been filled in with pointers to appropriate
+ * functions.
+ */
+void
+g_source_set_dummy_callback (GSource *source)
+{
+  GClosure *closure;
+
+  closure = g_closure_new_simple (sizeof (GClosure), NULL);
+  g_closure_set_meta_marshal (closure, NULL, dummy_closure_marshal);
+  g_source_set_closure (source, closure);
+}

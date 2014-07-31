@@ -27,5 +27,8 @@
 #pragma warning(disable:4244)	/* No possible loss of data warnings */
 #pragma warning(disable:4305)   /* No truncation from int to char warnings */
 
+#pragma warning(error:4819) /* The file contains a character that cannot be represented in the current code page */
+
 /* work around Microsoft's premature attempt to deprecate the C-Library */
-#pragma warning(disable:4996)   /* This function or variable may be unsafe. */
+#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_NONSTDC_NO_WARNINGS

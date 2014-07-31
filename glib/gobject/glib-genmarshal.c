@@ -12,27 +12,28 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
-#include	"config.h"
+
+#include "config.h"
+
+#include <stdlib.h>
+#include <fcntl.h>
+#include <string.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#include <glib/gstdio.h>
 
 #undef G_LOG_DOMAIN
 #define G_LOG_DOMAIN "GLib-Genmarshal"
-#include	<glib.h>
+#include <glib.h>
+#include <glib/gprintf.h>
 
-#include	<glib/gprintf.h>
-#include	<stdlib.h>
-#include	<fcntl.h>
-#include	<string.h>
-#include	<errno.h>
-#ifdef HAVE_UNISTD_H
-#include	<unistd.h>
+#ifdef G_OS_UNIX
+#include <unistd.h>
 #endif
-#include	<sys/types.h>
-#include	<sys/stat.h>
-
 #ifdef G_OS_WIN32
 #include <io.h>
 #endif
@@ -49,7 +50,12 @@ typedef struct
   gchar	      *keyword;		/* marhaller list keyword [MY_STRING] */
   const gchar *sig_name;	/* signature name [STRING] */
   const gchar *ctype;		/* C type name [gchar*] */
+  const gchar *promoted_ctype;	/* promoted C type name [gchar*] */
   const gchar *getter;		/* value getter function [g_value_get_string] */
+  const gchar *box;		/* value box function [g_strdup] */
+  const gchar *unbox;		/* value unbox function [g_free] */
+  gboolean     box_ignores_static;  /* Wether the box/unbox functions ignore the static_scope */
+  gboolean     box_takes_type;  /* Wether the box/unbox functions take a type arg */
 } InArgument;
 typedef struct
 {
@@ -121,6 +127,7 @@ static FILE             *fout = NULL;
 static gboolean		 gen_cheader = FALSE;
 static gboolean		 gen_cbody = FALSE;
 static gboolean          gen_internal = FALSE;
+static gboolean		 gen_valist = FALSE;
 static gboolean		 skip_ploc = FALSE;
 static gboolean		 std_includes = TRUE;
 static gint              exit_status = 0;
@@ -133,7 +140,7 @@ put_marshal_value_getters (void)
   fputs ("\n", fout);
   fputs ("#ifdef G_ENABLE_DEBUG\n", fout);
   fputs ("#define g_marshal_value_peek_boolean(v)  g_value_get_boolean (v)\n", fout);
-  fputs ("#define g_marshal_value_peek_char(v)     g_value_get_char (v)\n", fout);
+  fputs ("#define g_marshal_value_peek_char(v)     g_value_get_schar (v)\n", fout);
   fputs ("#define g_marshal_value_peek_uchar(v)    g_value_get_uchar (v)\n", fout);
   fputs ("#define g_marshal_value_peek_int(v)      g_value_get_int (v)\n", fout);
   fputs ("#define g_marshal_value_peek_uint(v)     g_value_get_uint (v)\n", fout);
@@ -150,6 +157,7 @@ put_marshal_value_getters (void)
   fputs ("#define g_marshal_value_peek_boxed(v)    g_value_get_boxed (v)\n", fout);
   fputs ("#define g_marshal_value_peek_pointer(v)  g_value_get_pointer (v)\n", fout);
   fputs ("#define g_marshal_value_peek_object(v)   g_value_get_object (v)\n", fout);
+  fputs ("#define g_marshal_value_peek_variant(v)  g_value_get_variant (v)\n", fout);
   fputs ("#else /* !G_ENABLE_DEBUG */\n", fout);
   fputs ("/* WARNING: This code accesses GValues directly, which is UNSUPPORTED API.\n", fout);
   fputs (" *          Do not access GValues directly in your code. Instead, use the\n", fout);
@@ -173,6 +181,7 @@ put_marshal_value_getters (void)
   fputs ("#define g_marshal_value_peek_boxed(v)    (v)->data[0].v_pointer\n", fout);
   fputs ("#define g_marshal_value_peek_pointer(v)  (v)->data[0].v_pointer\n", fout);
   fputs ("#define g_marshal_value_peek_object(v)   (v)->data[0].v_pointer\n", fout);
+  fputs ("#define g_marshal_value_peek_variant(v)  (v)->data[0].v_pointer\n", fout);
   fputs ("#endif /* !G_ENABLE_DEBUG */\n", fout);
   fputs ("\n", fout);
 }
@@ -181,29 +190,30 @@ static gboolean
 complete_in_arg (InArgument *iarg)
 {
   static const InArgument args[] = {
-    /* keyword		sig_name	ctype		getter			*/
-    { "VOID",		"VOID",		"void",		NULL,			},
-    { "BOOLEAN",	"BOOLEAN",	"gboolean",	"g_marshal_value_peek_boolean",	},
-    { "CHAR",		"CHAR",		"gchar",	"g_marshal_value_peek_char",	},
-    { "UCHAR",		"UCHAR",	"guchar",	"g_marshal_value_peek_uchar",	},
-    { "INT",		"INT",		"gint",		"g_marshal_value_peek_int",	},
-    { "UINT",		"UINT",		"guint",	"g_marshal_value_peek_uint",	},
-    { "LONG",		"LONG",		"glong",	"g_marshal_value_peek_long",	},
-    { "ULONG",		"ULONG",	"gulong",	"g_marshal_value_peek_ulong",	},
-    { "INT64",		"INT64",	"gint64",       "g_marshal_value_peek_int64",	},
-    { "UINT64",		"UINT64",	"guint64",	"g_marshal_value_peek_uint64",	},
-    { "ENUM",		"ENUM",		"gint",		"g_marshal_value_peek_enum",	},
-    { "FLAGS",		"FLAGS",	"guint",	"g_marshal_value_peek_flags",	},
-    { "FLOAT",		"FLOAT",	"gfloat",	"g_marshal_value_peek_float",	},
-    { "DOUBLE",		"DOUBLE",	"gdouble",	"g_marshal_value_peek_double",	},
-    { "STRING",		"STRING",	"gpointer",	"g_marshal_value_peek_string",	},
-    { "PARAM",		"PARAM",	"gpointer",	"g_marshal_value_peek_param",	},
-    { "BOXED",		"BOXED",	"gpointer",	"g_marshal_value_peek_boxed",	},
-    { "POINTER",	"POINTER",	"gpointer",	"g_marshal_value_peek_pointer",	},
-    { "OBJECT",		"OBJECT",	"gpointer",	"g_marshal_value_peek_object",	},
+    /* keyword		sig_name	ctype		promoted        getter			*/
+    { "VOID",		"VOID",		"void",		"void",		NULL,			},
+    { "BOOLEAN",	"BOOLEAN",	"gboolean",	"gboolean",	"g_marshal_value_peek_boolean",	},
+    { "CHAR",		"CHAR",		"gchar",	"gint",		"g_marshal_value_peek_char",	},
+    { "UCHAR",		"UCHAR",	"guchar",	"guint",	"g_marshal_value_peek_uchar",	},
+    { "INT",		"INT",		"gint",		"gint",		"g_marshal_value_peek_int",	},
+    { "UINT",		"UINT",		"guint",	"guint",	"g_marshal_value_peek_uint",	},
+    { "LONG",		"LONG",		"glong",	"glong",	"g_marshal_value_peek_long",	},
+    { "ULONG",		"ULONG",	"gulong",	"gulong",	"g_marshal_value_peek_ulong",	},
+    { "INT64",		"INT64",	"gint64",       "gint64",	"g_marshal_value_peek_int64",	},
+    { "UINT64",		"UINT64",	"guint64",	"guint64",	"g_marshal_value_peek_uint64",	},
+    { "ENUM",		"ENUM",		"gint",		"gint",		"g_marshal_value_peek_enum",	},
+    { "FLAGS",		"FLAGS",	"guint",	"guint",	"g_marshal_value_peek_flags",	},
+    { "FLOAT",		"FLOAT",	"gfloat",	"gdouble",	"g_marshal_value_peek_float",	},
+    { "DOUBLE",		"DOUBLE",	"gdouble",	"gdouble",	"g_marshal_value_peek_double",	},
+    { "STRING",		"STRING",	"gpointer",	"gpointer",	"g_marshal_value_peek_string",	"g_strdup", "g_free"},
+    { "PARAM",		"PARAM",	"gpointer",	"gpointer",	"g_marshal_value_peek_param",	"g_param_spec_ref", "g_param_spec_unref"},
+    { "BOXED",		"BOXED",	"gpointer",	"gpointer",	"g_marshal_value_peek_boxed",	"g_boxed_copy", "g_boxed_free", FALSE, TRUE},
+    { "POINTER",	"POINTER",	"gpointer",	"gpointer",	"g_marshal_value_peek_pointer",	},
+    { "OBJECT",		"OBJECT",	"gpointer",	"gpointer",	"g_marshal_value_peek_object",	"g_object_ref", "g_object_unref", TRUE},
+    { "VARIANT",	"VARIANT",	"gpointer",	"gpointer",	"g_marshal_value_peek_variant",	"g_variant_ref_sink", "g_variant_unref"},
     /* deprecated: */
-    { "NONE",		"VOID",		"void",		NULL,			},
-    { "BOOL",		"BOOLEAN",	"gboolean",	"g_marshal_value_peek_boolean",	},
+    { "NONE",		"VOID",		"void",		"void",		NULL,			},
+    { "BOOL",		"BOOLEAN",	"gboolean",	"gboolean",	"g_marshal_value_peek_boolean",	},
   };
   guint i;
 
@@ -214,7 +224,12 @@ complete_in_arg (InArgument *iarg)
       {
 	iarg->sig_name = args[i].sig_name;
 	iarg->ctype = args[i].ctype;
+	iarg->promoted_ctype = args[i].promoted_ctype;
 	iarg->getter = args[i].getter;
+	iarg->box = args[i].box;
+	iarg->unbox = args[i].unbox;
+	iarg->box_ignores_static = args[i].box_ignores_static;
+	iarg->box_takes_type = args[i].box_takes_type;
 
 	return TRUE;
       }
@@ -245,6 +260,7 @@ complete_out_arg (OutArgument *oarg)
     { "BOXED",		"BOXED",	"gpointer",	"g_value_take_boxed",			     },
     { "POINTER",	"POINTER",	"gpointer",	"g_value_set_pointer",			     },
     { "OBJECT",		"OBJECT",	"GObject*",	"g_value_take_object",			     },
+    { "VARIANT",	"VARIANT",	"GVariant*",	"g_value_take_variant",			     },
     /* deprecated: */
     { "NONE",		"VOID",		"void",		NULL,					     },
     { "BOOL",		"BOOLEAN",	"gboolean",	"g_value_set_boolean",			     },
@@ -352,6 +368,7 @@ generate_marshal (const gchar *signame,
       g_free (tmp);
     }
 
+  /* GValue marshaller */
   if (gen_cheader && have_std_marshaller)
     {
       g_fprintf (fout, "#define %s_%s\t%s_%s\n", marshaller_prefix, signame, std_marshaller_prefix, signame);
@@ -453,6 +470,174 @@ generate_marshal (const gchar *signame,
 
       /* cfile marshal footer */
       g_fprintf (fout, "}\n");
+    }
+
+
+  /* vararg marshaller */
+  if (gen_cheader && gen_valist && have_std_marshaller)
+    {
+      g_fprintf (fout, "#define %s_%sv\t%s_%sv\n", marshaller_prefix, signame, std_marshaller_prefix, signame);
+    }
+  if (gen_cheader && gen_valist && !have_std_marshaller)
+    {
+      ind = g_fprintf (fout, gen_internal ? "G_GNUC_INTERNAL " : "extern ");
+      ind += g_fprintf (fout, "void ");
+      ind += g_fprintf (fout, "%s_%sv (", marshaller_prefix, signame);
+      g_fprintf (fout,   "GClosure     *closure,\n");
+      g_fprintf (fout, "%sGValue       *return_value,\n", indent (ind));
+      g_fprintf (fout, "%sgpointer      instance,\n", indent (ind));
+      g_fprintf (fout, "%sva_list       args,\n", indent (ind));
+      g_fprintf (fout, "%sgpointer      marshal_data,\n", indent (ind));
+      g_fprintf (fout, "%sint           n_params,\n", indent (ind));
+      g_fprintf (fout, "%sGType        *param_types);\n", indent (ind));
+    }
+  if (gen_cbody && gen_valist && !have_std_marshaller)
+    {
+      gint i;
+      gboolean has_arg;
+
+      g_fprintf (fout, "void\n");
+      ind = g_fprintf (fout, "%s_%sv (", marshaller_prefix, signame);
+      g_fprintf (fout,   "GClosure     *closure,\n");
+      g_fprintf (fout, "%sGValue       *return_value,\n", indent (ind));
+      g_fprintf (fout, "%sgpointer      instance,\n", indent (ind));
+      g_fprintf (fout, "%sva_list       args,\n", indent (ind));
+      g_fprintf (fout, "%sgpointer      marshal_data,\n", indent (ind));
+      g_fprintf (fout, "%sint           n_params,\n", indent (ind));
+      g_fprintf (fout, "%sGType        *param_types)\n", indent (ind));
+      g_fprintf (fout, "{\n");
+
+      ind = g_fprintf (fout, "  typedef %s (*GMarshalFunc_%s) (", sig->rarg->ctype, signame);
+      g_fprintf (fout, "%s instance", pad ("gpointer"));
+      for (a = 0, node = sig->args; node; node = node->next)
+	{
+	  InArgument *iarg = node->data;
+
+	  if (iarg->getter)
+	    g_fprintf (fout, ",\n%s%s arg_%d", indent (ind), pad (iarg->ctype), a++);
+	}
+      g_fprintf (fout, ",\n%s%s data);\n", indent (ind), pad ("gpointer"));
+      g_fprintf (fout, "  GCClosure *cc = (GCClosure*) closure;\n");
+      g_fprintf (fout, "  gpointer data1, data2;\n");
+      g_fprintf (fout, "  GMarshalFunc_%s callback;\n", signame);
+      has_arg = FALSE;
+
+      i = 0;
+      for (node = sig->args; node; node = node->next)
+	{
+	  InArgument *iarg = node->data;
+
+	  if (iarg->getter)
+	    {
+	      g_fprintf (fout, "  %s arg%i;\n", iarg->ctype, i++);
+	      has_arg = TRUE;
+	    }
+	}
+      if (has_arg)
+	g_fprintf (fout, "  va_list args_copy;\n");
+
+      if (sig->rarg->setter)
+	g_fprintf (fout, "  %s v_return;\n", sig->rarg->ctype);
+
+      if (sig->rarg->setter)
+        {
+          g_fprintf (fout, "\n");
+          g_fprintf (fout, "  g_return_if_fail (return_value != NULL);\n");
+        }
+
+      /* cfile marshal data1, data2 and callback setup */
+      if (has_arg)
+	{
+	  g_fprintf (fout, "\n");
+	  g_fprintf (fout, "  G_VA_COPY (args_copy, args);\n");
+	  i = 0;
+	  for (node = sig->args; node; node = node->next)
+	    {
+	      InArgument *iarg = node->data;
+
+	      if (iarg->getter)
+		{
+		  g_fprintf (fout, "  arg%i = (%s) va_arg (args_copy, %s);\n",
+			     i, iarg->ctype, iarg->promoted_ctype);
+
+		  if (iarg->box != NULL)
+		    {
+		      g_fprintf (fout, "  if (");
+		      if (!iarg->box_ignores_static)
+			g_fprintf (fout, "(param_types[%i] & G_SIGNAL_TYPE_STATIC_SCOPE) == 0 && ", i);
+		      g_fprintf (fout, "arg%i != NULL)\n  ", i);
+		      if (iarg->box_takes_type)
+			g_fprintf (fout,
+				   "  arg%i = %s (param_types[%i] & ~G_SIGNAL_TYPE_STATIC_SCOPE, arg%i);\n",
+				   i, iarg->box, i, i);
+		      else
+			g_fprintf (fout,
+				   "  arg%i = %s (arg%i);\n",
+				   i, iarg->box, i);
+		    }
+		}
+	      i++;
+	    }
+	  g_fprintf (fout, "  va_end (args_copy);\n");
+	}
+
+      g_fprintf (fout, "\n");
+      /* cfile marshal data1, data2 and callback setup */
+      g_fprintf (fout, "  if (G_CCLOSURE_SWAP_DATA (closure))\n    {\n");
+      g_fprintf (fout, "      data1 = closure->data;\n");
+      g_fprintf (fout, "      data2 = instance;\n");
+      g_fprintf (fout, "    }\n  else\n    {\n");
+      g_fprintf (fout, "      data1 = instance;\n");
+      g_fprintf (fout, "      data2 = closure->data;\n");
+      g_fprintf (fout, "    }\n");
+      g_fprintf (fout, "  callback = (GMarshalFunc_%s) (marshal_data ? marshal_data : cc->callback);\n", signame);
+
+      /* cfile marshal callback action */
+      g_fprintf (fout, "\n");
+      ind = g_fprintf (fout, " %s callback (", sig->rarg->setter ? " v_return =" : "");
+      g_fprintf (fout, "data1");
+
+      i = 0;
+      for (node = sig->args; node; node = node->next)
+	{
+	  InArgument *iarg = node->data;
+
+	  if (iarg->getter)
+	    g_fprintf (fout, ",\n%sarg%i", indent (ind), i++);
+	}
+      g_fprintf (fout, ",\n%sdata2);\n", indent (ind));
+
+      i = 0;
+      for (node = sig->args; node; node = node->next)
+	{
+	  InArgument *iarg = node->data;
+
+	  if (iarg->unbox)
+	    {
+	      g_fprintf (fout, "  if (");
+	      if (!iarg->box_ignores_static)
+		g_fprintf (fout, "(param_types[%i] & G_SIGNAL_TYPE_STATIC_SCOPE) == 0 && ", i);
+	      g_fprintf (fout, "arg%i != NULL)\n  ", i);
+	      if (iarg->box_takes_type)
+		g_fprintf (fout,
+			   "  %s (param_types[%i] & ~G_SIGNAL_TYPE_STATIC_SCOPE, arg%i);\n",
+			   iarg->unbox, i, i);
+	      else
+		g_fprintf (fout,
+			   "  %s (arg%i);\n",
+			   iarg->unbox, i);
+	    }
+	  i++;
+	}
+
+      /* cfile marshal return value storage */
+      if (sig->rarg->setter)
+	{
+	  g_fprintf (fout, "\n");
+	  g_fprintf (fout, "  %s (return_value, v_return);\n", sig->rarg->setter);
+	}
+
+      g_fprintf (fout, "}\n\n");
     }
 }
 
@@ -620,7 +805,7 @@ main (int   argc,
   else
     files = g_slist_prepend (files, "/dev/stdin");
 
-  /* setup auxillary structs */
+  /* setup auxiliary structs */
   scanner = g_scanner_new (&scanner_config_template);
   fout = stdout;
   marshallers = g_hash_table_new (g_str_hash, g_str_equal);
@@ -663,7 +848,7 @@ main (int   argc,
 	/* Mostly for Win32. This is equivalent to opening /dev/stdin */
 	fd = dup (0);
       else
-	fd = open (file, O_RDONLY);
+	fd = g_open (file, O_RDONLY, 0);
 
       if (fd < 0)
 	{
@@ -678,14 +863,14 @@ main (int   argc,
       /* parse & process file */
       g_scanner_input_file (scanner, fd);
 
-      /* scanning loop, we parse the input untill it's end is reached,
+      /* scanning loop, we parse the input until its end is reached,
        * or our sub routine came across invalid syntax
        */
       do
 	{
 	  guint expected_token = G_TOKEN_NONE;
 
-	  switch (g_scanner_peek_next_token (scanner))
+	  switch ((guint) g_scanner_peek_next_token (scanner))
 	    {
 	    case '\n':
 	      /* eat newline and restart */
@@ -797,6 +982,11 @@ parse_args (gint    *argc_p,
 	  gen_internal = TRUE;
 	  argv[i] = NULL;
 	}
+      else if (strcmp ("--valist-marshallers", argv[i]) == 0)
+	{
+	  gen_valist = TRUE;
+	  argv[i] = NULL;
+	}
       else if ((strcmp ("--prefix", argv[i]) == 0) ||
 	       (strncmp ("--prefix=", argv[i], 9) == 0))
 	{
@@ -813,6 +1003,7 @@ parse_args (gint    *argc_p,
 	  argv[i] = NULL;
 	}
       else if (strcmp ("-h", argv[i]) == 0 ||
+          strcmp ("-?", argv[i]) == 0 ||
 	  strcmp ("--help", argv[i]) == 0)
 	{
 	  print_blurb (stderr, TRUE);
@@ -873,15 +1064,19 @@ print_blurb (FILE    *bout,
     }
   else
     {
-      g_fprintf (bout, "Usage: %s [options] [files...]\n", PRG_NAME);
-      g_fprintf (bout, "  --header                   generate C headers\n");
-      g_fprintf (bout, "  --body                     generate C code\n");
-      g_fprintf (bout, "  --prefix=string            specify marshaller prefix\n");
-      g_fprintf (bout, "  --skip-source              skip source location comments\n");
-      g_fprintf (bout, "  --stdinc, --nostdinc       include/use standard marshallers\n");
-      g_fprintf (bout, "  --internal                 mark generated functions as internal\n");
-      g_fprintf (bout, "  -h, --help                 show this help message\n");
-      g_fprintf (bout, "  -v, --version              print version informations\n");
-      g_fprintf (bout, "  --g-fatal-warnings         make warnings fatal (abort)\n");
+      g_fprintf (bout, "Usage:\n");
+      g_fprintf (bout, "  %s [OPTION...] [FILES...]\n\n", PRG_NAME);
+      g_fprintf (bout, "Help Options:\n");
+      g_fprintf (bout, "  -h, --help                 Show this help message\n\n");
+      g_fprintf (bout, "Utility Options:\n");
+      g_fprintf (bout, "  --header                   Generate C headers\n");
+      g_fprintf (bout, "  --body                     Generate C code\n");
+      g_fprintf (bout, "  --prefix=string            Specify marshaller prefix\n");
+      g_fprintf (bout, "  --skip-source              Skip source location comments\n");
+      g_fprintf (bout, "  --stdinc, --nostdinc       Include/use standard marshallers\n");
+      g_fprintf (bout, "  --internal                 Mark generated functions as internal\n");
+      g_fprintf (bout, "  --valist-marshallers       Generate va_list marshallers\n");
+      g_fprintf (bout, "  -v, --version              Print version informations\n");
+      g_fprintf (bout, "  --g-fatal-warnings         Make warnings fatal (abort)\n");
     }
 }

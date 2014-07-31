@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,22 +13,19 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
+
+#ifndef __G_SEEKABLE_H__
+#define __G_SEEKABLE_H__
 
 #if !defined (__GIO_GIO_H_INSIDE__) && !defined (GIO_COMPILATION)
 #error "Only <gio/gio.h> can be included directly."
 #endif
 
-#ifndef __G_SEEKABLE_H__
-#define __G_SEEKABLE_H__
-
-#include <glib-object.h>
-#include <gio/gcancellable.h>
+#include <gio/giotypes.h>
 
 G_BEGIN_DECLS
 
@@ -39,10 +36,9 @@ G_BEGIN_DECLS
 
 /**
  * GSeekable:
- * 
+ *
  * Seek object for streaming operations.
- **/ 
-typedef struct _GSeekable        GSeekable;
+ **/
 typedef struct _GSeekableIface   GSeekableIface;
 
 /**
@@ -51,26 +47,26 @@ typedef struct _GSeekableIface   GSeekableIface;
  * @tell: Tells the current location within a stream.
  * @can_seek: Checks if seeking is supported by the stream.
  * @seek: Seeks to a location within a stream.
- * @can_truncate: Chekcs if truncation is suppored by the stream.
+ * @can_truncate: Checks if truncation is supported by the stream.
  * @truncate_fn: Truncates a stream.
- * 
+ *
  * Provides an interface for implementing seekable functionality on I/O Streams.
- **/ 
+ **/
 struct _GSeekableIface
 {
   GTypeInterface g_iface;
 
   /* Virtual Table */
-  
+
   goffset     (* tell)	         (GSeekable    *seekable);
-  
+
   gboolean    (* can_seek)       (GSeekable    *seekable);
   gboolean    (* seek)	         (GSeekable    *seekable,
 				  goffset       offset,
 				  GSeekType     type,
 				  GCancellable *cancellable,
 				  GError      **error);
-  
+
   gboolean    (* can_truncate)   (GSeekable    *seekable);
   gboolean    (* truncate_fn)    (GSeekable    *seekable,
 				  goffset       offset,
@@ -80,16 +76,22 @@ struct _GSeekableIface
   /* TODO: Async seek/truncate */
 };
 
-GType g_seekable_get_type (void) G_GNUC_CONST;
+GLIB_AVAILABLE_IN_ALL
+GType    g_seekable_get_type     (void) G_GNUC_CONST;
 
+GLIB_AVAILABLE_IN_ALL
 goffset  g_seekable_tell         (GSeekable     *seekable);
+GLIB_AVAILABLE_IN_ALL
 gboolean g_seekable_can_seek     (GSeekable     *seekable);
+GLIB_AVAILABLE_IN_ALL
 gboolean g_seekable_seek         (GSeekable     *seekable,
 				  goffset        offset,
 				  GSeekType      type,
 				  GCancellable  *cancellable,
 				  GError       **error);
+GLIB_AVAILABLE_IN_ALL
 gboolean g_seekable_can_truncate (GSeekable     *seekable);
+GLIB_AVAILABLE_IN_ALL
 gboolean g_seekable_truncate     (GSeekable     *seekable,
 				  goffset        offset,
 				  GCancellable  *cancellable,

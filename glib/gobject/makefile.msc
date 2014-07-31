@@ -17,12 +17,10 @@ all :				\
 	glib-genmarshal.exe     \
 	gmarshal.h              \
 	gmarshal.c              \
-	gobjectalias.h	\
-	gobjectaliasdef.c \
 	gmarshal.strings \
 	gobject-query.exe \
 	libgobject-2.0-0.dll	\
-	gobject-2.16s.lib \
+	gobject-2.41s.lib \
 	testgobject.exe
 
 gobject_OBJECTS =		\
@@ -41,12 +39,6 @@ gobject_OBJECTS =		\
 	gvaluearray.obj		\
 	gvaluetypes.obj	\
 	gvaluetransform.obj
-
-gobjectalias.h: gobject.symbols
-	perl makegobjectalias.pl < gobject.symbols > gobjectalias.h
-
-gobjectaliasdef.c: gobject.symbols
-	perl makegobjectalias.pl -def < gobject.symbols > gobjectaliasdef.c
 
 gobject.def: gobject.symbols
 	echo EXPORTS > gobject.def
@@ -71,13 +63,13 @@ libgobject-2.0-0.dll : $(gobject_OBJECTS) gobject.def gobject.res
 	$(CC) $(CFLAGS) -Fm -LD -Fe$@ $(gobject_OBJECTS) gobject.res \
 	..\glib\glib-2.0.lib $(LDFLAGS) /implib:gobject-2.0.lib /def:gobject.def || del $@
 
-gobject-2.16s.lib : $(gobject_OBJECTS) 
+gobject-2.41s.lib : $(gobject_OBJECTS) 
 	lib /out:$@ $(gobject_OBJECTS)
 
 # link glib's static version to avoid installing 
 glib-genmarshal.exe : glib-genmarshal.c gmarshal.strings
 	$(CC) -Fe$@ $(CFLAGS) -UGOBJECT_COMPILATION glib-genmarshal.c \
-	..\glib\glib-2.16s.lib user32.lib advapi32.lib ole32.lib shell32.lib $(INTL_LIBS) 
+	..\glib\glib-2.41s.lib user32.lib advapi32.lib ole32.lib shell32.lib $(INTL_LIBS) 
 
 gobject-query.exe : gobject-query.c libgobject-2.0-0.dll
 	$(CC) -Fe$@ $(CFLAGS) -UGOBJECT_COMPILATION gobject-query.c \

@@ -1,26 +1,640 @@
+=== ChangeLog discontinued ===
+
+	With the move to git, GLib is switching from a ChangeLog file
+	to relying on commit messages to provide change history. Please
+	see README.commits for guidance on the expected message format.
+
+2009-03-13  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.20.0 ===
+
+2009-03-02  Matthias Clasen <mclasen@redhat.com>
+
+	* === Released 2.19.10 ===
+
+2009-03-02  Matthias Clasen <mclasen@redhat.com>
+
+	* === Released 2.19.9 ===
+
+2009-03-01  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 573128 – A couple of typos in GObject documentation
+
+	* gobject/tut_gobject.xml: Fix some typos. Reported by Dimitri Vorbiev
+
+2009-02-17  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.8 ===
+
+2009-02-16  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.7 ===
+
+2009-02-06  Stefan Kost  <ensonic@users.sf.net>
+
+	* gio/gio-docs.xml:
+	* glib/glib-docs.sgml:
+	* gobject/gobject-docs.sgml:
+	  Add online urls for library.gnome.org. This allows other docs to do
+          gtkdoc-rebase --online --html-dir=html
+          before publishing docs and have working xrefs.
+
+2009-02-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.6 ===
+
+2009-01-19  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.5 ===
+
+2009-01-13  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/glib-sections.txt:
+	* glib/tmpl/base64.sgml: Mention g_base64_decode_inplace
+
+2009-01-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.4 ===
+
+2009-01-02  Matthias Clasen <mclasen@redhat.com>
+
+	* glib/tmpl/string_utils.sgml: Move most function docs inline.
+
+2009-01-01  Matthias Clasen <mclasen@redhat.com>
+
+	Bug 565831 – error in interface creation sample
+
+	* gobject/tut_howto.xml: Fix an example. Pointed out by
+	Jens Georg.
+
+2008-12-15  Matthias Clasen <mclasen@redhat.com>
+
+	* === Released 2.19.3 ===
+
+2008-12-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add new functions
+
+2008-12-07  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 563156 – Document printing and scanning gunichar values
+
+	* glib/tmpl/unicode.sgml: Document printing and scanning gunichar
+	values.
+
+2008-12-07  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 563150 – G_GU?INT*_MODIFIER/FORMAT docs
+
+	* glib/tmpl/glib-unused.sgml:
+	* glib/tmpl/macros_misc.sgml:
+	* glib/tmpl/types.sgml:
+	Update docs to mention scanning as well as printing.
+	Cross reference these from their respective types.
+
+2008-12-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.2 ===
+
+2008-12-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.19.1 ===
+
+2008-12-01  Alexander Larsson  <alexl@redhat.com>
+
+        Reviewed by NOBODY (OOPS!).
+
+        * gio/gio-sections.txt:
+
+2008-11-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/running.sgml: Mention all and help special options in
+	debug envvars.
+
+2008-11-30  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 562538 – GObject interface tutorial shouldn't finalise with
+	"Please forget everything"
+
+	* gobject/tut_gtype.xml: Remove the questionable closing sentence
+	and all references to private functions. Pointed out by Christian
+	Dywan.
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 559452 – GObject Reference Manual (typo)
+	Bug 559462 – GObject Reference Manual (typo)
+	Bug 559517 – GObject Reference Manual (typo)
+
+	* gobject/tut_howto.xml:
+	* gobject/tut_gsignal.xml: 
+	* gobject/tut_gobject.xml: Fix typos, found by Andrew Feren.
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add g_app_info_get_commandline
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/tmpl/keyfile.sgml: Explain locale identifiers in
+	more detail
+
+2008-11-28  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 562549 – g_byte_array_free should tell how free data
+
+	* glib/tmpl/arrays_byte.sgml: Improve docs, proposed by
+	Guillaume Desmottes
+
+2008-11-21  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/Makefile.am:
+	* gobject/Makefile.am:
+	* gio/Makefile.am: Use a new gtk-doc feature to generate
+	much nicer indices.
+
+2008-11-14  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/glib-sections.txt: Add G_STATIC_ASSERT and friends
+
+2008-11-14  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add G_FILE_ATTRIBUTE_PREVIEW_ICON
+
+2008-11-10  Behdad Esfahbod  <behdad@gnome.org>
+
+	Bug 559448 – GObject Reference Manual (typo)
+
+	* gobject/tut_gobject.xml: Fix typo.
+
+2008-11-03 Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 552776 – ac_cv_func_posix_getgrgid_r not mentioned
+
+	* glib/cross.sgml: Mention ac_cv_func_posix_getgrgid_r.
+
+2008-10-29 16:04:38  Tim Janik  <timj@gtk.org>
+
+	* glib/tmpl/macros_misc.sgml: Clarified/added docs for
+	G_STRINGIFY, G_PASTE and G_STATIC_ASSERT, based on
+	patches from Christian Persch and  Christian Dywan.
+
+2008-10-21  Alexander Larsson  <alexl@redhat.com>
+
+        * gio/gio-sections.txt:
+	Update with new symbolse
+
+2008-10-16  Matthias Clasen <mclasen@redhat.com>
+
+	* === Released 2.19.0 ===
+
+	* gio/gio-sections.txt: Add new api
+
+	* gobject/gobject-docs.sgml: 
+	* gio/gio-docs.xml: Add new indexes
+
+2008-10-16  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/Makefile.am: Don't specify multiple directories in
+	DOC_SOURCE_DIR. It doesn't work.
+
+2008-09-26  Dan Winship  <danw@gnome.org>
+
+	* glib/tmpl/testing.sgml: Fix lots of typos, document
+	g_assert_error() and g_assert_no_error()
+
+2008-09-26`  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/tmpl/iochannel.sgml: Move more docs inline
+
+2008-09-17  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.18.1 ===
+
+2008-09-15  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 552359 – g_file_info_get_icon should return GThemedIcon, and
+	g_themed_icon_get_names shold be documented ?
+
+	* gio/gio-sections.txt: Add g_themed_icon_get_names. 
+
 2008-09-12  Matthias Clasen  <mclasen@redhat.com>
 
-	* === Released 2.16.6 ===
+	* glib/tmpl/modules.sgml: Reinstate docs that somehow got lost.
 
-2008-07-19  Matthias Clasen  <mclasen@redhat.com>
+2008-09-02  Matthias Clasen  <mclasen@redhat.com>
 
-	* === Released 2.16.5 === 
+	* === Released 2.18.0 ===
+
+2008-09-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* gobject/gobject-sections.txt: Add g_object_get_type
+
+2008-09-02  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 550056 – Missing documentation for g_emblemed_icon_get_emblems
+
+	* gio/gio-sections.txt: Add some missing GEmblem functions.
+	Noticed by Cosmio Cecchi
+
+2008-08-27  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/tmpl/i18n.sgml: Add hint about intltool to NC_() docs.
+
+2008-08-18  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.17.7 ===
+
+2008-08-16  Matthias Clasen  <mclasen@redhat.com>
+	
+	* gio/gio-sections.txt: Fix a typo
+
+2008-08-15  Tor Lillqvist  <tml@novell.com>
+
+	* glib/tmpl/threads.sgml: Add an exception: g_mem_set_vtable() may
+	be called before g_thread_init().
+
+2008-08-15  Tor Lillqvist  <tml@novell.com>
+
+	* glib/tmpl/threads.sgml: Warn about the consequences of not
+	calling g_thread_init() first, if it will be called at all. Advice
+	calling it if using random GLib-based libraries.
+
+2008-08-11  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 547262 – Missing link in the docs
+
+	* glib/tmpl/gregex.sgml: Fix a reference.
+	Pointed out by Bastien Nocera
+
+2008-08-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.17.6 ===
+
+2008-08-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio.types:
+	* gio/gio-docs.xml:
+	* gio/gio-sections.txt: Add Gemblem
+
+2008-08-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.17.5 ===
+
+2008-08-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* gobject/gobject-docs.sgml: Add a 2.18 index
+
+2008-08-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add some more GEmblemedIcon things.
+
+	* glib/tmpl/testing.sgml: Fix a typo. Noticed by Marek Kasik.
+
+2008-07-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/glib-sections.txt: Add g_markup_context_get_user_data
+
+2008-07-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt:
+	* gio/gio-docs.xml: Add GEmblemedIcon 
+
+2008-07-21  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.17.4 ===
+
+2008-07-18  Matthias Clasen  <mclasen@redhat.com>
+
+	* gobject/gobject-sections.txt: Add new signal api.
+
+2008-07-18  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/glib-sections.txt:
+	* glib/tmpl/i18n.sgml: Add new gettext stuff
+
+2008-07-18  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 530759 – update the gobject tutorial to the XXI century
+
+	* gobject/*: Some updates to the tutorial. Patch by Emmanuele
+	Bassi.
+
+2008-07-18  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add g_content_type_guess_for_tree
+
+2008-07-16  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 543220 – Case collision on gio-extension-points.html
+
+	Reported by Ryan Schmidt
+	* gio/overview.xml: Rename id to avoid filename conflict.
+
+2008-07-16  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 543168 – Description of G_SLICE=debug-blocks discourages its use
+
+	* glib/running.sgml: Improve docs of G_SLICE=debug-blocks.
+	Patch by Alessandro Vesely.
+
+2008-07-08  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add new GMount functions
+
+2008-07-05  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 521589 – [RFC] gobject documentation should mention Vala
+
+	* gobject/tut_tools.xml: Add a reference to Vala.
+	Patch by Marc-Andre Lureau.
+
+2008-07-05  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/glib-sections.txt: Move g_strcmp0 to a more appropriate
+	place in the docs.
+
+2008-07-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.17.3 ===
+
+2008-07-02  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add g_desktop_app_info_new_from_keyfile
+	and g_file_monitor
 
 2008-07-01  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio.types: Add missing types. Pointed out by David Zeuthen.
+
+2008-06-24  Michael Natterer  <mitch@imendio.com>
+
+	* glib/Makefile.am
+	* gobject/Makefile.am: don't comment out the include of
+	Makefile.decl just because there are no tests. It needs to be
+	included in each Makefile.am or make check will fail.
+
+2008-06-22  Stefan Kost  <ensonic@users.sf.net>
+
+	* glib/Makefile.am:
+	* gobject/Makefile.am:
+	  Unify the Makefiles. In glib only scan glib folders.
+
+2008-06-16  Ross Burton  <ross@burtonini.com>
+
+	* gio/gio-sections.txt:
+	Add g_file_enumerator_get_container.
+
+2008-06-14  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/tmpl/macros_misc.sgml: Document G_GNUC_MAY_ALIAS
+
+	* glib/tmpl/testing.sgml: Move docs around, and add more
+
+	* glib/tmpl/unicode.sgml: Document break types
+
+	* glib/tmpl/hash_tables.sgml: Add docs for GHashTableIter
+
+2008-06-12  Matthias Clasen  <mclasen@redhat.com>
 	
-	* === Released 2.16.4 ===
+	* === Released 2.17.2 ===
 
-2008-04-08  Matthias Clasen  <mclasen@redhat.com>
+2008-06-12  Matthias Clasen  <mclasen@redhat.com>
 
-	* === Released 2.16.3 ===
+	* === Released 2.17.1 ===
+
+2008-06-12  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add some new symbols
+
+2008-06-12  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/running.sgml: Remove mention of G_WIN32_PRETEND_WIN9X
+
+2008-06-12  Ross Burton  <ross@burtonini.com>
+
+	* gio/gio-sections.txt:
+	Add g_file_make_directory_with_parents.
+
+2008-06-12  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/glib-sections.txt: Testing documentation fixups
+
+2008-06-12  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/gtester.xml:
+	* glib/gtester.1:
+	* glib/gtester-report.xml:
+	* glib/gtester-report.1:
+	* glib/glib-docs.sgml:
+	* glib/Makefile.am: Add gtester, gtester-report man pages
+
+2008-06-11  Behdad Esfahbod  <behdad@gnome.org>
+
+	* glib/glib-sections.txt: Add g_dgettext() and g_dngettext().
+
+2008-06-11  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 535418 – Please document which glib version defines goffset
+
+	* glib/tmpl/types.sgml: Add a Since tag for goffset
+	Proposed by Holger Berndt
+
+2008-06-11  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 528715 – Misprint in the description of the interface
+	g_type_class_add_private
+
+	* glib/tmpl/macros_misc.sgml:
+	* gobject/tmpl/gclosure.sgml:
+	* gobject/tmpl/gtype.sgml: Fix typos
+	Noticed by Areg Beketovski
+
+2008-06-11  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 528714 – Misprint in the description of the interface 
+	g_param_spec_flags
+
+	* gobject/tmpl/param_value_types.sgml: Fix a typo.
+	Pointed out by Areg Beketovski
+
+2008-06-11  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 537260 – Doc bug in G_TYPE_INSTANCE_GET_CLASS()
+
+	* gobject/tmpl/gtype.sgml: Fix unclear parameter descriptions.
+	Pointed out by Behdad Esfahbod
+
+2008-06-11  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 530527 – Misprint in the description of the interface
+	g_cclosure_marshal_VOID__FLAGS
+
+	* gobject/tmpl/gclosure.sgml: Fix a duplication.
+	Noticed by Areg Beketovski
+
+2008-06-11  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 530526 – Misprint in the description of the fields 'class_init' 
+	and 'class_finalize' of the structure GTypeInfo
+
+	* gobject/tmpl/gtype.sgml: Improve GTypeInfo docs
+	Proposed by Areg Beketovski
+
+2008-06-11  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 528719 – Improvement to the documentation of the
+	"g_object_connect" interface
+
+	* gobject/tmpl/objects.sgml: Improve the documentation of
+	g_object_connect. Proposed by Areg Bketovski
+
+2008-06-11  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 528172 – gtk_signal_handlers_unblock_* functions return value
+	amount of matched signals, not amount of actually unblocked.
+
+	* gobject/tmpl/signals.sgml: Fix documentation of return value
+	of functions that operate on matched signal handlers.
+
+2008-06-11  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 528717 – Misprint in the description of the parameter 
+	'type_id' for the interface g_type_register_fundamental
+
+	* gobject/tmpl/gtype.sgml: Remove references to GTypeFundamentals
+	Pointed out by Areg Beketovski
+
+2008-06-11  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 528716 – Misprint in the description of the parameter 
+	'iface_data' for the callback types GInterfaceInitFunc and 
+	GInterfaceFinalizeFunc
+
+	* gobject/tmpl/gtype.sgml: Fix description of parameters
+	for GInterface{Init/Finalize}Func.
+	Pointed out by Areg Beketovski
+
+2008-06-10  Matthias Clasen  <mclasen@redhat.com>
+
+	* gobject/tmpl/gparamspec.sgml: Document G_PARAM_STATIC_NICK
+
+2008-06-10  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add g_themed_icon_prepend_name
+
+2008-06-10 14:06:34  Tim Janik  <timj@imendio.com>
+
+	* gobject/tmpl/gtype.sgml: fixed documentation regarding type checking
+	macros that do and do not issue warnings.
+
+2008-05-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/glib-docs.sgml:
+	* gio/gio-docs.sgml: Add indexes of 2.18 additions
+
+2008-05-27  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.17.0 ===
+
+2008-05-27  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/compiling.sgml: Document G_DISABLE_SINGLE_INCLUDES
+
+2008-05-27  Michael Natterer  <mitch@gimp.org>
+
+	* glib/tmpl/gurifuncs.sgml
+	* glib/tmpl/testing.sgml: new files.
+
+	* glib/tmpl/unicode.sgml
+	* glib/tmpl/macros_misc.sgml
+	* glib/tmpl/checksum.sgml: regenerated.
+
+	* Updated lots of svn:ignore all over the place.
+
+2008-05-27  Matthias Clasen  <mclasen@redhat.com>
+	
+	Bug 535021 – g_param_spec_internal documentation should 
+	describe purpose of nick and blurb
+
+	* gobject/tmpl/gparamspec.sgml: Explain nicks and blurbs
+	some more.
+
+2008-05-26  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/glib-docs.sgml: Add 2.18 index
+
+	* glib/glib-sections.txt: Add g_checksum_reset
+
+2008-05-25  Matthias Clasen  <mclasen@redhat.com>
+
+	* gobject/tmpl/gclosure.sgml: Fix docs for
+	g_cclosure_marshal_STRING__OBJECT_POINTER. (#534177, Areg Beketovski)
+
+2008-05-18  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 527214 – g_timer_elapsed() returns random values.
+
+	* docs/reference/glib/tmpl/timers.sgml:
+	Add notes regarding gthreads dependency. 
+	Patch by Mathias Hasselmann
+
+2008-05-17  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/gio-sections.txt: Add new api
+
+2008-05-17  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 528648 – Extra >s in Object Construction section...
+
+	* gobject/tut_howto.xml: Fix a formatting glitch
+
+2008-05-14  Tor Lillqvist  <tml@novell.com>
+
+	* glib/tmpl/spawn.sgml: Don't mention fork()/exec() in the short
+	description. fork()/exec() is an implementation detail on Unix.
 
 2008-04-07  Matthias Clasen  <mclasen@redhat.com>
 
 	* glib/tmpl/unicode.sgml: Updates for Unicode 5.1
 
-2008-03-31  Matthias Clasen  <mclasen@redhat.com>
+2008-04-07  Matthias Clasen  <mclasen@redhat.com>
 
-	* === Released 2.16.2 ===
+	Bug 526572 – Missing * in declaration of parent_class in Object
+	Destruction section of GObject Reference Manual
+
+	* gobject/tut_howto.xml: Add missing *.
+
+2008-04-03  Matthias Clasen  <mclasen@redhat.com>
+
+	Bug 525553 – fix typo and nitpicking in GArray documentation
+
+	* glib/tmpl/arrays.sgml: Correct an index in an example,
+	pointed out by Paul Bolle
+
+2008-03-30  Matthias Clasen  <mclasen@redhat.com>
+	
+	* gio/gio-sections.txt: Add g_file_query_file_type.
+
+2008-03-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib/glib-sections.txt:
+	* glib/tmpl/macros-misc.sgml: Document G_GNUC_ALLOC_SIZE
+	macros
+
+2008-03-28  A. Walton  <awalton@svn.gnome.org>
+
+	* gio/overview.xml:
+	Document GIO_EXTRA_MODULES, fixes a small typo.
+
+2008-03-19  Matthias Clasen  <mclasen@redhat.com>
+
+	* gio/overview.xml: Document GVS_DISABLE_FUSE.
+
+2008-03-12  Benjamin Otte  <otte@gnome.org>
+
+	* gio/gio-sections.txt:
+	g_file_contains_file() doesn't exist anymore
 
 2008-03-10  Matthias Clasen  <mclasen@redhat.com>
 	

@@ -13,24 +13,24 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#include <config.h>
+#include "config.h"
 #include "glocalvfs.h"
 #include "glocalfile.h"
 #include "giomodule.h"
+#include "giomodule-priv.h"
+#include "gvfs.h"
 #include <gio/gdummyfile.h>
 #include <sys/types.h>
-#ifdef HAVE_PWD_H
+#ifdef G_OS_UNIX
 #include <pwd.h>
 #endif
+#include <string.h>
 
-#include "gioalias.h"
 
 struct _GLocalVfs
 {
@@ -45,6 +45,7 @@ struct _GLocalVfsClass
 
 #define g_local_vfs_get_type _g_local_vfs_get_type
 G_DEFINE_TYPE_WITH_CODE (GLocalVfs, g_local_vfs, G_TYPE_VFS,
+			 _g_io_modules_ensure_extension_points_registered ();
 			 g_io_extension_point_implement (G_VFS_EXTENSION_POINT_NAME,
 							 g_define_type_id,
 							 "local",
@@ -87,9 +88,22 @@ g_local_vfs_get_file_for_uri (GVfs       *vfs,
 {
   char *path;
   GFile *file;
+  char *stripped_uri, *hash;
+  
+  if (strchr (uri, '#') != NULL)
+    {
+      stripped_uri = g_strdup (uri);
+      hash = strchr (stripped_uri, '#');
+      *hash = 0;
+    }
+  else
+    stripped_uri = (char *)uri;
+      
+  path = g_filename_from_uri (stripped_uri, NULL, NULL);
 
-  path = g_filename_from_uri (uri, NULL, NULL);
-
+  if (stripped_uri != uri)
+    g_free (stripped_uri);
+  
   if (path != NULL)
     file = _g_local_file_new (path);
   else
@@ -114,11 +128,9 @@ g_local_vfs_parse_name (GVfs       *vfs,
 {
   GFile *file;
   char *filename;
-  char *user_name;
   char *user_prefix;
   const char *user_start, *user_end;
   char *rest;
-  struct passwd *passwd_file_entry;
   
   g_return_val_if_fail (G_IS_VFS (vfs), NULL);
   g_return_val_if_fail (parse_name != NULL, NULL);
@@ -141,7 +153,10 @@ g_local_vfs_parse_name (GVfs       *vfs,
 	    user_prefix = g_strdup (g_get_home_dir ());
 	  else
 	    {
-#ifdef HAVE_PWD_H
+#ifdef G_OS_UNIX
+              struct passwd *passwd_file_entry;
+              char *user_name;
+
 	      user_name = g_strndup (user_start, user_end - user_start);
 	      passwd_file_entry = getpwnam (user_name);
 	      g_free (user_name);

@@ -14,16 +14,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Authors: Alexander Larsson <alexl@redhat.com>
  *          John McCutchan <john@johnmccutchan.com> 
  *          Sebastian Dröge <slomo@circular-chaos.org>
  */
 
-#include <config.h>
+#include "config.h"
 
 #include "ginotifyfilemonitor.h"
 #include <gio/giomodule.h>
@@ -31,14 +29,13 @@
 #define USE_INOTIFY 1
 #include "inotify-helper.h"
 
-#include "gioalias.h"
-
 struct _GInotifyFileMonitor
 {
   GLocalFileMonitor parent_instance;
   gchar *filename;
   gchar *dirname;
   inotify_sub *sub;
+  gboolean pair_moves;
 };
 
 static gboolean g_inotify_file_monitor_cancel (GFileMonitor* monitor);
@@ -63,63 +60,52 @@ g_inotify_file_monitor_finalize (GObject *object)
       inotify_monitor->sub = NULL;
     }
 
-  if (inotify_monitor->filename)
-    {
-      g_free (inotify_monitor->filename);
-      inotify_monitor->filename = NULL;
-    }
+  g_free (inotify_monitor->filename);
+  g_free (inotify_monitor->dirname);
 
-  if (inotify_monitor->dirname)
-    {
-      g_free (inotify_monitor->dirname);
-      inotify_monitor->dirname = NULL;
-    }
-
-  if (G_OBJECT_CLASS (g_inotify_file_monitor_parent_class)->finalize)
-    (*G_OBJECT_CLASS (g_inotify_file_monitor_parent_class)->finalize) (object);
+  G_OBJECT_CLASS (g_inotify_file_monitor_parent_class)->finalize (object);
 }
 
-static GObject *
-g_inotify_file_monitor_constructor (GType                  type,
-                                    guint                  n_construct_properties,
-                                    GObjectConstructParam *construct_properties)
+static void
+g_inotify_file_monitor_start (GLocalFileMonitor *local_monitor)
 {
-  GObject *obj;
-  GInotifyFileMonitorClass *klass;
-  GObjectClass *parent_class;
-  GInotifyFileMonitor *inotify_monitor;
+  GInotifyFileMonitor *inotify_monitor = G_INOTIFY_FILE_MONITOR (local_monitor);
   const gchar *filename = NULL;
+  gboolean watch_hardlinks;
   inotify_sub *sub = NULL;
-  
-  klass = G_INOTIFY_FILE_MONITOR_CLASS (g_type_class_peek (G_TYPE_INOTIFY_FILE_MONITOR));
-  parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
-  obj = parent_class->constructor (type,
-                                   n_construct_properties,
-                                   construct_properties);
+  gboolean pair_moves;
+  gboolean ret_ih_startup; /* return value of _ih_startup, for asserting */
 
-  inotify_monitor = G_INOTIFY_FILE_MONITOR (obj);
-
-  filename = G_LOCAL_FILE_MONITOR (obj)->filename;
-
+  filename = local_monitor->filename;
   g_assert (filename != NULL);
 
   inotify_monitor->filename = g_path_get_basename (filename);
   inotify_monitor->dirname = g_path_get_dirname (filename);
 
-  /* Will never fail as is_supported() should be called before instanciating
+  /* Will never fail as is_supported() should be called before instantiating
    * anyway */
-  g_assert (_ih_startup ());
+  /* assert on return value */
+  ret_ih_startup = _ih_startup();
+  g_assert (ret_ih_startup);
 
-  sub = _ih_sub_new (inotify_monitor->dirname, inotify_monitor->filename, inotify_monitor);
- 
+  pair_moves = local_monitor->flags & G_FILE_MONITOR_SEND_MOVED;
+  watch_hardlinks = local_monitor->flags & G_FILE_MONITOR_WATCH_HARD_LINKS;
+
+  sub = _ih_sub_new (inotify_monitor->dirname,
+                     inotify_monitor->filename,
+                     pair_moves,
+                     watch_hardlinks,
+                     inotify_monitor);
+
   /* FIXME: what to do about errors here? we can't return NULL or another
    * kind of error and an assertion is probably too hard */
   g_assert (sub != NULL);
-  g_assert (_ih_sub_add (sub));
+
+  /* _ih_sub_add allways returns TRUE, see gio/inotify/inotify-helper.c line 109
+   * g_assert (_ih_sub_add (sub)); */
+  _ih_sub_add (sub);
 
   inotify_monitor->sub = sub;
-
-  return obj;
 }
 
 static gboolean
@@ -134,12 +120,12 @@ g_inotify_file_monitor_class_init (GInotifyFileMonitorClass* klass)
   GObjectClass* gobject_class = G_OBJECT_CLASS (klass);
   GFileMonitorClass *file_monitor_class = G_FILE_MONITOR_CLASS (klass);
   GLocalFileMonitorClass *local_file_monitor_class = G_LOCAL_FILE_MONITOR_CLASS (klass);
-  
+
   gobject_class->finalize = g_inotify_file_monitor_finalize;
-  gobject_class->constructor = g_inotify_file_monitor_constructor;
   file_monitor_class->cancel = g_inotify_file_monitor_cancel;
 
   local_file_monitor_class->is_supported = g_inotify_file_monitor_is_supported;
+  local_file_monitor_class->start = g_inotify_file_monitor_start;
 }
 
 static void
@@ -165,4 +151,3 @@ g_inotify_file_monitor_cancel (GFileMonitor* monitor)
 
   return TRUE;
 }
-

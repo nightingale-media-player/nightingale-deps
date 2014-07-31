@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,9 +13,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
@@ -51,9 +49,12 @@ struct _GLocalFileInputStreamClass
   GFileInputStreamClass parent_class;
 };
 
-GType _g_local_file_input_stream_get_type (void) G_GNUC_CONST;
+GType              _g_local_file_input_stream_get_type (void) G_GNUC_CONST;
 
-GFileInputStream *_g_local_file_input_stream_new (int fd);
+GFileInputStream *_g_local_file_input_stream_new          (int                    fd);
+void              _g_local_file_input_stream_set_do_close (GLocalFileInputStream *in,
+							   gboolean               do_close);
+
 
 G_END_DECLS
 

@@ -2,224 +2,321 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Object properties</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.74.0">
+<title>GObject Reference Manual: Object properties</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="GObject Reference Manual">
 <link rel="up" href="chapter-gobject.html" title="The GObject base class">
 <link rel="prev" href="gobject-memory.html" title="Object memory management">
 <link rel="next" href="chapter-signal.html" title="The GObject messaging system">
-<meta name="generator" content="GTK-Doc V1.10 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.20.1 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
-<link rel="preface" href="pr01.html" title="Introduction">
-<link rel="part" href="pt01.html" title="Part I. Concepts">
-<link rel="chapter" href="chapter-intro.html" title="Background">
-<link rel="chapter" href="chapter-gtype.html" title="The GLib Dynamic Type System">
-<link rel="chapter" href="chapter-gobject.html" title="The GObject base class">
-<link rel="chapter" href="chapter-signal.html" title="The GObject messaging system">
-<link rel="reference" href="rn01.html" title="API Reference">
-<link rel="reference" href="rn02.html" title="Tools Reference">
-<link rel="part" href="pt02.html" title="Part IV. Tutorial">
-<link rel="chapter" href="howto-gobject.html" title="How to define and implement a new GObject">
-<link rel="chapter" href="howto-interface.html" title="How to define and implement interfaces">
-<link rel="chapter" href="howto-signals.html" title="How to create and use signals">
-<link rel="part" href="pt03.html" title="Part V. Related Tools">
-<link rel="chapter" href="tools-gob.html" title="GObject builder">
-<link rel="chapter" href="tools-ginspector.html" title="Graphical inspection of GObjects">
-<link rel="chapter" href="tools-refdb.html" title="Debugging reference count problems">
-<link rel="chapter" href="tools-gtkdoc.html" title="Writing API docs">
-<link rel="index" href="ix01.html" title="Index">
-<link rel="index" href="ix02.html" title="Index of deprecated symbols">
-<link rel="index" href="ix03.html" title="Index of new symbols in 2.2">
-<link rel="index" href="ix04.html" title="Index of new symbols in 2.4">
-<link rel="index" href="ix05.html" title="Index of new symbols in 2.6">
-<link rel="index" href="ix06.html" title="Index of new symbols in 2.8">
-<link rel="index" href="ix07.html" title="Index of new symbols in 2.10">
-<link rel="index" href="ix08.html" title="Index of new symbols in 2.12">
-<link rel="index" href="ix09.html" title="Index of new symbols in 2.14">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
-<td><a accesskey="p" href="gobject-memory.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="chapter-gobject.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">GObject Reference Manual</th>
-<td><a accesskey="n" href="chapter-signal.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts"></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="chapter-gobject.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="gobject-memory.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="chapter-signal.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
 </tr></table>
-<div class="sect1" lang="en">
+<div class="sect1">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="gobject-properties"></a>Object properties</h2></div></div></div>
 <p>
       One of GObject's nice features is its generic get/set mechanism for object
       properties. When an object
       is instantiated, the object's class_init handler should be used to register
-      the object's properties with <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-class-install-property" title="g_object_class_install_property ()">g_object_class_install_property</a></code>
+      the object's properties with <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-class-install-properties" title="g_object_class_install_properties ()">g_object_class_install_properties</a></code>
       (implemented in <code class="filename">gobject.c</code>).
     </p>
 <p>
       The best way to understand how object properties work is by looking at a real example
       on how it is used:
 </p>
-<pre class="programlisting">
-/************************************************/
-/* Implementation                               */
-/************************************************/
+<div class="informalexample">
+  <table class="listing_frame" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="listing_lines" align="right"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113</pre></td>
+        <td class="listing_code"><pre class="programlisting"><span class="comment">/************************************************/</span>
+<span class="comment">/* Implementation                               */</span>
+<span class="comment">/************************************************/</span>
 
-enum {
-  MAMAN_BAR_CONSTRUCT_NAME = 1,
-  MAMAN_BAR_PAPA_NUMBER,
-};
+<span class="keyword">enum</span>
+<span class="cbracket">{</span>
+<span class="normal">  PROP_0</span><span class="symbol">,</span>
 
-static void
-maman_bar_instance_init (GTypeInstance   *instance,
-                         gpointer         g_class)
-{
-  MamanBar *self = (MamanBar *)instance;
-}
+<span class="normal">  PROP_MAMAN_NAME</span><span class="symbol">,</span>
+<span class="normal">  PROP_PAPA_NUMBER</span><span class="symbol">,</span>
 
-static void
-maman_bar_set_property (GObject      *object,
-                        guint         property_id,
-                        const GValue *value,
-                        GParamSpec   *pspec)
-{
-  MamanBar *self = (MamanBar *) object;
+<span class="normal">  N_PROPERTIES</span>
+<span class="cbracket">}</span><span class="symbol">;</span>
 
-  switch (property_id) {
-  case MAMAN_BAR_CONSTRUCT_NAME: {
-    g_free (self-&gt;priv-&gt;name);
-    self-&gt;priv-&gt;name = g_value_dup_string (value);
-    g_print ("maman: %s\n",self-&gt;priv-&gt;name);
-  }
-    break;
-  case MAMAN_BAR_PAPA_NUMBER: {
-    self-&gt;priv-&gt;papa_number = g_value_get_uchar (value);
-    g_print ("papa: %u\n",self-&gt;priv-&gt;papa_number);
-  }
-    break;
-  default:
-    /* We don't have any other property... */
-    G_OBJECT_WARN_INVALID_PROPERTY_ID(object,property_id,pspec);
-    break;
-  }
-}
+<span class="keyword">static</span><span class="normal"> </span><span class="usertype">GParamSpec</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">obj_properties</span><span class="symbol">[</span><span class="normal">N_PROPERTIES</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">=</span><span class="normal"> </span><span class="cbracket">{</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">,</span><span class="normal"> </span><span class="cbracket">}</span><span class="symbol">;</span>
 
-static void
-maman_bar_get_property (GObject      *object,
-                        guint         property_id,
-                        GValue       *value,
-                        GParamSpec   *pspec)
-{
-  MamanBar *self = (MamanBar *) object;
+<span class="keyword">static</span><span class="normal"> </span><span class="type">void</span>
+<span class="function">maman_bar_set_property</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">GObject</span><span class="normal">      </span><span class="symbol">*</span><span class="normal">object</span><span class="symbol">,</span>
+<span class="normal">                        </span><span class="usertype">guint</span><span class="normal">         property_id</span><span class="symbol">,</span>
+<span class="normal">                        </span><span class="keyword">const</span><span class="normal"> </span><span class="usertype">GValue</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">value</span><span class="symbol">,</span>
+<span class="normal">                        </span><span class="usertype">GParamSpec</span><span class="normal">   </span><span class="symbol">*</span><span class="normal">pspec</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">MamanBar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">self </span><span class="symbol">=</span><span class="normal"> </span><span class="function">MAMAN_BAR</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">object</span><span class="symbol">);</span>
 
-  switch (property_id) {
-  case MAMAN_BAR_CONSTRUCT_NAME: {
-    g_value_set_string (value, self-&gt;priv-&gt;name);
-  }
-    break;
-  case MAMAN_BAR_PAPA_NUMBER: {
-    g_value_set_uchar (value, self-&gt;priv-&gt;papa_number);
-  }
-    break;
-  default:
-    /* We don't have any other property... */
-    G_OBJECT_WARN_INVALID_PROPERTY_ID(object,property_id,pspec);
-    break;
-  }
-}
+<span class="normal">  </span><span class="keyword">switch</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">property_id</span><span class="symbol">)</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="keyword">case</span><span class="normal"> PROP_MAMAN_NAME</span><span class="symbol">:</span>
+<span class="normal">      </span><span class="function"><a href="http://library.gnome.org/devel/glib/unstable/glib-Memory-Allocation.html#g-free">g_free</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">self</span><span class="symbol">-&gt;</span><span class="normal">priv</span><span class="symbol">-&gt;</span><span class="normal">name</span><span class="symbol">);</span>
+<span class="normal">      self</span><span class="symbol">-&gt;</span><span class="normal">priv</span><span class="symbol">-&gt;</span><span class="normal">name </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-value-dup-string">g_value_dup_string</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">value</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="function"><a href="http://library.gnome.org/devel/glib/unstable/glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"maman: %s</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> self</span><span class="symbol">-&gt;</span><span class="normal">priv</span><span class="symbol">-&gt;</span><span class="normal">name</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="keyword">break</span><span class="symbol">;</span>
 
-static void
-maman_bar_class_init (gpointer g_class,
-                      gpointer g_class_data)
-{
-  GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
-  MamanBarClass *klass = MAMAN_BAR_CLASS (g_class);
-  GParamSpec *pspec;
+<span class="normal">    </span><span class="keyword">case</span><span class="normal"> PROP_PAPA_NUMBER</span><span class="symbol">:</span>
+<span class="normal">      self</span><span class="symbol">-&gt;</span><span class="normal">priv</span><span class="symbol">-&gt;</span><span class="normal">papa_number </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-value-get-uchar">g_value_get_uchar</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">value</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="function"><a href="http://library.gnome.org/devel/glib/unstable/glib-Warnings-and-Assertions.html#g-print">g_print</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"papa: %u</span><span class="specialchar">\n</span><span class="string">"</span><span class="symbol">,</span><span class="normal"> self</span><span class="symbol">-&gt;</span><span class="normal">priv</span><span class="symbol">-&gt;</span><span class="normal">papa_number</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="keyword">break</span><span class="symbol">;</span>
 
-  gobject_class-&gt;set_property = maman_bar_set_property;
-  gobject_class-&gt;get_property = maman_bar_get_property;
+<span class="label">    default:</span>
+<span class="normal">      </span><span class="comment">/* We don't have any other property... */</span>
+<span class="normal">      </span><span class="function"><a href="gobject-The-Base-Object-Type.html#G-OBJECT-WARN-INVALID-PROPERTY-ID:CAPS">G_OBJECT_WARN_INVALID_PROPERTY_ID</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">object</span><span class="symbol">,</span><span class="normal"> property_id</span><span class="symbol">,</span><span class="normal"> pspec</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="keyword">break</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+<span class="cbracket">}</span>
 
-  pspec = g_param_spec_string ("maman-name",
-                               "Maman construct prop",
-                               "Set maman's name",
-                               "no-name-set" /* default value */,
-                               G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
-  g_object_class_install_property (gobject_class,
-                                   MAMAN_BAR_CONSTRUCT_NAME,
-                                   pspec);
+<span class="keyword">static</span><span class="normal"> </span><span class="type">void</span>
+<span class="function">maman_bar_get_property</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">GObject</span><span class="normal">    </span><span class="symbol">*</span><span class="normal">object</span><span class="symbol">,</span>
+<span class="normal">                        </span><span class="usertype">guint</span><span class="normal">       property_id</span><span class="symbol">,</span>
+<span class="normal">                        </span><span class="usertype">GValue</span><span class="normal">     </span><span class="symbol">*</span><span class="normal">value</span><span class="symbol">,</span>
+<span class="normal">                        </span><span class="usertype">GParamSpec</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">pspec</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">MamanBar</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">self </span><span class="symbol">=</span><span class="normal"> </span><span class="function">MAMAN_BAR</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">object</span><span class="symbol">);</span>
 
-  pspec = g_param_spec_uchar ("papa-number",
-                              "Number of current Papa",
-                              "Set/Get papa's number",
-                              0  /* minimum value */,
-                              10 /* maximum value */,
-                              2  /* default value */,
-                              G_PARAM_READWRITE);
-  g_object_class_install_property (gobject_class,
-                                   MAMAN_BAR_PAPA_NUMBER,
-                                   pspec);
-}
+<span class="normal">  </span><span class="keyword">switch</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">property_id</span><span class="symbol">)</span>
+<span class="normal">    </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="keyword">case</span><span class="normal"> PROP_MAMAN_NAME</span><span class="symbol">:</span>
+<span class="normal">      </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-value-set-string">g_value_set_string</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">value</span><span class="symbol">,</span><span class="normal"> self</span><span class="symbol">-&gt;</span><span class="normal">priv</span><span class="symbol">-&gt;</span><span class="normal">name</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="keyword">break</span><span class="symbol">;</span>
 
-/************************************************/
-/* Use                                          */
-/************************************************/
+<span class="normal">    </span><span class="keyword">case</span><span class="normal"> PROP_PAPA_NUMBER</span><span class="symbol">:</span>
+<span class="normal">      </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-value-set-uchar">g_value_set_uchar</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">value</span><span class="symbol">,</span><span class="normal"> self</span><span class="symbol">-&gt;</span><span class="normal">priv</span><span class="symbol">-&gt;</span><span class="normal">papa_number</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="keyword">break</span><span class="symbol">;</span>
 
-GObject *bar;
-GValue val = {0,};
-bar = g_object_new (MAMAN_TYPE_SUBBAR, NULL);
-g_value_init (&amp;val, G_TYPE_CHAR);
-g_value_set_char (&amp;val, 11);
-g_object_set_property (G_OBJECT (bar), "papa-number", &amp;val);
-</pre>
+<span class="label">    default:</span>
+<span class="normal">      </span><span class="comment">/* We don't have any other property... */</span>
+<span class="normal">      </span><span class="function"><a href="gobject-The-Base-Object-Type.html#G-OBJECT-WARN-INVALID-PROPERTY-ID:CAPS">G_OBJECT_WARN_INVALID_PROPERTY_ID</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">object</span><span class="symbol">,</span><span class="normal"> property_id</span><span class="symbol">,</span><span class="normal"> pspec</span><span class="symbol">);</span>
+<span class="normal">      </span><span class="keyword">break</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+<span class="cbracket">}</span>
+
+<span class="keyword">static</span><span class="normal"> </span><span class="type">void</span>
+<span class="function">maman_bar_class_init</span><span class="normal"> </span><span class="symbol">(</span><span class="usertype">MamanBarClass</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">klass</span><span class="symbol">)</span>
+<span class="cbracket">{</span>
+<span class="normal">  </span><span class="usertype">GObjectClass</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">gobject_class </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="gobject-The-Base-Object-Type.html#G-OBJECT-CLASS:CAPS">G_OBJECT_CLASS</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">klass</span><span class="symbol">);</span>
+
+<span class="normal">  gobject_class</span><span class="symbol">-&gt;</span><span class="normal">set_property </span><span class="symbol">=</span><span class="normal"> maman_bar_set_property</span><span class="symbol">;</span>
+<span class="normal">  gobject_class</span><span class="symbol">-&gt;</span><span class="normal">get_property </span><span class="symbol">=</span><span class="normal"> maman_bar_get_property</span><span class="symbol">;</span>
+
+<span class="normal">  obj_properties</span><span class="symbol">[</span><span class="normal">PROP_NAME</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">=</span>
+<span class="normal">    </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-param-spec-string">g_param_spec_string</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"maman-name"</span><span class="symbol">,</span>
+<span class="normal">                         </span><span class="string">"Maman construct prop"</span><span class="symbol">,</span>
+<span class="normal">                         </span><span class="string">"Set maman's name"</span><span class="symbol">,</span>
+<span class="normal">                         </span><span class="string">"no-name-set"</span><span class="normal"> </span><span class="comment">/* default value */</span><span class="symbol">,</span>
+<span class="normal">                         G_PARAM_CONSTRUCT_ONLY </span><span class="symbol">|</span><span class="normal"> G_PARAM_READWRITE</span><span class="symbol">);</span>
+
+<span class="normal">  obj_properties</span><span class="symbol">[</span><span class="normal">PROP_NUMBER</span><span class="symbol">]</span><span class="normal"> </span><span class="symbol">=</span>
+<span class="normal">    </span><span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-param-spec-uchar">g_param_spec_uchar</a></span><span class="normal"> </span><span class="symbol">(</span><span class="string">"papa-number"</span><span class="symbol">,</span>
+<span class="normal">                        </span><span class="string">"Number of current Papa"</span><span class="symbol">,</span>
+<span class="normal">                        </span><span class="string">"Set/Get papa's number"</span><span class="symbol">,</span>
+<span class="normal">                        </span><span class="number">0</span><span class="normal">  </span><span class="comment">/* minimum value */</span><span class="symbol">,</span>
+<span class="normal">                        </span><span class="number">10</span><span class="normal"> </span><span class="comment">/* maximum value */</span><span class="symbol">,</span>
+<span class="normal">                        </span><span class="number">2</span><span class="normal">  </span><span class="comment">/* default value */</span><span class="symbol">,</span>
+<span class="normal">                        G_PARAM_READWRITE</span><span class="symbol">);</span>
+
+<span class="normal">  </span><span class="function"><a href="gobject-The-Base-Object-Type.html#g-object-class-install-properties">g_object_class_install_properties</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">gobject_class</span><span class="symbol">,</span>
+<span class="normal">                                     N_PROPERTIES</span><span class="symbol">,</span>
+<span class="normal">                                     obj_properties</span><span class="symbol">);</span>
+<span class="cbracket">}</span>
+
+<span class="comment">/************************************************/</span>
+<span class="comment">/* Use                                          */</span>
+<span class="comment">/************************************************/</span>
+
+<span class="usertype">GObject</span><span class="normal"> </span><span class="symbol">*</span><span class="normal">bar</span><span class="symbol">;</span>
+<span class="usertype">GValue</span><span class="normal"> val </span><span class="symbol">=</span><span class="normal"> <a href="gobject-Generic-values.html#G-VALUE-INIT:CAPS">G_VALUE_INIT</a></span><span class="symbol">;</span>
+
+<span class="normal">bar </span><span class="symbol">=</span><span class="normal"> </span><span class="function"><a href="gobject-The-Base-Object-Type.html#g-object-new">g_object_new</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">MAMAN_TYPE_SUBBAR</span><span class="symbol">,</span><span class="normal"> <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macros.html#NULL:CAPS">NULL</a></span><span class="symbol">);</span>
+
+<span class="function"><a href="gobject-Generic-values.html#g-value-init">g_value_init</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">val</span><span class="symbol">,</span><span class="normal"> <a href="gobject-Type-Information.html#G-TYPE-CHAR:CAPS">G_TYPE_CHAR</a></span><span class="symbol">);</span>
+<span class="function"><a href="gobject-Standard-Parameter-and-Value-Types.html#g-value-set-char">g_value_set_char</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">val</span><span class="symbol">,</span><span class="normal"> </span><span class="number">11</span><span class="symbol">);</span>
+
+<span class="function"><a href="gobject-The-Base-Object-Type.html#g-object-set-property">g_object_set_property</a></span><span class="normal"> </span><span class="symbol">(</span><span class="function"><a href="gobject-The-Base-Object-Type.html#G-OBJECT:CAPS">G_OBJECT</a></span><span class="normal"> </span><span class="symbol">(</span><span class="normal">bar</span><span class="symbol">),</span><span class="normal"> </span><span class="string">"papa-number"</span><span class="symbol">,</span><span class="normal"> </span><span class="symbol">&amp;</span><span class="normal">val</span><span class="symbol">);</span>
+
+<span class="function"><a href="gobject-Generic-values.html#g-value-unset">g_value_unset</a></span><span class="normal"> </span><span class="symbol">(&amp;</span><span class="normal">val</span><span class="symbol">);</span></pre></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 <p>
       The client code just above looks simple but a lot of things happen under the hood:
     </p>
 <p>
-      <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-property" title="g_object_set_property ()">g_object_set_property</a></code> first ensures a property
-      with this name was registered in bar's class_init handler. If so, it calls
-      <code class="function">object_set_property</code> which first walks the class hierarchy,
+      <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-property" title="g_object_set_property ()">g_object_set_property</a></code> first ensures a property
+      with this name was registered in bar's class_init handler. If so it walks the class hierarchy,
       from bottom, most derived type, to top, fundamental type to find the class
       which registered that property. It then tries to convert the user-provided GValue
-      into a GValue whose type if that of the associated property.
+      into a GValue whose type is that of the associated property.
     </p>
 <p>
       If the user provides a signed char GValue, as is shown
       here, and if the object's property was registered as an unsigned int, 
-      <code class="function"><a class="link" href="gobject-Generic-values.html#g-value-transform" title="g_value_transform ()">g_value_transform</a></code> will try to transform the input signed char into
+      <code class="function"><a class="link" href="gobject-Generic-values.html#g-value-transform" title="g_value_transform ()">g_value_transform</a></code> will try to transform the input signed char into
       an unsigned int. Of course, the success of the transformation depends on the availability
       of the required transform function. In practice, there will almost always be a transformation
-      <sup>[<a name="id2655025" href="#ftn.id2655025" class="footnote">6</a>]</sup>
+      <a href="#ftn.id-1.3.4.6.5.2" class="footnote" name="id-1.3.4.6.5.2"><sup class="footnote">[4]</sup></a>
       which matches and conversion will be carried out if needed.
     </p>
 <p>
-      After transformation, the <span class="type"><a class="link" href="gobject-Generic-values.html#GValue" title="GValue">GValue</a></span> is validated by 
-      <code class="function"><a class="link" href="gobject-GParamSpec.html#g-param-value-validate" title="g_param_value_validate ()">g_param_value_validate</a></code> which makes sure the user's
-      data stored in the <span class="type"><a class="link" href="gobject-Generic-values.html#GValue" title="GValue">GValue</a></span> matches the characteristics specified by
-      the property's <span class="type"><a class="link" href="gobject-GParamSpec.html#GParamSpec" title="GParamSpec">GParamSpec</a></span>.  Here, the <span class="type"><a class="link" href="gobject-GParamSpec.html#GParamSpec" title="GParamSpec">GParamSpec</a></span> we 
+      After transformation, the <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> is validated by 
+      <code class="function"><a class="link" href="gobject-GParamSpec.html#g-param-value-validate" title="g_param_value_validate ()">g_param_value_validate</a></code> which makes sure the user's
+      data stored in the <a class="link" href="gobject-Generic-values.html#GValue" title="GValue"><span class="type">GValue</span></a> matches the characteristics specified by
+      the property's <a class="link" href="gobject-GParamSpec.html#GParamSpec" title="struct GParamSpec"><span class="type">GParamSpec</span></a>.
+      Here, the <a class="link" href="gobject-GParamSpec.html#GParamSpec" title="struct GParamSpec"><span class="type">GParamSpec</span></a> we 
       provided in class_init has a validation function which makes sure that the GValue
       contains a value which respects the minimum and maximum bounds of the 
-      <span class="type"><a class="link" href="gobject-GParamSpec.html#GParamSpec" title="GParamSpec">GParamSpec</a></span>. In the example above, the client's GValue does not
+      <a class="link" href="gobject-GParamSpec.html#GParamSpec" title="struct GParamSpec"><span class="type">GParamSpec</span></a>. In the example above, the client's GValue does not
       respect these constraints (it is set to 11, while the maximum is 10). As such, the
-      <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-property" title="g_object_set_property ()">g_object_set_property</a></code> function will return with an error.
+      <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-property" title="g_object_set_property ()">g_object_set_property</a></code> function will return with an error.
     </p>
 <p>
-      If the user's GValue had been set to a valid value, <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-property" title="g_object_set_property ()">g_object_set_property</a></code>
+      If the user's GValue had been set to a valid value, <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-property" title="g_object_set_property ()">g_object_set_property</a></code>
       would have proceeded with calling the object's set_property class method. Here, since our
       implementation of Foo did override this method, the code path would jump to
       <code class="function">foo_set_property</code> after having retrieved from the 
-      <span class="type"><a class="link" href="gobject-GParamSpec.html#GParamSpec" title="GParamSpec">GParamSpec</a></span> the <span class="emphasis"><em>param_id</em></span>
-      <sup>[<a name="id2655126" href="#ftn.id2655126" class="footnote">7</a>]</sup>
+      <a class="link" href="gobject-GParamSpec.html#GParamSpec" title="struct GParamSpec"><span class="type">GParamSpec</span></a> the <span class="emphasis"><em>param_id</em></span>
+      <a href="#ftn.id-1.3.4.6.7.5" class="footnote" name="id-1.3.4.6.7.5"><sup class="footnote">[5]</sup></a>
       which had been stored by
-      <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-class-install-property" title="g_object_class_install_property ()">g_object_class_install_property</a></code>.
+      <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-class-install-property" title="g_object_class_install_property ()">g_object_class_install_property</a></code>.
     </p>
 <p>
       Once the property has been set by the object's set_property class method, the code path
-      returns to <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-property" title="g_object_set_property ()">g_object_set_property</a></code> which calls 
-      <code class="function">g_object_notify_queue_thaw</code>. This function makes sure that
+      returns to <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-property" title="g_object_set_property ()">g_object_set_property</a></code> which makes sure that
       the "notify" signal is emitted on the object's instance with the changed property as
-      parameter unless notifications were frozen by <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-freeze-notify" title="g_object_freeze_notify ()">g_object_freeze_notify</a></code>.
+      parameter unless notifications were frozen by <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-freeze-notify" title="g_object_freeze_notify ()">g_object_freeze_notify</a></code>.
     </p>
 <p>
-      <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-thaw-notify" title="g_object_thaw_notify ()">g_object_thaw_notify</a></code> can be used to re-enable notification of 
+      <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-thaw-notify" title="g_object_thaw_notify ()">g_object_thaw_notify</a></code> can be used to re-enable notification of 
       property modifications through the "notify" signal. It is important to remember that
       even if properties are changed while property change notification is frozen, the "notify"
       signal will be emitted once for each of these changed properties as soon as the property
@@ -228,17 +325,17 @@ g_object_set_property (G_OBJECT (bar), "papa-number", &amp;val);
     </p>
 <p>
       It sounds like a tedious task to set up GValues every time when one wants to modify a property.
-      In practice one will rarely do this. The functions <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-property" title="g_object_set_property ()">g_object_set_property</a></code>
-      and <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-get-property" title="g_object_get_property ()">g_object_get_property</a></code>
+      In practice one will rarely do this. The functions <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-property" title="g_object_set_property ()">g_object_set_property</a></code>
+      and <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-get-property" title="g_object_get_property ()">g_object_get_property</a></code>
       are meant to be used by language bindings. For application there is an easier way and
       that is described next.
     </p>
-<div class="sect2" lang="en">
+<div class="sect2">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="gobject-multi-properties"></a>Accessing multiple properties at once</h3></div></div></div>
 <p>
-        It is interesting to note that the <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set" title="g_object_set ()">g_object_set</a></code> and 
-        <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-valist" title="g_object_set_valist ()">g_object_set_valist</a></code> (vararg version) functions can be used to set
+        It is interesting to note that the <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set" title="g_object_set ()">g_object_set</a></code> and 
+        <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-valist" title="g_object_set_valist ()">g_object_set_valist</a></code> (vararg version) functions can be used to set
         multiple properties at once. The client code shown above can then be re-written as:
 </p>
 <pre class="programlisting">
@@ -251,37 +348,37 @@ g_object_set (G_OBJECT (foo),
 </pre>
 <p>
         This saves us from managing the GValues that we were needing to handle when using
-        <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-property" title="g_object_set_property ()">g_object_set_property</a></code>.
+        <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set-property" title="g_object_set_property ()">g_object_set_property</a></code>.
         The code above will trigger one notify signal emission for each property modified.
       </p>
 <p>
-        Of course, the _get versions are also available: <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-get" title="g_object_get ()">g_object_get</a></code>
-        and <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-get-valist" title="g_object_get_valist ()">g_object_get_valist</a></code> (vararg version) can be used to get numerous
+        Of course, the _get versions are also available: <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-get" title="g_object_get ()">g_object_get</a></code>
+        and <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-get-valist" title="g_object_get_valist ()">g_object_get_valist</a></code> (vararg version) can be used to get numerous
         properties at once.
       </p>
 <p>
         These high level functions have one drawback - they don't provide a return result.
         One should pay attention to the argument types and ranges when using them.
-        A know source of errors is to e.g. pass a gfloat instead of a gdouble and thus
+        A known source of errors is to e.g. pass a gfloat instead of a gdouble and thus
         shifting all subsequent parameters by four bytes. Also forgetting the terminating
         NULL will lead to unexpected behaviour.
       </p>
 <p>
-        Really attentive readers now understand how <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-new" title="g_object_new ()">g_object_new</a></code>,
-        <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-newv" title="g_object_newv ()">g_object_newv</a></code> and <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-new-valist" title="g_object_new_valist ()">g_object_new_valist</a></code> 
+        Really attentive readers now understand how <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-new" title="g_object_new ()">g_object_new</a></code>,
+        <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-newv" title="g_object_newv ()">g_object_newv</a></code> and <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-new-valist" title="g_object_new_valist ()">g_object_new_valist</a></code> 
         work: they parse the user-provided variable number of parameters and invoke
-        <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set" title="g_object_set ()">g_object_set</a></code> on the parameters only after the object has been successfully constructed.
+        <code class="function"><a class="link" href="gobject-The-Base-Object-Type.html#g-object-set" title="g_object_set ()">g_object_set</a></code> on the parameters only after the object has been successfully constructed.
         Of course, the "notify" signal will be emitted for each property set.
       </p>
 </div>
 <div class="footnotes">
-<br><hr width="100" align="left">
-<div class="footnote"><p><sup>[<a name="ftn.id2655025" href="#id2655025" class="para">6</a>] </sup>Its behaviour might not be what you expect but it is up to you to actually avoid
+<br><hr style="width:100; text-align:left;margin-left: 0">
+<div id="ftn.id-1.3.4.6.5.2" class="footnote"><p><a href="#id-1.3.4.6.5.2" class="para"><sup class="para">[4] </sup></a>Its behaviour might not be what you expect but it is up to you to actually avoid
           relying on these transformations.
         </p></div>
-<div class="footnote"><p><sup>[<a name="ftn.id2655126" href="#id2655126" class="para">7</a>] </sup>
+<div id="ftn.id-1.3.4.6.7.5" class="footnote"><p><a href="#id-1.3.4.6.7.5" class="para"><sup class="para">[5] </sup></a>
           It should be noted that the param_id used here need only to uniquely identify each 
-          <span class="type"><a class="link" href="gobject-GParamSpec.html#GParamSpec" title="GParamSpec">GParamSpec</a></span> within the <span class="type">FooClass</span> such that the switch
+          <a class="link" href="gobject-GParamSpec.html#GParamSpec" title="struct GParamSpec"><span class="type">GParamSpec</span></a> within the <span class="type">FooClass</span> such that the switch
           used in the set and get methods actually works. Of course, this locally-unique 
           integer is purely an optimization: it would have been possible to use a set of 
           <span class="emphasis"><em>if (strcmp (a, b) == 0) {} else if (strcmp (a, b) == 0) {}</em></span> statements.
@@ -290,6 +387,6 @@ g_object_set (G_OBJECT (foo),
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.10</div>
+          Generated by GTK-Doc V1.20.1</div>
 </body>
 </html>

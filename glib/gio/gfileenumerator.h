@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,28 +13,21 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
+
+#ifndef __G_FILE_ENUMERATOR_H__
+#define __G_FILE_ENUMERATOR_H__
 
 #if !defined (__GIO_GIO_H_INSIDE__) && !defined (GIO_COMPILATION)
 #error "Only <gio/gio.h> can be included directly."
 #endif
 
-#ifndef __G_FILE_ENUMERATOR_H__
-#define __G_FILE_ENUMERATOR_H__
-
-#include <glib-object.h>
-#include <gio/gioerror.h>
-#include <gio/gcancellable.h>
-#include <gio/gfileinfo.h>
-#include <gio/gasyncresult.h>
+#include <gio/giotypes.h>
 
 G_BEGIN_DECLS
-
 
 #define G_TYPE_FILE_ENUMERATOR         (g_file_enumerator_get_type ())
 #define G_FILE_ENUMERATOR(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), G_TYPE_FILE_ENUMERATOR, GFileEnumerator))
@@ -45,19 +38,16 @@ G_BEGIN_DECLS
 
 /**
  * GFileEnumerator:
- * @parent_instance: The parent class.
- * 
+ *
  * A per matched file iterator.
  **/
-typedef struct _GFileEnumerator         GFileEnumerator;
 typedef struct _GFileEnumeratorClass    GFileEnumeratorClass;
 typedef struct _GFileEnumeratorPrivate  GFileEnumeratorPrivate;
-
 
 struct _GFileEnumerator
 {
   GObject parent_instance;
-  
+
   /*< private >*/
   GFileEnumeratorPrivate *priv;
 };
@@ -68,30 +58,30 @@ struct _GFileEnumeratorClass
 
   /* Virtual Table */
 
-  GFileInfo *(*next_file)         (GFileEnumerator              *enumerator,
-				   GCancellable                 *cancellable,
-				   GError                      **error);
-  gboolean   (*close_fn)          (GFileEnumerator              *enumerator,
-				   GCancellable                 *cancellable,
-				   GError                      **error);
+  GFileInfo * (* next_file)         (GFileEnumerator      *enumerator,
+                                     GCancellable         *cancellable,
+                                     GError              **error);
+  gboolean    (* close_fn)          (GFileEnumerator      *enumerator,
+                                     GCancellable         *cancellable,
+                                     GError              **error);
 
-  void       (*next_files_async)  (GFileEnumerator                *enumerator,
-				   int                             num_files,
-				   int                             io_priority,
-				   GCancellable                   *cancellable,
-				   GAsyncReadyCallback             callback,
-				   gpointer                        user_data);
-  GList *    (*next_files_finish) (GFileEnumerator                *enumerator,
-				   GAsyncResult                   *res,
-				   GError                        **error);
-  void       (*close_async)       (GFileEnumerator                *enumerator,
-				   int                             io_priority,
-				   GCancellable                   *cancellable,
-				   GAsyncReadyCallback             callback,
-				   gpointer                        user_data);
-  gboolean   (*close_finish)      (GFileEnumerator                *enumerator,
-				   GAsyncResult                   *res,
-				   GError                        **error);
+  void        (* next_files_async)  (GFileEnumerator      *enumerator,
+                                     int                   num_files,
+                                     int                   io_priority,
+                                     GCancellable         *cancellable,
+                                     GAsyncReadyCallback   callback,
+                                     gpointer              user_data);
+  GList *     (* next_files_finish) (GFileEnumerator      *enumerator,
+                                     GAsyncResult         *result,
+                                     GError              **error);
+  void        (* close_async)       (GFileEnumerator      *enumerator,
+                                     int                   io_priority,
+                                     GCancellable         *cancellable,
+                                     GAsyncReadyCallback   callback,
+                                     gpointer              user_data);
+  gboolean    (* close_finish)      (GFileEnumerator      *enumerator,
+                                     GAsyncResult         *result,
+                                     GError              **error);
 
   /*< private >*/
   /* Padding for future expansion */
@@ -104,35 +94,50 @@ struct _GFileEnumeratorClass
   void (*_g_reserved7) (void);
 };
 
-GType g_file_enumerator_get_type (void) G_GNUC_CONST;
+GLIB_AVAILABLE_IN_ALL
+GType      g_file_enumerator_get_type          (void) G_GNUC_CONST;
 
+GLIB_AVAILABLE_IN_ALL
 GFileInfo *g_file_enumerator_next_file         (GFileEnumerator      *enumerator,
 						GCancellable         *cancellable,
 						GError              **error);
+GLIB_AVAILABLE_IN_ALL
 gboolean   g_file_enumerator_close             (GFileEnumerator      *enumerator,
 						GCancellable         *cancellable,
 						GError              **error);
+GLIB_AVAILABLE_IN_ALL
 void       g_file_enumerator_next_files_async  (GFileEnumerator      *enumerator,
 						int                   num_files,
 						int                   io_priority,
 						GCancellable         *cancellable,
 						GAsyncReadyCallback   callback,
 						gpointer              user_data);
+GLIB_AVAILABLE_IN_ALL
 GList *    g_file_enumerator_next_files_finish (GFileEnumerator      *enumerator,
 						GAsyncResult         *result,
 						GError              **error);
+GLIB_AVAILABLE_IN_ALL
 void       g_file_enumerator_close_async       (GFileEnumerator      *enumerator,
 						int                   io_priority,
 						GCancellable         *cancellable,
 						GAsyncReadyCallback   callback,
 						gpointer              user_data);
+GLIB_AVAILABLE_IN_ALL
 gboolean   g_file_enumerator_close_finish      (GFileEnumerator      *enumerator,
 						GAsyncResult         *result,
 						GError              **error);
+GLIB_AVAILABLE_IN_ALL
 gboolean   g_file_enumerator_is_closed         (GFileEnumerator      *enumerator);
+GLIB_AVAILABLE_IN_ALL
 gboolean   g_file_enumerator_has_pending       (GFileEnumerator      *enumerator);
+GLIB_AVAILABLE_IN_ALL
 void       g_file_enumerator_set_pending       (GFileEnumerator      *enumerator,
 						gboolean              pending);
+GLIB_AVAILABLE_IN_ALL
+GFile *    g_file_enumerator_get_container     (GFileEnumerator *enumerator);
+GLIB_AVAILABLE_IN_2_36
+GFile *    g_file_enumerator_get_child         (GFileEnumerator *enumerator,
+                                                GFileInfo       *info);
 
 G_END_DECLS
 

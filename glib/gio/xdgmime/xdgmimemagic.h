@@ -20,9 +20,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef __XDG_MIME_MAGIC_H__
@@ -33,12 +31,12 @@
 typedef struct XdgMimeMagic XdgMimeMagic;
 
 #ifdef XDG_PREFIX
-#define _xdg_mime_glob_read_from_file             XDG_ENTRY(glob_read_from_file)
-#define _xdg_mime_magic_new                       XDG_ENTRY(magic_new)
-#define _xdg_mime_magic_read_from_file            XDG_ENTRY(magic_read_from_file)
-#define _xdg_mime_magic_free                      XDG_ENTRY(magic_free)
-#define _xdg_mime_magic_get_buffer_extents        XDG_ENTRY(magic_get_buffer_extents)
-#define _xdg_mime_magic_lookup_data               XDG_ENTRY(magic_lookup_data)
+#define _xdg_mime_glob_read_from_file             XDG_RESERVED_ENTRY(glob_read_from_file)
+#define _xdg_mime_magic_new                       XDG_RESERVED_ENTRY(magic_new)
+#define _xdg_mime_magic_read_from_file            XDG_RESERVED_ENTRY(magic_read_from_file)
+#define _xdg_mime_magic_free                      XDG_RESERVED_ENTRY(magic_free)
+#define _xdg_mime_magic_get_buffer_extents        XDG_RESERVED_ENTRY(magic_get_buffer_extents)
+#define _xdg_mime_magic_lookup_data               XDG_RESERVED_ENTRY(magic_lookup_data)
 #endif
 
 

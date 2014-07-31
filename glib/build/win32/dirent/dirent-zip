@@ -2,8 +2,7 @@
 
 # Build developer package for the dirent library.
 
-# These paths obviously are system-dependent:
-ZIP=/g/tmp/dirent.zip
+ZIP=/tmp/dirent.zip
 
 mkdir -p dist/include dist/lib
 cp dirent.h dist/include
@@ -11,7 +10,7 @@ cp dirent.lib dist/lib
 
 (cd dist
 rm $ZIP
-zip -r $ZIP -@ <<EOF
+zip $ZIP -@ <<EOF
 include/dirent.h
 lib/dirent.lib
 EOF
