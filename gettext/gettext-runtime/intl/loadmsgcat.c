@@ -33,6 +33,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#ifdef _WIN32_WCE
+# include <io.h>
+#define open(a,b) _open(a,b,0)
+#endif
+
 #ifdef __GNUC__
 # undef  alloca
 # define alloca __builtin_alloca
@@ -40,7 +45,9 @@
 #else
 # ifdef _MSC_VER
 #  include <malloc.h>
+#  undef alloca
 #  define alloca _alloca
+#  define HAVE_ALLOCA
 # else
 #  if defined HAVE_ALLOCA_H || defined _LIBC
 #   include <alloca.h>
@@ -499,7 +506,6 @@ char *alloca ();
 # define O_BINARY 0
 #endif
 
-
 /* We need a sign, whether a new catalog was loaded, which can be associated
    with all translations.  This is important if the translations are
    cached by one of GCC's features.  */
@@ -782,7 +788,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 {
   __libc_lock_define_initialized_recursive (static, lock)
   int fd = -1;
-  size_t size;
+  size_t _size;
 #ifdef _LIBC
   struct stat64 st;
 #else
@@ -836,15 +842,15 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 #else
       __builtin_expect (fstat (fd, &st) != 0, 0)
 #endif
-      || __builtin_expect ((size = (size_t) st.st_size) != st.st_size, 0)
-      || __builtin_expect (size < sizeof (struct mo_file_header), 0))
+      || __builtin_expect ((_size = (size_t) st.st_size) != st.st_size, 0)
+      || __builtin_expect (_size < sizeof (struct mo_file_header), 0))
     /* Something went wrong.  */
     goto out;
 
 #ifdef HAVE_MMAP
   /* Now we are ready to load the file.  If mmap() is available we try
      this first.  If not available or it failed we try to load it.  */
-  data = (struct mo_file_header *) mmap (NULL, size, PROT_READ,
+  data = (struct mo_file_header *) mmap (NULL, _size, PROT_READ,
 					 MAP_PRIVATE, fd, 0);
 
   if (__builtin_expect (data != (struct mo_file_header *) -1, 1))
@@ -863,11 +869,11 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
       size_t to_read;
       char *read_ptr;
 
-      data = (struct mo_file_header *) malloc (size);
+      data = (struct mo_file_header *) malloc (_size);
       if (data == NULL)
 	goto out;
 
-      to_read = size;
+      to_read = _size;
       read_ptr = (char *) data;
       do
 	{
@@ -897,7 +903,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
       /* The magic number is wrong: not a message catalog file.  */
 #ifdef HAVE_MMAP
       if (use_mmap)
-	munmap ((caddr_t) data, size);
+	munmap ((caddr_t) data, _size);
       else
 #endif
 	free (data);
@@ -911,7 +917,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 
   domain->data = (char *) data;
   domain->use_mmap = use_mmap;
-  domain->mmap_size = size;
+  domain->mmap_size = _size;
   domain->must_swap = data->magic != _MAGIC;
   domain->malloced = NULL;
 

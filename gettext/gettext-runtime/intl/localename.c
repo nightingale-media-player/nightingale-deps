@@ -1128,6 +1128,10 @@
 # endif
 #endif
 
+#ifdef _WIN32_WCE
+#define GetThreadLocale GetUserDefaultLCID
+#endif
+
 
 #if HAVE_CFLOCALECOPYCURRENT || HAVE_CFPREFERENCESCOPYAPPVALUE
 /* MacOS X 10.2 or newer */
@@ -1448,6 +1452,7 @@ static
 const char *
 gl_locale_name_from_win32_LANGID (LANGID langid)
 {
+#ifndef _WIN32_WCE
   /* Activate the new code only when the GETTEXT_MUI environment variable is
      set, for the time being, since the new code is not well tested.  */
   if (getenv ("GETTEXT_MUI") != NULL)
@@ -1465,6 +1470,7 @@ gl_locale_name_from_win32_LANGID (LANGID langid)
           return namebuf;
         }
     }
+#endif
   /* Internet Explorer has an LCID to RFC3066 name mapping stored in
      HKEY_CLASSES_ROOT\Mime\Database\Rfc1766.  But we better don't use that
      since IE's i18n subsystem is known to be inconsistent with the Win32 base

@@ -25,6 +25,9 @@
 
 /* Get SIZE_MAX.  */
 #include <limits.h>
+#ifdef _WIN32_WCE
+#define SIZE_MAX  _UI32_MAX
+#endif
 #if HAVE_STDINT_H
 # include <stdint.h>
 #endif

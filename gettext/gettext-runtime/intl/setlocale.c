@@ -17,6 +17,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
 
+
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -45,6 +46,9 @@
 #include "gettextP.h"
 
 #if (defined __APPLE__ && defined __MACH__) || defined _WIN32 || defined __WIN32__ || defined __CYGWIN__
+
+/* FIXME: In Windwos CE the function setlocale is not defined */
+# ifndef _WIN32_WCE
 
 # undef setlocale
 # undef newlocale
@@ -816,10 +820,14 @@ setlocale_single (int category, const char *locale)
 #  define setlocale_single setlocale_unixlike
 # endif
 
+# endif
+
 DLL_EXPORTED
 char *
 libintl_setlocale (int category, const char *locale)
 {
+/* FIXME: In Windwos CE we dont need setlocale */
+#ifndef _WIN32_WCE
   if (locale != NULL && locale[0] == '\0')
     {
       /* A request to the set the current locale to the default locale.  */
@@ -899,6 +907,8 @@ libintl_setlocale (int category, const char *locale)
     }
   else
     return setlocale_single (category, locale);
+#endif    
+    return NULL;
 }
 
 # if HAVE_NEWLOCALE

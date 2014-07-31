@@ -23,7 +23,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
+#endif
 
 /* A version of getenv() that works from DLLs */
 extern unsigned long DosScanEnv (const unsigned char *pszName, unsigned char **ppszValue);

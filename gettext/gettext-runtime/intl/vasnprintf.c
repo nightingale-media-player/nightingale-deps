@@ -86,6 +86,10 @@
 # endif
 #endif
 
+#ifdef _WIN32_WCE
+#include <wchar.h>
+#endif
+
 /* Checked size_t computations.  */
 #include "xsize.h"
 

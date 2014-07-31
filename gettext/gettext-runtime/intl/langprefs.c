@@ -53,6 +53,8 @@ extern void _nl_locale_name_canonicalize (char *name);
 extern const char *_nl_locale_name_from_win32_LANGID (LANGID langid);
 extern const char *_nl_locale_name_from_win32_LCID (LCID lcid);
 
+#ifndef _WIN32_WCE
+
 /* Get the preferences list through the MUI APIs. This works on Windows Vista
    and newer.  */
 static const char *
@@ -205,6 +207,8 @@ _nl_language_preferences_win32_95 ()
   return NULL;
 }
 
+
+
 /* Get the system's preference.  This can be used as a fallback.  */
 static BOOL CALLBACK
 ret_first_language (HMODULE h, LPCSTR type, LPCSTR name, WORD lang, LONG_PTR param)
@@ -222,7 +226,7 @@ _nl_language_preferences_win32_system (HMODULE kernel32)
                          ret_first_language, (LONG_PTR)&languages);
   return languages;
 }
-
+#endif
 #endif
 
 /* Determine the user's language preferences, as a colon separated list of
@@ -324,6 +328,7 @@ _nl_language_preferences_default (void)
     static const char *cached_languages;
     static int cache_initialized;
 
+#ifndef _WIN32_WCE
     /* Activate the new code only when the GETTEXT_MUI environment variable is
        set, for the time being, since the new code is not well tested.  */
     if (!cache_initialized && getenv ("GETTEXT_MUI") != NULL)
@@ -346,10 +351,21 @@ _nl_language_preferences_default (void)
         cached_languages = languages;
         cache_initialized = 1;
       }
+#else
+    if (!cache_initialized)
+      {
+        LCID lcid;
+        
+        /* Use native Win32 API locale ID.  */
+        lcid = GetSystemDefaultLCID ();
+        
+        cached_languages = _nl_locale_name_from_win32_LCID(lcid);
+        cache_initialized = 1;
+      }
+#endif
     if (cached_languages != NULL)
       return cached_languages;
   }
 #endif
-
   return NULL;
 }

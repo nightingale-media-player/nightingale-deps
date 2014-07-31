@@ -75,6 +75,11 @@
 # include "c-ctype.h"
 #endif
 
+#if defined(_WIN32_WCE) && !defined(_PTRDIFF_T_DEFINED)
+  typedef int ptrdiff_t;
+# define _PTRDIFF_T_DEFINED
+#endif
+
 #ifdef STATIC
 STATIC
 #endif

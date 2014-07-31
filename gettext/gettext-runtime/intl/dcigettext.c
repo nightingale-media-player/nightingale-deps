@@ -140,8 +140,12 @@ extern int errno;
 # define tfind __tfind
 #else
 # if !defined HAVE_GETCWD
+#  ifndef _WIN32_WCE
 char *getwd ();
-#  define getcwd(buf, max) getwd (buf)
+#   define getcwd(buf, max) getwd (buf)
+#  else
+#    define getcwd _getcwd
+#  endif
 # else
 #  if VMS
 #   define getcwd(buf, max) (getcwd) (buf, max, 0)
