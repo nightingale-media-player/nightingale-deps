@@ -1,5 +1,4 @@
 # Example for use of GNU gettext.
-# Copyright (C) 2003 Free Software Foundation, Inc.
 # This file is in the public domain.
 #
 # Makefile configuration - processed by automake.
@@ -29,11 +28,11 @@ hello$(EXEEXT) hello.rst: $(hello_SOURCES)
 	LOCALEDIR='@localedir@' $(PPC) $(hello_SOURCES)
 
 install-exec-local: all-local
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	$(mkdir_p) $(DESTDIR)$(bindir)
 	$(INSTALL_PROGRAM) hello$(EXEEXT) $(DESTDIR)$(bindir)/hello$(EXEEXT)
 
 installdirs-local:
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	$(mkdir_p) $(DESTDIR)$(bindir)
 
 uninstall-local:
 	rm -f $(DESTDIR)$(bindir)/hello$(EXEEXT)

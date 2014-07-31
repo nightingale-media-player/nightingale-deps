@@ -1,122 +1,129 @@
 # Translation of `gettext-runtime' messages to Japanese.
-# Copyright (C) 1999, 2002, 2003 Free Software Foundation, Inc.
-# Masahito Yamaga <ma@yama-ga.com>, 2003.
+# Copyright (C) 1999, 2002, 2003, 2006, 2007 Free Software Foundation, Inc.
+# Masahito Yamaga <ma@yama-ga.com>, 2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: GNU gettext-runtime 0.13.1\n"
+"Project-Id-Version: GNU gettext-runtime 0.16.2-pre5\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2005-01-14 13:07+0100\n"
-"PO-Revision-Date: 2003-12-20 00:24+0900\n"
+"POT-Creation-Date: 2010-05-09 13:18+0200\n"
+"PO-Revision-Date: 2007-10-16 10:29+0900\n"
 "Last-Translator: Masahito Yamaga <ma@yama-ga.com>\n"
 "Language-Team: Japanese <translation-team-ja@lists.sourceforge.net>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../gettext-tools/lib/closeout.c:64
+#: gnulib-lib/closeout.c:66
 msgid "write error"
 msgstr "書き込みエラー"
 
-#: ../gettext-tools/lib/error.c:121
+#: gnulib-lib/error.c:181
 msgid "Unknown system error"
 msgstr "未知のシステムエラー"
 
-#: ../gettext-tools/lib/getopt.c:551 ../gettext-tools/lib/getopt.c:570
-#, c-format
-msgid "%s: option `%s' is ambiguous\n"
+#: gnulib-lib/getopt.c:527 gnulib-lib/getopt.c:543
+#, fuzzy, c-format
+msgid "%s: option '%s' is ambiguous\n"
 msgstr "%s: オプション `%s' は曖昧です\n"
 
-#: ../gettext-tools/lib/getopt.c:603 ../gettext-tools/lib/getopt.c:607
-#, c-format
-msgid "%s: option `--%s' doesn't allow an argument\n"
+#: gnulib-lib/getopt.c:576 gnulib-lib/getopt.c:580
+#, fuzzy, c-format
+msgid "%s: option '--%s' doesn't allow an argument\n"
 msgstr "%s: オプション `--%s' には引数はありません\n"
 
-#: ../gettext-tools/lib/getopt.c:616 ../gettext-tools/lib/getopt.c:621
-#, c-format
-msgid "%s: option `%c%s' doesn't allow an argument\n"
+#: gnulib-lib/getopt.c:589 gnulib-lib/getopt.c:594
+#, fuzzy, c-format
+msgid "%s: option '%c%s' doesn't allow an argument\n"
 msgstr "%s: オプション `%c%s' には引数はありません\n"
 
-#: ../gettext-tools/lib/getopt.c:667 ../gettext-tools/lib/getopt.c:689
-#: ../gettext-tools/lib/getopt.c:1020 ../gettext-tools/lib/getopt.c:1042
-#, c-format
-msgid "%s: option `%s' requires an argument\n"
+#: gnulib-lib/getopt.c:637 gnulib-lib/getopt.c:656
+#, fuzzy, c-format
+msgid "%s: option '--%s' requires an argument\n"
 msgstr "%s: オプション `%s' には引数が必要です\n"
 
-#: ../gettext-tools/lib/getopt.c:727 ../gettext-tools/lib/getopt.c:730
-#, c-format
-msgid "%s: unrecognized option `--%s'\n"
+#: gnulib-lib/getopt.c:694 gnulib-lib/getopt.c:697
+#, fuzzy, c-format
+msgid "%s: unrecognized option '--%s'\n"
 msgstr "%s: オプション `--%s' は認識されません\n"
 
-#: ../gettext-tools/lib/getopt.c:738 ../gettext-tools/lib/getopt.c:741
-#, c-format
-msgid "%s: unrecognized option `%c%s'\n"
+#: gnulib-lib/getopt.c:705 gnulib-lib/getopt.c:708
+#, fuzzy, c-format
+msgid "%s: unrecognized option '%c%s'\n"
 msgstr "%s: オプション `%c%s' は認識されません\n"
 
-#: ../gettext-tools/lib/getopt.c:796 ../gettext-tools/lib/getopt.c:799
-#, c-format
-msgid "%s: illegal option -- %c\n"
-msgstr "%s: 不正なオプション -- %c\n"
-
-#: ../gettext-tools/lib/getopt.c:805 ../gettext-tools/lib/getopt.c:808
-#, c-format
-msgid "%s: invalid option -- %c\n"
+#: gnulib-lib/getopt.c:757 gnulib-lib/getopt.c:760
+#, fuzzy, c-format
+msgid "%s: invalid option -- '%c'\n"
 msgstr "%s: 無効なオプション -- %c\n"
 
-#: ../gettext-tools/lib/getopt.c:863 ../gettext-tools/lib/getopt.c:882
-#: ../gettext-tools/lib/getopt.c:1095 ../gettext-tools/lib/getopt.c:1116
-#, c-format
-msgid "%s: option requires an argument -- %c\n"
+#: gnulib-lib/getopt.c:810 gnulib-lib/getopt.c:827 gnulib-lib/getopt.c:1035
+#: gnulib-lib/getopt.c:1053
+#, fuzzy, c-format
+msgid "%s: option requires an argument -- '%c'\n"
 msgstr "%s: 引数が必要なオプション -- %c\n"
 
-#: ../gettext-tools/lib/getopt.c:935 ../gettext-tools/lib/getopt.c:954
-#, c-format
-msgid "%s: option `-W %s' is ambiguous\n"
+#: gnulib-lib/getopt.c:883 gnulib-lib/getopt.c:899
+#, fuzzy, c-format
+msgid "%s: option '-W %s' is ambiguous\n"
 msgstr "%s: オプション `-W %s' は曖昧です\n"
 
-#: ../gettext-tools/lib/getopt.c:978 ../gettext-tools/lib/getopt.c:999
-#, c-format
-msgid "%s: option `-W %s' doesn't allow an argument\n"
+#: gnulib-lib/getopt.c:923 gnulib-lib/getopt.c:941
+#, fuzzy, c-format
+msgid "%s: option '-W %s' doesn't allow an argument\n"
 msgstr "%s: オプション `-W %s' には引数はありません\n"
 
-#: ../gettext-tools/lib/xmalloc.c:41
+#: gnulib-lib/getopt.c:962 gnulib-lib/getopt.c:980
+#, fuzzy, c-format
+msgid "%s: option '-W %s' requires an argument\n"
+msgstr "%s: オプション `%s' には引数が必要です\n"
+
+#: gnulib-lib/xmalloc.c:37
 #, c-format
 msgid "memory exhausted"
 msgstr "メモリを使い果たしました"
 
-#: src/envsubst.c:113 src/gettext.c:135 src/ngettext.c:125
+#: src/envsubst.c:112 src/gettext.c:133 src/ngettext.c:123
 #, c-format, no-wrap
 msgid ""
 "Copyright (C) %s Free Software Foundation, Inc.\n"
-"This is free software; see the source for copying conditions.  There is NO\n"
-"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
+"This is free software: you are free to change and redistribute it.\n"
+"There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr ""
 "Copyright (C) %s Free Software Foundation, Inc.\n"
-"This is free software; see the source for copying conditions.  There is NO\n"
-"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
+"This is free software: you are free to change and redistribute it.\n"
+"There is NO WARRANTY, to the extent permitted by law.\n"
 "\n"
 "[参考訳]\n"
-"これはフリー・ソフトウェアです. コピーの条件についてはソースをお読みください.\n"
-"市場性及び特定目的適合性の如何によらず, いかなる保証もありません.\n"
-"\n"
+"ライセンス GPLv3+: GNU GPL バージョン 3 またはそれ以降 <http://gnu.org/licenses/gpl.html>\n"
+"これはフリー・ソフトウェアです. 改変と再配布は自由です.\n"
+"法で許された範囲内で無保証です.\n"
 
-#: src/envsubst.c:118 src/gettext.c:140 src/ngettext.c:130
+#: src/envsubst.c:118 src/gettext.c:139 src/ngettext.c:129
 #, c-format
 msgid "Written by %s.\n"
 msgstr "作者 %s.\n"
 
-#: src/envsubst.c:127 src/gettext.c:158 src/ngettext.c:142
+#. This is a proper name. See the gettext manual, section Names.
+#: src/envsubst.c:118
+msgid "Bruno Haible"
+msgstr "Bruno Haible"
+
+#: src/envsubst.c:127 src/gettext.c:157 src/ngettext.c:141
 #, c-format
 msgid "too many arguments"
 msgstr "引数が多すぎます"
 
-#: src/envsubst.c:138 src/gettext.c:168 src/ngettext.c:154
+#: src/envsubst.c:138 src/gettext.c:167 src/ngettext.c:153
 #, c-format
 msgid "missing arguments"
 msgstr "引数がありません"
 
-#: src/envsubst.c:171 src/gettext.c:239 src/ngettext.c:208
+#: src/envsubst.c:171 src/gettext.c:238 src/ngettext.c:207
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "より多くの情報を得るためには `%s --help' と入力してください.\n"
@@ -180,20 +187,29 @@ msgstr ""
 "--variables が使われると, 標準入力は無視され, 出力は 1行ずつシェル形式で\n"
 "参照される環境変数から構成されます.\n"
 
-#: src/envsubst.c:215 src/gettext.c:276 src/ngettext.c:242
+#. TRANSLATORS: The placeholder indicates the bug-reporting address
+#. for this package.  Please add _another line_ saying
+#. "Report translation bugs to <...>\n" with the address for translation
+#. bugs (typically your translation team's web or email address).
+#: src/envsubst.c:219 src/gettext.c:279 src/ngettext.c:245
 msgid "Report bugs to <bug-gnu-gettext@gnu.org>.\n"
 msgstr "バグレポートは <bug-gnu-gettext@gnu.org> まで.\n"
 
-#: src/envsubst.c:438
+#: src/envsubst.c:442
 #, c-format
 msgid "error while reading \"%s\""
 msgstr "\"%s\" 読み込み中のエラー"
 
-#: src/envsubst.c:439
+#: src/envsubst.c:443
 msgid "standard input"
 msgstr "標準入力"
 
-#: src/gettext.c:244
+#. This is a proper name. See the gettext manual, section Names.
+#: src/gettext.c:139 src/ngettext.c:129
+msgid "Ulrich Drepper"
+msgstr "Ulrich Drepper"
+
+#: src/gettext.c:243
 #, c-format, no-wrap
 msgid ""
 "Usage: %s [OPTION] [[TEXTDOMAIN] MSGID]\n"
@@ -202,12 +218,12 @@ msgstr ""
 "使用法: %s [オプション] [[TEXTDOMAIN] MSGID]\n"
 "または: %s [オプション] -s [MSGID]...\n"
 
-#: src/gettext.c:250
+#: src/gettext.c:249
 #, c-format, no-wrap
 msgid "Display native language translation of a textual message.\n"
 msgstr "原文のメッセージの自国語翻訳を表示.\n"
 
-#: src/gettext.c:254
+#: src/gettext.c:253
 #, c-format, no-wrap
 msgid ""
 "  -d, --domain=TEXTDOMAIN   retrieve translated messages from TEXTDOMAIN\n"
@@ -228,7 +244,7 @@ msgstr ""
 "  [TEXTDOMAIN] MSGID        MSGID に応じた翻訳メッセージを TEXTDOMAIN から\n"
 "                            取り出す\n"
 
-#: src/gettext.c:265
+#: src/gettext.c:264
 #, c-format, no-wrap
 msgid ""
 "If the TEXTDOMAIN parameter is not given, the domain is determined from the\n"
@@ -249,19 +265,19 @@ msgstr ""
 "翻訳されたものを表示します.\n"
 "標準の検索ディレクトリ: %s\n"
 
-#: src/ngettext.c:213
+#: src/ngettext.c:212
 #, c-format, no-wrap
 msgid "Usage: %s [OPTION] [TEXTDOMAIN] MSGID MSGID-PLURAL COUNT\n"
 msgstr "使用法: %s [オプション] [TEXTDOMAIN] MSGID MSGID-PLURAL COUNT\n"
 
-#: src/ngettext.c:218
+#: src/ngettext.c:217
 #, c-format, no-wrap
 msgid ""
 "Display native language translation of a textual message whose grammatical\n"
 "form depends on a number.\n"
 msgstr "文法上, 形式が数によって異なっている原文メッセージの自国語翻訳を表示.\n"
 
-#: src/ngettext.c:223
+#: src/ngettext.c:222
 #, c-format, no-wrap
 msgid ""
 "  -d, --domain=TEXTDOMAIN   retrieve translated message from TEXTDOMAIN\n"
@@ -282,7 +298,7 @@ msgstr ""
 "  MSGID MSGID-PLURAL        MSGID (単数形) / MSGID-PLURAL (複数形) を翻訳\n"
 "  COUNT                     この値を基本にして単数/複数形を選択\n"
 
-#: src/ngettext.c:234
+#: src/ngettext.c:233
 #, c-format, no-wrap
 msgid ""
 "If the TEXTDOMAIN parameter is not given, the domain is determined from the\n"
@@ -295,3 +311,6 @@ msgstr ""
 "ドメインが決まります. もし標準のディレクトリにメッセージカタログが\n"
 "見つからなければ, 環境変数 TEXTDOMAINDIR で指定された場所から探します.\n"
 "標準の検索ディレクトリ: %s\n"
+
+#~ msgid "%s: illegal option -- %c\n"
+#~ msgstr "%s: 不正なオプション -- %c\n"

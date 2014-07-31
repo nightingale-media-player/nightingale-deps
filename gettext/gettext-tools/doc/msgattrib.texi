@@ -54,11 +54,25 @@ Keep untranslated messages, remove translated messages.
 
 @item --no-fuzzy
 @opindex --no-fuzzy@r{, @code{msgattrib} option}
-Remove `fuzzy' marked messages.
+Remove
+@ifhtml
+‘fuzzy’
+@end ifhtml
+@ifnothtml
+`fuzzy'
+@end ifnothtml
+marked messages.
 
 @item --only-fuzzy
 @opindex --only-fuzzy@r{, @code{msgattrib} option}
-Keep `fuzzy' marked messages, remove all other messsages.
+Keep
+@ifhtml
+‘fuzzy’
+@end ifhtml
+@ifnothtml
+`fuzzy'
+@end ifnothtml
+marked messages, remove all other messages.
 
 @item --no-obsolete
 @opindex --no-obsolete@r{, @code{msgattrib} option}
@@ -72,7 +86,7 @@ Keep obsolete #~ messages, remove all other messages.
 
 @subsection Attribute manipulation
 
-@cindex modify message attrributes
+@cindex modify message attributes
 Attributes are modified after the message selection/removal has been
 performed.  If the @samp{--only-file} or @samp{--ignore-file} option is
 specified, the attribute modification is applied only to those messages
@@ -82,11 +96,23 @@ that are listed in the @var{only-file} and not listed in the
 @table @samp
 @item --set-fuzzy
 @opindex --set-fuzzy@r{, @code{msgattrib} option}
-Set all messages `fuzzy'.
+Set all messages
+@ifhtml
+‘fuzzy’.
+@end ifhtml
+@ifnothtml
+`fuzzy'.
+@end ifnothtml
 
 @item --clear-fuzzy
 @opindex --clear-fuzzy@r{, @code{msgattrib} option}
-Set all messages non-`fuzzy'.
+Set all messages
+@ifhtml
+non-‘fuzzy’.
+@end ifhtml
+@ifnothtml
+non-`fuzzy'.
+@end ifnothtml
 
 @item --set-obsolete
 @opindex --set-obsolete@r{, @code{msgattrib} option}
@@ -95,6 +121,10 @@ Set all messages obsolete.
 @item --clear-obsolete
 @opindex --clear-obsolete@r{, @code{msgattrib} option}
 Set all messages non-obsolete.
+
+@item --clear-previous
+@opindex --clear-previous@r{, @code{msgattrib} option}
+Remove the ``previous msgid'' (@samp{#|}) comments from all messages.
 
 @item --only-file=@var{file}
 @opindex --only-file@r{, @code{msgattrib} option}
@@ -109,7 +139,14 @@ Limit the attribute changes to entries that are not listed in @var{file}.
 @item --fuzzy
 @opindex --fuzzy@r{, @code{msgattrib} option}
 Synonym for @samp{--only-fuzzy --clear-fuzzy}: It keeps only the fuzzy
-messages and removes their `fuzzy' mark.
+messages and removes their
+@ifhtml
+‘fuzzy’
+@end ifhtml
+@ifnothtml
+`fuzzy'
+@end ifnothtml
+mark.
 
 @item --obsolete
 @opindex --obsolete@r{, @code{msgattrib} option}
@@ -140,6 +177,17 @@ Assume the input file is a NeXTstep/GNUstep localized resource file in
 @c --no-escape and --escape omitted on purpose.  They are not useful.
 
 @table @samp
+@item --color
+@itemx --color=@var{when}
+@opindex --color@r{, @code{msgattrib} option}
+Specify whether or when to use colors and other text attributes.
+See @ref{The --color option} for details.
+
+@item --style=@var{style_file}
+@opindex --style@r{, @code{msgattrib} option}
+Specify the CSS style rule file to use for @code{--color}.
+See @ref{The --style option} for details.
+
 @item --force-po
 @opindex --force-po@r{, @code{msgattrib} option}
 Always write an output file even if it contains no message.

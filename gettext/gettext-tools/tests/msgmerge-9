@@ -24,12 +24,12 @@ EOF
 tmpfiles="$tmpfiles mm-test9.err"
 : ${MSGMERGE=msgmerge}
 LC_MESSAGES=C LC_ALL= \
-${MSGMERGE} -q mm-test9.in1 mm-test9.in2 -o /dev/null \
-    2>&1 | grep -v '^==' > mm-test9.err
+${MSGMERGE} -q -o /dev/null mm-test9.in1 mm-test9.in2 \
+    2>&1 | grep -v '^==' | sed -e 's|[^ ]*\\msgmerge\.exe|msgmerge|' -e 's|^msgmerge\.exe|msgmerge|' | LC_ALL=C tr -d '\r' > mm-test9.err
 
 tmpfiles="$tmpfiles mm-test9.ok"
 cat << EOF > mm-test9.ok
-mm-test9.in1:3: duplicate message definition
+mm-test9.in1:3: duplicate message definition...
 mm-test9.in1:1: ...this is the location of the first definition
 msgmerge: found 1 fatal error
 EOF

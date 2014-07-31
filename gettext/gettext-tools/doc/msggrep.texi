@@ -44,25 +44,28 @@ or if it is @samp{-}.
 
 @example
   [-N @var{sourcefile}]... [-M @var{domainname}]...
-  [-K @var{msgid-pattern}] [-T @var{msgstr-pattern}] [-C @var{comment-pattern}]
+  [-J @var{msgctxt-pattern}] [-K @var{msgid-pattern}] [-T @var{msgstr-pattern}]
+  [-C @var{comment-pattern}]
 @end example
 
 A message is selected if
 @itemize @bullet
 @item it comes from one of the specified source files,
 @item or if it comes from one of the specified domains,
+@item or if @samp{-J} is given and its context (msgctxt) matches
+@var{msgctxt-pattern},
 @item or if @samp{-K} is given and its key (msgid or msgid_plural) matches
-      @var{msgid-pattern},
+@var{msgid-pattern},
 @item or if @samp{-T} is given and its translation (msgstr) matches
-      @var{msgstr-pattern},
+@var{msgstr-pattern},
 @item or if @samp{-C} is given and the translator's comment matches
-      @var{comment-pattern}.
+@var{comment-pattern}.
 @end itemize
 
 When more than one selection criterion is specified, the set of selected
 messages is the union of the selected messages of each criterion.
 
-@var{msgid-pattern} or @var{msgstr-pattern} syntax:
+@var{msgctxt-pattern} or @var{msgid-pattern} or @var{msgstr-pattern} syntax:
 @example
   [-E | -F] [-e @var{pattern} | -f @var{file}]...
 @end example
@@ -83,6 +86,12 @@ either a literal file name or a wildcard pattern.
 @opindex --domain@r{, @code{msggrep} option}
 Select messages belonging to domain @var{domainname}.
 
+@item -J
+@itemx --msgctxt
+@opindex -J@r{, @code{msggrep} option}
+@opindex --msgctxt@r{, @code{msggrep} option}
+Start of patterns for the msgctxt.
+
 @item -K
 @itemx --msgid
 @opindex -K@r{, @code{msggrep} option}
@@ -100,6 +109,12 @@ Start of patterns for the msgstr.
 @opindex -C@r{, @code{msggrep} option}
 @opindex --comment@r{, @code{msggrep} option}
 Start of patterns for the translator's comment.
+
+@item -X
+@itemx --extracted-comment
+@opindex -X@r{, @code{msggrep} option}
+@opindex --extracted-comment@r{, @code{msggrep} option}
+Start of patterns for the extracted comments.
 
 @item -E
 @itemx --extended-regexp
@@ -131,6 +146,13 @@ Obtain @var{pattern} from @var{file}.
 @opindex --ignore-case@r{, @code{msggrep} option}
 Ignore case distinctions.
 
+@item -v
+@itemx --invert-match
+@opindex -v@r{, @code{msggrep} option}
+@opindex --invert-match@r{, @code{msggrep} option}
+Output only the messages that do not match any selection criterion, instead
+of the messages that match a selection criterion.
+
 @end table
 
 @subsection Input file syntax
@@ -155,6 +177,17 @@ Assume the input file is a NeXTstep/GNUstep localized resource file in
 @c --no-escape and --escape omitted on purpose.  They are not useful.
 
 @table @samp
+@item --color
+@itemx --color=@var{when}
+@opindex --color@r{, @code{msggrep} option}
+Specify whether or when to use colors and other text attributes.
+See @ref{The --color option} for details.
+
+@item --style=@var{style_file}
+@opindex --style@r{, @code{msggrep} option}
+Specify the CSS style rule file to use for @code{--color}.
+See @ref{The --style option} for details.
+
 @item --force-po
 @opindex --force-po@r{, @code{msggrep} option}
 Always write an output file even if it contains no message.
@@ -231,3 +264,33 @@ Display this help and exit.
 Output version information and exit.
 
 @end table
+
+@subsection Examples
+
+To extract the messages that come from the source files
+@code{gnulib-lib/error.c} and @code{gnulib-lib/getopt.c}:
+
+@smallexample
+msggrep -N gnulib-lib/error.c -N gnulib-lib/getopt.c input.po
+@end smallexample
+
+To extract the messages that contain the string ``Please specify'' in the
+original string:
+
+@smallexample
+msggrep --msgid -F -e 'Please specify' input.po
+@end smallexample
+
+To extract the messages that have a context specifier of either ``Menu>File''
+or ``Menu>Edit'' or a submenu of them:
+
+@smallexample
+msggrep --msgctxt -E -e '^Menu>(File|Edit)' input.po
+@end smallexample
+
+To extract the messages whose translation contains one of the strings in the
+file @code{wordlist.txt}:
+
+@smallexample
+msggrep --msgstr -F -f wordlist.txt input.po
+@end smallexample

@@ -1,10 +1,10 @@
 /* Pattern Matchers for Regular Expressions.
-   Copyright (C) 1992, 1998, 2000, 2005 Free Software Foundation, Inc.
+   Copyright (C) 1992, 1998, 2000, 2005-2006 Free Software Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,10 +12,9 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-#if HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
@@ -41,6 +40,14 @@
 #endif
 #define ISALNUM(C) (IN_CTYPE_DOMAIN (C) && isalnum (C))
 
+struct patterns
+{
+  /* Regex compiled regexp. */
+  struct re_pattern_buffer regexbuf;
+  struct re_registers regs; /* This is here on account of a BRAIN-DEAD
+			       Q@#%!# library interface in regex.c.  */
+};
+
 struct compiled_regex {
   bool match_words;
   bool match_lines;
@@ -50,13 +57,7 @@ struct compiled_regex {
   struct dfa dfa;
 
   /* The Regex compiled patterns.  */
-  struct patterns
-  {
-    /* Regex compiled regexp. */
-    struct re_pattern_buffer regexbuf;
-    struct re_registers regs; /* This is here on account of a BRAIN-DEAD
-				 Q@#%!# library interface in regex.c.  */
-  } *patterns;
+  struct patterns *patterns;
   size_t pcount;
 
   /* KWset compiled pattern.  We compile a list of strings, at least one of
@@ -125,7 +126,7 @@ Gcompile (const char *pattern, size_t pattern_size,
   size_t total = pattern_size;
   const char *motif = pattern;
 
-  cregex = (struct compiled_regex *) xmalloc (sizeof (struct compiled_regex));
+  cregex = XMALLOC (struct compiled_regex);
   memset (cregex, '\0', sizeof (struct compiled_regex));
   cregex->match_words = match_words;
   cregex->match_lines = match_lines;
@@ -143,7 +144,7 @@ Gcompile (const char *pattern, size_t pattern_size,
   do
     {
       size_t len;
-      sep = memchr (motif, '\n', total);
+      sep = (const char *) memchr (motif, '\n', total);
       if (sep)
 	{
 	  len = sep - motif;
@@ -182,7 +183,7 @@ Gcompile (const char *pattern, size_t pattern_size,
       static const char line_end[] = "\\)$";
       static const char word_beg[] = "\\(^\\|[^[:alnum:]_]\\)\\(";
       static const char word_end[] = "\\)\\([^[:alnum:]_]\\|$\\)";
-      char *n = (char *) xmalloc (sizeof word_beg - 1 + pattern_size + sizeof word_end);
+      char *n = XNMALLOC (sizeof word_beg - 1 + pattern_size + sizeof word_end, char);
       size_t i;
       strcpy (n, match_lines ? line_beg : word_beg);
       i = strlen (n);
@@ -211,7 +212,7 @@ compile (const char *pattern, size_t pattern_size,
   size_t total = pattern_size;
   const char *motif = pattern;
 
-  cregex = (struct compiled_regex *) xmalloc (sizeof (struct compiled_regex));
+  cregex = XMALLOC (struct compiled_regex);
   memset (cregex, '\0', sizeof (struct compiled_regex));
   cregex->match_words = match_words;
   cregex->match_lines = match_lines;
@@ -229,7 +230,7 @@ compile (const char *pattern, size_t pattern_size,
   do
     {
       size_t len;
-      sep = memchr (motif, '\n', total);
+      sep = (const char *) memchr (motif, '\n', total);
       if (sep)
 	{
 	  len = sep - motif;
@@ -268,7 +269,7 @@ compile (const char *pattern, size_t pattern_size,
       static const char line_end[] = ")$";
       static const char word_beg[] = "(^|[^[:alnum:]_])(";
       static const char word_end[] = ")([^[:alnum:]_]|$)";
-      char *n = (char *) xmalloc (sizeof word_beg - 1 + pattern_size + sizeof word_end);
+      char *n = XNMALLOC (sizeof word_beg - 1 + pattern_size + sizeof word_end, char);
       size_t i;
       strcpy (n, match_lines ? line_beg : word_beg);
       i = strlen(n);
@@ -345,7 +346,7 @@ EGexecute (const void *compiled_pattern,
 	      beg += offset;
 	      /* Narrow down to the line containing the candidate, and
 		 run it through DFA. */
-	      end = memchr (beg, eol, buflim - beg);
+	      end = (const char *) memchr (beg, eol, buflim - beg);
 	      if (end != NULL)
 		end++;
 	      else
@@ -369,7 +370,7 @@ EGexecute (const void *compiled_pattern,
 		break;
 	      /* Narrow down to the line we've found. */
 	      beg += offset;
-	      end = memchr (beg, eol, buflim - beg);
+	      end = (const char *) memchr (beg, eol, buflim - beg);
 	      if (end != NULL)
 		end++;
 	      else

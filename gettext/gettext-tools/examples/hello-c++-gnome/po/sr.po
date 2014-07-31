@@ -9,15 +9,16 @@ msgstr ""
 "PO-Revision-Date: 2004-01-31 00:47-0500\n"
 "Last-Translator: Aleksandar Jelenak <jelenak@netlinkplus.net>\n"
 "Language-Team: Serbian <sr@li.org>\n"
+"Language: sr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: hello.cc:51
+#: hello.cc:50
 msgid "Hello, world!"
 msgstr "Здраво свима!"
 
-#: hello.cc:56
+#: hello.cc:55
 #, c-format
 msgid "This program is running as process number %d."
 msgstr "Овај програм се извршава као процес број %d."

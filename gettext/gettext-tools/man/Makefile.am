@@ -1,10 +1,10 @@
 ## Makefile for the gettext-tools/man subdirectory of GNU gettext
-## Copyright (C) 2001-2003 Free Software Foundation, Inc.
+## Copyright (C) 2001-2003, 2006-2007 Free Software Foundation, Inc.
 ##
-## This program is free software; you can redistribute it and/or modify
+## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
+## the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,17 +12,11 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software Foundation,
-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Process this file with automake to produce Makefile.in.
 
 VERSION = @VERSION@
-mandir = @mandir@
-docdir = @docdir@
-htmldir = $(docdir)
-
-localedir = $(datadir)/locale
 
 AUTOMAKE_OPTIONS = 1.2 gnits
 EXTRA_DIST =
@@ -33,6 +27,7 @@ EXTRA_DIST =
 man_aux = \
 msgcmp.x msgfmt.x msgmerge.x msgunfmt.x xgettext.x \
 msgattrib.x msgcat.x msgcomm.x msgconv.x msgen.x msgexec.x msgfilter.x msggrep.x msginit.x msguniq.x \
+recode-sr-latin.x \
 gettextize.x autopoint.x
 
 # Likewise.
@@ -40,6 +35,7 @@ gettextize.x autopoint.x
 man_MAN1OTHER = \
 msgcmp.1 msgfmt.1 msgmerge.1 msgunfmt.1 xgettext.1 \
 msgattrib.1 msgcat.1 msgcomm.1 msgconv.1 msgen.1 msgexec.1 msgfilter.1 msggrep.1 msginit.1 msguniq.1 \
+recode-sr-latin.1 \
 gettextize.1 autopoint.1
 man_MAN1 = $(man_MAN1OTHER)
 man_MANS = $(man_MAN1)
@@ -47,6 +43,7 @@ man_MANS = $(man_MAN1)
 man_HTMLOTHER = \
 msgcmp.1.html msgfmt.1.html msgmerge.1.html msgunfmt.1.html xgettext.1.html \
 msgattrib.1.html msgcat.1.html msgcomm.1.html msgconv.1.html msgen.1.html msgexec.1.html msgfilter.1.html msggrep.1.html msginit.1.html msguniq.1.html \
+recode-sr-latin.1.html \
 gettextize.1.html autopoint.1.html
 man_HTML = $(man_HTMLOTHER)
 
@@ -109,6 +106,8 @@ msginit.1: msginit.x
 	$(SHELL) x-to-1 $(UPDATEMODE) "$(PERL)" "$(HELP2MAN)" ../src/msginit$(EXEEXT) $(srcdir)/msginit.x msginit.1
 msguniq.1: msguniq.x
 	$(SHELL) x-to-1 $(UPDATEMODE) "$(PERL)" "$(HELP2MAN)" ../src/msguniq$(EXEEXT) $(srcdir)/msguniq.x msguniq.1
+recode-sr-latin.1: recode-sr-latin.x
+	$(SHELL) x-to-1 $(UPDATEMODE) "$(PERL)" "$(HELP2MAN)" ../src/recode-sr-latin$(EXEEXT) $(srcdir)/recode-sr-latin.x recode-sr-latin.1
 
 gettextize.1: gettextize.x
 	$(SHELL) x-to-1 $(UPDATEMODE) "$(PERL)" "$(HELP2MAN)" ../misc/gettextize $(srcdir)/gettextize.x gettextize.1
@@ -177,6 +176,9 @@ msginit.1.html: msginit.1
 msguniq.1.html: msguniq.1
 	$(MAN2HTML) `if test -f msguniq.1; then echo .; else echo $(srcdir); fi`/msguniq.1 | sed -e '/CreationDate:/d' > t-$@
 	mv t-$@ $@
+recode-sr-latin.1.html: recode-sr-latin.1
+	$(MAN2HTML) `if test -f recode-sr-latin.1; then echo .; else echo $(srcdir); fi`/recode-sr-latin.1 | sed -e '/CreationDate:/d' > t-$@
+	mv t-$@ $@
 gettextize.1.html: gettextize.1
 	$(MAN2HTML) `if test -f gettextize.1; then echo .; else echo $(srcdir); fi`/gettextize.1 | sed -e '/CreationDate:/d' > t-$@
 	mv t-$@ $@
@@ -184,27 +186,17 @@ autopoint.1.html: autopoint.1
 	$(MAN2HTML) `if test -f autopoint.1; then echo .; else echo $(srcdir); fi`/autopoint.1 | sed -e '/CreationDate:/d' > t-$@
 	mv t-$@ $@
 
-install-html:
-	$(mkinstalldirs) $(DESTDIR)$(htmldir)
+install-html-local:
+	$(mkdir_p) $(DESTDIR)$(htmldir)
 	for file in $(man_HTML); do \
 	  if test -f $$file; then dir=.; else dir=$(srcdir); fi; \
 	  $(INSTALL_DATA) $$dir/$$file $(DESTDIR)$(htmldir)/$$file; \
 	done
 
 installdirs-html:
-	$(mkinstalldirs) $(DESTDIR)$(htmldir)
+	$(mkdir_p) $(DESTDIR)$(htmldir)
 
 uninstall-html:
 	for file in $(man_HTML); do \
 	  $(RM) $(DESTDIR)$(htmldir)/$$file; \
 	done
-
-
-# VMS support.
-
-EXTRA_DIST += Makefile.vms
-
-
-# Woe32 support.
-
-EXTRA_DIST += Makefile.msvc

@@ -1,10 +1,10 @@
 /* Pattern Matcher for Fixed String search.
-   Copyright (C) 1992, 1998, 2000, 2005 Free Software Foundation, Inc.
+   Copyright (C) 1992, 1998, 2000, 2005-2006 Free Software Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,10 +12,9 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-#if HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
@@ -46,7 +45,7 @@ Fcompile (const char *pattern, size_t pattern_size,
   struct compiled_kwset *ckwset;
   const char *beg, *lim, *err;
 
-  ckwset = (struct compiled_kwset *) xmalloc (sizeof (struct compiled_kwset));
+  ckwset = XMALLOC (struct compiled_kwset);
   kwsinit (ckwset, match_icase, match_words, match_lines, eolbyte);
 
   beg = pattern;
@@ -72,7 +71,7 @@ Fexecute (const void *compiled_pattern, const char *buf, size_t buf_size,
 	  size_t *match_size, bool exact)
 {
   struct compiled_kwset *ckwset = (struct compiled_kwset *) compiled_pattern;
-  register const char *beg, *try, *end;
+  register const char *beg, *curr, *end;
   register size_t len;
   char eol = ckwset->eolbyte;
   struct kwsmatch kwsmatch;
@@ -118,12 +117,12 @@ Fexecute (const void *compiled_pattern, const char *buf, size_t buf_size,
 	  goto success;
 	}
       else if (ckwset->match_words)
-	for (try = beg; len; )
+	for (curr = beg; len; )
 	  {
-	    if (try > buf && IS_WORD_CONSTITUENT ((unsigned char) try[-1]))
+	    if (curr > buf && IS_WORD_CONSTITUENT ((unsigned char) curr[-1]))
 	      break;
-	    if (try + len < buf + buf_size
-		&& IS_WORD_CONSTITUENT ((unsigned char) try[len]))
+	    if (curr + len < buf + buf_size
+		&& IS_WORD_CONSTITUENT ((unsigned char) curr[len]))
 	      {
 		offset = kwsexec (ckwset->kwset, beg, --len, &kwsmatch);
 		if (offset == (size_t) -1)
@@ -134,7 +133,7 @@ Fexecute (const void *compiled_pattern, const char *buf, size_t buf_size,
 #endif /* MBS_SUPPORT */
 		    return offset;
 		  }
-		try = beg + offset;
+		curr = beg + offset;
 		len = kwsmatch.size[0];
 	      }
 	    else
@@ -151,7 +150,7 @@ Fexecute (const void *compiled_pattern, const char *buf, size_t buf_size,
   return -1;
 
  success:
-  end = memchr (beg + len, eol, (buf + buf_size) - (beg + len));
+  end = (const char *) memchr (beg + len, eol, (buf + buf_size) - (beg + len));
   end++;
   while (buf < beg && beg[-1] != eol)
     --beg;

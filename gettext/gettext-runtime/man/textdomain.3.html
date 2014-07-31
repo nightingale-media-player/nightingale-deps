@@ -1,3 +1,4 @@
+<!-- Creator     : groff version 1.18.1 -->
 <html>
 <head>
 <meta name="generator" content="groff -Thtml, see www.gnu.org">
@@ -16,123 +17,134 @@
 <a href="#SEE ALSO">SEE ALSO</a><br>
 
 <hr>
-<!-- Creator     : groff version 1.17 -->
 <a name="NAME"></a>
 <h2>NAME</h2>
+<!-- INDENTATION -->
 <table width="100%" border=0 rules="none" frame="void"
        cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td width="10%"></td><td width="90%">
-textdomain - set domain for future gettext() calls</td></table>
+<td width="10%"></td>
+<td width="89%">
+<p>textdomain &minus; set domain for future gettext()
+calls</p>
+</td>
+</table>
 <a name="SYNOPSIS"></a>
 <h2>SYNOPSIS</h2>
-
+<!-- INDENTATION -->
 <table width="100%" border=0 rules="none" frame="void"
        cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td width="10%"></td><td width="90%">
+<td width="10%"></td>
+<td width="89%">
 <pre><b>#include &lt;libintl.h&gt;
 
 char * textdomain (const char *</b> <i>domainname</i><b>);
-</b></pre></td></table>
+</b></pre>
+</td>
+</table>
 <a name="DESCRIPTION"></a>
 <h2>DESCRIPTION</h2>
+<!-- INDENTATION -->
 
 <table width="100%" border=0 rules="none" frame="void"
        cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td width="10%"></td><td width="90%">
-The <b>textdomain</b> function sets or retrieves the current
-message domain.</td></table>
-
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td><td width="90%">
-A message domain is a set of translatable <i>msgid</i>
+<td width="10%"></td>
+<td width="89%">
+<p>The <b>textdomain</b> function sets or retrieves the
+current message domain.</p>
+<!-- INDENTATION -->
+<p>A message domain is a set of translatable <i>msgid</i>
 messages. Usually, every software package has its own
 message domain. The domain name is used to determine the
 message catalog where a translation is looked up; it must be
-a non-empty string.</td></table>
-
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td><td width="90%">
-The current message domain is used by the <b>gettext</b>,
+a non-empty string.</p>
+<!-- INDENTATION -->
+<p>The current message domain is used by the <b>gettext</b>,
 <b>ngettext</b> functions, and by the <b>dgettext</b>,
 <b>dcgettext</b>, <b>dngettext</b> and <b>dcngettext</b>
-functions when called with a NULL domainname
-argument.</td></table>
-
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td><td width="90%">
-If <i>domainname</i> is not NULL, the current message domain
-is set to <i>domainname</i>. The string the function stores
-internally is a copy of the <i>domainname</i>
-argument.</td></table>
-
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="10%"></td><td width="90%">
-If <i>domainname</i> is NULL, the function returns the
-current message domain.</td></table>
+functions when called with a NULL domainname argument.</p>
+<!-- INDENTATION -->
+<p>If <i>domainname</i> is not NULL, the current message
+domain is set to <i>domainname</i>. The string the function
+stores internally is a copy of the <i>domainname</i>
+argument.</p>
+<!-- INDENTATION -->
+<p>If <i>domainname</i> is NULL, the function returns the
+current message domain.</p>
+</td>
+</table>
 <a name="RETURN VALUE"></a>
 <h2>RETURN VALUE</h2>
-
+<!-- INDENTATION -->
 <table width="100%" border=0 rules="none" frame="void"
        cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td width="10%"></td><td width="90%">
-If successful, the <b>textdomain</b> function returns the
+<td width="10%"></td>
+<td width="89%">
+<p>If successful, the <b>textdomain</b> function returns the
 current message domain, after possibly changing it. The
 resulting string is valid until the next <b>textdomain</b>
 call and must not be modified or freed. If a memory
 allocation failure occurs, it sets <b>errno</b> to
-<b>ENOMEM</b> and returns NULL.</td></table>
+<b>ENOMEM</b> and returns NULL.</p>
+</td>
+</table>
 <a name="ERRORS"></a>
 <h2>ERRORS</h2>
-
+<!-- INDENTATION -->
 <table width="100%" border=0 rules="none" frame="void"
        cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td width="10%"></td><td width="90%">
-The following error can occur, among others:</td></table>
-
+<td width="10%"></td>
+<td width="89%">
+<p>The following error can occur, among others:</p>
+</td>
+</table>
+<!-- TABS -->
 <table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
+       cols="5" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td width="10%"></td><td width="90%">
-<b>ENOMEM</b></td></table>
+<td width="11%"></td>
+<td width="8%">
 
-<table width="100%" border=0 rules="none" frame="void"
-       cols="2" cellspacing="0" cellpadding="0">
-<tr valign="top" align="left">
-<td width="21%"></td><td width="79%">
-Not enough memory available.</td></table>
+<p><b>ENOMEM</b></p>
+</td>
+<td width="13%"></td>
+<td width="41%">
+
+<p>Not enough memory available.</p>
+</td>
+<td width="24%">
+</td>
+</table>
 <a name="BUGS"></a>
 <h2>BUGS</h2>
-
+<!-- INDENTATION -->
 <table width="100%" border=0 rules="none" frame="void"
        cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td width="10%"></td><td width="90%">
-The return type ought to be <b>const char *</b>, but is
+<td width="10%"></td>
+<td width="89%">
+<p>The return type ought to be <b>const char *</b>, but is
 <b>char *</b> to avoid warnings in C code predating ANSI
-C.</td></table>
+C.</p>
+</td>
+</table>
 <a name="SEE ALSO"></a>
 <h2>SEE ALSO</h2>
-
+<!-- INDENTATION -->
 <table width="100%" border=0 rules="none" frame="void"
        cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td width="10%"></td><td width="90%">
-<b>gettext</b>(3), <b>ngettext</b>(3),
+<td width="10%"></td>
+<td width="89%">
+<p><b>gettext</b>(3), <b>ngettext</b>(3),
 <b>bindtextdomain</b>(3),
-<b>bind_textdomain_codeset</b>(3)</td></table>
+<b>bind_textdomain_codeset</b>(3)</p>
+</td>
+</table>
 <hr>
 </body>
 </html>

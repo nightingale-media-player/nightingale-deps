@@ -1,3 +1,59 @@
+2010-05-09  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.18 released.
+
+2007-11-07  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.17 released.
+
+2007-09-01  Bruno Haible  <bruno@clisp.org>
+
+	Implement msgctxt for Java ResourceBundles.
+	* gnu/gettext/GettextResource.java (gettextnull): New method.
+	(gettext): Use it.
+	(ngettextnull): New method, extracted from ngettext.
+	(ngettext): Use it.
+	(pgettext, npgettext): New methods.
+	Suggested by Felix Berger.
+
+2007-03-27  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.am (javadoc2/index.html): Pass the package name to javadoc.
+	* javadoc2/package-list: Mention package gnu.gettext.
+	Reported by Jens Petersen <petersen@redhat.com>.
+
+2007-03-27  Bruno Haible  <bruno@clisp.org>
+
+	* javadoc1/**: Remove files.
+	* Makefile.am (JAVADOC1, JAVADOC1_FILES): Remove variables.
+	(all-javadoc1, javadoc1/tree.html, install-javadoc1,
+	installdirs-javadoc1, uninstall-javadoc1): Remove rules.
+
+2006-11-27  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.16.1 released.
+
+2006-10-26  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.16 released.
+
+2006-07-31  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.am (JAVACOMP): Update for changed location of javacomp.sh.
+
+2006-07-21  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.15 released.
+
+2006-04-14  Bruno Haible  <bruno@clisp.org>
+
+	Assume autoconf >= 2.60.
+	* Makefile.am (docdir, htmldir): Remove variables.
+
+2006-04-17  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.am: Use $(mkdir_p) instead of $(mkinstalldirs).
+
 2006-06-21  Bruno Haible  <bruno@clisp.org>
 
 	* gettext-0.14.6 released.

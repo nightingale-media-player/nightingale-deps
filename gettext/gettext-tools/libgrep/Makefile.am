@@ -1,10 +1,10 @@
 ## Makefile for libgrep directory in GNU gettext package.
-## Copyright (C) 2005 Free Software Foundation, Inc.
+## Copyright (C) 2005-2007, 2009 Free Software Foundation, Inc.
 ##
-## This program is free software; you can redistribute it and/or modify
+## This program is free software: you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
+## the Free Software Foundation; either version 3 of the License, or
+## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -12,8 +12,7 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software Foundation,
-## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Process this file with automake to produce Makefile.in.
 
@@ -36,8 +35,7 @@ libgrep_a_SOURCES = \
 
 LIBADD_SOURCE = \
   memchr.c \
-  regex.h regex.c \
-  strdup.h strdup.c
+  regex.h regex.c
 
 # How to build libgrep.a.
 libgrep_a_LIBADD = @LIBGREPOBJS@
@@ -47,14 +45,4 @@ libgrep_a_DEPENDENCIES = @LIBGREPOBJS@
 
 EXTRA_DIST += $(LIBADD_SOURCE)
 
-AM_CPPFLAGS = -I.. -I../lib -I$(top_srcdir)/lib -I../intl
-
-
-# VMS support.
-
-EXTRA_DIST += Makefile.vms
-
-
-# Woe32 support.
-
-EXTRA_DIST += Makefile.msvc
+AM_CPPFLAGS = -I.. -I../gnulib-lib -I$(top_srcdir)/gnulib-lib -I../intl

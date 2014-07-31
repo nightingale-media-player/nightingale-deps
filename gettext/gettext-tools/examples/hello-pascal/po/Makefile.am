@@ -1,5 +1,4 @@
 # Example for use of GNU gettext.
-# Copyright (C) 2003-2005 Free Software Foundation, Inc.
 # This file is in the public domain.
 #
 # Makefile configuration - processed by automake.
@@ -44,7 +43,11 @@ MSGID_BUGS_ADDRESS = bug-gnu-gettext@gnu.org
 # message catalogs shall be used.  It is usually empty.
 EXTRA_LOCALE_CATEGORIES =
 
-localedir = $(datadir)/locale
+# These options get passed to msgmerge.
+# Useful options are in particular:
+#   --previous            to keep previous msgids of translated messages,
+#   --quiet               to reduce the verbosity.
+MSGMERGE_OPTIONS = --quiet
 
 MSGMERGE = msgmerge
 MSGMERGE_UPDATE = @MSGMERGE@ --update
@@ -77,8 +80,8 @@ SUFFIXES = .po .gmo .mo .sed .sin .nop .po-create .po-update
 .po.gmo:
 	@lang=`echo $* | sed -e 's,.*/,,'`; \
 	test "$(srcdir)" = . && cdcmd="" || cdcmd="cd $(srcdir) && "; \
-	echo "$${cdcmd}rm -f $${lang}.gmo && $(GMSGFMT) -c --statistics -o $${lang}.gmo $${lang}.po"; \
-	cd $(srcdir) && rm -f $${lang}.gmo && $(GMSGFMT) -c --statistics -o t-$${lang}.gmo $${lang}.po && mv t-$${lang}.gmo $${lang}.gmo
+	echo "$${cdcmd}rm -f $${lang}.gmo && $(GMSGFMT) -c --statistics --verbose -o $${lang}.gmo $${lang}.po"; \
+	cd $(srcdir) && rm -f $${lang}.gmo && $(GMSGFMT) -c --statistics --verbose -o t-$${lang}.gmo $${lang}.po && mv t-$${lang}.gmo $${lang}.gmo
 
 .sin.sed:
 	sed -e '/^#/d' $< > t-$@
@@ -120,16 +123,34 @@ stamp-po: $(srcdir)/$(DOMAIN).pot
 # This target rebuilds $(DOMAIN).pot; it is an expensive operation.
 # Note that $(DOMAIN).pot is not touched if it doesn't need to be changed.
 $(DOMAIN).pot-update: $(POTFILES_DEPS) remove-potcdate.sed
+	if LC_ALL=C grep 'GNU $(PACKAGE)' $(top_srcdir)/* 2>/dev/null | grep -v 'libtool:' >/dev/null; then \
+	  package_gnu='GNU '; \
+	else \
+	  package_gnu=''; \
+	fi; \
 	if test -n '$(MSGID_BUGS_ADDRESS)'; then \
 	  msgid_bugs_address='$(MSGID_BUGS_ADDRESS)'; \
 	else \
 	  msgid_bugs_address='$(PACKAGE_BUGREPORT)'; \
 	fi; \
-	$(XGETTEXT) --default-domain=$(DOMAIN) --directory=$(top_srcdir) \
-	  --add-comments=TRANSLATORS: $(XGETTEXT_OPTIONS) \
-	  --copyright-holder='$(COPYRIGHT_HOLDER)' \
-	  --msgid-bugs-address="$$msgid_bugs_address" \
-	  $(POTFILES)
+	case `$(XGETTEXT) --version | sed 1q | sed -e 's,^[^0-9]*,,'` in \
+	  '' | 0.[0-9] | 0.[0-9].* | 0.1[0-5] | 0.1[0-5].* | 0.16 | 0.16.[0-1]*) \
+	    $(XGETTEXT) --default-domain=$(DOMAIN) --directory=$(top_srcdir) \
+	      --add-comments=TRANSLATORS: $(XGETTEXT_OPTIONS) @XGETTEXT_EXTRA_OPTIONS@ \
+	      --copyright-holder='$(COPYRIGHT_HOLDER)' \
+	      --msgid-bugs-address="$$msgid_bugs_address" \
+	      $(POTFILES) \
+	    ;; \
+	  *) \
+	    $(XGETTEXT) --default-domain=$(DOMAIN) --directory=$(top_srcdir) \
+	      --add-comments=TRANSLATORS: $(XGETTEXT_OPTIONS) @XGETTEXT_EXTRA_OPTIONS@ \
+	      --copyright-holder='$(COPYRIGHT_HOLDER)' \
+	      --package-name="$${package_gnu}$(PACKAGE)" \
+	      --package-version='$(VERSION)' \
+	      --msgid-bugs-address="$$msgid_bugs_address" \
+	      $(POTFILES) \
+	    ;; \
+	esac
 	test ! -f $(DOMAIN).po || { \
 	  if test -f $(srcdir)/$(DOMAIN).pot; then \
 	    sed -f remove-potcdate.sed < $(srcdir)/$(DOMAIN).pot > $(DOMAIN).1po && \
@@ -157,8 +178,15 @@ $(POFILES): $(srcdir)/$(DOMAIN).pot
 	@lang=`echo $@ | sed -e 's,.*/,,' -e 's/\.po$$//'`; \
 	if test -f "$(srcdir)/$${lang}.po"; then \
 	  test "$(srcdir)" = . && cdcmd="" || cdcmd="cd $(srcdir) && "; \
-	  echo "$${cdcmd}$(MSGMERGE_UPDATE) $${lang}.po $(DOMAIN).pot"; \
-	  cd $(srcdir) && $(MSGMERGE_UPDATE) $${lang}.po $(DOMAIN).pot; \
+	  echo "$${cdcmd}$(MSGMERGE_UPDATE) $(MSGMERGE_OPTIONS) --lang=$${lang} $${lang}.po $(DOMAIN).pot"; \
+	  cd $(srcdir) \
+	    && { case `$(MSGMERGE_UPDATE) --version | sed 1q | sed -e 's,^[^0-9]*,,'` in \
+	           '' | 0.[0-9] | 0.[0-9].* | 0.1[0-7] | 0.1[0-7].*) \
+	             $(MSGMERGE_UPDATE) $(MSGMERGE_OPTIONS) $${lang}.po $(DOMAIN).pot;; \
+	           *) \
+	             $(MSGMERGE_UPDATE) $(MSGMERGE_OPTIONS) --lang=$${lang} $${lang}.po $(DOMAIN).pot;; \
+	         esac; \
+	       }; \
 	else \
 	  $(MAKE) $${lang}.po-create; \
 	fi
@@ -167,13 +195,13 @@ $(POFILES): $(srcdir)/$(DOMAIN).pot
 install-data-local: install-data-local-@USE_NLS@
 install-data-local-no: all-local
 install-data-local-yes: all-local
-	$(mkinstalldirs) $(DESTDIR)$(datadir)
+	$(mkdir_p) $(DESTDIR)$(datadir)
 	@catalogs='$(CATALOGS)'; \
 	for cat in $$catalogs; do \
 	  cat=`basename $$cat`; \
 	  lang=`echo $$cat | sed -e 's/\.gmo$$//'`; \
 	  dir=$(localedir)/$$lang/LC_MESSAGES; \
-	  $(mkinstalldirs) $(DESTDIR)$$dir; \
+	  $(mkdir_p) $(DESTDIR)$$dir; \
 	  if test -r $$cat; then realcat=$$cat; else realcat=$(srcdir)/$$cat; fi; \
 	  $(INSTALL_DATA) $$realcat $(DESTDIR)$$dir/$(DOMAIN).mo; \
 	  echo "installing $$realcat as $(DESTDIR)$$dir/$(DOMAIN).mo"; \
@@ -210,13 +238,13 @@ install-data-local-yes: all-local
 installdirs-local: installdirs-local-@USE_NLS@
 installdirs-local-no:
 installdirs-local-yes:
-	$(mkinstalldirs) $(DESTDIR)$(datadir)
+	$(mkdir_p) $(DESTDIR)$(datadir)
 	@catalogs='$(CATALOGS)'; \
 	for cat in $$catalogs; do \
 	  cat=`basename $$cat`; \
 	  lang=`echo $$cat | sed -e 's/\.gmo$$//'`; \
 	  dir=$(localedir)/$$lang/LC_MESSAGES; \
-	  $(mkinstalldirs) $(DESTDIR)$$dir; \
+	  $(mkdir_p) $(DESTDIR)$$dir; \
 	  for lc in '' $(EXTRA_LOCALE_CATEGORIES); do \
 	    if test -n "$$lc"; then \
 	      if (cd $(DESTDIR)$(localedir)/$$lang && LC_ALL=C ls -l -d $$lc 2>/dev/null) | grep ' -> ' >/dev/null; then \
@@ -259,7 +287,7 @@ html ID:
 MOSTLYCLEANFILES =
 MOSTLYCLEANFILES += remove-potcdate.sed
 MOSTLYCLEANFILES += stamp-poT
-MOSTLYCLEANFILES += core core.* $(DOMAIN).po $(DOMAIN).1po $(DOMAIN).2po *.new.po
+MOSTLYCLEANFILES += core core.* *.stackdump $(DOMAIN).po $(DOMAIN).1po $(DOMAIN).2po *.new.po
 MOSTLYCLEANFILES += *.o
 
 DISTCLEANFILES = *.mo
@@ -298,9 +326,15 @@ update-po: Makefile
 	tmpdir=`pwd`; \
 	echo "$$lang:"; \
 	test "$(srcdir)" = . && cdcmd="" || cdcmd="cd $(srcdir) && "; \
-	echo "$${cdcmd}$(MSGMERGE) $$lang.po $(DOMAIN).pot -o $$lang.new.po"; \
+	echo "$${cdcmd}$(MSGMERGE) $(MSGMERGE_OPTIONS) --lang=$$lang $$lang.po $(DOMAIN).pot -o $$lang.new.po"; \
 	cd $(srcdir); \
-	if $(MSGMERGE) $$lang.po $(DOMAIN).pot -o $$tmpdir/$$lang.new.po; then \
+	if { case `$(MSGMERGE) --version | sed 1q | sed -e 's,^[^0-9]*,,'` in \
+	       '' | 0.[0-9] | 0.[0-9].* | 0.1[0-7] | 0.1[0-7].*) \
+	         $(MSGMERGE) $(MSGMERGE_OPTIONS) -o $$tmpdir/$$lang.new.po $$lang.po $(DOMAIN).pot;; \
+	       *) \
+	         $(MSGMERGE) $(MSGMERGE_OPTIONS) --lang=$$lang -o $$tmpdir/$$lang.new.po $$lang.po $(DOMAIN).pot;; \
+	     esac; \
+	   }; then \
 	  if cmp $$lang.po $$tmpdir/$$lang.new.po >/dev/null 2>&1; then \
 	    rm -f $$tmpdir/$$lang.new.po; \
 	  else \

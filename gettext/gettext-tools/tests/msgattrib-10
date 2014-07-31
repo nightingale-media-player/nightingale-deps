@@ -1,8 +1,7 @@
 #! /bin/sh
 
 # Test --set-obsolete option. Note that the output routines drop untranslated
-# obsolete messages. Note also that obsolete messages don't have file locations
-# attached.
+# obsolete messages.
 
 tmpfiles=""
 trap 'rm -fr $tmpfiles' 1 2 3 15
@@ -58,9 +57,11 @@ msgstr ""
 #~ msgstr "das einen verheirateten Mann liebt"
 EOF
 
-tmpfiles="$tmpfiles ma-test10.out"
+tmpfiles="$tmpfiles ma-test10.tmp ma-test10.out"
 : ${MSGATTRIB=msgattrib}
-${MSGATTRIB} --set-obsolete ma-test10.po -o ma-test10.out
+${MSGATTRIB} --set-obsolete -o ma-test10.tmp ma-test10.po
+test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+LC_ALL=C tr -d '\r' < ma-test10.tmp > ma-test10.out
 test $? = 0 || { rm -fr $tmpfiles; exit 1; }
 
 tmpfiles="$tmpfiles ma-test10.ok"
@@ -73,10 +74,12 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: married-men:4
 #, fuzzy
 #~ msgid "The world is full of married men"
 #~ msgstr "So viele verheiratete Männer"
 
+#: married-men:5
 #~ msgid "with wives who never understand"
 #~ msgstr "und ihre Frauen verstehen sie nicht"
 

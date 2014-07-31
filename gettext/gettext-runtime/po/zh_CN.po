@@ -1,120 +1,130 @@
 # Simplified Chinese translation for gettext.
-# Copyright (C) 1998, 2001, 2002 Free Software Foundation, Inc.
+# Copyright (C) 1998, 2001, 2002, 2008 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gettext package.
 # Yuan-Chung Cheng <platin@ms.ccafps.khc.edu.tw>, 1998.
 # Pofeng Lee <pofeng@linux.org.tw>, 2001-2002.
 # Abel Cheung <maddog@linux.org.hk>, 2002.
 # Liu Songhe <jackliu9999@263.net>, 2003.
+# LI Daobing <lidaobing@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gettext-runtime 0.13-pre1\n"
+"Project-Id-Version: gettext-runtime 0.16.2-pre5\n"
 "Report-Msgid-Bugs-To: bug-gnu-gettext@gnu.org\n"
-"POT-Creation-Date: 2005-01-14 13:07+0100\n"
-"PO-Revision-Date: 2003-11-19 21:43+0800\n"
-"Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
-"Language-Team: Chinese (simplified) <i18n-translation@lists.linux.net.cn>\n"
+"POT-Creation-Date: 2010-05-09 13:18+0200\n"
+"PO-Revision-Date: 2008-08-09 20:25+0800\n"
+"Last-Translator: LI Daobing <lidaobing@gmail.com>\n"
+"Language-Team: Chinese (simplified) <translation-team-zh-cn@lists."
+"sourceforge.net>\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../gettext-tools/lib/closeout.c:64
+#: gnulib-lib/closeout.c:66
 msgid "write error"
 msgstr "写错误"
 
-#: ../gettext-tools/lib/error.c:121
+#: gnulib-lib/error.c:181
 msgid "Unknown system error"
 msgstr "未知的系统错误"
 
-#: ../gettext-tools/lib/getopt.c:551 ../gettext-tools/lib/getopt.c:570
-#, c-format
-msgid "%s: option `%s' is ambiguous\n"
+#: gnulib-lib/getopt.c:527 gnulib-lib/getopt.c:543
+#, fuzzy, c-format
+msgid "%s: option '%s' is ambiguous\n"
 msgstr "%s：选项“%s”是不明确的\n"
 
-#: ../gettext-tools/lib/getopt.c:603 ../gettext-tools/lib/getopt.c:607
-#, c-format
-msgid "%s: option `--%s' doesn't allow an argument\n"
+#: gnulib-lib/getopt.c:576 gnulib-lib/getopt.c:580
+#, fuzzy, c-format
+msgid "%s: option '--%s' doesn't allow an argument\n"
 msgstr "%s：选项“--%s”不允许有参数\n"
 
-#: ../gettext-tools/lib/getopt.c:616 ../gettext-tools/lib/getopt.c:621
-#, c-format
-msgid "%s: option `%c%s' doesn't allow an argument\n"
+#: gnulib-lib/getopt.c:589 gnulib-lib/getopt.c:594
+#, fuzzy, c-format
+msgid "%s: option '%c%s' doesn't allow an argument\n"
 msgstr "%s：选项“%c%s”不允许有参数\n"
 
-#: ../gettext-tools/lib/getopt.c:667 ../gettext-tools/lib/getopt.c:689
-#: ../gettext-tools/lib/getopt.c:1020 ../gettext-tools/lib/getopt.c:1042
-#, c-format
-msgid "%s: option `%s' requires an argument\n"
+#: gnulib-lib/getopt.c:637 gnulib-lib/getopt.c:656
+#, fuzzy, c-format
+msgid "%s: option '--%s' requires an argument\n"
 msgstr "%s：选项“%s”需要一个参数\n"
 
-#: ../gettext-tools/lib/getopt.c:727 ../gettext-tools/lib/getopt.c:730
-#, c-format
-msgid "%s: unrecognized option `--%s'\n"
+#: gnulib-lib/getopt.c:694 gnulib-lib/getopt.c:697
+#, fuzzy, c-format
+msgid "%s: unrecognized option '--%s'\n"
 msgstr "%s：无法识别的选项“--%s”\n"
 
-#: ../gettext-tools/lib/getopt.c:738 ../gettext-tools/lib/getopt.c:741
-#, c-format
-msgid "%s: unrecognized option `%c%s'\n"
+#: gnulib-lib/getopt.c:705 gnulib-lib/getopt.c:708
+#, fuzzy, c-format
+msgid "%s: unrecognized option '%c%s'\n"
 msgstr "%s：无法识别的选项“%c%s”\n"
 
-#: ../gettext-tools/lib/getopt.c:796 ../gettext-tools/lib/getopt.c:799
-#, c-format
-msgid "%s: illegal option -- %c\n"
-msgstr "%s：非法选项 ─ %c\n"
-
-#: ../gettext-tools/lib/getopt.c:805 ../gettext-tools/lib/getopt.c:808
-#, c-format
-msgid "%s: invalid option -- %c\n"
+#: gnulib-lib/getopt.c:757 gnulib-lib/getopt.c:760
+#, fuzzy, c-format
+msgid "%s: invalid option -- '%c'\n"
 msgstr "%s：无效选项 ─ %c\n"
 
-#: ../gettext-tools/lib/getopt.c:863 ../gettext-tools/lib/getopt.c:882
-#: ../gettext-tools/lib/getopt.c:1095 ../gettext-tools/lib/getopt.c:1116
-#, c-format
-msgid "%s: option requires an argument -- %c\n"
+#: gnulib-lib/getopt.c:810 gnulib-lib/getopt.c:827 gnulib-lib/getopt.c:1035
+#: gnulib-lib/getopt.c:1053
+#, fuzzy, c-format
+msgid "%s: option requires an argument -- '%c'\n"
 msgstr "%s：选项需要一个参数 ─ %c\n"
 
-#: ../gettext-tools/lib/getopt.c:935 ../gettext-tools/lib/getopt.c:954
-#, c-format
-msgid "%s: option `-W %s' is ambiguous\n"
+#: gnulib-lib/getopt.c:883 gnulib-lib/getopt.c:899
+#, fuzzy, c-format
+msgid "%s: option '-W %s' is ambiguous\n"
 msgstr "%s：选项“-W %s”是不明确的\n"
 
-#: ../gettext-tools/lib/getopt.c:978 ../gettext-tools/lib/getopt.c:999
-#, c-format
-msgid "%s: option `-W %s' doesn't allow an argument\n"
+#: gnulib-lib/getopt.c:923 gnulib-lib/getopt.c:941
+#, fuzzy, c-format
+msgid "%s: option '-W %s' doesn't allow an argument\n"
 msgstr "%s：选项“-W %s”不允许有参数\n"
 
-#: ../gettext-tools/lib/xmalloc.c:41
+#: gnulib-lib/getopt.c:962 gnulib-lib/getopt.c:980
+#, fuzzy, c-format
+msgid "%s: option '-W %s' requires an argument\n"
+msgstr "%s：选项“%s”需要一个参数\n"
+
+#: gnulib-lib/xmalloc.c:37
 #, c-format
 msgid "memory exhausted"
 msgstr "内存耗尽"
 
-#: src/envsubst.c:113 src/gettext.c:135 src/ngettext.c:125
+#: src/envsubst.c:112 src/gettext.c:133 src/ngettext.c:123
 #, c-format, no-wrap
 msgid ""
 "Copyright (C) %s Free Software Foundation, Inc.\n"
-"This is free software; see the source for copying conditions.  There is NO\n"
-"warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
+"This is free software: you are free to change and redistribute it.\n"
+"There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr ""
 "版权所有 (C) %s Free Software Foundation, Inc.\n"
-"这是自由软件；请参考原始码的版权声明。本软件不提供任何担保，甚至不会包括\n"
-"可售性或适用于任何特定目的的担保。\n"
+"授权协议 GPLv3+: GNU GPL 版本 3 或之后版本 <http://gnu.org/licenses/gpl.html>\n"
+"这是自由软件: 你有修改和再发布的自由。\n"
+"本软件在法律允许的范围内不提供任何担保。\n"
 
-#: src/envsubst.c:118 src/gettext.c:140 src/ngettext.c:130
+#: src/envsubst.c:118 src/gettext.c:139 src/ngettext.c:129
 #, c-format
 msgid "Written by %s.\n"
 msgstr "由 %s 编写。\n"
 
-#: src/envsubst.c:127 src/gettext.c:158 src/ngettext.c:142
+#. This is a proper name. See the gettext manual, section Names.
+#: src/envsubst.c:118
+msgid "Bruno Haible"
+msgstr "Bruno Haible"
+
+#: src/envsubst.c:127 src/gettext.c:157 src/ngettext.c:141
 #, c-format
 msgid "too many arguments"
 msgstr "参数过多"
 
-#: src/envsubst.c:138 src/gettext.c:168 src/ngettext.c:154
+#: src/envsubst.c:138 src/gettext.c:167 src/ngettext.c:153
 #, c-format
 msgid "missing arguments"
 msgstr "缺少了参数"
 
-#: src/envsubst.c:171 src/gettext.c:239 src/ngettext.c:208
+#: src/envsubst.c:171 src/gettext.c:238 src/ngettext.c:207
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "试试“%s --help”来获取更多信息。\n"
@@ -177,20 +187,29 @@ msgstr ""
 "若使用了 --variables，则会忽略标准输入，而输出由 SHELL格式 引用的环境变量组成，\n"
 "每行出现一个环境变量。\n"
 
-#: src/envsubst.c:215 src/gettext.c:276 src/ngettext.c:242
+#. TRANSLATORS: The placeholder indicates the bug-reporting address
+#. for this package.  Please add _another line_ saying
+#. "Report translation bugs to <...>\n" with the address for translation
+#. bugs (typically your translation team's web or email address).
+#: src/envsubst.c:219 src/gettext.c:279 src/ngettext.c:245
 msgid "Report bugs to <bug-gnu-gettext@gnu.org>.\n"
 msgstr "将错误报告至 <bug-gnu-gettext@gnu.org>。\n"
 
-#: src/envsubst.c:438
+#: src/envsubst.c:442
 #, c-format
 msgid "error while reading \"%s\""
 msgstr "读取“%s”时出错"
 
-#: src/envsubst.c:439
+#: src/envsubst.c:443
 msgid "standard input"
 msgstr "标准输入"
 
-#: src/gettext.c:244
+#. This is a proper name. See the gettext manual, section Names.
+#: src/gettext.c:139 src/ngettext.c:129
+msgid "Ulrich Drepper"
+msgstr "Ulrich Drepper"
+
+#: src/gettext.c:243
 #, c-format, no-wrap
 msgid ""
 "Usage: %s [OPTION] [[TEXTDOMAIN] MSGID]\n"
@@ -199,12 +218,12 @@ msgstr ""
 "用法：%s [选项] [[文本域] MSGID]\n"
 "或：  %s [选项] -s [MSGID]...\n"
 
-#: src/gettext.c:250
+#: src/gettext.c:249
 #, c-format, no-wrap
 msgid "Display native language translation of a textual message.\n"
 msgstr "显示某原文消息的本地语言翻译。\n"
 
-#: src/gettext.c:254
+#: src/gettext.c:253
 #, c-format, no-wrap
 msgid ""
 "  -d, --domain=TEXTDOMAIN   retrieve translated messages from TEXTDOMAIN\n"
@@ -224,7 +243,7 @@ msgstr ""
 "  -V, --version             显示版本信息并退出\n"
 "  [文本域] MSGID            由<文本域>读取相应于 MSGID 的翻译消息\n"
 
-#: src/gettext.c:265
+#: src/gettext.c:264
 #, c-format, no-wrap
 msgid ""
 "If the TEXTDOMAIN parameter is not given, the domain is determined from the\n"
@@ -243,19 +262,19 @@ msgstr ""
 "输出，而是寻找消息一览表文件里翻译过的消息。\n"
 "标准的搜索目录为：%s\n"
 
-#: src/ngettext.c:213
+#: src/ngettext.c:212
 #, c-format, no-wrap
 msgid "Usage: %s [OPTION] [TEXTDOMAIN] MSGID MSGID-PLURAL COUNT\n"
 msgstr "用法：%s [选项] [文本域] MSGID 复数-MSGID 数字\n"
 
-#: src/ngettext.c:218
+#: src/ngettext.c:217
 #, c-format, no-wrap
 msgid ""
 "Display native language translation of a textual message whose grammatical\n"
 "form depends on a number.\n"
 msgstr "显示某原文消息的本地语言翻译，而翻译的语法和数字有关。\n"
 
-#: src/ngettext.c:223
+#: src/ngettext.c:222
 #, c-format, no-wrap
 msgid ""
 "  -d, --domain=TEXTDOMAIN   retrieve translated message from TEXTDOMAIN\n"
@@ -276,7 +295,7 @@ msgstr ""
 "  MSGID 复数-MSGID          翻译 MSGID (单数) / 复数-MSGID (复数)\n"
 "  数字                      根据<数字>来选择单数或复数型态\n"
 
-#: src/ngettext.c:234
+#: src/ngettext.c:233
 #, c-format, no-wrap
 msgid ""
 "If the TEXTDOMAIN parameter is not given, the domain is determined from the\n"
@@ -289,3 +308,6 @@ msgstr ""
 "假如消息一览表文件不在正常的目录下，可以用环境变量 TEXTDOMAINDIR 指定\n"
 "消息一览表文件所在的位置。\n"
 "标准的搜索目录为：%s\n"
+
+#~ msgid "%s: illegal option -- %c\n"
+#~ msgstr "%s：非法选项 ─ %c\n"

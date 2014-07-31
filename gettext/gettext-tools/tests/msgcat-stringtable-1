@@ -27,10 +27,15 @@ is completely ignored, even if in "quotes", or \escape characters, etc.
 "hoe322070.element";
 EOF
 
-tmpfiles="$tmpfiles mcat-s-1.out"
-rm -f mcat-s-1.out
+tmpfiles="$tmpfiles mcat-s-1.tmp mcat-s-1.err mcat-s-1.out"
+rm -f mcat-s-1.tmp
 : ${MSGCAT=msgcat}
-${MSGCAT} --stringtable-input mcat-s-1.in -o mcat-s-1.out
+LC_MESSAGES=C LC_ALL= \
+${MSGCAT} --stringtable-input -o mcat-s-1.tmp mcat-s-1.in >mcat-s-1.err 2>&1
+result=$?
+cat mcat-s-1.err | grep -v ': internationalized messages'
+test $result = 0 || { rm -fr $tmpfiles; exit 1; }
+LC_ALL=C tr -d '\r' < mcat-s-1.tmp > mcat-s-1.out
 test $? = 0 || { rm -fr $tmpfiles; exit 1; }
 
 tmpfiles="$tmpfiles mcat-s-1.ok"
@@ -46,7 +51,7 @@ msgstr "pattern II target 1"
 msgid "escapes"
 msgstr ""
 "This is a tab \t and a return \n"
-" or a  but not a p"
+" or a \a but not a p"
 
 msgid "escapes2"
 msgstr "Well how about a "

@@ -1,12 +1,12 @@
 /* xgettext glade backend.
-   Copyright (C) 2002-2003 Free Software Foundation, Inc.
+   Copyright (C) 2002-2003, 2005-2009 Free Software Foundation, Inc.
 
    This file was written by Bruno Haible <haible@clisp.cons.org>, 2002.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,15 +14,18 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
+/* Specification.  */
+#include "x-glade.h"
+
 #include <errno.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,13 +39,12 @@
 
 #include "message.h"
 #include "xgettext.h"
-#include "x-glade.h"
 #include "error.h"
 #include "xerror.h"
+#include "xvasprintf.h"
 #include "basename.h"
 #include "progname.h"
 #include "xalloc.h"
-#include "exit.h"
 #include "hash.h"
 #include "po-charset.h"
 #include "gettext.h"
@@ -78,9 +80,9 @@ x_glade_keyword (const char *name)
   else
     {
       if (keywords.table == NULL)
-	init_hash (&keywords, 100);
+        hash_init (&keywords, 100);
 
-      insert_entry (&keywords, name, strlen (name), NULL);
+      hash_insert_entry (&keywords, name, strlen (name), NULL);
     }
 }
 
@@ -91,6 +93,8 @@ init_keywords ()
 {
   if (default_keywords)
     {
+      /* When adding new keywords here, also update the documentation in
+         xgettext.texi!  */
       x_glade_keyword ("label");
       x_glade_keyword ("title");
       x_glade_keyword ("text");
@@ -104,10 +108,103 @@ init_keywords ()
 }
 
 
+/* ======================= Different libexpat ABIs.  ======================= */
+
+/* There are three different ABIs of libexpat, regarding the functions
+   XML_GetCurrentLineNumber and XML_GetCurrentColumnNumber.
+   In expat < 2.0, they return an 'int'.
+   In expat >= 2.0, they return
+     - a 'long' if expat was compiled with the default flags, or
+     - a 'long long' if expat was compiled with -DXML_LARGE_SIZE.
+   But the <expat.h> include file does not contain the information whether
+   expat was compiled with -DXML_LARGE_SIZE; so the include file is lying!
+   For this information, we need to call XML_GetFeatureList(), for
+   expat >= 2.0.1; for expat = 2.0.0, we have to assume the default flags.  */
+
+#if !DYNLOAD_LIBEXPAT
+
+# if XML_MAJOR_VERSION >= 2
+
+/* expat >= 2.0 -> Return type is 'int64_t' worst-case.  */
+
+/* Put the function pointers into variables, because some GCC 4 versions
+   generate an abort when we convert symbol address to different function
+   pointer types.  */
+static void *p_XML_GetCurrentLineNumber = (void *) &XML_GetCurrentLineNumber;
+static void *p_XML_GetCurrentColumnNumber = (void *) &XML_GetCurrentColumnNumber;
+
+/* Return true if libexpat was compiled with -DXML_LARGE_SIZE.  */
+static bool
+is_XML_LARGE_SIZE_ABI (void)
+{
+  static bool tested;
+  static bool is_large;
+
+  if (!tested)
+    {
+      const XML_Feature *features;
+
+      is_large = false;
+      for (features = XML_GetFeatureList (); features->name != NULL; features++)
+        if (strcmp (features->name, "XML_LARGE_SIZE") == 0)
+          {
+            is_large = true;
+            break;
+          }
+
+      tested = true;
+    }
+  return is_large;
+}
+
+static int64_t
+GetCurrentLineNumber (XML_Parser parser)
+{
+  if (is_XML_LARGE_SIZE_ABI ())
+    return ((int64_t (*) (XML_Parser)) p_XML_GetCurrentLineNumber) (parser);
+  else
+    return ((long (*) (XML_Parser)) p_XML_GetCurrentLineNumber) (parser);
+}
+#  define XML_GetCurrentLineNumber GetCurrentLineNumber
+
+static int64_t
+GetCurrentColumnNumber (XML_Parser parser)
+{
+  if (is_XML_LARGE_SIZE_ABI ())
+    return ((int64_t (*) (XML_Parser)) p_XML_GetCurrentColumnNumber) (parser);
+  else
+    return ((long (*) (XML_Parser)) p_XML_GetCurrentColumnNumber) (parser);
+}
+#  define XML_GetCurrentColumnNumber GetCurrentColumnNumber
+
+# else
+
+/* expat < 2.0 -> Return type is 'int'.  */
+
+# endif
+
+#endif
+
+
 /* ===================== Dynamic loading of libexpat.  ===================== */
 
 #if DYNLOAD_LIBEXPAT
 
+typedef struct
+  {
+    int major;
+    int minor;
+    int micro;
+  }
+  XML_Expat_Version;
+enum XML_FeatureEnum { XML_FEATURE_END = 0 };
+typedef struct
+  {
+    enum XML_FeatureEnum feature;
+    const char *name;
+    long int value;
+  }
+  XML_Feature;
 typedef void *XML_Parser;
 typedef char XML_Char;
 typedef char XML_LChar;
@@ -117,16 +214,54 @@ typedef void (*XML_EndElementHandler) (void *userData, const XML_Char *name);
 typedef void (*XML_CharacterDataHandler) (void *userData, const XML_Char *s, int len);
 typedef void (*XML_CommentHandler) (void *userData, const XML_Char *data);
 
+static XML_Expat_Version (*p_XML_ExpatVersionInfo) (void);
+static const XML_Feature * (*p_XML_GetFeatureList) (void);
 static XML_Parser (*p_XML_ParserCreate) (const XML_Char *encoding);
 static void (*p_XML_SetElementHandler) (XML_Parser parser, XML_StartElementHandler start, XML_EndElementHandler end);
 static void (*p_XML_SetCharacterDataHandler) (XML_Parser parser, XML_CharacterDataHandler handler);
 static void (*p_XML_SetCommentHandler) (XML_Parser parser, XML_CommentHandler handler);
 static int (*p_XML_Parse) (XML_Parser parser, const char *s, int len, int isFinal);
 static enum XML_Error (*p_XML_GetErrorCode) (XML_Parser parser);
-static int (*p_XML_GetCurrentLineNumber) (XML_Parser parser);
-static int (*p_XML_GetCurrentColumnNumber) (XML_Parser parser);
+static void *p_XML_GetCurrentLineNumber;
+static void *p_XML_GetCurrentColumnNumber;
 static void (*p_XML_ParserFree) (XML_Parser parser);
 static const XML_LChar * (*p_XML_ErrorString) (int code);
+
+#define XML_ExpatVersionInfo (*p_XML_ExpatVersionInfo)
+#define XML_GetFeatureList (*p_XML_GetFeatureList)
+
+enum XML_Size_ABI { is_int, is_long, is_int64_t };
+
+static enum XML_Size_ABI
+get_XML_Size_ABI (void)
+{
+  static bool tested;
+  static enum XML_Size_ABI abi;
+
+  if (!tested)
+    {
+      if (XML_ExpatVersionInfo () .major >= 2)
+        /* expat >= 2.0 -> XML_Size is 'int64_t' or 'long'.  */
+        {
+          const XML_Feature *features;
+
+          abi = is_long;
+          for (features = XML_GetFeatureList ();
+               features->name != NULL;
+               features++)
+            if (strcmp (features->name, "XML_LARGE_SIZE") == 0)
+              {
+                abi = is_int64_t;
+                break;
+              }
+        }
+      else
+        /* expat < 2.0 -> XML_Size is 'int'.  */
+        abi = is_int;
+      tested = true;
+    }
+  return abi;
+}
 
 #define XML_ParserCreate (*p_XML_ParserCreate)
 #define XML_SetElementHandler (*p_XML_SetElementHandler)
@@ -134,8 +269,39 @@ static const XML_LChar * (*p_XML_ErrorString) (int code);
 #define XML_SetCommentHandler (*p_XML_SetCommentHandler)
 #define XML_Parse (*p_XML_Parse)
 #define XML_GetErrorCode (*p_XML_GetErrorCode)
-#define XML_GetCurrentLineNumber (*p_XML_GetCurrentLineNumber)
-#define XML_GetCurrentColumnNumber (*p_XML_GetCurrentColumnNumber)
+
+static int64_t
+XML_GetCurrentLineNumber (XML_Parser parser)
+{
+  switch (get_XML_Size_ABI ())
+    {
+    case is_int:
+      return ((int (*) (XML_Parser)) p_XML_GetCurrentLineNumber) (parser);
+    case is_long:
+      return ((long (*) (XML_Parser)) p_XML_GetCurrentLineNumber) (parser);
+    case is_int64_t:
+      return ((int64_t (*) (XML_Parser)) p_XML_GetCurrentLineNumber) (parser);
+    default:
+      abort ();
+    }
+}
+
+static int64_t
+XML_GetCurrentColumnNumber (XML_Parser parser)
+{
+  switch (get_XML_Size_ABI ())
+    {
+    case is_int:
+      return ((int (*) (XML_Parser)) p_XML_GetCurrentColumnNumber) (parser);
+    case is_long:
+      return ((long (*) (XML_Parser)) p_XML_GetCurrentColumnNumber) (parser);
+    case is_int64_t:
+      return ((int64_t (*) (XML_Parser)) p_XML_GetCurrentColumnNumber) (parser);
+    default:
+      abort ();
+    }
+}
+
 #define XML_ParserFree (*p_XML_ParserFree)
 #define XML_ErrorString (*p_XML_ErrorString)
 
@@ -146,21 +312,51 @@ load_libexpat ()
 {
   if (libexpat_loaded == 0)
     {
-      void *handle = dlopen ("libexpat.so.0", RTLD_LAZY);
+      void *handle;
+
+      /* Try to load libexpat-2.x.  */
+      handle = dlopen ("libexpat.so.1", RTLD_LAZY);
+      if (handle == NULL)
+        /* Try to load libexpat-1.x.  */
+        handle = dlopen ("libexpat.so.0", RTLD_LAZY);
       if (handle != NULL
-	  && (p_XML_ParserCreate = dlsym (handle, "XML_ParserCreate")) != NULL
-	  && (p_XML_SetElementHandler = dlsym (handle, "XML_SetElementHandler")) != NULL
-	  && (p_XML_SetCharacterDataHandler = dlsym (handle, "XML_SetCharacterDataHandler")) != NULL
-	  && (p_XML_SetCommentHandler = dlsym (handle, "XML_SetCommentHandler")) != NULL
-	  && (p_XML_Parse = dlsym (handle, "XML_Parse")) != NULL
-	  && (p_XML_GetErrorCode = dlsym (handle, "XML_GetErrorCode")) != NULL
-	  && (p_XML_GetCurrentLineNumber = dlsym (handle, "XML_GetCurrentLineNumber")) != NULL
-	  && (p_XML_GetCurrentColumnNumber = dlsym (handle, "XML_GetCurrentColumnNumber")) != NULL
-	  && (p_XML_ParserFree = dlsym (handle, "XML_ParserFree")) != NULL
-	  && (p_XML_ErrorString = dlsym (handle, "XML_ErrorString")) != NULL)
-	libexpat_loaded = 1;
+          && (p_XML_ExpatVersionInfo =
+                (XML_Expat_Version (*) (void))
+                dlsym (handle, "XML_ExpatVersionInfo")) != NULL
+          && (p_XML_GetFeatureList =
+                (const XML_Feature * (*) (void))
+                dlsym (handle, "XML_GetFeatureList")) != NULL
+          && (p_XML_ParserCreate =
+                (XML_Parser (*) (const XML_Char *))
+                dlsym (handle, "XML_ParserCreate")) != NULL
+          && (p_XML_SetElementHandler =
+                (void (*) (XML_Parser, XML_StartElementHandler, XML_EndElementHandler))
+                dlsym (handle, "XML_SetElementHandler")) != NULL
+          && (p_XML_SetCharacterDataHandler =
+                (void (*) (XML_Parser, XML_CharacterDataHandler))
+                dlsym (handle, "XML_SetCharacterDataHandler")) != NULL
+          && (p_XML_SetCommentHandler =
+                (void (*) (XML_Parser, XML_CommentHandler))
+                dlsym (handle, "XML_SetCommentHandler")) != NULL
+          && (p_XML_Parse =
+                (int (*) (XML_Parser, const char *, int, int))
+                dlsym (handle, "XML_Parse")) != NULL
+          && (p_XML_GetErrorCode =
+                (enum XML_Error (*) (XML_Parser))
+                dlsym (handle, "XML_GetErrorCode")) != NULL
+          && (p_XML_GetCurrentLineNumber =
+                dlsym (handle, "XML_GetCurrentLineNumber")) != NULL
+          && (p_XML_GetCurrentColumnNumber =
+                dlsym (handle, "XML_GetCurrentColumnNumber")) != NULL
+          && (p_XML_ParserFree =
+                (void (*) (XML_Parser))
+                dlsym (handle, "XML_ParserFree")) != NULL
+          && (p_XML_ErrorString =
+                (const XML_LChar * (*) (int))
+                dlsym (handle, "XML_ErrorString")) != NULL)
+        libexpat_loaded = 1;
       else
-	libexpat_loaded = -1;
+        libexpat_loaded = -1;
     }
   return libexpat_loaded >= 0;
 }
@@ -189,6 +385,7 @@ static XML_Parser parser;
 struct element_state
 {
   bool extract_string;
+  char *extracted_comment;
   int lineno;
   char *buffer;
   size_t bufmax;
@@ -205,10 +402,10 @@ ensure_stack_size (size_t size)
     {
       stack_size = 2 * stack_size;
       if (stack_size < size)
-	stack_size = size;
+        stack_size = size;
       stack =
-	(struct element_state *)
-	xrealloc (stack, stack_size * sizeof (struct element_state));
+        (struct element_state *)
+        xrealloc (stack, stack_size * sizeof (struct element_state));
     }
 }
 
@@ -217,7 +414,7 @@ static size_t stack_depth;
 /* Callback called when <element> is seen.  */
 static void
 start_element_handler (void *userData, const char *name,
-		       const char **attributes)
+                       const char **attributes)
 {
   struct element_state *p;
   void *hash_result;
@@ -231,57 +428,67 @@ start_element_handler (void *userData, const char *name,
 
   p = &stack[stack_depth];
   p->extract_string = extract_all;
+  p->extracted_comment = NULL;
   /* In Glade 1, a few specific elements are translatable.  */
   if (!p->extract_string)
     p->extract_string =
-      (find_entry (&keywords, name, strlen (name), &hash_result) == 0);
+      (hash_find_entry (&keywords, name, strlen (name), &hash_result) == 0);
   /* In Glade 2, all <property> and <atkproperty> elements are translatable
-     that have the attribute translatable="yes".  */
+     that have the attribute translatable="yes".
+     See <http://library.gnome.org/devel/libglade/unstable/libglade-dtd.html>.
+     The translator comment is found in the attribute comments="...".
+     See <http://live.gnome.org/TranslationProject/DevGuidelines/Use comments>.
+   */
   if (!p->extract_string
       && (strcmp (name, "property") == 0 || strcmp (name, "atkproperty") == 0))
     {
       bool has_translatable = false;
+      const char *extracted_comment = NULL;
       const char **attp = attributes;
       while (*attp != NULL)
-	{
-	  if (strcmp (attp[0], "translatable") == 0)
-	    {
-	      has_translatable = (strcmp (attp[1], "yes") == 0);
-	      break;
-	    }
-	  attp += 2;
-	}
+        {
+          if (strcmp (attp[0], "translatable") == 0)
+            has_translatable = (strcmp (attp[1], "yes") == 0);
+          else if (strcmp (attp[0], "comments") == 0)
+            extracted_comment = attp[1];
+          attp += 2;
+        }
       p->extract_string = has_translatable;
+      p->extracted_comment =
+        (has_translatable && extracted_comment != NULL
+         ? xstrdup (extracted_comment)
+         : NULL);
     }
   if (!p->extract_string
       && strcmp (name, "atkaction") == 0)
     {
       const char **attp = attributes;
       while (*attp != NULL)
-	{
-	  if (strcmp (attp[0], "description") == 0)
-	    {
-	      if (strcmp (attp[1], "") != 0)
-		{
-		  lex_pos_ty pos;
+        {
+          if (strcmp (attp[0], "description") == 0)
+            {
+              if (strcmp (attp[1], "") != 0)
+                {
+                  lex_pos_ty pos;
 
-		  pos.file_name = logical_file_name;
-		  pos.line_number = XML_GetCurrentLineNumber (parser);
+                  pos.file_name = logical_file_name;
+                  pos.line_number = XML_GetCurrentLineNumber (parser);
 
-		  remember_a_message (mlp, xstrdup (attp[1]),
-				      null_context, &pos);
-		}
-	      break;
-	    }
-	  attp += 2;
-	}
+                  remember_a_message (mlp, NULL, xstrdup (attp[1]),
+                                      null_context, &pos,
+                                      NULL, savable_comment);
+                }
+              break;
+            }
+          attp += 2;
+        }
     }
   p->lineno = XML_GetCurrentLineNumber (parser);
   p->buffer = NULL;
   p->bufmax = 0;
   p->buflen = 0;
   if (!p->extract_string)
-    xgettext_comment_reset ();
+    savable_comment_reset ();
 }
 
 /* Callback called when </element> is seen.  */
@@ -295,29 +502,32 @@ end_element_handler (void *userData, const char *name)
     {
       /* Don't extract the empty string.  */
       if (p->buflen > 0)
-	{
-	  lex_pos_ty pos;
+        {
+          lex_pos_ty pos;
 
-	  if (p->buflen == p->bufmax)
-	    p->buffer = (char *) xrealloc (p->buffer, p->buflen + 1);
-	  p->buffer[p->buflen] = '\0';
+          if (p->buflen == p->bufmax)
+            p->buffer = (char *) xrealloc (p->buffer, p->buflen + 1);
+          p->buffer[p->buflen] = '\0';
 
-	  pos.file_name = logical_file_name;
-	  pos.line_number = p->lineno;
+          pos.file_name = logical_file_name;
+          pos.line_number = p->lineno;
 
-	  remember_a_message (mlp, p->buffer, null_context, &pos);
-	  p->buffer = NULL;
-	}
+          remember_a_message (mlp, NULL, p->buffer, null_context, &pos,
+                              p->extracted_comment, savable_comment);
+          p->buffer = NULL;
+        }
     }
 
   /* Free memory for this stack level.  */
+  if (p->extracted_comment != NULL)
+    free (p->extracted_comment);
   if (p->buffer != NULL)
     free (p->buffer);
 
   /* Decrease stack depth.  */
   stack_depth--;
 
-  xgettext_comment_reset ();
+  savable_comment_reset ();
 }
 
 /* Callback called when some text is seen.  */
@@ -330,12 +540,12 @@ character_data_handler (void *userData, const char *s, int len)
   if (len > 0)
     {
       if (p->buflen + len > p->bufmax)
-	{
-	  p->bufmax = 2 * p->bufmax;
-	  if (p->bufmax < p->buflen + len)
-	    p->bufmax = p->buflen + len;
-	  p->buffer = (char *) xrealloc (p->buffer, p->bufmax);
-	}
+        {
+          p->bufmax = 2 * p->bufmax;
+          if (p->bufmax < p->buflen + len)
+            p->bufmax = p->buflen + len;
+          p->buffer = (char *) xrealloc (p->buffer, p->bufmax);
+        }
       memcpy (p->buffer + p->buflen, s, len);
       p->buflen += len;
     }
@@ -348,17 +558,17 @@ comment_handler (void *userData, const char *data)
   /* Split multiline comment into lines, and remove leading and trailing
      whitespace.  */
   char *copy = xstrdup (data);
-  char *p = copy;
+  char *p;
   char *q;
 
   for (p = copy; (q = strchr (p, '\n')) != NULL; p = q + 1)
     {
       while (p[0] == ' ' || p[0] == '\t')
-	p++;
+        p++;
       while (q > p && (q[-1] == ' ' || q[-1] == '\t'))
-	q--;
+        q--;
       *q = '\0';
-      xgettext_comment_add (p);
+      savable_comment_add (p);
     }
   q = p + strlen (p);
   while (p[0] == ' ' || p[0] == '\t')
@@ -366,15 +576,15 @@ comment_handler (void *userData, const char *data)
   while (q > p && (q[-1] == ' ' || q[-1] == '\t'))
     q--;
   *q = '\0';
-  xgettext_comment_add (p);
+  savable_comment_add (p);
   free (copy);
 }
 
 
 static void
 do_extract_glade (FILE *fp,
-		  const char *real_filename, const char *logical_filename,
-		  msgdomain_list_ty *mdlp)
+                  const char *real_filename, const char *logical_filename,
+                  msgdomain_list_ty *mdlp)
 {
   mlp = mdlp->item[0]->messages;
 
@@ -401,26 +611,26 @@ do_extract_glade (FILE *fp,
       int count = fread (buf, 1, sizeof buf, fp);
 
       if (count == 0)
-	{
-	  if (ferror (fp))
-	    error (EXIT_FAILURE, errno, _("\
+        {
+          if (ferror (fp))
+            error (EXIT_FAILURE, errno, _("\
 error while reading \"%s\""), real_filename);
-	  /* EOF reached.  */
-	  break;
-	}
+          /* EOF reached.  */
+          break;
+        }
 
       if (XML_Parse (parser, buf, count, 0) == 0)
-	error (EXIT_FAILURE, 0, _("%s:%d:%d: %s"), logical_filename,
-	       XML_GetCurrentLineNumber (parser),
-	       XML_GetCurrentColumnNumber (parser) + 1,
-	       XML_ErrorString (XML_GetErrorCode (parser)));
+        error (EXIT_FAILURE, 0, _("%s:%lu:%lu: %s"), logical_filename,
+               (unsigned long) XML_GetCurrentLineNumber (parser),
+               (unsigned long) XML_GetCurrentColumnNumber (parser) + 1,
+               XML_ErrorString (XML_GetErrorCode (parser)));
     }
 
   if (XML_Parse (parser, NULL, 0, 1) == 0)
-    error (EXIT_FAILURE, 0, _("%s:%d:%d: %s"), logical_filename,
-	   XML_GetCurrentLineNumber (parser),
-	   XML_GetCurrentColumnNumber (parser) + 1,
-	   XML_ErrorString (XML_GetErrorCode (parser)));
+    error (EXIT_FAILURE, 0, _("%s:%lu:%lu: %s"), logical_filename,
+           (unsigned long) XML_GetCurrentLineNumber (parser),
+           (unsigned long) XML_GetCurrentColumnNumber (parser) + 1,
+           XML_ErrorString (XML_GetErrorCode (parser)));
 
   XML_ParserFree (parser);
 
@@ -433,9 +643,9 @@ error while reading \"%s\""), real_filename);
 
 void
 extract_glade (FILE *fp,
-	       const char *real_filename, const char *logical_filename,
-	       flag_context_list_table_ty *flag_table,
-	       msgdomain_list_ty *mdlp)
+               const char *real_filename, const char *logical_filename,
+               flag_context_list_table_ty *flag_table,
+               msgdomain_list_ty *mdlp)
 {
 #if DYNLOAD_LIBEXPAT || HAVE_LIBEXPAT
   if (LIBEXPAT_AVAILABLE ())
@@ -444,10 +654,10 @@ extract_glade (FILE *fp,
 #endif
     {
       multiline_error (xstrdup (""),
-		       xasprintf (_("\
+                       xasprintf (_("\
 Language \"glade\" is not supported. %s relies on expat.\n\
 This version was built without expat.\n"),
-				  basename (program_name)));
+                                  basename (program_name)));
       exit (EXIT_FAILURE);
     }
 }
