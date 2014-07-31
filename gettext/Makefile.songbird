@@ -40,23 +40,154 @@ SB_VENDOR_TARGET_VERSION = 0.18
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
-SB_VENDOR_TARGET_CONFIGURE_OPTS := --enable-relocatable \
-                                   --disable-libsuffix \
-                                   --enable-cxx-warnings=no \
-                                   --disable-native-java \
-                                   --disable-java \
-                                   --disable-openmp
+# SB_VENDOR_TARGET_CONFIGURE_OPTS := --enable-relocatable \
+#                                    --disable-libsuffix \
+#                                    --enable-cxx-warnings=no \
+#                                    --disable-native-java \
+#                                    --disable-java \
+#                                    --disable-openmp
 
+# ifeq (Linux,$(SB_VENDOR_ARCH))
+#   SB_VENDOR_TARGET_CONFIGURE_OPTS += --enable-threads=posix
+# endif
+
+
+# SB_VENDOR_TARGET_DYLIB_FIXUPS := \
+#     libintl \
+#     libasprintf \
+#     libgettextlib \
+#     libgettextsrc \
+#     libgettextpo
+
+
+### CMAKE ###
+# Set compiler flags.
 ifeq (Linux,$(SB_VENDOR_ARCH))
-  SB_VENDOR_TARGET_CONFIGURE_OPTS += --enable-threads=posix
+  ifeq (1, $(LINT_BUILD))
+    CMAKE_C_FLAGS := -fPIC -fstack-protector
+    CMAKE_CXX_FLAGS := -fPIC -fstack-protector
+    CMAKE_LD_FLAGS := -Wl,-z,relro
+  else
+    CMAKE_C_FLAGS := -fPIC -fno-stack-protector
+    CMAKE_CXX_FLAGS := -fPIC -fno-stack-protector
+  endif
 endif
 
+SB_ICONV_DIR := $(SB_VENDOR_BINARIES_DIR)/libiconv/$(SB_BUILD_TYPE)
 
-SB_VENDOR_TARGET_DYLIB_FIXUPS := \
-   libintl \
-   libasprintf \
-   libgettextlib \
-   libgettextsrc \
-   libgettextpo
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  CMAKE_C_FLAGS_DEBUG := $(CMAKE_C_FLAGS) -MDd
+  CMAKE_C_FLAGS_RELEASE := $(CMAKE_C_FLAGS) -MD
+  CMAKE_CXX_FLAGS_DEBUG := $(CMAKE_CXX_FLAGS) -MDd
+  CMAKE_CXX_FLAGS_RELEASE := $(CMAKE_CXX_FLAGS) -MD
+
+  CMAKE_ICONV_FLAGS := -DICONV_INCLUDE_DIR:PATH="$(SB_ICONV_DIR)/include" \
+                       -DICONV_LIBRARY:FILEPATH="$(SB_ICONV_DIR)/lib/iconv.lib"
+else
+  ifeq (SunOS,$(SB_VENDOR_ARCH))
+    CMAKE_C_FLAGS_DEBUG += -g
+    CMAKE_CXX_FLAGS_DEBUG += -g
+  else
+    ifneq (, $(findstring clang, $(CC)))
+      CMAKE_C_FLAGS_DEBUG += -g
+      CMAKE_CXX_FLAGS_DEBUG += -g
+    else
+      CMAKE_C_FLAGS_DEBUG += -g -gstabs+
+      CMAKE_CXX_FLAGS_DEBUG += -g -gstabs+
+      CMAKE_C_FLAGS_RELEASE += -gstabs+
+      CMAKE_CXX_FLAGS_RELEASE += -gstabs+
+    endif
+  endif
+endif
+
+# This makefile fixes OS X 10.6, by forcing a 10.4u SDK / GCC4.0 build
+ifeq (Darwin,$(SB_VENDOR_ARCH))
+  CMAKE_ARGS += -DCMAKE_OSX_DEPLOYMENT_TARGET=10.4
+  CMAKE_ARGS += -DCMAKE_OSX_SYSROOT:PATH=/Developer/SDKs/MacOSX10.4u.sdk
+  CMAKE_ARGS += -DCMAKE_C_COMPILER:PATH=/usr/bin/gcc-4.0
+  CMAKE_ARGS += -DCMAKE_CXX_COMPILER:PATH=/usr/bin/g++-4.0
+endif
+
+ifeq (debug,$(SB_BUILD_TYPE))
+  CMAKE_ARGS += -DCMAKE_BUILD_TYPE=Debug
+endif
+ifeq (release,$(SB_BUILD_TYPE))
+  CMAKE_ARGS += -DCMAKE_BUILD_TYPE=Release
+endif
+
+# Set makefile type.
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  CMAKE_MAKEFILE_TYPE := NMake Makefiles
+
+  # Used by -rules; defaults to $(MAKE), BUT NOT FOR Win32 CMAKE!!
+  SUBMAKE_CMD = $(CURDIR)/../call-nmake.py
+else
+  CMAKE_MAKEFILE_TYPE := Unix Makefiles
+endif
+
+SB_RUN_CONFIGURE := 0
+
 
 include $(CURDIR)/../songbird-vendor-rules.mk
+
+module_setup_build:
+	cd $(SB_VENDOR_BUILD_DIR) && $(CMAKE) $(CMAKE_ARGS) \
+          -DCMAKE_C_FLAGS="$(CMAKE_C_FLAGS)" \
+          -DCMAKE_CXX_FLAGS="$(CMAKE_CXX_FLAGS)" \
+          -DCMAKE_C_FLAGS_DEBUG="$(CMAKE_C_FLAGS_DEBUG)" \
+          -DCMAKE_CXX_FLAGS_DEBUG="$(CMAKE_CXX_FLAGS_DEBUG)" \
+          -DCMAKE_C_FLAGS_RELEASE="$(CMAKE_C_FLAGS_RELEASE)" \
+          -DCMAKE_CXX_FLAGS_RELEASE="$(CMAKE_CXX_FLAGS_RELEASE)" \
+          -DCMAKE_VERBOSE_MAKEFILE=1 \
+          -DCMAKE_INSTALL_PREFIX=$(SB_CONFIGURE_PREFIX) \
+          -DCMAKE_DEBUG_POSTFIX= \
+          $(CMAKE_ICONV_FLAGS) \
+          -G "$(CMAKE_MAKEFILE_TYPE)"
+
+# module_setup_build:
+# 	@echo 
+# 	@echo 
+# 	@echo ----------------------
+# 	@echo - module_setup_build -
+# 	@echo ----------------------
+# 	@echo 
+# 	@echo SB_VENDOR_BUILD_DIR = $(SB_VENDOR_BUILD_DIR) 
+# 	@echo 
+# 	@echo --- CMAKE VARS ---
+# 	@echo 
+# 	@echo CMAKE = $(CMAKE)
+# 	@echo CMAKE_ARGS = $(CMAKE_ARGS)
+# 	@echo CMAKE_C_FLAGS = $(CMAKE_C_FLAGS)
+# 	@echo CMAKE_CXX_FLAGS = $(CMAKE_CXX_FLAGS)
+# 	@echo CMAKE_C_FLAGS_DEBUG = $(CMAKE_C_FLAGS_DEBUG)
+# 	@echo CMAKE_CXX_FLAGS_DEBUG = $(CMAKE_CXX_FLAGS_DEBUG)
+# 	@echo CMAKE_C_FLAGS_RELEASE = $(CMAKE_C_FLAGS_RELEASE)
+# 	@echo CMAKE_CXX_FLAGS_RELEASE = $(CMAKE_CXX_FLAGS_RELEASE)
+# 	@echo CMAKE_VERBOSE_MAKEFILE = 1
+# 	@echo CMAKE_INSTALL_PREFIX = $(SB_CONFIGURE_PREFIX)
+# 	@echo CMAKE_DEBUG_POSTFIX = 
+# 	@echo CMAKE_MAKEFILE_TYPE = $(CMAKE_MAKEFILE_TYPE)
+# 	@echo 
+# 	@echo 
+# 	@echo --- END CMAKE VARS DUMP ---
+# 	@echo 
+# 	@echo 
+# 	cd $(SB_VENDOR_BUILD_DIR) && $(CMAKE) $(CMAKE_ARGS) \
+#           -DCMAKE_C_FLAGS="$(CMAKE_C_FLAGS)" \
+#           -DCMAKE_CXX_FLAGS="$(CMAKE_CXX_FLAGS)" \
+#           -DCMAKE_C_FLAGS_DEBUG="$(CMAKE_C_FLAGS_DEBUG)" \
+#           -DCMAKE_CXX_FLAGS_DEBUG="$(CMAKE_CXX_FLAGS_DEBUG)" \
+#           -DCMAKE_C_FLAGS_RELEASE="$(CMAKE_C_FLAGS_RELEASE)" \
+#           -DCMAKE_CXX_FLAGS_RELEASE="$(CMAKE_CXX_FLAGS_RELEASE)" \
+#           -DCMAKE_VERBOSE_MAKEFILE=1 \
+#           -DCMAKE_INSTALL_PREFIX=$(SB_CONFIGURE_PREFIX) \
+#           -DCMAKE_DEBUG_POSTFIX= \
+#           $(CMAKE_ICONV_FLAGS) \
+#           -G "$(CMAKE_MAKEFILE_TYPE)"
+# 	@echo 
+# 	@echo 
+# 	@echo --------------------------
+# 	@echo - END module_setup_build -
+# 	@echo --------------------------
+# 	@echo 
+# 	@echo 
