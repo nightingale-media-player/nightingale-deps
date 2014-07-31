@@ -3,7 +3,13 @@
 #AUTOMAKE_OPTIONS = 1.7 foreign dist-zip dist-bzip2
 AUTOMAKE_OPTIONS = foreign 1.11 dist-zip dist-xz
 
-SUBDIRS = m4 include vq lib test doc
+if VORBIS_ENABLE_TESTS
+TESTS_DIR = test
+else
+TESTS_DIR =
+endif
+
+SUBDIRS = m4 include vq lib $(TESTS_DIR) doc
 
 if BUILD_EXAMPLES 
 SUBDIRS += examples 
