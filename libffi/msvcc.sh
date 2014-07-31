@@ -49,158 +49,179 @@ cl="cl"
 ml="ml"
 safeseh="-safeseh"
 output=
+sawlink=
+linkargs=
 
 while [ $# -gt 0 ]
 do
-  case $1
-  in
-    -fexceptions)
-      # Don't enable exceptions for now.
-      #args="$args -EHac"
-      shift 1
-    ;;
-    -m32)
-      shift 1
-    ;;
-    -m64)
-      cl="cl"   # "$MSVC/x86_amd64/cl"
-      ml="ml64" # "$MSVC/x86_amd64/ml64"
-      safeseh=
-      shift 1
-    ;;
-    -O0)
-      args="$args -Od"
-      shift 1
-    ;;
-    -O*)
-      # Runtime error checks (enabled by setting -RTC1 in the -DFFI_DEBUG
-      # case below) are not compatible with optimization flags and will
-      # cause the build to fail. Therefore, drop the optimization flag if
-      # -DFFI_DEBUG is also set.
-      case $args_orig in
-        *-DFFI_DEBUG*)
-          args="$args"
-        ;;
-        *)
-          # The ax_cc_maxopt.m4 macro from the upstream autoconf-archive
-          # project doesn't support MSVC and therefore ends up trying to
-          # use -O3. Use the equivalent "max optimization" flag for MSVC
-          # instead of erroring out.
-          case $1 in
-            -O3)
-              args="$args -O2"
-            ;;
-            *)
-              args="$args $1"
-            ;;
-          esac
-          opt="true"
-        ;;
-      esac
-      shift 1
-    ;;
-    -g)
-      # Enable debug symbol generation.
-      args="$args -Zi"
-      shift 1
-    ;;
-    -DFFI_DEBUG)
-      # Link against debug CRT and enable runtime error checks.
-      args="$args -RTC1"
-      defines="$defines $1"
-      md=-MDd
-      shift 1
-    ;;
-    -c)
-      args="$args -c"
-      args="$(echo $args | sed 's%/Fe%/Fo%g')"
-      single="-c"
-      shift 1
-    ;;
-    -D*=*)
-      name="$(echo $1|sed 's/-D\([^=][^=]*\)=.*/\1/g')"
-      value="$(echo $1|sed 's/-D[^=][^=]*=//g')"
-      args="$args -D${name}='$value'"
-      defines="$defines -D${name}='$value'"
-      shift 1
-    ;;
-    -D*)
-      args="$args $1"
-      defines="$defines $1"
-      shift 1
-    ;;
-    -I)
-      args="$args -I$2"
-      includes="$includes -I$2"
-      shift 2
-    ;;
-    -I*)
-      args="$args $1"
-      includes="$includes $1"
-      shift 1
-    ;;
-    -W|-Wextra)
-      # TODO map extra warnings
-      shift 1
-    ;;
-    -Wall)
-      # -Wall on MSVC is overzealous, and we already build with -W3. Nothing
-      # to do here.
-      shift 1
-    ;;
-    -pedantic)
-      # libffi tests -pedantic with -Wall, so drop it also.
-      shift 1
-    ;;
-    -Werror)
-      args="$args -WX"
-      shift 1
-    ;;
-    -W*)
-      # TODO map specific warnings
-      shift 1
-    ;;
-    -S)
-      args="$args -FAs"
-      shift 1
-    ;;
-    -o)
-      outdir="$(dirname $2)"
-      base="$(basename $2|sed 's/\.[^.]*//g')"
-      if [ -n "$single" ]; then 
-        output="-Fo$2"
-      else
-        output="-Fe$2"
-      fi
-      if [ -n "$assembly" ]; then
-        args="$args $output"
-      else
-        args="$args $output -Fd$outdir/$base -Fp$outdir/$base -Fa$outdir/$base"
-      fi
-      shift 2
-    ;;
-    *.S)
-      src=$1
-      assembly="true"
-      shift 1
-    ;;
-    *.c)
-      args="$args $1"
-      shift 1
-    ;;
-    *)
-      # Assume it's an MSVC argument, and pass it through.
-      args="$args $1"
-      shift 1
-    ;;
-  esac
+  if [ -n "$sawlink" ]; then
+    if [ -z "$linkargs" ]; then 
+      linkargs="$1"
+    else
+      linkargs="$linkargs $1"
+    fi
+    shift 1
+  else
+    case $1
+    in
+      -fexceptions)
+        # Don't enable exceptions for now.
+        #args="$args -EHac"
+        shift 1
+      ;;
+      -m32)
+        shift 1
+      ;;
+      -m64)
+        cl="cl"   # "$MSVC/x86_amd64/cl"
+        ml="ml64" # "$MSVC/x86_amd64/ml64"
+        safeseh=
+        shift 1
+      ;;
+      -O0)
+        args="$args -Od"
+        shift 1
+      ;;
+      -O*)
+        # Runtime error checks (enabled by setting -RTC1 in the -DFFI_DEBUG
+        # case below) are not compatible with optimization flags and will
+        # cause the build to fail. Therefore, drop the optimization flag if
+        # -DFFI_DEBUG is also set.
+        case $args_orig in
+          *-DFFI_DEBUG*)
+            args="$args"
+          ;;
+          *)
+            # The ax_cc_maxopt.m4 macro from the upstream autoconf-archive
+            # project doesn't support MSVC and therefore ends up trying to
+            # use -O3. Use the equivalent "max optimization" flag for MSVC
+            # instead of erroring out.
+            case $1 in
+              -O3)
+                args="$args -O2"
+              ;;
+              *)
+                args="$args $1"
+              ;;
+            esac
+            opt="true"
+          ;;
+        esac
+        shift 1
+      ;;
+      -g)
+        # Enable debug symbol generation.
+        args="$args -Zi"
+        shift 1
+      ;;
+      -DFFI_DEBUG)
+        # Link against debug CRT and enable runtime error checks.
+        args="$args -RTC1"
+        defines="$defines $1"
+        md=-MDd
+        shift 1
+      ;;
+      -c)
+        args="$args -c"
+        args="$(echo $args | sed 's%/Fe%/Fo%g')"
+        single="-c"
+        shift 1
+      ;;
+      -D*=*)
+        name="$(echo $1|sed 's/-D\([^=][^=]*\)=.*/\1/g')"
+        value="$(echo $1|sed 's/-D[^=][^=]*=//g')"
+        args="$args -D${name}='$value'"
+        defines="$defines -D${name}='$value'"
+        shift 1
+      ;;
+      -D*)
+        args="$args $1"
+        defines="$defines $1"
+        shift 1
+      ;;
+      -I)
+        args="$args -I$2"
+        includes="$includes -I$2"
+        shift 2
+      ;;
+      -I*)
+        args="$args $1"
+        includes="$includes $1"
+        shift 1
+      ;;
+      -W|-Wextra)
+        # TODO map extra warnings
+        shift 1
+      ;;
+      -Wall)
+        # -Wall on MSVC is overzealous, and we already build with -W3. Nothing
+        # to do here.
+        shift 1
+      ;;
+      -pedantic)
+        # libffi tests -pedantic with -Wall, so drop it also.
+        shift 1
+      ;;
+      -Werror)
+        args="$args -WX"
+        shift 1
+      ;;
+      -W*)
+        # TODO map specific warnings
+        shift 1
+      ;;
+      -S)
+        args="$args -FAs"
+        shift 1
+      ;;
+      -o)
+        outdir="$(dirname $2)"
+        base="$(basename $2|sed 's/\.[^.]*//g')"
+        if [ -n "$single" ]; then 
+          output="-Fo$2"
+        else
+          output="-Fe$2"
+        fi
+        if [ -n "$assembly" ]; then
+          args="$args $output"
+        else
+          args="$args $output -Fd$outdir/$base -Fp$outdir/$base -Fa$outdir/$base"
+        fi
+        shift 2
+      ;;
+      *.S)
+        src=$1
+        assembly="true"
+        shift 1
+      ;;
+      *.c)
+        args="$args $1"
+        shift 1
+      ;;
+      -link)
+        sawlink="true"
+        shift 1
+      ;;
+      *)
+        # Assume it's an MSVC argument, and pass it through.
+        args="$args $1"
+        shift 1
+      ;;
+    esac
+  fi
 done
 
 # If -Zi is specified, certain optimizations are implicitly disabled
 # by MSVC. Add back those optimizations if this is an optimized build.
 # NOTE: These arguments must come after all others.
 if [ -n "$opt" ]; then
+  if [ -n "$sawlink" ]; then
+    if [ -n "$linkargs" ]; then
+      args="$args -link $linkargs -OPT:REF -OPT:ICF -INCREMENTAL:NO"
+    fi
+  else
     args="$args -link -OPT:REF -OPT:ICF -INCREMENTAL:NO"
+  fi
 fi
 
 if [ -n "$assembly" ]; then
