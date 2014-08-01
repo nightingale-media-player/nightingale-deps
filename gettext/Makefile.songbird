@@ -82,7 +82,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
   CMAKE_CXX_FLAGS_RELEASE := $(CMAKE_CXX_FLAGS) -MD
 
   CMAKE_ICONV_FLAGS := -DICONV_INCLUDE_DIR:PATH="$(SB_ICONV_DIR)/include" \
-                       -DICONV_LIBRARY:FILEPATH="$(SB_ICONV_DIR)/lib/iconv.lib"
+  										 -DICONV_LIBRARIES:FILEPATH="$(SB_ICONV_DIR)/lib/iconv.lib"
 else
   ifeq (SunOS,$(SB_VENDOR_ARCH))
     CMAKE_C_FLAGS_DEBUG += -g
