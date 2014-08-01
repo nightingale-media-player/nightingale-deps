@@ -51,6 +51,14 @@ ifneq (,$(filter Msys Darwin,$(SB_VENDOR_ARCH)))
   SB_VENDOR_TARGET_CONFIGURE_OPTS += --with-libiconv=gnu
 endif
 
+ifeq (Msys, $(SB_VENDOR_ARCH))
+  SB_CC = $(CURDIR)/../clwrapper.py
+  SB_CXX = $(CURDIR)/../clwrapper.py
+
+  export ZLIB_CFLAGS=$(SB_ZLIB_CFLAGS)
+  export ZLIB_LIBS=$(SB_ZLIB_LDFLAGS)
+endif
+
 SB_VENDOR_TARGET_DYLIB_FIXUPS := \
   libglib-2.0 \
   libgobject-2.0 \
