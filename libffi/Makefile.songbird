@@ -30,7 +30,7 @@
 ################################################################################
 ################################################################################
 
-SB_VENDOR_TARGET_DEP_MODULES :=
+SB_VENDOR_TARGET_DEP_MODULES := $(NULL)
 
 SB_VENDOR_TARGET = libffi
 SB_VENDOR_TARGET_VERSION = 3.1
@@ -41,9 +41,11 @@ SB_VENDOR_TARGET_CONFIGURE_OPTS :=
 
 ifeq (Msys,$(SB_VENDOR_ARCH))
   SB_VENDOR_TARGET_CONFIGURE_OPTS += CC=$(CURDIR)/msvcc.sh LD=link \
-                                     CPP='cl -nologo -EP' CFLAGS='-O2'
+                                     CPP='cl -nologo -EP' CFLAGS='-O2' \
+                                     --disable-shared
 
   SB_CFLAGS = $(NULL)
+  SB_CPPFLAGS = $(NULL)
   SB_CXXFLAGS = $(NULL)
   SB_LDFLAGS = $(NULL)
 
