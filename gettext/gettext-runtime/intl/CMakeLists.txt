@@ -56,7 +56,7 @@ add_definitions(-DIN_LIBINTL)
 add_library(intl ${LIBRARY_TYPE} ${INTL_SRCS})
 target_link_libraries(intl ${ICONV_LIBRARIES})
 if(MSVC)
-set_target_properties(intl PROPERTIES OUTPUT_NAME "libintl")
+set_target_properties(intl PROPERTIES OUTPUT_NAME "intl")
 endif(MSVC)
 
 if(WINCE)
