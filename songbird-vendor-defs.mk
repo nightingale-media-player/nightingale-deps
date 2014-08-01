@@ -226,7 +226,7 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
 
    # We need these for all builds on Win32, since the system doesn't provide
    # it...
-   SB_VENDOR_TARGET_DEP_MODULES += iconv glib gettext
+   SB_VENDOR_TARGET_DEP_MODULES += iconv libffi glib gettext
 endif
 
 ifeq (Darwin,$(SB_VENDOR_ARCH))
@@ -511,6 +511,20 @@ ifeq (Msys,$(SB_VENDOR_ARCH))
   endif
 endif
 
+
+#
+# libffi
+#
+ifneq (,$(call enable-sb-lib, libffi))
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libffi/$(SB_BUILD_TYPE)),)
+    $(info Enabling Songbird vendor lib: libffi)
+    SB_LIBFFI_DIR := $(call find-dep-dir, libffi)
+    SB_PKG_CONFIG_PATH += $(SB_LIBFFI_DIR)/lib/pkgconfig
+
+    # ifeq (Darwin,$(SB_VENDOR_ARCH))
+    #    LDFLAGS += -Wl,-dylib_file -Wl,libffi.dylib:$(SB_LIBFFI_DIR)/lib/libffi.dylib
+    # endif
+  endif
 endif
 
 #
