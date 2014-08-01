@@ -3,12 +3,13 @@
 *.pyc
 ignore*/*
 sqlite/autom4te.cache
-linux-*
-checkout
-build
+checkout/
+build/
 msys*
 darwin*
-macosx-i686
+linux-*/
+windows-i686*/
+macosx-i686*/
 xulrunner*/mozilla/.mozconfig*
 xulrunner*/mozilla/compiled/
 xulrunner*/mozilla/config/*.pyc
