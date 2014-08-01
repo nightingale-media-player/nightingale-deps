@@ -3,8 +3,8 @@
 *.pyc
 ignore*/*
 sqlite/autom4te.cache
-checkout/
-build/
+checkout/*
+build/*
 msys*
 darwin*
 linux-*/
