@@ -492,6 +492,25 @@ ifneq (,$(call enable-sb-lib, iconv))
     endif
   endif
 endif
+
+#
+# Zlib
+#
+ifeq (Msys,$(SB_VENDOR_ARCH))
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/zlib/$(SB_BUILD_TYPE)), )
+    SB_ZLIB_DIR := $(call find-dep-dir, zlib)
+    SB_ZLIB_LDFLAGS := -L$(SB_ZLIB_DIR)/lib -lzlib
+    SB_ZLIB_CFLAGS := -I$(SB_ZLIB_DIR)/include
+
+    ifneq (,$(call enable-sb-lib, zlib))
+      $(info Enabling Songbird vendor lib: zlib)
+      SB_LDFLAGS += $(SB_ZLIB_LDFLAGS)
+      SB_CFLAGS += $(SB_ZLIB_CFLAGS)
+    endif
+
+  endif
+endif
+
 endif
 
 #
