@@ -1,5 +1,6 @@
 flac                1.3.0
-gettext             0.18
+gettext-0.19.2      0.19.2
+gettext-0.18        0.18
 glib                2.41.2
 gst-plugins-base    1.4.0
 gst-plugins-bad     1.4.0
