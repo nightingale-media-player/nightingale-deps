@@ -683,19 +683,18 @@ ifneq (,$(call enable-sb-lib, flac))
 endif
 
 #
-# libjpeg
+# libjpeg-turbo
 #
 ifneq (,$(call enable-sb-lib, jpeg))
-  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libjpeg/$(SB_BUILD_TYPE)),)
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libjpeg-trubo/$(SB_BUILD_TYPE)),)
     $(info Enabling Songbird vendor lib: jpeg)
-    # SB_LIBJPEG_DIR = $(call find-dep-dir, libjpeg)
     SB_LIBJPEG_DIR = $(call find-dep-dir, libjpeg-turbo)
     SB_LDFLAGS += -L$(SB_LIBJPEG_DIR)/lib
 
     SB_CFLAGS += -I$(SB_LIBJPEG_DIR)/include
 
     ifeq (Msys,$(SB_VENDOR_ARCH))
-      SB_JPEG_LIBS += "-ljpeg-7"
+      SB_JPEG_LIBS += -ljpeg
       SB_PATH += $(SB_LIBJPEG_DIR)/bin
       ifeq (debug,$(SB_BUILD_TYPE))
         SB_JPEG_LIBS += -Wl,-Zi
@@ -704,4 +703,27 @@ ifneq (,$(call enable-sb-lib, jpeg))
 
   endif
 endif
+
+# Deprecated
+##
+## libjpeg
+##
+#ifneq (,$(call enable-sb-lib, jpeg))
+#  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libjpeg/$(SB_BUILD_TYPE)),)
+#    $(info Enabling Songbird vendor lib: jpeg)
+#    SB_LIBJPEG_DIR = $(call find-dep-dir, libjpeg)
+#    SB_LDFLAGS += -L$(SB_LIBJPEG_DIR)/lib
+#
+#    SB_CFLAGS += -I$(SB_LIBJPEG_DIR)/include
+#
+#    ifeq (Msys,$(SB_VENDOR_ARCH))
+#      SB_JPEG_LIBS += "-ljpeg-7"
+#      SB_PATH += $(SB_LIBJPEG_DIR)/bin
+#      ifeq (debug,$(SB_BUILD_TYPE))
+#        SB_JPEG_LIBS += -Wl,-Zi
+#      endif
+#    endif
+#
+#  endif
+#endif
 
