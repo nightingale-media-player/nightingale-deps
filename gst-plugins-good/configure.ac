@@ -142,6 +142,9 @@ AC_CHECK_FUNCS(clock_gettime, [], [
   ])
 ])
 
+AC_ARG_WITH([ws232], AS_HELP_STRING([--with-ws232], [Link the Ws2_32.lib to the UDP Plugin]))
+AM_CONDITIONAL(HAVE_WIN32, test "x$with_ws232" = "xyes")
+
 dnl *** checks for header files ***
 
 dnl check if we have ANSI C header files
