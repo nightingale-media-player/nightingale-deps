@@ -47,7 +47,9 @@
 
 GST_DEBUG_CATEGORY (videoconvert_debug);
 #define GST_CAT_DEFAULT videoconvert_debug
+#ifndef WIN32
 GST_DEBUG_CATEGORY_EXTERN (GST_CAT_PERFORMANCE);
+#endif
 
 GType gst_video_convert_get_type (void);
 
@@ -564,10 +566,12 @@ gst_video_convert_transform_frame (GstVideoFilter * filter,
 
   space = GST_VIDEO_CONVERT_CAST (filter);
 
+#ifndef WIN32
   GST_CAT_DEBUG_OBJECT (GST_CAT_PERFORMANCE, filter,
       "doing colorspace conversion from %s -> to %s",
       GST_VIDEO_INFO_NAME (&filter->in_info),
       GST_VIDEO_INFO_NAME (&filter->out_info));
+#endif
 
   videoconvert_convert_set_dither (space->convert, space->dither);
 
