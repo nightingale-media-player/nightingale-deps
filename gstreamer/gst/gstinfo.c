@@ -510,7 +510,11 @@ gst_debug_log_valist (GstDebugCategory * category, GstDebugLevel level,
 
   message.message = NULL;
   message.format = format;
+#ifdef G_OS_WIN32
+  message.arguments = args;
+#else
   G_VA_COPY (message.arguments, args);
+#endif
 
   handler = __log_functions;
   while (handler) {
