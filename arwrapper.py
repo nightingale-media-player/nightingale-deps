@@ -14,9 +14,16 @@ def winpath(unixpath):
     return unixpath
 
 if __name__ == "__main__":
-    fargs = ["lib"] + sys.argv[1:]
+    sargs = sys.argv[1:]
 
-    fargs[1] = "-OUT:%s" % (fargs[1])
+    if (sargs[1] == "-cr"):
+        libname = sargs[2];
+        fargs = ["lib"] + sargs[2:]
+    else:
+        libname = sargs[1];
+        fargs = ["lib"] + sargs[1:]
+
+    fargs[1] = "-OUT:%s" % (libname)
 
     print "Calling ", fargs
 
