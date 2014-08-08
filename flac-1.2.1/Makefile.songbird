@@ -1,0 +1,68 @@
+################################################################################
+################################################################################
+#
+# BEGIN NIGHTINGALE GPL
+# 
+# This file is part of the Nightingale Media Player.
+#
+# Copyright(c) 2007 POTI, Inc.
+# http://www.songbirdnest.com
+#
+# Copyright(c) 2014
+# http://www.getnightingale.com
+# 
+# This file may be licensed under the terms of of the
+# GNU General Public License Version 2 (the "GPL").
+# 
+# Software distributed under the License is distributed 
+# on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either 
+# express or implied. See the GPL for the specific language 
+# governing rights and limitations.
+#
+# You should have received a copy of the GPL along with this 
+# program. If not, go to http://www.gnu.org/licenses/gpl.html
+# or write to the Free Software Foundation, Inc., 
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# 
+# END NIGHTINGALE GPL
+#
+################################################################################
+#
+# Makefile for building Nightingale vendor: flac
+#
+################################################################################
+################################################################################
+
+SB_VENDOR_TARGET_DEP_MODULES :=
+
+SB_VENDOR_TARGET = flac
+SB_VENDOR_TARGET_VERSION = 1.2.1
+
+include $(CURDIR)/../songbird-vendor-defs.mk
+
+SB_VENDOR_TARGET_CONFIGURE_OPTS := --disable-ogg \
+                                   --disable-cpplibs \
+                                   --disable-rpath \
+                                   --disable-doxygen-docs \
+                                   --disable-oggtest \
+                                   --disable-asm-optimizations \
+                                   $(NULL)
+
+SB_CFLAGS += -DFLAC_API_EXPORTS
+
+SB_CXXFLAGS += $(SB_CFLAGS)
+
+SB_VENDOR_TARGET_DYLIB_FIXUPS := libFLAC \
+                                 $(NULL)
+
+SB_ACLOCAL_FLAGS += -I common/m4 \
+                    $(NULL)
+
+ifeq (Msys,$(SB_VENDOR_ARCH))
+   # use clwrapper in libtool-based modules for symbol generation (see bug 6486)
+   SB_CC = $(CURDIR)/../clwrapper.py
+   SB_CXX = $(CURDIR)/../clwrapper.py
+   SB_USE_MOZCRT = 1
+endif
+
+include $(CURDIR)/../songbird-vendor-rules.mk
