@@ -1,12 +1,15 @@
 ################################################################################
 ################################################################################
 #
-# BEGIN SONGBIRD GPL
+# BEGIN NIGHTINGALE GPL
 # 
-# This file is part of the Songbird web player.
+# This file is part of the Nightingale Media Player.
 #
 # Copyright(c) 2007 POTI, Inc.
 # http://www.songbirdnest.com
+#
+# Copyright(c) 2014
+# http://www.getnightingale.com
 # 
 # This file may be licensed under the terms of of the
 # GNU General Public License Version 2 (the "GPL").
@@ -21,11 +24,11 @@
 # or write to the Free Software Foundation, Inc., 
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # 
-# END SONGBIRD GPL
+# END NIGHTINGALE GPL
 #
 ################################################################################
 #
-# Makefile for building Songbird vendor: gstreamer (core)
+# Makefile for building Nightingale vendor: gst-plugins-good
 #
 ################################################################################
 ################################################################################
