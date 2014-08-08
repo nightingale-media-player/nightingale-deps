@@ -689,14 +689,13 @@ ifneq (,$(call enable-sb-lib, jpeg))
   ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libjpeg-turbo/$(SB_BUILD_TYPE)),)
     $(info Enabling Songbird vendor lib: jpeg)
     SB_LIBJPEG_DIR = $(call find-dep-dir, libjpeg-turbo)
-    SB_JPEG_LIBS = -L$(SB_LIBJPEG_DIR)/lib
-    SB_JPEG_CFLAGS := -I$(SB_LIBJPEG_DIR)/include
 
-    # SB_CFLAGS += $(SB_JPEG_CFLAGS)
-    # SB_LDFLAGS += $(SB_JPEG_LIBS)
+    SB_LDFLAGS += -L$(SB_LIBJPEG_DIR)/lib
+    SB_CFLAGS += -I$(SB_LIBJPEG_DIR)/include
 
     ifeq (Msys,$(SB_VENDOR_ARCH))
-      SB_JPEG_LIBS += -ljpeg
+      # SB_JPEG_LIBS += -ljpeg
+      SB_JPEG_LIBS += -ljpeg.dll
       SB_PATH += $(SB_LIBJPEG_DIR)/bin
       ifeq (debug,$(SB_BUILD_TYPE))
         SB_JPEG_LIBS += -Wl,-Zi
