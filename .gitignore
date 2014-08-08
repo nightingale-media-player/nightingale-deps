@@ -10,6 +10,8 @@ darwin*
 linux-*/
 windows-i686*/
 macosx-i686*/
+packages/win32/*/*
+!packages/win32/*/
 xulrunner*/mozilla/.mozconfig*
 xulrunner*/mozilla/compiled/
 xulrunner*/mozilla/config/*.pyc
@@ -24,3 +26,4 @@ xulrunner*/mozilla/a.out
 xulrunner*/mozilla/confdefs.h
 xulrunner*/mozilla/config.cache
 xulrunner*/mozilla/config.log
+*.sublime-*
