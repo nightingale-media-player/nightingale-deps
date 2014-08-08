@@ -14,6 +14,10 @@
 #include <limits.h>
 #include <glib.h>
 
+#ifdef _MSC_VER
+#define __attribute__(x)
+#endif
+
 typedef size_t VP8_BD_VALUE;
 
 # define VP8_BD_VALUE_SIZE ((int)sizeof(VP8_BD_VALUE)*CHAR_BIT)

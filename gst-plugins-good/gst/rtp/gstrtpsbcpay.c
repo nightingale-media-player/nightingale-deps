@@ -27,6 +27,10 @@
 #include <math.h>
 #include <string.h>
 
+#ifdef _MSC_VER
+#define __attribute__(x)
+#endif
+
 #define RTP_SBC_PAYLOAD_HEADER_SIZE 1
 #define DEFAULT_MIN_FRAMES 0
 #define RTP_SBC_HEADER_TOTAL (12 + RTP_SBC_PAYLOAD_HEADER_SIZE)
