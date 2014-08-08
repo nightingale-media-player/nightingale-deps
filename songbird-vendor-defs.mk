@@ -686,12 +686,14 @@ endif
 # libjpeg-turbo
 #
 ifneq (,$(call enable-sb-lib, jpeg))
-  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libjpeg-trubo/$(SB_BUILD_TYPE)),)
+  ifneq ($(wildcard $(SB_VENDOR_BINARIES_DIR)/libjpeg-turbo/$(SB_BUILD_TYPE)),)
     $(info Enabling Songbird vendor lib: jpeg)
     SB_LIBJPEG_DIR = $(call find-dep-dir, libjpeg-turbo)
-    SB_LDFLAGS += -L$(SB_LIBJPEG_DIR)/lib
+    SB_JPEG_LIBS = -L$(SB_LIBJPEG_DIR)/lib
+    SB_JPEG_CFLAGS := -I$(SB_LIBJPEG_DIR)/include
 
-    SB_CFLAGS += -I$(SB_LIBJPEG_DIR)/include
+    # SB_CFLAGS += $(SB_JPEG_CFLAGS)
+    # SB_LDFLAGS += $(SB_JPEG_LIBS)
 
     ifeq (Msys,$(SB_VENDOR_ARCH))
       SB_JPEG_LIBS += -ljpeg
