@@ -36,6 +36,15 @@
 
 #include "gst-play-kb.h"
 
+/* MSVC doesn't have round */
+#ifdef WIN32
+static inline
+double round(double d)
+{
+  return (d < 0.0) ? ceil(d - 0.5) : floor(d + 0.5);
+}
+#endif
+
 #define VOLUME_STEPS 20
 
 GST_DEBUG_CATEGORY (play_debug);
