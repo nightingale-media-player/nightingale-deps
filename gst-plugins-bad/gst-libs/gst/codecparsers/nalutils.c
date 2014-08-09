@@ -77,7 +77,11 @@ nal_reader_init (NalReader * nr, const guint8 * data, guint size)
   nr->cache = 0xff;
 }
 
+#ifdef _MSC_VER
+gboolean
+#else
 inline gboolean
+#endif
 nal_reader_read (NalReader * nr, guint nbits)
 {
   if (G_UNLIKELY (nr->byte * 8 + (nbits - nr->bits_in_cache) > nr->size * 8)) {
@@ -115,7 +119,11 @@ nal_reader_read (NalReader * nr, guint nbits)
 
 /* Skips the specified amount of bits. This is only suitable to a
    cacheable number of bits */
+#ifdef _MSC_VER
+gboolean
+#else
 inline gboolean
+#endif
 nal_reader_skip (NalReader * nr, guint nbits)
 {
   g_assert (nbits <= 8 * sizeof (nr->cache));
@@ -146,19 +154,31 @@ nal_reader_skip_long (NalReader * nr, guint nbits)
   return TRUE;
 }
 
+#ifdef _MSC_VER
+guint
+#else
 inline guint
+#endif
 nal_reader_get_pos (const NalReader * nr)
 {
   return nr->byte * 8 - nr->bits_in_cache;
 }
 
+#ifdef _MSC_VER
+guint
+#else
 inline guint
+#endif
 nal_reader_get_remaining (const NalReader * nr)
 {
   return (nr->size - nr->byte) * 8 + nr->bits_in_cache;
 }
 
+#ifdef _MSC_VER
+guint
+#else
 inline guint
+#endif
 nal_reader_get_epb_count (const NalReader * nr)
 {
   return nr->n_epb;
@@ -233,7 +253,11 @@ nal_reader_get_ue (NalReader * nr, guint32 * val)
   return TRUE;
 }
 
+#ifdef _MSC_VER
+gboolean
+#else
 inline gboolean
+#endif
 nal_reader_get_se (NalReader * nr, gint32 * val)
 {
   guint32 value;
@@ -300,7 +324,11 @@ nal_reader_has_more_data (NalReader * nr)
 
 /***********  end of nal parser ***************/
 
+#ifdef _MSC_VER
+gint
+#else
 inline gint
+#endif
 scan_for_start_codes (const guint8 * data, guint size)
 {
   GstByteReader br;
