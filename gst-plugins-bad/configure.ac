@@ -1435,6 +1435,72 @@ AM_CONDITIONAL(HAVE_JPEG, test "x$HAVE_JPEG" = "xyes")
 
 dnl *** sys plug-ins ***
 
+dnl check for QuickTime
+
+AC_ARG_WITH(quicktime-sdk,
+        [ --with-quicktime-sdk=PATH   Specify path to Quicktime SDK installation ],
+        [ QUICKTIME_SDK_DIR=$withval ],
+        [ QUICKTIME_SDK_DIR="" ]
+)
+
+translit(dnm, m, l) AM_CONDITIONAL(USE_QUICKTIME, true)
+AG_GST_CHECK_FEATURE(QUICKTIME, [QuickTime wrapper], qtwrapper, [
+  QUICKTIME_CFLAGS=""
+  QUICKTIME_LDFLAGS=""
+  AC_CHECK_HEADER(QuickTime/Movies.h, 
+      [ HAVE_QUICKTIME="yes", 
+        QUICKTIME_LDFLAGS="-Wl,-framework,CoreAudio,-framework,AudioToolbox,-framework,Carbon,-framework,QuickTime,-framework,QuartzCore" 
+      ],
+      [ 
+        save_CFLAGS="$CFLAGS"
+        CFLAGS="$CFLAGS -I$QUICKTIME_SDK_DIR/CIncludes"
+        AC_CHECK_HEADER(Movies.h, 
+            [
+              HAVE_QUICKTIME="yes"
+              QUICKTIME_CFLAGS="-I$QUICKTIME_SDK_DIR/CIncludes"
+              QUICKTIME_LDFLAGS="-L$QUICKTIME_SDK_DIR/Libraries -lCVClient -lQTMLClient -luser32 -ladvapi32"
+            ], 
+            [
+              HAVE_QUICKTIME="no"
+            ])
+        CFLAGS=$save_CFLAGS
+      ])
+
+  AC_SUBST(QUICKTIME_CFLAGS)
+  AC_SUBST(QUICKTIME_LDFLAGS)
+])
+
+dnl check for DirectShow
+
+AC_ARG_WITH(windows-sdk,
+        [ --with-windows-sdk=PATH   Specify path to Windows SDK installation ],
+        [ WINDOWS_SDK_DIR=$withval ],
+        [ WINDOWS_SDK_DIR="" ]
+)
+AC_SUBST(WINDOWS_SDK_DIR)
+
+AC_ARG_WITH(directshow-libs,
+        [ --with-directshow-libs=PATH   Specify path to DirectShow base class libraries ],
+        [ DIRECTSHOW_LIB_DIR=$withval ],
+        [ DIRECTSHOW_LIB_DIR="" ]
+)
+AC_SUBST(DIRECTSHOW_LIB_DIR)
+
+translit(dnm, m, l) AM_CONDITIONAL(USE_DIRECTSHOW, true)
+AG_GST_CHECK_FEATURE(DIRECTSHOW, [DirectShow plug-in], dshowdecwrapper, [
+  HAVE_DIRECTSHOW="no"
+  save_CFLAGS="$CFLAGS"
+  # -TP to compile as C++
+  CFLAGS="$CFLAGS -I$WINDOWS_SDK_DIR/Samples/Multimedia/DirectShow/BaseClasses -TP"
+  AC_MSG_CHECKING(for DirectShow Base classes)
+  AC_CHECK_HEADER([streams.h],
+    [HAVE_DIRECTSHOW="yes"],
+    [HAVE_DIRECTSHOW="no"])
+  AC_MSG_RESULT($HAVE_DIRECTSHOW)
+  CFLAGS=$save_CFLAGS
+  AC_SUBST(HAVE_DIRECTSHOW)
+])
+
 dnl DirectSound
 translit(dnm, m, l) AM_CONDITIONAL(USE_DIRECTSOUND, true)
 AG_GST_CHECK_FEATURE(DIRECTSOUND, [DirectSound], directsoundsrc, [
