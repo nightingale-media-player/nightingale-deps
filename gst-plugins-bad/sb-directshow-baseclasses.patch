@@ -1,8 +1,5 @@
-Index: baseclasses.vcproj
-=================================================================
-diff -ru8 /d/ms-sdks/Windows/v6.0/Samples/Multimedia/DirectShow/BaseClasses/baseclasses.vcproj /d/ms-sdks/DirectShow-baseclasses/baseclasses.vcproj
---- baseclasses.vcproj	Wed Jan 24 09:49:18 2007
-+++ baseclasses.vcproj	Wed Oct  8 12:14:43 2008
+--- baseclasses.vcproj	2007-01-24 09:49:18 -0600
++++ baseclasses.vcproj	2014-08-08 18:38:10 -0500
 @@ -39,17 +39,17 @@
  			/>
  			<Tool

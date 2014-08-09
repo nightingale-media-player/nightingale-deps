@@ -117,7 +117,9 @@ directshow-libs:
 ifeq (Msys,$(SB_VENDOR_ARCH))
 	$(MKDIR) $(DIRECTSHOW_LIBS_ROOT)
 	$(MSYS_CP) $(WINDOWS_SDK_ROOT)/Samples/MultiMedia/DirectShow/BaseClasses $(DIRECTSHOW_LIBS_ROOT)
+	dos2unix $(DIRECTSHOW_LIBS_ROOT)/baseclasses.vcproj
 	patch -d $(DIRECTSHOW_LIBS_ROOT) -p0 < $(CURDIR)/sb-directshow-baseclasses.patch
+	unix2dos $(DIRECTSHOW_LIBS_ROOT)/baseclasses.vcproj
 ifeq (debug,$(SB_BUILD_TYPE))
 	cd $(DIRECTSHOW_LIBS_ROOT) && \
          devenv baseclasses.sln -Build "Debug" -Project baseclasses
