@@ -50,7 +50,9 @@
 
 #define GST_CAT_DEFAULT theoradec_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+#ifndef _MSC_VER
 GST_DEBUG_CATEGORY_EXTERN (GST_CAT_PERFORMANCE);
+#endif
 
 #define THEORA_DEF_TELEMETRY_MV 0
 #define THEORA_DEF_TELEMETRY_MBMODE 0
@@ -634,9 +636,11 @@ theora_handle_image (GstTheoraDec * dec, th_ycbcr_buffer buf,
     }
   }
 
+#ifndef _MSC_VER
   /* if only libtheora would allow us to give it a destination frame */
   GST_CAT_TRACE_OBJECT (GST_CAT_PERFORMANCE, dec,
       "doing unavoidable video frame copy");
+#endif
 
   if (G_UNLIKELY (!gst_video_frame_map (&vframe, &dec->output_state->info,
               frame->output_buffer, GST_MAP_WRITE)))
