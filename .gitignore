@@ -11,7 +11,7 @@ linux-*/
 windows-i686*/
 macosx-i686*/
 packages/win32/*/*
-!packages/win32/*/
+prebuilt/win32/*/*
 xulrunner*/mozilla/.mozconfig*
 xulrunner*/mozilla/compiled/
 xulrunner*/mozilla/config/*.pyc
