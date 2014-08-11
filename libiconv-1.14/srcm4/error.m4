@@ -1,4 +1,4 @@
-#serial 14
+#serial 13
 
 # Copyright (C) 1996-1998, 2001-2004, 2009-2011 Free Software Foundation, Inc.
 #
@@ -8,8 +8,16 @@
 
 AC_DEFUN([gl_ERROR],
 [
-  dnl We don't use AC_FUNC_ERROR_AT_LINE any more, because it is no longer
-  dnl maintained in Autoconf and because it invokes AC_LIBOBJ.
+  AC_FUNC_ERROR_AT_LINE
+  dnl Note: AC_FUNC_ERROR_AT_LINE does AC_LIBSOURCES([error.h, error.c]).
+  gl_PREREQ_ERROR
+])
+
+# Redefine AC_FUNC_ERROR_AT_LINE, because it is no longer maintained in
+# Autoconf.
+AC_DEFUN([AC_FUNC_ERROR_AT_LINE],
+[
+  AC_LIBSOURCES([error.h, error.c])dnl
   AC_CACHE_CHECK([for error_at_line], [ac_cv_lib_error_at_line],
     [AC_LINK_IFELSE(
        [AC_LANG_PROGRAM(
@@ -17,6 +25,9 @@ AC_DEFUN([gl_ERROR],
           [[error_at_line (0, 0, "", 0, "an error occurred");]])],
        [ac_cv_lib_error_at_line=yes],
        [ac_cv_lib_error_at_line=no])])
+  if test $ac_cv_lib_error_at_line = no; then
+    AC_LIBOBJ([error])
+  fi
 ])
 
 # Prerequisites of lib/error.c.

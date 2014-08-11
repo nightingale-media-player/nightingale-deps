@@ -1,4 +1,4 @@
-# serial 23
+# serial 21
 
 # Copyright (C) 1997-2001, 2003-2011 Free Software Foundation, Inc.
 #
@@ -15,28 +15,24 @@ AC_DEFUN([gl_FUNC_LSTAT],
   dnl "#define lstat stat", and lstat.c is a no-op.
   AC_CHECK_FUNCS_ONCE([lstat])
   if test $ac_cv_func_lstat = yes; then
-    AC_REQUIRE([gl_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK])
-    if test $gl_cv_func_lstat_dereferences_slashed_symlink = no; then
+    AC_REQUIRE([AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK])
+    if test $ac_cv_func_lstat_dereferences_slashed_symlink = no; then
+      dnl Note: AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK does AC_LIBOBJ([lstat]).
       REPLACE_LSTAT=1
     fi
+    # Prerequisites of lib/lstat.c.
+    AC_REQUIRE([AC_C_INLINE])
   else
     HAVE_LSTAT=0
   fi
 ])
 
-# Prerequisites of lib/lstat.c.
-AC_DEFUN([gl_PREREQ_LSTAT],
+# Redefine AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK, because it is no longer
+# maintained in Autoconf.
+AC_DEFUN([AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK],
 [
-  AC_REQUIRE([AC_C_INLINE])
-  :
-])
-
-AC_DEFUN([gl_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK],
-[
-  dnl We don't use AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK any more, because it
-  dnl is no longer maintained in Autoconf and because it invokes AC_LIBOBJ.
   AC_CACHE_CHECK([whether lstat correctly handles trailing slash],
-    [gl_cv_func_lstat_dereferences_slashed_symlink],
+    [ac_cv_func_lstat_dereferences_slashed_symlink],
     [rm -f conftest.sym conftest.file
      echo >conftest.file
      if test "$as_ln_s" = "ln -s" && ln -s conftest.file conftest.sym; then
@@ -49,22 +45,25 @@ AC_DEFUN([gl_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK],
                  have to compile and use the lstat wrapper.  */
               return lstat ("conftest.sym/", &sbuf) == 0;
             ]])],
-         [gl_cv_func_lstat_dereferences_slashed_symlink=yes],
-         [gl_cv_func_lstat_dereferences_slashed_symlink=no],
+         [ac_cv_func_lstat_dereferences_slashed_symlink=yes],
+         [ac_cv_func_lstat_dereferences_slashed_symlink=no],
          [# When cross-compiling, be pessimistic so we will end up using the
           # replacement version of lstat that checks for trailing slashes and
           # calls lstat a second time when necessary.
-          gl_cv_func_lstat_dereferences_slashed_symlink=no
+          ac_cv_func_lstat_dereferences_slashed_symlink=no
          ])
      else
        # If the 'ln -s' command failed, then we probably don't even
        # have an lstat function.
-       gl_cv_func_lstat_dereferences_slashed_symlink=no
+       ac_cv_func_lstat_dereferences_slashed_symlink=no
      fi
      rm -f conftest.sym conftest.file
     ])
-  test $gl_cv_func_lstat_dereferences_slashed_symlink = yes &&
+  test $ac_cv_func_lstat_dereferences_slashed_symlink = yes &&
     AC_DEFINE_UNQUOTED([LSTAT_FOLLOWS_SLASHED_SYMLINK], [1],
       [Define to 1 if `lstat' dereferences a symlink specified
        with a trailing slash.])
+  if test "x$ac_cv_func_lstat_dereferences_slashed_symlink" = xno; then
+    AC_LIBOBJ([lstat])
+  fi
 ])

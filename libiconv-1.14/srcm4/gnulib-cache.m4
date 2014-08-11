@@ -15,7 +15,7 @@
 
 
 # Specification in the form of a command-line invocation:
-#   gnulib-tool --import --dir=. --local-dir=gnulib-local --lib=libicrt --source-base=srclib --m4-base=srcm4 --doc-base=doc --tests-base=tests --aux-dir=build-aux --makefile-name=Makefile.gnulib --no-conditional-dependencies --no-libtool --macro-prefix=gl --no-vc-files binary-io error gettext gettext-h libiconv-misc mbstate memmove progname relocatable-prog safe-read sigpipe stdio stdlib strerror unistd uniwidth/width unlocked-io xalloc
+#   gnulib-tool --import --dir=. --local-dir=gnulib-local --lib=libicrt --source-base=srclib --m4-base=srcm4 --doc-base=doc --tests-base=tests --aux-dir=build-aux --makefile-name=Makefile.gnulib --no-libtool --macro-prefix=gl --no-vc-files binary-io error gettext gettext-h libiconv-misc mbstate memmove progname relocatable relocatable-prog safe-read sigpipe stdio stdlib strerror unistd uniwidth/width unlocked-io xalloc
 
 # Specification in the form of a few gnulib-tool.m4 macro invocations:
 gl_LOCAL_DIR([gnulib-local])
@@ -28,6 +28,7 @@ gl_MODULES([
   mbstate
   memmove
   progname
+  relocatable
   relocatable-prog
   safe-read
   sigpipe
@@ -49,5 +50,4 @@ gl_LIB([libicrt])
 gl_MAKEFILE_NAME([Makefile.gnulib])
 gl_MACRO_PREFIX([gl])
 gl_PO_DOMAIN([])
-gl_WITNESS_C_DOMAIN([])
 gl_VC_FILES([false])

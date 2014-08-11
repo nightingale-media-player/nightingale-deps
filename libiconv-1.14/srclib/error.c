@@ -97,15 +97,11 @@ extern void __error_at_line (int status, int errnum, const char *file_name,
 /* The gnulib override of fcntl is not needed in this file.  */
 # undef fcntl
 
-# if !HAVE_DECL_STRERROR_R
+# if !HAVE_DECL_STRERROR_R && STRERROR_R_CHAR_P
 #  ifndef HAVE_DECL_STRERROR_R
 "this configure-time declaration test was not run"
 #  endif
-#  if STRERROR_R_CHAR_P
 char *strerror_r ();
-#  else
-int strerror_r ();
-#  endif
 # endif
 
 /* The calling program should define program_name and set it to the

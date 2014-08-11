@@ -1,4 +1,4 @@
-# serial 10  -*- Autoconf -*-
+# serial 9  -*- Autoconf -*-
 # Enable extensions on systems that normally disable them.
 
 # Copyright (C) 2003, 2006-2011 Free Software Foundation, Inc.
@@ -67,10 +67,6 @@ AC_BEFORE([$0], [AC_RUN_IFELSE])dnl
 #ifndef _ALL_SOURCE
 # undef _ALL_SOURCE
 #endif
-/* Enable general extensions on MacOS X.  */
-#ifndef _DARWIN_C_SOURCE
-# undef _DARWIN_C_SOURCE
-#endif
 /* Enable GNU extensions on systems that have them.  */
 #ifndef _GNU_SOURCE
 # undef _GNU_SOURCE
@@ -99,7 +95,6 @@ AC_BEFORE([$0], [AC_RUN_IFELSE])dnl
   test $ac_cv_safe_to_define___extensions__ = yes &&
     AC_DEFINE([__EXTENSIONS__])
   AC_DEFINE([_ALL_SOURCE])
-  AC_DEFINE([_DARWIN_C_SOURCE])
   AC_DEFINE([_GNU_SOURCE])
   AC_DEFINE([_POSIX_PTHREAD_SEMANTICS])
   AC_DEFINE([_TANDEM_SOURCE])

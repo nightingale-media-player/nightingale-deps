@@ -25,12 +25,14 @@ AC_DEFUN([gl_EARLY],
   m4_pattern_allow([^gl_ES$])dnl a valid locale name
   m4_pattern_allow([^gl_LIBOBJS$])dnl a variable
   m4_pattern_allow([^gl_LTLIBOBJS$])dnl a variable
-  AC_REQUIRE([gl_PROG_AR_RANLIB])
+  AC_REQUIRE([AC_PROG_RANLIB])
   AC_REQUIRE([AM_PROG_CC_C_O])
   # Code from module alloca-opt:
   # Code from module allocator:
   # Code from module areadlink:
+  # Code from module arg-nonnull:
   # Code from module binary-io:
+  # Code from module c++defs:
   # Code from module canonicalize-lgpl:
   # Code from module careadlinkat:
   # Code from module dosname:
@@ -46,7 +48,6 @@ AC_DEFUN([gl_EARLY],
   # Code from module havelib:
   # Code from module include_next:
   # Code from module intprops:
-  # Code from module largefile:
   # Code from module libiconv-misc:
   # Code from module lstat:
   # Code from module malloca:
@@ -64,10 +65,6 @@ AC_DEFUN([gl_EARLY],
   # Code from module signal:
   # Code from module sigpipe:
   # Code from module sigprocmask:
-  # Code from module snippet/_Noreturn:
-  # Code from module snippet/arg-nonnull:
-  # Code from module snippet/c++defs:
-  # Code from module snippet/warn-on-use:
   # Code from module ssize_t:
   # Code from module stat:
   # Code from module stdbool:
@@ -77,7 +74,6 @@ AC_DEFUN([gl_EARLY],
   # Code from module stdlib:
   # Code from module streq:
   # Code from module strerror:
-  # Code from module strerror-override:
   # Code from module string:
   # Code from module sys_stat:
   # Code from module time:
@@ -87,6 +83,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module uniwidth/width:
   # Code from module unlocked-io:
   # Code from module verify:
+  # Code from module warn-on-use:
   # Code from module xalloc:
   # Code from module xreadlink:
 ])
@@ -109,9 +106,6 @@ AC_DEFUN([gl_INIT],
   gl_source_base='srclib'
 gl_FUNC_ALLOCA
 gl_CANONICALIZE_LGPL
-if test $HAVE_CANONICALIZE_FILE_NAME = 0 || test $REPLACE_CANONICALIZE_FILE_NAME = 1; then
-  AC_LIBOBJ([canonicalize-lgpl])
-fi
 gl_MODULE_INDICATOR([canonicalize-lgpl])
 gl_STDLIB_MODULE_INDICATOR([canonicalize_file_name])
 gl_STDLIB_MODULE_INDICATOR([realpath])
@@ -121,10 +115,6 @@ gl_ENVIRON
 gl_UNISTD_MODULE_INDICATOR([environ])
 gl_HEADER_ERRNO_H
 gl_ERROR
-if test $ac_cv_lib_error_at_line = no; then
-  AC_LIBOBJ([error])
-  gl_PREREQ_ERROR
-fi
 m4_ifdef([AM_XGETTEXT_OPTION],
   [AM_][XGETTEXT_OPTION([--flag=error:3:c-format])
    AM_][XGETTEXT_OPTION([--flag=error_at_line:5:c-format])])
@@ -134,43 +124,26 @@ AM_GNU_GETTEXT_VERSION([0.18.1])
 AC_SUBST([LIBINTL])
 AC_SUBST([LTLIBINTL])
 gl_FUNC_LSTAT
-if test $REPLACE_LSTAT = 1; then
-  AC_LIBOBJ([lstat])
-  gl_PREREQ_LSTAT
-fi
 gl_SYS_STAT_MODULE_INDICATOR([lstat])
 gl_MALLOCA
 AC_TYPE_MBSTATE_T
 gl_FUNC_MEMMOVE
-if test $ac_cv_func_memmove = no; then
-  AC_LIBOBJ([memmove])
-  gl_PREREQ_MEMMOVE
-fi
 gl_MULTIARCH
 gl_PATHMAX
 AC_CHECK_DECLS([program_invocation_name], [], [], [#include <errno.h>])
 AC_CHECK_DECLS([program_invocation_short_name], [], [], [#include <errno.h>])
 gl_FUNC_READ
-if test $REPLACE_READ = 1; then
-  AC_LIBOBJ([read])
-fi
 gl_UNISTD_MODULE_INDICATOR([read])
 gl_FUNC_READLINK
-if test $HAVE_READLINK = 0 || test $REPLACE_READLINK = 1; then
-  AC_LIBOBJ([readlink])
-  gl_PREREQ_READLINK
-fi
 gl_UNISTD_MODULE_INDICATOR([readlink])
 gl_RELOCATABLE([$gl_source_base])
-if test $RELOCATABLE = yes; then
-  AC_LIBOBJ([progreloc])
-fi
 gl_FUNC_READLINK_SEPARATE
 gl_CANONICALIZE_LGPL_SEPARATE
 gl_MALLOCA
-gl_RELOCATABLE_LIBRARY
+gl_RELOCATABLE_LIBRARY_SEPARATE
 gl_FUNC_SETENV_SEPARATE
-gl_PREREQ_SAFE_READ
+gl_FUNC_STRERROR_SEPARATE
+gl_SAFE_READ
 gl_SIGNAL_H
 gl_SIGNAL_SIGPIPE
 dnl Define the C macro GNULIB_SIGPIPE to 1.
@@ -186,17 +159,9 @@ dnl Define the substituted variable GNULIB_UNISTD_H_SIGPIPE to 1.
 AC_REQUIRE([gl_UNISTD_H_DEFAULTS])
 GNULIB_UNISTD_H_SIGPIPE=1
 gl_SIGNALBLOCKING
-if test $HAVE_POSIX_SIGNALBLOCKING = 0; then
-  AC_LIBOBJ([sigprocmask])
-  gl_PREREQ_SIGPROCMASK
-fi
 gl_SIGNAL_MODULE_INDICATOR([sigprocmask])
 gt_TYPE_SSIZE_T
 gl_FUNC_STAT
-if test $REPLACE_STAT = 1; then
-  AC_LIBOBJ([stat])
-  gl_PREREQ_STAT
-fi
 gl_SYS_STAT_MODULE_INDICATOR([stat])
 AM_STDBOOL_H
 gl_STDDEF_H
@@ -204,17 +169,7 @@ gl_STDINT_H
 gl_STDIO_H
 gl_STDLIB_H
 gl_FUNC_STRERROR
-if test $REPLACE_STRERROR = 1; then
-  AC_LIBOBJ([strerror])
-fi
-gl_MODULE_INDICATOR([strerror])
 gl_STRING_MODULE_INDICATOR([strerror])
-AC_REQUIRE([gl_HEADER_ERRNO_H])
-AC_REQUIRE([gl_FUNC_STRERROR_0])
-if test -n "$ERRNO_H" || test $REPLACE_STRERROR_0 = 1; then
-  AC_LIBOBJ([strerror-override])
-  gl_PREREQ_SYS_H_WINSOCK2
-fi
 gl_HEADER_STRING_H
 gl_HEADER_SYS_STAT_H
 AC_PROG_MKDIR_P
@@ -364,14 +319,13 @@ AC_DEFUN([gltests_LIBSOURCES], [
 # This macro records the list of files which have been installed by
 # gnulib-tool and may be removed by future gnulib-tool invocations.
 AC_DEFUN([gl_FILE_LIST], [
+  build-aux/arg-nonnull.h
+  build-aux/c++defs.h
   build-aux/config.libpath
   build-aux/config.rpath
   build-aux/install-reloc
   build-aux/reloc-ldflags
-  build-aux/snippet/_Noreturn.h
-  build-aux/snippet/arg-nonnull.h
-  build-aux/snippet/c++defs.h
-  build-aux/snippet/warn-on-use.h
+  build-aux/warn-on-use.h
   doc/relocatable.texi
   lib/alloca.in.h
   lib/allocator.c
@@ -419,8 +373,6 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/stdio.in.h
   lib/stdlib.in.h
   lib/streq.h
-  lib/strerror-override.c
-  lib/strerror-override.h
   lib/strerror.c
   lib/string.in.h
   lib/sys_stat.in.h
@@ -463,7 +415,6 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/intmax.m4
   m4/inttypes-pri.m4
   m4/inttypes_h.m4
-  m4/largefile.m4
   m4/lcmessage.m4
   m4/lib-ld.m4
   m4/lib-link.m4
@@ -502,7 +453,6 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/stdlib_h.m4
   m4/strerror.m4
   m4/string_h.m4
-  m4/sys_socket_h.m4
   m4/sys_stat_h.m4
   m4/threadlib.m4
   m4/time_h.m4

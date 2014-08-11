@@ -1,4 +1,4 @@
-# canonicalize.m4 serial 23
+# canonicalize.m4 serial 21
 
 dnl Copyright (C) 2003-2007, 2009-2011 Free Software Foundation, Inc.
 
@@ -10,6 +10,8 @@ dnl with or without modifications, as long as this notice is preserved.
 # not provide or fix realpath.
 AC_DEFUN([gl_FUNC_CANONICALIZE_FILENAME_MODE],
 [
+  AC_LIBOBJ([canonicalize])
+
   AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
   AC_CHECK_FUNCS_ONCE([canonicalize_file_name])
   AC_REQUIRE([gl_DOUBLE_SLASH_ROOT])
@@ -28,14 +30,16 @@ AC_DEFUN([gl_CANONICALIZE_LGPL],
   AC_REQUIRE([gl_CANONICALIZE_LGPL_SEPARATE])
   if test $ac_cv_func_canonicalize_file_name = no; then
     HAVE_CANONICALIZE_FILE_NAME=0
+    AC_LIBOBJ([canonicalize-lgpl])
     if test $ac_cv_func_realpath = no; then
       HAVE_REALPATH=0
     elif test "$gl_cv_func_realpath_works" != yes; then
       REPLACE_REALPATH=1
     fi
   elif test "$gl_cv_func_realpath_works" != yes; then
-    REPLACE_CANONICALIZE_FILE_NAME=1
+    AC_LIBOBJ([canonicalize-lgpl])
     REPLACE_REALPATH=1
+    REPLACE_CANONICALIZE_FILE_NAME=1
   fi
 ])
 

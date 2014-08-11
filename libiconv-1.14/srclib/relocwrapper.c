@@ -29,6 +29,7 @@
     -> relocatable
     -> setenv
        -> malloca
+    -> strerror
     -> c-ctype
 
    Macros that need to be set while compiling this file:
