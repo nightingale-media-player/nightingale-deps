@@ -52,3 +52,8 @@ SB_VENDOR_TARGET_DYLIB_FIXUPS := \
       libjpeg-turbo
 
 include $(CURDIR)/../songbird-vendor-rules.mk
+
+module_setup_build:
+ifeq (Linux, $(SB_VENDOR_ARCH))
+	cd $(SB_VENDOR_BUILD_DIR) && autoreconf -f -i
+endif
