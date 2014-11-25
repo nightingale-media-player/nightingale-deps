@@ -136,7 +136,7 @@ static void PrintStackFrame(void *aPC, void *aClosure)
 
   NS_DescribeCodeAddress(aPC, &details);
   NS_FormatCodeAddressDetails(aPC, &details, buf, sizeof(buf));
-  fprintf(stdout, buf);
+  fprintf(stdout, "%s", buf);
 }
 
 }
