@@ -65,5 +65,13 @@ sb-%:
 	@echo Making vendor package $@ in $(SB_VENDOR_PACKAGE_DIR)
 	$(MAKE) -C $(SB_VENDOR_PACKAGE_DIR) -f Makefile.songbird all 2>&1 | $(TEE) $(SB_VENDOR_PACKAGE_DIR)/$(SB_VENDOR_BUILD_LOG)
 
-.PHONY: world
+clean:
+	rm -rf build linux-i?86 linux-x86_64 macosx-i686 windows-i686-msvc8 xulrunner-1.9.2/mozilla/compiled
+
+distclean: clean
+	rm -rf checkout
+	cd xulrunner-1.9.2/mozilla && rm -f configure .mozconfig .mozconfig.mk .mozconfig.out security/manager/.nss.checkout
+	find . -type f -name \*.pyc -delete
+
+.PHONY: world clean distclean
 #$(add-prefix sb-, gettext libogg liboil libtheora gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly)
