@@ -36,6 +36,9 @@ SB_VENDOR_TARGET_VERSION = 3.8.8.2
 include $(CURDIR)/../songbird-vendor-defs.mk
 
 SB_VENDOR_TARGET_CONFIGURE_OPTS := \
+   --enable-static \
+   --disable-shared \
+   --with-pic \
    --enable-threadsafe \
    $(NULL)
 
@@ -65,8 +68,6 @@ endif
 SB_VENDOR_TARGET_DYLIB_FIXUPS := $(NULL)
 
 include $(CURDIR)/../songbird-vendor-rules.mk
-
-AUTOMAKE := automake
 
 module_setup_build: FORCE
 	@echo module_setup_build: Running $(AUTOCONF) to generate configure

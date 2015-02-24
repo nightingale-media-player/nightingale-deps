@@ -137,6 +137,7 @@ endif
 
 AWK ?= awk
 AUTOCONF ?= autoconf
+AUTOMAKE ?= automake
 CHMOD ?= chmod
 CMAKE ?= cmake
 CONFIGURE ?= ./configure
