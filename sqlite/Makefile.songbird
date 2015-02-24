@@ -31,7 +31,7 @@
 SB_VENDOR_TARGET_DEP_MODULES := 
 
 SB_VENDOR_TARGET = sqlite
-SB_VENDOR_TARGET_VERSION = 3.6.10
+SB_VENDOR_TARGET_VERSION = 3.8.8.2
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 
