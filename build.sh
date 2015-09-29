@@ -32,8 +32,8 @@ case $OSTYPE in
 		echo -e "Building sqlite...\n"
 		make -C sqlite -f Makefile.songbird
 		
-		echo -e "Building taglib...\n"
-		make -C taglib -f Makefile.songbird
+		#echo -e "Building taglib...\n"
+		#make -C taglib -f Makefile.songbird
 		
 		echo -e "Done! Provided there were no errors, you can \nfind your deps in the linux-$(uname -m) directory. Copy or link it into [nightingale build directory]/dependencies and you're ready to build!\n"
 	;;
