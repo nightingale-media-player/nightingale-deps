@@ -18,5 +18,9 @@ ac_add_options --disable-url-classifier
 ac_add_options --disable-mochitest
 ac_add_options --disable-crashreporter
 ac_add_options --disable-necko-wifi
+ac_add_options --with-system-jpeg
+ac_add_options --with-system-zlib
+ac_add_options --with-system-bz2
+ac_add_options --with-system-png
 
 mk_add_options MOZ_MAKE_FLAGS="-j4"
