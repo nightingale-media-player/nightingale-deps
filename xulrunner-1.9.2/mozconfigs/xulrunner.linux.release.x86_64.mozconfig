@@ -12,8 +12,6 @@ export LDFLAGS="-Wl,-z,now -Wl,-z,relro"
 
 ac_add_options --enable-application=xulrunner
 ac_add_options --with-xulrunner-stub-name=nightingale-bin
-ac_add_options --with-system-nspr
-ac_add_options --with-system-nss
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-zlib
 ac_add_options --with-system-bz2
