@@ -20,13 +20,11 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "config.h"
 #endif
 
 #include "xdgmimeparent.h"
@@ -111,6 +109,7 @@ _xdg_mime_parent_list_lookup (XdgParentList *list,
     {
       key.mime = (char *)mime;
       key.parents = NULL;
+      key.n_parents = 0;
 
       entry = bsearch (&key, list->parents, list->n_mimes,
 		       sizeof (XdgMimeParents), &parent_entry_cmp);
@@ -199,6 +198,7 @@ _xdg_mime_parent_read_from_file (XdgParentList *list,
            sizeof (XdgMimeParents), &parent_entry_cmp);
 }
 
+#ifdef NOT_USED_IN_GIO
 
 void         
 _xdg_mime_parent_list_dump (XdgParentList *list)
@@ -216,4 +216,5 @@ _xdg_mime_parent_list_dump (XdgParentList *list)
     }
 }
 
+#endif
 

@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,21 +13,18 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Christian Kellner <gicmo@gnome.org> 
+ * Author: Christian Kellner <gicmo@gnome.org>
  */
+
+#ifndef __G_MEMORY_OUTPUT_STREAM_H__
+#define __G_MEMORY_OUTPUT_STREAM_H__
 
 #if !defined (__GIO_GIO_H_INSIDE__) && !defined (GIO_COMPILATION)
 #error "Only <gio/gio.h> can be included directly."
 #endif
 
-#ifndef __G_MEMORY_OUTPUT_STREAM_H__
-#define __G_MEMORY_OUTPUT_STREAM_H__
-
-#include <glib-object.h>
 #include <gio/goutputstream.h>
 
 G_BEGIN_DECLS
@@ -41,10 +38,9 @@ G_BEGIN_DECLS
 
 /**
  * GMemoryOutputStream:
- * 
+ *
  * Implements #GOutputStream for arbitrary memory chunks.
  **/
-typedef struct _GMemoryOutputStream         GMemoryOutputStream;
 typedef struct _GMemoryOutputStreamClass    GMemoryOutputStreamClass;
 typedef struct _GMemoryOutputStreamPrivate  GMemoryOutputStreamPrivate;
 
@@ -58,7 +54,7 @@ struct _GMemoryOutputStream
 
 struct _GMemoryOutputStreamClass
 {
- GOutputStreamClass parent_class;
+  GOutputStreamClass parent_class;
 
   /*< private >*/
   /* Padding for future expansion */
@@ -75,22 +71,36 @@ struct _GMemoryOutputStreamClass
  * @size: size to reallocate @data to
  *
  * Changes the size of the memory block pointed to by @data to
- * @size bytes. 
+ * @size bytes.
  *
  * The function should have the same semantics as realloc().
  *
  * Returns: a pointer to the reallocated memory
  */
-typedef gpointer (*GReallocFunc) (gpointer data, gsize size);
+typedef gpointer (* GReallocFunc) (gpointer data,
+                                   gsize    size);
 
-GType          g_memory_output_stream_get_type (void) G_GNUC_CONST;
+GLIB_AVAILABLE_IN_ALL
+GType          g_memory_output_stream_get_type      (void) G_GNUC_CONST;
 
-GOutputStream *g_memory_output_stream_new      (gpointer             data,
-                                                gsize                len,
-                                                GReallocFunc         realloc_fn,
-                                                GDestroyNotify       destroy);
-gpointer       g_memory_output_stream_get_data (GMemoryOutputStream *ostream);
-gsize          g_memory_output_stream_get_size (GMemoryOutputStream *ostream);
+GLIB_AVAILABLE_IN_ALL
+GOutputStream *g_memory_output_stream_new           (gpointer             data,
+                                                     gsize                size,
+                                                     GReallocFunc         realloc_function,
+                                                     GDestroyNotify       destroy_function);
+GLIB_AVAILABLE_IN_2_36
+GOutputStream *g_memory_output_stream_new_resizable (void);
+GLIB_AVAILABLE_IN_ALL
+gpointer       g_memory_output_stream_get_data      (GMemoryOutputStream *ostream);
+GLIB_AVAILABLE_IN_ALL
+gsize          g_memory_output_stream_get_size      (GMemoryOutputStream *ostream);
+GLIB_AVAILABLE_IN_ALL
+gsize          g_memory_output_stream_get_data_size (GMemoryOutputStream *ostream);
+GLIB_AVAILABLE_IN_ALL
+gpointer       g_memory_output_stream_steal_data    (GMemoryOutputStream *ostream);
+
+GLIB_AVAILABLE_IN_2_34
+GBytes *       g_memory_output_stream_steal_as_bytes (GMemoryOutputStream *ostream);
 
 G_END_DECLS
 

@@ -13,20 +13,19 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#include <config.h>
+#include "config.h"
 #include <string.h>
 #include "gdataoutputstream.h"
+#include "gseekable.h"
 #include "gioenumtypes.h"
+#include "gioerror.h"
 #include "glibintl.h"
 
-#include "gioalias.h"
 
 /**
  * SECTION:gdataoutputstream
@@ -59,17 +58,32 @@ static void g_data_output_stream_get_property (GObject      *object,
 					       GValue       *value,
 					       GParamSpec   *pspec);
 
-G_DEFINE_TYPE (GDataOutputStream,
-               g_data_output_stream,
-               G_TYPE_FILTER_OUTPUT_STREAM)
+static void     g_data_output_stream_seekable_iface_init (GSeekableIface  *iface);
+static goffset  g_data_output_stream_tell                (GSeekable       *seekable);
+static gboolean g_data_output_stream_can_seek            (GSeekable       *seekable);
+static gboolean g_data_output_stream_seek                (GSeekable       *seekable,
+							  goffset          offset,
+							  GSeekType        type,
+							  GCancellable    *cancellable,
+							  GError         **error);
+static gboolean g_data_output_stream_can_truncate        (GSeekable       *seekable);
+static gboolean g_data_output_stream_truncate            (GSeekable       *seekable,
+							  goffset          offset,
+							  GCancellable    *cancellable,
+							  GError         **error);
+
+G_DEFINE_TYPE_WITH_CODE (GDataOutputStream,
+			 g_data_output_stream,
+			 G_TYPE_FILTER_OUTPUT_STREAM,
+                         G_ADD_PRIVATE (GDataOutputStream)
+			 G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE,
+						g_data_output_stream_seekable_iface_init))
 
 
 static void
 g_data_output_stream_class_init (GDataOutputStreamClass *klass)
 {
   GObjectClass *object_class;
-
-  g_type_class_add_private (klass, sizeof (GDataOutputStreamPrivate));
 
   object_class = G_OBJECT_CLASS (klass);
   object_class->get_property = g_data_output_stream_get_property;
@@ -141,11 +155,18 @@ g_data_output_stream_get_property (GObject    *object,
 static void
 g_data_output_stream_init (GDataOutputStream *stream)
 {
-  stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream,
-                                              G_TYPE_DATA_OUTPUT_STREAM,
-                                              GDataOutputStreamPrivate);
-
+  stream->priv = g_data_output_stream_get_instance_private (stream);
   stream->priv->byte_order = G_DATA_STREAM_BYTE_ORDER_BIG_ENDIAN;
+}
+
+static void
+g_data_output_stream_seekable_iface_init (GSeekableIface *iface)
+{
+  iface->tell         = g_data_output_stream_tell;
+  iface->can_seek     = g_data_output_stream_can_seek;
+  iface->seek         = g_data_output_stream_seek;
+  iface->can_truncate = g_data_output_stream_can_truncate;
+  iface->truncate_fn  = g_data_output_stream_truncate;
 }
 
 /**
@@ -211,7 +232,7 @@ g_data_output_stream_get_byte_order (GDataOutputStream *stream)
  * g_data_output_stream_put_byte:
  * @stream: a #GDataOutputStream.
  * @data: a #guchar.
- * @cancellable: optional #GCancellable object, %NULL to ignore.
+ * @cancellable: (allow-none): optional #GCancellable object, %NULL to ignore.
  * @error: a #GError, %NULL to ignore.
  * 
  * Puts a byte into the output stream.
@@ -238,7 +259,7 @@ g_data_output_stream_put_byte (GDataOutputStream  *stream,
  * g_data_output_stream_put_int16:
  * @stream: a #GDataOutputStream.
  * @data: a #gint16.
- * @cancellable: optional #GCancellable object, %NULL to ignore.
+ * @cancellable: (allow-none): optional #GCancellable object, %NULL to ignore.
  * @error: a #GError, %NULL to ignore.
  * 
  * Puts a signed 16-bit integer into the output stream.
@@ -278,7 +299,7 @@ g_data_output_stream_put_int16 (GDataOutputStream  *stream,
  * g_data_output_stream_put_uint16:
  * @stream: a #GDataOutputStream.
  * @data: a #guint16.
- * @cancellable: optional #GCancellable object, %NULL to ignore.
+ * @cancellable: (allow-none): optional #GCancellable object, %NULL to ignore.
  * @error: a #GError, %NULL to ignore.
  * 
  * Puts an unsigned 16-bit integer into the output stream.
@@ -318,7 +339,7 @@ g_data_output_stream_put_uint16 (GDataOutputStream  *stream,
  * g_data_output_stream_put_int32:
  * @stream: a #GDataOutputStream.
  * @data: a #gint32.
- * @cancellable: optional #GCancellable object, %NULL to ignore.
+ * @cancellable: (allow-none): optional #GCancellable object, %NULL to ignore.
  * @error: a #GError, %NULL to ignore.
  * 
  * Puts a signed 32-bit integer into the output stream.
@@ -358,7 +379,7 @@ g_data_output_stream_put_int32 (GDataOutputStream  *stream,
  * g_data_output_stream_put_uint32:
  * @stream: a #GDataOutputStream.
  * @data: a #guint32.
- * @cancellable: optional #GCancellable object, %NULL to ignore.
+ * @cancellable: (allow-none): optional #GCancellable object, %NULL to ignore.
  * @error: a #GError, %NULL to ignore.
  * 
  * Puts an unsigned 32-bit integer into the stream.
@@ -398,7 +419,7 @@ g_data_output_stream_put_uint32 (GDataOutputStream  *stream,
  * g_data_output_stream_put_int64:
  * @stream: a #GDataOutputStream.
  * @data: a #gint64.
- * @cancellable: optional #GCancellable object, %NULL to ignore.
+ * @cancellable: (allow-none): optional #GCancellable object, %NULL to ignore.
  * @error: a #GError, %NULL to ignore.
  * 
  * Puts a signed 64-bit integer into the stream.
@@ -438,7 +459,7 @@ g_data_output_stream_put_int64 (GDataOutputStream  *stream,
  * g_data_output_stream_put_uint64:
  * @stream: a #GDataOutputStream.
  * @data: a #guint64.
- * @cancellable: optional #GCancellable object, %NULL to ignore.
+ * @cancellable: (allow-none): optional #GCancellable object, %NULL to ignore.
  * @error: a #GError, %NULL to ignore.
  * 
  * Puts an unsigned 64-bit integer into the stream.
@@ -478,7 +499,7 @@ g_data_output_stream_put_uint64 (GDataOutputStream  *stream,
  * g_data_output_stream_put_string:
  * @stream: a #GDataOutputStream.
  * @str: a string.
- * @cancellable: optional #GCancellable object, %NULL to ignore.
+ * @cancellable: (allow-none): optional #GCancellable object, %NULL to ignore.
  * @error: a #GError, %NULL to ignore.
  * 
  * Puts a string into the output stream. 
@@ -500,7 +521,78 @@ g_data_output_stream_put_string (GDataOutputStream  *stream,
 				    str, strlen (str),
 				    &bytes_written,
 				    cancellable, error);
-}  
+}
 
-#define __G_DATA_OUTPUT_STREAM_C__
-#include "gioaliasdef.c"
+static goffset
+g_data_output_stream_tell (GSeekable *seekable)
+{
+  GOutputStream *base_stream;
+  GSeekable *base_stream_seekable;
+
+  base_stream = G_FILTER_OUTPUT_STREAM (seekable)->base_stream;
+  if (!G_IS_SEEKABLE (base_stream))
+    return 0;
+  base_stream_seekable = G_SEEKABLE (base_stream);
+  return g_seekable_tell (base_stream_seekable);
+}
+
+static gboolean
+g_data_output_stream_can_seek (GSeekable *seekable)
+{
+  GOutputStream *base_stream;
+  
+  base_stream = G_FILTER_OUTPUT_STREAM (seekable)->base_stream;
+  return G_IS_SEEKABLE (base_stream) && g_seekable_can_seek (G_SEEKABLE (base_stream));
+}
+
+static gboolean
+g_data_output_stream_seek (GSeekable     *seekable,
+			   goffset        offset,
+			   GSeekType      type,
+			   GCancellable  *cancellable,
+			   GError       **error)
+{
+  GOutputStream *base_stream;
+  GSeekable *base_stream_seekable;
+
+  base_stream = G_FILTER_OUTPUT_STREAM (seekable)->base_stream;
+  if (!G_IS_SEEKABLE (base_stream))
+    {
+      g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+                           _("Seek not supported on base stream"));
+      return FALSE;
+    }
+
+  base_stream_seekable = G_SEEKABLE (base_stream);
+  return g_seekable_seek (base_stream_seekable, offset, type, cancellable, error);
+}
+
+static gboolean
+g_data_output_stream_can_truncate (GSeekable *seekable)
+{
+  GOutputStream *base_stream;
+  
+  base_stream = G_FILTER_OUTPUT_STREAM (seekable)->base_stream;
+  return G_IS_SEEKABLE (base_stream) && g_seekable_can_truncate (G_SEEKABLE (base_stream));
+}
+
+static gboolean
+g_data_output_stream_truncate (GSeekable     *seekable,
+				   goffset        offset,
+				   GCancellable  *cancellable,
+				   GError       **error)
+{
+  GOutputStream *base_stream;
+  GSeekable *base_stream_seekable;
+
+  base_stream = G_FILTER_OUTPUT_STREAM (seekable)->base_stream;
+  if (!G_IS_SEEKABLE (base_stream))
+    {
+      g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+                           _("Truncate not supported on base stream"));
+      return FALSE;
+    }
+
+  base_stream_seekable = G_SEEKABLE (base_stream);
+  return g_seekable_truncate (base_stream_seekable, offset, cancellable, error);
+}

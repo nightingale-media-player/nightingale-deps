@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,23 +13,19 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
+
+#ifndef __G_DATA_OUTPUT_STREAM_H__
+#define __G_DATA_OUTPUT_STREAM_H__
 
 #if !defined (__GIO_GIO_H_INSIDE__) && !defined (GIO_COMPILATION)
 #error "Only <gio/gio.h> can be included directly."
 #endif
 
-#ifndef __G_DATA_OUTPUT_STREAM_H__
-#define __G_DATA_OUTPUT_STREAM_H__
-
-#include <glib-object.h>
 #include <gio/gfilteroutputstream.h>
-#include <gio/gdatainputstream.h>
 
 G_BEGIN_DECLS
 
@@ -42,9 +38,8 @@ G_BEGIN_DECLS
 
 /**
  * GDataOutputStream:
- * @parent_instance: a #GBufferedOutputStream.
  *
- * An implementation of #GBufferedOutputStream that allows for high-level 
+ * An implementation of #GBufferedOutputStream that allows for high-level
  * data manipulation of arbitrary data (including binary operations).
  **/
 typedef struct _GDataOutputStream         GDataOutputStream;
@@ -61,7 +56,8 @@ struct _GDataOutputStream
 
 struct _GDataOutputStreamClass
 {
- GFilterOutputStreamClass parent_class;
+  GFilterOutputStreamClass parent_class;
+
   /*< private >*/
   /* Padding for future expansion */
   void (*_g_reserved1) (void);
@@ -72,41 +68,53 @@ struct _GDataOutputStreamClass
 };
 
 
-GType          g_data_output_stream_get_type   (void) G_GNUC_CONST;
-GDataOutputStream*  g_data_output_stream_new        (GOutputStream *base_stream);
+GLIB_AVAILABLE_IN_ALL
+GType                g_data_output_stream_get_type       (void) G_GNUC_CONST;
+GLIB_AVAILABLE_IN_ALL
+GDataOutputStream *  g_data_output_stream_new            (GOutputStream         *base_stream);
 
+GLIB_AVAILABLE_IN_ALL
 void                 g_data_output_stream_set_byte_order (GDataOutputStream     *stream,
 							  GDataStreamByteOrder   order);
+GLIB_AVAILABLE_IN_ALL
 GDataStreamByteOrder g_data_output_stream_get_byte_order (GDataOutputStream     *stream);
 
+GLIB_AVAILABLE_IN_ALL
 gboolean             g_data_output_stream_put_byte       (GDataOutputStream     *stream,
 							  guchar                 data,
 							  GCancellable          *cancellable,
 							  GError               **error);
+GLIB_AVAILABLE_IN_ALL
 gboolean             g_data_output_stream_put_int16      (GDataOutputStream     *stream,
 							  gint16                 data,
 							  GCancellable          *cancellable,
 							  GError               **error);
+GLIB_AVAILABLE_IN_ALL
 gboolean             g_data_output_stream_put_uint16     (GDataOutputStream     *stream,
 							  guint16                data,
 							  GCancellable          *cancellable,
 							  GError               **error);
+GLIB_AVAILABLE_IN_ALL
 gboolean             g_data_output_stream_put_int32      (GDataOutputStream     *stream,
 							  gint32                 data,
 							  GCancellable          *cancellable,
 							  GError               **error);
+GLIB_AVAILABLE_IN_ALL
 gboolean             g_data_output_stream_put_uint32     (GDataOutputStream     *stream,
 							  guint32                data,
 							  GCancellable          *cancellable,
 							  GError               **error);
+GLIB_AVAILABLE_IN_ALL
 gboolean             g_data_output_stream_put_int64      (GDataOutputStream     *stream,
 							  gint64                 data,
 							  GCancellable          *cancellable,
 							  GError               **error);
+GLIB_AVAILABLE_IN_ALL
 gboolean             g_data_output_stream_put_uint64     (GDataOutputStream     *stream,
 							  guint64                data,
 							  GCancellable          *cancellable,
 							  GError               **error);
+GLIB_AVAILABLE_IN_ALL
 gboolean             g_data_output_stream_put_string     (GDataOutputStream     *stream,
 							  const char            *str,
 							  GCancellable          *cancellable,

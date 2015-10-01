@@ -1,8 +1,13 @@
-include $(top_srcdir)/Makefile.decl
+include $(top_srcdir)/glib.mk
 
-INCLUDES = \
+noinst_LTLIBRARIES += libpcre.la
+
+libpcre_la_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"GLib-GRegex\" \
+	-DHAVE_CONFIG_H \
+	-DHAVE_MEMMOVE \
 	-DSUPPORT_UCP \
+	-DSUPPORT_UTF \
 	-DSUPPORT_UTF8 \
 	-DNEWLINE=-1 \
 	-DMATCH_LIMIT=10000000 \
@@ -13,54 +18,47 @@ INCLUDES = \
 	-DLINK_SIZE=2 \
 	-DPOSIX_MALLOC_THRESHOLD=10 \
 	-DPCRE_STATIC \
-	-I$(top_srcdir) \
-	-I$(srcdir) \
-	-I$(top_srcdir)/glib \
-	-I$(top_builddir)/glib \
+	-UBSR_ANYCRLF \
+	-UEBCDIC \
+	$(glib_INCLUDES) \
 	@GLIB_DEBUG_FLAGS@ \
-	-DG_DISABLE_DEPRECATED \
 	-DGLIB_COMPILATION \
-	$(DEPRECATED_FLAGS)\
-	$(WARN_CFLAGS) \
+	$(AM_CPPFLAGS)
+
+libpcre_la_CFLAGS = \
+	$(GLIB_HIDDEN_VISIBILITY_CFLAGS) \
 	$(PCRE_WARN_CFLAGS) \
-	$(DEP_CFLAGS)
+	$(DEP_CFLAGS) \
+	$(AM_CFLAGS)
 
-noinst_LTLIBRARIES = libpcre.la
-
-libpcre_headers =
+libpcre_la_LDFLAGS = \
+	-no-undefined \
+	$(AM_LDFLAGS)
 
 libpcre_la_SOURCES = \
-	pcre_compile.c \
+	pcre_byte_order.c \
 	pcre_chartables.c \
+	pcre_compile.c \
 	pcre_config.c \
 	pcre_dfa_exec.c \
 	pcre_exec.c \
 	pcre_fullinfo.c \
 	pcre_get.c \
 	pcre_globals.c \
-	pcre_info.c \
-	pcre_maketables.c \
+	pcre_jit_compile.c \
 	pcre_newline.c \
 	pcre_ord2utf8.c \
-	pcre_refcount.c \
+	pcre_string_utils.c \
 	pcre_study.c \
 	pcre_tables.c \
-	pcre_try_flipped.c \
-	pcre_ucp_searchfuncs.c \
 	pcre_valid_utf8.c \
-	pcre_version.c \
 	pcre_xclass.c \
 	pcre.h \
 	pcre_internal.h \
-	ucp.h \
-	ucpinternal.h \
-	$(libpcre_headers)
+	ucp.h
 
 libpcre_la_LIBADD = $(DEP_LIBS)
 
-libpcre_la_LDFLAGS = -no-undefined
-
-EXTRA_DIST =				\
+EXTRA_DIST +=				\
 		COPYING			\
 		makefile.msc
-

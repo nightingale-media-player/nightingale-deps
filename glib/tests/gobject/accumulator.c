@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 #undef	G_LOG_DOMAIN
@@ -58,6 +56,8 @@ struct _TestObjectClass
 			    gint        param);
   gboolean (*test_signal2) (TestObject *tobject,
 			    gint        param);
+  GVariant* (*test_signal3) (TestObject *tobject,
+                             gboolean *weak_ptr);
 };
 
 static GType test_object_get_type (void);
@@ -84,7 +84,7 @@ test_signal1_accumulator (GSignalInvocationHint *ihint,
   return TRUE;
 }
 
-gchar*
+static gchar *
 test_object_signal1_callback_before (TestObject *tobject,
 				     gint        param,
 				     gpointer    data)
@@ -92,14 +92,14 @@ test_object_signal1_callback_before (TestObject *tobject,
   return g_strdup ("<before>");
 }
 
-gchar*
+static gchar *
 test_object_real_signal1 (TestObject *tobject,
 			  gint        param)
 {
   return g_strdup ("<default>");
 }
 
-gchar*
+static gchar *
 test_object_signal1_callback_after (TestObject *tobject,
 				    gint        param,
 				    gpointer    data)
@@ -107,7 +107,7 @@ test_object_signal1_callback_after (TestObject *tobject,
   return g_strdup ("<after>");
 }
 
-gboolean
+static gboolean
 test_object_signal2_callback_before (TestObject *tobject,
 				     gint        param)
 {
@@ -123,7 +123,7 @@ test_object_signal2_callback_before (TestObject *tobject,
   return FALSE;
 }
 
-gboolean
+static gboolean
 test_object_real_signal2 (TestObject *tobject,
 			  gint        param)
 {
@@ -139,7 +139,7 @@ test_object_real_signal2 (TestObject *tobject,
   return FALSE;
 }
 
-gboolean
+static gboolean
 test_object_signal2_callback_after (TestObject *tobject,
 				     gint        param)
 {
@@ -155,11 +155,70 @@ test_object_signal2_callback_after (TestObject *tobject,
   return FALSE;
 }
 
+static gboolean
+test_signal3_accumulator (GSignalInvocationHint *ihint,
+			  GValue                *return_accu,
+			  const GValue          *handler_return,
+			  gpointer               data)
+{
+  GVariant *variant;
+
+  variant = g_value_get_variant (handler_return);
+  g_assert (!g_variant_is_floating (variant));
+
+  g_value_set_variant (return_accu, variant);
+
+  return variant == NULL;
+}
+
+/* To be notified when the variant is finalised, we construct
+ * it from data with a custom GDestroyNotify.
+ */
+
+typedef struct {
+  char *mem;
+  gsize n;
+  gboolean *weak_ptr;
+} VariantData;
+
+static void
+free_data (VariantData *data)
+{
+  *(data->weak_ptr) = TRUE;
+  g_free (data->mem);
+  g_slice_free (VariantData, data);
+}
+
+static GVariant *
+test_object_real_signal3 (TestObject *tobject,
+                          gboolean *weak_ptr)
+{
+  GVariant *variant;
+  VariantData *data;
+
+  variant = g_variant_ref_sink (g_variant_new_uint32 (42));
+  data = g_slice_new (VariantData);
+  data->weak_ptr = weak_ptr;
+  data->n = g_variant_get_size (variant);
+  data->mem = g_malloc (data->n);
+  g_variant_store (variant, data->mem);
+  g_variant_unref (variant);
+
+  variant = g_variant_new_from_data (G_VARIANT_TYPE ("u"),
+                                     data->mem,
+                                     data->n,
+                                     TRUE,
+                                     (GDestroyNotify) free_data,
+                                     data);
+  return g_variant_ref_sink (variant);
+}
+
 static void
 test_object_class_init (TestObjectClass *class)
 {
   class->test_signal1 = test_object_real_signal1;
   class->test_signal2 = test_object_real_signal2;
+  class->test_signal3 = test_object_real_signal3;
   
   g_signal_new ("test-signal1",
 		G_OBJECT_CLASS_TYPE (class),
@@ -175,6 +234,13 @@ test_object_class_init (TestObjectClass *class)
 		g_signal_accumulator_true_handled, NULL,
 		test_marshal_BOOLEAN__INT,
 		G_TYPE_BOOLEAN, 1, G_TYPE_INT);
+  g_signal_new ("test-signal3",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (TestObjectClass, test_signal3),
+		test_signal3_accumulator, NULL,
+		test_marshal_VARIANT__POINTER,
+		G_TYPE_VARIANT, 1, G_TYPE_POINTER);
 }
 
 static DEFINE_TYPE(TestObject, test_object,
@@ -188,11 +254,12 @@ main (int   argc,
   TestObject *object;
   gchar *string_result;
   gboolean bool_result;
+  gboolean variant_finalised;
+  GVariant *variant_result;
 	
   g_log_set_always_fatal (g_log_set_always_fatal (G_LOG_FATAL_MASK) |
 			  G_LOG_LEVEL_WARNING |
 			  G_LOG_LEVEL_CRITICAL);
-  g_type_init ();
 
   object = g_object_new (TEST_TYPE_OBJECT, NULL);
 
@@ -222,6 +289,19 @@ main (int   argc,
   bool_result = TRUE;
   g_signal_emit_by_name (object, "test-signal2", 4, &bool_result);
   g_assert (bool_result == FALSE);
+
+  variant_finalised = FALSE;
+  variant_result = NULL;
+  g_signal_emit_by_name (object, "test-signal3", &variant_finalised, &variant_result);
+  g_assert (variant_result != NULL);
+  g_assert (!g_variant_is_floating (variant_result));
+
+  /* Test that variant_result had refcount 1 */
+  g_assert (!variant_finalised);
+  g_variant_unref (variant_result);
+  g_assert (variant_finalised);
+
+  g_object_unref (object);
 
   return 0;
 }

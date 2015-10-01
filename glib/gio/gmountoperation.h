@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,23 +13,19 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
+
+#ifndef __G_MOUNT_OPERATION_H__
+#define __G_MOUNT_OPERATION_H__
 
 #if !defined (__GIO_GIO_H_INSIDE__) && !defined (GIO_COMPILATION)
 #error "Only <gio/gio.h> can be included directly."
 #endif
 
-#ifndef __G_MOUNT_OPERATION_H__
-#define __G_MOUNT_OPERATION_H__
-
-#include <sys/stat.h>
-
-#include <glib-object.h>
+#include <gio/giotypes.h>
 
 G_BEGIN_DECLS
 
@@ -42,11 +38,10 @@ G_BEGIN_DECLS
 
 /**
  * GMountOperation:
- * 
- * Class for providing authentication methods for mounting operations, 
+ *
+ * Class for providing authentication methods for mounting operations,
  * such as mounting a file locally, or authenticating with a server.
  **/
-typedef struct _GMountOperation        GMountOperation;
 typedef struct _GMountOperationClass   GMountOperationClass;
 typedef struct _GMountOperationPrivate GMountOperationPrivate;
 
@@ -57,75 +52,37 @@ struct _GMountOperation
   GMountOperationPrivate *priv;
 };
 
-/**
- * GAskPasswordFlags:
- * @G_ASK_PASSWORD_NEED_PASSWORD: operation requires a password.
- * @G_ASK_PASSWORD_NEED_USERNAME: operation requires a username.
- * @G_ASK_PASSWORD_NEED_DOMAIN: operation requires a domain.
- * @G_ASK_PASSWORD_SAVING_SUPPORTED: operation supports saving settings.
- * @G_ASK_PASSWORD_ANONYMOUS_SUPPORTED: operation supports anonymous users.
- * 
- * #GAskPasswordFlags are used to request specific information from the 
- * user, or to notify the user of their choices in an authentication
- * situation. 
- * 
- **/ 
-typedef enum {
-  G_ASK_PASSWORD_NEED_PASSWORD       = 1<<0,
-  G_ASK_PASSWORD_NEED_USERNAME       = 1<<1,
-  G_ASK_PASSWORD_NEED_DOMAIN         = 1<<2,
-  G_ASK_PASSWORD_SAVING_SUPPORTED    = 1<<3,
-  G_ASK_PASSWORD_ANONYMOUS_SUPPORTED = 1<<4
-} GAskPasswordFlags;
-
-/**
- * GPasswordSave:
- * @G_PASSWORD_SAVE_NEVER: never save a password.
- * @G_PASSWORD_SAVE_FOR_SESSION: save a password for the session.
- * @G_PASSWORD_SAVE_PERMANENTLY: save a password permanently.
- * 
- * #GPasswordSave is used to indicate the lifespan of a saved password.
- **/ 
-typedef enum {
-  G_PASSWORD_SAVE_NEVER,
-  G_PASSWORD_SAVE_FOR_SESSION,
-  G_PASSWORD_SAVE_PERMANENTLY
-} GPasswordSave;
-
-/**
- * GMountOperationResult:
- * @G_MOUNT_OPERATION_HANDLED: The request was fulfilled and the user specified data is now availible
- * @G_MOUNT_OPERATION_ABORTED: The user requested the mount operation to be aborted
- * @G_MOUNT_OPERATION_UNHANDLED: The request was unhandled (i.e. not implemented)
- * 
- * #GMountOperationResult is returned as a result when a request for information
- * is send by the mounting operation.
- **/ 
-typedef enum {
-  G_MOUNT_OPERATION_HANDLED,
-  G_MOUNT_OPERATION_ABORTED,
-  G_MOUNT_OPERATION_UNHANDLED
-} GMountOperationResult;
-
 struct _GMountOperationClass
 {
   GObjectClass parent_class;
 
   /* signals: */
 
-  void (* ask_password) (GMountOperation *op,
-			 const char      *message,
-			 const char      *default_user,
-			 const char      *default_domain,
-			 GAskPasswordFlags flags);
+  void (* ask_password) (GMountOperation       *op,
+			 const char            *message,
+			 const char            *default_user,
+			 const char            *default_domain,
+			 GAskPasswordFlags      flags);
 
-  void (* ask_question) (GMountOperation *op,
-			 const char      *message,
-			 const char      *choices[]);
-  
-  void (* reply)        (GMountOperation *op,
-			 GMountOperationResult result);
-  
+  void (* ask_question) (GMountOperation       *op,
+			 const char            *message,
+			 const char            *choices[]);
+
+  void (* reply)        (GMountOperation       *op,
+			 GMountOperationResult  result);
+
+  void (* aborted)      (GMountOperation       *op);
+
+  void (* show_processes) (GMountOperation      *op,
+                           const gchar          *message,
+                           GArray               *processes,
+                           const gchar          *choices[]);
+
+  void (* show_unmount_progress) (GMountOperation *op,
+                                  const gchar     *message,
+                                  gint64           time_left,
+                                  gint64           bytes_left);
+
   /*< private >*/
   /* Padding for future expansion */
   void (*_g_reserved1) (void);
@@ -137,33 +94,44 @@ struct _GMountOperationClass
   void (*_g_reserved7) (void);
   void (*_g_reserved8) (void);
   void (*_g_reserved9) (void);
-  void (*_g_reserved10) (void);
-  void (*_g_reserved11) (void);
-  void (*_g_reserved12) (void);
 };
 
-GType g_mount_operation_get_type (void) G_GNUC_CONST;
-  
-GMountOperation *  g_mount_operation_new (void);
+GLIB_AVAILABLE_IN_ALL
+GType             g_mount_operation_get_type      (void) G_GNUC_CONST;
+GLIB_AVAILABLE_IN_ALL
+GMountOperation * g_mount_operation_new           (void);
 
+GLIB_AVAILABLE_IN_ALL
 const char *  g_mount_operation_get_username      (GMountOperation *op);
+GLIB_AVAILABLE_IN_ALL
 void          g_mount_operation_set_username      (GMountOperation *op,
 						   const char      *username);
+GLIB_AVAILABLE_IN_ALL
 const char *  g_mount_operation_get_password      (GMountOperation *op);
+GLIB_AVAILABLE_IN_ALL
 void          g_mount_operation_set_password      (GMountOperation *op,
 						   const char      *password);
+GLIB_AVAILABLE_IN_ALL
 gboolean      g_mount_operation_get_anonymous     (GMountOperation *op);
+GLIB_AVAILABLE_IN_ALL
 void          g_mount_operation_set_anonymous     (GMountOperation *op,
 						   gboolean         anonymous);
+GLIB_AVAILABLE_IN_ALL
 const char *  g_mount_operation_get_domain        (GMountOperation *op);
+GLIB_AVAILABLE_IN_ALL
 void          g_mount_operation_set_domain        (GMountOperation *op,
 						   const char      *domain);
+GLIB_AVAILABLE_IN_ALL
 GPasswordSave g_mount_operation_get_password_save (GMountOperation *op);
+GLIB_AVAILABLE_IN_ALL
 void          g_mount_operation_set_password_save (GMountOperation *op,
 						   GPasswordSave    save);
+GLIB_AVAILABLE_IN_ALL
 int           g_mount_operation_get_choice        (GMountOperation *op);
+GLIB_AVAILABLE_IN_ALL
 void          g_mount_operation_set_choice        (GMountOperation *op,
 						   int              choice);
+GLIB_AVAILABLE_IN_ALL
 void          g_mount_operation_reply             (GMountOperation *op,
 						   GMountOperationResult result);
 

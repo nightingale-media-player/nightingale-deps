@@ -13,11 +13,12 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
+#include "config.h"
+
 #include <glib.h>
+#include <glib-unix.h>
 #include <gstdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -50,9 +51,11 @@ static gboolean     subtest_verbose = FALSE;
 static gboolean     subtest_mode_fatal = TRUE;
 static gboolean     subtest_mode_perf = FALSE;
 static gboolean     subtest_mode_quick = TRUE;
+static gboolean     subtest_mode_undefined = TRUE;
 static const gchar *subtest_seedstr = NULL;
 static gchar       *subtest_last_seed = NULL;
 static GSList      *subtest_paths = NULL;
+static GSList      *skipped_paths = NULL;
 static GSList      *subtest_args = NULL;
 static gboolean     testcase_open = FALSE;
 static guint        testcase_count = 0;
@@ -113,7 +116,7 @@ testcase_close (long double duration,
     g_print ("GTester: last random seed: %s\n", subtest_last_seed);
   if (exit_status)
     testcase_fail_count += 1;
-  if (subtest_mode_fatal && testcase_fail_count)
+  if (subtest_mode_fatal && exit_status)
     terminate();
 }
 
@@ -125,6 +128,8 @@ test_log_msg (GTestLogMsg *msg)
       guint i;
       gchar **strv;
     case G_TEST_LOG_NONE:
+    case G_TEST_LOG_START_SUITE:
+    case G_TEST_LOG_STOP_SUITE:
       break;
     case G_TEST_LOG_ERROR:
       strv = g_strsplit (msg->strings[0], "\n", -1);
@@ -281,12 +286,13 @@ launch_test_binary (const char *binary,
   gboolean loop_pending;
   gint i = 0;
 
-  if (pipe (report_pipe) < 0)
+  if (!g_unix_open_pipe (report_pipe, FD_CLOEXEC, &error))
     {
       if (subtest_mode_fatal)
-        g_error ("Failed to open pipe for test binary: %s: %s", binary, g_strerror (errno));
+        g_error ("Failed to open pipe for test binary: %s: %s", binary, error->message);
       else
-        g_warning ("Failed to open pipe for test binary: %s: %s", binary, g_strerror (errno));
+        g_warning ("Failed to open pipe for test binary: %s: %s", binary, error->message);
+      g_clear_error (&error);
       return FALSE;
     }
 
@@ -306,6 +312,8 @@ launch_test_binary (const char *binary,
     argc++;
   if (subtest_mode_perf)
     argc++;
+  if (!subtest_mode_undefined)
+    argc++;
   if (gtester_list_tests)
     argc++;
   if (subtest_seedstr)
@@ -314,6 +322,8 @@ launch_test_binary (const char *binary,
   if (skip_tests)
     argc++;
   for (slist = subtest_paths; slist; slist = slist->next)
+    argc++;
+  for (slist = skipped_paths; slist; slist = slist->next)
     argc++;
 
   /* setup argv */
@@ -334,6 +344,8 @@ launch_test_binary (const char *binary,
     argv[i++] = "-m=slow";
   if (subtest_mode_perf)
     argv[i++] = "-m=perf";
+  if (!subtest_mode_undefined)
+    argv[i++] = "-m=no-undefined";
   if (gtester_list_tests)
     argv[i++] = "-l";
   if (subtest_seedstr)
@@ -343,6 +355,8 @@ launch_test_binary (const char *binary,
     argv[i++] = queue_gfree (&free_list, g_strdup_printf ("--GTestSkipCount=%u", skip_tests));
   for (slist = subtest_paths; slist; slist = slist->next)
     argv[i++] = queue_gfree (&free_list, g_strdup_printf ("-p=%s", (gchar*) slist->data));
+  for (slist = skipped_paths; slist; slist = slist->next)
+    argv[i++] = queue_gfree (&free_list, g_strdup_printf ("-s=%s", (gchar*) slist->data));
   argv[i++] = NULL;
 
   g_spawn_async_with_pipes (NULL, /* g_get_current_dir() */
@@ -405,7 +419,9 @@ launch_test_binary (const char *binary,
       loop_pending = g_main_context_pending (NULL);
     }
 
-  g_source_remove (child_report_cb_id);
+  if (subtest_io_pending)
+    g_source_remove (child_report_cb_id);
+
   close (report_pipe[0]);
   g_test_log_buffer_free (tlb);
 
@@ -418,8 +434,8 @@ launch_test (const char *binary)
   gboolean success = TRUE;
   GTimer *btimer = g_timer_new();
   gboolean need_restart;
+
   testcase_count = 0;
-  testcase_fail_count = 0;
   if (!gtester_quiet)
     g_print ("TEST: %s... ", binary);
 
@@ -445,8 +461,12 @@ launch_test (const char *binary)
       goto retry;
     }
 
+  /* count the inability to run a test as a failure */
+  if (!success && testcase_count == 0)
+    testcase_fail_count++;
+
   if (!gtester_quiet)
-    g_print ("%s: %s\n", testcase_fail_count || !success ? "FAIL" : "PASS", binary);
+    g_print ("%s: %s\n", !success ? "FAIL" : "PASS", binary);
   g_timer_destroy (btimer);
   if (subtest_mode_fatal && !success)
     terminate();
@@ -460,21 +480,24 @@ usage (gboolean just_version)
       g_print ("gtester version %d.%d.%d\n", GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION, GLIB_MICRO_VERSION);
       return;
     }
-  g_print ("Usage: gtester [OPTIONS] testprogram...\n");
+  g_print ("Usage:\n");
+  g_print ("gtester [OPTIONS] testprogram...\n\n");
   /*        12345678901234567890123456789012345678901234567890123456789012345678901234567890 */
-  g_print ("Options:\n");
-  g_print ("  -h, --help                  show this help message\n");
-  g_print ("  -v, --version               print version informations\n");
-  g_print ("  --g-fatal-warnings          make warnings fatal (abort)\n");
-  g_print ("  -k, --keep-going            continue running after tests failed\n");
-  g_print ("  -l                          list paths of available test cases\n");
-  g_print ("  -m=perf, -m=slow, -m=quick -m=thorough\n");
-  g_print ("                              run test cases in mode perf, slow/thorough or quick (default)\n");
-  g_print ("  -p=TESTPATH                 only start test cases matching TESTPATH\n");
-  g_print ("  --seed=SEEDSTRING           start all tests with random number seed SEEDSTRING\n");
-  g_print ("  -o=LOGFILE                  write the test log to LOGFILE\n");
-  g_print ("  -q, --quiet                 suppress per test binary output\n");
-  g_print ("  --verbose                   report success per testcase\n");
+  g_print ("Help Options:\n");
+  g_print ("  -h, --help                    Show this help message\n\n");
+  g_print ("Utility Options:\n");
+  g_print ("  -v, --version                 Print version informations\n");
+  g_print ("  --g-fatal-warnings            Make warnings fatal (abort)\n");
+  g_print ("  -k, --keep-going              Continue running after tests failed\n");
+  g_print ("  -l                            List paths of available test cases\n");
+  g_print ("  -m {perf|slow|thorough|quick} Run test cases according to mode\n");
+  g_print ("  -m {undefined|no-undefined}   Run test cases according to mode\n");
+  g_print ("  -p=TESTPATH                   Only start test cases matching TESTPATH\n");
+  g_print ("  -s=TESTPATH                   Skip test cases matching TESTPATH\n");
+  g_print ("  --seed=SEEDSTRING             Start tests with random seed SEEDSTRING\n");
+  g_print ("  -o=LOGFILE                    Write the test log to LOGFILE\n");
+  g_print ("  -q, --quiet                   Suppress per test binary output\n");
+  g_print ("  --verbose                     Report success per testcase\n");
 }
 
 static void
@@ -530,6 +553,18 @@ parse_args (gint    *argc_p,
             }
           argv[i] = NULL;
         }
+      else if (strcmp ("-s", argv[i]) == 0 || strncmp ("-s=", argv[i], 3) == 0)
+        {
+          gchar *equal = argv[i] + 2;
+          if (*equal == '=')
+            skipped_paths = g_slist_prepend (skipped_paths, equal + 1);
+          else if (i + 1 < argc)
+            {
+              argv[i++] = NULL;
+              skipped_paths = g_slist_prepend (skipped_paths, argv[i]);
+            }
+          argv[i] = NULL;
+        }
       else if (strcmp ("--test-arg", argv[i]) == 0 || strncmp ("--test-arg=", argv[i], 11) == 0)
         {
           gchar *equal = argv[i] + 10;
@@ -574,6 +609,10 @@ parse_args (gint    *argc_p,
               subtest_mode_quick = TRUE;
               subtest_mode_perf = FALSE;
             }
+          else if (strcmp (mode, "undefined") == 0)
+            subtest_mode_undefined = TRUE;
+          else if (strcmp (mode, "no-undefined") == 0)
+            subtest_mode_undefined = FALSE;
           else
             g_error ("unknown test mode: -m %s", mode);
           argv[i] = NULL;
@@ -626,20 +665,6 @@ main (int    argc,
 {
   guint ui;
 
-  /* some unices need SA_RESTART for SIGCHLD to return -EAGAIN for io.
-   * we must fiddle with sigaction() *before* glib is used, otherwise
-   * we could revoke signal hanmdler setups from glib initialization code.
-   */
-  if (TRUE)
-    {
-      struct sigaction sa;
-      struct sigaction osa;
-      sa.sa_handler = SIG_DFL;
-      sigfillset (&sa.sa_mask);
-      sa.sa_flags = SA_RESTART;
-      sigaction (SIGCHLD, &sa, &osa);
-    }
-
   g_set_prgname (argv[0]);
   parse_args (&argc, &argv);
   if (gtester_selftest)
@@ -672,7 +697,7 @@ main (int    argc,
 
   close (log_fd);
 
-  return 0;
+  return testcase_fail_count == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 static void
@@ -704,7 +729,7 @@ static int
 main_selftest (int    argc,
                char **argv)
 {
-  /* gtester main() for --gtester-selftest invokations */
+  /* gtester main() for --gtester-selftest invocations */
   g_test_init (&argc, &argv, NULL);
   g_test_add ("/gtester/fixture-test", guint, NULL, fixture_setup, fixture_test, fixture_teardown);
   return g_test_run();

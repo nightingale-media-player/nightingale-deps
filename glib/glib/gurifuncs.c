@@ -13,28 +13,35 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#include <config.h>
-#include "gurifuncs.h"
-#include "string.h"
+#include "config.h"
 
-#include "galias.h"
+#include "gurifuncs.h"
+
+#include <glib/gstrfuncs.h>
+#include <glib/gmessages.h>
+#include <glib/gstring.h>
+#include <glib/gmem.h>
+
+#include <string.h>
+
+#include "config.h"
 
 /**
  * SECTION:gurifuncs
- * @short_description: URI Functions
- * 
- * Functions for manipulating Universal Resource Identifiers (URIs) as 
- * defined by RFC 3986. It is highly recommended that you have read and
- * understand RFC 3986 for understanding this API. A copy of RFC 3986 
- * can be found at <ulink url="http://www.ietf.org/rfc/rfc3986.txt"/>.
- **/
+ * @title: URI Functions
+ * @short_description: manipulating URIs
+ *
+ * Functions for manipulating Universal Resource Identifiers (URIs) as
+ * defined by
+ * [RFC 3986](http://www.ietf.org/rfc/rfc3986.txt).
+ * It is highly recommended that you have read and
+ * understand RFC 3986 for understanding this API.
+ */
 
 static int
 unescape_character (const char *scanner)
@@ -55,9 +62,9 @@ unescape_character (const char *scanner)
 
 /**
  * g_uri_unescape_segment:
- * @escaped_string: a string.
- * @escaped_string_end: a string.
- * @illegal_characters: an optional string of illegal characters not to be allowed.
+ * @escaped_string: (allow-none): A string, may be %NULL
+ * @escaped_string_end: (allow-none): Pointer to end of @escaped_string, may be %NULL
+ * @illegal_characters: (allow-none): An optional string of illegal characters not to be allowed, may be %NULL
  * 
  * Unescapes a segment of an escaped string.
  *
@@ -68,7 +75,9 @@ unescape_character (const char *scanner)
  * handling.
  *
  * Returns: an unescaped version of @escaped_string or %NULL on error.
- * The returned string should be freed when no longer needed.
+ * The returned string should be freed when no longer needed.  As a
+ * special case if %NULL is given for @escaped_string, this function
+ * will return %NULL.
  *
  * Since: 2.16
  **/
@@ -129,7 +138,8 @@ g_uri_unescape_segment (const char *escaped_string,
 /**
  * g_uri_unescape_string:
  * @escaped_string: an escaped string to be unescaped.
- * @illegal_characters: an optional string of illegal characters not to be allowed.
+ * @illegal_characters: (allow-none): a string of illegal characters not to be
+ *      allowed, or %NULL.
  * 
  * Unescapes a whole escaped string.
  * 
@@ -156,9 +166,9 @@ g_uri_unescape_string (const char *escaped_string,
  * @uri: a valid URI.
  * 
  * Gets the scheme portion of a URI string. RFC 3986 decodes the scheme as:
- * <programlisting>
+ * |[
  * URI = scheme ":" hier-part [ "?" query ] [ "#" fragment ] 
- * </programlisting>
+ * ]|
  * Common schemes include "file", "http", "svn+ssh", etc.
  * 
  * Returns: The "Scheme" component of the URI, or %NULL on error. 
@@ -207,8 +217,8 @@ g_uri_parse_scheme (const char  *uri)
 /**
  * g_uri_escape_string:
  * @unescaped: the unescaped input string.
- * @reserved_chars_allowed: a string of reserved characters that are
- *      allowed to be used.
+ * @reserved_chars_allowed: (allow-none): a string of reserved characters that
+ *      are allowed to be used, or %NULL.
  * @allow_utf8: %TRUE if the result can include UTF-8 characters.
  * 
  * Escapes a string for use in a URI.
@@ -240,6 +250,3 @@ g_uri_escape_string (const char *unescaped,
   
   return g_string_free (s, FALSE);
 }
-
-#define __G_URI_FUNCS_C__
-#include "galiasdef.c"

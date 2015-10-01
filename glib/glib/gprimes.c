@@ -12,26 +12,23 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
  * Modified by the GLib Team and others 1997-2000.  See the AUTHORS
  * file for a list of people on the GLib Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GLib at ftp://ftp.gtk.org/pub/gtk/. 
+ * GLib at ftp://ftp.gtk.org/pub/gtk/.
  */
 
-/* 
+/*
  * MT safe
  */
 
 #include "config.h"
 
-#include "glib.h"
-#include "galias.h"
+#include "gprimes.h"
 
 
 static const guint g_primes[] =
@@ -72,19 +69,28 @@ static const guint g_primes[] =
   13845163,
 };
 
-static const guint g_nprimes = sizeof (g_primes) / sizeof (g_primes[0]);
-
+/**
+ * g_spaced_primes_closest:
+ * @num: a #guint
+ *
+ * Gets the smallest prime number from a built-in array of primes which
+ * is larger than @num. This is used within GLib to calculate the optimum
+ * size of a #GHashTable.
+ *
+ * The built-in array of primes ranges from 11 to 13845163 such that
+ * each prime is approximately 1.5-2 times the previous prime.
+ *
+ * Returns: the smallest prime number from a built-in array of primes
+ *     which is larger than @num
+ */
 guint
 g_spaced_primes_closest (guint num)
 {
   gint i;
 
-  for (i = 0; i < g_nprimes; i++)
+  for (i = 0; i < G_N_ELEMENTS (g_primes); i++)
     if (g_primes[i] > num)
       return g_primes[i];
 
-  return g_primes[g_nprimes - 1];
+  return g_primes[G_N_ELEMENTS (g_primes) - 1];
 }
-
-#define __G_PRIMES_C__
-#include "galiasdef.c"

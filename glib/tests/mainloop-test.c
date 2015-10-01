@@ -27,8 +27,8 @@
  * be locked while the context array mutex is locked
  */
 GPtrArray *context_array;
-GMutex *context_array_mutex;
-GCond *context_array_cond;
+GMutex context_array_mutex;
+GCond context_array_cond;
 
 GMainLoop *main_loop;
 
@@ -54,7 +54,7 @@ struct _TestData
 
 static void cleanup_crawlers (GMainContext *context);
 
-gboolean
+static gboolean
 read_all (GIOChannel *channel, char *buf, gsize len)
 {
   gsize bytes_read = 0;
@@ -78,7 +78,7 @@ read_all (GIOChannel *channel, char *buf, gsize len)
   return TRUE;
 }
 
-gboolean
+static gboolean
 write_all (GIOChannel *channel, char *buf, gsize len)
 {
   gsize bytes_written = 0;
@@ -97,7 +97,7 @@ write_all (GIOChannel *channel, char *buf, gsize len)
   return TRUE;
 }
 
-gboolean
+static gboolean
 adder_callback (GIOChannel   *source,
 		GIOCondition  condition,
 		gpointer      data)
@@ -105,7 +105,7 @@ adder_callback (GIOChannel   *source,
   char buf1[32];
   char buf2[32];
 
-  char result[32];
+  char result[32] = { 0, };
 
   AddrData *addr_data = data;
 
@@ -122,7 +122,7 @@ adder_callback (GIOChannel   *source,
   return TRUE;
 }
 
-gboolean
+static gboolean
 timeout_callback (gpointer data)
 {
   AddrData *addr_data = data;
@@ -132,7 +132,7 @@ timeout_callback (gpointer data)
   return TRUE;
 }
 
-gpointer
+static gpointer
 adder_thread (gpointer data)
 {
   GMainContext *context;
@@ -144,25 +144,27 @@ adder_thread (gpointer data)
 
   context = g_main_context_new ();
 
-  g_mutex_lock (context_array_mutex);
+  g_mutex_lock (&context_array_mutex);
   
   g_ptr_array_add (context_array, context);
 
   if (context_array->len == NTHREADS)
-    g_cond_broadcast (context_array_cond);
+    g_cond_broadcast (&context_array_cond);
   
-  g_mutex_unlock (context_array_mutex);
+  g_mutex_unlock (&context_array_mutex);
 
   addr_data.dest = channels[1];
   addr_data.loop = g_main_loop_new (context, FALSE);
   addr_data.count = 0;
-  
+
   adder_source = g_io_create_watch (channels[0], G_IO_IN | G_IO_HUP);
+  g_source_set_name (adder_source, "Adder I/O");
   g_source_set_callback (adder_source, (GSourceFunc)adder_callback, &addr_data, NULL);
   g_source_attach (adder_source, context);
   g_source_unref (adder_source);
 
   timeout_source = g_timeout_source_new (10);
+  g_source_set_name (timeout_source, "Adder timeout");
   g_source_set_callback (timeout_source, (GSourceFunc)timeout_callback, &addr_data, NULL);
   g_source_set_priority (timeout_source, G_PRIORITY_HIGH);
   g_source_attach (timeout_source, context);
@@ -181,18 +183,19 @@ adder_thread (gpointer data)
   g_print ("Timeout run %d times\n", addr_data.count);
 #endif
 
-  g_mutex_lock (context_array_mutex);
+  g_mutex_lock (&context_array_mutex);
   g_ptr_array_remove (context_array, context);
   if (context_array->len == 0)
     g_main_loop_quit (main_loop);
-  g_mutex_unlock (context_array_mutex);
+  g_mutex_unlock (&context_array_mutex);
 
   cleanup_crawlers (context);
+  g_main_context_unref (context);
 
   return NULL;
 }
 
-void
+static void
 io_pipe (GIOChannel **channels)
 {
   gint fds[2];
@@ -210,11 +213,11 @@ io_pipe (GIOChannel **channels)
   g_io_channel_set_close_on_unref (channels[1], TRUE);
 }
 
-void
+static void
 do_add (GIOChannel *in, gint a, gint b)
 {
-  char buf1[32];
-  char buf2[32];
+  char buf1[32] = { 0, };
+  char buf2[32] = { 0, };
 
   sprintf (buf1, "%d", a);
   sprintf (buf2, "%d", b);
@@ -223,7 +226,7 @@ do_add (GIOChannel *in, gint a, gint b)
   write_all (in, buf2, 32);
 }
 
-gboolean
+static gboolean
 adder_response (GIOChannel   *source,
 		GIOCondition  condition,
 		gpointer      data)
@@ -259,7 +262,7 @@ adder_response (GIOChannel   *source,
   return TRUE;
 }
 
-void
+static void
 create_adder_thread (void)
 {
   GError *err = NULL;
@@ -335,15 +338,16 @@ static void
 create_crawler (void)
 {
   GSource *source = g_timeout_source_new (g_random_int_range (0, CRAWLER_TIMEOUT_RANGE));
+  g_source_set_name (source, "Crawler timeout");
   g_source_set_callback (source, (GSourceFunc)crawler_callback, source, NULL);
 
   G_LOCK (crawler_array_lock);
   g_ptr_array_add (crawler_array, source);
   
-  g_mutex_lock (context_array_mutex);
+  g_mutex_lock (&context_array_mutex);
   g_source_attach (source, context_array->pdata[g_random_int_range (0, context_array->len)]);
   g_source_unref (source);
-  g_mutex_unlock (context_array_mutex);
+  g_mutex_unlock (&context_array_mutex);
 
   G_UNLOCK (crawler_array_lock);
 }
@@ -383,31 +387,25 @@ recurser_start (gpointer data)
   GMainContext *context;
   GSource *source;
   
-  g_mutex_lock (context_array_mutex);
+  g_mutex_lock (&context_array_mutex);
   context = context_array->pdata[g_random_int_range (0, context_array->len)];
   source = g_idle_source_new ();
+  g_source_set_name (source, "Recursing idle source");
   g_source_set_callback (source, recurser_idle, context, NULL);
   g_source_attach (source, context);
   g_source_unref (source);
-  g_mutex_unlock (context_array_mutex);
+  g_mutex_unlock (&context_array_mutex);
 
   return TRUE;
 }
 
-int 
+int
 main (int   argc,
       char *argv[])
 {
-  /* Only run the test, if threads are enabled and a default thread
-     implementation is available */
-#if defined(G_THREADS_ENABLED) && ! defined(G_THREADS_IMPL_NONE)
   gint i;
 
-  g_thread_init (NULL);
-
   context_array = g_ptr_array_new ();
-  context_array_mutex = g_mutex_new ();
-  context_array_cond = g_cond_new (); 
 
   crawler_array = g_ptr_array_new ();
 
@@ -418,12 +416,12 @@ main (int   argc,
 
   /* Wait for all threads to start
    */
-  g_mutex_lock (context_array_mutex);
+  g_mutex_lock (&context_array_mutex);
   
   if (context_array->len < NTHREADS)
-    g_cond_wait (context_array_cond, context_array_mutex);
+    g_cond_wait (&context_array_cond, &context_array_mutex);
   
-  g_mutex_unlock (context_array_mutex);
+  g_mutex_unlock (&context_array_mutex);
   
   for (i = 0; i < NCRAWLERS; i++)
     create_crawler ();
@@ -433,6 +431,8 @@ main (int   argc,
   g_main_loop_run (main_loop);
   g_main_loop_unref (main_loop);
 
-#endif
+  g_ptr_array_unref (crawler_array);
+  g_ptr_array_unref (context_array);
+
   return 0;
 }

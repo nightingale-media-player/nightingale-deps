@@ -38,7 +38,7 @@ ifneq (,$(filter Linux,$(SB_VENDOR_ARCH)))
 endif
 
 SB_VENDOR_TARGET = glib
-SB_VENDOR_TARGET_VERSION = 2.16.6
+SB_VENDOR_TARGET_VERSION = 2.46.0
 
 include $(CURDIR)/../songbird-vendor-defs.mk
 

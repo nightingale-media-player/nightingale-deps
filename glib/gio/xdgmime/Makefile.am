@@ -1,9 +1,10 @@
-include $(top_srcdir)/Makefile.decl
+include $(top_srcdir)/glib.mk
 
 AM_CPPFLAGS = -DXDG_PREFIX=_gio_xdg
 
-noinst_LTLIBRARIES = libxdgmime.la
+noinst_LTLIBRARIES += libxdgmime.la
 
+libxdgmime_la_CFLAGS = $(GLIB_HIDDEN_VISIBILITY_CFLAGS)
 libxdgmime_la_SOURCES = \
 	xdgmime.c 	\
 	xdgmime.h	\
@@ -13,14 +14,11 @@ libxdgmime_la_SOURCES = \
 	xdgmimecache.h	\
 	xdgmimeglob.c 	\
 	xdgmimeglob.h 	\
+	xdgmimeicon.c	\
+	xdgmimeicon.h	\
 	xdgmimeint.c 	\
 	xdgmimeint.h 	\
 	xdgmimemagic.c  \
 	xdgmimemagic.h	\
 	xdgmimeparent.c	\
 	xdgmimeparent.h
-
-noinst_PROGRAMS = test-mime
-
-test_mime_LDADD = libxdgmime.la
-test_mime_SOURCES = test-mime.c

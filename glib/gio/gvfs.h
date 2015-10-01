@@ -1,5 +1,5 @@
 /* GIO - GLib Input, Output and Streaming Library
- * 
+ *
  * Copyright (C) 2006-2007 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -13,22 +13,19 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
+
+#ifndef __G_VFS_H__
+#define __G_VFS_H__
 
 #if !defined (__GIO_GIO_H_INSIDE__) && !defined (GIO_COMPILATION)
 #error "Only <gio/gio.h> can be included directly."
 #endif
 
-#ifndef __G_VFS_H__
-#define __G_VFS_H__
-
-#include <glib-object.h>
-#include <gio/gfile.h>
+#include <gio/giotypes.h>
 
 G_BEGIN_DECLS
 
@@ -42,20 +39,20 @@ G_BEGIN_DECLS
 /**
  * G_VFS_EXTENSION_POINT_NAME:
  *
- * Extension point for #GVfs functionality. 
- * See <link linkend="gio-extension-points">Extending GIO</link>.
+ * Extension point for #GVfs functionality.
+ * See [Extending GIO][extending-gio].
  */
 #define G_VFS_EXTENSION_POINT_NAME "gio-vfs"
 
 /**
  * GVfs:
- * 
+ *
  * Virtual File System object.
  **/
-typedef struct _GVfs         GVfs; /* Dummy typedef */
 typedef struct _GVfsClass    GVfsClass;
 
-struct _GVfs {
+struct _GVfs
+{
   GObject parent_instance;
 };
 
@@ -65,17 +62,39 @@ struct _GVfsClass
 
   /* Virtual Table */
 
-  gboolean             (*is_active)                 (GVfs *vfs);
-  GFile               *(*get_file_for_path)         (GVfs *vfs,
-				                     const char *path);
-  GFile               *(*get_file_for_uri)          (GVfs *vfs,
-				                     const char *uri);
-  const gchar * const *(*get_supported_uri_schemes) (GVfs *vfs);
-  GFile               *(*parse_name)                (GVfs *vfs,
-				                     const char *parse_name);
-
+  gboolean              (* is_active)                 (GVfs       *vfs);
+  GFile               * (* get_file_for_path)         (GVfs       *vfs,
+                                                       const char *path);
+  GFile               * (* get_file_for_uri)          (GVfs       *vfs,
+                                                       const char *uri);
+  const gchar * const * (* get_supported_uri_schemes) (GVfs       *vfs);
+  GFile               * (* parse_name)                (GVfs       *vfs,
+                                                       const char *parse_name);
 
   /*< private >*/
+  void                  (* local_file_add_info)       (GVfs       *vfs,
+						       const char *filename,
+						       guint64     device,
+						       GFileAttributeMatcher *attribute_matcher,
+						       GFileInfo  *info,
+						       GCancellable *cancellable,
+						       gpointer   *extra_data,
+						       GDestroyNotify *free_extra_data);
+  void                  (* add_writable_namespaces)   (GVfs       *vfs,
+						       GFileAttributeInfoList *list);
+  gboolean              (* local_file_set_attributes) (GVfs       *vfs,
+						       const char *filename,
+						       GFileInfo  *info,
+                                                       GFileQueryInfoFlags flags,
+                                                       GCancellable *cancellable,
+						       GError    **error);
+  void                  (* local_file_removed)        (GVfs       *vfs,
+						       const char *filename);
+  void                  (* local_file_moved)          (GVfs       *vfs,
+						       const char *source,
+						       const char *dest);
+  GIcon *               (* deserialize_icon)          (GVfs       *vfs,
+                                                       GVariant   *value);
   /* Padding for future expansion */
   void (*_g_reserved1) (void);
   void (*_g_reserved2) (void);
@@ -83,28 +102,29 @@ struct _GVfsClass
   void (*_g_reserved4) (void);
   void (*_g_reserved5) (void);
   void (*_g_reserved6) (void);
-  void (*_g_reserved7) (void);
-  void (*_g_reserved8) (void);
-  void (*_g_reserved9) (void);
-  void (*_g_reserved10) (void);
-  void (*_g_reserved11) (void);
-  void (*_g_reserved12) (void);
-  
 };
 
-GType g_vfs_get_type (void) G_GNUC_CONST;
+GLIB_AVAILABLE_IN_ALL
+GType                 g_vfs_get_type                  (void) G_GNUC_CONST;
 
+GLIB_AVAILABLE_IN_ALL
 gboolean              g_vfs_is_active                 (GVfs       *vfs);
+GLIB_AVAILABLE_IN_ALL
 GFile *               g_vfs_get_file_for_path         (GVfs       *vfs,
-				                       const char *path);
+                                                       const char *path);
+GLIB_AVAILABLE_IN_ALL
 GFile *               g_vfs_get_file_for_uri          (GVfs       *vfs,
-				                       const char *uri);
-const gchar * const * g_vfs_get_supported_uri_schemes (GVfs *vfs);
+                                                       const char *uri);
+GLIB_AVAILABLE_IN_ALL
+const gchar* const * g_vfs_get_supported_uri_schemes  (GVfs       *vfs);
 
+GLIB_AVAILABLE_IN_ALL
 GFile *               g_vfs_parse_name                (GVfs       *vfs,
-				                       const char *parse_name);
+                                                       const char *parse_name);
 
+GLIB_AVAILABLE_IN_ALL
 GVfs *                g_vfs_get_default               (void);
+GLIB_AVAILABLE_IN_ALL
 GVfs *                g_vfs_get_local                 (void);
 
 G_END_DECLS

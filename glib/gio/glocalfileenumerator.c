@@ -13,31 +13,24 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <glib.h>
 #include <glocalfileenumerator.h>
 #include <glocalfileinfo.h>
+#include <glocalfile.h>
+#include <gioerror.h>
 #include <string.h>
 #include <stdlib.h>
 #include "glibintl.h"
 
-#include "gioalias.h"
 
 #define CHUNK_SIZE 1000
-
-  /* TODO:
-   *  It would be nice to use the dirent->d_type to check file type without
-   *  needing to stat each files on linux and other systems that support it.
-   *  (question: does that following symlink or not?)
-   */
 
 #ifdef G_OS_WIN32
 #define USE_GDIR
@@ -52,6 +45,7 @@
 typedef struct {
   char *name;
   long inode;
+  GFileType type;
 } DirEntry;
 
 #endif
@@ -61,6 +55,7 @@ struct _GLocalFileEnumerator
   GFileEnumerator parent;
 
   GFileAttributeMatcher *matcher;
+  GFileAttributeMatcher *reduced_matcher;
   char *filename;
   char *attributes;
   GFileQueryInfoFlags flags;
@@ -114,8 +109,11 @@ g_local_file_enumerator_finalize (GObject *object)
 
   local = G_LOCAL_FILE_ENUMERATOR (object);
 
+  if (local->got_parent_info)
+    _g_local_file_info_free_parent_info (&local->parent_info);
   g_free (local->filename);
   g_file_attribute_matcher_unref (local->matcher);
+  g_file_attribute_matcher_unref (local->reduced_matcher);
   if (local->dir)
     {
 #ifdef USE_GDIR
@@ -127,9 +125,8 @@ g_local_file_enumerator_finalize (GObject *object)
     }
 
   free_entries (local);
-  
-  if (G_OBJECT_CLASS (g_local_file_enumerator_parent_class)->finalize)
-    (*G_OBJECT_CLASS (g_local_file_enumerator_parent_class)->finalize) (object);
+
+  G_OBJECT_CLASS (g_local_file_enumerator_parent_class)->finalize (object);
 }
 
 
@@ -175,25 +172,42 @@ convert_file_to_io_error (GError **error,
         case G_FILE_ERROR_NOTDIR:
           new_code = G_IO_ERROR_NOT_DIRECTORY;
           break;
+        case G_FILE_ERROR_MFILE:
+          new_code = G_IO_ERROR_TOO_MANY_OPEN_FILES;
+          break;
         default:
           break;
         }
     }
   
-  g_set_error (error, G_IO_ERROR,
-	       new_code,
-	       "%s", file_error->message);
+  g_set_error_literal (error, G_IO_ERROR,
+                       new_code,
+                       file_error->message);
+}
+#else
+static GFileAttributeMatcher *
+g_file_attribute_matcher_subtract_attributes (GFileAttributeMatcher *matcher,
+                                              const char *           attributes)
+{
+  GFileAttributeMatcher *result, *tmp;
+
+  tmp = g_file_attribute_matcher_new (attributes);
+  result = g_file_attribute_matcher_subtract (matcher, tmp);
+  g_file_attribute_matcher_unref (tmp);
+
+  return result;
 }
 #endif
 
 GFileEnumerator *
-_g_local_file_enumerator_new (const char           *filename,
+_g_local_file_enumerator_new (GLocalFile *file,
 			      const char           *attributes,
 			      GFileQueryInfoFlags   flags,
 			      GCancellable         *cancellable,
 			      GError              **error)
 {
   GLocalFileEnumerator *local;
+  char *filename = g_file_get_path (G_FILE (file));
 
 #ifdef USE_GDIR
   GError *dir_error;
@@ -208,6 +222,7 @@ _g_local_file_enumerator_new (const char           *filename,
 	  convert_file_to_io_error (error, dir_error);
 	  g_error_free (dir_error);
 	}
+      g_free (filename);
       return NULL;
     }
 #else
@@ -219,19 +234,27 @@ _g_local_file_enumerator_new (const char           *filename,
     {
       errsv = errno;
 
-      g_set_error (error, G_IO_ERROR,
-		   g_io_error_from_errno (errsv),
-		   "%s", g_strerror (errsv));
+      g_set_error_literal (error, G_IO_ERROR,
+                           g_io_error_from_errno (errsv),
+                           g_strerror (errsv));
+      g_free (filename);
       return NULL;
     }
 
 #endif
   
-  local = g_object_new (G_TYPE_LOCAL_FILE_ENUMERATOR, NULL);
+  local = g_object_new (G_TYPE_LOCAL_FILE_ENUMERATOR,
+                        "container", file,
+                        NULL);
 
   local->dir = dir;
-  local->filename = g_strdup (filename);
+  local->filename = filename;
   local->matcher = g_file_attribute_matcher_new (attributes);
+#ifndef USE_GDIR
+  local->reduced_matcher = g_file_attribute_matcher_subtract_attributes (local->matcher,
+                                                                         G_LOCAL_FILE_INFO_NOSTAT_ATTRIBUTES","
+                                                                         "standard::type");
+#endif
   local->flags = flags;
   
   return G_FILE_ENUMERATOR (local);
@@ -248,8 +271,32 @@ sort_by_inode (const void *_a, const void *_b)
   return a->inode - b->inode;
 }
 
+#ifdef HAVE_STRUCT_DIRENT_D_TYPE
+static GFileType
+file_type_from_dirent (char d_type)
+{
+  switch (d_type)
+    {
+    case DT_BLK:
+    case DT_CHR:
+    case DT_FIFO:
+    case DT_SOCK:
+      return G_FILE_TYPE_SPECIAL;
+    case DT_DIR:
+      return G_FILE_TYPE_DIRECTORY;
+    case DT_LNK:
+      return G_FILE_TYPE_SYMBOLIC_LINK;
+    case DT_REG:
+      return G_FILE_TYPE_REGULAR;
+    case DT_UNKNOWN:
+    default:
+      return G_FILE_TYPE_UNKNOWN;
+    }
+}
+#endif
+
 static const char *
-next_file_helper (GLocalFileEnumerator *local)
+next_file_helper (GLocalFileEnumerator *local, GFileType *file_type)
 {
   struct dirent *entry;
   const char *filename;
@@ -282,6 +329,11 @@ next_file_helper (GLocalFileEnumerator *local)
 	    {
 	      local->entries[i].name = g_strdup (entry->d_name);
 	      local->entries[i].inode = entry->d_ino;
+#if HAVE_STRUCT_DIRENT_D_TYPE
+              local->entries[i].type = file_type_from_dirent (entry->d_type);
+#else
+              local->entries[i].type = G_FILE_TYPE_UNKNOWN;
+#endif
 	    }
 	  else
 	    break;
@@ -292,10 +344,14 @@ next_file_helper (GLocalFileEnumerator *local)
       qsort (local->entries, i, sizeof (DirEntry), sort_by_inode);
     }
 
-  filename = local->entries[local->entries_pos++].name;
+  filename = local->entries[local->entries_pos].name;
   if (filename == NULL)
     local->at_end = TRUE;
     
+  *file_type = local->entries[local->entries_pos].type;
+
+  local->entries_pos++;
+
   return filename;
 }
 
@@ -311,19 +367,21 @@ g_local_file_enumerator_next_file (GFileEnumerator  *enumerator,
   char *path;
   GFileInfo *info;
   GError *my_error;
+  GFileType file_type;
 
   if (!local->got_parent_info)
     {
       _g_local_file_info_get_parent_info (local->filename, local->matcher, &local->parent_info);
       local->got_parent_info = TRUE;
     }
-  
+
  next_file:
 
 #ifdef USE_GDIR
   filename = g_dir_read_name (local->dir);
+  file_type = G_FILE_TYPE_UNKNOWN;
 #else
-  filename = next_file_helper (local);
+  filename = next_file_helper (local, &file_type);
 #endif
 
   if (filename == NULL)
@@ -331,11 +389,30 @@ g_local_file_enumerator_next_file (GFileEnumerator  *enumerator,
 
   my_error = NULL;
   path = g_build_filename (local->filename, filename, NULL);
-  info = _g_local_file_info_get (filename, path,
-				 local->matcher,
-				 local->flags,
-				 &local->parent_info,
-				 &my_error); 
+  if (file_type == G_FILE_TYPE_UNKNOWN ||
+      (file_type == G_FILE_TYPE_SYMBOLIC_LINK && !(local->flags & G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS)))
+    {
+      info = _g_local_file_info_get (filename, path,
+                                     local->matcher,
+                                     local->flags,
+                                     &local->parent_info,
+                                     &my_error); 
+    }
+  else
+    {
+      info = _g_local_file_info_get (filename, path,
+                                     local->reduced_matcher,
+                                     local->flags,
+                                     &local->parent_info,
+                                     &my_error); 
+      if (info)
+        {
+          _g_local_file_info_get_nostat (info, filename, path, local->matcher);
+          g_file_info_set_file_type (info, file_type);
+          if (file_type == G_FILE_TYPE_SYMBOLIC_LINK)
+            g_file_info_set_is_symlink (info, TRUE);
+        }
+    }
   g_free (path);
 
   if (info == NULL)
@@ -344,8 +421,7 @@ g_local_file_enumerator_next_file (GFileEnumerator  *enumerator,
       /* If the file does not exist there might have been a race where
        * the file was removed between the readdir and the stat, so we
        * ignore the file. */
-      if (my_error->domain == G_IO_ERROR &&
-	  my_error->code == G_IO_ERROR_NOT_FOUND)
+      if (g_error_matches (my_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
 	{
 	  g_error_free (my_error);
 	  goto next_file;
@@ -376,5 +452,3 @@ g_local_file_enumerator_close (GFileEnumerator  *enumerator,
 
   return TRUE;
 }
-
-

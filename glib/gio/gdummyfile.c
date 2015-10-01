@@ -13,28 +13,23 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #include <stdlib.h>
 
 #include "gdummyfile.h"
+#include "gfile.h"
 
-#include "gioalias.h"
 
 static void g_dummy_file_file_iface_init (GFileIface *iface);
 
@@ -87,9 +82,8 @@ g_dummy_file_finalize (GObject *object)
     _g_decoded_uri_free (dummy->decoded_uri);
   
   g_free (dummy->text_uri);
-  
-  if (G_OBJECT_CLASS (g_dummy_file_parent_class)->finalize)
-    (*G_OBJECT_CLASS (g_dummy_file_parent_class)->finalize) (object);
+
+  G_OBJECT_CLASS (g_dummy_file_parent_class)->finalize (object);
 }
 
 static void
@@ -105,12 +99,6 @@ g_dummy_file_init (GDummyFile *dummy)
 {
 }
 
-/**
- * g_dummy_file_new:
- * @uri: Universal Resource Identifier for the dummy file object.
- * 
- * Returns: a new #GFile. 
- **/
 GFile *
 _g_dummy_file_new (const char *uri)
 {
@@ -144,10 +132,6 @@ g_dummy_file_get_basename (GFile *file)
 static char *
 g_dummy_file_get_path (GFile *file)
 {
-  GDummyFile *dummy = G_DUMMY_FILE (file);
-
-  if (dummy->decoded_uri)
-    return g_strdup (dummy->decoded_uri->path);
   return NULL;
 }
 
@@ -429,6 +413,8 @@ g_dummy_file_file_iface_init (GFileIface *iface)
   iface->get_relative_path = g_dummy_file_get_relative_path;
   iface->resolve_relative_path = g_dummy_file_resolve_relative_path;
   iface->get_child_for_display_name = g_dummy_file_get_child_for_display_name;
+
+  iface->supports_thread_contexts = TRUE;
 }
 
 /* Uri handling helper functions: */
@@ -692,16 +678,13 @@ is_valid (char c, const char *reserved_chars_allowed)
 }
 
 static void
-g_string_append_encoded (GString    *string, 
+g_string_append_encoded (GString    *string,
                          const char *encoded,
 			 const char *reserved_chars_allowed)
 {
   unsigned char c;
-  const char *end;
   static const gchar hex[16] = "0123456789ABCDEF";
 
-  end = encoded + strlen (encoded);
-  
   while ((c = *encoded) != 0)
     {
       if (is_valid (c, reserved_chars_allowed))

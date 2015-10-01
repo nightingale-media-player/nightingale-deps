@@ -1,10 +1,11 @@
+#include "testmarshal.h"
 
 #include	<glib-object.h>
 
 
 #ifdef G_ENABLE_DEBUG
 #define g_marshal_value_peek_boolean(v)  g_value_get_boolean (v)
-#define g_marshal_value_peek_char(v)     g_value_get_char (v)
+#define g_marshal_value_peek_char(v)     g_value_get_schar (v)
 #define g_marshal_value_peek_uchar(v)    g_value_get_uchar (v)
 #define g_marshal_value_peek_int(v)      g_value_get_int (v)
 #define g_marshal_value_peek_uint(v)     g_value_get_uint (v)
@@ -21,6 +22,7 @@
 #define g_marshal_value_peek_boxed(v)    g_value_get_boxed (v)
 #define g_marshal_value_peek_pointer(v)  g_value_get_pointer (v)
 #define g_marshal_value_peek_object(v)   g_value_get_object (v)
+#define g_marshal_value_peek_variant(v)  g_value_get_variant (v)
 #else /* !G_ENABLE_DEBUG */
 /* WARNING: This code accesses GValues directly, which is UNSUPPORTED API.
  *          Do not access GValues directly in your code. Instead, use the
@@ -44,6 +46,7 @@
 #define g_marshal_value_peek_boxed(v)    (v)->data[0].v_pointer
 #define g_marshal_value_peek_pointer(v)  (v)->data[0].v_pointer
 #define g_marshal_value_peek_object(v)   (v)->data[0].v_pointer
+#define g_marshal_value_peek_variant(v)  (v)->data[0].v_pointer
 #endif /* !G_ENABLE_DEBUG */
 
 
@@ -59,9 +62,9 @@ test_marshal_BOOLEAN__INT (GClosure     *closure,
   typedef gboolean (*GMarshalFunc_BOOLEAN__INT) (gpointer     data1,
                                                  gint         arg_1,
                                                  gpointer     data2);
-  register GMarshalFunc_BOOLEAN__INT callback;
-  register GCClosure *cc = (GCClosure*) closure;
-  register gpointer data1, data2;
+  GMarshalFunc_BOOLEAN__INT callback;
+  GCClosure *cc = (GCClosure*) closure;
+  gpointer data1, data2;
   gboolean v_return;
 
   g_return_if_fail (return_value != NULL);
@@ -98,9 +101,9 @@ test_marshal_STRING__INT (GClosure     *closure,
   typedef gchar* (*GMarshalFunc_STRING__INT) (gpointer     data1,
                                               gint         arg_1,
                                               gpointer     data2);
-  register GMarshalFunc_STRING__INT callback;
-  register GCClosure *cc = (GCClosure*) closure;
-  register gpointer data1, data2;
+  GMarshalFunc_STRING__INT callback;
+  GCClosure *cc = (GCClosure*) closure;
+  gpointer data1, data2;
   gchar* v_return;
 
   g_return_if_fail (return_value != NULL);
@@ -123,5 +126,44 @@ test_marshal_STRING__INT (GClosure     *closure,
                        data2);
 
   g_value_take_string (return_value, v_return);
+}
+
+/* VARIANT:POINTER (./testmarshal.list:4) */
+void
+test_marshal_VARIANT__POINTER (GClosure     *closure,
+                               GValue       *return_value G_GNUC_UNUSED,
+                               guint         n_param_values,
+                               const GValue *param_values,
+                               gpointer      invocation_hint G_GNUC_UNUSED,
+                               gpointer      marshal_data)
+{
+  typedef GVariant* (*GMarshalFunc_VARIANT__POINTER) (gpointer     data1,
+                                                      gpointer     arg_1,
+                                                      gpointer     data2);
+  GMarshalFunc_VARIANT__POINTER callback;
+  GCClosure *cc = (GCClosure*) closure;
+  gpointer data1, data2;
+  GVariant* v_return;
+
+  g_return_if_fail (return_value != NULL);
+  g_return_if_fail (n_param_values == 2);
+
+  if (G_CCLOSURE_SWAP_DATA (closure))
+    {
+      data1 = closure->data;
+      data2 = g_value_peek_pointer (param_values + 0);
+    }
+  else
+    {
+      data1 = g_value_peek_pointer (param_values + 0);
+      data2 = closure->data;
+    }
+  callback = (GMarshalFunc_VARIANT__POINTER) (marshal_data ? marshal_data : cc->callback);
+
+  v_return = callback (data1,
+                       g_marshal_value_peek_pointer (param_values + 1),
+                       data2);
+
+  g_value_take_variant (return_value, v_return);
 }
 

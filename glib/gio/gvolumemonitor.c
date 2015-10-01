@@ -15,19 +15,19 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  *         David Zeuthen <davidz@redhat.com>
  */
 
-#include <config.h>
+#include "config.h"
 #include "gvolumemonitor.h"
+#include "gvolume.h"
+#include "gmount.h"
+#include "gdrive.h"
 #include "glibintl.h"
 
-#include "gioalias.h"
 
 /**
  * SECTION:gvolumemonitor
@@ -38,7 +38,12 @@
  * #GVolumeMonitor is for listing the user interesting devices and volumes
  * on the computer. In other words, what a file selector or file manager
  * would show in a sidebar. 
-**/
+ *
+ * #GVolumeMonitor is not
+ * [thread-default-context aware][g-main-context-push-thread-default],
+ * and so should not be used other than from the main thread, with no
+ * thread-default-context active.
+ **/
 
 G_DEFINE_TYPE (GVolumeMonitor, g_volume_monitor, G_TYPE_OBJECT);
 
@@ -53,6 +58,8 @@ enum {
   DRIVE_CONNECTED,
   DRIVE_DISCONNECTED,
   DRIVE_CHANGED,
+  DRIVE_EJECT_BUTTON,
+  DRIVE_STOP_BUTTON,
   LAST_SIGNAL
 };
 
@@ -62,12 +69,7 @@ static guint signals[LAST_SIGNAL] = { 0 };
 static void
 g_volume_monitor_finalize (GObject *object)
 {
-  GVolumeMonitor *monitor;
-
-  monitor = G_VOLUME_MONITOR (object);
-
-  if (G_OBJECT_CLASS (g_volume_monitor_parent_class)->finalize)
-    (*G_OBJECT_CLASS (g_volume_monitor_parent_class)->finalize) (object);
+  G_OBJECT_CLASS (g_volume_monitor_parent_class)->finalize (object);
 }
 
 static void
@@ -84,7 +86,7 @@ g_volume_monitor_class_init (GVolumeMonitorClass *klass)
    * 
    * Emitted when a mountable volume is added to the system.
    **/
-  signals[VOLUME_ADDED] = g_signal_new (I_("volume_added"),
+  signals[VOLUME_ADDED] = g_signal_new (I_("volume-added"),
                                         G_TYPE_VOLUME_MONITOR,
                                         G_SIGNAL_RUN_LAST,
                                         G_STRUCT_OFFSET (GVolumeMonitorClass, volume_added),
@@ -99,7 +101,7 @@ g_volume_monitor_class_init (GVolumeMonitorClass *klass)
    * 
    * Emitted when a mountable volume is removed from the system.
    **/  
-  signals[VOLUME_REMOVED] = g_signal_new (I_("volume_removed"),
+  signals[VOLUME_REMOVED] = g_signal_new (I_("volume-removed"),
                                           G_TYPE_VOLUME_MONITOR,
                                           G_SIGNAL_RUN_LAST,
                                           G_STRUCT_OFFSET (GVolumeMonitorClass, volume_removed),
@@ -114,7 +116,7 @@ g_volume_monitor_class_init (GVolumeMonitorClass *klass)
    * 
    * Emitted when mountable volume is changed.
    **/  
-  signals[VOLUME_CHANGED] = g_signal_new (I_("volume_changed"),
+  signals[VOLUME_CHANGED] = g_signal_new (I_("volume-changed"),
                                           G_TYPE_VOLUME_MONITOR,
                                           G_SIGNAL_RUN_LAST,
                                           G_STRUCT_OFFSET (GVolumeMonitorClass, volume_changed),
@@ -129,7 +131,7 @@ g_volume_monitor_class_init (GVolumeMonitorClass *klass)
    * 
    * Emitted when a mount is added.
    **/
-  signals[MOUNT_ADDED] = g_signal_new (I_("mount_added"),
+  signals[MOUNT_ADDED] = g_signal_new (I_("mount-added"),
                                        G_TYPE_VOLUME_MONITOR,
                                        G_SIGNAL_RUN_LAST,
                                        G_STRUCT_OFFSET (GVolumeMonitorClass, mount_added),
@@ -144,7 +146,7 @@ g_volume_monitor_class_init (GVolumeMonitorClass *klass)
    * 
    * Emitted when a mount is removed.
    **/
-  signals[MOUNT_REMOVED] = g_signal_new (I_("mount_removed"),
+  signals[MOUNT_REMOVED] = g_signal_new (I_("mount-removed"),
                                          G_TYPE_VOLUME_MONITOR,
                                          G_SIGNAL_RUN_LAST,
                                          G_STRUCT_OFFSET (GVolumeMonitorClass, mount_removed),
@@ -159,7 +161,7 @@ g_volume_monitor_class_init (GVolumeMonitorClass *klass)
    *
    * Emitted when a mount is about to be removed.
    **/ 
-  signals[MOUNT_PRE_UNMOUNT] = g_signal_new (I_("mount_pre_unmount"),
+  signals[MOUNT_PRE_UNMOUNT] = g_signal_new (I_("mount-pre-unmount"),
                                              G_TYPE_VOLUME_MONITOR,
                                              G_SIGNAL_RUN_LAST,
                                              G_STRUCT_OFFSET (GVolumeMonitorClass, mount_pre_unmount),
@@ -174,7 +176,7 @@ g_volume_monitor_class_init (GVolumeMonitorClass *klass)
    *
    * Emitted when a mount changes.
    **/ 
-  signals[MOUNT_CHANGED] = g_signal_new (I_("mount_changed"),
+  signals[MOUNT_CHANGED] = g_signal_new (I_("mount-changed"),
                                          G_TYPE_VOLUME_MONITOR,
                                          G_SIGNAL_RUN_LAST,
                                          G_STRUCT_OFFSET (GVolumeMonitorClass, mount_changed),
@@ -189,7 +191,7 @@ g_volume_monitor_class_init (GVolumeMonitorClass *klass)
    * 
    * Emitted when a drive is connected to the system.
    **/
-  signals[DRIVE_CONNECTED] = g_signal_new (I_("drive_connected"),
+  signals[DRIVE_CONNECTED] = g_signal_new (I_("drive-connected"),
 					   G_TYPE_VOLUME_MONITOR,
 					   G_SIGNAL_RUN_LAST,
 					   G_STRUCT_OFFSET (GVolumeMonitorClass, drive_connected),
@@ -204,7 +206,7 @@ g_volume_monitor_class_init (GVolumeMonitorClass *klass)
    * 
    * Emitted when a drive is disconnected from the system.
    **/  
-  signals[DRIVE_DISCONNECTED] = g_signal_new (I_("drive_disconnected"),
+  signals[DRIVE_DISCONNECTED] = g_signal_new (I_("drive-disconnected"),
 					      G_TYPE_VOLUME_MONITOR,
 					      G_SIGNAL_RUN_LAST,
 					      G_STRUCT_OFFSET (GVolumeMonitorClass, drive_disconnected),
@@ -219,13 +221,47 @@ g_volume_monitor_class_init (GVolumeMonitorClass *klass)
    *
    * Emitted when a drive changes.
    **/ 
-  signals[DRIVE_CHANGED] = g_signal_new (I_("drive_changed"),
+  signals[DRIVE_CHANGED] = g_signal_new (I_("drive-changed"),
                                          G_TYPE_VOLUME_MONITOR,
                                          G_SIGNAL_RUN_LAST,
                                          G_STRUCT_OFFSET (GVolumeMonitorClass, drive_changed),
                                          NULL, NULL,
                                          g_cclosure_marshal_VOID__OBJECT,
                                          G_TYPE_NONE, 1, G_TYPE_DRIVE);
+
+  /**
+   * GVolumeMonitor::drive-eject-button:
+   * @volume_monitor: The volume monitor emitting the signal.
+   * @drive: the drive where the eject button was pressed
+   *
+   * Emitted when the eject button is pressed on @drive.
+   *
+   * Since: 2.18
+   **/
+  signals[DRIVE_EJECT_BUTTON] = g_signal_new (I_("drive-eject-button"),
+                                              G_TYPE_VOLUME_MONITOR,
+                                              G_SIGNAL_RUN_LAST,
+                                              G_STRUCT_OFFSET (GVolumeMonitorClass, drive_eject_button),
+                                              NULL, NULL,
+                                              g_cclosure_marshal_VOID__OBJECT,
+                                              G_TYPE_NONE, 1, G_TYPE_DRIVE);
+
+  /**
+   * GVolumeMonitor::drive-stop-button:
+   * @volume_monitor: The volume monitor emitting the signal.
+   * @drive: the drive where the stop button was pressed
+   *
+   * Emitted when the stop button is pressed on @drive.
+   *
+   * Since: 2.22
+   **/
+  signals[DRIVE_STOP_BUTTON] = g_signal_new (I_("drive-stop-button"),
+                                             G_TYPE_VOLUME_MONITOR,
+                                             G_SIGNAL_RUN_LAST,
+                                             G_STRUCT_OFFSET (GVolumeMonitorClass, drive_stop_button),
+                                             NULL, NULL,
+                                             g_cclosure_marshal_VOID__OBJECT,
+                                             G_TYPE_NONE, 1, G_TYPE_DRIVE);
 
 }
 
@@ -244,7 +280,7 @@ g_volume_monitor_init (GVolumeMonitor *monitor)
  * The returned list should be freed with g_list_free(), after
  * its elements have been unreffed with g_object_unref().
  *
- * Returns: a #GList of connected #GDrive<!-- -->s
+ * Returns: (element-type GDrive) (transfer full): a #GList of connected #GDrive objects.
  **/
 GList *
 g_volume_monitor_get_connected_drives (GVolumeMonitor *volume_monitor)
@@ -267,7 +303,7 @@ g_volume_monitor_get_connected_drives (GVolumeMonitor *volume_monitor)
  * The returned list should be freed with g_list_free(), after
  * its elements have been unreffed with g_object_unref().
  *
- * Returns: a #GList of #GVolume<!-- -->s.
+ * Returns: (element-type GVolume) (transfer full): a #GList of #GVolume objects.
  **/
 GList *
 g_volume_monitor_get_volumes (GVolumeMonitor *volume_monitor)
@@ -290,7 +326,7 @@ g_volume_monitor_get_volumes (GVolumeMonitor *volume_monitor)
  * The returned list should be freed with g_list_free(), after
  * its elements have been unreffed with g_object_unref().
  * 
- * Returns: a #GList of #GMount<!-- -->s
+ * Returns: (element-type GMount) (transfer full): a #GList of #GMount objects.
  **/
 GList *
 g_volume_monitor_get_mounts (GVolumeMonitor *volume_monitor)
@@ -309,9 +345,10 @@ g_volume_monitor_get_mounts (GVolumeMonitor *volume_monitor)
  * @volume_monitor: a #GVolumeMonitor.
  * @uuid: the UUID to look for
  * 
- * Finds a #GVolume object by it's UUID (see g_volume_get_uuid())
+ * Finds a #GVolume object by its UUID (see g_volume_get_uuid())
  * 
- * Returns: a #GVolume or %NULL if no such volume is available.
+ * Returns: (transfer full): a #GVolume or %NULL if no such volume is available.
+ *     Free the returned object with g_object_unref().
  **/
 GVolume *
 g_volume_monitor_get_volume_for_uuid (GVolumeMonitor *volume_monitor, 
@@ -332,9 +369,10 @@ g_volume_monitor_get_volume_for_uuid (GVolumeMonitor *volume_monitor,
  * @volume_monitor: a #GVolumeMonitor.
  * @uuid: the UUID to look for
  * 
- * Finds a #GMount object by it's UUID (see g_mount_get_uuid())
+ * Finds a #GMount object by its UUID (see g_mount_get_uuid())
  * 
- * Returns: a #GMount or %NULL if no such mount is available.
+ * Returns: (transfer full): a #GMount or %NULL if no such mount is available.
+ *     Free the returned object with g_object_unref().
  **/
 GMount *
 g_volume_monitor_get_mount_for_uuid (GVolumeMonitor *volume_monitor, 
@@ -349,7 +387,3 @@ g_volume_monitor_get_mount_for_uuid (GVolumeMonitor *volume_monitor,
 
   return class->get_mount_for_uuid (volume_monitor, uuid);
 }
-
-
-#define __G_VOLUME_MONITOR_C__
-#include "gioaliasdef.c"

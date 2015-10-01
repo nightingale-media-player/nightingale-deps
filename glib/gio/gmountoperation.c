@@ -13,49 +13,49 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General
- * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <string.h>
 
 #include "gmountoperation.h"
 #include "gioenumtypes.h"
-#include "gio-marshal.h"
 #include "glibintl.h"
 
-#include "gioalias.h"
 
-/** 
+/**
  * SECTION:gmountoperation
- * @short_description: Authentication methods for mountable locations
+ * @short_description: Object used for authentication and user interaction
  * @include: gio/gio.h
  *
- * #GMountOperation provides a mechanism for authenticating mountable 
- * operations, such as loop mounting files, hard drive partitions or 
- * server locations. 
+ * #GMountOperation provides a mechanism for interacting with the user.
+ * It can be used for authenticating mountable operations, such as loop
+ * mounting files, hard drive partitions or server locations. It can
+ * also be used to ask the user questions or show a list of applications
+ * preventing unmount or eject operations from completing.
  *
- * Mounting operations are handed a #GMountOperation that then can use 
- * if they require any privileges or authentication for their volumes 
- * to be mounted (e.g. a hard disk partition or an encrypted filesystem), 
- * or if they are implementing a remote server protocol which requires 
- * user credentials such as FTP or WebDAV.
+ * Note that #GMountOperation is used for more than just #GMount
+ * objects – for example it is also used in g_drive_start() and
+ * g_drive_stop().
  *
- * Users should instantiate a subclass of this that implements all
- * the various callbacks to show the required dialogs.
- **/
-
-G_DEFINE_TYPE (GMountOperation, g_mount_operation, G_TYPE_OBJECT);
+ * Users should instantiate a subclass of this that implements all the
+ * various callbacks to show the required dialogs, such as
+ * #GtkMountOperation. If no user interaction is desired (for example
+ * when automounting filesystems at login time), usually %NULL can be
+ * passed, see each method taking a #GMountOperation for details.
+ */
 
 enum {
   ASK_PASSWORD,
   ASK_QUESTION,
   REPLY,
+  ABORTED,
+  SHOW_PROCESSES,
+  SHOW_UNMOUNT_PROGRESS,
   LAST_SIGNAL
 };
 
@@ -79,6 +79,8 @@ enum {
   PROP_PASSWORD_SAVE,
   PROP_CHOICE
 };
+
+G_DEFINE_TYPE_WITH_PRIVATE (GMountOperation, g_mount_operation, G_TYPE_OBJECT)
 
 static void 
 g_mount_operation_set_property (GObject      *object,
@@ -187,9 +189,8 @@ g_mount_operation_finalize (GObject *object)
   g_free (priv->password);
   g_free (priv->user);
   g_free (priv->domain);
-  
-  if (G_OBJECT_CLASS (g_mount_operation_parent_class)->finalize)
-    (*G_OBJECT_CLASS (g_mount_operation_parent_class)->finalize) (object);
+
+  G_OBJECT_CLASS (g_mount_operation_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -198,7 +199,7 @@ reply_non_handled_in_idle (gpointer data)
   GMountOperation *op = data;
 
   g_mount_operation_reply (op, G_MOUNT_OPERATION_UNHANDLED);
-  return FALSE;
+  return G_SOURCE_REMOVE;
 }
 
 static void
@@ -226,11 +227,30 @@ ask_question (GMountOperation *op,
 }
 
 static void
+show_processes (GMountOperation      *op,
+                const gchar          *message,
+                GArray               *processes,
+                const gchar          *choices[])
+{
+  g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
+		   reply_non_handled_in_idle,
+		   g_object_ref (op),
+		   g_object_unref);
+}
+
+static void
+show_unmount_progress (GMountOperation *op,
+                       const gchar     *message,
+                       gint64           time_left,
+                       gint64           bytes_left)
+{
+  /* nothing to do */
+}
+
+static void
 g_mount_operation_class_init (GMountOperationClass *klass)
 {
   GObjectClass *object_class;
-  
-  g_type_class_add_private (klass, sizeof (GMountOperationPrivate));
  
   object_class = G_OBJECT_CLASS (klass);
   object_class->finalize = g_mount_operation_finalize;
@@ -239,6 +259,8 @@ g_mount_operation_class_init (GMountOperationClass *klass)
   
   klass->ask_password = ask_password;
   klass->ask_question = ask_question;
+  klass->show_processes = show_processes;
+  klass->show_unmount_progress = show_unmount_progress;
   
   /**
    * GMountOperation::ask-password:
@@ -247,16 +269,20 @@ g_mount_operation_class_init (GMountOperationClass *klass)
    * @default_user: string containing the default user name.
    * @default_domain: string containing the default domain.
    * @flags: a set of #GAskPasswordFlags.
-   * 
+   *
    * Emitted when a mount operation asks the user for a password.
+   *
+   * If the message contains a line break, the first line should be
+   * presented as a heading. For example, it may be used as the
+   * primary text in a #GtkMessageDialog.
    */
   signals[ASK_PASSWORD] =
-    g_signal_new (I_("ask_password"),
+    g_signal_new (I_("ask-password"),
 		  G_TYPE_FROM_CLASS (object_class),
 		  G_SIGNAL_RUN_LAST,
 		  G_STRUCT_OFFSET (GMountOperationClass, ask_password),
 		  NULL, NULL,
-		  _gio_marshal_VOID__STRING_STRING_STRING_FLAGS,
+		  NULL,
 		  G_TYPE_NONE, 4,
 		  G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_ASK_PASSWORD_FLAGS);
 		  
@@ -265,25 +291,29 @@ g_mount_operation_class_init (GMountOperationClass *klass)
    * @op: a #GMountOperation asking a question.
    * @message: string containing a message to display to the user.
    * @choices: an array of strings for each possible choice.
-   * 
-   * Emitted when asking the user a question and gives a list of 
-   * choices for the user to choose from. 
+   *
+   * Emitted when asking the user a question and gives a list of
+   * choices for the user to choose from.
+   *
+   * If the message contains a line break, the first line should be
+   * presented as a heading. For example, it may be used as the
+   * primary text in a #GtkMessageDialog.
    */
   signals[ASK_QUESTION] =
-    g_signal_new (I_("ask_question"),
+    g_signal_new (I_("ask-question"),
 		  G_TYPE_FROM_CLASS (object_class),
 		  G_SIGNAL_RUN_LAST,
 		  G_STRUCT_OFFSET (GMountOperationClass, ask_question),
 		  NULL, NULL,
-		  _gio_marshal_VOID__STRING_BOXED,
+		  NULL,
 		  G_TYPE_NONE, 2,
 		  G_TYPE_STRING, G_TYPE_STRV);
 		  
   /**
    * GMountOperation::reply:
    * @op: a #GMountOperation.
-   * @abort: a boolean indicating %TRUE if the operation was aborted.
-   * 
+   * @result: a #GMountOperationResult indicating how the request was handled
+   *
    * Emitted when the user has replied to the mount operation.
    */
   signals[REPLY] =
@@ -295,6 +325,97 @@ g_mount_operation_class_init (GMountOperationClass *klass)
 		  g_cclosure_marshal_VOID__ENUM,
 		  G_TYPE_NONE, 1,
 		  G_TYPE_MOUNT_OPERATION_RESULT);
+
+  /**
+   * GMountOperation::aborted:
+   *
+   * Emitted by the backend when e.g. a device becomes unavailable
+   * while a mount operation is in progress.
+   *
+   * Implementations of GMountOperation should handle this signal
+   * by dismissing open password dialogs.
+   *
+   * Since: 2.20
+   */
+  signals[ABORTED] =
+    g_signal_new (I_("aborted"),
+		  G_TYPE_FROM_CLASS (object_class),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (GMountOperationClass, aborted),
+		  NULL, NULL,
+		  g_cclosure_marshal_VOID__VOID,
+		  G_TYPE_NONE, 0);
+
+  /**
+   * GMountOperation::show-processes:
+   * @op: a #GMountOperation.
+   * @message: string containing a message to display to the user.
+   * @processes: (element-type GPid): an array of #GPid for processes
+   *   blocking the operation.
+   * @choices: an array of strings for each possible choice.
+   *
+   * Emitted when one or more processes are blocking an operation
+   * e.g. unmounting/ejecting a #GMount or stopping a #GDrive.
+   *
+   * Note that this signal may be emitted several times to update the
+   * list of blocking processes as processes close files. The
+   * application should only respond with g_mount_operation_reply() to
+   * the latest signal (setting #GMountOperation:choice to the choice
+   * the user made).
+   *
+   * If the message contains a line break, the first line should be
+   * presented as a heading. For example, it may be used as the
+   * primary text in a #GtkMessageDialog.
+   *
+   * Since: 2.22
+   */
+  signals[SHOW_PROCESSES] =
+    g_signal_new (I_("show-processes"),
+		  G_TYPE_FROM_CLASS (object_class),
+		  G_SIGNAL_RUN_LAST,
+		  G_STRUCT_OFFSET (GMountOperationClass, show_processes),
+		  NULL, NULL,
+		  NULL,
+		  G_TYPE_NONE, 3,
+		  G_TYPE_STRING, G_TYPE_ARRAY, G_TYPE_STRV);
+
+  /**
+   * GMountOperation::show-unmount-progress:
+   * @op: a #GMountOperation:
+   * @message: string containing a mesage to display to the user
+   * @time_left: the estimated time left before the operation completes,
+   *     in microseconds, or -1
+   * @bytes_left: the amount of bytes to be written before the operation
+   *     completes (or -1 if such amount is not known), or zero if the operation
+   *     is completed
+   *
+   * Emitted when an unmount operation has been busy for more than some time
+   * (typically 1.5 seconds).
+   *
+   * When unmounting or ejecting a volume, the kernel might need to flush
+   * pending data in its buffers to the volume stable storage, and this operation
+   * can take a considerable amount of time. This signal may be emitted several
+   * times as long as the unmount operation is outstanding, and then one
+   * last time when the operation is completed, with @bytes_left set to zero.
+   *
+   * Implementations of GMountOperation should handle this signal by
+   * showing an UI notification, and then dismiss it, or show another notification
+   * of completion, when @bytes_left reaches zero.
+   *
+   * If the message contains a line break, the first line should be
+   * presented as a heading. For example, it may be used as the
+   * primary text in a #GtkMessageDialog.
+   *
+   * Since: 2.34
+   */
+  signals[SHOW_UNMOUNT_PROGRESS] =
+    g_signal_new (I_("show-unmount-progress"),
+                  G_TYPE_FROM_CLASS (object_class),
+                  G_SIGNAL_RUN_LAST,
+                  G_STRUCT_OFFSET (GMountOperationClass, show_unmount_progress),
+                  NULL, NULL, NULL,
+                  G_TYPE_NONE, 3,
+                  G_TYPE_STRING, G_TYPE_INT64, G_TYPE_INT64);
 
   /**
    * GMountOperation:username:
@@ -388,9 +509,7 @@ g_mount_operation_class_init (GMountOperationClass *klass)
 static void
 g_mount_operation_init (GMountOperation *operation)
 {
-  operation->priv = G_TYPE_INSTANCE_GET_PRIVATE (operation,
-						 G_TYPE_MOUNT_OPERATION,
-						 GMountOperationPrivate);
+  operation->priv = g_mount_operation_get_instance_private (operation);
 }
 
 /**
@@ -407,7 +526,7 @@ g_mount_operation_new (void)
 }
 
 /**
- * g_mount_operation_get_username
+ * g_mount_operation_get_username:
  * @op: a #GMountOperation.
  * 
  * Get the user name from the mount operation.
@@ -427,7 +546,6 @@ g_mount_operation_get_username (GMountOperation *op)
  * @username: input username.
  *
  * Sets the user name within @op to @username.
- * 
  **/
 void
 g_mount_operation_set_username (GMountOperation *op,
@@ -632,6 +750,3 @@ g_mount_operation_reply (GMountOperation *op,
   g_return_if_fail (G_IS_MOUNT_OPERATION (op));
   g_signal_emit (op, signals[REPLY], 0, result);
 }
-
-#define __G_MOUNT_OPERATION_C__
-#include "gioaliasdef.c"

@@ -14,17 +14,14 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with the Gnome Library; see the file COPYING.LIB.  If not,
- * write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- *   Boston, MA 02111-1307, USA.
+ * see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
 
 #include <stdlib.h>
 
-#include "glib.h"
 #include "gunibreak.h"
-#include "galias.h"
 
 #define TPROP_PART1(Page, Char) \
   ((break_property_table_part1[Page] >= G_UNICODE_MAX_TABLE_INDEX) \
@@ -54,13 +51,10 @@
  * resolution algorithms and normally you would use a function such
  * as pango_break() instead of caring about break types yourself.
  * 
- * Return value: the break type of @c
+ * Returns: the break type of @c
  **/
 GUnicodeBreakType
 g_unichar_break_type (gunichar c)
 {
   return PROP (c);
 }
-
-#define __G_UNIBREAK_C__
-#include "galiasdef.c"

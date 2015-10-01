@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 #include <glib.h>
 
@@ -22,14 +20,13 @@
 #include <string.h>
 
 #define quick_rand32()  (rand_accu = 1664525 * rand_accu + 1013904223, rand_accu)
-static guint    prime_size = 1021; // 769; // 509
+static guint    prime_size = 1021; /* 769; 509 */
 static gboolean clean_memchunks = FALSE;
 static guint    number_of_blocks = 10000;          /* total number of blocks allocated */
 static guint    number_of_repetitions = 10000;     /* number of alloc+free repetitions */
 static gboolean want_corruption = FALSE;
 
 /* --- old memchunk prototypes (memchunks.c) --- */
-void            old_mem_chunks_init     (void);
 GMemChunk*      old_mem_chunk_new       (const gchar  *name,
                                          gint          atom_size,
                                          gulong        area_size,
@@ -265,8 +262,6 @@ main (int   argc,
       seedp = &seed32;
     }
 
-  g_thread_init (NULL);
-
   if (argc <= 1)
     usage();
 
@@ -282,12 +277,11 @@ main (int   argc,
     threads = g_alloca (sizeof(GThread*) * n_threads);
     if (!use_memchunks)
       for (i = 0; i < n_threads; i++)
-        threads[i] = g_thread_create_full (test_sliced_mem_thread, seedp, 0, TRUE, FALSE, 0, NULL);
+        threads[i] = g_thread_create (test_sliced_mem_thread, seedp, TRUE, NULL);
     else
       {
-        old_mem_chunks_init();
         for (i = 0; i < n_threads; i++)
-          threads[i] = g_thread_create_full (test_memchunk_thread, seedp, 0, TRUE, FALSE, 0, NULL);
+          threads[i] = g_thread_create (test_memchunk_thread, seedp, TRUE, NULL);
       }
     for (i = 0; i < n_threads; i++)
       g_thread_join (threads[i]);
@@ -299,7 +293,7 @@ main (int   argc,
         for (i = 0; i < n_chunks; i++)
           {
             gint64 *vals = g_slice_get_config_state (G_SLICE_CONFIG_CONTENTION_COUNTER, i, &n);
-            g_print ("  %9llu   |  %9llu   |  %9llu\n", vals[0], vals[2], vals[1]);
+            g_print ("  %9" G_GINT64_FORMAT "   |  %9" G_GINT64_FORMAT "   |  %9" G_GINT64_FORMAT "\n", vals[0], vals[2], vals[1]);
             g_free (vals);
           }
       }

@@ -21,6 +21,10 @@
 #ifndef __G_SHELL_H__
 #define __G_SHELL_H__
 
+#if !defined (__GLIB_H_INSIDE__) && !defined (GLIB_COMPILATION)
+#error "Only <glib.h> can be included directly."
+#endif
+
 #include <glib/gerror.h>
 
 G_BEGIN_DECLS
@@ -36,11 +40,15 @@ typedef enum
   G_SHELL_ERROR_FAILED
 } GShellError;
 
+GLIB_AVAILABLE_IN_ALL
 GQuark g_shell_error_quark (void);
 
+GLIB_AVAILABLE_IN_ALL
 gchar*   g_shell_quote      (const gchar   *unquoted_string);
+GLIB_AVAILABLE_IN_ALL
 gchar*   g_shell_unquote    (const gchar   *quoted_string,
                              GError       **error);
+GLIB_AVAILABLE_IN_ALL
 gboolean g_shell_parse_argv (const gchar   *command_line,
                              gint          *argcp,
                              gchar       ***argvp,
@@ -49,5 +57,3 @@ gboolean g_shell_parse_argv (const gchar   *command_line,
 G_END_DECLS
 
 #endif /* __G_SHELL_H__ */
-
-

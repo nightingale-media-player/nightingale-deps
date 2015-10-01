@@ -12,9 +12,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 #include <glib.h>
 #include <string.h>
@@ -131,13 +129,14 @@ main (int   argc,
   /* basic sanity checks */
   if (!block_size || !n_blocks || block_size >= area_size)
     {
-      g_printerr ("Invalid arguments: block-size=%llu memory-size=%llu\n", block_size, area_size);
+      g_printerr ("Invalid arguments: block-size=%" G_GUINT64_FORMAT " memory-size=%" G_GUINT64_FORMAT "\n", block_size, area_size);
       usage();
       return 1;
     }
 
-  g_printerr ("Will allocate and touch %llu blocks of %llu bytes (= %llu bytes) %llu times with color increment: 0x%08llx\n",
-              n_blocks, block_size, n_blocks * block_size, repeats, g_slice_get_config (G_SLICE_CONFIG_COLOR_INCREMENT));
+  g_printerr ("Will allocate and touch %" G_GUINT64_FORMAT " blocks of %" G_GUINT64_FORMAT " bytes (= %" G_GUINT64_FORMAT " bytes) %" G_GUINT64_FORMAT " times with color increment: 0x%08" G_GINT64_MODIFIER "x\n",
+              n_blocks, block_size, n_blocks * block_size, repeats,
+	      (guint64)g_slice_get_config (G_SLICE_CONFIG_COLOR_INCREMENT));
 
   touch_mem (block_size, n_blocks, repeats);
   
